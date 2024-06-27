@@ -28,7 +28,7 @@ class InputController extends Controller
         $validasi_pelanggan = Validator::make(
             $request->all(),
             [
-                'no_faktur' => 'required',
+                // 'no_faktur' => 'required',
                 'tanggal' => 'required',
                 'cabang' => 'required',
                 'sub_total' => 'required',

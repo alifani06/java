@@ -57,11 +57,11 @@
             <div class="card">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-md-4 mb-3">
+                        {{-- <div class="col-md-4 mb-3">
                             <label for="no_faktur">No Faktur</label>
                             <input type="text"  class="form-control" id="no_faktur" name="no_faktur"
                                value="{{ old('no_faktur') }}">
-                        </div>
+                        </div> --}}
                         <div class="col-md-4 mb-3">
                             <label>Tanggal :</label>
                             <div class="input-group date" id="reservationdatetime">

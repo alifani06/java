@@ -12,7 +12,8 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Data Subklasifikasi 1</li>
+                        <li class="breadcrumb-item"><a href="{{ url('admin/klasifikasi') }}">Klaisifikasi</a></li>
+                        <li class="breadcrumb-item active">Tambah</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
