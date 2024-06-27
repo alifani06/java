@@ -83,18 +83,18 @@
                         </div>
                         <div class="form-group">
                             <label for="nama_lengkap">Nama lengkap</label>
-                            <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" 
+                            <input type="text" class="form-control" id="nama_lengkap" readonly name="nama_lengkap" 
                                 placeholder="" value="{{ old('nama_lengkap') }}">
                         </div>
                         <div class="form-group">
                             <label for="nama">No KTP</label>
-                            <input type="text" class="form-control" id="no_ktp" name="no_ktp"  placeholder=""
+                            <input type="text" class="form-control" id="no_ktp" readonly name="no_ktp"  placeholder=""
                                 value="{{ old('no_ktp') }}">
                         </div>
 
                         <div class="form-group">
                             <label for="nama">Alamat</label>
-                            <input type="text" class="form-control" id="alamat" name="alamat"  placeholder=""
+                            <input type="text" class="form-control" id="alamat" readonly name="alamat"  placeholder=""
                                 value="{{ old('alamat') }}">
                         </div>
 
