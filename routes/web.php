@@ -40,6 +40,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::post('akses-access/{id}', [\App\Http\Controllers\Admin\AksesController::class, 'access_user']);
     Route::resource('karyawan', \App\Http\Controllers\Admin\KaryawanController::class);
     Route::resource('user', \App\Http\Controllers\Admin\UserController::class);
+    Route::get('user/karyawan/{id}', [\App\Http\Controllers\Admin\UserController::class, 'karyawan']);
     Route::resource('kartu', \App\Http\Controllers\Admin\KartuController::class);
     // Route::resource('addpelanggan', \App\Http\Controllers\Admin\AddpelangganController::class);
     Route::resource('pelanggan', \App\Http\Controllers\Admin\PelangganController::class);
