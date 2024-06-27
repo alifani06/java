@@ -54,12 +54,11 @@ class PelangganController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'kode_lama' => 'required',
+                // 'kode_lama' => 'required',
                 'nama_pelanggan' => 'required',
                 'alamat' => 'required',
                 'gender' => 'required',
                 'telp' => 'required',
-                // 'jabatan' => 'required',
                 'email' => 'required',
                 'pekerjaan' => 'required',
                 'tanggal_lahir' => 'required',
@@ -69,18 +68,18 @@ class PelangganController extends Controller
             ],
             [
              
-                'kode_lama.required' => 'Masukkan no ktp',
-                'nama_pelanggan.required' => 'Masukkan no sim',
+                'kode_lama.required' => 'Masukkan kode lama',
+                'nama_pelanggan.required' => 'Masukkan nama pelanggan',
                
-                'pekerjaan.required' => 'Pilih gender',
-                'gender.required' => 'Masukkan tanggal lahir',
-                'email.required' => 'Masukkan tanggal gabung',
+                'pekerjaan.required' => 'masukan pekerjaan',
+                'gender.required' => 'peilih gender',
+                'email.required' => 'Masukkan email',
                 // 'jabatan.required' => 'Pilih jabatan',
                 'telp.required' => 'Masukkan no telepon',
                 'alamat.required' => 'Masukkan alamat',
-                'tanggal_lahir.required' => 'Masukkan alamat',
-                'tanggal_awal.required' => 'Masukkan alamat',
-                'tanggal_akhir.required' => 'Masukkan alamat',
+                'tanggal_lahir.required' => 'Masukkan tanggal lahir',
+                'tanggal_awal.required' => 'Masukkan tanggal gabung',
+                'tanggal_akhir.required' => 'Masukkan tanggal expired',
                 'gambar.image' => 'Gambar yang dimasukan salah!',
             ]
         );
