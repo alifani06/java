@@ -14,6 +14,9 @@ use App\Models\Member;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ConditionalRules;
+use Barryvdh\DomPDF\Facade ;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+// use Barryvdh\DomPDF\PDF as DomPDFPDF;
 
 class PelangganController extends Controller
 {
@@ -277,5 +280,24 @@ class PelangganController extends Controller
 
         return redirect('admin/pelanggan')->with('success', 'Berhasil menghapus data pelanggan');
     }
+    
+    // public function cetak_pdf($id)
+    // {
+    //     $pelanggan = Pelanggan::findOrFail($id);
 
+    //     $pdf = FacadePdf::loadView('admin.pelanggan.cetak_pdf', compact('pelanggan'));
+    //     return $pdf->download('kartu_member.pdf');
+    // }
+    public function cetak_pdf($id)
+    {
+        $pelanggan = Pelanggan::findOrFail($id);
+
+        // Membuat PDF dan menetapkan ukuran kertas kustom
+        $pdf = FacadePdf::loadView('admin.pelanggan.cetak_pdf', compact('pelanggan'))
+                        ->setPaper([0, 0, 500, 270]); // [left, top, width, height]
+
+        // Mengirimkan view PDF sebagai respons
+        return $pdf->stream('kartu_member.pdf');
+
+    }
 }

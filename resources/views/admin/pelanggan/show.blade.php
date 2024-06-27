@@ -22,133 +22,97 @@
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
+
     <style>
-   
         .card {
             width: 500px;
             height: 270px; 
-            background-color: rgb(183, 181, 181);
+            background-color: rgb(255, 255, 255);
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             padding: 20px;
             margin: 0 auto;
-            position: relative; /* Membuat posisi relatif untuk dapat mengatur absolut */
+            position: relative;
+            background-image: url('storage/uploads/icon/bakery.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
+
         .qr-code {
             position: absolute;
-            bottom: 20px ; /* Jarak dari atas */
-            right: 20px; /* Jarak dari kanan */
+            bottom: 90px;
+            right: 20px;
         }
         .qr-code img {
-            max-width: 80px; /* Ukuran maksimum QR Code */
+            max-width: 200px;
         }
         .info {
             margin-bottom: 10px;
         }
         .info label {
             position: absolute;
-            top: 10px ; /* Jarak dari atas */
-            right: 20px; /* Jarak dari kanan */
+            top: 10px;
+            right: 20px;
             font-weight: bold;
             font-size: 200%;
-        
         }
         .info1 {
             position: absolute;
-            top: 150px ; /* Jarak dari atas */
-            left: 50px; /* Jarak dari kanan */
+            top: 150px;
+            left: 50px;
             font-weight: bold;
             font-size: 200%;
         }
         .info2 {
             position: absolute;
-            top: 190px ; /* Jarak dari atas */
-            left: 50px; /* Jarak dari kanan */
+            bottom: 60px;
+            right: 20px;
             font-weight: bold;
             font-size: 130%;
-            font-family: monospace
+            font-family: monospace;
         }
         .logo {
             position: absolute;
-            top: 2px; /* Jarak dari atas */
-            left: 5px; /* Jarak dari kiri */
+            top: 0px;
+            left: 0px;
         }
         .logo img {
-            max-width: 100px; /* Atur ukuran maksimum logo */
-        }
-
-        .info3 {
-            position: absolute;
-            top: 60px; /* Jarak dari atas */
-            left: 20px; /* Jarak dari kiri */
-            right: 20px; /* Jarak dari kanan */
-            font-weight: bold;
-            font-size: 200%;
-            border-bottom: 2px solid black; /* Menambahkan garis bawah */
-            padding-bottom: 5px; /* Jarak antara teks dan garis bawah */
-            display: flex;
-            justify-content: space-between;
+            width: 500px;
+            height: 270px;
+            margin: 0 auto;
+            background-size: cover;
         }
     </style>
+
     <section class="content">
         <div class="container-fluid">
-            <div class="card">
+            <div class="card mb-3" id="printCard">
                 <div class="card-body">
-                    <div class="logo">
-                        <img  src="{{ asset('storage/uploads/icon/bakery.png') }}">
-                    </div>
-                  
-                    <div class="info">
-                        <label for="kode_pelanggan">MEMBER CARD</label>
-                 <div class="info3">
 
-                 </div>
-                    <div class="info1">
-                        <span>{{ $pelanggan->nama_pelanggan }}</span>
+                    <div class="logo">
+                        <img src="{{ asset('storage/uploads/icon/depan.jpeg') }}">
                     </div>
-    
+
                     <div class="info2">
                         <span>{{ $pelanggan->kode_pelanggan }}</span>
                     </div>
-    
-                    <div class="qr-code" data-bs-toggle="modal" data-bs-target="#modal-qrcode-{{ $pelanggan->id }}"
-                        style="display: inline-block;">
-                        {!! DNS2D::getBarcodeHTML("$pelanggan->qrcode_pelanggan", 'QRCODE', 2, 2) !!}
+                    <div class="qr-code" data-bs-toggle="modal" data-bs-target="#modal-qrcode-{{ $pelanggan->id }}">
+                        {!! DNS2D::getBarcodeHTML($pelanggan->qrcode_pelanggan, 'QRCODE', 2, 2) !!}
                     </div>
                 </div>
-
-            </div>     
-      </div>
+            </div>  
+            <a href="{{ route('pelanggan.cetak_pdf', $pelanggan->id) }}" class="btn btn-primary" target="_blank">CETAK</a>
+        </div>
     </section>
+
+    <script>
+        function printCard() {
+            var printContents = document.getElementById('printCard').innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+    </script>
 @endsection
-
-
-
-            
-
-
-    {{-- <body>
-            <div class="card">
-
-                <div class="logo">
-                    <img  src="{{ asset('storage/uploads/icon/bakery.png') }}">
-                </div>
-              
-                <div class="info">
-                    <label for="kode_pelanggan">MEMBER CARD</label>
-             
-                <div class="info1">
-                    <span>{{ $pelanggan->nama_pelanggan }}</span>
-                </div>
-
-                <div class="info2">
-                    <span>{{ $pelanggan->kode_pelanggan }}</span>
-                </div>
-
-                <div class="qr-code" data-bs-toggle="modal" data-bs-target="#modal-qrcode-{{ $pelanggan->id }}"
-                    style="display: inline-block;">
-                    {!! DNS2D::getBarcodeHTML("$pelanggan->qrcode_pelanggan", 'QRCODE', 2, 2) !!}
-                </div>
-    
-            </div>
-        </body> --}}

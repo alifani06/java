@@ -9,6 +9,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\KlasifikasiController;
 use App\Http\Controllers\Admin\AddpelangganController;
 use App\Http\Controllers\Admin\KlasifikasiController as AdminKlasifikasiController;
+use App\Http\Controllers\Admin\PelangganController;
 use App\Http\Controllers\KategoriDropdownController;
 use App\Http\Controllers\SubcategoryController;
 use Illuminate\Support\Facades\Route;
@@ -53,13 +54,14 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('member', \App\Http\Controllers\Admin\MemberController::class); 
     Route::resource('input', \App\Http\Controllers\Admin\InputController::class); 
     Route::get('pelanggan/getpelanggan/{id}', [\App\Http\Controllers\Admin\PelangganController::class, 'getpelanggan']);
+    Route::get('pelanggan/cetak_pdf/{id}', [PelangganController::class, 'cetak_pdf'])->name('pelanggan.cetak_pdf');
+    // Route::get('/pelanggan/cetak_pdf/{id}', [\App\Http\Controllers\Admin\PelangganController::class, 'cetak_pdf']);
     Route::post('tambahkategori', [\App\Http\Controllers\Admin\AddkategoriController::class, 'tambahkategori']);
     Route::get('/klasifikasi/{id}/sub', [\App\Http\Controllers\Admin\KlasifikasiController::class, 'getSubCategories']);
     Route::get('klasifikasi/get_subklasifikasi/{id}', [\App\Http\Controllers\Admin\KlasifikasiController::class, 'get_subklasifikasi']);
     Route::get('addsub/get_subklasifikasi/{id}', [\App\Http\Controllers\Admin\AddsubController::class, 'get_subklasifikasi']);
     Route::get('klasifikasi/get_klasifikasi/{id}', [\App\Http\Controllers\Admin\BarangController::class, 'get_klasifikasi']);
     // Route::get('klasifikasi/addkategori/create', [\App\Http\Controllers\Admin\AddkategoriController::class, 'create']);
-
     });
     Route::get('/toko/slawi', [SlawiController::class, 'index']);
     Route::get('/addpelanggan', [AddpelangganController::class, 'create']);
