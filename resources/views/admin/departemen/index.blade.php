@@ -23,7 +23,7 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            @if (session('success'))
+            {{-- @if (session('success'))
                 <div class="alert alert-success alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <h5>
@@ -31,7 +31,20 @@
                     </h5>
                     {{ session('success') }}
                 </div>
-            @endif
+            @endif --}}
+            @if (session('success'))
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: '{{ session('success') }}',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+                });
+            </script>
+        @endif
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Data Departemen</h3>

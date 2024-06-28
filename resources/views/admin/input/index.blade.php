@@ -6,7 +6,7 @@
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
-                @if (session('success'))
+                {{-- @if (session('success'))
                     <div class="alert alert-success alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                         <h5>
@@ -14,7 +14,21 @@
                         </h5>
                         {{ session('success') }}
                     </div>
-                @endif
+                @endif --}}
+
+                @if (session('success'))
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: '{{ session('success') }}',
+                            timer: 1000,
+                            showConfirmButton: false
+                        });
+                    });
+                </script>
+            @endif
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0">Input Stok Barang Jadi</h1>

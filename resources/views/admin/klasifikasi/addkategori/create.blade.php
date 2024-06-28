@@ -23,16 +23,27 @@
 
     <section class="content">
         <div class="container-fluid">
-            @if (session('error'))
-                <div class="alert alert-danger alert-dismissible">
+            {{-- @if (session('success'))
+                <div class="alert alert-success alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <h5>
-                        <i class="icon fas fa-ban"></i> Error!
+                        <i class="icon fas fa-check"></i> Success!
                     </h5>
-                    @foreach (session('error') as $error)
-                        - {{ $error }} <br>
-                    @endforeach
+                    {{ session('success') }}
                 </div>
+            @endif --}}
+            @if (session('success'))
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: '{{ session('success') }}',
+                            timer: 1000,
+                            showConfirmButton: false
+                        });
+                    });
+                </script>
             @endif
             <form action="{{ url('admin/tambahkategori') }}" method="POST" enctype="multipart/form-data"
             autocomplete="off">

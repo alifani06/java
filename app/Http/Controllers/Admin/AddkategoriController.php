@@ -163,7 +163,7 @@ class AddkategoriController extends Controller
         // $pembelians = Pembelian::find($transaksi_id);
 
         // $parts = Subklasifikasi::where('pembelian_id', $pembelians->id)->get();
-   return back();
+   return back()->with('success', 'Berhasil Menambahkan  subklasifikasi');
        
     }
 

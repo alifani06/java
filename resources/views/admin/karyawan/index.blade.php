@@ -19,7 +19,7 @@
     </div>
     <section class="content">
         <div class="container-fluid">
-            @if (session('success'))
+            {{-- @if (session('success'))
                 <div class="alert alert-success alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <h5>
@@ -27,6 +27,20 @@
                     </h5>
                     {{ session('success') }}
                 </div>
+            @endif --}}
+
+            @if (session('success'))
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: '{{ session('success') }}',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+                });
+            </script>
             @endif
             <div class="card">
                 <div class="card-header">
@@ -89,7 +103,7 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <p>Yakin hapus karyawan <strong>{{ $karyawan->nama }}</strong>?</p>
+                                                <p>Yakin hapus karyawan <strong>{{ $karyawan->nama_lengkap }}</strong>?</p>
                                             </div>
                                             <div class="modal-footer justify-content-between">
                                                 <button type="button" class="btn btn-default"
