@@ -46,9 +46,9 @@ class Input extends Model
         return $this->belongsTo(Subsub::class);
     }
 
-    public function detailbarangjadi()
+    public function details()
     {
-        return $this->hasMany(Detailbarangjadi::class);
+        return $this->hasMany(Detailbarangjadi::class, 'input_id', 'id');
     }
 
 

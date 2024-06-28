@@ -33,6 +33,13 @@
                 <div class="col-sm-6">
                     <h1 class="m-0">Input Stok Barang Jadi</h1>
 
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="{{ url('admin/input/data') }}">Barang Jadi</a></li>
+                         
+                        </ol>
+                    </div><!-- /.col -->
+
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -69,14 +76,14 @@
             @csrf
 
             <div class="card">
-                <div class="card-header">
+                <div class="card-header" >
                     <div class="row">
+                        <div class="col-md-4 mb-3" hidden>
+                            <label for="kode_faktur">No Faktur</label>
+                            <input type="text"  class="form-control" id="kode_faktur" name="kode_faktur"
+                               value="{{ old('kode_faktur') }}">
+                        </div>
                         {{-- <div class="col-md-4 mb-3">
-                            <label for="no_faktur">No Faktur</label>
-                            <input type="text"  class="form-control" id="no_faktur" name="no_faktur"
-                               value="{{ old('no_faktur') }}">
-                        </div> --}}
-                        <div class="col-md-4 mb-3">
                             <label>Tanggal :</label>
                             <div class="input-group date" id="reservationdatetime">
                                 <input type="date" id="tanggal" name="tanggal"
@@ -85,7 +92,18 @@
                                     value="{{ old('tanggal') }}" class="form-control datetimepicker-input"
                                     data-target="#reservationdatetime">
                             </div>
+                        </div> --}}
+                        <div class="col-md-4 mb-3">
+                            <label>Tanggal :</label>
+                            <div class="input-group date" id="reservationdatetime">
+                                <input type="datetime-local" id="tanggal" name="tanggal"
+                                    placeholder="dd-mm-yyyy hh:mm"
+                                    value="{{ old('tanggal') }}"
+                                    class="form-control datetimepicker-input"
+                                    data-target="#reservationdatetime">
+                            </div>
                         </div>
+                        
                         <div class="col mb-3">
                             <label class="form-label" for="cabang">Pilih Cabang</label>
                             <select class="form-control" id="cabang" name="cabang">

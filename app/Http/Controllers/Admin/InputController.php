@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Barang; // Import model Barang untuk mengambil data barang
 use App\Models\Detailbarangjadi;
+use App\Models\Klasifikasi;
 use App\Models\Subsub; // Import model Subsub untuk mengambil data subsub
 
 class InputController extends Controller
@@ -19,16 +20,49 @@ class InputController extends Controller
         
         $barangs = Barang::all();
         $subs1 = Subsub::all();
+        $details = Detailbarangjadi::all();
+        $klasifikasi = Klasifikasi::all();
         $inputs = Input::with('barang')->get();
-        return view('admin/input.index', compact('inputs', 'barangs', 'subs1'));
+        return view('admin/input.index', compact('inputs', 'barangs', 'subs1', 'details','klasifikasi'));
+    }
+
+    // show as data
+    public function show(Request $request)
+    {
+        $tanggal = $request->tanggal ?? now()->format('Y-m-d');
+        $barangs = Barang::all();
+        $subs1 = Subsub::all();
+        $inputs = Input::with('details.subsub.subklasifikasi.klasifikasi')
+        ->whereDate('tanggal', $tanggal)
+        ->get();
+        return view('admin.input.data', compact('inputs', 'barangs', 'subs1'));
     }
    
+   
+    public function kode()
+    {
+        $faktur = Input::all();
+        if ($faktur->isEmpty()) {
+            $num = "000001";
+        } else {
+            $id = Input::getId();
+            foreach ($id as $value);
+            $idlm = $value->id;
+            $idbr = $idlm + 1;
+            $num = sprintf("%06s", $idbr);
+        }
+
+        $data = 'JB';
+        $kode_faktur = $data . $num;
+        return $kode_faktur;
+    }
+    
     public function store(Request $request)
     {
         $validasi_pelanggan = Validator::make(
             $request->all(),
             [
-                // 'no_faktur' => 'required',
+                // 'kode_faktur' => 'required',
                 'tanggal' => 'required',
                 'cabang' => 'required',
                 'sub_total' => 'required',
@@ -36,7 +70,7 @@ class InputController extends Controller
                 'tanggal_pengiriman' => 'required',
             ],
             [
-                'no_faktur.required' => 'Pilih no_faktur',
+                'kode_faktur.required' => 'Pilih no_faktur',
                 'tanggal.required' => 'Pilih Pelanggan',
                 'cabang.required' => 'Masukkan grand total',
             ]
@@ -98,11 +132,12 @@ class InputController extends Controller
       
         $tanggal1 = Carbon::now('Asia/Jakarta');
         $format_tanggal = $tanggal1->format('d F Y');
-
+        $kode = $this->kode();
         $tanggal = Carbon::now()->format('Y-m-d');
+
         $cetakpdf = Input::create([
             // 'user_id' => auth()->user()->id,
-            'no_faktur' => $request->no_faktur,
+            // 'kode_faktur' => $kode,
             'tanggal' => $request->tanggal,
             'cabang' => $request->cabang,
             'sub_total' => $request->sub_total,
@@ -135,6 +170,30 @@ class InputController extends Controller
         $details = Detailbarangjadi::where('input_id', $cetakpdf->id)->get();
 return back()->with('success', 'Berhasil menambahkan barang jadi');;
     }
+
+
+//     public function kode()
+// {
+//     $input = Input::all();
+
+//     if ($input->isEmpty()) {
+//         $num = 1; // Jika tidak ada data, mulai dari nomor 1
+//     } else {
+//         // Ambil ID terakhir dari input
+//         $lastId = $input->last()->id;
+//         $num = $lastId + 1; // Nomor urut berikutnya
+//     }
+
+//     // Mendapatkan tahun saat ini
+//     $tahun = date('Y');
+
+//     // Format kode pelanggan
+//     $prefix = 'JB'; // Prefix untuk kode pelanggan
+//     $formattedNum = sprintf("%06d", $num); // Format nomor urut dengan panjang 6 digit angka
+//     $kode_pelanggan = $prefix . $tahun . $formattedNum;
+
+//     return $kode_pelanggan;
+// }
 
 // public function store(Request $request)
 // {

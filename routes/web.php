@@ -53,6 +53,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('subklasifikasi', \App\Http\Controllers\Admin\SubklasifikasiController::class); 
     Route::resource('member', \App\Http\Controllers\Admin\MemberController::class); 
     Route::resource('input', \App\Http\Controllers\Admin\InputController::class); 
+    // Route::get('/data', [\App\Http\Controllers\Admin\InputController::class, 'data']); 
     Route::get('pelanggan/getpelanggan/{id}', [\App\Http\Controllers\Admin\PelangganController::class, 'getpelanggan']);
     Route::get('pelanggan/cetak_pdf/{id}', [PelangganController::class, 'cetak_pdf'])->name('pelanggan.cetak_pdf');
     // Route::get('/pelanggan/cetak_pdf/{id}', [\App\Http\Controllers\Admin\PelangganController::class, 'cetak_pdf']);

@@ -48,7 +48,7 @@ class Detailbarangjadi extends Model
 
     public function input()
     {
-        return $this->belongsTo(Input::class);
+        return $this->belongsTo(Input::class, 'input_id', 'id');
     }
 
 
