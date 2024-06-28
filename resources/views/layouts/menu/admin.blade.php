@@ -27,7 +27,9 @@
     request()->is('admin/akses*') ||
     request()->is('admin/departemen*')||
     request()->is('admin/pelanggan*')||
-    request()->is('admin/barang*')||
+    // request()->is('admin/barang*')||
+    request()->is('admin/produk*')||
+    request()->is('admin/toko*')||
     request()->is('admin/klasifikasi*')||
     request()->is('admin/input*')
   
@@ -39,7 +41,9 @@
         request()->is('admin/akses*') ||
         request()->is('admin/departemen*')||
         request()->is('admin/pelanggan*')||
-        request()->is('admin/barang*')||
+        // request()->is('admin/barang*')||
+        request()->is('admin/produk*')||
+        request()->is('admin/toko*')||
         request()->is('admin/klasifikasi*')||
         request()->is('admin/input*')
       
@@ -100,20 +104,7 @@
             </a>
         </li>
         @endif
-        {{-- <li class="nav-item">
-            <a href="{{ url('admin/kartu') }}"
-                class="nav-link {{ request()->is('admin/kartu*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Data Kartu</p>
-            </a>
-        </li> --}}
-        {{-- <li class="nav-item">
-            <a href="{{ url('admin/member') }}"
-                class="nav-link {{ request()->is('admin/member*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Kode Member</p>
-            </a>
-        </li> --}}
+{{-- 
         @if (auth()->check() && auth()->user()->menu['barang'])
         <li class="nav-item">
             <a href="{{ url('admin/barang') }}"
@@ -122,7 +113,26 @@
                 <p style="font-size: 14px;">Data Barang</p>
             </a>
         </li>
-        @endif
+        @endif --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['produk']) --}}
+        <li class="nav-item">
+            <a href="{{ url('admin/produk') }}"
+                class="nav-link {{ request()->is('admin/produk*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Data produk</p>
+            </a>
+        </li>
+        {{-- @endif --}}
+
+        {{-- @if (auth()->check() && auth()->user()->menu['toko']) --}}
+        <li class="nav-item">
+            <a href="{{ url('admin/toko') }}"
+                class="nav-link {{ request()->is('admin/toko*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Data toko</p>
+            </a>
+        </li>
+        {{-- @endif --}}
 
         @if (auth()->check() && auth()->user()->menu['klasifikasi'])
         <li class="nav-item">
@@ -147,69 +157,7 @@
     </ul>
 </li>
 
-<li
-    class="nav-item {{ 
-    request()->is('toko/tegal*') ||
-    request()->is('toko/slawi*') ||
-    request()->is('toko/benjaran*') ||
-    request()->is('toko/pekalongan*')||
-    request()->is('toko/bumiayu*')
-        ? 'menu-open'
-        : '' }}">
-    <a href="#"
-        class="nav-link {{ 
-        request()->is('toko/tegal*') ||
-        request()->is('toko/slawi*') ||
-        request()->is('toko/benjaran*') ||
-        request()->is('toko/pekalongan*')||
-        request()->is('toko/bumiayu*')
-            ? 'active'
-            : '' }}">
 
-        <i class="nav-icon fas fa-grip-horizontal"></i>
-        <p>
-            <strong style="color: rgb(255, 255, 255);">TOKO CABANG</strong>
-            <i class="right fas fa-angle-left"></i>
-        </p>
-    </a>
-    <ul class="nav nav-treeview">
-        <li class="nav-item">
-            <a href="{{ url('toko/benjaran') }}"
-                class="nav-link {{ request()->is('toko/karyawan*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">BENJARAN</p>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="{{ url('toko/bumiayu') }}" class="nav-link {{ request()->is('toko/bumiayu*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">BUMIAYU</p>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="{{ url('toko/pekalongan') }}" class="nav-link {{ request()->is('toko/pekalongan*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">PEKALONGAN</p>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="{{ url('toko/slawi') }}"
-                class="nav-link {{ request()->is('toko/slawi*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">SLAWI</p>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="{{ url('toko/tegal') }}"
-                class="nav-link {{ request()->is('toko/tegal*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">TEGAL</p>
-            </a>
-        </li>
-    </ul>
-</li>
 
 <li class="nav-header">Profile</li>
 <li class="nav-item">
