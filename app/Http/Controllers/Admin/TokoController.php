@@ -161,7 +161,10 @@ class TokoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $tokos = Toko::find($id);
+        $tokos->delete();
+
+        return redirect('admin/toko')->with('success', 'Berhasil menghapus toko');
     }
     
 

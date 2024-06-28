@@ -78,6 +78,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::resource('toko', \App\Http\Controllers\Admin\TokoController::class);
 
+    Route::resource('hargajual', \App\Http\Controllers\Admin\HargajualController::class);
+
 
     // Route::get('/data', [\App\Http\Controllers\Admin\InputController::class, 'data']); 
     // Route::get('/pelanggan/cetak_pdf/{id}', [\App\Http\Controllers\Admin\PelangganController::class, 'cetak_pdf']);
