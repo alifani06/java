@@ -15,10 +15,13 @@ class Hargajual extends Model
     // use LogsActivity;
 
     protected $fillable = [
-       'kode_toko',
-       'nama_toko',
-       'alamat',
-       'qrcode_toko',
+    'produk_id', 
+    'member_harga', 
+    'non_member_harga', 
+    'hargajual',
+    'diskon_member', 
+    'diskon_non_member', 
+
   
     ];
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Hargajual;
+use App\Models\Produk;
 use Illuminate\Http\Request;
 
 class HargajualController extends Controller
@@ -15,8 +16,9 @@ class HargajualController extends Controller
      */
     public function index()
     {
+        $produks = Produk::all();
         $harga = Hargajual::with('produk')->get();
-        return view('admin.hargajual.index', compact('harga'));
+        return view('admin.hargajual.index', compact('harga', 'produks'));
     }
 
     /**
@@ -71,7 +73,32 @@ class HargajualController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+     // Validasi data yang diterima
+    $request->validate([
+        'member_harga' => 'required|numeric',
+        'diskon_member' => 'required|numeric|min:0|max:100',
+        'non_member_harga' => 'required|numeric',
+        'diskon_non_member' => 'required|numeric|min:0|max:100',
+    ]);
+
+    // Temukan harga jual berdasarkan ID
+    $hargaJual = HargaJual::findOrFail($id);
+
+    // Perbarui harga dan diskon
+    $hargaJual->member_harga = $request->input('member_harga');
+    $hargaJual->diskon_member = $request->input('diskon_member');
+    $hargaJual->non_member_harga = $request->input('non_member_harga');
+    $hargaJual->diskon_non_member = $request->input('diskon_non_member');
+
+    // Hitung harga jual setelah diskon
+    $hargaJual->harga_jual_member = $hargaJual->member_harga * (1 - ($hargaJual->diskon_member / 100));
+    $hargaJual->harga_jual_non_member = $hargaJual->non_member_harga * (1 - ($hargaJual->diskon_non_member / 100));
+
+    // Simpan perubahan
+    $hargaJual->save();
+
+    // Redirect kembali dengan pesan sukses
+    return redirect()->back()->with('success', 'Harga jual berhasil diperbarui.');
     }
 
     /**

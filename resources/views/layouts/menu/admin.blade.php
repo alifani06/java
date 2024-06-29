@@ -106,8 +106,8 @@
             </a>
         </li>
         @endif
-{{-- 
-        @if (auth()->check() && auth()->user()->menu['barang'])
+
+        {{-- @if (auth()->check() && auth()->user()->menu['barang']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/barang') }}"
                 class="nav-link {{ request()->is('admin/barang*') ? 'active' : '' }}">
@@ -115,7 +115,7 @@
                 <p style="font-size: 14px;">Data Barang</p>
             </a>
         </li>
-        @endif --}}
+        {{-- @endif --}}
         {{-- @if (auth()->check() && auth()->user()->menu['produk']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/produk') }}"

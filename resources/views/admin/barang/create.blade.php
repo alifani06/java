@@ -192,7 +192,7 @@
         });
     </script>
 
-    <script>
+     <script>
         $(document).ready(function() {
             $('#klasifikasi_id').on('change', function() {
                 var klasifikasiID = $(this).val();
