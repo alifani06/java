@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Hargajual;
 use App\Models\Produk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
+
 
 class HargajualController extends Controller
 {
@@ -50,15 +53,20 @@ class HargajualController extends Controller
      */
     public function show($id)
     {
-        //
+      // Mendapatkan data produk
+      $produks = Produk::all();
+
+      // Mendapatkan data harga jual yang diperbarui hari ini
+      $today = Carbon::today()->toDateString();
+      $harga = Hargajual::with('produk')
+          ->whereDate('updated_at', $today)
+          ->get();
+  
+      return view('admin.hargajual.show', compact('harga', 'produks'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+ 
+ 
     public function edit($id)
     {
         //
@@ -73,40 +81,71 @@ class HargajualController extends Controller
      */
     public function update(Request $request, $id)
     {
-     // Validasi data yang diterima
-    $request->validate([
-        'member_harga' => 'required|numeric',
-        'diskon_member' => 'required|numeric|min:0|max:100',
-        'non_member_harga' => 'required|numeric',
-        'diskon_non_member' => 'required|numeric|min:0|max:100',
-    ]);
-
-    // Temukan harga jual berdasarkan ID
-    $hargaJual = HargaJual::findOrFail($id);
-
-    // Perbarui harga dan diskon
-    $hargaJual->member_harga = $request->input('member_harga');
-    $hargaJual->diskon_member = $request->input('diskon_member');
-    $hargaJual->non_member_harga = $request->input('non_member_harga');
-    $hargaJual->diskon_non_member = $request->input('diskon_non_member');
-
-    // Hitung harga jual setelah diskon
-    $hargaJual->harga_jual_member = $hargaJual->member_harga * (1 - ($hargaJual->diskon_member / 100));
-    $hargaJual->harga_jual_non_member = $hargaJual->non_member_harga * (1 - ($hargaJual->diskon_non_member / 100));
-
-    // Simpan perubahan
-    $hargaJual->save();
-
-    // Redirect kembali dengan pesan sukses
-    return redirect()->back()->with('success', 'Harga jual berhasil diperbarui.');
+        
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    public function updateHarga(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer',
+            'member_harga' => 'nullable|numeric',
+            'diskon_member' => 'nullable|numeric',
+            'non_member_harga' => 'nullable|numeric',
+            'diskon_non_member' => 'nullable|numeric',
+        ]);
+    
+        $item = Hargajual::find($request->input('id'));
+        if ($item) {
+            $updatedFields = [];
+    
+            if ($request->filled('member_harga') && $request->input('member_harga') != $item->member_harga) {
+                $item->member_harga = $request->input('member_harga');
+                $updatedFields['member_harga'] = $request->input('member_harga');
+            }
+            if ($request->filled('diskon_member') && $request->input('diskon_member') != $item->diskon_member) {
+                $item->diskon_member = $request->input('diskon_member');
+                $updatedFields['diskon_member'] = $request->input('diskon_member');
+            }
+            if ($request->filled('non_member_harga') && $request->input('non_member_harga') != $item->non_member_harga) {
+                $item->non_member_harga = $request->input('non_member_harga');
+                $updatedFields['non_member_harga'] = $request->input('non_member_harga');
+            }
+            if ($request->filled('diskon_non_member') && $request->input('diskon_non_member') != $item->diskon_non_member) {
+                $item->diskon_non_member = $request->input('diskon_non_member');
+                $updatedFields['diskon_non_member'] = $request->input('diskon_non_member');
+            }
+    
+            $item->save();
+    
+            // Update harga di tabel produk jika diperlukan
+            if ($request->filled('member_harga')) {
+                $produk = $item->produk; // Asumsi relasi Hargajual ke Produk
+                if ($produk) {
+                    $produk->harga = $request->input('member_harga');
+                    $produk->save();
+                }
+            }
+    
+            // Simpan data yang telah diubah di sesi
+            $updatedItems = $request->session()->get('updated_items', []);
+            $updatedItems[] = [
+                'id' => $item->id,
+                'updatedFields' => $updatedFields,
+                'produk' => $item->produk->nama_produk,
+            ];
+            $request->session()->put('updated_items', $updatedItems);
+        }
+    
+        return redirect()->route('updated.items.view')->with('success', 'Berhasil memperbarui barang');
+    }
+    
+    public function showUpdatedItems()
+    {
+        $updatedItems = session('updated_items', []);
+        return view('updated_items', compact('updatedItems'));
+    }
+
+
     public function destroy($id)
     {
         //

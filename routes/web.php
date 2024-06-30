@@ -8,6 +8,7 @@ use App\Http\Controllers\SlawiController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\KlasifikasiController;
 use App\Http\Controllers\Admin\AddpelangganController;
+use App\Http\Controllers\Admin\HargajualController;
 use App\Http\Controllers\Admin\KlasifikasiController as AdminKlasifikasiController;
 use App\Http\Controllers\Admin\PelangganController;
 use App\Http\Controllers\KategoriDropdownController;
@@ -79,6 +80,11 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('toko', \App\Http\Controllers\Admin\TokoController::class);
 
     Route::resource('hargajual', \App\Http\Controllers\Admin\HargajualController::class);
+    Route::post('/update-harga', [HargajualController::class, 'updateHarga'])->name('update.harga');
+    Route::get('/updated-items', [HargajualController::class, 'showUpdatedItems'])->name('updated.items.view');
+
+    // Route::post('/list', [HargajualController::class, 'list']);
+
 
 
     // Route::get('/data', [\App\Http\Controllers\Admin\InputController::class, 'data']); 
