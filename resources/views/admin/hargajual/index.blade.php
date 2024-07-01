@@ -86,9 +86,7 @@
                                 <th>+</th>
                                 <th colspan="4" style="text-align: center;">Toko Slawi</th>
                                 <th colspan="4" style="text-align: center;">Toko Benjaran</th>
-                                <th colspan="4" style="text-align: center;">Toko Tegal</th>
-                                <th colspan="4" style="text-align: center;">Toko Pekalongan</th>
-                                <th colspan="4" style="text-align: center;">Toko Bumiayu</th>
+                      
                              
                            
                             </tr>
@@ -107,21 +105,7 @@
                                 <th style="text-align: center;"></th>
                                 <th style="text-align: center;"></th>
                                 <th style="text-align: center;">Non Member</th>
-                                {{-- Tegal --}}
-                                <th style="text-align: center;">Member</th>
-                                <th style="text-align: center;"></th>
-                                <th style="text-align: center;"></th>
-                                <th style="text-align: center;">Non Member</th>
-                                {{-- pekalongan --}}
-                                <th style="text-align: center;">Member</th>
-                                <th style="text-align: center;"></th>
-                                <th style="text-align: center;"></th>
-                                <th style="text-align: center;">Non Member</th>
-                                {{-- bumiayu --}}
-                                <th style="text-align: center;">Member</th>
-                                <th style="text-align: center;"></th>
-                                <th style="text-align: center;"></th>
-                                <th style="text-align: center;">Non Member</th>
+                              
                           
                             </tr>
                             <tr>
@@ -139,21 +123,8 @@
                                 <th style="text-align: center;">Diskon (%)</th>
                                 <th style="text-align: center;">Harga</th>
                                 <th style="text-align: center;">Diskon (%)</th>
-                                {{-- tegal --}}
-                                <th style="text-align: center;">Harga</th>
-                                <th style="text-align: center;">Diskon (%)</th>
-                                <th style="text-align: center;">Harga</th>
-                                <th style="text-align: center;">Diskon (%)</th>
-                                 {{-- pekalonagn --}}
-                                 <th style="text-align: center;">Harga</th>
-                                 <th style="text-align: center;">Diskon (%)</th>
-                                 <th style="text-align: center;">Harga</th>
-                                 <th style="text-align: center;">Diskon (%)</th>
-                                  {{-- buniayu --}}
-                                <th style="text-align: center;">Harga</th>
-                                <th style="text-align: center;">Diskon (%)</th>
-                                <th style="text-align: center;">Harga</th>
-                                <th style="text-align: center;">Diskon (%)</th>
+                              
+                          
                               
                             </tr>
                         </thead>
@@ -167,23 +138,23 @@
                                     <td>{{ $item->produk->nama_produk }}</td>
                                     <td>
                                         <button type="button" class="btn btn-danger btn-xs" id="update-button-{{ $loop->index }}" onclick="updateHarga({{ $loop->index }}, {{ $item->id }})">
-                                            <i class="fa fa-strip" id="icon-{{ $loop->index }}"></i>
+                                            <i class="fa fa-edit" id="icon-{{ $loop->index }}"></i>
                                         </button>
                                     </td>
 
                                     {{-- slawi --}}
                                     <td style="text-align: center;">
-                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="member_harga" id="member-harga-{{ $loop->index }}" value="{{ old('member_harga', $item->produk->harga) }}" onchange="markAsChanged({{ $loop->index }})">
+                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="member_harga_slw" id="member-harga-{{ $loop->index }}" value="{{ $item->member_harga_slw ?? $item->produk->harga }}" onchange="markAsChanged({{ $loop->index }})">
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="diskon_member" id="diskon-member-{{ $loop->index }}" value="0" onchange="markAsChanged({{ $loop->index }})">
+                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="member_diskon_slw" id="diskon-member-{{ $loop->index }}" value="{{ $item->member_diskon_slw ?? $item->produk->diskon }}" onchange="markAsChanged({{ $loop->index }})">
                                     </td>
                                     <td style="text-align: center;">
-                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="non_member_harga" id="non-member-harga-{{ $loop->index }}" value="{{ $item->non_member_harga ?? $item->produk->harga }}" onchange="markAsChanged({{ $loop->index }})">
+                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="non_harga_slw" id="non-member-harga-{{ $loop->index }}" value="{{ $item->non_harga_slw ?? $item->produk->harga }}" onchange="markAsChanged({{ $loop->index }})">
                                     </td>
                                     
                                     <td>
-                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="diskon_non_member" id="diskon-non-member-{{ $loop->index }}" value="0" onchange="markAsChanged({{ $loop->index }})">
+                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="non_diskon_slw" id="diskon-non-member-{{ $loop->index }}" value="{{ $item->non_diskon_slw ?? $item->produk->diskon }}" onchange="markAsChanged({{ $loop->index }})">
                                     </td>
                                 
                                     {{-- Benjaran --}}
@@ -201,50 +172,7 @@
                                         <input type="text" class="form-control form-control-sm" style="width: 70px;" name="diskon_non_member" id="diskon-non-member-{{ $loop->index }}" value="0" onchange="markAsChanged({{ $loop->index }})">
                                     </td>
 
-                                    {{-- Tegal --}}
-                                    <td style="text-align: center;">
-                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="member_harga" id="member-harga-{{ $loop->index }}" value="{{ old('member_harga', $item->produk->harga) }}" onchange="markAsChanged({{ $loop->index }})">
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="diskon_member" id="diskon-member-{{ $loop->index }}" value="0" onchange="markAsChanged({{ $loop->index }})">
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="non_member_harga" id="non-member-harga-{{ $loop->index }}" value="{{ $item->non_member_harga ?? $item->produk->harga }}" onchange="markAsChanged({{ $loop->index }})">
-                                    </td>
                                     
-                                    <td>
-                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="diskon_non_member" id="diskon-non-member-{{ $loop->index }}" value="0" onchange="markAsChanged({{ $loop->index }})">
-                                    </td>
-
-                                    {{-- pekalongan --}}
-                                    <td style="text-align: center;">
-                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="member_harga" id="member-harga-{{ $loop->index }}" value="{{ old('member_harga', $item->produk->harga) }}" onchange="markAsChanged({{ $loop->index }})">
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="diskon_member" id="diskon-member-{{ $loop->index }}" value="0" onchange="markAsChanged({{ $loop->index }})">
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="non_member_harga" id="non-member-harga-{{ $loop->index }}" value="{{ $item->non_member_harga ?? $item->produk->harga }}" onchange="markAsChanged({{ $loop->index }})">
-                                    </td>
-                                    
-                                    <td>
-                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="diskon_non_member" id="diskon-non-member-{{ $loop->index }}" value="0" onchange="markAsChanged({{ $loop->index }})">
-                                    </td>
-
-                                    {{-- bumiayu --}}
-                                    <td style="text-align: center;">
-                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="member_harga" id="member-harga-{{ $loop->index }}" value="{{ old('member_harga', $item->produk->harga) }}" onchange="markAsChanged({{ $loop->index }})">
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="diskon_member" id="diskon-member-{{ $loop->index }}" value="0" onchange="markAsChanged({{ $loop->index }})">
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="non_member_harga" id="non-member-harga-{{ $loop->index }}" value="{{ $item->non_member_harga ?? $item->produk->harga }}" onchange="markAsChanged({{ $loop->index }})">
-                                    </td>
-                                    
-                                    <td>
-                                        <input type="text" class="form-control form-control-sm" style="width: 70px;" name="diskon_non_member" id="diskon-non-member-{{ $loop->index }}" value="0" onchange="markAsChanged({{ $loop->index }})">
-                                    </td>
                                 </form>
 
 
@@ -263,54 +191,7 @@
     <!-- /.card -->
 @endsection
 
-{{-- <script>
-    function updateHarga(index, id) {
-        const form = document.getElementById('update-harga-form');
-        const formData = new FormData();
-
-        const memberHargaInput = document.getElementById(`member-harga-${index}`);
-        const diskonMemberInput = document.getElementById(`diskon-member-${index}`);
-        const nonMemberHargaInput = document.getElementById(`non-member-harga-${index}`);
-        const diskonNonMemberInput = document.getElementById(`diskon-non-member-${index}`);
-
-        // Only add the inputs that have been changed
-        if (memberHargaInput.value != memberHargaInput.defaultValue) {
-            formData.append('member_harga', memberHargaInput.value);
-        }
-        if (diskonMemberInput.value != diskonMemberInput.defaultValue) {
-            formData.append('diskon_member', diskonMemberInput.value);
-        }
-        if (nonMemberHargaInput.value != nonMemberHargaInput.defaultValue) {
-            formData.append('non_member_harga', nonMemberHargaInput.value);
-        }
-        if (diskonNonMemberInput.value != diskonNonMemberInput.defaultValue) {
-            formData.append('diskon_non_member', diskonNonMemberInput.value);
-        }
-
-        formData.append('id', id);
-        formData.append('_token', '{{ csrf_token() }}');
-
-        fetch('{{ route('update.harga') }}', {
-            method: 'POST',
-            body: formData,
-        })
-        .then(response => response.json())
-        .then(data => {
-            // No notifications
-        })
-        .catch(error => {
-            console.error('Kesalahan:', error);
-            // No notifications
-        });
-    }
-
-    function markAsChanged(index) {
-        const updateButton = document.getElementById(`update-button-${index}`);
-        updateButton.classList.remove('btn-danger');
-        updateButton.classList.add('btn-success');
-    }
-</script> --}}
-
+{{-- 
 <script>
     function updateHarga(index, id) {
         const formData = new FormData();
@@ -321,16 +202,16 @@
         const diskonNonMemberInput = document.getElementById(`diskon-non-member-${index}`);
 
         if (memberHargaInput.value != memberHargaInput.defaultValue) {
-            formData.append('member_harga', memberHargaInput.value);
+            formData.append('member_harga_slw', memberHargaInput.value);
         }
         if (diskonMemberInput.value != diskonMemberInput.defaultValue) {
-            formData.append('diskon_member', diskonMemberInput.value);
+            formData.append('member_diskon_slw', diskonMemberInput.value);
         }
         if (nonMemberHargaInput.value != nonMemberHargaInput.defaultValue) {
-            formData.append('non_member_harga', nonMemberHargaInput.value);
+            formData.append('non_harga_slw', nonMemberHargaInput.value);
         }
         if (diskonNonMemberInput.value != diskonNonMemberInput.defaultValue) {
-            formData.append('diskon_non_member', diskonNonMemberInput.value);
+            formData.append('non_diskon_slw', diskonNonMemberInput.value);
         }
 
         formData.append('id', id);
@@ -357,6 +238,72 @@
         updateButton.classList.remove('btn-danger');
         updateButton.classList.add('btn-success');
         icon.classList.remove('fa-eye');
+        icon.classList.add('fa-check');
+    }
+</script> --}}
+<script>
+    function updateHarga(index, id) {
+        const formData = new FormData();
+
+        const memberHargaInput = document.getElementById(`member-harga-${index}`);
+        const diskonMemberInput = document.getElementById(`diskon-member-${index}`);
+        const nonMemberHargaInput = document.getElementById(`non-member-harga-${index}`);
+        const diskonNonMemberInput = document.getElementById(`diskon-non-member-${index}`);
+
+        const memberHargaBnjrInput = document.getElementById(`member-harga-bnjr-${index}`);
+        const diskonMemberBnjrInput = document.getElementById(`diskon-member-bnjr-${index}`);
+        const nonMemberHargaBnjrInput = document.getElementById(`non-member-harga-bnjr-${index}`);
+        const diskonNonMemberBnjrInput = document.getElementById(`diskon-non-member-bnjr-${index}`);
+
+        if (memberHargaInput.value != memberHargaInput.defaultValue) {
+            formData.append('member_harga_slw', memberHargaInput.value);
+        }
+        if (diskonMemberInput.value != diskonMemberInput.defaultValue) {
+            formData.append('member_diskon_slw', diskonMemberInput.value);
+        }
+        if (nonMemberHargaInput.value != nonMemberHargaInput.defaultValue) {
+            formData.append('non_harga_slw', nonMemberHargaInput.value);
+        }
+        if (diskonNonMemberInput.value != diskonNonMemberInput.defaultValue) {
+            formData.append('non_diskon_slw', diskonNonMemberInput.value);
+        }
+
+        // if (memberHargaBnjrInput.value != memberHargaBnjrInput.defaultValue) {
+        //     formData.append('member_harga_bnjr', memberHargaBnjrInput.value);
+        // }
+        // if (diskonMemberBnjrInput.value != diskonMemberBnjrInput.defaultValue) {
+        //     formData.append('member_diskon_bnjr', diskonMemberBnjrInput.value);
+        // }
+        // if (nonMemberHargaBnjrInput.value != nonMemberHargaBnjrInput.defaultValue) {
+        //     formData.append('non_harga_bnjr', nonMemberHargaBnjrInput.value);
+        // }
+        // if (diskonNonMemberBnjrInput.value != diskonNonMemberBnjrInput.defaultValue) {
+        //     formData.append('non_diskon_bnjr', diskonNonMemberBnjrInput.value);
+        // }
+        formData.append('id', id);
+        formData.append('_token', '{{ csrf_token() }}');
+
+        fetch('{{ route('update.harga') }}', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById(`row-${index}`).style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Kesalahan:', error);
+        });
+    }
+
+    function markAsChanged(index) {
+        const updateButton = document.getElementById(`update-button-${index}`);
+        const icon = document.getElementById(`icon-${index}`);
+        updateButton.classList.remove('btn-danger');
+        updateButton.classList.add('btn-success');
+        icon.classList.remove('fa-edit');
         icon.classList.add('fa-check');
     }
 </script>

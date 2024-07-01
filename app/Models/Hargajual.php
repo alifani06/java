@@ -16,11 +16,15 @@ class Hargajual extends Model
 
     protected $fillable = [
     'produk_id', 
-    'member_harga', 
-    'non_member_harga', 
+    'member_harga_slw', 
+    'member_diskon_slw', 
+    'non_harga_slw', 
+    'non_diskon_slw', 
+    'member_harga_bnjr', 
+    'non_harga_bnjr', 
+    'non_diskon_bnjr', 
+    'diskon_bnjr', 
     'hargajual',
-    'diskon_member', 
-    'diskon_non_member', 
 
   
     ];

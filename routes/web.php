@@ -80,7 +80,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('toko', \App\Http\Controllers\Admin\TokoController::class);
 
     Route::resource('hargajual', \App\Http\Controllers\Admin\HargajualController::class);
-    Route::post('/update-harga', [HargajualController::class, 'updateHarga'])->name('update.harga');
+    Route::post('/admin/update-harga', [HargajualController::class, 'updateHarga'])->name('update.harga');
     Route::get('/updated-items', [HargajualController::class, 'showUpdatedItems'])->name('updated.items.view');
 
     // Route::post('/list', [HargajualController::class, 'list']);

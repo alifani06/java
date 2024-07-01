@@ -55,6 +55,11 @@
                             <input type="number" class="form-control" id="harga" name="harga"
                                 placeholder="Masukan harga" value="{{ old('harga') }}">
                         </div>
+                        <div class="col mb-3" hidden>
+                            <label for="nama">Diskon</label>
+                            <input type="number" class="form-control" id="diskon" name="diskon"
+                                placeholder="Masukan diskon" value="0">
+                        </div>
                     </div>
                         <div class="mb-3">
                             <label class="form-label" for="satuan">Pilih Satuan</label>
@@ -89,7 +94,7 @@
                 </form>
             </div>
         </div>
-    </section>
+</section>
 
     <script>
         $(document).ready(function() {

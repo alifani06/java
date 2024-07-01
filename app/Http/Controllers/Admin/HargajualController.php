@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Hargajual;
 use App\Models\Produk;
+use App\Models\Tokoslawi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -85,59 +86,46 @@ class HargajualController extends Controller
     }
 
     public function updateHarga(Request $request)
-    {
-        $request->validate([
-            'id' => 'required|integer',
-            'member_harga' => 'nullable|numeric',
-            'diskon_member' => 'nullable|numeric',
-            'non_member_harga' => 'nullable|numeric',
-            'diskon_non_member' => 'nullable|numeric',
-        ]);
-    
-        $item = Hargajual::find($request->input('id'));
-        if ($item) {
-            $updatedFields = [];
-    
-            if ($request->filled('member_harga') && $request->input('member_harga') != $item->member_harga) {
-                $item->member_harga = $request->input('member_harga');
-                $updatedFields['member_harga'] = $request->input('member_harga');
-            }
-            if ($request->filled('diskon_member') && $request->input('diskon_member') != $item->diskon_member) {
-                $item->diskon_member = $request->input('diskon_member');
-                $updatedFields['diskon_member'] = $request->input('diskon_member');
-            }
-            if ($request->filled('non_member_harga') && $request->input('non_member_harga') != $item->non_member_harga) {
-                $item->non_member_harga = $request->input('non_member_harga');
-                $updatedFields['non_member_harga'] = $request->input('non_member_harga');
-            }
-            if ($request->filled('diskon_non_member') && $request->input('diskon_non_member') != $item->diskon_non_member) {
-                $item->diskon_non_member = $request->input('diskon_non_member');
-                $updatedFields['diskon_non_member'] = $request->input('diskon_non_member');
-            }
-    
-            $item->save();
-    
-            // Update harga di tabel produk jika diperlukan
-            if ($request->filled('member_harga')) {
-                $produk = $item->produk; // Asumsi relasi Hargajual ke Produk
-                if ($produk) {
-                    $produk->harga = $request->input('member_harga');
-                    $produk->save();
-                }
-            }
-    
-            // Simpan data yang telah diubah di sesi
-            $updatedItems = $request->session()->get('updated_items', []);
-            $updatedItems[] = [
-                'id' => $item->id,
-                'updatedFields' => $updatedFields,
-                'produk' => $item->produk->nama_produk,
-            ];
-            $request->session()->put('updated_items', $updatedItems);
-        }
-    
-        return redirect()->route('updated.items.view')->with('success', 'Berhasil memperbarui barang');
+
+{
+    $validatedData = $request->validate([
+        'id' => 'required|exists:hargajuals,id',
+        'member_harga_slw' => 'nullable|numeric',
+        'member_diskon_slw' => 'nullable|numeric',
+        'non_harga_slw' => 'nullable|numeric',
+        'non_diskon_slw' => 'nullable|numeric',
+    ]);
+
+    $hargajual = Hargajual::find($validatedData['id']);
+
+    // Simpan data ke tabel hargajual
+    if (isset($validatedData['member_harga_slw'])) {
+        $hargajual->member_harga_slw = $validatedData['member_harga_slw'];
     }
+    if (isset($validatedData['member_diskon_slw'])) {
+        $hargajual->member_diskon_slw = $validatedData['member_diskon_slw'];
+    }
+    if (isset($validatedData['non_harga_slw'])) {
+        $hargajual->non_harga_slw = $validatedData['non_harga_slw'];
+    }
+    if (isset($validatedData['non_diskon_slw'])) {
+        $hargajual->non_diskon_slw = $validatedData['non_diskon_slw'];
+    }
+    $hargajual->save();
+
+    // Simpan data ke tabel tokoslawi
+    $tokoSlawi = TokoSlawi::updateOrCreate(
+        ['produk_id' => $hargajual->produk_id],
+        [
+            'member_harga_slw' => $validatedData['member_harga_slw'] ?? $hargajual->member_harga_slw,
+            'member_diskon_slw' => $validatedData['member_diskon_slw'] ?? $hargajual->member_diskon_slw,
+            'non_harga_slw' => $validatedData['non_harga_slw'] ?? $hargajual->non_harga_slw,
+            'non_diskon_slw' => $validatedData['non_diskon_slw'] ?? $hargajual->non_diskon_slw,
+        ]
+    );
+
+    return response()->json(['success' => true]);
+}
     
     public function showUpdatedItems()
     {
