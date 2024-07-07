@@ -7,6 +7,7 @@ use App\Models\Hargajual;
 use App\Models\Produk;
 use App\Models\Tokoslawi;
 use App\Models\Tokobenjaran;
+use App\Models\Tokotegal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -24,19 +25,12 @@ class HargajualController extends Controller
      */
     public function index()
     {
-        // $produks = Produk::all();
-        // $tokoslawi = Tokoslawi::all();
-        // $tokobenjaran = Tokobenjaran::latest()->first();
-        // $harga = Hargajual::with(['produk', 'tokobenjaran'])->get();
-        // return view('admin.hargajual.index', compact('harga', 'produks', 'tokoslawi', 'tokobenjaran'));
-        // $produks = Produk::all();
-
-        // $tokoslawi = Tokoslawi::latest()->first();
-        // $tokobenjaran = Tokobenjaran::latest()->first();
+      
         $tokoslawi = Tokoslawi::latest()->first();
         $tokobenjaran = Tokobenjaran::latest()->first();
-        $produk = Produk::with(['tokoslawi', 'tokobenjaran'])->get();
-        return view('admin.hargajual.index', compact('produk', 'tokoslawi', 'tokobenjaran'));
+        $tokotegal = Tokotegal::latest()->first();
+        $produk = Produk::with(['tokoslawi', 'tokobenjaran','tokotegal'])->get();
+        return view('admin.hargajual.index', compact('produk', 'tokoslawi', 'tokobenjaran', 'tokotegal'));
     }
 
 
@@ -57,7 +51,7 @@ class HargajualController extends Controller
         $toko = request()->input('toko', 'tokoslawi'); // Ambil input toko dari request, default ke 'tokoslawi'
         $today = Carbon::today(); // Tanggal hari ini
         
-        $produk = Produk::with(['tokoslawi', 'tokobenjaran'])
+        $produk = Produk::with(['tokoslawi', 'tokobenjaran' , 'tokotegal'])
             ->where(function ($query) use ($today) {
                 $query->whereHas('tokoslawi', function ($query) use ($today) {
                     $query->whereDate('updated_at', $today)
@@ -77,6 +71,17 @@ class HargajualController extends Controller
                                     ->orWhereRaw('tokobenjarans.non_harga_bnjr != tokobenjarans.harga_awal')
                                     ->orWhereRaw('tokobenjarans.member_diskon_bnjr != 0')
                                     ->orWhereRaw('tokobenjarans.non_diskon_bnjr != 0');
+                          });
+                });
+            })
+            ->orWhere(function ($query) use ($today) {
+                $query->whereHas('tokotegal', function ($query) use ($today) {
+                    $query->whereDate('updated_at', $today)
+                          ->where(function ($query) {
+                              $query->whereRaw('tokotegals.member_harga_tgl != tokotegals.harga_awal')
+                                    ->orWhereRaw('tokotegals.non_harga_tgl != tokotegals.harga_awal')
+                                    ->orWhereRaw('tokotegals.member_diskon_tgl != 0')
+                                    ->orWhereRaw('tokotegals.non_diskon_tgl != 0');
                           });
                 });
             })
@@ -114,10 +119,17 @@ public function updateHarga(Request $request)
             'member_diskon_slw' => 'nullable|numeric',
             'non_harga_slw' => 'nullable|numeric',
             'non_diskon_slw' => 'nullable|numeric',
+            
             'member_harga_bnjr' => 'nullable|numeric',
             'member_diskon_bnjr' => 'nullable|numeric',
             'non_harga_bnjr' => 'nullable|numeric',
             'non_diskon_bnjr' => 'nullable|numeric',
+
+            'member_harga_tgl' => 'nullable|numeric',
+            'member_diskon_tgl' => 'nullable|numeric',
+            'non_harga_tgl' => 'nullable|numeric',
+            'non_diskon_tgl' => 'nullable|numeric',
+            
         ]);
 
         // Cari produk berdasarkan ID
@@ -159,6 +171,24 @@ public function updateHarga(Request $request)
             ]);
         }
 
+         // Update harga dan diskon untuk toko Tegal
+         $tokotegal = $produk->tokotegal->first();
+         if ($tokotegal) {
+             $tokotegal->member_harga_tgl = $request->member_harga_tgl ?? $tokotegal->member_harga_tgl;
+             $tokotegal->member_diskon_tgl = $request->member_diskon_tgl ?? $tokotegal->member_diskon_tgl;
+             $tokotegal->non_harga_tgl = $request->non_harga_tgl ?? $tokotegal->non_harga_tgl;
+             $tokotegal->non_diskon_tgl = $request->non_diskon_tgl ?? $tokotegal->non_diskon_tgl;
+             $tokotegal->save();
+         } else {
+             Tokotegal::create([
+                 'produk_id' => $produk->id,
+                 'member_harga_tgl' => $request->member_harga_tgl,
+                 'member_diskon_tgl' => $request->member_diskon_tgl,
+                 'non_harga_tgl' => $request->non_harga_tgl,
+                 'non_diskon_tgl' => $request->non_diskon_tgl,
+             ]);
+         }
+ 
         return response()->json(['success' => true]);
     }
 

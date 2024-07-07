@@ -189,6 +189,20 @@
                                     <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_diskon_bnjr" id="diskon-non-member-bnjr-{{ $loop->index }}" value="{{ $item->tokobenjaran->first()->non_diskon_bnjr ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
                                 </td>
 
+                                 {{-- Tegal --}}
+                                 <td style="text-align: center;">
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_harga_tgl" id="member-harga-tgl-{{ $loop->index }}" value="{{ $item->tokotegal->first()->member_harga_tgl ?? $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_diskon_tgl" id="diskon-member-tgl-{{ $loop->index }}" value="{{ $item->tokotegal->first()->member_diskon_tgl ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
+                                </td>
+                                <td style="text-align: center;">
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_harga_tgl" id="non-member-harga-tgl-{{ $loop->index }}" value="{{ $item->tokotegal->first()->non_harga_tgl ?? $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_diskon_tgl" id="diskon-non-member-tgl-{{ $loop->index }}" value="{{ $item->tokotegal->first()->non_diskon_tgl ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
+                                </td>
+
                             
                             </form>
                         </tr>

@@ -8,6 +8,7 @@ use App\Models\Produk;
 use App\Models\Hargajual;
 use App\Models\Tokoslawi;
 use App\Models\Tokobenjaran;
+use App\Models\Tokotegal;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
@@ -215,6 +216,16 @@ class ProdukController extends Controller
             'member_diskon_bnjr' => 0,
             'non_harga_bnjr' => $request->harga,
             'non_diskon_bnjr' => 0,
+        ]);
+
+        Tokotegal::create([
+            'produk_id' => $produk->id,
+            'harga_awal' => $request->harga,
+            'diskon_awal' => 0,
+            'member_harga_tgl' => $request->harga,
+            'member_diskon_tgl' => 0,
+            'non_harga_tgl' => $request->harga,
+            'non_diskon_tgl' => 0,
         ]);
     
         return redirect('admin/produk')->with('success', 'Berhasil menambahkan produk');
