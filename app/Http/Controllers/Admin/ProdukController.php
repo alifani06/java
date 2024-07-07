@@ -201,6 +201,7 @@ class ProdukController extends Controller
             'produk_id' => $produk->id,
             'member_harga_slw' => $request->harga,
             'harga_awal' => $request->harga,
+            'diskon_awal' =>  0,
             'member_diskon_slw' => 0,
             'non_harga_slw' => $request->harga,
             'non_diskon_slw' => 0,
@@ -209,6 +210,7 @@ class ProdukController extends Controller
         Tokobenjaran::create([
             'produk_id' => $produk->id,
             'harga_awal' => $request->harga,
+            'diskon_awal' => 0,
             'member_harga_bnjr' => $request->harga,
             'member_diskon_bnjr' => 0,
             'non_harga_bnjr' => $request->harga,

@@ -82,6 +82,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('hargajual', \App\Http\Controllers\Admin\HargajualController::class);
     Route::post('/admin/update-harga', [HargajualController::class, 'updateHarga'])->name('update.harga');
     Route::get('admin/hargajual/show', [App\Http\Controllers\Admin\HargajualController::class, 'show'])->name('show');
+    Route::get('/cetak-pdf', [HargajualController::class, 'cetakPdf'])->name('cetak.pdf');
 
     // Route::post('/list', [HargajualController::class, 'list']);
 

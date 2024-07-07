@@ -10,6 +10,9 @@ use App\Models\Tokobenjaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Dompdf\Dompdf;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+
 
 
 class HargajualController extends Controller
@@ -48,58 +51,45 @@ class HargajualController extends Controller
         //
     }
 
-    // public function show()
-    // {
-    //     // Mendapatkan data harga jual yang telah berubah dari Toko Slawi atau Toko Benjaran
-    //     $produk = Produk::with(['tokoslawi', 'tokobenjaran'])
-    //         ->whereHas('tokoslawi', function ($query) {
-    //             $query->whereRaw('member_harga_slw != produk.harga OR non_harga_slw != produk.harga');
-    //         })
-    //         ->orWhereHas('tokobenjaran', function ($query) {
-    //             $query->whereRaw('member_harga_bnjr != produk.harga OR non_harga_bnjr != produk.harga');
-    //         })
-    //         ->get();
     
-    //     // Cek apakah ada data yang telah berubah
-    //     if ($produk->isEmpty()) {
-    //         // Jika tidak ada, redirect kembali dengan pesan
-    //         return redirect()->back()->with('info', 'Tidak ada data yang telah berubah.');
-    //     }
-    
-    //     return view('admin.hargajual.show', compact('produk'));
-    // }
-    
-public function show()
-{
-                    // Mendapatkan data harga jual yang diperbarui hari ini di Toko Slawi atau Toko Benjaran
-                    $today = Carbon::today()->toDateString();
-
-                    // Query untuk mendapatkan produk yang terkait dengan Toko Slawi atau Toko Benjaran yang diperbarui hari ini
-                    $produk = Produk::with(['tokoslawi', 'tokobenjaran'])
-                        ->whereHas('tokoslawi', function($query) use ($today) {
-                            $query->whereDate('updated_at', $today)
-                                ->where(function($q) {
-                                    $q->whereRaw('tokoslawis.member_harga_slw != tokoslawis.harga_awal')
-                                      ->orWhereRaw('tokoslawis.non_harga_slw != tokoslawis.harga_awal');
-                                });
-                        })
-                        ->orWhereHas('tokobenjaran', function($query) use ($today) {
-                            $query->whereDate('updated_at', $today)
-                                ->where(function($q) {
-                                    $q->whereRaw('tokobenjarans.member_harga_bnjr != tokobenjarans.harga_awal')
-                                      ->orWhereRaw('tokobenjarans.non_harga_bnjr != tokobenjarans.harga_awal');
-                                });
-                        })
-                        ->get();
+    public function show()
+    {
+        $toko = request()->input('toko', 'tokoslawi'); // Ambil input toko dari request, default ke 'tokoslawi'
+        $today = Carbon::today(); // Tanggal hari ini
+        
+        $produk = Produk::with(['tokoslawi', 'tokobenjaran'])
+            ->where(function ($query) use ($today) {
+                $query->whereHas('tokoslawi', function ($query) use ($today) {
+                    $query->whereDate('updated_at', $today)
+                          ->where(function ($query) {
+                              $query->whereRaw('tokoslawis.member_harga_slw != tokoslawis.harga_awal')
+                                    ->orWhereRaw('tokoslawis.non_harga_slw != tokoslawis.harga_awal')
+                                    ->orWhereRaw('tokoslawis.member_diskon_slw != 0')
+                                    ->orWhereRaw('tokoslawis.non_diskon_slw != 0');
+                          });
+                });
+            })
+            ->orWhere(function ($query) use ($today) {
+                $query->whereHas('tokobenjaran', function ($query) use ($today) {
+                    $query->whereDate('updated_at', $today)
+                          ->where(function ($query) {
+                              $query->whereRaw('tokobenjarans.member_harga_bnjr != tokobenjarans.harga_awal')
+                                    ->orWhereRaw('tokobenjarans.non_harga_bnjr != tokobenjarans.harga_awal')
+                                    ->orWhereRaw('tokobenjarans.member_diskon_bnjr != 0')
+                                    ->orWhereRaw('tokobenjarans.non_diskon_bnjr != 0');
+                          });
+                });
+            })
+            ->get();
                 
                     // Cek apakah ada data yang diperbarui hari ini
                     if ($produk->isEmpty()) {
                         // Jika tidak ada, redirect kembali dengan pesan
                         return redirect()->back()->with('info', 'Tidak ada data yang diperbarui hari ini.');
                     }
-                
+                    
                     return view('admin.hargajual.show', compact('produk'));
-}
+    }
 
 
  
@@ -173,6 +163,17 @@ public function updateHarga(Request $request)
     }
 
  
+    public function cetakPdf(Request $request)
+    {
+        $toko = $request->input('toko', 'tokoslawi');
+        $produk = Produk::with([$toko])->get();
+
+        $pdf = FacadePdf::loadView('admin/hargajual/cetak-pdf', compact('produk', 'toko'))
+        ->setPaper('a4', 'portrait'); // [left, top, width, height]
+        return $pdf->stream('updated-items.pdf');
+      
+    }
+
 
     
     public function destroy($id)

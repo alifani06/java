@@ -18,6 +18,7 @@ class Tokobenjaran extends Model
     'produk_id', 
     'hargajual_id', 
     'harga_awal',
+    'diskon_awal',
     'member_harga_bnjr', 
     'non_harga_bnjr', 
     'member_diskon_bnjr', 

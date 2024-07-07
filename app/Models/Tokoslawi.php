@@ -18,6 +18,7 @@ class Tokoslawi extends Model
     'produk_id', 
     'hargajual_id', 
     'harga_awal', 
+    'diskon_awal', 
     'member_harga_slw', 
     'non_harga_slw', 
     'member_diskon_slw', 
