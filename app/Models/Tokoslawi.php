@@ -17,6 +17,7 @@ class Tokoslawi extends Model
     protected $fillable = [
     'produk_id', 
     'hargajual_id', 
+    'harga_awal', 
     'member_harga_slw', 
     'non_harga_slw', 
     'member_diskon_slw', 

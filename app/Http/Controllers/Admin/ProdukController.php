@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Produk;
 use App\Models\Hargajual;
 use App\Models\Tokoslawi;
+use App\Models\Tokobenjaran;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
@@ -199,18 +200,20 @@ class ProdukController extends Controller
         TokoSlawi::create([
             'produk_id' => $produk->id,
             'member_harga_slw' => $request->harga,
+            'harga_awal' => $request->harga,
             'member_diskon_slw' => 0,
             'non_harga_slw' => $request->harga,
             'non_diskon_slw' => 0,
         ]);
     
-        // TokoBenjaran::create([
-        //     'produk_id' => $produk->id,
-        //     'member_harga' => $request->harga,
-        //     'member_diskon' => 0,
-        //     'non_harga' => $request->harga,
-        //     'non_diskon' => 0,
-        // ]);
+        Tokobenjaran::create([
+            'produk_id' => $produk->id,
+            'harga_awal' => $request->harga,
+            'member_harga_bnjr' => $request->harga,
+            'member_diskon_bnjr' => 0,
+            'non_harga_bnjr' => $request->harga,
+            'non_diskon_bnjr' => 0,
+        ]);
     
         return redirect('admin/produk')->with('success', 'Berhasil menambahkan produk');
     }
