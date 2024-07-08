@@ -76,6 +76,11 @@
                             $nonMemberHarga = $item->tokobumiayu->first()->non_harga_bmy;
                             $memberDiskon = $item->tokobumiayu->first()->member_diskon_bmy;
                             $nonMemberDiskon = $item->tokobumiayu->first()->non_diskon_bmy;
+                        }elseif ($toko == 'tokocilacap') {
+                            $memberHarga = $item->tokocilacap->first()->member_harga_clc;
+                            $nonMemberHarga = $item->tokocilacap->first()->non_harga_clc;
+                            $memberDiskon = $item->tokocilacap->first()->member_diskon_clc;
+                            $nonMemberDiskon = $item->tokocilacap->first()->non_diskon_clc;
                         }
     
     

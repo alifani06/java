@@ -5,12 +5,16 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Produk;
+use App\Models\Klasifikasi;
+use App\Models\Subklasifikasi;
+use App\Models\Subsub;
 use App\Models\Hargajual;
 use App\Models\Tokoslawi;
 use App\Models\Tokobenjaran;
 use App\Models\Tokotegal;
 use App\Models\Tokopemalang;
 use App\Models\Tokobumiayu;
+use App\Models\Tokocilacap;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
@@ -31,15 +35,27 @@ class ProdukController extends Controller
         return view('admin.produk.index', compact('produks'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function getkategori($id)
+    {
+
+        $klasifikasi = Klasifikasi::where('kategori', $id)->get();
+        return response()->json($klasifikasi);
+    }
+
+    public function get_klasifikasi($klasifikasi_id)
+    {
+        $klasifikasis = Subklasifikasi::where('klasifikasi_id', $klasifikasi_id)->get();
+        return response()->json($klasifikasis);
+    }
+
+
     public function create()
     {
         $produks = Produk::all();
-        return view('admin/produk.create', compact('produks'));
+        $klasifikasis = Klasifikasi::all();
+        $subs = Subklasifikasi::all();
+        $subs1 = Subsub::all();
+        return view('admin/produk.create', compact('produks', 'klasifikasis', 'subs', 'subs1'));
     }
 
  
@@ -84,6 +100,7 @@ class ProdukController extends Controller
                 'kode_produk' => $kode,
                 'qrcode_produk' => 'https://javabakery.id/produk/' . $kode,
                 'tanggal' => Carbon::now('Asia/Jakarta'),
+                // 'harga' =>$produk->subsub_id = $request->subsub_id,
             ]
         ));
     
@@ -146,6 +163,15 @@ class ProdukController extends Controller
             'member_diskon_bmy' => 0,
             'non_harga_bmy' => $request->harga,
             'non_diskon_bmy' => 0,
+        ]);
+        Tokocilacap::create([
+            'produk_id' => $produk->id,
+            'harga_awal' => $request->harga,
+            'diskon_awal' => 0,
+            'member_harga_clc' => $request->harga,
+            'member_diskon_clc' => 0,
+            'non_harga_clc' => $request->harga,
+            'non_diskon_clc' => 0,
         ]);
     
         return redirect('admin/produk')->with('success', 'Berhasil menambahkan produk');

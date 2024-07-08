@@ -66,5 +66,9 @@ class Produk extends Model
     {
         return $this->hasMany(Tokobumiayu::class);
     }
+    public function tokocilacap()
+    {
+        return $this->hasMany(Tokocilacap::class);
+    }
  
 }

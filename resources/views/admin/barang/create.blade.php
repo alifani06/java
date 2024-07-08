@@ -38,13 +38,13 @@
                     @csrf
                     <div class="card-body">
                         <div class="row mb-3 align-items-center">
-                            <div class="col-auto">
+                            <div class="col-auto mt-2">
                                 <div class="form-group mb-3">
                                     <label for="nama">Nama Barang</label>
                                     <input type="text" class="form-control" id="nama_input" name="nama_input" value="{{ old('nama') }}" readonly>
                                 </div>
                             </div>
-                            <div class="col-auto mt-2">
+                            <div class="col-auto">
                                 <button class="btn btn-primary btn-sm" type="button" onclick="showCategoryModalmarketing(this.value)">
                                     <i class="fas fa-search"></i>
                                 </button>
@@ -69,10 +69,7 @@
                             <label for="diskon">Diskon</label>
                             <input type="text" class="form-control" id="diskon" name="diskon" value="{{ old('diskon') }}">
                         </div>
-                        {{-- <div class="form-group mb-3">
-                            <label for="total">Total</label>
-                            <input type="text" class="form-control" id="total" name="total" value="{{ old('total') }}" readonly>
-                        </div> --}}
+              
 
                         <input type="hidden" id="subsub_id" name="subsub_id" value="{{ old('subsub_id') }}">
                         <input type="hidden" id="nama" name="nama" value="{{ old('nama') }}">

@@ -10,6 +10,7 @@ use App\Models\Tokobenjaran;
 use App\Models\Tokotegal;
 use App\Models\Tokopemalang;
 use App\Models\Tokobumiayu;
+use App\Models\Tokocilacap;
 use App\Models\Detailtoko;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -34,8 +35,9 @@ class HargajualController extends Controller
         $tokotegal = Tokotegal::latest()->first();
         $tokopemalang = Tokopemalang::latest()->first();
         $tokobumiayu = Tokobumiayu::latest()->first();
-        $produk = Produk::with(['tokoslawi', 'tokobenjaran','tokotegal', 'tokopemalang', 'tokobumiayu'])->get();
-        return view('admin.hargajual.index', compact('produk', 'tokoslawi', 'tokobenjaran', 'tokotegal', 'tokopemalang', 'tokobumiayu'));
+        $tokocilacap = Tokocilacap::latest()->first();
+        $produk = Produk::with(['tokoslawi', 'tokobenjaran','tokotegal', 'tokopemalang', 'tokobumiayu' , 'tokocilacap'])->get();
+        return view('admin.hargajual.index', compact('produk', 'tokoslawi', 'tokobenjaran', 'tokotegal', 'tokopemalang', 'tokobumiayu', 'tokocilacap'));
     }
 
 
@@ -111,6 +113,16 @@ class HargajualController extends Controller
                                     ->orWhereRaw('tokobumiayus.non_diskon_bmy != 0');
                           });
                 });
+            })->orWhere(function ($query) use ($today) {
+                $query->whereHas('tokocilacap', function ($query) use ($today) {
+                    $query->whereDate('updated_at', $today)
+                          ->where(function ($query) {
+                              $query->whereRaw('tokocilacaps.member_harga_clc != tokocilacaps.harga_awal')
+                                    ->orWhereRaw('tokocilacaps.non_harga_clc != tokocilacaps.harga_awal')
+                                    ->orWhereRaw('tokocilacaps.member_diskon_clc != 0')
+                                    ->orWhereRaw('tokocilacaps.non_diskon_clc != 0');
+                          });
+                });
             })
             ->get();
                 
@@ -167,6 +179,11 @@ public function updateHarga(Request $request)
         'member_diskon_bmy' => 'nullable|numeric',
         'non_harga_bmy' => 'nullable|numeric',
         'non_diskon_bmy' => 'nullable|numeric',
+
+        'member_harga_clc' => 'nullable|numeric',
+        'member_diskon_clc' => 'nullable|numeric',
+        'non_harga_clc' => 'nullable|numeric',
+        'non_diskon_clc' => 'nullable|numeric',
     ]);
 
     // Cari produk berdasarkan ID
@@ -336,6 +353,40 @@ public function updateHarga(Request $request)
          'member_diskon' => $request->dikon_member_bmy,
          'non_member_harga' => $request->non_harga_bmy,
          'non_member_diskon' => $request->non_diskon_bmy,
+         'harga_diskon_member' => $harga_diskon_member,
+         'harga_diskon_non' => $harga_diskon_non_member,
+         'created_at' => Carbon::now('Asia/Jakarta'),
+         'updated_at' => Carbon::now('Asia/Jakarta'),
+  
+     ]);
+
+     // Update atau buat entri baru untuk toko Cilacap
+     $tokocilacap = $produk->tokocilacap->first();
+     if ($tokocilacap) {
+         $tokocilacap->member_harga_clc = $request->member_harga_clc ?? $tokocilacap->member_harga_clc;
+         $tokocilacap->member_diskon_clc = $request->member_diskon_clc ?? $tokocilacap->member_diskon_clc;
+         $tokocilacap->non_harga_clc = $request->non_harga_clc ?? $tokocilacap->non_harga_clc;
+         $tokocilacap->non_diskon_clc = $request->non_diskon_clc ?? $tokocilacap->non_diskon_clc;
+         $tokocilacap->save();
+     } else {
+         $tokocilacap = Tokocilacap::create([
+             'produk_id' => $produk->id,
+             'member_harga_clc' => $request->member_harga_clc,
+             'member_diskon_clc' => $request->member_diskon_clc,
+             'non_harga_clc' => $request->non_harga_clc,
+             'non_diskon_clc' => $request->non_diskon_clc,
+         ]);
+     }
+ 
+     $harga_diskon_member = $request->member_harga_clc * (1 - ($request->member_diskon_clc / 100));
+     $harga_diskon_non_member = $request->non_harga_clc * (1 - ($request->non_diskon_clc / 100));
+     // Simpan ID toko Pemalang di detailtoko
+     Detailtoko::create([
+         'tokocilacap_id' => $tokocilacap->id,
+         'member_harga' => $request->member_harga_clc,
+         'member_diskon' => $request->dikon_member_bmy,
+         'non_member_harga' => $request->non_harga_clc,
+         'non_member_diskon' => $request->non_diskon_clc,
          'harga_diskon_member' => $harga_diskon_member,
          'harga_diskon_non' => $harga_diskon_non_member,
          'created_at' => Carbon::now('Asia/Jakarta'),

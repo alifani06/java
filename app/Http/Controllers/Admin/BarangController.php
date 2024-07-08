@@ -28,11 +28,7 @@ class BarangController extends Controller
     }
 
    
-    // public function get_klasifikasi($klasifikasi_id)
-    // {
-    //     $klasifikasis = Subklasifikasi::where('klasifikasi_id', $klasifikasi_id)->get();
-    //     return response()->json($klasifikasis);
-    // }
+
 
 
     public function getkategori($id)

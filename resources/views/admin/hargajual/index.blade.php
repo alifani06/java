@@ -60,7 +60,7 @@
             
             <div class="card-body">
                 <table id="datatables1" class="table table-sm table-bordered table-striped table-hover">
-                    <thead>
+                    {{-- <thead>
                         <tr>
                             <th>No</th>
                             <th>Kode produk</th>
@@ -145,7 +145,63 @@
                             <th style="text-align: center;">Harga</th>
                             <th style="text-align: center;">Diskon (%)</th>
                         </tr>
+                    </thead> --}}
+                    <thead>
+                        <tr>
+                            <th rowspan="3" style="text-align: center;">No</th>
+                            <th rowspan="3" style="text-align: center;">Kode Produk</th>
+                            <th rowspan="3" style="text-align: center;">Nama Produk</th>
+                            <th rowspan="3" style="text-align: center;">+</th>
+                            <th colspan="4" style="text-align: center;">Toko Slawi</th>
+                            <th colspan="4" style="text-align: center;">Toko Benjaran</th>
+                            <th colspan="4" style="text-align: center;">Toko Tegal</th>
+                            <th colspan="4" style="text-align: center;">Toko Pemalang</th>
+                            <th colspan="4" style="text-align: center;">Toko Bumiayu</th>
+                            <th colspan="4" style="text-align: center;">Toko Cilacap</th>
+                        </tr>
+                        <tr>
+                            <th colspan="2" style="text-align: center;">Member</th>
+                            <th colspan="2" style="text-align: center;">Non Member</th>
+                            <th colspan="2" style="text-align: center;">Member</th>
+                            <th colspan="2" style="text-align: center;">Non Member</th>
+                            <th colspan="2" style="text-align: center;">Member</th>
+                            <th colspan="2" style="text-align: center;">Non Member</th>
+                            <th colspan="2" style="text-align: center;">Member</th>
+                            <th colspan="2" style="text-align: center;">Non Member</th>
+                            <th colspan="2" style="text-align: center;">Member</th>
+                            <th colspan="2" style="text-align: center;">Non Member</th>
+                            <th colspan="2" style="text-align: center;">Member</th>
+                            <th colspan="2" style="text-align: center;">Non Member</th>
+                        </tr>
+                        <tr>
+                            <th style="text-align: center;">Harga</th>
+                            <th style="text-align: center;">Diskon (%)</th>
+                            <th style="text-align: center;">Harga</th>
+                            <th style="text-align: center;">Diskon (%)</th>
+                            <th style="text-align: center;">Harga</th>
+                            <th style="text-align: center;">Diskon (%)</th>
+                            <th style="text-align: center;">Harga</th>
+                            <th style="text-align: center;">Diskon (%)</th>
+                            <th style="text-align: center;">Harga</th>
+                            <th style="text-align: center;">Diskon (%)</th>
+                            <th style="text-align: center;">Harga</th>
+                            <th style="text-align: center;">Diskon (%)</th>
+                            <th style="text-align: center;">Harga</th>
+                            <th style="text-align: center;">Diskon (%)</th>
+                            <th style="text-align: center;">Harga</th>
+                            <th style="text-align: center;">Diskon (%)</th>
+                            <th style="text-align: center;">Harga</th>
+                            <th style="text-align: center;">Diskon (%)</th>
+                            <th style="text-align: center;">Harga</th>
+                            <th style="text-align: center;">Diskon (%)</th>
+                            <th style="text-align: center;">Harga</th>
+                            <th style="text-align: center;">Diskon (%)</th>
+                            <th style="text-align: center;">Harga</th>
+                            <th style="text-align: center;">Diskon (%)</th>
+                            
+                        </tr>
                     </thead>
+                    
                     <tbody>
                         @foreach ($produk as $index => $item)
                         <tr id="row-{{ $loop->index }}">
@@ -229,6 +285,20 @@
                                 </td>
                                 <td>
                                     <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_diskon_bmy" id="diskon-non-member-pml-{{ $loop->index }}" value="{{ $item->tokobumiayu->first()->non_diskon_bmy ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
+                                </td>
+
+                                 {{-- Cilacap --}}
+                                 <td style="text-align: center;">
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_harga_clc" id="member-harga-clc-{{ $loop->index }}" value="{{ $item->tokocilacap->first()->member_harga_clc ?? $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_diskon_clc" id="diskon-member-clc-{{ $loop->index }}" value="{{ $item->tokocilacap->first()->member_diskon_clc ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
+                                </td>
+                                <td style="text-align: center;">
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_harga_clc" id="non-member-harga-clc-{{ $loop->index }}" value="{{ $item->tokocilacap->first()->non_harga_clc ?? $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_diskon_clc" id="diskon-non-member-clc-{{ $loop->index }}" value="{{ $item->tokocilacap->first()->non_diskon_clc ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
                                 </td>
   
                             

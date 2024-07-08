@@ -32,6 +32,7 @@
                                 <option value="tokotegal" @if(request()->input('toko') == 'tokotegal') selected @endif>Toko Tegal</option>
                                 <option value="tokopemalang" @if(request()->input('toko') == 'tokopemalang') selected @endif>Toko Pemalang</option>
                                 <option value="tokobumiayu" @if(request()->input('toko') == 'tokobumiayu') selected @endif>Toko Bumiayu</option>
+                                <option value="tokocilacap" @if(request()->input('toko') == 'tokocilacap') selected @endif>Toko Cilacap</option>
                             </select>
                         </div>
                     
@@ -452,7 +453,7 @@
                                                 $nonMemberHarga = $item->tokobumiayu->first()->non_harga_bmy;
                                                 $hargaAwal = $item->tokobumiayu->first()->harga_awal;
                                                 $memberDiskon = $item->tokobumiayu->first()->member_diskon_bmy;
-                                                $nonMemberDiskon = $item->tokobumiayu->first()->non_diskon_bmmy;
+                                                $nonMemberDiskon = $item->tokobumiayu->first()->non_diskon_bmy;
                                 
                                                 // Cek apakah ada perubahan pada harga member atau diskon member atau harga non-member atau diskon non-member
                                                 $isChanged = ($memberHarga != $hargaAwal) || ($memberDiskon != 0) || 
@@ -493,6 +494,96 @@
                 @endif
             </div>
 
+               {{-- Tampilkan Tabel TokoCilacap --}}
+               <div id="tokocilacapTable" @if(request()->input('toko', 'tokocilacap') != 'tokocilacap') style="display: none;" @endif>
+                @if($produk->filter(function($item) {
+                        return $item->tokocilacap->isNotEmpty();
+                    })->isNotEmpty())
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Data Harga Jual tokocilacap yang Diperbarui Hari Ini</h3>
+                        </div>
+                        <div class="card-body">
+                      
+                            <table id="datatable" class="table table-sm table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Kode produk</th>
+                                        <th>Nama produk</th>
+                                        <th>Harga produk awal</th>
+                                        <th colspan="4" style="text-align: center;">Toko Cilacap</th>
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th style="text-align: center;">Member</th>
+                                        <th style="text-align: center;"></th>
+                                        <th style="text-align: center;"></th>
+                                        <th style="text-align: center;">Non Member</th>
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th style="text-align: center;">Harga</th>
+                                        <th style="text-align: center;">Diskon (%)</th>
+                                        <th style="text-align: center;">Harga</th>
+                                        <th style="text-align: center;">Diskon (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($produk as $index => $item)
+                                        @if($item->tokocilacap->isNotEmpty())
+                                            @php
+                                                $memberHarga = $item->tokocilacap->first()->member_harga_clc;
+                                                $nonMemberHarga = $item->tokocilacap->first()->non_harga_clc;
+                                                $hargaAwal = $item->tokocilacap->first()->harga_awal;
+                                                $memberDiskon = $item->tokocilacap->first()->member_diskon_clc;
+                                                $nonMemberDiskon = $item->tokocilacap->first()->non_diskon_clc;
+                                
+                                                // Cek apakah ada perubahan pada harga member atau diskon member atau harga non-member atau diskon non-member
+                                                $isChanged = ($memberHarga != $hargaAwal) || ($memberDiskon != 0) || 
+                                                             ($nonMemberHarga != $hargaAwal) || ($nonMemberDiskon != 0);
+                                            @endphp
+                                
+                                            @if($isChanged)
+                                                <tr>
+                                                    <td class="text-center">{{ $loop->iteration }}</td>
+                                                    <td>{{ $item->kode_produk }}</td>
+                                                    <td>{{ $item->nama_produk }}</td>
+                                                    <td>{{ 'Rp. ' . number_format($hargaAwal, 0, ',', '.') }}</td>
+                                                    <td style="text-align: center;">
+                                                        {{ $memberHarga != $hargaAwal || $memberDiskon != 0 ? 'Rp. ' . number_format($memberHarga - ($memberHarga * $memberDiskon / 100), 0, ',', '.') : '-' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $memberHarga != $hargaAwal || $memberDiskon != 0 ? $memberDiskon : '-' }}
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        {{ $nonMemberHarga != $hargaAwal || $nonMemberDiskon != 0 ? 'Rp. ' . number_format($nonMemberHarga - ($nonMemberHarga * $nonMemberDiskon / 100), 0, ',', '.') : '-' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $nonMemberHarga != $hargaAwal || $nonMemberDiskon != 0 ? $nonMemberDiskon : '-' }}
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                        @endif
+                                    @endforeach 
+                                </tbody>
+                            </table>
+                            
+                        </div>
+                    </div>
+                @else
+                    <div class="alert alert-info">
+                        Tidak ada data Harga Jual Toko Cilacap yang diperbarui hari ini.
+                    </div>
+                @endif
+            </div>
+
         </div>
     </section>
 
@@ -514,6 +605,8 @@
                 document.getElementById('tokobenjaranTable').style.display = 'none';
                 document.getElementById('tokotegalTable').style.display = 'none';
                 document.getElementById('tokopemalangTable').style.display = 'none';
+                document.getElementById('tokobumiayuTable').style.display = 'none';
+                document.getElementById('tokocilacapTable').style.display = 'none';
 
             } else if (toko === 'tokobenjaran') {
                 document.getElementById('tokoslawiTable').style.display = 'none';
@@ -521,6 +614,7 @@
                 document.getElementById('tokotegalTable').style.display = 'none';
                 document.getElementById('tokopemalangTable').style.display = 'none';
                 document.getElementById('tokobumiayuTable').style.display = 'none';
+                document.getElementById('tokocilacapTable').style.display = 'none';
 
             }else if (toko === 'tokotegal') {
                 document.getElementById('tokoslawiTable').style.display = 'none';
@@ -528,6 +622,7 @@
                 document.getElementById('tokotegalTable').style.display = 'block';
                 document.getElementById('tokopemalangTable').style.display = 'none';
                 document.getElementById('tokobumiayuTable').style.display = 'none';
+                document.getElementById('tokocilacapTable').style.display = 'none';
 
             }else if (toko === 'tokopemalang') {
                 document.getElementById('tokoslawiTable').style.display = 'none';
@@ -535,6 +630,7 @@
                 document.getElementById('tokotegalTable').style.display = 'none';
                 document.getElementById('tokopemalangTable').style.display = 'block';
                 document.getElementById('tokobumiayuTable').style.display = 'none';
+                document.getElementById('tokocilacapTable').style.display = 'none';
 
             }else if (toko === 'tokobumiayu') {
                 document.getElementById('tokoslawiTable').style.display = 'none';
@@ -542,6 +638,15 @@
                 document.getElementById('tokotegalTable').style.display = 'none';
                 document.getElementById('tokopemalangTable').style.display = 'none';
                 document.getElementById('tokobumiayuTable').style.display = 'block';
+                document.getElementById('tokocilacapTable').style.display = 'none';
+
+            }else if (toko === 'tokocilacap') {
+                document.getElementById('tokoslawiTable').style.display = 'none';
+                document.getElementById('tokobenjaranTable').style.display = 'none';
+                document.getElementById('tokotegalTable').style.display = 'none';
+                document.getElementById('tokopemalangTable').style.display = 'none';
+                document.getElementById('tokobumiayuTable').style.display = 'none';
+                document.getElementById('tokocilacapTable').style.display = 'block';
             }
         
         }

@@ -9,26 +9,19 @@ use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Detailtoko extends Model
+class Tokocilacap extends Model
 {
     use HasFactory;
     // use LogsActivity;
 
     protected $fillable = [
-   'tokoslawi_id',
-   'tokobenjaran_id',
-   'tokotegal_id',
-   'tokopemalang_id',
-   'tokobumiayu_id',
-   'tokocilacap_id',
-   'member_harga',
-   'non_member_harga',
-   'member_diskon',
-   'non_member_diskon',
-   'harga_diskon_member',
-   'harga_diskon_non',
-   'harga_awal',
-   'diskon_awal',
+    'produk_id', 
+    'harga_awal',
+    'diskon_awal',
+    'member_harga_clc', 
+    'non_harga_clc', 
+    'member_diskon_clc', 
+    'non_diskon_clc', 
     ];
 
     use SoftDeletes;
@@ -42,13 +35,16 @@ class Detailtoko extends Model
     
     public static function getId()
     {
-        return $getId = DB::table('detailtoko')->orderBy('id', 'DESC')->take(1)->get();
+        return $getId = DB::table('tokocilacaps')->orderBy('id', 'DESC')->take(1)->get();
     }
 
     public function produk()
     {
         return $this->belongsTo(Produk::class, 'produk_id');
     }
-
+    public function hargajual()
+    {
+        return $this->belongsTo(Hargajual::class, 'hargajual_id', 'id');
+    }
         
 }
