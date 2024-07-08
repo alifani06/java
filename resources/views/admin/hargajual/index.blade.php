@@ -154,10 +154,9 @@
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $item->kode_produk }}</td>
                                 <td>{{ $item->nama_produk }}</td>
-                                <td hidden>{{ 'Rp. ' . number_format($item->tokoslawi->first()->member_harga_slw - ($item->tokoslawi->first()->member_harga_slw * $item->tokoslawi->first()->member_diskon_slw / 100), 0, ',', '.') }}</td> <!-- Display total after discount with format -->
                                 <td>
                                     <button type="button" class="btn btn-danger btn-xs" id="update-button-{{ $loop->index }}" onclick="updateHarga({{ $loop->index }}, {{ $item->id }})">
-                                        <i class="fa fa-edit" id="icon-{{ $loop->index }}"></i>
+                                        <i class="fa fa-save" id="icon-{{ $loop->index }}"></i>
                                     </button>
                                 </td>
 
@@ -203,6 +202,35 @@
                                     <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_diskon_tgl" id="diskon-non-member-tgl-{{ $loop->index }}" value="{{ $item->tokotegal->first()->non_diskon_tgl ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
                                 </td>
 
+                                {{-- Pemalang --}}
+                                <td style="text-align: center;">
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_harga_pml" id="member-harga-pml-{{ $loop->index }}" value="{{ $item->tokopemalang->first()->member_harga_pml ?? $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_diskon_pml" id="diskon-member-pml-{{ $loop->index }}" value="{{ $item->tokopemalang->first()->member_diskon_pml ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
+                                </td>
+                                <td style="text-align: center;">
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_harga_pml" id="non-member-harga-pml-{{ $loop->index }}" value="{{ $item->tokopemalang->first()->non_harga_pml ?? $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_diskon_pml" id="diskon-non-member-pml-{{ $loop->index }}" value="{{ $item->tokopemalang->first()->non_diskon_pml ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
+                                </td>
+
+
+                                {{-- Bumiayu --}}
+                                <td style="text-align: center;">
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_harga_bmy" id="member-harga-pml-{{ $loop->index }}" value="{{ $item->tokobumiayu->first()->member_harga_bmy ?? $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_diskon_bmy" id="diskon-member-pml-{{ $loop->index }}" value="{{ $item->tokobumiayu->first()->member_diskon_bmy ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
+                                </td>
+                                <td style="text-align: center;">
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_harga_bmy" id="non-member-harga-pml-{{ $loop->index }}" value="{{ $item->tokobumiayu->first()->non_harga_bmy ?? $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_diskon_bmy" id="diskon-non-member-pml-{{ $loop->index }}" value="{{ $item->tokobumiayu->first()->non_diskon_bmy ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
+                                </td>
+  
                             
                             </form>
                         </tr>

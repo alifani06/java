@@ -9,6 +9,8 @@ use App\Models\Hargajual;
 use App\Models\Tokoslawi;
 use App\Models\Tokobenjaran;
 use App\Models\Tokotegal;
+use App\Models\Tokopemalang;
+use App\Models\Tokobumiayu;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
@@ -40,109 +42,9 @@ class ProdukController extends Controller
         return view('admin/produk.create', compact('produks'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    // public function store(Request $request)
-    // {
-    //     $validator = Validator::make(
-    //         $request->all(),
-    //         [
-    //             'nama_produk' => 'required',
-    //             'satuan' => 'required',
-    //             'harga' => 'required',
-    //             'gambar' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
-    //         ],
-    //         [
-    //             'nama_produk.required' => 'Masukan nama produk',
-    //             'satuan.required' => 'Masukkan satuan',
-    //             'harga.required' => 'Masukkan harga',
-    //             'gambar.image' => 'Gambar yang dimasukan salah!',
-    //         ]
-    //     );
-
-    //     if ($validator->fails()) {
-    //         $errors = $validator->errors()->all();
-    //         return back()->withInput()->with('error', $errors);
-    //     }
-
-    //     if ($request->gambar) {
-    //         $gambar = str_replace(' ', '', $request->gambar->getClientOriginalName());
-    //         $namaGambar = 'produk/' . date('mYdHs') . rand(1, 10) . '_' . $gambar;
-    //         $request->gambar->storeAs('public/uploads/', $namaGambar);
-    //     } else {
-    //         $namaGambar = null;
-    //     }
-    //     $kode = $this->kode();
-
-    //     Produk::create(array_merge(
-    //         $request->all(),
-    //         [
-    //             'gambar' => $namaGambar,
-    //             'kode_produk' => $this->kode(),
-    //             'qrcode_produk' => 'https://javabakery.id/produk/' . $kode,
-    //             'tanggal' => Carbon::now('Asia/Jakarta'),
-
-    //         ]
-    //     ));
-
-    //     return redirect('admin/produk')->with('success', 'Berhasil menambahkan produk');
-    // }
+ 
     public function store(Request $request)
-    // {
-    //     $validator = Validator::make(
-    //         $request->all(),
-    //         [
-    //             'nama_produk' => 'required',
-    //             'satuan' => 'required',
-    //             'harga' => 'required',
-    //             'gambar' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
-    //         ],
-    //         [
-    //             'nama_produk.required' => 'Masukan nama produk',
-    //             'satuan.required' => 'Masukkan satuan',
-    //             'harga.required' => 'Masukkan harga',
-    //             'gambar.image' => 'Gambar yang dimasukan salah!',
-    //         ]
-    //     );
-    
-    //     if ($validator->fails()) {
-    //         $errors = $validator->errors()->all();
-    //         return back()->withInput()->with('error', $errors);
-    //     }
-    
-    //     if ($request->gambar) {
-    //         $gambar = str_replace(' ', '', $request->gambar->getClientOriginalName());
-    //         $namaGambar = 'produk/' . date('mYdHs') . rand(1, 10) . '_' . $gambar;
-    //         $request->gambar->storeAs('public/uploads/', $namaGambar);
-    //     } else {
-    //         $namaGambar = null;
-    //     }
-    //     $kode = $this->kode();
-    
-    //     $produk = Produk::create(array_merge(
-    //         $request->all(),
-    //         [
-    //             'diskon' => 0,
-    //             'gambar' => $namaGambar,
-    //             'kode_produk' => $kode,
-    //             'qrcode_produk' => 'https://javabakery.id/produk/' . $kode,
-    //             'tanggal' => Carbon::now('Asia/Jakarta'),
-    //         ]
-    //     ));
-    
-    //     // Create a record in hargajuals with the produk_id
-    //     HargaJual::create([
-    //         'produk_id' => $produk->id,
-    //         'harga' => $request->harga,
-    //         // Add other necessary fields here if needed
-    //     ]);
-    
-    //     return redirect('admin/produk')->with('success', 'Berhasil menambahkan produk');
-    // }
+ 
     {
         $validator = Validator::make(
             $request->all(),
@@ -226,6 +128,24 @@ class ProdukController extends Controller
             'member_diskon_tgl' => 0,
             'non_harga_tgl' => $request->harga,
             'non_diskon_tgl' => 0,
+        ]);
+        Tokopemalang::create([
+            'produk_id' => $produk->id,
+            'harga_awal' => $request->harga,
+            'diskon_awal' => 0,
+            'member_harga_pml' => $request->harga,
+            'member_diskon_pml' => 0,
+            'non_harga_pml' => $request->harga,
+            'non_diskon_pml' => 0,
+        ]);
+        Tokobumiayu::create([
+            'produk_id' => $produk->id,
+            'harga_awal' => $request->harga,
+            'diskon_awal' => 0,
+            'member_harga_bmy' => $request->harga,
+            'member_diskon_bmy' => 0,
+            'non_harga_bmy' => $request->harga,
+            'non_diskon_bmy' => 0,
         ]);
     
         return redirect('admin/produk')->with('success', 'Berhasil menambahkan produk');

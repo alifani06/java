@@ -30,6 +30,8 @@
                                 <option value="tokoslawi" @if(request()->input('toko', 'tokoslawi') == 'tokoslawi') selected @endif>Toko Slawi</option>
                                 <option value="tokobenjaran" @if(request()->input('toko') == 'tokobenjaran') selected @endif>Toko Benjaran</option>
                                 <option value="tokotegal" @if(request()->input('toko') == 'tokotegal') selected @endif>Toko Tegal</option>
+                                <option value="tokopemalang" @if(request()->input('toko') == 'tokopemalang') selected @endif>Toko Pemalang</option>
+                                <option value="tokobumiayu" @if(request()->input('toko') == 'tokobumiayu') selected @endif>Toko Bumiayu</option>
                             </select>
                         </div>
                     
@@ -130,6 +132,7 @@
                     </div>
                 @endif
             </div>
+
             {{-- Tampilkan Tabel Tokobenjaran --}}
             <div id="tokobenjaranTable" @if(request()->input('toko', 'tokobenjaran') != 'tokobenjaran') style="display: none;" @endif>
                 @if($produk->filter(function($item) {
@@ -148,7 +151,7 @@
                                         <th>Kode produk</th>
                                         <th>Nama produk</th>
                                         <th>Harga produk awal</th>
-                                        <th colspan="4" style="text-align: center;">Toko Slawi</th>
+                                        <th colspan="4" style="text-align: center;">Toko Benjaran</th>
                                     </tr>
                                     <tr>
                                         <th></th>
@@ -238,7 +241,7 @@
                                         <th>Kode produk</th>
                                         <th>Nama produk</th>
                                         <th>Harga produk awal</th>
-                                        <th colspan="4" style="text-align: center;">Toko Slawi</th>
+                                        <th colspan="4" style="text-align: center;">Toko Tegal</th>
                                     </tr>
                                     <tr>
                                         <th></th>
@@ -309,6 +312,187 @@
                     </div>
                 @endif
             </div>
+
+             {{-- Tampilkan Tabel TokoPemlaang --}}
+             <div id="tokopemalangTable" @if(request()->input('toko', 'tokopemalang') != 'tokopemalang') style="display: none;" @endif>
+                @if($produk->filter(function($item) {
+                        return $item->tokopemalang->isNotEmpty();
+                    })->isNotEmpty())
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Data Harga Jual tokopemalang yang Diperbarui Hari Ini</h3>
+                        </div>
+                        <div class="card-body">
+                      
+                            <table id="datatable" class="table table-sm table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Kode produk</th>
+                                        <th>Nama produk</th>
+                                        <th>Harga produk awal</th>
+                                        <th colspan="4" style="text-align: center;">Toko Tegal</th>
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th style="text-align: center;">Member</th>
+                                        <th style="text-align: center;"></th>
+                                        <th style="text-align: center;"></th>
+                                        <th style="text-align: center;">Non Member</th>
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th style="text-align: center;">Harga</th>
+                                        <th style="text-align: center;">Diskon (%)</th>
+                                        <th style="text-align: center;">Harga</th>
+                                        <th style="text-align: center;">Diskon (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($produk as $index => $item)
+                                        @if($item->tokopemalang->isNotEmpty())
+                                            @php
+                                                $memberHarga = $item->tokopemalang->first()->member_harga_pml;
+                                                $nonMemberHarga = $item->tokopemalang->first()->non_harga_pml;
+                                                $hargaAwal = $item->tokopemalang->first()->harga_awal;
+                                                $memberDiskon = $item->tokopemalang->first()->member_diskon_pml;
+                                                $nonMemberDiskon = $item->tokopemalang->first()->non_diskon_pml;
+                                
+                                                // Cek apakah ada perubahan pada harga member atau diskon member atau harga non-member atau diskon non-member
+                                                $isChanged = ($memberHarga != $hargaAwal) || ($memberDiskon != 0) || 
+                                                             ($nonMemberHarga != $hargaAwal) || ($nonMemberDiskon != 0);
+                                            @endphp
+                                
+                                            @if($isChanged)
+                                                <tr>
+                                                    <td class="text-center">{{ $loop->iteration }}</td>
+                                                    <td>{{ $item->kode_produk }}</td>
+                                                    <td>{{ $item->nama_produk }}</td>
+                                                    <td>{{ 'Rp. ' . number_format($hargaAwal, 0, ',', '.') }}</td>
+                                                    <td style="text-align: center;">
+                                                        {{ $memberHarga != $hargaAwal || $memberDiskon != 0 ? 'Rp. ' . number_format($memberHarga - ($memberHarga * $memberDiskon / 100), 0, ',', '.') : '-' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $memberHarga != $hargaAwal || $memberDiskon != 0 ? $memberDiskon : '-' }}
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        {{ $nonMemberHarga != $hargaAwal || $nonMemberDiskon != 0 ? 'Rp. ' . number_format($nonMemberHarga - ($nonMemberHarga * $nonMemberDiskon / 100), 0, ',', '.') : '-' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $nonMemberHarga != $hargaAwal || $nonMemberDiskon != 0 ? $nonMemberDiskon : '-' }}
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                        @endif
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            
+                        </div>
+                    </div>
+                @else
+                    <div class="alert alert-info">
+                        Tidak ada data Harga Jual Toko Pemalang yang diperbarui hari ini.
+                    </div>
+                @endif
+            </div>
+
+              {{-- Tampilkan Tabel TokoBumiayu --}}
+              <div id="tokobumiayuTable" @if(request()->input('toko', 'tokobumiayu') != 'tokobumiayu') style="display: none;" @endif>
+                @if($produk->filter(function($item) {
+                        return $item->tokobumiayu->isNotEmpty();
+                    })->isNotEmpty())
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Data Harga Jual tokobumiayu yang Diperbarui Hari Ini</h3>
+                        </div>
+                        <div class="card-body">
+                      
+                            <table id="datatable" class="table table-sm table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Kode produk</th>
+                                        <th>Nama produk</th>
+                                        <th>Harga produk awal</th>
+                                        <th colspan="4" style="text-align: center;">Toko Bumiayu</th>
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th style="text-align: center;">Member</th>
+                                        <th style="text-align: center;"></th>
+                                        <th style="text-align: center;"></th>
+                                        <th style="text-align: center;">Non Member</th>
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th style="text-align: center;">Harga</th>
+                                        <th style="text-align: center;">Diskon (%)</th>
+                                        <th style="text-align: center;">Harga</th>
+                                        <th style="text-align: center;">Diskon (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($produk as $index => $item)
+                                        @if($item->tokobumiayu->isNotEmpty())
+                                            @php
+                                                $memberHarga = $item->tokobumiayu->first()->member_harga_bmy;
+                                                $nonMemberHarga = $item->tokobumiayu->first()->non_harga_bmy;
+                                                $hargaAwal = $item->tokobumiayu->first()->harga_awal;
+                                                $memberDiskon = $item->tokobumiayu->first()->member_diskon_bmy;
+                                                $nonMemberDiskon = $item->tokobumiayu->first()->non_diskon_bmmy;
+                                
+                                                // Cek apakah ada perubahan pada harga member atau diskon member atau harga non-member atau diskon non-member
+                                                $isChanged = ($memberHarga != $hargaAwal) || ($memberDiskon != 0) || 
+                                                             ($nonMemberHarga != $hargaAwal) || ($nonMemberDiskon != 0);
+                                            @endphp
+                                
+                                            @if($isChanged)
+                                                <tr>
+                                                    <td class="text-center">{{ $loop->iteration }}</td>
+                                                    <td>{{ $item->kode_produk }}</td>
+                                                    <td>{{ $item->nama_produk }}</td>
+                                                    <td>{{ 'Rp. ' . number_format($hargaAwal, 0, ',', '.') }}</td>
+                                                    <td style="text-align: center;">
+                                                        {{ $memberHarga != $hargaAwal || $memberDiskon != 0 ? 'Rp. ' . number_format($memberHarga - ($memberHarga * $memberDiskon / 100), 0, ',', '.') : '-' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $memberHarga != $hargaAwal || $memberDiskon != 0 ? $memberDiskon : '-' }}
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        {{ $nonMemberHarga != $hargaAwal || $nonMemberDiskon != 0 ? 'Rp. ' . number_format($nonMemberHarga - ($nonMemberHarga * $nonMemberDiskon / 100), 0, ',', '.') : '-' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $nonMemberHarga != $hargaAwal || $nonMemberDiskon != 0 ? $nonMemberDiskon : '-' }}
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                        @endif
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            
+                        </div>
+                    </div>
+                @else
+                    <div class="alert alert-info">
+                        Tidak ada data Harga Jual Toko Pemalang yang diperbarui hari ini.
+                    </div>
+                @endif
+            </div>
+
         </div>
     </section>
 
@@ -329,17 +513,38 @@
                 document.getElementById('tokoslawiTable').style.display = 'block';
                 document.getElementById('tokobenjaranTable').style.display = 'none';
                 document.getElementById('tokotegalTable').style.display = 'none';
+                document.getElementById('tokopemalangTable').style.display = 'none';
+
             } else if (toko === 'tokobenjaran') {
                 document.getElementById('tokoslawiTable').style.display = 'none';
                 document.getElementById('tokobenjaranTable').style.display = 'block';
                 document.getElementById('tokotegalTable').style.display = 'none';
+                document.getElementById('tokopemalangTable').style.display = 'none';
+                document.getElementById('tokobumiayuTable').style.display = 'none';
+
             }else if (toko === 'tokotegal') {
                 document.getElementById('tokoslawiTable').style.display = 'none';
                 document.getElementById('tokobenjaranTable').style.display = 'none';
                 document.getElementById('tokotegalTable').style.display = 'block';
-            }
-        }
+                document.getElementById('tokopemalangTable').style.display = 'none';
+                document.getElementById('tokobumiayuTable').style.display = 'none';
 
+            }else if (toko === 'tokopemalang') {
+                document.getElementById('tokoslawiTable').style.display = 'none';
+                document.getElementById('tokobenjaranTable').style.display = 'none';
+                document.getElementById('tokotegalTable').style.display = 'none';
+                document.getElementById('tokopemalangTable').style.display = 'block';
+                document.getElementById('tokobumiayuTable').style.display = 'none';
+
+            }else if (toko === 'tokobumiayu') {
+                document.getElementById('tokoslawiTable').style.display = 'none';
+                document.getElementById('tokobenjaranTable').style.display = 'none';
+                document.getElementById('tokotegalTable').style.display = 'none';
+                document.getElementById('tokopemalangTable').style.display = 'none';
+                document.getElementById('tokobumiayuTable').style.display = 'block';
+            }
+        
+        }
         function printPdf() {
         var toko = document.getElementById('toko').value;
         var url = '{{ route("cetak.pdf") }}' + '?toko=' + toko;

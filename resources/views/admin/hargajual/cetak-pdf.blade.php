@@ -61,7 +61,25 @@
                             $nonMemberHarga = $item->tokobenjaran->first()->non_harga_bnjr;
                             $memberDiskon = $item->tokobenjaran->first()->member_diskon_bnjr;
                             $nonMemberDiskon = $item->tokobenjaran->first()->non_diskon_bnjr;
+                        }elseif ($toko == 'tokotegal') {
+                            $memberHarga = $item->tokotegal->first()->member_harga_tgl;
+                            $nonMemberHarga = $item->tokotegal->first()->non_harga_tgl;
+                            $memberDiskon = $item->tokotegal->first()->member_diskon_tgl;
+                            $nonMemberDiskon = $item->tokotegal->first()->non_diskon_tgl;
+                        }elseif ($toko == 'tokopemalang') {
+                            $memberHarga = $item->tokopemalang->first()->member_harga_pml;
+                            $nonMemberHarga = $item->tokopemalang->first()->non_harga_pml;
+                            $memberDiskon = $item->tokopemalang->first()->member_diskon_pml;
+                            $nonMemberDiskon = $item->tokopemalang->first()->non_diskon_pml;
+                        }elseif ($toko == 'tokobumiayu') {
+                            $memberHarga = $item->tokobumiayu->first()->member_harga_bmy;
+                            $nonMemberHarga = $item->tokobumiayu->first()->non_harga_bmy;
+                            $memberDiskon = $item->tokobumiayu->first()->member_diskon_bmy;
+                            $nonMemberDiskon = $item->tokobumiayu->first()->non_diskon_bmy;
                         }
+    
+    
+    
     
                         if ($memberHarga != $hargaAwal || $nonMemberHarga != $hargaAwal || $memberDiskon != $diskonAwal || $nonMemberDiskon != $diskonAwal) {
                             $isChanged = true;

@@ -58,5 +58,13 @@ class Produk extends Model
     {
         return $this->hasMany(Tokotegal::class);
     }
+    public function tokopemalang()
+    {
+        return $this->hasMany(Tokopemalang::class);
+    }
+    public function tokobumiayu()
+    {
+        return $this->hasMany(Tokobumiayu::class);
+    }
  
 }
