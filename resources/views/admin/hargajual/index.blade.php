@@ -51,106 +51,26 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Data Harga Jual</h3>
+              
                 <div class="float-right">
                     <a href="{{ url('admin/hargajual/show') }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-print"></i> 
+                    </a>
+                    <a href="{{ route('admin.hargajual.all') }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-print"></i> Tampilkan All
                     </a>
                 </div>
             </div>
             
             <div class="card-body">
                 <table id="datatables1" class="table table-sm table-bordered table-striped table-hover">
-                    {{-- <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Kode produk</th>
-                            <th>Nama produk</th>
-                            <th>+</th>
-                            <th colspan="4" style="text-align: center;">Toko Slawi</th>
-                            <th colspan="4" style="text-align: center;">Toko Benjaran</th>
-                            <th colspan="4" style="text-align: center;">Toko Tegal</th>
-                            <th colspan="4" style="text-align: center;">Toko Pemalang</th>
-                            <th colspan="4" style="text-align: center;">Toko Bumiayu</th>
-                            <th colspan="4" style="text-align: center;">Toko Cilacap</th>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                     
-                            <th style="text-align: center;">Member</th>
-                            <th style="text-align: center;"></th>
-                            <th style="text-align: center;"></th>
-                            <th style="text-align: center;">Non Member</th>
-
-                            <th style="text-align: center;">Member</th>
-                            <th style="text-align: center;"></th>
-                            <th style="text-align: center;"></th>
-                            <th style="text-align: center;">Non Member</th>
-
-                            <th style="text-align: center;">Member</th>
-                            <th style="text-align: center;"></th>
-                            <th style="text-align: center;"></th>
-                            <th style="text-align: center;">Non Member</th>
-
-                            <th style="text-align: center;">Member</th>
-                            <th style="text-align: center;"></th>
-                            <th style="text-align: center;"></th>
-                            <th style="text-align: center;">Non Member</th>
-
-                            <th style="text-align: center;">Member</th>
-                            <th style="text-align: center;"></th>
-                            <th style="text-align: center;"></th>
-                            <th style="text-align: center;">Non Member</th>
-
-                            <th style="text-align: center;">Member</th>
-                            <th style="text-align: center;"></th>
-                            <th style="text-align: center;"></th>
-                            <th style="text-align: center;">Non Member</th>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                       
-                            <th style="text-align: center;">Harga</th>
-                            <th style="text-align: center;">Diskon (%)</th>
-                            <th style="text-align: center;">Harga</th>
-                            <th style="text-align: center;">Diskon (%)</th>
-
-                            <th style="text-align: center;">Harga</th>
-                            <th style="text-align: center;">Diskon (%)</th>
-                            <th style="text-align: center;">Harga</th>
-                            <th style="text-align: center;">Diskon (%)</th>
-
-                            <th style="text-align: center;">Harga</th>
-                            <th style="text-align: center;">Diskon (%)</th>
-                            <th style="text-align: center;">Harga</th>
-                            <th style="text-align: center;">Diskon (%)</th>
-
-                            <th style="text-align: center;">Harga</th>
-                            <th style="text-align: center;">Diskon (%)</th>
-                            <th style="text-align: center;">Harga</th>
-                            <th style="text-align: center;">Diskon (%)</th>
-
-                            <th style="text-align: center;">Harga</th>
-                            <th style="text-align: center;">Diskon (%)</th>
-                            <th style="text-align: center;">Harga</th>
-                            <th style="text-align: center;">Diskon (%)</th>
-
-                            <th style="text-align: center;">Harga</th>
-                            <th style="text-align: center;">Diskon (%)</th>
-                            <th style="text-align: center;">Harga</th>
-                            <th style="text-align: center;">Diskon (%)</th>
-                        </tr>
-                    </thead> --}}
+             
                     <thead>
                         <tr>
                             <th rowspan="3" style="text-align: center;">No</th>
                             <th rowspan="3" style="text-align: center;">Kode Produk</th>
                             <th rowspan="3" style="text-align: center;">Nama Produk</th>
+                            <th rowspan="3" style="text-align: center;">Harga Awal</th>
                             <th rowspan="3" style="text-align: center;">+</th>
                             <th colspan="4" style="text-align: center;">Toko Slawi</th>
                             <th colspan="4" style="text-align: center;">Toko Benjaran</th>
@@ -210,6 +130,7 @@
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $item->kode_produk }}</td>
                                 <td>{{ $item->nama_produk }}</td>
+                                <td>{{ $item->harga }}</td>
                                 <td>
                                     <button type="button" class="btn btn-danger btn-xs" id="update-button-{{ $loop->index }}" onclick="updateHarga({{ $loop->index }}, {{ $item->id }})">
                                         <i class="fa fa-save" id="icon-{{ $loop->index }}"></i>

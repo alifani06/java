@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Hargajual;
+use Illuminate\Support\Facades\DB;
 use App\Models\Produk;
 use App\Models\Tokoslawi;
 use App\Models\Tokobenjaran;
@@ -12,6 +13,7 @@ use App\Models\Tokopemalang;
 use App\Models\Tokobumiayu;
 use App\Models\Tokocilacap;
 use App\Models\Detailtoko;
+use App\Models\Detailtokoslawi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -52,13 +54,54 @@ class HargajualController extends Controller
         //
     }
 
-    
+//     public function all(Request $request)
+// {
+//     $start_date = $request->input('start_date');
+//     $end_date = $request->input('end_date');
+
+//     $query = Detailtokoslawi::with('produk')
+//         ->select('detailtokoslawis.*')
+//         ->whereIn('id', function($query) {
+//             $query->select(DB::raw('MAX(id)'))
+//                   ->from('detailtokoslawis')
+//                   ->groupBy('produk_id');
+//         });
+
+//     if ($start_date && $end_date) {
+//         $query->whereBetween('updated_at', [$start_date . ' 00:00:00', $end_date . ' 23:59:59']);
+//     }
+
+//     $detailtokoslawi = $query->orderBy('updated_at', 'desc')
+//                              ->get();
+
+//     return view('admin.hargajual.all', compact('detailtokoslawi'));
+// }
+public function all(Request $request)
+{
+    $start_date = $request->input('start_date');
+    $end_date = $request->input('end_date');
+
+    $query = Detailtokoslawi::with('produk');
+
+    if ($start_date && $end_date) {
+        $query->whereBetween('updated_at', [$start_date . ' 00:00:00', $end_date . ' 23:59:59']);
+    }
+
+    $detailtokoslawi = $query->orderBy('updated_at', 'desc')
+                             ->get();
+
+    return view('admin.hargajual.all', compact('detailtokoslawi'));
+}
+
+
+
+
     public function show()
     {
         $toko = request()->input('toko', 'tokoslawi'); // Ambil input toko dari request, default ke 'tokoslawi'
         $today = Carbon::today(); // Tanggal hari ini
         
-        $produk = Produk::with(['tokoslawi', 'tokobenjaran' , 'tokotegal'])
+        $produk = Produk::with(['tokoslawi', 'tokobenjaran' , 'tokotegal','tokopemalang', 'tokobumiayu', 'tokocilacap'])
             ->where(function ($query) use ($today) {
                 $query->whereHas('tokoslawi', function ($query) use ($today) {
                     $query->whereDate('updated_at', $today)
@@ -135,8 +178,8 @@ class HargajualController extends Controller
                     return view('admin.hargajual.show', compact('produk'));
     }
 
-
- 
+   
+    
  
     public function edit($id)
     {
@@ -210,7 +253,8 @@ public function updateHarga(Request $request)
     $harga_diskon_member = $request->member_harga_slw * (1 - ($request->member_diskon_slw / 100));
     $harga_diskon_non_member = $request->non_harga_slw * (1 - ($request->non_diskon_slw / 100));
     // Simpan ID toko Slawi di detailtoko
-    Detailtoko::create([
+    Detailtokoslawi::create([
+        'produk_id' => $produk->id,
         'tokoslawi_id' => $tokoslawi->id,
         'member_harga' => $request->member_harga_slw,
         'member_diskon' => $request->member_diskon_slw,

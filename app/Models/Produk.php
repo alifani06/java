@@ -70,5 +70,12 @@ class Produk extends Model
     {
         return $this->hasMany(Tokocilacap::class);
     }
- 
+    public function detailtoko()
+    {
+        return $this->hasMany(Detailtoko::class);
+    }
+    public function detailtokoslawi()
+    {
+        return $this->hasMany(Detailtokoslawi::class);
+    }
 }

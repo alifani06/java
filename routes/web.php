@@ -80,9 +80,11 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('toko', \App\Http\Controllers\Admin\TokoController::class);
 
     Route::resource('hargajual', \App\Http\Controllers\Admin\HargajualController::class);
+    Route::get('admin/hargajual/all', [HargajualController::class, 'all'])->name('admin.hargajual.all');
     Route::post('/admin/update-harga', [HargajualController::class, 'updateHarga'])->name('update.harga');
     Route::get('admin/hargajual/show', [App\Http\Controllers\Admin\HargajualController::class, 'show'])->name('show');
     Route::get('/cetak-pdf', [HargajualController::class, 'cetakPdf'])->name('cetak.pdf');
+    Route::get('/admin/hargajual/filter', [HargajualController::class, 'all'])->name('admin.hargajual.filter');
 
     // Route::post('/list', [HargajualController::class, 'list']);
 
