@@ -8,10 +8,18 @@
         body {
             font-family: Arial, sans-serif;
             font-size: 12px;
+            margin: 0;
+            padding: 0;
+        }
+        .logo {
+            position: absolute;
+            top: -20;
+            left: -30;
         }
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 100px; /* Adjust the margin-top value to avoid overlap with the image */
         }
         th, td {
             padding: 8px;
@@ -21,10 +29,19 @@
         th {
             background-color: #f2f2f2;
         }
+
+        h2{
+            position: absolute;
+            top: -20;
+            left:90;
+        }
     </style>
 </head>
 <body>
-    <h2>PERUBAHAN HARGA PRODUK - {{ ucfirst($toko) }}</h2>
+    <div class="logo">
+        <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JavaBakery" height="70" width="150">
+    </div>
+    <h2>DATA PERUBAHAN HARGA PRODUK - {{ ucfirst($toko) }}</h2>
 
     <table>
         <thead>
@@ -61,28 +78,27 @@
                             $nonMemberHarga = $item->tokobenjaran->first()->non_harga_bnjr;
                             $memberDiskon = $item->tokobenjaran->first()->member_diskon_bnjr;
                             $nonMemberDiskon = $item->tokobenjaran->first()->non_diskon_bnjr;
-                        }elseif ($toko == 'tokotegal') {
+                        } elseif ($toko == 'tokotegal') {
                             $memberHarga = $item->tokotegal->first()->member_harga_tgl;
                             $nonMemberHarga = $item->tokotegal->first()->non_harga_tgl;
                             $memberDiskon = $item->tokotegal->first()->member_diskon_tgl;
                             $nonMemberDiskon = $item->tokotegal->first()->non_diskon_tgl;
-                        }elseif ($toko == 'tokopemalang') {
+                        } elseif ($toko == 'tokopemalang') {
                             $memberHarga = $item->tokopemalang->first()->member_harga_pml;
                             $nonMemberHarga = $item->tokopemalang->first()->non_harga_pml;
                             $memberDiskon = $item->tokopemalang->first()->member_diskon_pml;
                             $nonMemberDiskon = $item->tokopemalang->first()->non_diskon_pml;
-                        }elseif ($toko == 'tokobumiayu') {
+                        } elseif ($toko == 'tokobumiayu') {
                             $memberHarga = $item->tokobumiayu->first()->member_harga_bmy;
                             $nonMemberHarga = $item->tokobumiayu->first()->non_harga_bmy;
                             $memberDiskon = $item->tokobumiayu->first()->member_diskon_bmy;
                             $nonMemberDiskon = $item->tokobumiayu->first()->non_diskon_bmy;
-                        }elseif ($toko == 'tokocilacap') {
+                        } elseif ($toko == 'tokocilacap') {
                             $memberHarga = $item->tokocilacap->first()->member_harga_clc;
                             $nonMemberHarga = $item->tokocilacap->first()->non_harga_clc;
                             $memberDiskon = $item->tokocilacap->first()->member_diskon_clc;
                             $nonMemberDiskon = $item->tokocilacap->first()->non_diskon_clc;
                         }
-    
     
     
     
@@ -131,8 +147,5 @@
             @endforeach
         </tbody>
     </table>
-    
-    
-    
 </body>
 </html>

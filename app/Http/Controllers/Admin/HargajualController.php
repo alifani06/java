@@ -397,10 +397,32 @@ public function updateHarga(Request $request)
     return response()->json(['success' => true]);
 }
 
-    public function cetakPdf(Request $request)
+//     public function cetakPdf(Request $request)
+// {
+//     $toko = $request->input('toko', 'tokoslawi');
+//     $produk = Produk::with([$toko])->get();
+
+//     // Periksa apakah view tersedia
+//     if (!view()->exists('admin.hargajual.cetak-pdf')) {
+//         return response()->json(['error' => 'View not found'], 404);
+//     }
+
+//     $pdf = FacadePdf::loadView('admin.hargajual.cetak-pdf', compact('produk', 'toko'))
+//         ->setPaper('a4', 'portrait');
+
+//     return $pdf->stream('updated-items.pdf');
+// }
+
+
+public function cetakPdf(Request $request)
 {
     $toko = $request->input('toko', 'tokoslawi');
-    $produk = Produk::with([$toko])->get();
+    $today = Carbon::today();
+
+    // Query hanya data yang diubah hari ini
+    $produk = Produk::whereHas($toko, function ($query) use ($today) {
+        $query->whereDate('updated_at', $today);
+    })->with([$toko])->get();
 
     // Periksa apakah view tersedia
     if (!view()->exists('admin.hargajual.cetak-pdf')) {
@@ -412,6 +434,7 @@ public function updateHarga(Request $request)
 
     return $pdf->stream('updated-items.pdf');
 }
+
 
     
     public function destroy($id)
