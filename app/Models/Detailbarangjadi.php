@@ -18,9 +18,9 @@ class Detailbarangjadi extends Model
     
     protected $fillable = [
         'input_id',
-        'barang_id',
-        'kode_barang',
-        'nama_barang',
+        'produk_id',
+        'kode_produk',
+        'nama_produk',
         'jumlah',
         'harga',
         'total',

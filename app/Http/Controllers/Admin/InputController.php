@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Barang; // Import model Barang untuk mengambil data barang
 use App\Models\Detailbarangjadi;
 use App\Models\Klasifikasi;
+use App\Models\Produk;
 use App\Models\Subsub; // Import model Subsub untuk mengambil data subsub
+use App\Models\Tokoslawi;
 
 class InputController extends Controller
 {
@@ -19,11 +21,13 @@ class InputController extends Controller
     {
         
         $barangs = Barang::all();
+        $produks = Produk::all();
         $subs1 = Subsub::all();
         $details = Detailbarangjadi::all();
         $klasifikasi = Klasifikasi::all();
+        $tokoslawis = Tokoslawi::all();
         $inputs = Input::with('barang')->get();
-        return view('admin/input.index', compact('inputs', 'barangs', 'subs1', 'details','klasifikasi'));
+        return view('admin/input.index', compact('inputs', 'barangs', 'produks', 'subs1', 'details','klasifikasi', 'tokoslawis'));
     }
 
     // show as data
@@ -67,7 +71,7 @@ class InputController extends Controller
                 'cabang' => 'required',
                 'sub_total' => 'required',
                 'catatan' => 'required',
-                'tanggal_pengiriman' => 'required',
+                // 'tanggal_pengiriman' => 'required',
             ],
             [
                 'kode_faktur.required' => 'Pilih no_faktur',
@@ -85,12 +89,12 @@ class InputController extends Controller
         $error_pesanans = array();
         $data_pembelians = collect();
 
-        if ($request->has('barang_id')) {
-            for ($i = 0; $i < count($request->barang_id); $i++) {
+        if ($request->has('produk_id')) {
+            for ($i = 0; $i < count($request->produk_id); $i++) {
                 $validasi_produk = Validator::make($request->all(), [
-                    'kode_barang.' . $i => 'required',
-                    'barang_id.' . $i => 'required',
-                    'nama_barang.' . $i => 'required',
+                    'kode_produk.' . $i => 'required',
+                    'produk_id.' . $i => 'required',
+                    'nama_produk.' . $i => 'required',
                     'harga.' . $i => 'required',
                     'total.' . $i => 'required',
                  
@@ -100,18 +104,18 @@ class InputController extends Controller
                     array_push($error_pesanans, "Barang no " . ($i + 1) . " belum dilengkapi!"); // Corrected the syntax for concatenation and indexing
                 }
 
-                $barang_id = is_null($request->barang_id[$i]) ? '' : $request->barang_id[$i];
-                $kode_barang = is_null($request->kode_barang[$i]) ? '' : $request->kode_barang[$i];
-                $nama_barang = is_null($request->nama_barang[$i]) ? '' : $request->nama_barang[$i];
+                $produk_id = is_null($request->produk_id[$i]) ? '' : $request->produk_id[$i];
+                $kode_produk = is_null($request->kode_produk[$i]) ? '' : $request->kode_produk[$i];
+                $nama_produk = is_null($request->nama_produk[$i]) ? '' : $request->nama_produk[$i];
                 $jumlah = is_null($request->jumlah[$i]) ? '' : $request->jumlah[$i];
                 $harga = is_null($request->harga[$i]) ? '' : $request->harga[$i];
                 $total = is_null($request->total[$i]) ? '' : $request->total[$i];
              
 
                 $data_pembelians->push([
-                    'kode_barang' => $kode_barang,
-                    'barang_id' => $barang_id,
-                    'nama_barang' => $nama_barang,
+                    'kode_produk' => $kode_produk,
+                    'produk_id' => $produk_id,
+                    'nama_produk' => $nama_produk,
                     'jumlah' => $jumlah,
                     'harga' => $harga,
                     'total' => $total,
@@ -142,7 +146,7 @@ class InputController extends Controller
             'cabang' => $request->cabang,
             'sub_total' => $request->sub_total,
             'catatan' => $request->catatan,
-            'tanggal_pengiriman' => $request->tanggal_pengiriman,
+            // 'tanggal_pengiriman' => $request->tanggal_pengiriman,
            
         ]);
 
@@ -152,9 +156,9 @@ class InputController extends Controller
             foreach ($data_pembelians as $data_pesanan) {
                 $detailTagihan = Detailbarangjadi::create([
                     'input_id' => $cetakpdf->id,
-                    'kode_barang' => $data_pesanan['kode_barang'],
-                    'barang_id' => $data_pesanan['barang_id'],
-                    'nama_barang' => $data_pesanan['nama_barang'],
+                    'kode_produk' => $data_pesanan['kode_produk'],
+                    'produk_id' => $data_pesanan['produk_id'],
+                    'nama_produk' => $data_pesanan['nama_produk'],
                     'jumlah' => $data_pesanan['jumlah'],
                     'harga' => $data_pesanan['harga'],
                     // 'no_po' => $data_pesanan['no_po'],
@@ -223,10 +227,10 @@ return back()->with('success', 'Berhasil menambahkan barang jadi');;
 
 //     $data_pembelians = collect();
 
-//     if ($request->has('barang_id')) {
+//     if ($request->has('produk_id')) {
 //         for ($i = 0; $i < count($request->barang_id); $i++) {
 //             $validasi_produk = Validator::make($request->all(), [
-//                 'kode_barang.' . $i => 'required',
+//                 'kode_produk.' . $i => 'required',
 //                 'barang_id.' . $i => 'required',
 //                 'nama_barang.' . $i => 'required',
 //                 'harga.' . $i => 'required',
@@ -241,7 +245,7 @@ return back()->with('success', 'Berhasil menambahkan barang jadi');;
 //             }
 
 //             $data_pembelians->push([
-//                 'kode_barang' => $request->kode_barang[$i],
+//                 'kode_produk' => $request->kode_produk[$i],
 //                 'barang_id' => $request->barang_id[$i],
 //                 'nama_barang' => $request->nama_barang[$i],
 //                 'jumlah' => $request->jumlah[$i],
@@ -266,7 +270,7 @@ return back()->with('success', 'Berhasil menambahkan barang jadi');;
 //         foreach ($data_pembelians as $data_pesanan) {
 //             Detailbarangjadi::create([
 //                 'input_id' => $input->id,
-//                 'kode_barang' => $data_pesanan['kode_barang'],
+//                 'kode_produk' => $data_pesanan['kode_produk'],
 //                 'barang_id' => $data_pesanan['barang_id'],
 //                 'nama_barang' => $data_pesanan['nama_barang'],
 //                 'jumlah' => $data_pesanan['jumlah'],

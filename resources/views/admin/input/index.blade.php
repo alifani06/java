@@ -87,10 +87,10 @@
                         <div class="col-md-4 mb-3">
                             <label>Tanggal :</label>
                             <div class="input-group date" id="reservationdatetime">
-                                <input type="datetime-local" id="tanggal" name="tanggal"
-                                    placeholder="dd-mm-yyyy hh:mm"
-                                    value="{{ old('tanggal') }}"
-                                    class="form-control datetimepicker-input"
+                                <input type="date" id="tanggal" name="tanggal"
+                                    placeholder="d M Y sampai d M Y"
+                                    data-options='{"mode":"range","dateFormat":"d M Y","disableMobile":true}'
+                                    value="{{ old('tanggal') }}" class="form-control datetimepicker-input"
                                     data-target="#reservationdatetime">
                             </div>
                         </div>
@@ -154,72 +154,45 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th style="font-size:14px" class="text-center">No</th>
-                                <th style="font-size:14px">Kode Barang</th>
-                                <th style="font-size:14px">Nama Barang</th>
-                                <th style="font-size:14px">Jumlah</th>
-                                <th style="font-size:14px">Harga</th>
-                                <th style="font-size:14px">Total</th>
-                                <th style="font-size:14px; text-align:center">Opsi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabel-pembelian">
-                            {{-- <tr id="pembelian-0">
-                                <td style="width: 70px; font-size:14px" class="text-center" id="urutan">1
-                                </td>
-                                <td hidden>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="barang_id-0"
-                                            name="barang_id[]">
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="form-group">
-                                        <input onclick="showCategoryModal(0)" style="font-size:14px" readonly
-                                            type="text" class="form-control" id="kode_barang-0" name="kode_barang[]">
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="form-group">
-                                        <input onclick="showCategoryModal(0)" style="font-size:14px" readonly
-                                            type="text" class="form-control" id="nama_barang-0" name="nama_barang[]">
-                                    </div>
-                                </td>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th style="font-size:14px" class="text-center">No</th>
+                                        <th style="font-size:14px">Kode Barang</th>
+                                        <th style="font-size:14px">Nama Barang</th>
+                                        <th style="font-size:14px">Jumlah</th>
+                                        <th style="font-size:14px">Harga</th>
+                                        <th style="font-size:14px">Total</th>
+                                        <th style="font-size:14px; text-align:center">Opsi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabel-pembelian">
+                                
+                                </tbody>
+                            </table>
+                        </div>
 
-                                <td>
-                                    <div class="form-group">
-                                        <input  style="font-size:14px" oninput="hitungTotal(' + urutan + ')"
-                                            type="text" class="form-control" id="jumlah-0" name="jumlah[]">
-                                    </div>
-                                </td>
-                                <td >
-                                    <div class="form-group">
-                                        <input onclick="showCategoryModal(0)" style="font-size:14px" readonly
-                                            type="text" class="form-control" id="harga-0" name="harga[]">
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="form-group">
-                                        <input style="font-size:14px" 
-                                            type="text" class="form-control" id="total-0" name="total[]">
-                                    </div>
-                                </td>
-                        
-                                <td style="width: 100px">
-                                    <button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(0)">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                    <button style="margin-left:5px" type="button" class="btn btn-danger btn-sm"
-                                        onclick="removeBan(0)">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr> --}}
-                        </tbody>
-                    </table>
+                        {{-- <div class="col">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th style="font-size:14px" class="text-center">No</th>
+                                        <th style="font-size:14px">Kode Barang</th>
+                                        <th style="font-size:14px">Nama Barang</th>
+                                        <th style="font-size:14px">Jumlah</th>
+                                        <th style="font-size:14px">Harga</th>
+                                        <th style="font-size:14px">Total</th>
+                                        <th style="font-size:14px; text-align:center">Opsi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabel-pembelian">
+                                
+                                </tbody>
+                            </table>
+                        </div> --}}
+                    </div>
                     {{-- <div class="form-group mt-2">
                         <label style="font-size:14px" for="keterangan">Keterangan</label>
                         <textarea style="font-size:14px" type="text" class="form-control" id="keterangan" name="keterangan"
@@ -247,7 +220,7 @@
                             <textarea type="text"  class="form-control" id="catatan" name="catatan"
                                value="{{ old('catatan') }}"></textarea>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        {{-- <div class="col-md-4 mb-3">
                             <label>Tanggal Pengiriman:</label>
                             <div class="input-group date" id="reservationdatetime">
                                 <input type="date" id="tanggal_pengiriman" name="tanggal_pengiriman"
@@ -256,10 +229,10 @@
                                     value="{{ old('tanggal_pengiriman') }}" class="form-control datetimepicker-input"
                                     data-target="#reservationdatetime">
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="col-md-5 mb-3">
-                            <label for="catatan">Bagian Input Stok :</label>
+                            <label for="catatan">Bagian Input  :</label>
                            <input type="text" class="form-control" readonly value="{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}">
                         </div>
                     </div>
@@ -281,7 +254,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Data Barang</h4>
+                        <h4 class="modal-title">Data Produk</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -291,22 +264,22 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">No</th>
-                                    <th>Kode Barang</th>
-                                    <th>Nama Barang</th>
+                                    <th>Kode Produk</th>
+                                    <th>Nama Produk</th>
                                     <th>Harga</th>
                                     <th>Opsi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($barangs as $item)
+                                @foreach ($produks as $item)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $item->kode_barang }}</td>
-                                    <td>{{ $item->subsub->nama }}</td>
-                                    <td>{{number_format($item->total, 0, ',', '.') }}</td> <!-- Format harga -->
+                                    <td>{{ $item->kode_produk }}</td>
+                                    <td>{{ $item->nama_produk }}</td>
+                                    <td>{{number_format($item->harga, 0, ',', '.') }}</td> <!-- Format harga -->
                                     <td class="text-center">
                                         <button type="button" class="btn btn-primary btn-sm"
-                                            onclick="getSelectedData('{{ $item->id }}','{{ $item->kode_barang }}', '{{ $item->subsub->nama }}', '{{ $item->total }}')">
+                                            onclick="getSelectedData('{{ $item->id }}','{{ $item->kode_produk }}', '{{ $item->nama_produk }}', '{{ $item->harga}}')">
                                             <i class="fas fa-plus"></i> Pilih
                                         </button>
                                     </td>
@@ -345,12 +318,12 @@
         }
     
         // Fungsi untuk memilih data barang dari modal
-        function getSelectedData(id, kode_barang, subsub_id, harga) {
+        function getSelectedData(id, kode_produk, subsub_id, harga) {
             var urutan = $('#tableMarketing').attr('data-urutan');
             // Set nilai input pada baris yang sesuai
-            $('#barang_id-' + urutan).val(id);
-            $('#kode_barang-' + urutan).val(kode_barang);
-            $('#nama_barang-' + urutan).val(subsub_id);
+            $('#produk_id-' + urutan).val(id);
+            $('#kode_produk-' + urutan).val(kode_produk);
+            $('#nama_produk-' + urutan).val(subsub_id);
             $('#harga-' + urutan).val(harga);
             // Hitung total
             hitungTotal(urutan);
@@ -407,17 +380,17 @@
         }
     
         function itemPembelian(urutan, key, value = null) {
-            var barang_id = '';
-            var kode_barang = '';
-            var nama_barang = '';
+            var produk_id = '';
+            var kode_produk = '';
+            var nama_produk = '';
             var jumlah = '';
             var harga = '';
             var total = '';
     
             if (value !== null) {
-                barang_id = value.barang_id;
-                kode_barang = value.kode_barang;
-                nama_barang = value.nama_barang;
+                produk_id = value.produk_id;
+                kode_produk = value.kode_produk;
+                nama_produk = value.nama_produk;
                 jumlah = value.jumlah;
                 harga = value.harga;
                 total = value.total;
@@ -425,9 +398,9 @@
     
             var item_pembelian = '<tr id="pembelian-' + urutan + '">';
             item_pembelian += '<td style="width: 70px; font-size:14px" class="text-center" id="urutan-' + urutan + '">' + urutan + '</td>';
-            item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="barang_id-' + urutan + '" name="barang_id[]" value="' + barang_id + '"></div></td>';
-            item_pembelian += '<td onclick="tableMarketing(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_barang-' + urutan + '" name="kode_barang[]" value="' + kode_barang + '"></div></td>';
-            item_pembelian += '<td><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_barang-' + urutan + '" name="nama_barang[]" value="' + nama_barang + '"></div></td>';
+            item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="produk_id-' + urutan + '" name="produk_id[]" value="' + produk_id + '"></div></td>';
+            item_pembelian += '<td onclick="tableMarketing(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
+            item_pembelian += '<td><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
             item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')"></div></td>';
             item_pembelian += '<td><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="harga-' + urutan + '" name="harga[]" value="' + harga + '"></div></td>';
             item_pembelian += '<td><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="total-' + urutan + '" name="total[]" value="' + total + '"></div></td>';
@@ -479,12 +452,12 @@
         }
     
         // Fungsi untuk memilih data barang dari modal
-        function getSelectedData(id, kode_barang, subsub_id, harga) {
+        function getSelectedData(id, kode_produk, subsub_id, harga) {
             var urutan = $('#tableMarketing').attr('data-urutan');
             // Set nilai input pada baris yang sesuai
-            $('#barang_id-' + urutan).val(id);
-            $('#kode_barang-' + urutan).val(kode_barang);
-            $('#nama_barang-' + urutan).val(subsub_id);
+            $('#produk_id-' + urutan).val(id);
+            $('#kode_produk-' + urutan).val(kode_produk);
+            $('#nama_produk-' + urutan).val(subsub_id);
             $('#harga-' + urutan).val(formatRupiah(harga));
             // Hitung total
             hitungTotal(urutan);
@@ -541,17 +514,17 @@
         }
     
         function itemPembelian(urutan, key, value = null) {
-            var barang_id = '';
-            var kode_barang = '';
-            var nama_barang = '';
+            var produk_id = '';
+            var kode_produk = '';
+            var nama_produk = '';
             var jumlah = '';
             var harga = '';
             var total = '';
     
             if (value !== null) {
-                barang_id = value.barang_id;
-                kode_barang = value.kode_barang;
-                nama_barang = value.nama_barang;
+                produk_id = value.produk_id;
+                kode_produk = value.kode_produk;
+                nama_produk = value.nama_produk;
                 jumlah = value.jumlah;
                 harga = value.harga;
                 total = value.total;
@@ -559,9 +532,9 @@
     
             var item_pembelian = '<tr id="pembelian-' + urutan + '">';
             item_pembelian += '<td style="width: 70px; font-size:14px" class="text-center" id="urutan-' + urutan + '">' + urutan + '</td>';
-            item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="barang_id-' + urutan + '" name="barang_id[]" value="' + barang_id + '"></div></td>';
-            item_pembelian += '<td onclick="tableMarketing(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_barang-' + urutan + '" name="kode_barang[]" value="' + kode_barang + '"></div></td>';
-            item_pembelian += '<td><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_barang-' + urutan + '" name="nama_barang[]" value="' + nama_barang + '"></div></td>';
+            item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="produk_id-' + urutan + '" name="produk_id[]" value="' + produk_id + '"></div></td>';
+            item_pembelian += '<td onclick="tableMarketing(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
+            item_pembelian += '<td><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
             item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')"></div></td>';
             item_pembelian += '<td><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="harga-' + urutan + '" name="harga[]" value="' + formatRupiah(harga) + '"></div></td>';
             item_pembelian += '<td><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="total-' + urutan + '" name="total[]" value="' + formatRupiah(total) + '"></div></td>';

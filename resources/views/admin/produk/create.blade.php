@@ -8,11 +8,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">produk</h1>
+                    <h1 class="m-0">Produk</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ url('admin/produk') }}">produk</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('admin/produk') }}">Produk</a></li>
                         <li class="breadcrumb-item active">Tambah</li>
                     </ol>
                 </div><!-- /.col -->
@@ -45,15 +45,19 @@
                         <div class="row mb-3 align-items-center">
                             <div class="col-auto mt-2">
                                 <label for="nama">Nama Produk</label>
-                                <input type="text" class="form-control" id="nama_produk" name="nama_produk"
-                                    placeholder="Masukan nama produk" value="{{ old('nama_produk') }}">
+                                <div class="d-flex align-items-center">
+                                    <input type="text" class="form-control" id="nama_produk" name="nama_produk"
+                                        placeholder="Masukan nama produk" value="{{ old('nama_produk') }}">
+                                    <button class="btn btn-primary ml-2" type="button" onclick="showCategoryModalmarketing(this.value)">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="col-auto">
-                                <button class="btn btn-primary btn-sm" type="button" onclick="showCategoryModalmarketing(this.value)">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                         </div>
+                        </div>
+
+                         <!-- Tambahkan input field tersembunyi untuk menyimpan subsub_id -->
+                         <input type="hidden" id="subsub_id" name="subsub_id">
+                         <input type="hidden" id="nama_input" name="nama_input">
                      <div class="row">
                         <div class="col mb-3">
                             <label for="nama">Harga</label>
@@ -65,8 +69,8 @@
                             <input type="number" class="form-control" id="diskon" name="diskon"
                                 placeholder="Masukan diskon" value="0">
                         </div>
-                    </div>
-                        <div class="mb-3">
+
+                        <div class="col mb-3">
                             <label class="form-label" for="satuan">Pilih Satuan</label>
                             <select class="form-control" id="satuan" name="satuan">
                                 <option value="">- Pilih -</option>
@@ -78,6 +82,8 @@
                                     pcs</option>
                             </select>
                         </div>
+                    </div>
+                       
 
                         <div class="form-group">
                             <label for="gambar">Gambar <small>(Kosongkan saja jika tidak
@@ -189,23 +195,6 @@
         </div>
 </section>
 
-    {{-- <script>
-        $(document).ready(function() {
-            // Tambahkan event listener pada tombol "Simpan"
-            $('#btnSimpan').click(function() {
-                // Sembunyikan tombol "Simpan" dan "Reset", serta tampilkan elemen loading
-                $(this).hide();
-                $('#btnReset').hide(); // Tambahkan id "btnReset" pada tombol "Reset"
-                $('#loading').show();
-
-                // Lakukan pengiriman formulir
-                $('form').submit();
-            });
-        });
-    </script>
- --}}
-
-
 <script>
     $(document).ready(function() {
         // Tambahkan event listener pada tombol "Simpan"
@@ -221,7 +210,7 @@
     });
 </script>
 
- <script>
+<script>
     $(document).ready(function() {
         $('#klasifikasi_id').on('change', function() {
             var klasifikasiID = $(this).val();
@@ -246,49 +235,21 @@
     });
 </script>
 
-
-
 <script>
-function showCategoryModal(selectedCategory) {
-    $('#tableKategori').modal('show');
-}
-
-function getSelectedData(merek_id, namaMerek, namaModel, namaTipe) {
-    // Set the values in the form fields
-    document.getElementById('merek_id').value = merek_id;
-    document.getElementById('nama_merek').value = namaMerek;
-    document.getElementById('model').value = namaModel;
-    document.getElementById('tipe').value = namaTipe;
-
-    // Close the modal (if needed)
-    $('#tableKategori').modal('hide');
-}
-
-document.getElementById('btn-tambah-tipe').addEventListener('click', function() {
-    var modalTipe = new bootstrap.Modal(document.getElementById('modal-tipe'));
-    modalTipe.show();
-});
-
-document.getElementById('btn-tambah-model').addEventListener('click', function() {
-    var modalTipe = new bootstrap.Modal(document.getElementById('modal-model'));
-    modalTipe.show();
-});
-
 function showCategoryModalmarketing(selectedCategory) {
     $('#tableMarketing').modal('show');
 }
 
 function getSelectedDatamarketing(subsub_id, nama) {
-// Mengatur nilai pada input field tersembunyi
-document.getElementById('subsub_id').value = subsub_id;
-document.getElementById('nama_input').value = nama;
+    // Mengatur nilai pada input field tersembunyi
+    document.getElementById('subsub_id').value = subsub_id;
+    document.getElementById('nama_input').value = nama;
 
-// Memperbarui field form yang terlihat
-document.getElementById('nama_input').value = nama;
+    // Memperbarui field form yang terlihat
+    document.getElementById('nama_produk').value = nama;
 
-// Menutup modal
-$('#tableMarketing').modal('hide');
+    // Menutup modal
+    $('#tableMarketing').modal('hide');
 }
-
 </script>
 @endsection

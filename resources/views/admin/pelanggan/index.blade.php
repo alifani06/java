@@ -47,7 +47,7 @@
         @endif
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Data Pelanggan</h3>
+                    <h3 class="card-title">Data Pelanggann</h3>
                     <div class="float-right">
                         {{-- <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal"
                         data-target="#modal-add">
