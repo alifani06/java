@@ -56,9 +56,9 @@
                     <a href="{{ url('admin/hargajual/show') }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-print"></i> 
                     </a>
-                    <a href="{{ route('admin.hargajual.all') }}" class="btn btn-primary btn-sm">
+                    {{-- <a href="{{ route('admin.hargajual.all') }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-print"></i> Tampilkan All
-                    </a>
+                    </a> --}}
                 </div>
             </div>
             
