@@ -76,6 +76,10 @@ class Produk extends Model
     }
     public function detailtokoslawi()
     {
-        return $this->hasMany(Detailtokoslawi::class);
+        return $this->hasMany(Detailtokoslawi::class,  'produk_id', 'id');
+    }
+    public function detailbarangjadi()
+    {
+        return $this->hasMany(Detailbarangjadi::class,  'produk_id', 'id');
     }
 }

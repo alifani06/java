@@ -121,8 +121,8 @@
                             @foreach ($detailtokoslawi as $item)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $item->produk->kode_produk }}</td>
-                                    <td>{{ $item->produk->nama_produk }}</td>
+                                    <td>{{ $item->produk->kode_produk ?? '-'}}</td>
+                                    <td>{{ $item->produk->nama_produk ?? '-' }}</td>
                                     <td>{{ 'Rp. ' . number_format($item->harga_awal, 0, ',', '.') }}</td>
                                     <td>{{ 'Rp. ' . number_format($item->member_harga, 0, ',', '.') }}</td>
                                     <td>{{ $item ->member_diskon }}</td>

@@ -9,6 +9,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\KlasifikasiController;
 use App\Http\Controllers\Admin\AddpelangganController;
 use App\Http\Controllers\Admin\HargajualController;
+use App\Http\Controllers\Admin\PemesananprodukController;
 use App\Http\Controllers\Admin\KlasifikasiController as AdminKlasifikasiController;
 use App\Http\Controllers\Admin\PelangganController;
 use App\Http\Controllers\KategoriDropdownController;
@@ -86,9 +87,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/cetak-pdf', [HargajualController::class, 'cetakPdf'])->name('cetak.pdf');
     Route::get('/admin/hargajual/filter', [HargajualController::class, 'all'])->name('admin.hargajual.filter');
 
-    // Route::post('/list', [HargajualController::class, 'list']);
-
-
+    Route::resource('pemesanan_produk', \App\Http\Controllers\Admin\PemesananprodukController::class);
 
     // Route::get('/data', [\App\Http\Controllers\Admin\InputController::class, 'data']); 
     // Route::get('/pelanggan/cetak_pdf/{id}', [\App\Http\Controllers\Admin\PelangganController::class, 'cetak_pdf']);

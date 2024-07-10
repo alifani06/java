@@ -236,37 +236,69 @@
 
 
 <script>
-    function updateHarga(index, id) {
-        const form = document.getElementById(`update-harga-form-${index}`);
-        const formData = new FormData(form);
-        formData.append('id', id);
+    // function updateHarga(index, id) {
+    //     const form = document.getElementById(`update-harga-form-${index}`);
+    //     const formData = new FormData(form);
+    //     formData.append('id', id);
 
-        fetch('{{ route('update.harga') }}', {
-            method: 'POST',
-            body: formData,
-        }).then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: 'Harga berhasil diperbarui.',
-                    timer: 1000,
-                    showConfirmButton: false
-                });
+    //     fetch('{{ route('update.harga') }}', {
+    //         method: 'POST',
+    //         body: formData,
+    //     }).then(response => response.json())
+    //     .then(data => {
+    //         if (data.success) {
+    //             Swal.fire({
+    //                 icon: 'success',
+    //                 title: 'Berhasil!',
+    //                 text: 'Harga berhasil diperbarui.',
+    //                 timer: 1000,
+    //                 showConfirmButton: false
+    //             });
                 
-                // Ubah kembali button dan icon setelah sukses update
-                const updateButton = document.getElementById(`update-button-${index}`);
-                const icon = document.getElementById(`icon-${index}`);
-                updateButton.classList.remove('btn-success');
-                updateButton.classList.add('btn-danger');
-                icon.classList.remove('fa-check');
-                icon.classList.add('fa-edit');
-            }
-        }).catch(error => {
-            console.error('Kesalahan:', error);
-        });
-    }
+    //             // Ubah kembali button dan icon setelah sukses update
+    //             const updateButton = document.getElementById(`update-button-${index}`);
+    //             const icon = document.getElementById(`icon-${index}`);
+    //             updateButton.classList.remove('btn-success');
+    //             updateButton.classList.add('btn-danger');
+    //             icon.classList.remove('fa-check');
+    //             icon.classList.add('fa-edit');
+    //         }
+    //     }).catch(error => {
+    //         console.error('Kesalahan:', error);
+    //     });
+    // }
+    function updateHarga(index, id) {
+    const form = document.getElementById(`update-harga-form-${index}`);
+    const formData = new FormData(form);
+    formData.append('id', id);
+
+    fetch('{{ route('update.harga') }}', {  // <-- Perhatikan bagian ini
+        method: 'POST',
+        body: formData,
+    }).then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: 'Harga berhasil diperbarui.',
+                timer: 1000,
+                showConfirmButton: false
+            });
+            
+            // Ubah kembali button dan icon setelah sukses update
+            const updateButton = document.getElementById(`update-button-${index}`);
+            const icon = document.getElementById(`icon-${index}`);
+            updateButton.classList.remove('btn-success');
+            updateButton.classList.add('btn-danger');
+            icon.classList.remove('fa-check');
+            icon.classList.add('fa-edit');
+        }
+    }).catch(error => {
+        console.error('Kesalahan:', error);
+    });
+}
+
 
     function markAsChanged(index) {
         // Fungsi ini tetap kosong agar tidak ada perubahan saat input diubah

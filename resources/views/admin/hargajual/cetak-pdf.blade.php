@@ -77,7 +77,7 @@
         }
 
             table:last-of-type {
-             margin-bottom: 150px; /* Atur jarak antara tabel terakhir dan signature */
+             margin-bottom: 140px; /* Atur jarak antara tabel terakhir dan signature */
             }
             .signature-container {
                 margin-top: 60px;
@@ -194,12 +194,40 @@
                             <th>No</th>
                             <th>Kode produk</th>
                             <th>Nama produk</th>
-                            <th>Harga produk awal</th>
-                            <th>Harga Member</th>
-                            <th>Diskon Member (%)</th>
-                            <th>Harga Non Member</th>
-                            <th>Diskon Non Member (%)</th>
+                            <th colspan="8" style="text-align: center;"></th>
                         </tr>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th colspan="4" style="text-align: center;">Member</th>
+                            <th colspan="4" style="text-align: center;">Non Member</th>
+
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th colspan="2" style="text-align: center;">Harga</th>
+                            <th colspan="2" style="text-align: center;">Diskon</th>
+                            <th colspan="2" style="text-align: center;">Harga</th>
+                            <th colspan="2" style="text-align: center;">Diskon</th>
+                          
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th style="text-align: center;">Harga lama</th>
+                            <th style="text-align: center;">Harga Baru</th>
+                            <th style="text-align: center;">diskon lama</th>
+                            <th style="text-align: center;">diskon Baru</th>
+                            <th style="text-align: center;">Harga lama</th>
+                            <th style="text-align: center;">Harga Baru</th>
+                            <th style="text-align: center;">diskon lama</th>
+                            <th style="text-align: center;">diskon Baru</th>
+                        </tr>
+                   
                     </thead>
                     <tbody>
                         @foreach ($filteredData as $index => $item)
@@ -255,14 +283,17 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->kode_produk }}</td>
                                     <td>{{ $item->nama_produk }}</td>
-                                    <td>{{ 'Rp. ' . number_format($hargaAwal, 0, ',', '.') }}</td>
-                                    <td>
+                                    <td > {{number_format($item->harga, 0, ',', '.') }}</td>
+                                    <td > {{number_format($memberHarga, 0, ',', '.') }}</td>
+                                    {{-- <td>
                                         @if($memberHarga != $hargaAwal || $memberDiskon != $diskonAwal)
-                                            {{ 'Rp. ' . number_format($memberHarga - ($memberHarga * $memberDiskon / 100), 0, ',', '.') }}
+                                            {{number_format($memberHarga - ($memberHarga * $memberDiskon / 100), 0, ',', '.') }}
                                         @else
                                             -
                                         @endif
-                                    </td>
+                                    </td> --}}
+                                    <td>{{ $diskonAwal }}</td>
+                                    
                                     <td>
                                         @if($memberHarga != $hargaAwal || $memberDiskon != $diskonAwal)
                                             {{ $memberDiskon }}
@@ -270,13 +301,18 @@
                                             -
                                         @endif
                                     </td>
+                                    <td > {{number_format($item->harga, 0, ',', '.') }}
+                                    </td>
+
                                     <td>
                                         @if($nonMemberHarga != $hargaAwal || $nonMemberDiskon != $diskonAwal)
-                                            {{ 'Rp. ' . number_format($nonMemberHarga - ($nonMemberHarga * $nonMemberDiskon / 100), 0, ',', '.') }}
+                                            {{number_format($nonMemberHarga - ($nonMemberHarga * $nonMemberDiskon / 100), 0, ',', '.') }}
                                         @else
                                             -
                                         @endif
                                     </td>
+
+                                    <td>{{ $diskonAwal }}</td>
                                     <td>
                                         @if($nonMemberHarga != $hargaAwal || $nonMemberDiskon != $diskonAwal)
                                             {{ $nonMemberDiskon }}
@@ -284,6 +320,7 @@
                                             -
                                         @endif
                                     </td>
+
                                 </tr>
                             @endif
                         @endforeach

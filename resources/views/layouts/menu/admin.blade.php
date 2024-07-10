@@ -169,6 +169,59 @@
     </ul>
 </li>
 
+<li
+    class="nav-item {{ request()->is('admin/pemesanan_produk*') 
+    // request()->is('admin/user*') ||
+    // request()->is('admin/akses*') ||
+    // request()->is('admin/departemen*')||
+    // request()->is('admin/pelanggan*')||
+    // request()->is('admin/produk*')||
+    // request()->is('admin/toko*')||
+    // request()->is('admin/harga*')||
+    // request()->is('admin/klasifikasi*')||
+    // request()->is('admin/input*')
+  
+        ? 'menu-open'
+        : '' }}">
+    <a href="#"
+        class="nav-link {{ request()->is('admin/pemesanan_produk*') 
+        // request()->is('admin/user*') ||
+        // request()->is('admin/akses*') ||
+        // request()->is('admin/departemen*')||
+        // request()->is('admin/pelanggan*')||
+        // request()->is('admin/produk*')||
+        // request()->is('admin/toko*')||
+        // request()->is('admin/harga*')||
+        // request()->is('admin/klasifikasi*')||
+        // request()->is('admin/input*')
+      
+            ? 'active'
+            : '' }}">
+
+        <i class="nav-icon fas fa-grip-horizontal"></i>
+        <p>
+            <strong style="color: rgb(255, 255, 255);">Transaksi</strong>
+            <i class="right fas fa-angle-left"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        <li class="nav-item">
+            <a href="{{ url('admin/pemesanan_produk') }}"
+                class="nav-link {{ request()->is('admin/pemesanan_produk*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Pemesanan Produk</p>
+            </a>
+        </li>
+        {{-- @endif --}}
+
+
+        
+     
+
+    </ul>
+</li>
+
 
 
 <li class="nav-header">Profile</li>

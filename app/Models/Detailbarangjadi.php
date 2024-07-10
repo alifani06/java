@@ -50,6 +50,9 @@ class Detailbarangjadi extends Model
     {
         return $this->belongsTo(Input::class, 'input_id', 'id');
     }
-
+    public function produk()
+    {
+        return $this->belongsTo(Produk::class, 'produk_id', 'id');
+    }
 
 }
