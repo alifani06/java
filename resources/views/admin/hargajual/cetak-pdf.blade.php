@@ -11,12 +11,56 @@
             margin: 0;
             padding: 0;
             padding-bottom: 40px;
-            position: relative; /* Tambahkan posisi relatif untuk body */
         }
-        .logo {
-            position: absolute;
-            top: -20px;
-            left: -30px;
+        .logo img {
+            width: 150px;
+            height: 77px;
+            margin-top: -20px;
+            
+        }
+        .header {
+            text-align: center;
+            margin-top: -50px ;
+        }
+        .header span {
+            display: block;
+        }
+        .header .title {
+            font-weight: bold;
+            font-size: 28px;
+        }
+        .header .address, .header .contact {
+            font-size: 12px;
+        }
+        .divider {
+            border: 0.5px solid;
+            margin-top: 3px;
+            margin-bottom: 1px;
+        }
+        .change-header {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 40px;
+        }
+        .tanggal {
+            text-align: left;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .tanggal1 {
+            text-align: left;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .section-title {
+            margin-top: 30px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: left;
         }
         table {
             width: 100%;
@@ -31,104 +75,49 @@
         th {
             background-color: #f2f2f2;
         }
-        h2 {
-            position: absolute;
-            top: -20px;
-            left: 90px;
-        }
-        .welcome-text {
-            position: fixed;
-            top: -50px;
-            left: 9px;
-            right: 9px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: 700;
-            color: #000;
-            z-index: 999;
-        }
-        .t1 {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .section-title {
-            margin-bottom: 10px;
-            font-weight: bold;
-            font-size: 16px;
-            text-align: center;
-        }
-        .section-title.tokoslawi {
-            margin-top: 30px;
-        }
-        .section-title.tokobenjaran,
-        .section-title.tokotegal,
-        .section-title.tokopemalang,
-        .section-title.tokobumiayu,
-        .section-title.tokocilacap {
-            margin-top: 30px;
-        }
-        .signature-container {
-            position: absolute;
-            bottom: 50px; /* Atur jarak signature dari bottom */
-            left: 0;
-            right: 0;
-            text-align: center; /* Pusatkan signature */
-        }
-        .signature {
-            display: inline-block;
-            margin-right: 100px; /* Jarak antara signature */
-        }
 
-        /* Gaya khusus untuk header "SURAT PERUBAHAN HARGA" */
-        .change-header {
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 100px;
-        }
-        .tanggal{
-            text-align: right;
-            font-size: 12px;
-            font-weight: bold;
-            margin-top: 10px;
-        }
+            table:last-of-type {
+             margin-bottom: 150px; /* Atur jarak antara tabel terakhir dan signature */
+            }
+            .signature-container {
+                margin-top: 60px;
+                text-align: center;
+            }
+            .signature {
+                display: inline-block;
+                margin: 0 50px;
+                text-align: center;
+            }
+            .signature p {
+                margin: 0;
+            }
+
     </style>
 </head>
 <body>
-    <div class="welcome-text">
-        <div class="header">
-            <table width="100%">
-                <tr>
-                    <td style="width: 20%;">
-                        <div style="text-align: left;">
-                            <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY" width="150" height="70">
-                        </div>
-                    </td>
-                    <td style="width: 70%; text-align: left;">
-                        <div style="text-align: center;">
-                            <span style="font-weight: bold; font-size: 28px;">JAVA BAKERY</span>
-                            <br>
-                            <span style="font-size: 12px;">JL. HOS COKRO AMINOTO NO 5 SLAWI TEGAL</span>
-                            <br>
-                            <span style="font-size: 12px;">Telp / Fax,</span>
-                            <br>
-                            <span style="font-size: 12px;">Email : </span>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-            <hr style="border: 0.5px solid; margin-top: 3px; margin-bottom: 1px; padding: 0;">
-            <hr style="border: 0.5px solid; margin-top: 1px; margin-bottom: 1px; padding: 0;">
+   
+        <div class="logo">
+            <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
         </div>
-    </div>
+        <div class="header">
+            <div>
+                <span class="title">JAVA BAKERY</span>
+                <span class="address">JL. HOS COKRO AMINOTO NO 5 SLAWI TEGAL</span>
+                <span class="contact">Telp / Fax, Email :</span>
+            </div>
+            <hr class="divider">
+            <hr class="divider">
+        </div>
 
-    <!-- Elemen untuk header "SURAT PERUBAHAN HARGA" -->
     <div class="change-header">SURAT PERUBAHAN HARGA</div>
 
-<!-- Tanggal dan waktu cetak -->
-<div class="tanggal" >
-    Tanggal: {{ \Carbon\Carbon::now()->format('d/m/Y H:i:s') }}
-</div>
+    <div class="tanggal">
+        Tanggal : {{ \Carbon\Carbon::now()->format('d/m/Y H:i:s') }}
+    </div>
+    {{-- <div class="tanggal1">
+        No surat : -
+    </div> --}}
+
     @php
         $tokoNames = [
             'tokoslawi' => 'Toko Slawi',
@@ -306,19 +295,23 @@
 
     <div class="signature-container">
         <div class="signature">
+            <p>Mengetahui</p>
+            <p>Pimpinan</p>
+            <br><br><br>
+            <p>__________________</p>
+        </div>
+        <div class="signature">
+            <p>Mengetahui</p>
             <p>Finance</p>
-            <br><br>
-            <p>________________</p>
+            <br><br><br>
+            <p>__________________</p>
         </div>
         <div class="signature">
+            <p>Mengetahui</p>
             <p>Admin</p>
-            <br><br>
-            <p>________________</p>
-        </div>
-        <div class="signature">
-            <p>Owner</p>
-            <br><br>
-            <p>________________</p>
+            <br><br><br>
+            {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}
+            <p>__________________</p>
         </div>
     </div>
 </body>
