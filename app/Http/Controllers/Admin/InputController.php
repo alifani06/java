@@ -172,8 +172,11 @@ class InputController extends Controller
         }
 
         $details = Detailbarangjadi::where('input_id', $cetakpdf->id)->get();
-return back()->with('success', 'Berhasil menambahkan barang jadi');;
+        return back()->with('success', 'Berhasil menambahkan barang jadi');;
     }
+
+
+
 
 
 //     public function kode()

@@ -1,0 +1,55 @@
+<?php
+
+namespace App\Models;
+
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+
+class Pemesananproduk extends Model
+{
+    use HasFactory;
+
+    
+    protected $fillable = [
+        'kode_pemesanan',
+        'nama_pelanggan',
+        'alamat',
+        'telp',
+        'kategori',
+        'sub_total',
+        'tanggal',
+        'qrcode_pemesanan',
+  
+    ];
+
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
+
+    public static function getId()
+    {
+        return $getId = DB::table('inputs')->orderBy('id', 'DESC')->take(1)->get();
+    }
+
+    public function barang()
+    {
+        return $this->belongsTo(Barang::class);
+    }
+
+    public function subsub()
+    {
+        return $this->belongsTo(Subsub::class);
+    }
+
+    public function details()
+    {
+        return $this->hasMany(Detailbarangjadi::class, 'input_id', 'id');
+    }
+
+
+}

@@ -100,8 +100,7 @@ class KaryawanController extends Controller
                 'status' => 'null',
                 'kode_karyawan' => $this->kode(),
                 'qrcode_karyawan' => 'https://javabakery.id/karyawan/' . $kode,
-                // 'qrcode_karyawan' => 'http://192.168.1.46/tigerload/karyawan/' . $kode
-                'tanggal' => Carbon::now('Asia/Jakarta'),
+               'tanggal' => Carbon::now('Asia/Jakarta'),
 
             ]
         ));

@@ -3,6 +3,7 @@
 @section('title', 'Pemesanan Produk')
 
 @section('content')
+
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
@@ -58,14 +59,14 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-md-4 mb-3" hidden>
-                                <label for="kode_faktur">No Faktur</label>
-                                <input type="text" class="form-control" id="kode_faktur" name="kode_faktur" value="{{ old('kode_faktur') }}">
+                                <label for="kode_pemesanan">No Faktur</label>
+                                <input type="text" class="form-control" id="kode_pemesanan" name="kode_pemesanan" value="{{ old('kode_pemesanan') }}">
                             </div>
                             <div class="row mb-3 align-items-center">
                                 <div class="col-auto mt-2">
                                     <label for="nama"></label>
                                     <div class="d-flex align-items-center">
-                                        <input readonly type="text" class="form-control" id="nama_produk" name="nama_produk" placeholder="pilih data pelanggan" value="{{ old('nama_produk') }}">
+                                        {{-- <input readonly type="text" class="form-control" id="nama_produk" name="nama_produk" placeholder="pilih data pelanggan" value="{{ old('nama_produk') }}"> --}}
                                         <button class="btn btn-primary ml-2" type="button" onclick="showCategoryModalpemesanan()">
                                             <i class="fas fa-search"></i>
                                         </button>
@@ -83,8 +84,8 @@
                                     <label class="form-label" for="kategori">Tipe Pelanggan</label>
                                     <select class="form-control" id="kategori" name="kategori">
                                         <option value="">- Pilih -</option>
-                                        <option value="member" {{ old('kategori') == 'L' ? 'selected' : null }}>Member</option>
-                                        <option value="nonmember" {{ old('kategori') == 'P' ? 'selected' : null }}>Non Member</option>
+                                        <option value="member" {{ old('kategori') == 'member' ? 'selected' : null }}>Member</option>
+                                        <option value="nonmember" {{ old('kategori') == 'nonmember' ? 'selected' : null }}>Non Member</option>
                                     </select>
                                 </div>
                             </div>
@@ -190,7 +191,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <table id="datatables4" class="table table-bordered table-striped">
+                                <table id="datatables5" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
                                             <th class="text-center">No</th>
@@ -201,31 +202,6 @@
                                             <th>Opsi</th>
                                         </tr>
                                     </thead>
-                                    {{-- <tbody>
-                                        @foreach ($produks as $item)
-                                            @php
-                                                $hargaSlw = $kategoriPelanggan == 'member' ? $item->tokoslawi->first()->member_harga_slw : $item->tokoslawi->first()->non_harga_slw;
-                                            @endphp
-                                            <tr>
-                                                <td class="text-center">{{ $loop->iteration }}</td>
-                                                <td>{{ $item->kode_produk }}</td>
-                                                <td>{{ $item->nama_produk }}</td>
-                                                @if($kategoriPelanggan == 'member')
-                                                    <td>{{ number_format($item->tokoslawi->first()->member_harga_slw ,0, ',', '.') }}</td> 
-                                                    <td>-</td> 
-                                                @else
-                                                    <td>-</td> 
-                                                    <td>{{ number_format($item->tokoslawi->first()->non_harga_slw ,0, ',', '.') }}</td> 
-                                                @endif
-                                                <td class="text-center">
-                                                    <button type="button" class="btn btn-primary btn-sm"
-                                                        onclick="getSelectedData('{{ $item->id }}', '{{ $item->kode_produk }}', '{{ $item->nama_produk }}', '{{ $hargaSlw }}')">
-                                                        <i class="fas fa-plus"></i> Pilih
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody> --}}
                                     
                                     <tbody>
                                         @foreach ($produks as $item)
@@ -289,10 +265,10 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="row">
-                            <div class="col-md-4 mb-3">
+                            {{-- <div class="col-md-4 mb-3">
                                 <label for="catatan">Catatan</label>
                                 <textarea type="text" class="form-control" id="catatan" name="catatan">{{ old('catatan') }}</textarea>
-                            </div>
+                            </div> --}}
                             <div class="col-md-5 mb-3">
                                 <label for="catatan">Bagian Input :</label>
                                 <input type="text" class="form-control" readonly value="{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}">
@@ -310,7 +286,7 @@
             </form>
         </div>
     </section>
-    <script>
+    {{-- <script>
         document.addEventListener('DOMContentLoaded', function() {
             var kategoriSelect = document.getElementById('kategori');
             var pilihBtns = document.querySelectorAll('.pilih-btn');
@@ -339,9 +315,6 @@
         }
     </script>
 
-
-
-
     <script>
         function showCategoryModalpemesanan() {
             $('#tableMarketing').modal('show');
@@ -353,8 +326,60 @@
             document.getElementById('alamat').value = alamat;
             $('#tableMarketing').modal('hide');
         }
-    </script>
+    </script> --}}
 
+    <script>
+        $(document).ready(function() {
+            // Inisialisasi datatables
+            var pelangganTable = $('#datatables4').DataTable();
+            var produkTable = $('#datatables5').DataTable();
+    
+            $('#tableMarketing').on('shown.bs.modal', function () {
+                pelangganTable.columns.adjust().draw();
+            });
+    
+            $('#tableProduk').on('shown.bs.modal', function () {
+                produkTable.columns.adjust().draw();
+            });
+        });
+    
+        document.addEventListener('DOMContentLoaded', function() {
+            var kategoriSelect = document.getElementById('kategori');
+            var pilihBtns = document.querySelectorAll('.pilih-btn');
+    
+            kategoriSelect.addEventListener('change', function() {
+                var kategori = kategoriSelect.value;
+    
+                pilihBtns.forEach(function(btn) {
+                    btn.onclick = function() {
+                        var id = btn.getAttribute('data-id');
+                        var kode = btn.getAttribute('data-kode');
+                        var nama = btn.getAttribute('data-nama');
+                        var memberHarga = btn.getAttribute('data-member');
+                        var nonmemberHarga = btn.getAttribute('data-nonmember');
+                        var harga = kategori === 'member' ? memberHarga : nonmemberHarga;
+    
+                        getSelectedData(id, kode, nama, harga);
+                    };
+                });
+            });
+        });
+    
+        function getSelectedData(id, kode, nama, harga) {
+            console.log('ID:', id, 'Kode:', kode, 'Nama:', nama, 'Harga:', harga);
+        }
+    
+        function showCategoryModalpemesanan() {
+            $('#tableMarketing').modal('show');
+        }
+    
+        function getSelectedDataPemesanan(nama_pelanggan, telp, alamat) {
+            document.getElementById('nama_pelanggan').value = nama_pelanggan;
+            document.getElementById('telp').value = telp;
+            document.getElementById('alamat').value = alamat;
+            $('#tableMarketing').modal('hide');
+        }
+    </script>
 <script>
     var data_pembelian = @json(session('data_pembelians'));
     var jumlah_ban = 0;
