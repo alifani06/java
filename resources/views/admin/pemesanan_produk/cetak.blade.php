@@ -10,6 +10,7 @@
             font-family: Arial, sans-serif;
             line-height: 1.6;
             padding: 20px;
+            font-size: 12px;
         }
         .container {
             max-width: 800px;
@@ -36,6 +37,8 @@
         .section h2 {
             border-bottom: 1px solid #ccc;
             padding-bottom: 5px;
+            text-align: center;
+            : 
         }
         .section table {
             width: 100%;
@@ -69,7 +72,7 @@
         </div>
         
         <div class="section">
-            <h2>Data Pemesanan Produk</h2>
+            <h2>Surat Pemesanan Produk</h2>
             <p><strong>Kode Pemesanan:</strong> {{ $pemesanan->kode_pemesanan }}</p>
             <p><strong>Nama Pelanggan:</strong> {{ $pemesanan->nama_pelanggan }}</p>
             <p><strong>No Telepon:</strong> {{ $pemesanan->telp }}</p>
@@ -114,20 +117,22 @@
         
         <div class="signatures">
             <div class="signature">
-                <p>Tanda Tangan Pelanggan</p>
+                <p>Pelanggan</p>
                 <br><br><br>
                 {{$pemesanan->nama_pelanggan}}
                 <p>__________________</p>
             </div>
             <div class="signature">
-                <p>Tanda Tangan Admin</p>
+                <p>Admin</p>
                 <br><br><br>
                 {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}
                 <p>__________________</p>
             </div>
            
             <div class="signature">
-                <p>Tanda Tangan Pemilik</p>
+                <p>Pemilik</p>
+                <br><br><br>
+                <p>__________________</p>
                 <!-- Placeholder for owner signature -->
             </div>
         </div>

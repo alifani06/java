@@ -139,16 +139,16 @@
 
                                 {{-- slawi --}}
                                 <td style="text-align: center;">
-                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_harga_slw" id="member-harga-{{ $loop->index }}" value="{{  $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_harga_slw" id="member-harga-{{ $loop->index }}" value="{{$item->tokoslawi->first()->member_harga_slw ??  $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
                                 </td>
                                 <td>
-                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_diskon_slw" id="diskon-member-{{ $loop->index }}" value="{{  $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_diskon_slw" id="diskon-member-{{ $loop->index }}" value="{{$item->tokoslawi->first()->member_diskon_slw ??  $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
                                 </td>
                                 <td style="text-align: center;">
-                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_harga_slw" id="non-member-harga-{{ $loop->index }}" value="{{  $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_harga_slw" id="non-member-harga-{{ $loop->index }}" value="{{$item->tokoslawi->first()->non_harga_swl ??  $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
                                 </td>
                                 <td>
-                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_diskon_slw" id="diskon-non-member-{{ $loop->index }}" value="{{  $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_diskon_slw" id="diskon-non-member-{{ $loop->index }}" value="{{$item->tokoslawi->first()->non_diskon_slw ??  $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
                                 </td>
 
                                 {{-- Benjaran --}}
