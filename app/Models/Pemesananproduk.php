@@ -25,6 +25,7 @@ class Pemesananproduk extends Model
         'sub_total',
         'tanggal',
         'qrcode_pemesanan',
+        'tanggal_pemesanan',
   
     ];
 
@@ -50,6 +51,15 @@ class Pemesananproduk extends Model
     {
         return $this->hasMany(Detailbarangjadi::class, 'input_id', 'id');
     }
-
+    public function detailpemesananproduk()
+    {
+        return $this->hasMany(Detailpemesananproduk::class, 'pemesananproduk_id');
+    }
+    
+    public function pelanggan()
+    {
+        return $this->belongsTo(Pelanggan::class, 'pelanggan_id');
+    }
+    
 
 }

@@ -17,7 +17,7 @@ class Detailpemesananproduk extends Model
 
     
     protected $fillable = [
-        'pemesanan_id',
+        'pemesananproduk_id',
         'kode_produk',
         'nama_produk',
         'jumlah',
@@ -53,5 +53,9 @@ class Detailpemesananproduk extends Model
     {
         return $this->belongsTo(Produk::class, 'produk_id', 'id');
     }
-
+    public function pemesananproduk()
+    {
+        return $this->belongsTo(Pemesananproduk::class, 'pemesananproduk_id');
+    }
+    
 }
