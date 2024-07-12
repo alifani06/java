@@ -21,6 +21,7 @@ class Detailpemesananproduk extends Model
         'kode_produk',
         'nama_produk',
         'jumlah',
+        'diskon',
         'harga',
         'total',
   

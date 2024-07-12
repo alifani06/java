@@ -36,13 +36,6 @@
             </script>
         @endif
             <div class="card">
-                <div class="card-header">
-                    <div class="float-right">
-                        <a href="{{ url('admin/pemesanan_produk/create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus"></i> 
-                        </a>
-                    </div>
-                </div>
                 <!-- /.card-header -->
                 <div class="card-body">
                     <table id="datatables1" class="table table-bordered table-striped table-hover">
@@ -56,7 +49,6 @@
                                 <th>qty</th>
                                 <th>Harga</th>
                                 <th>Qrcode</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -89,7 +89,11 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::resource('pemesanan_produk', \App\Http\Controllers\Admin\PemesananprodukController::class);
     Route::get('/admin/pemesanan_produk/cetak/{id}', [PemesananProdukController::class, 'cetak'])->name('admin.pemesanan_produk.cetak');
+    Route::get('/get-customer/{kode}', [PemesananProdukController::class, 'getCustomerByKode']);
+    Route::get('pemesanan/pelanggan/{id}', [\App\Http\Controllers\Admin\PemesananprodukController::class, 'pelanggan']);
 
+
+    Route::resource('inquery_pemesananproduk', \App\Http\Controllers\Admin\Inquery_pemesananprodukController::class);
 
     // Route::get('/data', [\App\Http\Controllers\Admin\InputController::class, 'data']); 
     // Route::get('/pelanggan/cetak_pdf/{id}', [\App\Http\Controllers\Admin\PelangganController::class, 'cetak_pdf']);

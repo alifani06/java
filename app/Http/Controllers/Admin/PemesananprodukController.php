@@ -35,10 +35,20 @@ class PemesananprodukController extends Controller
  
     public function index()
     {
-        $produks = Produk::all();
-        return view('admin.pemesanan_produk.index', compact('produks'));
+        // $detailpemesananproduk = Detailpemesananproduk::latest()->first();
+
+        $pemesanans = Detailpemesananproduk::with('pemesananproduk')->get();
+        return view('admin.pemesanan_produk.index', compact('pemesanans'));
 
     }
+
+    public function pelanggan($id)
+    {
+        $user = Pelanggan::where('id', $id)->first();
+
+        return json_decode($user);
+    }
+
 
     public function create()
     {
@@ -55,7 +65,14 @@ class PemesananprodukController extends Controller
         return view('admin.pemesanan_produk.create', compact('barangs', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan'));
     }
     
- 
+    public function getCustomerByKode($kode)
+    {
+        $customer = Pelanggan::where('kode_pelanggan', $kode)->first();
+        if ($customer) {
+            return response()->json($customer);
+        }
+        return response()->json(['message' => 'Customer not found'], 404);
+    }
     // public function store(Request $request)
     // {
     //     $validasi_pelanggan = Validator::make(
@@ -329,6 +346,7 @@ class PemesananprodukController extends Controller
             $kode_produk = is_null($request->kode_produk[$i]) ? '' : $request->kode_produk[$i];
             $nama_produk = is_null($request->nama_produk[$i]) ? '' : $request->nama_produk[$i];
             $jumlah = is_null($request->jumlah[$i]) ? '' : $request->jumlah[$i];
+            $diskon = is_null($request->diskon[$i]) ? '' : $request->diskon[$i];
             $harga = is_null($request->harga[$i]) ? '' : $request->harga[$i];
             $total = is_null($request->total[$i]) ? '' : $request->total[$i];
 
@@ -337,6 +355,7 @@ class PemesananprodukController extends Controller
                 'produk_id' => $produk_id,
                 'nama_produk' => $nama_produk,
                 'jumlah' => $jumlah,
+                'diskon' => $diskon,
                 'harga' => $harga,
                 'total' => $total,
             ]);
@@ -375,6 +394,7 @@ class PemesananprodukController extends Controller
                 'kode_produk' => $data_pesanan['kode_produk'],
                 'nama_produk' => $data_pesanan['nama_produk'],
                 'jumlah' => $data_pesanan['jumlah'],
+                'diskon' => $data_pesanan['diskon'],
                 'harga' => $data_pesanan['harga'],
                 'total' => $data_pesanan['total'],
             ]);

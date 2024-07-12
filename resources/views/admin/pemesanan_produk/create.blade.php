@@ -67,10 +67,27 @@
                                     <option value="nonmember" {{ old('kategori') == 'nonmember' ? 'selected' : null }}>Non Member</option>
                                 </select>
                             </div>
+                        
                             <div class="col-auto mt-2" id="kodePelangganRow" hidden>
                                 <label class="form-label" for="kode_pelanggan">Scan Barcode</label>
-                                <input  placeholder="masukan kode pelanggan" type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('nama_pelanggan') }}">
+                                <input placeholder="masukan kode pelanggan" type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('nama_pelanggan') }}">
                             </div>
+                            {{-- <div class="col-auto mt-2" id="kodePelangganRow" hidden> <!-- Adjusted flex value -->
+                                <label for="pelanggan_id">Pilih Kode Karyawan</label>
+                                
+                                <select class="select2bs4 select2-hidden-accessible" name="pelanggan_id"
+                                    data-placeholder="Cari Karyawan.." style="width: 100%;" data-select2-id="23" tabindex="-1"
+                                    aria-hidden="true" id="kode_pelanggan" onchange="getData(0)">
+                                    <option value="" hidden>- Pilih -</option>
+                                    @foreach ($pelanggans as $pelanggan)
+                                        <option value="{{ $pelanggan->id }}"
+                                            {{ old('pelanggan_id') == $pelanggan->id ? 'selected' : '' }}>
+                                            {{ $pelanggan->kode_pelanggan }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div> --}}
+                            
                         </div>
                     
                         <div class="row mb-3 align-items-center" id="namaPelangganRow" style="display: none;">
@@ -79,7 +96,6 @@
                                     <button class="btn btn-info mb-3 btn-sm" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
                                         <i class="fas fa-search"> Cari pelanggan</i>
                                     </button>
-                                    {{-- <label  class="ml-4">Cari</label> --}}
                                 </div>
                                 
                                 <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}">
@@ -336,7 +352,6 @@
             </form>
         </div>
     </section>
-
 
     <script>
         // menghide form inputan
@@ -768,4 +783,98 @@
         return prefix + rupiah;
     }
 </script>
+
+{{-- 
+<script>
+    $(document).ready(function() {
+        $('#kode_pelanggan').on('change', function() {
+            var kodePelanggan = $(this).val();
+
+            if (kodePelanggan) {
+                $.ajax({
+                    url: '/get-customer/' + kodePelanggan,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data) {
+                            // Memasukkan data ke dalam form input
+                            $('#nama_pelanggan').val(data.nama_pelanggan);
+                            $('#telp').val(data.telp);
+                            $('#alamat').val(data.alamat);
+
+                            // Menampilkan baris input yang sebelumnya tersembunyi
+                            $('#namaPelangganRow').show();
+                            $('#telpRow').show();
+                            $('#alamatRow').show();
+                        } else {
+                            // Jika data tidak ditemukan, kosongkan input
+                            $('#nama_pelanggan').val('');
+                            $('#telp').val('');
+                            $('#alamat').val('');
+
+                            // Sembunyikan baris input
+                            $('#namaPelangganRow').hide();
+                            $('#telpRow').hide();
+                            $('#alamatRow').hide();
+                        }
+                    },
+                    error: function() {
+                        // Jika terjadi kesalahan dalam melakukan request
+                        $('#nama_pelanggan').val('');
+                        $('#telp').val('');
+                        $('#alamat').val('');
+
+                        // Sembunyikan baris input
+                        $('#namaPelangganRow').hide();
+                        $('#telpRow').hide();
+                        $('#alamatRow').hide();
+                    }
+                });
+            } else {
+                // Jika kode pelanggan kosong, kosongkan dan sembunyikan input
+                $('#nama_pelanggan').val('');
+                $('#telp').val('');
+                $('#alamat').val('');
+
+                $('#namaPelangganRow').hide();
+                $('#telpRow').hide();
+                $('#alamatRow').hide();
+            }
+        });
+    });
+</script> --}}
+
+<script>
+    function getData(id) {
+        var kode_pelanggan = document.getElementById('kode_pelanggan');
+        $.ajax({
+            url: "{{ url('admin/pemesanan/pelanggan') }}" + "/" + kode_pelanggan.value,
+            type: "GET",
+            dataType: "json",
+            success: function(response) {
+                console.log('Respons dari server:', response);
+
+                var nama_pelanggan = document.getElementById('nama_pelanggan');
+                var telp = document.getElementById('telp');
+                var alamat = document.getElementById('alamat');
+
+                // Periksa apakah properti yang diharapkan ada dalam respons JSON
+                if (response && response.nama_pelanggan) {
+                    nama_pelanggan.value = response.nama_pelanggan;
+                }
+                if (response && response.telp) {
+                    telp.value = response.telp;
+                }
+                if (response && response.alamat) {
+                    alamat.value = response.alamat;
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Terjadi kesalahan dalam permintaan AJAX:', error);
+            }
+        });
+    }
+
+</script>
+
 @endsection

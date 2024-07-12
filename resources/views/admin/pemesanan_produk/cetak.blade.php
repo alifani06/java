@@ -137,5 +137,10 @@
             </div>
         </div>
     </div>
+
+
+    <div class="float-right">
+        <button class="btn btn-primary" onclick="printPdf()">Cetak PDF</button>
+    </div>
 </body>
 </html>
