@@ -3,6 +3,29 @@
 @section('title', 'Data Pemesanan Produk')
 
 @section('content')
+<style>
+    .context-menu {
+        display: none;
+        position: absolute;
+        z-index: 1000;
+        width: 150px;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    }
+    .context-menu ul {
+        list-style: none;
+        padding: 5px 0;
+        margin: 0;
+    }
+    .context-menu ul li {
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+    .context-menu ul li:hover {
+        background-color: #f2f2f2;
+    }
+</style>
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
@@ -69,7 +92,7 @@
                                 <th>Qty</th>
                                 <th>Total</th>
                                 <th>QR Code</th>
-                                <th>Aksi</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -88,17 +111,7 @@
                                                 {!! DNS2D::getBarcodeHTML($pemesanan->qrcode_pemesanan, 'QRCODE', 1, 1) !!}
                                             </div>
                                         </td>
-                                        <td style="text-align: center;">
-                                            <div class="dropdown">
-                                                <button class="btn btn-sm btn-default dropdown-toggle" type="button" id="dropdownMenuButton_{{ $detail->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    Aksi
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_{{ $detail->id }}">
-                                                    <a class="dropdown-item" href="#">Edit</a>
-                                                    <a class="dropdown-item" href="#">Hapus</a>
-                                                </div>
-                                            </div>
-                                        </td>
+
                                     </tr>
 
                                     <!-- Modal QR Code -->
@@ -135,6 +148,57 @@
                             @endforeach
                         </tbody>
                     </table>
+
+   <!-- Context Menu -->
+   <div class="context-menu" id="context-menu">
+    <ul>
+        <li id="edit">Ubah</li>
+        <li id="delete">Hapus</li>
+    </ul>
+</div>
+
+<script>
+    $(document).ready(function() {
+        let currentRowId;
+        $('#datatables1 tbody tr').on('contextmenu', function(e) {
+    e.preventDefault();
+    currentRowId = $(this).data('id');
+    
+    // Mendapatkan koordinat klik
+    var posX = e.pageX;
+    var posY = e.pageY;
+    
+    // Menyesuaikan posisi dropdown agar muncul di samping kursor
+    $('#context-menu').css({
+        display: 'block',
+        position: 'fixed',
+        left: posX + 'px',
+        top: posY + 'px'
+    });
+    
+        return false; // Mencegah munculnya konteks menu browser bawaan
+    });
+
+        // Hide context menu on clicking outside
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#context-menu').length) {
+                $('#context-menu').hide();
+            }
+        });
+
+        // Handle context menu options
+        $('#edit').on('click', function() {
+            window.location.href = '/admin/pemesanan_produk/edit/' + currentRowId;
+        });
+
+        $('#delete').on('click', function() {
+            if (confirm('Apakah Anda yakin ingin menghapus item ini?')) {
+                window.location.href = '/admin/pemesanan_produk/delete/' + currentRowId;
+            }
+        });
+    });
+</script>
+
                 </div>
                 <!-- /.card-body -->
             </div>
