@@ -22,36 +22,35 @@
             box-shadow: 0px 0px 5px rgba(0,0,0,0.1);
         }
         .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.header .text {
-    display: flex;
-    flex-direction: column;
-}
+        .header .text {
+            display: flex;
+            flex-direction: column;
+        }
 
-.header .text h1 {
-    margin-top: 10px;
-    margin-bottom: 2px;
-    padding: 0;
-    font-size: 16px;
-    color: #0c0c0c;
-    text-transform: uppercase;
-}
+        .header .text h1 {
+            margin-top: 10px;
+            margin-bottom: 2px;
+            padding: 0;
+            font-size: 16px;
+            color: #0c0c0c;
+            text-transform: uppercase;
+        }
 
-.header .text p {
-    margin: 2px 0;
-    font-size: 8px;
-}
+        .header .text p {
+            margin: 2px 0;
+            font-size: 8px;
+        }
 
-.header .logo img {
-    margin-top: 5px;
-    max-width: 80px; /* Adjust the size as needed */
-    height: auto;
-
-}
+        .header .logo img {
+            margin-top: 5px;
+            max-width: 80px; /* Adjust the size as needed */
+            height: auto;
+        }
 
         .section {
             margin-bottom: 10px;
@@ -79,9 +78,14 @@
             display: flex;
             justify-content: space-between;
         }
-        .signature {
-            text-align: center;
+        .signature1 {
+            text-align: left;
             font-size: 7px;
+        }
+        .signature2 {
+            text-align: right;
+            font-size: 7px;
+            margin-top: -65px;
         }
         .signature p {
             margin-top: 10px;
@@ -105,9 +109,9 @@
             background-color: #0056b3;
         }
         .detail-info {
-        display: flex;
-        margin-top: -24px;
-        flex-direction: column;
+            display: flex;
+            margin-top: -24px;
+            flex-direction: column;
         }
 
         .detail-info p {
@@ -125,19 +129,17 @@
             flex: 1;
             text-align: left;
             font-size: 8px;
-
         }
-        .pemesanan p span{
+        .pemesanan p span {
             margin-top: 3px;
         }
-
-        .pelanggan p span{
+        .pelanggan p span {
             margin-top: 3px;
         }
-        .telepon p span{
+        .telepon p span {
             margin-top: 3px;
         }
-        .alamat p span{
+        .alamat p span {
             margin-top: 3px;
         }
 
@@ -155,36 +157,28 @@
                 <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
             </div> --}}
         </div>
-        
         <div class="section">
             <h2>Surat Pemesanan Produk</h2>
             <p style="text-align: right; font-size: 8px;">
-                <p style="text-align: right; font-size: 8px;">
-                    {{ \Carbon\Carbon::parse($pemesanan->tanggal_pemesanan)->locale('id')->translatedFormat('l, d F Y H:i') }}
-                </p>
-            
-            
+                {{ \Carbon\Carbon::parse($pemesanan->tanggal_pemesanan)->locale('id')->translatedFormat('l, d F Y H:i') }}
+            </p>
             <div class="detail-info">
                 <div class="pemesanan">
                     <p>No Pemesanan&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; <span>{{ $pemesanan->kode_pemesanan }}</span></p>
                 </div>
                 <div class="pemesanan">
-                    <p>Kasir&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        :&nbsp; <span>{{ ucfirst(auth()->user()->karyawan->nama_lengkap)  }}</span></p>
+                    <p>Kasir&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp; <span>{{ ucfirst(auth()->user()->karyawan->nama_lengkap)  }}</span></p>
                 </div>
                 <div class="pelanggan">
                     <p>Pelanggan&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp; <span>{{ $pemesanan->nama_pelanggan }}</span></p>
                 </div>
                 <div class="telepon">
                     <p>Telepon &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; <span>0{{ $pemesanan->telp }}</span></p>
-
                 </div>
                 <div class="alamat">
                     <p>Alamat Tujuan&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp; <span>{{ $pemesanan->alamat }}</span></p>
-
                 </div>
             </div>
-            
             <h3>Detail Pemesanan</h3>
             @if($pemesanan->detailpemesananproduk->isEmpty())
                 <p>Tidak ada detail pemesanan produk.</p>
@@ -226,37 +220,21 @@
                     </tr>
                 </tbody>
             </table>
-            
             @endif
         </div>
-        
         <div class="signatures">
-            <div class="signature">
+            <div class="signature1">
                 <p>Pelanggan</p>
                 <br><br>
                 <p style="text-decoration: underline;">{{ $pemesanan->nama_pelanggan }}</p>
             </div>
-            {{-- <div class="signature">
-                <p>Admin</p>
-                <br><br>
-                <p style="text-decoration: underline;">{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</p>
-              
-            </div> --}}
-            <div class="signature">
+            <div class="signature2">
                 <p>Pemilik</p>
                 <p>-</p>
                 <p>__________________</p>
-                <!-- Placeholder for owner signature -->
             </div>
         </div>
-        {{-- <div class="float-right">
-            <a href="{{ route('admin.pemesanan_produk.cetak-pdf', $pemesanan->id) }}" target="_blank" class="btn btn-primary">Cetak PDF</a>
-        </div> --}}
-        <div class="float-right">
-            <a href="{{ route('admin.pemesanan_produk.cetak-pdf', $pemesanan->id) }}" target="_blank" class="btn btn-primary btn-sm">Cetak PDF</a>
-                <i class="fas fa-print"></i> 
-            </a>
-        </div>
+    
     </div>  
 </body>
 </html>

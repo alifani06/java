@@ -33,13 +33,31 @@ use Illuminate\Support\Facades\Storage;
 class Inquery_pemesananprodukController extends Controller
 {
  
-    public function index()
+    public function index(Request $request)
+
     {
-        // $detailpemesananproduk = Detailpemesananproduk::latest()->first();
-
-        $pemesanans = Detailpemesananproduk::with('pemesananproduk')->get();
-        return view('admin.inquery_pemesananproduk.index', compact('pemesanans'));
-
+        // Membuat kueri Pemesananproduk
+        $query = Pemesananproduk::query();
+    
+        // Jika terdapat filter tanggal di request
+        if ($request->has('start_date') && $request->has('end_date')) {
+            $startDate = Carbon::parse($request->input('start_date'))->startOfDay();
+            $endDate = Carbon::parse($request->input('end_date'))->endOfDay();
+    
+            // Menambahkan kondisi whereBetween untuk filter tanggal yang diinputkan
+            $query->whereBetween('tanggal_pemesanan', [$startDate, $endDate]);
+        } else {
+            // Jika tidak ada filter tanggal, menampilkan data hari ini saja
+            $todayStart = Carbon::now()->startOfDay();
+            $todayEnd = Carbon::now()->endOfDay();
+            $query->whereBetween('tanggal_pemesanan', [$todayStart, $todayEnd]);
+        }
+    
+        // Mengambil hasilnya
+        $pemesanans = $query->get();
+    
+        // Mengembalikan tampilan dengan hasil
+        return view('admin.inquery_pemesananproduk.index', compact('pemesanans', 'query'));
     }
 
     public function create()

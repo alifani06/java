@@ -68,10 +68,10 @@
                                 </select>
                             </div>
                         
-                            <div class="col-auto mt-2" id="kodePelangganRow" hidden>
+                            {{-- <div class="col-auto mt-2" id="kodePelangganRow" hidden>
                                 <label class="form-label" for="kode_pelanggan">Scan Barcode</label>
                                 <input placeholder="masukan kode pelanggan" type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('nama_pelanggan') }}">
-                            </div>
+                            </div> --}}
                             {{-- <div class="col-auto mt-2" id="kodePelangganRow" hidden> <!-- Adjusted flex value -->
                                 <label for="pelanggan_id">Pilih Kode Karyawan</label>
                                 
@@ -87,6 +87,10 @@
                                     @endforeach
                                 </select>
                             </div> --}}
+                            <div class="col-auto mt-2" id="kodePelangganRow" hidden>
+                                <label for="kode_pelanggan">Masukkan Kode Karyawan</label>
+                                <input type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" placeholder="Masukkan Kode Karyawan" onchange="getData(this.value)">
+                            </div>
                             
                         </div>
                     
@@ -94,7 +98,7 @@
                             <div class="col-md-4 mb-3 "> 
                                 <div class="col-md">
                                     <button class="btn btn-info mb-3 btn-sm" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
-                                        <i class="fas fa-search"> Cari pelanggan</i>
+                                        <i class="fas fa-search"></i>
                                     </button>
                                 </div>
                                 
@@ -784,67 +788,8 @@
     }
 </script>
 
-{{-- 
-<script>
-    $(document).ready(function() {
-        $('#kode_pelanggan').on('change', function() {
-            var kodePelanggan = $(this).val();
 
-            if (kodePelanggan) {
-                $.ajax({
-                    url: '/get-customer/' + kodePelanggan,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        if (data) {
-                            // Memasukkan data ke dalam form input
-                            $('#nama_pelanggan').val(data.nama_pelanggan);
-                            $('#telp').val(data.telp);
-                            $('#alamat').val(data.alamat);
-
-                            // Menampilkan baris input yang sebelumnya tersembunyi
-                            $('#namaPelangganRow').show();
-                            $('#telpRow').show();
-                            $('#alamatRow').show();
-                        } else {
-                            // Jika data tidak ditemukan, kosongkan input
-                            $('#nama_pelanggan').val('');
-                            $('#telp').val('');
-                            $('#alamat').val('');
-
-                            // Sembunyikan baris input
-                            $('#namaPelangganRow').hide();
-                            $('#telpRow').hide();
-                            $('#alamatRow').hide();
-                        }
-                    },
-                    error: function() {
-                        // Jika terjadi kesalahan dalam melakukan request
-                        $('#nama_pelanggan').val('');
-                        $('#telp').val('');
-                        $('#alamat').val('');
-
-                        // Sembunyikan baris input
-                        $('#namaPelangganRow').hide();
-                        $('#telpRow').hide();
-                        $('#alamatRow').hide();
-                    }
-                });
-            } else {
-                // Jika kode pelanggan kosong, kosongkan dan sembunyikan input
-                $('#nama_pelanggan').val('');
-                $('#telp').val('');
-                $('#alamat').val('');
-
-                $('#namaPelangganRow').hide();
-                $('#telpRow').hide();
-                $('#alamatRow').hide();
-            }
-        });
-    });
-</script> --}}
-
-<script>
+{{-- <script>
     function getData(id) {
         var kode_pelanggan = document.getElementById('kode_pelanggan');
         $.ajax({
@@ -875,6 +820,36 @@
         });
     }
 
-</script>
+</script> --}}
 
+<script>
+    function getData(kodePelanggan) {
+        $.ajax({
+            url: "{{ url('admin/pemesanan/pelanggan') }}" + "/" + kodePelanggan,
+            type: "GET",
+            dataType: "json",
+            success: function(response) {
+                console.log('Response dari server:', response);
+
+                var nama_pelanggan = document.getElementById('nama_pelanggan');
+                var telp = document.getElementById('telp');
+                var alamat = document.getElementById('alamat');
+
+                // Periksa apakah properti yang diharapkan ada dalam respons JSON
+                if (response && response.nama_pelanggan) {
+                    nama_pelanggan.value = response.nama_pelanggan;
+                }
+                if (response && response.telp) {
+                    telp.value = response.telp;
+                }
+                if (response && response.alamat) {
+                    alamat.value = response.alamat;
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Terjadi kesalahan dalam permintaan AJAX:', error);
+            }
+        });
+    }
+</script>
 @endsection

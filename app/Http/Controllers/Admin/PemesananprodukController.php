@@ -27,20 +27,28 @@ use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+
 
 
 
 class PemesananprodukController extends Controller
 {
  
+    // public function index()
+    // {
+
+    //     $pemesanans = Detailpemesananproduk::with('pemesananproduk')->get();
+    //     return view('admin.pemesanan_produk.index', compact('pemesanans'));
+
+    // }
     public function index()
-    {
-        // $detailpemesananproduk = Detailpemesananproduk::latest()->first();
+{
+    $today = Carbon::today();
 
-        $pemesanans = Detailpemesananproduk::with('pemesananproduk')->get();
-        return view('admin.pemesanan_produk.index', compact('pemesanans'));
-
-    }
+    $pemesanans = Detailpemesananproduk::whereDate('created_at', $today)->get();
+    return view('admin.pemesanan_produk.index', compact('pemesanans'));
+}
 
     public function pelanggan($id)
     {
@@ -425,6 +433,17 @@ class PemesananprodukController extends Controller
         return view('admin.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans'));
     }
     
+    public function cetakPdf($id)
+    {
+        $pemesanan = Pemesananproduk::findOrFail($id);
+        $pelanggans = Pelanggan::all();
+
+
+        $pdf = FacadePdf::loadView('admin.pemesanan_produk.cetak-pdf', compact('pemesanan', 'pelanggans'));
+        // $pdf->setPaper([0, 0, 226.77, 226.77], 'portrait'); // 80 mm = 226.77 points
+
+        return $pdf->stream('pemesanan.pdf');
+    }
 
 
     public function kode()

@@ -54,28 +54,7 @@ class HargajualController extends Controller
         //
     }
 
-//     public function all(Request $request)
-// {
-//     $start_date = $request->input('start_date');
-//     $end_date = $request->input('end_date');
 
-//     $query = Detailtokoslawi::with('produk')
-//         ->select('detailtokoslawis.*')
-//         ->whereIn('id', function($query) {
-//             $query->select(DB::raw('MAX(id)'))
-//                   ->from('detailtokoslawis')
-//                   ->groupBy('produk_id');
-//         });
-
-//     if ($start_date && $end_date) {
-//         $query->whereBetween('updated_at', [$start_date . ' 00:00:00', $end_date . ' 23:59:59']);
-//     }
-
-//     $detailtokoslawi = $query->orderBy('updated_at', 'desc')
-//                              ->get();
-
-//     return view('admin.hargajual.all', compact('detailtokoslawi'));
-// }
 public function all(Request $request)
 {
     $start_date = $request->input('start_date');
@@ -92,9 +71,6 @@ public function all(Request $request)
 
     return view('admin.hargajual.all', compact('detailtokoslawi'));
 }
-
-
-
 
     public function show()
     {
@@ -178,9 +154,6 @@ public function all(Request $request)
                     return view('admin.hargajual.show', compact('produk'));
     }
 
-   
-    
- 
     public function edit($id)
     {
         //
@@ -476,7 +449,7 @@ public function cetakPdf(Request $request)
     $pdf = FacadePdf::loadView('admin.hargajual.cetak-pdf', compact('produk', 'toko'))
         ->setPaper('a4', 'portrait');
 
-    return $pdf->stream('updated-items.pdf');
+    return $pdf->stream('Harga Jual.pdf');
 }
 
 
