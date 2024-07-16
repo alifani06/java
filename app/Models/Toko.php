@@ -14,6 +14,7 @@ class Toko extends Model
     use HasFactory;
     // use LogsActivity;
 
+    protected $table = 'tokos';
     protected $fillable = [
        'kode_toko',
        'nama_toko',
@@ -47,6 +48,14 @@ class Toko extends Model
     }
 
     public function input()
+    {
+        return $this->hasMany(Input::class);
+    }
+    public function tokoslawi()
+    {
+        return $this->hasMany(Input::class);
+    }
+    public function pemesananproduk()
     {
         return $this->hasMany(Input::class);
     }

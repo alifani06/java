@@ -26,6 +26,12 @@ class Pemesananproduk extends Model
         'tanggal',
         'qrcode_pemesanan',
         'tanggal_pemesanan',
+        'cabang',
+        'nama_penerima',
+        'telp_penerima',
+        'alamat_penerima',
+        'tanggal_kirim',
+        'toko_id',
   
     ];
 
@@ -59,6 +65,11 @@ class Pemesananproduk extends Model
     public function pelanggan()
     {
         return $this->belongsTo(Pelanggan::class, 'pelanggan_id');
+    }
+    
+    public function toko()
+    {
+        return $this->belongsTo(Toko::class, 'toko_id');
     }
     
 

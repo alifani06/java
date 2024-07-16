@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cetak Pemesanan Produk</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
         body {
             font-family: inherit;
@@ -22,36 +23,42 @@
             box-shadow: 0px 0px 5px rgba(0,0,0,0.1);
         }
         .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.header .text {
-    display: flex;
-    flex-direction: column;
-}
+        .header .text {
+            display: flex;
+            flex-direction: column;
+        }
 
-.header .text h1 {
-    margin-top: 10px;
-    margin-bottom: 2px;
-    padding: 0;
-    font-size: 16px;
-    color: #0c0c0c;
-    text-transform: uppercase;
-}
+        .header .text h1 {
+            margin-top: 10px;
+            margin-bottom: 2px;
+            padding: 0;
+            font-size: 16px;
+            color: #0c0c0c;
+            text-transform: uppercase;
+        }
 
-.header .text p {
-    margin: 2px 0;
-    font-size: 8px;
-}
+        .header .text p {
+            margin: 2px 0;
+            font-size: 8px;
+        }
 
-.header .logo img {
-    margin-top: 5px;
-    max-width: 80px; /* Adjust the size as needed */
-    height: auto;
+        .header .logo img {
+            margin-top: 5px;
+            max-width: 80px; /* Adjust the size as needed */
+            height: auto;
 
-}
+        }
+        .divider {
+            border: 0.5px solid;
+            margin-top: 3px;
+            margin-bottom: 1px;
+            border-bottom: 1px solid #0f0e0e;
+        }
 
         .section {
             margin-bottom: 10px;
@@ -63,6 +70,11 @@
             margin-bottom: 5px;
             font-size: 12px;
             text-transform: uppercase;
+        }
+        .section h2 {
+
+            font-size: 12px;
+        
         }
         .section table {
             width: 100%;
@@ -155,6 +167,8 @@
                 <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
             </div> --}}
         </div>
+            <hr class="divider">
+            <hr class="divider">
         
         <div class="section">
             <h2>Surat Pemesanan Produk</h2>
@@ -185,7 +199,7 @@
                 </div>
             </div>
             
-            <h3>Detail Pemesanan</h3>
+            <h5 style="font-size: 12px " class="mt-2"><strong>Detail Pemesanan</strong></h5>
             @if($pemesanan->detailpemesananproduk->isEmpty())
                 <p>Tidak ada detail pemesanan produk.</p>
             @else
@@ -258,5 +272,12 @@
             </a>
         </div>
     </div>  
+    <div class="float-left">
+        <a href="{{ url('admin/pemesanan_produk') }}" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus">Kembali</i>
+        </a>
+    </div>
+</div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </html>

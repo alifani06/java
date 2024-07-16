@@ -22,7 +22,7 @@
             @endif
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Pemesanan Produk</h1>
+                    <h1 class="m-0">UBAHPemesanan Produk</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -53,53 +53,45 @@
                     @endforeach
                 </div>
             @endif
-            <form action="{{ url('admin/pemesanan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form action="{{ route('pemesanan_produk.update', $pemesananProduk->id) }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
-                {{-- detail pelanggan --}}
+                @method('PUT')
                 <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Detail Pelanggan</h3>
-                    </div>
-                    <div class="card-body">
-                       
-                        <div class="row mb-3 align-items-center">
-                            <div class="col-auto mt-2">
-                                <label class="form-label" for="kategori">Tipe Pelanggan</label>
-                                <select class="form-control" id="kategori" name="kategori">
-                                    <option value="">- Pilih -</option>
-                                    <option value="member" {{ old('kategori') == 'member' ? 'selected' : null }}>Member</option>
-                                    <option value="nonmember" {{ old('kategori') == 'nonmember' ? 'selected' : null }}>Non Member</option>
-                                </select>
-                            </div>
-                            <div class="col-auto mt-2">
-                                <label class="form-label" for="toko">Pilih Cabang</label>
-                                <select class="form-control" id="toko" name="toko">
-                                    <option value="">- Pilih -</option>
-                                    @foreach ($tokos as $toko)
-                                        <option value="{{ $toko->id }}" {{ old('toko') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                       
-                            <div class="col-auto mt-2" id="kodePelangganRow" hidden>
-                                <label for="kode_pelanggan">Scan Kode Pelanggan</label>
-                                <input type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" placeholder="scan kode Pelanggan" onchange="getData(this.value)">
-                            </div>
-                            
-                        </div>
-                    
-                        <div class="row mb-3 align-items-center" id="namaPelangganRow" style="display: none;">
-                            <div class="col-md">
-                                <button class="btn btn-info mb-3 btn-sm" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>      
-                            <div class="col-md-4 mb-3 "> 
-                                <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}">
-                            </div>   
-                               
-                            </div>
 
+                    <div class="card-header">
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-3 mt-2">
+                                <label class="form-label" for="kategori">Tipe Pelanggan</label>
+                                <input readonly type="text" class="form-control" id="kategori" name="kategori" value="{{ old('kategori', $pemesananProduk->kategori) }}"> 
+                            </div>  
+                            <div class="col-md-3 mt-2">
+                                <label class="form-label" for="kode_pemesanan">Kode Pemesanan</label>
+                                <input readonly type="text" class="form-control" id="kode_pemesanan" name="kode_pemesanan" value="{{ old('kode_pemesanan', $pemesananProduk->kode_pemesanan) }}">
+                            </div>   
+                        </div>
+                   
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-6">
+                                <label class="form-label" for="nama_pelanggan">Nama Pelanggan</label>
+                                <input  type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan', $pemesananProduk->nama_pelanggan) }}">
+                            </div>   
+                        </div>
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-6">
+                                <label class="form-label" for="telp">No Telepon</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">+62</span>
+                                    </div>  
+                                    <input type="number" id="telp" name="telp" class="form-control" placeholder="Masukan nomor telepon" value="{{ old('telp', $pemesananProduk->telp) }}">
+                                </div>                            </div>   
+                        </div>
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-6">
+                                <label class="form-label" for="nama_pelanggan">Alamat</label>
+                                <textarea placeholder="Masukan alamat tujuan" type="text" class="form-control" id="alamat" name="alamat">{{ old('alamat', $pemesananProduk->alamat) }}</textarea>
+                            </div>   
+                        </div>
                         <div class="row mb-3 align-items-center" id="telpRow" hidden>
                             <div class="col-md-4 mb-3">
                                 <label for="telp">No. Telepon</label>
@@ -140,7 +132,7 @@
                                             <th>Opsi</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    {{-- <tbody>
                                         @foreach ($pelanggans as $item)
                                             <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}')">
                                                 <td class="text-center">{{ $loop->iteration }}</td>
@@ -154,58 +146,13 @@
                                                 </td>
                                             </tr>
                                         @endforeach 
-                                    </tbody>
+                                    </tbody> --}}
                                 </table>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {{-- detail pengiriman --}}
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Detail Pengiriman</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="col-md-4 mb-3">
-                            <label for="tanggal_kirim">Tanggal Pengiriman:</label>
-                            <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
-                                <input type="text" id="tanggal_kirim" name="tanggal_kirim"
-                                       class="form-control datetimepicker-input"
-                                       data-target="#reservationdatetime"
-                                       value="{{ old('tanggal_kirim') }}"
-                                       placeholder="DD/MM/YYYY HH:mm">
-                                <div class="input-group-append" data-target="#reservationdatetime" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-3 align-items-center">
-                            <div class="col-md-6 -auto" id="" >
-                                <label for="nama_penerima">Nama Penerima </label> <span style="font-size: 10px;">(kosongkan jika sama dengan nama pelanggan)</span>
-                                <input type="text" class="form-control" id="nama_penerima" name="nama_penerima" placeholder="masukan nama Penerima" value="{{ old('nama_penerima') }}">
-                            </div>
-                        </div>
-                        <div class="row  align-items-center" id="telp_penerima" >
-                            <div class="col-md-6">
-                                <label for="telp_penerima">No. Telepon</label> <span style="font-size: 10px;">(kosongkan jika sama dengan Nomer telepon pelanggan)</span>
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">+62</span>
-                                    </div>
-                                    <input type="number" id="telp_penerima" name="telp_penerima" class="form-control" placeholder="Masukan nomor telepon" value="{{ old('telp_penerima') }}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3 align-items-center" id="alamat_penerima" >
-                            <div class="col-md-6 mb-3">
-                                <label for="alamat_penerima">Alamat Penerima</label><span style="font-size: 10px;">(kosongkan jika sama dengan alamat pelanggan)</span>
-                                <textarea placeholder="Masukan alamat penerima" type="text" class="form-control" id="alamat_penerima" name="alamat_penerima">{{ old('alamat_penerima') }}</textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="card">
                     <div class="card-header">
@@ -262,7 +209,7 @@
                                             <th>Opsi</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    {{-- <tbody>
                                         @foreach ($produks as $item)
                                         <tr>
                                             <td class="text-center">{{ $loop->iteration }}</td>
@@ -294,7 +241,7 @@
                                             </td>
                                         </tr>
                                         @endforeach
-                                    </tbody>
+                                    </tbody> --}}
                                 </table>
                             </div>
                         </div>
@@ -306,7 +253,7 @@
                         <div class="row">
                             <div class="col-md-4 mb-3 ml-auto">
                                 <label for="sub_total">Sub Total</label>
-                                <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="{{ old('sub_total') }}">
+                                <input readonly type="text" class="form-control large-font" id="sub_total" name="sub_total" value="{{ old('sub_total', $pemesananProduk->sub_total) }}">
                             </div>
                         </div>
                     </div>
@@ -333,27 +280,7 @@
         </div>
     </section>
 
-
-   <script>
-    $(function () {
-        $('#reservationdatetime').datetimepicker({
-            format: 'DD/MM/YYYY HH:mm',
-            icons: {
-                time: 'fa fa-clock',
-                date: 'fa fa-calendar',
-                up: 'fa fa-arrow-up',
-                down: 'fa fa-arrow-down',
-                previous: 'fa fa-chevron-left',
-                next: 'fa fa-chevron-right',
-                today: 'fa fa-calendar-check-o',
-                clear: 'fa fa-trash',
-                close: 'fa fa-times'
-            }
-        });
-    });
-</script>
-
-    <script>
+    {{-- <script>
         // menghide form inputan
         document.addEventListener('DOMContentLoaded', function() {
             var kategoriSelect = document.getElementById('kategori');
@@ -389,12 +316,17 @@
 
                 }
             });
-
+    
+            // if (kategoriSelect.value === 'nonmember') {
+            //     namaPelangganRow.hidden = true;
+            //     telpRow.hidden = true;
+            //     alamatRow.hidden = true;
+            // }
         });
-    </script>
+    </script> --}}
 
  
-    <script>
+    {{-- <script>
         //    memunculkan button utk mencari pelanggan yg sudah ada
         document.addEventListener('DOMContentLoaded', function() {
             var kategoriSelect = document.getElementById('kategori');
@@ -412,7 +344,7 @@
                 searchButtonRow.hidden = true;
             }
         });
-    </script>
+    </script> --}}
 
     <script>
         // memunculkan datatable pelaanggan dan produk

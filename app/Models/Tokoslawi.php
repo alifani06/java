@@ -46,6 +46,10 @@ class Tokoslawi extends Model
     {
         return $this->belongsTo(Produk::class, 'produk_id');
     }
+    public function tokos()
+    {
+        return $this->belongsTo(Toko::class, 'toko_id');
+    }
 
         
 }
