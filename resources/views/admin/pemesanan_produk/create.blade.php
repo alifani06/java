@@ -211,7 +211,7 @@
                     <div class="card-header">
                         <h3 class="card-title"><span></span></h3>
                         <div class="float-right">
-                            <button type="button" class="btn btn-primary btn-sm" onclick="addPesanan()">
+                            <button  type="button" class="btn btn-primary btn-sm" onclick="addPesanan()">
                                 <i class="fas fa-plus"></i>
                             </button>
                         </div>
@@ -264,7 +264,13 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($produks as $item)
-                                        <tr>
+                                        <tr class="pilih-btn" data-id="{{ $item->id }}"
+                                            data-kode="{{ $item->kode_produk }}"
+                                            data-nama="{{ $item->nama_produk }}"
+                                            data-member="{{ $item->tokoslawi->first()->member_harga_slw }}"
+                                            data-diskonmember="{{ $item->tokoslawi->first()->member_diskon_slw }}"
+                                            data-nonmember="{{ $item->tokoslawi->first()->non_harga_slw }}"
+                                            data-diskonnonmember="{{ $item->tokoslawi->first()->non_diskon_slw }}">>
                                             <td class="text-center">{{ $loop->iteration }}</td>
                                             <td>{{ $item->kode_produk }}</td>
                                             <td>{{ $item->nama_produk }}</td>
@@ -430,35 +436,6 @@
             });
         });
     
-        document.addEventListener('DOMContentLoaded', function() {
-            var kategoriSelect = document.getElementById('kategori');
-            var pilihBtns = document.querySelectorAll('.pilih-btn');
-    
-            kategoriSelect.addEventListener('change', function() {
-                var kategori = kategoriSelect.value;
-    
-                pilihBtns.forEach(function(btn) {
-                    btn.onclick = function() {
-                        var id = btn.getAttribute('data-id');
-                        var kode = btn.getAttribute('data-kode');
-                        var nama = btn.getAttribute('data-nama');
-                        var memberHarga = btn.getAttribute('data-member');
-                        var memberDiskon = btn.getAttribute('data-diskonmember');
-                        var nonmemberHarga = btn.getAttribute('data-nonmember');
-                        var nonmemberDiskon = btn.getAttribute('data-diskonnonmember');
-                        var harga = kategori === 'member' ? memberHarga : nonmemberHarga;
-                        var diskon = kategori === 'member' ? memberDiskon : nonmemberDiskon;
-    
-                        getSelectedData(id, kode, nama, harga, diskon);
-                    };
-                });
-            });
-        });
-    
-        function getSelectedData(id, kode, nama, harga, diskon) {
-            console.log('ID:', id, 'Kode:', kode, 'Nama:', nama, 'Harga:', harga, 'Diskon:', diskon);
-        }
-    
         function showCategoryModalpemesanan() {
             $('#tableMarketing').modal('show');
         }
@@ -523,6 +500,11 @@
         hitungTotal(urutan);
         // Tutup modal
         $('#tableProduk').modal('hide');
+
+
+        $('#tableProduk').on('hidden.bs.modal', function() {
+            $('#jumlah').focus();
+        });
     }
 
     // Fungsi untuk menghitung total berdasarkan harga dan jumlah
@@ -683,5 +665,6 @@
         });
     }
 </script>
+
 
 @endsection
