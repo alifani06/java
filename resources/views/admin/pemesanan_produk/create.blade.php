@@ -330,7 +330,7 @@
                 </div>
                 <div class="card-footer text-right mt-3">
                     <button type="reset" class="btn btn-secondary" id="btnReset">Reset</button>
-                    <button type="submit" class="btn btn-primary" id="btnSimpan">Simpan</button>
+                    <button type="" class="btn btn-primary" id="simpanButton">Simpan</button>
                     <div id="loading" style="display: none;">
                         <i class="fas fa-spinner fa-spin"></i> Sedang Menyimpan...
                     </div>
@@ -358,6 +358,32 @@
         });
     });
 </script>
+
+    <script>
+
+        function handleEnter(event, urutan) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Mencegah form dari submit jika ada
+                addPesanan(urutan);
+            }
+        }
+
+        function addPesanan(urutan) {
+            // Logika untuk menambah pesanan
+            console.log("Pesanan ditambahkan untuk urutan " + urutan);
+        }
+
+        function simpanPesanan() {
+            // Logika untuk menyimpan pesanan
+            console.log("Pesanan disimpan");
+        }
+
+        // Contoh: Tambahkan event listener untuk tombol simpan
+        document.getElementById('simpanButton').addEventListener('click', function() {
+            simpanPesanan();
+        });
+
+    </script>
 
     <script>
         // menghide form inputan
@@ -502,9 +528,20 @@
         $('#tableProduk').modal('hide');
 
 
-        $('#tableProduk').on('hidden.bs.modal', function() {
-            $('#jumlah').focus();
-        });
+            // Setelah menambahkan data dari modal, fokuskan ke input jumlah
+        var InputJumlah =  document.getElementById('jumlah-' + urutan).focus();
+
+        // InputJumlah.addEventListener('keydown', function(event){
+        //     if(event.key === 'Enter'){
+
+        //         event.preventDefault();
+                
+        //         addPesanan();
+
+        //     }
+
+        // });
+
     }
 
     // Fungsi untuk menghitung total berdasarkan harga dan jumlah
@@ -578,15 +615,15 @@
             total = value.total;
         }
 
-        var item_pembelian = '<tr id="pembelian-' + urutan + '">';
+        var item_pembelian = '<tr  id="pembelian-' + urutan + '">';
         item_pembelian += '<td style="width: 70px; font-size:14px" class="text-center" id="urutan-' + urutan + '">' + urutan + '</td>';
         item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="produk_id-' + urutan + '" name="produk_id[]" value="' + produk_id + '"></div></td>';
         item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
-        item_pembelian += '<td><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
-        item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')"></div></td>';
-        item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" readonly id="diskon-' + urutan + '" name="diskon[]" value="' + diskon + '" ></div></td>';
-        item_pembelian += '<td><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="harga-' + urutan + '" name="harga[]" value="' + formatRupiah(harga) + '"></div></td>';
-        item_pembelian += '<td><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="total-' + urutan + '" name="total[]" value="' + formatRupiah(total) + '"></div></td>';
+        item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
+        item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
+        item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')" style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" readonly id="diskon-' + urutan + '" name="diskon[]" value="' + diskon + '" ></div></td>';
+        item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="harga-' + urutan + '" name="harga[]" value="' + formatRupiah(harga) + '"></div></td>';
+        item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="total-' + urutan + '" name="total[]" value="' + formatRupiah(total) + '"></div></td>';
         item_pembelian += '<td style="width: 100px"><button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(' + urutan + ')"><i class="fas fa-plus"></i></button><button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' + urutan + ')"><i class="fas fa-trash"></i></button></td>';
         item_pembelian += '</tr>';
 
@@ -665,6 +702,7 @@
         });
     }
 </script>
+
 
 
 @endsection
