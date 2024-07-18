@@ -1,181 +1,185 @@
 @extends('layouts.app')
 
-@section('title', 'Data Pemesanan Produk')
+@section('title', 'Laporan Pememsanan Produk')
 
 @section('content')
-<style>
-    /* Gaya untuk menu konteks */
-    .context-menu {
-        display: none;
-        position: absolute;
-        z-index: 1000;
-        width: 150px;
-        background-color: white;
-        border: 1px solid #ccc;
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-    }
-    .context-menu ul {
-        list-style: none;
-        padding: 5px 0;
-        margin: 0;
-    }
-    .context-menu ul li {
-        padding: 8px 12px;
-        cursor: pointer;
-    }
-    .context-menu ul li:hover {
-        background-color: #f2f2f2;
-    }
-</style>
-
-<!-- Header Konten (halaman header) -->
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">Data Pemesanan Produk</h1>
-            </div><!-- /.col -->
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.inquery_pemesananproduk.index') }}">Data Pemesanan Produk</a></li>
-                    <li class="breadcrumb-item active">Data yang Difilter</li>
-                </ol>
-            </div>
-        </div>
+    <div id="loadingSpinner" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
+        <i class="fas fa-spinner fa-spin" style="font-size: 3rem;"></i>
     </div>
-</div>
 
-<section class="content">
-    <div class="container-fluid">
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                document.getElementById("loadingSpinner").style.display = "none";
+                document.getElementById("mainContent").style.display = "block";
+                document.getElementById("mainContentSection").style.display = "block";
+            }, 100); // Adjust the delay time as needed
+        });
+    </script>
 
-        @if (session('success'))
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: '{{ session('success') }}',
-                        timer: 1000,
-                        showConfirmButton: false
-                    });
-                });
-            </script>
-        @endif
+    <!-- Content Header (Page header) -->
+    <div class="content-header" style="display: none;" id="mainContent">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Laporan pemesanan Produk</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item active">Laporan pemesanan Produk</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
 
-        <!-- Form filter -->
-        <div class="row mb-3" style="font-size: 14px">
-            <form action="{{ route('admin.inquery_pemesananproduk.index') }}" method="get" class="form-inline">
-                <div class="col-mb-3 ml-2">
-                    <label for="start_date" class="mr-2">Dari Tanggal:</label>
-                    <input type="date" name="start_date" id="start_date" class="form-control mr-2" value="{{ request('start_date') }}">
+    <!-- Main content -->
+    <section class="content" style="display: none;" id="mainContentSection">
+        <div class="container-fluid">
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <h5>
+                        <i class="icon fas fa-check"></i> Success!
+                    </h5>
+                    {{ session('success') }}
                 </div>
-                <div class="col-mb-3">
-                    <label for="end_date" class="mr-2">Sampai Tanggal:</label>
-                    <input type="date" name="end_date" id="end_date" class="form-control mr-2" value="{{ request('end_date') }}">
+            @endif
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Data Laporan Pemesanan Produk</h3>
                 </div>
-                <div class="col-mb-3" style="margin-top: 22px">
-                    <button type="submit" class="btn btn-primary btn-sm">Filter</button>
-                </div>
-            </form>
-        </div>
-
-        <div class="card">
-            <!-- /.card-header -->
-            <div class="card-body">
-                <table id="datatables1" class="table table-bordered table-hover" style="font-size: 14px">
-                    <thead class="table-secondary">
-                        <tr>
-                            <th>No</th>
-                            <th>Kode Pemesanan</th>
-                            <th>Nama Pelanggan</th>
-                            <th>Produk</th>
-                            <th>Harga</th>
-                            <th>Qty</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php
-                            $grandTotal = 0.0; // Reset grand total untuk perhitungan baru setelah filter
-                        @endphp
-                        @foreach ($pemesanans as $index => $pemesanan)
-                            @foreach ($pemesanan->detailpemesananproduk as $detail)
-                                <tr>
-                                    <td class="text-center">{{ $loop->parent->iteration }}</td>
-                                    <td>{{ $pemesanan->kode_pemesanan }}</td>
-                                    <td>{{ $pemesanan->nama_pelanggan }}</td>
-                                    <td>{{ $detail->nama_produk }}</td>
-                                    <td>{{ number_format((float) $detail->harga, 0, ',', '.') }}</td> 
-                                    <td>{{ $detail->jumlah }}</td>
-                                    <td>{{ number_format((float) $detail->total, 0, ',', '.') }}</td> 
-                                </tr>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <form method="GET" id="form-action">
+                        <div class="row">
+                            {{-- <div class="col-md-3 mb-3">
+                                <label for="created_at">Kategori</label>
+                                <select class="custom-select form-control" id="status" name="status">
+                                    <option value="">- Semua Status -</option>
+                                    <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>
+                                        Belum Lunas
+                                    </option>
+                                    <option value="selesai" {{ Request::get('status') == 'selesai' ? 'selected' : '' }}>
+                                        Lunas</option>
+                                </select>
+                            </div> --}}
+                            <div class="col-md-3 mb-3">
+                                <label for="tanggal_pemesanan">Tanggal Awal</label>
+                                <input class="form-control" id="tanggal_pemesanan" name="tanggal_pemesanan" type="date"
+                                    value="{{ Request::get('tanggal_pemesanan') }}" max="{{ date('Y-m-d') }}" />
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="tanggal_akhir">Tanggal Akhir</label>
+                                <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
+                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                {{-- @if (auth()->check() && auth()->user()->fitur['laporan pembelian ban cari']) --}}
+                                    <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
+                                        <i class="fas fa-search"></i> Cari
+                                    </button>
+                                {{-- @endif --}}
+                                {{-- @if (auth()->check() && auth()->user()->fitur['laporan pembelian ban cetak']) --}}
+                                    <button type="button" class="btn btn-primary btn-block" onclick="printReport()"
+                                        target="_blank">
+                                        <i class="fas fa-print"></i> Cetak
+                                    </button>
+                                {{-- @endif --}}
+                            </div>
+                        </div>
+                    </form>
+                    <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
+                        <thead>
+                            <tr>
+                                <th class="text-center">No</th>
+                                <th>Kode Pemesanan</th>
+                                <th>Tanggal Pemesanan</th>
+                                <th>Nama Pelanggan</th>
+                                <th>Produk</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $totalSubtotal = 0; // Initialize the total variable
+                            @endphp
+                            @foreach ($inquery as $item)
                                 @php
-                                    $grandTotal += (float) $detail->total; // Menambahkan $detail->total ke $grandTotal
+                                    // Check if the current item's tanggal_pemesanan is within the specified range
+                                    $tanggalPemesanan = \Carbon\Carbon::parse($item->tanggal_pemesanan);
+                                    $tanggalAkhir = \Carbon\Carbon::parse($item->tanggal_akhir);
+                                    if ((!$tanggalPemesanan || $tanggalPemesanan >= \Carbon\Carbon::parse($tanggalPemesanan))
+                                        && (!$tanggalAkhir || $tanggalAkhir <= \Carbon\Carbon::parse($tanggalAkhir))) {
+                                        // Accumulate the subtotal for each $item within the date range
+                                        $totalSubtotal += $item->sub_total;
+                                    }
                                 @endphp
+                                <tr>
+                                    <td class="text-center">{{ $loop->iteration }}</td>
+                                    <td>{{ $item->kode_pemesanan }}</td>
+                                    <td>{{ $item->tanggal_pemesanan }}</td>
+                                    <td>{{ $item->nama_pelanggan }}</td>
+                                    <td>
+                                        @if ($item->detailpemesananproduk->isNotEmpty())
+                                            {{ $item->detailpemesananproduk->pluck('nama_produk')->implode(', ') }}
+                                        @else
+                                            tidak ada
+                                        @endif
+                                    </td>
+                                    <td>{{ number_format($item->sub_total, 0, ',', '.') }}</td>
+                                </tr>
                             @endforeach
-                        @endforeach
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th colspan="6" style="text-align: right;">Total Keseluruhan</th>
-                            <th>{{ 'Rp. ' . number_format($grandTotal, 0, ',', '.') }}</th> <!-- Format grand total tanpa desimal dan pemisah ribuan titik (.) -->
-                        </tr>
-                    </tfoot>
-                </table>
-
-                <!-- Menu Konteks -->
-                <div class="context-menu" id="context-menu">
-                    <ul>
-                        <li id="edit">Ubah</li>
-                        <li id="delete">Hapus</li>
-                    </ul>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="5" class="text-right"><strong>Total</strong></td>
+                                <td class="text-right"><strong>Rp. {{ number_format($totalSubtotal, 0, ',', '.') }}</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    
                 </div>
-
-                <script>
-                    $(document).ready(function() {
-                        let currentRowId;
-                        $('#datatables1 tbody tr').on('contextmenu', function(e) {
-                            e.preventDefault();
-                            currentRowId = $(this).data('id');
-
-                            // Mendapatkan koordinat klik
-                            var posX = e.pageX;
-                            var posY = e.pageY;
-
-                            // Menyesuaikan posisi dropdown agar muncul di samping kursor
-                            $('#context-menu').css({
-                                display: 'block',
-                                position: 'fixed',
-                                left: posX + 'px',
-                                top: posY + 'px'
-                            });
-
-                            return false; // Mencegah munculnya konteks menu browser bawaan
-                        });
-
-                        // Sembunyikan menu konteks saat mengklik di luarnya
-                        $(document).on('click', function(e) {
-                            if (!$(e.target).closest('#context-menu').length) {
-                                $('#context-menu').hide();
-                            }
-                        });
-
-                        // Tangani opsi menu konteks
-                        $('#edit').on('click', function() {
-                            window.location.href = '/admin/pemesanan_produk/edit/' + currentRowId;
-                        });
-
-                        $('#delete').on('click', function() {
-                            if (confirm('Apakah Anda yakin ingin menghapus item ini?')) {
-                                window.location.href = '/admin/pemesanan_produk/delete/' + currentRowId;
-                            }
-                        });
-                    });
-                </script>
+                <!-- /.card-body -->
             </div>
-
         </div>
-    </div>
-</section>
+    </section>
+    <!-- /.card -->
+    <script>
+        var tanggalAwal = document.getElementById('tanggal_pemesanan');
+        var tanggalAkhir = document.getElementById('tanggal_akhir');
+        if (tanggalAwal.value == "") {
+            tanggalAkhir.readOnly = true;
+        }
+        tanggalAwal.addEventListener('change', function() {
+            if (this.value == "") {
+                tanggalAkhir.readOnly = true;
+            } else {
+                tanggalAkhir.readOnly = false;
+            };
+            tanggalAkhir.value = "";
+            var today = new Date().toISOString().split('T')[0];
+            tanggalAkhir.value = today;
+            tanggalAkhir.setAttribute('min', this.value);
+        });
+        var form = document.getElementById('form-action')
 
+        function cari() {
+            form.action = "{{ url('admin/laporan_pemesananproduk') }}";
+            form.submit();
+        }
+
+        function printReport() {
+            var startDate = tanggalAwal.value;
+            var endDate = tanggalAkhir.value;
+
+            if (startDate && endDate) {
+                form.action = "{{ url('admin/print_ban') }}" + "?start_date=" + startDate + "&end_date=" + endDate;
+                form.submit();
+            } else {
+                alert("Silakan isi kedua tanggal sebelum mencetak.");
+            }
+        }
+    </script>
 @endsection

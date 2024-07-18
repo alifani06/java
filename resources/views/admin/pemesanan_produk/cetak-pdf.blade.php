@@ -348,14 +348,17 @@
                                 <td style="font-size: 8px;">{{ $detail->total }}</td>
                             </tr>
                             @php
-                                $subtotal += $detail->total;
+                                // Validasi dan konversi data menjadi numerik
+                                $total = is_numeric($detail->total) ? $detail->total : 0;
+                                $subtotal += $total;
                             @endphp
                         @endforeach
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total Bayar</strong></td>
-                            <td style="font-size: 8px;">{{ $pemesanan->sub_total }}</td>
+                            <td style="font-size: 8px;">{{ $subtotal }}</td>
                         </tr>
                     </tbody>
+                    
                 </table>
                 @endif
             </div>

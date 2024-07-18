@@ -36,29 +36,39 @@ class Laporan_pemesananprodukController extends Controller
     public function index(Request $request)
 
     {
-        // Membuat kueri Pemesananproduk
-        $query = Pemesananproduk::query();
-    
-        // Jika terdapat filter tanggal di request
-        if ($request->has('start_date') && $request->has('end_date')) {
-            $startDate = Carbon::parse($request->input('start_date'))->startOfDay();
-            $endDate = Carbon::parse($request->input('end_date'))->endOfDay();
-    
-            // Menambahkan kondisi whereBetween untuk filter tanggal yang diinputkan
-            $query->whereBetween('tanggal_pemesanan', [$startDate, $endDate]);
-        } else {
-            // Jika tidak ada filter tanggal, menampilkan data hari ini saja
-            $todayStart = Carbon::now()->startOfDay();
-            $todayEnd = Carbon::now()->endOfDay();
-            $query->whereBetween('tanggal_pemesanan', [$todayStart, $todayEnd]);
+        // if (auth()->check() && auth()->user()->menu['laporan pembelian ban']) {
+
+            $status = $request->status;
+            $tanggal_awal = $request->tanggal_awal;
+            $tanggal_akhir = $request->tanggal_akhir;
+
+            $inquery = Pemesananproduk::query();
+
+            if ($status) {
+                $inquery->where('status', $status);
+            }
+
+            if ($tanggal_awal && $tanggal_akhir) {
+                $inquery->whereBetween('tanggal_pemesanan', [$tanggal_awal, $tanggal_akhir]);
+            } elseif ($tanggal_awal) {
+                $inquery->where('tanggal_pemesanan', '>=', $tanggal_awal);
+            } elseif ($tanggal_akhir) {
+                $inquery->where('tanggal_pemesanan', '<=', $tanggal_akhir);
+            } else {
+                // Jika tidak ada filter tanggal hari ini
+                $inquery->whereDate('tanggal_pemesanan', Carbon::today());
+            }
+
+            $inquery->orderBy('id', 'DESC');
+            $inquery = $inquery->get();
+
+
+            return view('admin.laporan_pemesananproduk.index', compact('inquery'));
+        
+            // tidak memiliki akses
+            return back()->with('error', array('Anda tidak memiliki akses'));
         }
     
-        // Mengambil hasilnya
-        $pemesanans = $query->get();
-    
-        // Mengembalikan tampilan dengan hasil
-        return view('admin.laporan_pemesananproduk.index', compact('pemesanans', 'query'));
-    }
 
     public function create()
     {

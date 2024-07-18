@@ -1,67 +1,59 @@
 @extends('layouts.app')
 
-@section('title', 'Data produk')
+@section('title', 'Produks')
 
 @section('content')
-<style>
-    .context-menu {
-        display: none;
-        position: absolute;
-        z-index: 1000;
-        width: 150px;
-        background-color: white;
-        border: 1px solid #ccc;
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-    }
-    .context-menu ul {
-        list-style: none;
-        padding: 5px 0;
-        margin: 0;
-    }
-    .context-menu ul li {
-        padding: 8px 12px;
-        cursor: pointer;
-    }
-    .context-menu ul li:hover {
-        background-color: #f2f2f2;
-    }
+    <div id="loadingSpinner" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
+        <i class="fas fa-spinner fa-spin" style="font-size: 3rem;"></i>
+    </div>
 
-    #datatables1 tbody tr:hover {
-        background-color: #dfdfdf; /* Ganti warna sesuai kebutuhan */
-    }
-</style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                document.getElementById("loadingSpinner").style.display = "none";
+                document.getElementById("mainContent").style.display = "block";
+                document.getElementById("mainContentSection").style.display = "block";
+            }, 10); // Adjust the delay time as needed
+        });
+    </script>
     <!-- Content Header (Page header) -->
-    <div class="content-header">
+    <div class="content-header" style="display: none;" id="mainContent">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Data pemesanan produk</h1>
+                    <h1 class="m-0">Pemesanan Produk</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Data pemesanan produk</li>
+                        <li class="breadcrumb-item active">Pemesanan Produk</li>
                     </ol>
-                </div>
-            </div>
-        </div>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
     </div>
+    <!-- /.content-header -->
 
-    <section class="content">
+    <!-- Main content -->
+    <section class="content" style="display: none;" id="mainContentSection">
         <div class="container-fluid">
-
             @if (session('success'))
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: '{{ session('success') }}',
-                        timer: 1000,
-                        showConfirmButton: false
-                    });
-                });
-            </script>
-        @endif
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <h5>
+                        <i class="icon fas fa-check"></i> Success!
+                    </h5>
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if (session('error'))
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <h5>
+                        <i class="icon fas fa-ban"></i> Error!
+                    </h5>
+                    {{ session('error') }}
+                </div>
+            @endif
             <div class="card">
                 <div class="card-header">
                     <div class="float-right">
@@ -72,150 +64,291 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-
-                    <table id="datatables1" class="table table-bordered table-hover" style="font-size: 14px">
-                        <thead class="table-secondary"> 
+                    <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
+                        <thead class="">
                             <tr>
-                                <th>No</th>
-                                <th>Kode pemesanan</th>
+                                {{-- <th> <input type="checkbox" name="" id="select_all_ids"></th> --}}
+                                <th class="text-center">No</th>
+                                <th>Kode Pemesanan</th>
+                                <th>Tanggal Pemesanan</th>
                                 <th>Nama Pelanggan</th>
                                 <th>Produk</th>
-                                <th>Harga</th>
-                                <th>qty</th>
-                                <th>Harga</th>
-                                <th>Qrcode</th>
-                                <th>opsi</th>
+                                <th>Total</th>
+                                <th class="text-center" width="20">Opsi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($pemesanans as $produk)
-                                <tr data-id="{{ $produk->id }}" class="table-row">
+                            @foreach ($inquery as $item)
+                                <tr class="dropdown"{{ $item->id }}>
+                                   
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $produk->pemesananproduk->kode_pemesanan }}</td>
-                                    <td>{{ $produk->pemesananproduk->nama_pelanggan }}</td>
-                                    <td>{{ $produk->nama_produk }}</td>
-                                    <td>{{ $produk->harga }}</td>
-                                    <td>{{ $produk->jumlah }}</td>
-                                    <td>{{ $produk->total }}</td>
-                                    <td data-toggle="modal" data-target="#modal-qrcode-{{ $produk->id }}" style="text-align: center;">
-                                        <div style="display: inline-block;">
-                                            {!! DNS2D::getBarcodeHTML($produk->pemesananproduk->qrcode_pemesanan, 'QRCODE', 1, 1) !!}
-                                        </div>
+                                    <td>
+                                        {{ $item->kode_pemesanan }}
                                     </td>
                                     <td>
-                                        <div class="float-right">
-                                            <a href="{{ route('admin.pemesanan_produk.cetak-pdf', $produk->pemesananproduk_id) }}" target="_blank" class="btn btn-primary btn-sm">
-                                                <i class="fas fa-print"></i> 
-                                            </a>
+                                        {{ \Carbon\Carbon::parse($item->tanggal_pemesanan)->format('d/m/Y H:i') }}
+                                    </td>
+                                    
+                                    <td>
+                                        {{ $item->nama_pelanggan }}
+                                    </td>
+                                    <td>
+                                        @if ($item->detailpemesananproduk->isNotEmpty())
+                                            {{ $item->detailpemesananproduk->pluck('nama_produk')->implode(', ') }}
+                                        @else
+                                            tidak ada
+                                        @endif
+                                    </td>
+                                    <td>
+                                        {{ $item->sub_total }}
+                                    </td>
+
+                                    <td class="text-center">
+                                        @if ($item->status == 'posting')
+                                            <button type="button" class="btn btn-success btn-sm">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        @endif
+                                        @if ($item->status == 'unpost')
+                                      
+                                        @endif
+                                     
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            @if ($item->status == 'unpost')
+                                               
+                                                    <a class="dropdown-item posting-btn"
+                                                        data-memo-id="{{ $item->id }}">Posting</a>
+                                             
+                                                    <a class="dropdown-item"
+                                                        href="{{ url('admin/inquery_pemesananproduk/' . $item->id . '/edit') }}">Update</a>
+                                                
+                                                    <a class="dropdown-item"
+                                                        href="{{ url('/admin/pemesanan_produk/' . $item->id ) }}">Show</a>
+                                            @endif
+                                            @if ($item->status == 'posting')
+                                                    <a class="dropdown-item unpost-btn"
+                                                        data-memo-id="{{ $item->id }}">Unpost</a>
+                                                    <a class="dropdown-item"
+                                                        href="{{ url('/admin/pemesanan_produk/' . $item->id ) }}">Show</a>
+                                            @endif
+                                           
                                         </div>
-                                        {{-- <div class="float-right">
-                                            <a href="{{ url('admin/pemesanan_produk/' . $produk->pemesananproduk->id . '/edit') }}" class="btn btn-success btn-sm">
-                                                <i class="fas fa-edit"></i> 
-                                            </a>
-                                        </div> --}}
                                     </td>
                                 </tr>
-                                <div class="modal fade" id="modal-qrcode-{{ $produk->id }}">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h4 class="modal-title">Gambar QR Code</h4>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div style="text-align: center;">
-                                                    <p style="font-size:20px; font-weight: bold;">{{ $produk->pemesananproduk->kode_pemesanan }}</p>
-                                                    <div style="display: inline-block;">
-                                                        {!! DNS2D::getBarcodeHTML($produk->pemesananproduk->qrcode_pemesanan, 'QRCODE', 10, 10) !!}
-                                                    </div>
-                                                    <p style="font-size:20px; font-weight: bold;">{{ $produk->pemesananproduk->nama_pelanggan }}</p>
-                                                </div>
-                                                <div class="modal-footer justify-content-between">
-                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
-                                                    <a href="{{ url('admin/karyawan/cetak-pdf/' . $produk->id) }}" class="btn btn-primary btn-sm">
-                                                        <i class=""></i> Cetak
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                             @endforeach
                         </tbody>
                     </table>
-
-                {{-- <!-- Dropdown Menu -->
-                <div id="context-menu" class="dropdown-menu" style="display:none; position:absolute;">
-                    <a class="dropdown-item" href="{{ url('admin/pemesanan_produk/' . $produk->pemesananproduk->id . '/edit') }}" id="edit-row">Ubah</a>
-                    <a class="dropdown-item" href="" id="show-row">Lihat</a>
-                    <a class="dropdown-item" href="" id="delete-row">Hapus</a>
+                    <!-- Modal Loading -->
+                    <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
+                        aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body text-center">
+                                    <i class="fas fa-spinner fa-spin fa-3x text-primary"></i>
+                                    <h4 class="mt-2">Sedang Menyimpan...</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-
-                 <script>
-                    document.addEventListener("DOMContentLoaded", function() {
-                        let selectedRow = null;
-                        const contextMenu = document.getElementById('context-menu');
-                        const offset = -230;   // Jarak dari kursor
-                        
-                        document.querySelectorAll(".table-row").forEach(row => {
-                            // Klik kiri untuk memilih baris
-                            row.addEventListener("click", function() {
-                                if (selectedRow) {
-                                    selectedRow.classList.remove("selected");
-                                }
-                                selectedRow = this;
-                                selectedRow.classList.add("selected");
-                            });
-                
-                            // Klik kanan untuk membuka menu konteks
-                            row.addEventListener("contextmenu", function(e) {
-                                e.preventDefault();
-                                if (selectedRow === this) {
-                                    contextMenu.style.display = 'block';
-                                    contextMenu.style.left = `${e.pageX + offset}px`;
-                                    contextMenu.style.top = `${e.pageY + offset}px`;
-                                }
-                            });
-                        });
-                
-                        // Sembunyikan menu konteks saat mengklik di luar menu
-                        document.addEventListener("click", function(e) {
-                            if (e.button !== 2) {
-                                contextMenu.style.display = 'none';
-                            }
-                        });
-                
-                        // Handle aksi Edit dan Hapus
-                        document.getElementById('edit-row').addEventListener("click", function() {
-                            if (selectedRow) {
-                                const id = selectedRow.getAttribute('data-id');
-                                window.location.href ="{{ url('admin/pemesanan_produk/' . $produk->pemesananproduk->id . '/edit') }}";
-                            }
-                        });
-                
-                        document.getElementById('delete-row').addEventListener("click", function() {
-                            if (selectedRow) {
-                                const id = selectedRow.getAttribute('data-id');
-                                // Tambahkan logika hapus di sini
-                                alert(`Menghapus baris dengan ID: ${id}`);
-                            }
-                        });
-                    });
-                </script>
-                
-                <style>
-                    .table-row.selected {
-                        background-color: #dfdfdf;
-                    }
-                </style> --}}
-                </div>
-                
+                <!-- /.card-body -->
             </div>
         </div>
     </section>
-    <!-- /.card -->
-@endsection
 
+
+    <!-- /.card -->
+    <script>
+        var tanggalAwal = document.getElementById('tanggal_awal');
+        var tanggalAkhir = document.getElementById('tanggal_akhir');
+
+        if (tanggalAwal.value == "") {
+            tanggalAkhir.readOnly = true;
+        }
+
+        tanggalAwal.addEventListener('change', function() {
+            if (this.value == "") {
+                tanggalAkhir.readOnly = true;
+            } else {
+                tanggalAkhir.readOnly = false;
+            }
+
+            tanggalAkhir.value = "";
+            var today = new Date().toISOString().split('T')[0];
+            tanggalAkhir.value = today;
+            tanggalAkhir.setAttribute('min', this.value);
+        });
+
+        var form = document.getElementById('form-action');
+
+        function cari() {
+            form.action = "{{ url('admin/inquery_pemesnanproduk') }}";
+            form.submit();
+        }
+    </script>
+
+    <script>
+        $(function(e) {
+            $("#select_all_ids").click(function() {
+                $('.checkbox_ids').prop('checked', $(this).prop('checked'))
+            })
+        });
+
+        function printSelectedData() {
+            var selectedIds = document.querySelectorAll(".checkbox_ids:checked");
+            if (selectedIds.length === 0) {
+                alert("Harap centang setidaknya satu item sebelum mencetak.");
+            } else {
+                var selectedCheckboxes = document.querySelectorAll('.checkbox_ids:checked');
+                var selectedIds = [];
+                selectedCheckboxes.forEach(function(checkbox) {
+                    selectedIds.push(checkbox.value);
+                });
+                document.getElementById('selectedIds').value = selectedIds.join(',');
+                var selectedIdsString = selectedIds.join(',');
+                window.location.href = "{{ url('admin/cetak_fakturekspedisifilter') }}?ids=" + selectedIdsString;
+                // var url = "{{ url('admin/ban/cetak_pdffilter') }}?ids=" + selectedIdsString;
+            }
+        }
+    </script>
+
+    {{-- unpost memo  --}}
+    <script>
+        $(document).ready(function() {
+            $('.unpost-btn').click(function() {
+                var memoId = $(this).data('memo-id');
+                $(this).addClass('disabled');
+
+                // Tampilkan modal loading saat permintaan AJAX diproses
+                $('#modal-loading').modal('show');
+
+                // Kirim permintaan AJAX untuk melakukan unpost
+                $.ajax({
+                    url: "{{ url('admin/inquery_pemesananproduk/unpost_pemesananproduk/') }}/" + memoId,
+                    type: 'GET',
+                    data: {
+                        id: memoId
+                    },
+                    success: function(response) {
+                        // Sembunyikan modal loading setelah permintaan selesai
+                        $('#modal-loading').modal('hide');
+
+                        // Tampilkan pesan sukses atau lakukan tindakan lain sesuai kebutuhan
+                        console.log(response);
+
+                        // Tutup modal setelah berhasil unpost
+                        $('#modal-posting-' + memoId).modal('hide');
+
+                        // Reload the page to refresh the table
+                        location.reload();
+                    },
+                    error: function(error) {
+                        // Sembunyikan modal loading setelah permintaan selesai
+                        $('#modal-loading').modal('hide');
+
+                        // Tampilkan pesan error atau lakukan tindakan lain sesuai kebutuhan
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+    {{-- posting memo --}}
+    <script>
+        $(document).ready(function() {
+            $('.posting-btn').click(function() {
+                var memoId = $(this).data('memo-id');
+                $(this).addClass('disabled');
+
+                // Tampilkan modal loading saat permintaan AJAX diproses
+                $('#modal-loading').modal('show');
+
+                // Kirim permintaan AJAX untuk melakukan posting
+                $.ajax({
+                    url: "{{ url('admin/inquery_pemesananproduk/posting_pemesananproduk/') }}/" + memoId,
+                    type: 'GET',
+                    data: {
+                        id: memoId
+                    },
+                    success: function(response) {
+                        // Sembunyikan modal loading setelah permintaan selesai
+                        $('#modal-loading').modal('hide');
+
+                        // Tampilkan pesan sukses atau lakukan tindakan lain sesuai kebutuhan
+                        console.log(response);
+
+                        // Tutup modal setelah berhasil posting
+                        $('#modal-posting-' + memoId).modal('hide');
+
+                        // Reload the page to refresh the table
+                        location.reload();
+                    },
+                    error: function(error) {
+                        // Sembunyikan modal loading setelah permintaan selesai
+                        $('#modal-loading').modal('hide');
+
+                        // Tampilkan pesan error atau lakukan tindakan lain sesuai kebutuhan
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('tbody tr.dropdown').click(function(e) {
+                // Memeriksa apakah yang diklik adalah checkbox
+                if ($(e.target).is('input[type="checkbox"]')) {
+                    return; // Jika ya, hentikan eksekusi
+                }
+
+                // Menghapus kelas 'selected' dan mengembalikan warna latar belakang ke warna default dari semua baris
+                $('tr.dropdown').removeClass('selected').css('background-color', '');
+
+                // Menambahkan kelas 'selected' ke baris yang dipilih dan mengubah warna latar belakangnya
+                $(this).addClass('selected').css('background-color', '#b0b0b0');
+
+                // Menyembunyikan dropdown pada baris lain yang tidak dipilih
+                $('tbody tr.dropdown').not(this).find('.dropdown-menu').hide();
+
+                // Mencegah event klik menyebar ke atas (misalnya, saat mengklik dropdown)
+                e.stopPropagation();
+            });
+
+            $('tbody tr.dropdown').contextmenu(function(e) {
+                // Memeriksa apakah baris ini memiliki kelas 'selected'
+                if ($(this).hasClass('selected')) {
+                    // Menampilkan dropdown saat klik kanan
+                    var dropdownMenu = $(this).find('.dropdown-menu');
+                    dropdownMenu.show();
+
+                    // Mendapatkan posisi td yang diklik
+                    var clickedTd = $(e.target).closest('td');
+                    var tdPosition = clickedTd.position();
+
+                    // Menyusun posisi dropdown relatif terhadap td yang di klik
+                    dropdownMenu.css({
+                        'position': 'absolute',
+                        'top': tdPosition.top + clickedTd
+                            .height(), // Menempatkan dropdown sedikit di bawah td yang di klik
+                        'left': tdPosition
+                            .left // Menempatkan dropdown di sebelah kiri td yang di klik
+                    });
+
+                    // Mencegah event klik kanan menyebar ke atas (misalnya, saat mengklik dropdown)
+                    e.stopPropagation();
+                    e.preventDefault(); // Mencegah munculnya konteks menu bawaan browser
+                }
+            });
+
+            // Menyembunyikan dropdown saat klik di tempat lain
+            $(document).click(function() {
+                $('.dropdown-menu').hide();
+                $('tr.dropdown').removeClass('selected').css('background-color',
+                    ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
+            });
+        });
+    </script>
+
+@endsection

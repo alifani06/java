@@ -13,7 +13,7 @@
                 document.getElementById("loadingSpinner").style.display = "none";
                 document.getElementById("mainContent").style.display = "block";
                 document.getElementById("mainContentSection").style.display = "block";
-            }, 100); // Adjust the delay time as needed
+            }, 10); // Adjust the delay time as needed
         });
     </script>
     <!-- Content Header (Page header) -->
@@ -25,7 +25,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Inquery Pemesana Produk</li>
+                        <li class="breadcrumb-item active">Inquery Pemesanan Produk</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -61,50 +61,76 @@
                 <!-- /.card-header -->
                 <div class="card-body">
                     <form method="GET" id="form-action">
+                    <div class="row">
+
+                        <div class="col-md-4 mb-3">
+                            <select class="custom-select form-control" id="status" name="status">
+                                <option value="">- Semua Status -</option>
+                                <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
+                                <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
+                            </select>
+                            <label for="status">(Pilih Status)</label>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <input class="form-control" id="tanggal_awal" name="tanggal_awal" type="date"
+                                   value="{{ Request::get('tanggal_awal') }}" max="{{ date('Y-m-d') }}" />
+                            <label for="tanggal_awal">(Dari Tanggal)</label>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
+                                   value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
+                            <label for="tanggal_akhir">(Sampai Tanggal)</label>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <button type="submit" class="btn btn-outline-primary btn-block">
+                                <i class="fas fa-search"></i> Cari
+                            </button>
+                        </div>
+                    </div>
+                    </form>
+
+                    {{-- <form method="GET" id="form-action">
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <select class="custom-select form-control" id="kategori" name="kategori">
-                                    <option value="">- Semua kategori -</option>
-                                    <option value="member" {{ Request::get('kategori') == 'member' ? 'selected' : '' }}>
-                                        member
+                                <select class="custom-select form-control" id="status" name="status">
+                                    <option value="">- Semua Status -</option>
+                                    <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>
+                                        Posting
                                     </option>
-                                    <option value="nonmember" {{ Request::get('kategori') == 'nonmember' ? 'selected' : '' }}>
-                                        nonmember</option>
+                                    <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>
+                                        Unpost</option>
                                 </select>
-                                <label for="kategori">(Pilih kategori)</label>
+                                <label for="status">(Pilih Status)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_awal" name="tanggal_awal" type="date"
-                                    value="{{ Request::get('tanggal_pemesanan') }}" max="{{ date('Y-m-d') }}" />
+                                    value="{{ Request::get('tanggal_awal') }}" max="{{ date('Y-m-d') }}" />
                                 <label for="tanggal_awal">(Dari Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
-                                    value="{{ Request::get('tanggal_pemesanan') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_awal">(Sampai Tanggal)</label>
+                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
                             <div class="col-md-2 mb-3">
                                 <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
                                 <input type="hidden" name="ids" id="selectedIds" value="">
-                                {{-- <button type="button" class="btn btn-primary btn-block mt-1" id="checkfilter"
-                                    onclick="printSelectedData()" target="_blank">
-                                    <i class="fas fa-print"></i> Cetak Filter
-                                </button> --}}
+                               
                             </div>
                         </div>
-                    </form>
+                    </form> --}}
                     <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
                         <thead class="">
                             <tr>
                                 {{-- <th> <input type="checkbox" name="" id="select_all_ids"></th> --}}
                                 <th class="text-center">No</th>
                                 <th>Kode Pemesanan</th>
+                                <th>Tanggal Pemesanan</th>
                                 <th>Nama Pelanggan</th>
                                 <th>Produk</th>
-                                <th>Harga</th>
-                                <th>qty</th>
+                          
                                 <th>Total</th>
                                 <th class="text-center" width="20">Opsi</th>
                             </tr>
@@ -118,86 +144,53 @@
                                         {{ $item->kode_pemesanan }}
                                     </td>
                                     <td>
+                                        {{ \Carbon\Carbon::parse($item->tanggal_pemesanan)->format('d/m/Y H:i') }}
+                                    </td>
+                                    
+                                    <td>
                                         {{ $item->nama_pelanggan }}
                                     </td>
                                     <td>
                                         @if ($item->detailpemesananproduk->isNotEmpty())
-                                            @foreach ($item->detailpemesananproduk as $detail)
-                                                {{ $detail->nama_produk }}<br>
-                                            @endforeach
+                                            {{ $item->detailpemesananproduk->pluck('nama_produk')->implode(', ') }}
                                         @else
                                             tidak ada
                                         @endif
                                     </td>
+
                                     <td>
-                                        @if ($item->detailpemesananproduk->isNotEmpty())
-                                        @foreach ($item->detailpemesananproduk as $detail)
-                                            {{ $detail->harga }}<br>
-                                        @endforeach
-                                    @else
-                                        tidak ada
-                                    @endif
+                                        {{ $item->sub_total }}
                                     </td>
-                                    <td>
-                                        @if ($item->detailpemesananproduk->isNotEmpty())
-                                        @foreach ($item->detailpemesananproduk as $detail)
-                                            {{ $detail->jumlah }}<br>
-                                        @endforeach
-                                    @else
-                                        tidak ada
-                                    @endif
-                                    </td>
-                                    <td>
-                                        @if ($item->detailpemesananproduk->isNotEmpty())
-                                        @foreach ($item->detailpemesananproduk as $detail)
-                                            {{ $detail->total }}<br>
-                                        @endforeach
-                                    @else
-                                        tidak ada
-                                    @endif
-                                    </td>
-                                    {{-- <td class="text-right">
-                                        {{ number_format(($item->ban->target_km_ban - $item->ban->km_pelepasan) * ($item->ban->harga / ($item->ban->target_km_ban - $item->ban->km_pemasangan)), 2, ',', '.') }}
-                                    </td> --}}
+
                                     <td class="text-center">
-                                        @if ($item->kategori == 'member')
+                                        @if ($item->status == 'posting')
                                             <button type="button" class="btn btn-success btn-sm">
                                                 <i class="fas fa-check"></i>
                                             </button>
                                         @endif
+                                        @if ($item->status == 'unpost')
+                                      
+                                        @endif
                                      
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            {{-- @if ($item->status == 'unpost')
-                                                @if (auth()->check() && auth()->user()->fitur['inquery faktur ekspedisi posting']) --}}
+                                            @if ($item->status == 'unpost')
+                                               
                                                     <a class="dropdown-item posting-btn"
                                                         data-memo-id="{{ $item->id }}">Posting</a>
-                                                {{-- @endif --}}
-                                                {{-- @if (auth()->check() && auth()->user()->fitur['inquery faktur ekspedisi update']) --}}
+                                             
                                                     <a class="dropdown-item"
                                                         href="{{ url('admin/inquery_pemesananproduk/' . $item->id . '/edit') }}">Update</a>
-                                                {{-- @endif --}}
-                                                {{-- @if (auth()->check() && auth()->user()->fitur['inquery pemasangan ban show']) --}}
+                                                
                                                     <a class="dropdown-item"
                                                         href="{{ url('admin/inquery_pemesananproduk/' . $item->id) }}">Show</a>
-                                                {{-- @endif --}}
-                                             
-                                            {{-- @endif --}}
-                                            {{-- @if ($klaimban->status == 'posting')
-                                                @if (auth()->check() && auth()->user()->fitur['inquery faktur ekspedisi unpost'])
-                                                    <a class="dropdown-item unpost-btn"
-                                                        data-memo-id="{{ $klaimban->id }}">Unpost</a>
-                                                @endif
-                                                @if (auth()->check() && auth()->user()->fitur['inquery pemasangan ban show'])
-                                                    <a class="dropdown-item"
-                                                        href="{{ url('admin/inqueryklaim_ban/' . $klaimban->id) }}">Show</a>
-                                                @endif
                                             @endif
-                                            @if ($klaimban->status == 'selesai')
-                                                @if (auth()->check() && auth()->user()->fitur['inquery pemasangan ban show'])
+                                            @if ($item->status == 'posting')
+                                                    <a class="dropdown-item unpost-btn"
+                                                        data-memo-id="{{ $item->id }}">Unpost</a>
                                                     <a class="dropdown-item"
-                                                        href="{{ url('admin/inqueryklaim_ban/' . $klaimban->id) }}">Show</a>
-                                                @endif
-                                            @endif --}}
+                                                        href="{{ url('admin/inqueryklaim_ban/' . $item->id) }}">Show</a>
+                                            @endif
+                                           
                                         </div>
                                     </td>
                                 </tr>
@@ -290,7 +283,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan unpost
                 $.ajax({
-                    url: "{{ url('admin/inqueryklaim_ban/unpost_klaimban/') }}/" + memoId,
+                    url: "{{ url('admin/inquery_pemesananproduk/unpost_pemesananproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -331,7 +324,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan posting
                 $.ajax({
-                    url: "{{ url('admin/inqueryklaim_ban/posting_klaimban/') }}/" + memoId,
+                    url: "{{ url('admin/inquery_pemesananproduk/posting_pemesananproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

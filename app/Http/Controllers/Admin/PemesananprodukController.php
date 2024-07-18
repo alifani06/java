@@ -36,13 +36,58 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 class PemesananprodukController extends Controller
 {
  
-    public function index()
-    {
-        $today = Carbon::today();
+    public function index(Request $request)
+    // {
+    //     $today = Carbon::today();
 
-        $pemesanans = Detailpemesananproduk::whereDate('created_at', $today)->get();
-        return view('admin.pemesanan_produk.index', compact('pemesanans'));
+    //     $pemesanans = Detailpemesananproduk::whereDate('created_at', $today)->get();
+    //     return view('admin.pemesanan_produk.index', compact('pemesanans'));
+    // }
+
+    {
+
+            $today = Carbon::today();
+            $inquery = Pemesananproduk::whereDate('created_at', $today)
+                ->orWhere(function ($query) use ($today) {
+                    $query->where('status', 'unpost')
+                        ->whereDate('created_at', '<', $today);
+                })
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return view('admin.pemesanan_produk.index', compact('inquery'));
+            // tidak memiliki akses
+            return back()->with('error', array('Anda tidak memiliki akses'));
+        
     }
+    // {
+    //     $status = $request->status;
+    //     $tanggal_awal = $request->tanggal_awal;
+    //     $tanggal_akhir = $request->tanggal_akhir;
+    
+    //     $inquery = Pemesananproduk::query();
+    
+    //     if ($status) {
+    //         $inquery->where('status', $status);
+    //     }
+    
+    //     if ($tanggal_awal && $tanggal_akhir) {
+    //         $inquery->whereBetween('tanggal_pemesanan', [$tanggal_awal, $tanggal_akhir]);
+    //     } elseif ($tanggal_awal) {
+    //         $inquery->where('tanggal_pemesanan', '>=', $tanggal_awal);
+    //     } elseif ($tanggal_akhir) {
+    //         $inquery->where('tanggal_pemesanan', '<=', $tanggal_akhir);
+    //     } else {
+    //         // Jika tidak ada filter tanggal, gunakan tanggal hari ini
+    //         $inquery->whereDate('tanggal_pemesanan', Carbon::today());
+    //     }
+    
+    //     $inquery->orderBy('id', 'DESC');
+    //     $inquery = $inquery->get();
+    
+    //     return view('admin.pemesanan_produk.index', compact('inquery'));
+    // }
+    
 
     public function pelanggan($id)
     {
@@ -188,6 +233,8 @@ class PemesananprodukController extends Controller
             'kode_pemesanan' => $this->kode(),
             'qrcode_pemesanan' => 'https://javabakery.id/pemesanan/' . $kode,
             'tanggal_pemesanan' => Carbon::now('Asia/Jakarta'),
+            'status' => 'posting',
+
         ]);
 
         // Dapatkan ID transaksi baru
@@ -264,10 +311,15 @@ class PemesananprodukController extends Controller
     }
     
     public function show($id)
-    {
-        //
-    }
-
+    {   
+        $pemesanan = Pemesananproduk::findOrFail($id);
+        $pelanggans = Pelanggan::all();
+        
+    
+        $tokos = $pemesanan->toko;
+    
+        return view('admin.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans', 'tokos'));}
+    
 
     public function edit($id)
     {

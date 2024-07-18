@@ -32,6 +32,8 @@ class Pemesananproduk extends Model
         'alamat_penerima',
         'tanggal_kirim',
         'toko_id',
+        'status',
+        'tanggaL_akhir',
   
     ];
 
