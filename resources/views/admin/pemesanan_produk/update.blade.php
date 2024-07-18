@@ -22,7 +22,7 @@
             @endif
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">UBAHPemesanan Produk</h1>
+                    <h1 class="m-0">Ubah Pemesanan Produk</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -53,7 +53,7 @@
                     @endforeach
                 </div>
             @endif
-            <form action="{{ route('pemesanan_produk.update', $pemesananProduk->id) }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form action="{{ url('admin/pemesanan_produk/' . $inquery->id) }}" method="post" autocomplete="off">
                 @csrf
                 @method('PUT')
                 <div class="card">
@@ -62,18 +62,18 @@
                         <div class="row mb-3 align-items-center">
                             <div class="col-md-3 mt-2">
                                 <label class="form-label" for="kategori">Tipe Pelanggan</label>
-                                <input readonly type="text" class="form-control" id="kategori" name="kategori" value="{{ old('kategori', $pemesananProduk->kategori) }}"> 
+                                <input readonly type="text" class="form-control" id="kategori" name="kategori" value="{{ old('kategori', $inquery->kategori) }}"> 
                             </div>  
                             <div class="col-md-3 mt-2">
                                 <label class="form-label" for="kode_pemesanan">Kode Pemesanan</label>
-                                <input readonly type="text" class="form-control" id="kode_pemesanan" name="kode_pemesanan" value="{{ old('kode_pemesanan', $pemesananProduk->kode_pemesanan) }}">
+                                <input readonly type="text" class="form-control" id="kode_pemesanan" name="kode_pemesanan" value="{{ old('kode_pemesanan', $inquery->kode_pemesanan) }}">
                             </div>   
                         </div>
                    
                         <div class="row mb-3 align-items-center">
                             <div class="col-md-6">
                                 <label class="form-label" for="nama_pelanggan">Nama Pelanggan</label>
-                                <input  type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan', $pemesananProduk->nama_pelanggan) }}">
+                                <input  type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan', $inquery->nama_pelanggan) }}">
                             </div>   
                         </div>
                         <div class="row mb-3 align-items-center">
@@ -83,13 +83,13 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">+62</span>
                                     </div>  
-                                    <input type="number" id="telp" name="telp" class="form-control" placeholder="Masukan nomor telepon" value="{{ old('telp', $pemesananProduk->telp) }}">
+                                    <input type="number" id="telp" name="telp" class="form-control" placeholder="Masukan nomor telepon" value="{{ old('telp', $inquery->telp) }}">
                                 </div>                            </div>   
                         </div>
                         <div class="row mb-3 align-items-center">
                             <div class="col-md-6">
                                 <label class="form-label" for="nama_pelanggan">Alamat</label>
-                                <textarea placeholder="Masukan alamat tujuan" type="text" class="form-control" id="alamat" name="alamat">{{ old('alamat', $pemesananProduk->alamat) }}</textarea>
+                                <textarea placeholder="Masukan alamat tujuan" type="text" class="form-control" id="alamat" name="alamat">{{ old('alamat', $inquery->alamat) }}</textarea>
                             </div>   
                         </div>
                         <div class="row mb-3 align-items-center" id="telpRow" hidden>
@@ -179,7 +179,45 @@
                                             <th style="font-size:14px; text-align:center">Opsi</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tabel-pembelian"></tbody>
+                                    <tbody id="tabel-pembelian">
+                                        @foreach ($inquery->detailpemesananproduk as $detail)
+
+                                        <tr id="pembelian-0">
+                                            <td class="text-center" id="urutan">1</td>
+
+                                            <td>
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" value="{{ $detail->kode_produk }}" id="kode_barang-0" name="kode_barang[]">
+                                                </div>
+                                            </td> 
+                                            <td>
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" value="{{ $detail->nama_produk }}" id="nama_produk-0" name="nama_produk[]">
+                                                </div>
+                                            </td> 
+                                            <td>
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" value="{{ $detail->jumlah }}" id="jumlah-0" name="jumlah[]">
+                                                </div>
+                                            </td> 
+                                            <td>
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" value="{{ $detail->diskon }}" id="diskon-0" name="diskon[]">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" value="{{ $detail->harga }}" id="harga-0" name="harga[]">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" value="{{ $detail->total }}" id="total-0" name="total[]">
+                                                </div>
+                                            </td>
+                                         </tr>
+                                         @endforeach
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -253,7 +291,7 @@
                         <div class="row">
                             <div class="col-md-4 mb-3 ml-auto">
                                 <label for="sub_total">Sub Total</label>
-                                <input readonly type="text" class="form-control large-font" id="sub_total" name="sub_total" value="{{ old('sub_total', $pemesananProduk->sub_total) }}">
+                                <input readonly type="text" class="form-control large-font" id="sub_total" name="sub_total" value="{{ old('sub_total', $inquery->sub_total) }}">
                             </div>
                         </div>
                     </div>

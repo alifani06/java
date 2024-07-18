@@ -120,7 +120,7 @@
                                                         data-memo-id="{{ $item->id }}">Posting</a>
                                              
                                                     <a class="dropdown-item"
-                                                        href="{{ url('admin/inquery_pemesananproduk/' . $item->id . '/edit') }}">Update</a>
+                                                        href="{{ url('admin/pemesanan_produk/' . $item->id . '/edit') }}">Update</a>
                                                 
                                                     <a class="dropdown-item"
                                                         href="{{ url('/admin/pemesanan_produk/' . $item->id ) }}">Show</a>

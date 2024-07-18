@@ -323,9 +323,9 @@ class PemesananprodukController extends Controller
 
     public function edit($id)
     {
-        
-        $pemesananProduk = Pemesananproduk::findOrFail($id);
-        return view('admin.pemesanan_produk.update', compact('pemesananProduk'));
+        $inquery = Pemesananproduk::with('detailpemesananproduk')->where('id', $id)->first();
+
+        return view('admin.pemesanan_produk.update', compact('inquery'));
     }
     
 

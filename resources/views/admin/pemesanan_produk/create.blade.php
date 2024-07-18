@@ -85,19 +85,17 @@
                                 <label for="qrcode_pelanggan">Scan Kode Pelanggan</label>
                                 <input type="text" class="form-control" id="qrcode_pelanggan" name="qrcode_pelanggan" placeholder="scan kode Pelanggan" onchange="getData(this.value)">
                             </div>
-                            
                         </div>
                     
                         <div class="row mb-3 align-items-center" id="namaPelangganRow" style="display: none;">
-                            <div class="col-md">
-                                <button class="btn btn-info mb-3 btn-sm" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
-                                    <i class="fas fa-search" style=""> <span>Cari</span></i>
+                            <div class="col-md-4">
+                                <button class="btn btn-outline-primary mb-3 btn-sm" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
+                                    <i class="fas fa-search" style=""></i>Cari pelanggan
                                 </button>
                             </div>      
                             <div class="col-md-4 mb-3 "> 
-                                <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}">
-                            </div>   
-                               
+                                <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" onclick="showCategoryModalpemesanan()">
+                            </div>     
                         </div>
 
                         <div class="row  align-items-center" id="telpRow" hidden>
@@ -232,7 +230,9 @@
                                             <th style="font-size:14px; text-align:center">Opsi</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tabel-pembelian"></tbody>
+                                    <tbody id="tabel-pembelian">
+                                        
+                                    </tbody>
                                 </table>
                             </div>
                         </div>

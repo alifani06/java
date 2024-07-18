@@ -66,14 +66,14 @@
                                 </select>
                             </div> --}}
                             <div class="col-md-3 mb-3">
-                                <label for="tanggal_pemesanan">Tanggal Awal</label>
                                 <input class="form-control" id="tanggal_pemesanan" name="tanggal_pemesanan" type="date"
-                                    value="{{ Request::get('tanggal_pemesanan') }}" max="{{ date('Y-m-d') }}" />
+                                value="{{ Request::get('tanggal_pemesanan') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_pemesanan">(Dari Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <label for="tanggal_akhir">Tanggal Akhir</label>
                                 <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
-                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
+                                value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 {{-- @if (auth()->check() && auth()->user()->fitur['laporan pembelian ban cari']) --}}
