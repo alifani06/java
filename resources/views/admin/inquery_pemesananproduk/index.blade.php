@@ -59,11 +59,11 @@
                     <h3 class="card-title">Pemesanan Produk</h3>
                 </div>
                 <!-- /.card-header -->
+                 
                 <div class="card-body">
                     <form method="GET" id="form-action">
-                    <div class="row">
-
-                        <div class="col-md-4 mb-3">
+                        <div class="row">
+                        <div class="col-md-3 mb-3">
                             <select class="custom-select form-control" id="status" name="status">
                                 <option value="">- Semua Status -</option>
                                 <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
@@ -71,56 +71,26 @@
                             </select>
                             <label for="status">(Pilih Status)</label>
                         </div>
-                        <div class="col-md-3 mb-3">
-                            <input class="form-control" id="tanggal_awal" name="tanggal_awal" type="date"
-                                   value="{{ Request::get('tanggal_awal') }}" max="{{ date('Y-m-d') }}" />
-                            <label for="tanggal_awal">(Dari Tanggal)</label>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
-                                   value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
-                            <label for="tanggal_akhir">(Sampai Tanggal)</label>
-                        </div>
-                        <div class="col-md-2 mb-3">
-                            <button type="submit" class="btn btn-outline-primary btn-block">
-                                <i class="fas fa-search"></i> Cari
-                            </button>
-                        </div>
-                    </div>
-                    </form>
-
-                    {{-- <form method="GET" id="form-action">
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <select class="custom-select form-control" id="status" name="status">
-                                    <option value="">- Semua Status -</option>
-                                    <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>
-                                        Posting
-                                    </option>
-                                    <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>
-                                        Unpost</option>
-                                </select>
-                                <label for="status">(Pilih Status)</label>
-                            </div>
                             <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_awal" name="tanggal_awal" type="date"
-                                    value="{{ Request::get('tanggal_awal') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_awal">(Dari Tanggal)</label>
+                                <input class="form-control" id="tanggal_pemesanan" name="tanggal_pemesanan" type="date"
+                                    value="{{ Request::get('tanggal_pemesanan') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_pemesanan">(Dari Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
                                     value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
-                            <div class="col-md-2 mb-3">
+                            <div class="col-md-3 mb-3">
                                 <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
-                                <input type="hidden" name="ids" id="selectedIds" value="">
-                               
+                                
                             </div>
                         </div>
-                    </form> --}}
+                    </form>
+
+                   
                     <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
                         <thead class="">
                             <tr>
@@ -159,7 +129,7 @@
                                     </td>
 
                                     <td>
-                                        {{ $item->sub_total }}
+                                        {{ number_format($item->sub_total, 0, ',', '.') }}
                                     </td>
 
                                     <td class="text-center">
@@ -182,13 +152,13 @@
                                                         href="{{ url('admin/inquery_pemesananproduk/' . $item->id . '/edit') }}">Update</a>
                                                 
                                                     <a class="dropdown-item"
-                                                        href="{{ url('admin/inquery_pemesananproduk/' . $item->id) }}">Show</a>
-                                            @endif
+                                                    href="{{ url('/admin/pemesanan_produk/' . $item->id ) }}">Show</a>
+                                                    @endif
                                             @if ($item->status == 'posting')
                                                     <a class="dropdown-item unpost-btn"
                                                         data-memo-id="{{ $item->id }}">Unpost</a>
                                                     <a class="dropdown-item"
-                                                        href="{{ url('admin/inqueryklaim_ban/' . $item->id) }}">Show</a>
+                                                    href="{{ url('/admin/pemesanan_produk/' . $item->id ) }}">Show</a>
                                             @endif
                                            
                                         </div>
@@ -218,32 +188,29 @@
 
     <!-- /.card -->
     <script>
-        var tanggalAwal = document.getElementById('tanggal_awal');
+        var tanggalAwal = document.getElementById('tanggal_pemesanan');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
-
         if (tanggalAwal.value == "") {
             tanggalAkhir.readOnly = true;
         }
-
         tanggalAwal.addEventListener('change', function() {
             if (this.value == "") {
                 tanggalAkhir.readOnly = true;
             } else {
                 tanggalAkhir.readOnly = false;
-            }
-
+            };
             tanggalAkhir.value = "";
             var today = new Date().toISOString().split('T')[0];
             tanggalAkhir.value = today;
             tanggalAkhir.setAttribute('min', this.value);
         });
-
-        var form = document.getElementById('form-action');
+        var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('admin/inquery_pemesnanproduk') }}";
+            form.action = "{{ url('admin/inquery_pemesananproduk') }}";
             form.submit();
         }
+
     </script>
 
     <script>

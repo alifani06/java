@@ -515,7 +515,7 @@
             $('#produk_id-' + urutan).val(id);
             $('#kode_produk-' + urutan).val(kode_produk);
             $('#nama_produk-' + urutan).val(nama_produk);
-            $('#harga-' + urutan).val(formatRupiah(harga));
+            $('#harga-' + urutan).val(harga);
             $('#diskon-' + urutan).val(diskon);
             // Hitung total
             hitungTotal(urutan);
@@ -549,7 +549,7 @@
             var total = hargaSetelahDiskon * jumlah;
 
             // Format total ke dalam format rupiah dan set nilai input total
-            $('#total-' + urutan).val(formatRupiah(total));
+            $('#total-' + urutan).val(total);
             // Hitung subtotal setiap kali total di baris berubah
             hitungSubTotal();
         }
@@ -561,7 +561,7 @@
                 var total = parseFloat($(this).val().replace(/[^0-9]/g, '')) || 0;
                 subTotal += total;
             });
-            $('#sub_total').val(formatRupiah(subTotal));
+            $('#sub_total').val(subTotal);
         }
 
         function addPesanan() {
@@ -617,8 +617,8 @@
             item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
             item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
             item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')" style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" readonly id="diskon-' + urutan + '" name="diskon[]" value="' + diskon + '" ></div></td>';
-            item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="harga-' + urutan + '" name="harga[]" value="' + formatRupiah(harga) + '"></div></td>';
-            item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="total-' + urutan + '" name="total[]" value="' + formatRupiah(total) + '"></div></td>';
+            item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="harga-' + urutan + '" name="harga[]" value="' + harga + '"></div></td>';
+            item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="total-' + urutan + '" name="total[]" value="' + total + '"></div></td>';
             item_pembelian += '<td style="width: 100px"><button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(' + urutan + ')"><i class="fas fa-plus"></i></button><button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' + urutan + ')"><i class="fas fa-trash"></i></button></td>';
             item_pembelian += '</tr>';
 

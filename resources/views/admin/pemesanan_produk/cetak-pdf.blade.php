@@ -344,8 +344,8 @@
                                         -
                                     @endif
                                 </td>
-                                <td style="font-size: 8px;">{{ $detail->harga }}</td>
-                                <td style="font-size: 8px;">{{ $detail->total }}</td>
+                                <td style="font-size: 8px;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
+                                <td style="font-size: 8px;">{{ number_format($detail->total , 0, ',', '.')}}</td>
                             </tr>
                             @php
                                 // Validasi dan konversi data menjadi numerik
@@ -355,7 +355,7 @@
                         @endforeach
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total Bayar</strong></td>
-                            <td style="font-size: 8px;">{{ $subtotal }}</td>
+                            <td style="font-size: 8px;">{{ number_format($pemesanan->sub_total, 0, ',', '.') }}</td>
                         </tr>
                     </tbody>
                     
