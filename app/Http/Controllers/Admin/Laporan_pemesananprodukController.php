@@ -27,6 +27,7 @@ use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
@@ -34,12 +35,9 @@ class Laporan_pemesananprodukController extends Controller
 {
  
     public function index(Request $request)
-
     {
-        // if (auth()->check() && auth()->user()->menu['laporan pembelian ban']) {
-
             $status = $request->status;
-            $tanggal_awal = $request->tanggal_awal;
+            $tanggal_pemesanan = $request->tanggal_pemesanan;
             $tanggal_akhir = $request->tanggal_akhir;
 
             $inquery = Pemesananproduk::query();
@@ -48,10 +46,10 @@ class Laporan_pemesananprodukController extends Controller
                 $inquery->where('status', $status);
             }
 
-            if ($tanggal_awal && $tanggal_akhir) {
-                $inquery->whereBetween('tanggal_pemesanan', [$tanggal_awal, $tanggal_akhir]);
-            } elseif ($tanggal_awal) {
-                $inquery->where('tanggal_pemesanan', '>=', $tanggal_awal);
+            if ($tanggal_pemesanan && $tanggal_akhir) {
+                $inquery->whereBetween('tanggal_pemesanan', [$tanggal_pemesanan, $tanggal_akhir]);
+            } elseif ($tanggal_pemesanan) {
+                $inquery->where('tanggal_pemesanan', '>=', $tanggal_pemesanan);
             } elseif ($tanggal_akhir) {
                 $inquery->where('tanggal_pemesanan', '<=', $tanggal_akhir);
             } else {
@@ -70,6 +68,33 @@ class Laporan_pemesananprodukController extends Controller
         }
     
 
+        public function print_pemesanan(Request $request)
+        {
+    
+                $status = $request->status;
+                $tanggal_pemesanan = $request->tanggal_pemesanan;
+                $tanggal_akhir = $request->tanggal_akhir;
+    
+                $query = Pemesananproduk::orderBy('id', 'DESC');
+    
+                if ($status == "posting") {
+                    $query->where('status', $status);
+                } else {
+                    $query->where('status', 'posting');
+                }
+    
+                if ($tanggal_pemesanan && $tanggal_akhir) {
+                    $query->whereDate('tanggal_pemesanan', '>=', $tanggal_pemesanan)
+                        ->whereDate('tanggal_pemesanan', '<=', $tanggal_akhir);
+                }
+    
+                $inquery = $query->orderBy('id', 'DESC')->get();
+    
+                $pdf = FacadePdf::loadView('admin.laporan_pemesananproduk.print', compact('inquery'));
+                return $pdf->stream('Laporan_Pembelian_Ban.pdf');
+      
+        }
+        
     public function create()
     {
 

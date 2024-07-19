@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\HargajualController;
 use App\Http\Controllers\Admin\Inquery_pemesananprodukController;
 use App\Http\Controllers\Admin\PemesananprodukController;
 use App\Http\Controllers\Admin\KlasifikasiController as AdminKlasifikasiController;
+use App\Http\Controllers\Admin\Laporan_pemesananprodukController;
 use App\Http\Controllers\Admin\PelangganController;
 use App\Http\Controllers\KategoriDropdownController;
 use App\Http\Controllers\SubcategoryController;
@@ -105,6 +106,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('inquery_pemesananproduk/posting_pemesananproduk/{id}', [\App\Http\Controllers\Admin\Inquery_pemesananprodukController::class, 'posting_pemesananproduk']);
 
     Route::resource('laporan_pemesananproduk', \App\Http\Controllers\Admin\Laporan_pemesananprodukController::class);
+    // Route::get('laporan_pemesananproduk/print', [Laporan_pemesananprodukController::class, 'print'])->name('print');
+    Route::get('print_pemesanan', [\App\Http\Controllers\Admin\Laporan_pemesananprodukController::class, 'print_pemesanan']);
 
     // Route::get('/data', [\App\Http\Controllers\Admin\InputController::class, 'data']); 
     // Route::get('/pelanggan/cetak_pdf/{id}', [\App\Http\Controllers\Admin\PelangganController::class, 'cetak_pdf']);

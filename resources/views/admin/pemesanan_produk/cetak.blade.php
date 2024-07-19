@@ -190,7 +190,7 @@
         <div class="header">
             <div class="text">
                 <h1>PT JAVA BAKERY FACTORY</h1>
-                <p>Cabang : {{ $tokos->nama_toko }}</p>
+                <p>Cabang : {{ $tokos->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
                 <p>{{ $tokos->alamat }}</p>
             </div>
         </div>

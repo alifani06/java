@@ -275,13 +275,13 @@
                                             <td>{{ $item->kode_produk }}</td>
                                             <td>{{ $item->nama_produk }}</td>
                                             <td>
-                                                <span class="member_harga_slw">{{ number_format($item->tokoslawi->first()->member_harga_slw, 0, ',', '.') }}</span>
+                                                <span class="member_harga_slw">{{$item->tokoslawi->first()->member_harga_slw}}</span>
                                             </td>
                                             <td>
                                                 <span class="member_diskon_slw">{{ $item->tokoslawi->first()->member_diskon_slw }}</span>
                                             </td>
                                             <td>
-                                                <span class="non_harga_slw">{{ number_format($item->tokoslawi->first()->non_harga_slw, 0, ',', '.') }}</span>
+                                                <span class="non_harga_slw">{{$item->tokoslawi->first()->non_harga_slw}}</span>
                                             </td>
                                             <td>
                                                 <span class="non_diskon_slw">{{ $item->tokoslawi->first()->non_diskon_slw }}</span>
