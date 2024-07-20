@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Produk;
-use App\Models\Klasifikasi;
-use App\Models\Subklasifikasi;
-use App\Models\Subsub;
+use Illuminate\Support\Facades\DB;
 use App\Models\Pelanggan;
 use App\Models\Hargajual;
 use App\Models\Tokoslawi;
@@ -465,9 +463,20 @@ class PemesananprodukController extends Controller
         }
         
 
-    public function destroy($id)
-    {
-        //
-    }
+        public function destroy($id)
+        {
+            DB::transaction(function () use ($id) {
+                $pemesanan = Pemesananproduk::findOrFail($id);
+        
+                // Menghapus (soft delete) detail pemesanan terkait
+                DetailPemesananProduk::where('pemesananproduk_id', $id)->delete();
+        
+                // Menghapus (soft delete) data pemesanan
+                $pemesanan->delete();
+            });
+        
+            return redirect('admin/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
+        }
+        
 
 }

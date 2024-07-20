@@ -110,13 +110,19 @@
                                             </button>
                                         @endif
                                         @if ($item->status == 'unpost')
-                                      
+                                        <form action="{{ route('pemesanan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="btn btn-danger btn-sm mt-2">
+                                                <i class="fas fa-trash-alt"></i> 
+                                            </button>
+                                        </form>
                                         @endif
                                      
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($item->status == 'unpost')
-                                               
-                                                    <a class="dropdown-item posting-btn"
+                                                <a class="dropdown-item posting-btn"
                                                         data-memo-id="{{ $item->id }}">Posting</a>
                                              
                                                     <a class="dropdown-item"
@@ -124,6 +130,7 @@
                                                 
                                                     <a class="dropdown-item"
                                                         href="{{ url('/admin/pemesanan_produk/' . $item->id ) }}">Show</a>
+                                                      
                                             @endif
                                             @if ($item->status == 'posting')
                                                     <a class="dropdown-item unpost-btn"
@@ -138,6 +145,7 @@
                             @endforeach
                         </tbody>
                     </table>
+
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
                         aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">

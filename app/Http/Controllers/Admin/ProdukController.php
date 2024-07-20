@@ -260,7 +260,10 @@ class ProdukController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $produk = Produk::find($id);
+        $produk->delete();
+
+        return redirect('admin/produk')->with('success', 'Berhasil menghapus data produk');
     }
 
     public function kode()
