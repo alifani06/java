@@ -170,15 +170,15 @@
 </li>
 
 <li
-    class="nav-item {{ request()->is('admin/pemesanan_produk*') 
-    // request()->is('admin/user*') ||
+    class="nav-item {{ request()->is('admin/pemesanan_produk*') ||
+    request()->is('admin/penjualan_produk*') 
     // request()->is('admin/input*')
   
         ? 'menu-open'
         : '' }}">
     <a href="#"
-        class="nav-link {{ request()->is('admin/pemesanan_produk*') 
-        // request()->is('admin/user*') ||
+        class="nav-link {{ request()->is('admin/pemesanan_produk*') ||
+        request()->is('admin/penjualan_produk*') 
         // request()->is('admin/input*')
       
             ? 'active'
@@ -200,19 +200,29 @@
             </a>
         </li>
         {{-- @endif --}}
+
+        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        <li class="nav-item">
+            <a href="{{ url('admin/penjualan_produk') }}"
+                class="nav-link {{ request()->is('admin/penjualan_produk*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">penjualan Produk</p>
+            </a>
+        </li>
+        {{-- @endif --}}
     </ul>
 </li>
 
 <li
-    class="nav-item {{ request()->is('admin/inquery_pemesananproduk*') 
-    // request()->is('admin/user*') ||
+    class="nav-item {{ request()->is('admin/inquery_pemesananproduk*') ||
+    request()->is('admin/inquery_penjualanproduk*') 
     // request()->is('admin/input*')
   
         ? 'menu-open'
         : '' }}">
     <a href="#"
-        class="nav-link {{ request()->is('admin/inquery_pemesananproduk*') 
-        // request()->is('admin/user*') ||
+        class="nav-link {{ request()->is('admin/inquery_pemesananproduk*') ||
+        request()->is('admin/inquery_penjualanproduk*')
         // request()->is('admin/input*')
       
             ? 'active'
@@ -234,19 +244,28 @@
             </a>
         </li>
         {{-- @endif --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        <li class="nav-item">
+            <a href="{{ url('admin/inquery_penjualanproduk') }}"
+                class="nav-link {{ request()->is('admin/inquery_penjualanproduk*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Inquery Penjualan Produk</p>
+            </a>
+        </li>
+        {{-- @endif --}}
     </ul>
 </li>
 
 <li
-    class="nav-item {{ request()->is('admin/laporan_pemesananproduk*') 
-    // request()->is('admin/user*') ||
+    class="nav-item {{ request()->is('admin/laporan_pemesananproduk*') ||
+    request()->is('admin/laporan_penjualanproduk*')
     // request()->is('admin/input*')
   
         ? 'menu-open'
         : '' }}">
     <a href="#"
-        class="nav-link {{ request()->is('admin/laporan_pemesananproduk*') 
-        // request()->is('admin/user*') ||
+        class="nav-link {{ request()->is('admin/laporan_pemesananproduk*') ||
+        request()->is('admin/laporan_penjualanproduk*') 
         // request()->is('admin/input*')
       
             ? 'active'
@@ -265,6 +284,15 @@
                 class="nav-link {{ request()->is('admin/laporan_pemesananproduk*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Laporan Pemesanan Produk</p>
+            </a>
+        </li>
+        {{-- @endif --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        <li class="nav-item">
+            <a href="{{ url('admin/laporan_penjualanproduk') }}"
+                class="nav-link {{ request()->is('admin/laporan_penjualanproduk*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Laporan Penjualan Produk</p>
             </a>
         </li>
         {{-- @endif --}}

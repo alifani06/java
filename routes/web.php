@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\PemesananprodukController;
 use App\Http\Controllers\Admin\KlasifikasiController as AdminKlasifikasiController;
 use App\Http\Controllers\Admin\Laporan_pemesananprodukController;
 use App\Http\Controllers\Admin\PelangganController;
+use App\Http\Controllers\Admin\PenjualanprodukController;
 use App\Http\Controllers\KategoriDropdownController;
 use App\Http\Controllers\SubcategoryController;
 use Illuminate\Support\Facades\Route;
@@ -52,7 +53,6 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::resource('kartu', \App\Http\Controllers\Admin\KartuController::class);
 
-    // Route::resource('addpelanggan', \App\Http\Controllers\Admin\AddpelangganController::class);
     Route::resource('pelanggan', \App\Http\Controllers\Admin\PelangganController::class);
     Route::get('pelanggan/getpelanggan/{id}', [\App\Http\Controllers\Admin\PelangganController::class, 'getpelanggan']);
     Route::get('pelanggan/cetak_pdf/{id}', [PelangganController::class, 'cetak_pdf'])->name('pelanggan.cetak_pdf');
@@ -93,8 +93,6 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/admin/pemesanan_produk/cetak/{id}', [PemesananProdukController::class, 'cetak'])->name('admin.pemesanan_produk.cetak');
     Route::get('/get-customer/{kode}', [PemesananProdukController::class, 'getCustomerByKode']);
     Route::get('pemesanan/pelanggan/{id}', [\App\Http\Controllers\Admin\PemesananprodukController::class, 'pelanggan']);
-    // Route::get('/admin/pemesanan_produk/{id}/cetak-pdf', [PemesananprodukController::class, 'cetakPdf'])->name('admin.pemesanan_produk.cetak-pdf');
-    // Route::get('/admin/pemesanan_produk/{id}/cetak-pdf', [PemesananprodukController::class, 'cetakPdf'])->name('admin.pemesanan_produk.cetak-pdf');
     Route::get('/get-customer-data', [PemesananprodukController::class, 'getCustomerData'])->name('get.customer.data');
     Route::get('/admin/pemesanan_produk/update/{id}', [PemesananprodukController::class, 'edit'])->name('pemesanan_produk.update');
     Route::get('/admin/pemesanan_produk/cetak-pdf{id}', [PemesananprodukController::class, 'cetakPdf'])->name('admin.pemesanan_produk.cetak-pdf');
@@ -107,12 +105,13 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('inquery_pemesananproduk/posting_pemesananproduk/{id}', [\App\Http\Controllers\Admin\Inquery_pemesananprodukController::class, 'posting_pemesananproduk']);
 
     Route::resource('laporan_pemesananproduk', \App\Http\Controllers\Admin\Laporan_pemesananprodukController::class);
-    // Route::get('laporan_pemesananproduk/print', [Laporan_pemesananprodukController::class, 'print'])->name('print');
     Route::get('print_pemesanan', [\App\Http\Controllers\Admin\Laporan_pemesananprodukController::class, 'print_pemesanan']);
 
-    // Route::get('/data', [\App\Http\Controllers\Admin\InputController::class, 'data']); 
-    // Route::get('/pelanggan/cetak_pdf/{id}', [\App\Http\Controllers\Admin\PelangganController::class, 'cetak_pdf']);
-    // Route::get('klasifikasi/addkategori/create', [\App\Http\Controllers\Admin\AddkategoriController::class, 'create']);
+
+    Route::resource('penjualan_produk', \App\Http\Controllers\Admin\PenjualanprodukController::class);
+    Route::get('/admin/penjualan_produk/cetak/{id}', [PenjualanprodukController::class, 'cetak'])->name('admin.penjualan_produk.cetak');
+    Route::get('/admin/penjualan_produk/cetak-pdf{id}', [PenjualanprodukController::class, 'cetakPdf'])->name('admin.penjualan_produk.cetak-pdf');
+
     });
     Route::get('/toko/slawi', [SlawiController::class, 'index']);
     Route::get('/addpelanggan', [AddpelangganController::class, 'create']);
@@ -120,7 +119,6 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/tambah', [AddpelangganController::class, 'getbarang']);
     
 
-    // In web.php
 
 
 

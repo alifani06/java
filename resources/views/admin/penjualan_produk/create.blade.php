@@ -22,11 +22,11 @@
             @endif
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Pemesanan Produk</h1>
+                    <h1 class="m-0">penjualan Produk</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ url('admin/subklasifikasi') }}">Pemesanan Produk</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('admin/subklasifikasi') }}">penjualan Produk</a></li>
                         <li class="breadcrumb-item active">Tambah</li>
                     </ol>
                 </div><!-- /.col -->
@@ -53,7 +53,7 @@
                     @endforeach
                 </div>
             @endif
-            <form action="{{ url('admin/pemesanan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form action="{{ url('admin/penjualan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 {{-- detail pelanggan --}}
                 <div class="card">
@@ -93,7 +93,7 @@
                                 </button> 
                             </div>      
                             <div class="col-md-6 mb-3 "> 
-                                <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" >
+                                <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" onclick="showCategoryModalpemesanan()">
                             </div>     
                         </div>
 
@@ -117,6 +117,82 @@
                         </div>
                     </div>
                 </div>
+                {{-- <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Detail Pelanggan</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-6 mt-2">
+                                        <label class="form-label" for="kategori">Tipe Pelanggan</label>
+                                        <select class="form-control" id="kategori" name="kategori">
+                                            <option value="">- Pilih -</option>
+                                            <option value="member" {{ old('kategori') == 'member' ? 'selected' : null }}>Member</option>
+                                            <option value="nonmember" {{ old('kategori') == 'nonmember' ? 'selected' : null }}>Non Member</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mt-2">
+                                        <label class="form-label" for="toko">Pilih Cabang</label>
+                                        <select class="form-control" id="toko" name="toko">
+                                            <option value="">- Pilih -</option>
+                                            @foreach ($tokos as $toko)
+                                                <option value="{{ $toko->id }}" {{ old('toko') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3 align-items-center" id="namaPelangganRow" style="display: none;">
+                                    <div class="col-md">
+                                        <button class="btn btn-outline-primary mb-3 btn-sm" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
+                                            <i class="fas fa-search" style=""></i>Cari pelanggan
+                                        </button> 
+                                    </div>      
+                                    <div class="col-md-6 mb-3 "> 
+                                        <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" onclick="showCategoryModalpemesanan()">
+                                    </div>     
+                                </div>
+                                <div class="row mb-3 align-items-center" id="kodePelangganRow" hidden>
+                                    <div class="col-md">
+                                        <label for="qrcode_pelanggan">Scan Kode Pelanggan</label>
+                                        <input type="text" class="form-control" id="qrcode_pelanggan" name="qrcode_pelanggan" placeholder="scan kode Pelanggan" onchange="getData(this.value)">
+                                    </div>
+                                </div>
+                                <div class="row mb-3 align-items-center" id="telpRow" hidden>
+                                    <div class="col-md-12 mb-3">
+                                        <label for="telp">No. Telepon</label>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">+62</span>
+                                            </div>
+                                            <input type="number" id="telp" name="telp" class="form-control" placeholder="Masukan nomor telepon" value="{{ old('telp') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3 align-items-center" id="alamatRow" hidden>
+                                    <div class="col-md-12 mb-3">
+                                        <label for="catatan">Alamat</label>
+                                        <textarea placeholder="" type="text" class="form-control" id="alamat" name="alamat">{{ old('alamat') }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Informasi Tambahan</h3>
+                            </div>
+                            <div class="card-body">
+                                <!-- Tambahkan elemen-elemen tambahan yang diperlukan di sini -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 --}}
+
                 <div class="modal fade" id="tableMarketing" data-backdrop="static">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -153,100 +229,6 @@
                                         @endforeach 
                                     </tbody>
                                 </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                {{-- <div class="modal fade" id="tableCatatan" data-backdrop="static">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Catatan Produk</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label for="modalCatatanInput">Catatan:</label>
-                                    <input type="text" class="form-control" id="modalCatatanInput">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" onclick="saveCatatan()">Simpan</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                 --}}
-                 <div class="modal fade" id="tableCatatan" data-backdrop="static">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Catatan Produk</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label for="modalCatatanInput">Catatan:</label>
-                                    <input type="text" class="form-control" id="modalCatatanInput">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" onclick="saveCatatan()">Simpan</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-
-                {{-- detail pengiriman --}}
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Detail Pengiriman</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="col-md-4 mb-3">
-                            <label for="tanggal_kirim">Tanggal Pengiriman:</label>
-                            <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
-                                <input type="text" id="tanggal_kirim" name="tanggal_kirim"
-                                       class="form-control datetimepicker-input"
-                                       data-target="#reservationdatetime"
-                                       value="{{ old('tanggal_kirim') }}"
-                                       placeholder="DD/MM/YYYY HH:mm">
-                                <div class="input-group-append" data-target="#reservationdatetime" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-3 align-items-center">
-                            <div class="col-md-6 -auto" id="" >
-                                <label for="nama_penerima">Nama Penerima </label> <span style="font-size: 10px;">(kosongkan jika sama dengan nama pelanggan)</span>
-                                <input type="text" class="form-control" id="nama_penerima" name="nama_penerima" placeholder="masukan nama Penerima" value="{{ old('nama_penerima') }}">
-                            </div>
-                        </div>
-                        <div class="row  align-items-center" id="telp_penerima" >
-                            <div class="col-md-6">
-                                <label for="telp_penerima">No. Telepon</label> <span style="font-size: 10px;">(kosongkan jika sama dengan Nomer telepon pelanggan)</span>
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">+62</span>
-                                    </div>
-                                    <input type="number" id="telp_penerima" name="telp_penerima" class="form-control" placeholder="Masukan nomor telepon" value="{{ old('telp_penerima') }}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3 align-items-center" id="alamat_penerima" >
-                            <div class="col-md-6 mb-3">
-                                <label for="alamat_penerima">Alamat Penerima</label><span style="font-size: 10px;"> (kosongkan jika sama dengan alamat pelanggan)</span>
-                                <textarea placeholder="Masukan alamat penerima" type="text" class="form-control" id="alamat_penerima" name="alamat_penerima">{{ old('alamat_penerima') }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -357,22 +339,29 @@
                         </div>
                     </div>
                 </div>
-         
                 <div class="card">
                     <div class="card-header">
                         <div class="row">
-                            <div class="col-md-4 mb-3 ml-auto">
-                                <label for="sub_total">Sub Total</label>
-                                <input type="number" class="form-control large-font" id="sub_total" name="sub_total" value="{{ old('sub_total') }}">
+                            <div class="col-md-4 mb-3 ml-auto d-flex align-items-center">
+                                <label for="sub_total" class="mr-2">Sub Total</label>
+                                <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="{{ old('sub_total') }}" readonly>
                             </div>
                         </div>
-                        {{-- <div class="row">
-                            <div class="col-md-4 mb-3 ml-auto">
-                                <label for="sub_total">DP</label>
-                                <input type="number" class="form-control large-font" id="sub_total" name="sub_total" value="{{ old('sub_total') }}">
+                        <div class="row">
+                            <div class="col-md-4 mb-3 ml-auto d-flex align-items-center">
+                                <label for="bayar" class="mr-2">Uang Bayar</label>
+                                <input type="text" class="form-control large-font" id="bayar" name="bayar" value="{{ old('bayar') }}" oninput="formatAndUpdateKembali()">
                             </div>
-                        </div> --}}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3 ml-auto d-flex align-items-center">
+                                <label for="kembali" class="mr-2">Kembali</label>
+                                <input type="text" class="form-control large-font" id="kembali" name="kembali" value="{{ old('kembali') }}" readonly>
+                            </div>
+                        </div>
                     </div>
+                </div>
+                
                 </div>
                 <div class="card">
                     <div class="card-header">
@@ -398,41 +387,6 @@
             </form>
         </div>
     </section>
-
-    {{-- <script>
-function showCategoryModalCatatan(urutan) {
-    // Tampilkan modal
-    $('#tableCatatan').modal('show');
-
-    // Simpan urutan yang dipilih di elemen tersembunyi di modal
-    $('#tableCatatan').data('urutan', urutan);
-}
-
-function saveCatatan() {
-    var urutan = $('#tableCatatan').data('urutan');
-    var catatan = $('#modalCatatanInput').val();
-
-    // Masukkan catatan ke input yang sesuai
-    $('#catatanproduk-' + urutan).val(catatan);
-
-    // Tutup modal
-    $('#tableCatatan').modal('hide');
-}
-    </script>
-    <script>
-        function showCategoryModalCatatan(urutan) {
-            $('#tableCatatan').modal('show');
-            $('#tableCatatan').data('urutan', urutan);
-        }
-    
-        function saveCatatan() {
-            var urutan = $('#tableCatatan').data('urutan');
-            var catatan = $('#modalCatatanInput').val();
-            $('#catatanproduk-' + urutan).val(catatan);
-            $('#tableCatatan').modal('hide');
-        }
-    </script> --}}
-    
 
     <script>
         function showCategoryModalCatatan(urutan) {
@@ -483,23 +437,7 @@ function saveCatatan() {
             $('#tableCatatan').modal('hide');
         }
     </script>
-    
 
-
-{{-- 
-<script>
-    function showCategoryModalCatatan(urutan) {
-        $('#tableCatatan').modal('show');
-        $('#tableCatatan').data('urutan', urutan);
-    }
-
-    function saveCatatan() {
-        var urutan = $('#tableCatatan').data('urutan');
-        var catatan = $('#modalCatatanInput').val();
-        $('#catatan-' + urutan).val(catatan);
-        $('#tableCatatan').modal('hide');
-    }
-</script> --}}
 
    <script>
         $(function () {
@@ -556,21 +494,19 @@ function saveCatatan() {
 
             kategoriSelect.addEventListener('change', function() {
                 if (kategoriSelect.value === 'member') {
-                    // namaPelangganRow.hidden = false;
-                    // namaPelangganRow.readOnly = false;
+                
                     kodePelangganRow.hidden = false;
                     namaPelangganInput.readOnly = true;
                     namaPelangganRow.style.display = 'block';
                     telpRow.hidden = false;
                     alamatRow.hidden = false;
                 } else if (kategoriSelect.value === 'nonmember') {
-                    // namaPelangganRow.hidden = false;
-                    // namaPelangganRow.readonly = false;
+                    
                     kodePelangganRow.hidden = true;
                     namaPelangganInput.readOnly = false;
-                    namaPelangganRow.style.display = 'block';
-                    telpRow.hidden = false;
-                    alamatRow.hidden = false;
+                    namaPelangganRow.style.display = 'none';
+                    telpRow.hidden = true;
+                    alamatRow.hidden = true;
                 } else {
                     namaPelangganRow.style.display = 'none';
                     namaPelangganRow.readonly = true;
@@ -688,16 +624,7 @@ function saveCatatan() {
                 // Setelah menambahkan data dari modal, fokuskan ke input jumlah
             var InputJumlah =  document.getElementById('jumlah-' + urutan).focus();
 
-            // InputJumlah.addEventListener('keydown', function(event){
-            //     if(event.key === 'Enter'){
-
-            //         event.preventDefault();
-                    
-            //         addPesanan();
-
-            //     }
-
-            // });
+       
 
         }
 
@@ -718,13 +645,13 @@ function saveCatatan() {
 
         // Fungsi untuk menghitung subtotal semua barang
         function hitungSubTotal() {
-            var subTotal = 0;
-            $('[id^=total-]').each(function() {
-                var total = parseFloat($(this).val().replace(/[^0-9]/g, '')) || 0;
-                subTotal += total;
-            });
-            $('#sub_total').val(subTotal);
-        }
+        var subTotal = 0;
+        $('[id^=total-]').each(function() {
+            var total = parseFloat($(this).val().replace(/[^0-9]/g, '')) || 0;
+            subTotal += total;
+        });
+        $('#sub_total').val(formatRupiah(subTotal));
+    }
 
         function addPesanan() {
             jumlah_ban = jumlah_ban + 1;
@@ -755,7 +682,6 @@ function saveCatatan() {
 
         function itemPembelian(urutan, key, value = null) {
             var produk_id = '';
-            var catatanproduk = '';
             var kode_produk = '';
             var nama_produk = '';
             var jumlah = '';
@@ -765,7 +691,6 @@ function saveCatatan() {
 
             if (value !== null) {
                 produk_id = value.produk_id;
-                catatanproduk = value.catatanproduk;
                 kode_produk = value.kode_produk;
                 nama_produk = value.nama_produk;
                 jumlah = value.jumlah;
@@ -777,7 +702,6 @@ function saveCatatan() {
             var item_pembelian = '<tr  id="pembelian-' + urutan + '">';
             item_pembelian += '<td style="width: 70px; font-size:14px" class="text-center" id="urutan-' + urutan + '">' + urutan + '</td>'; 
             item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="produk_id-' + urutan + '" name="produk_id[]" value="' + produk_id + '"></div></td>';
-            item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="catatanproduk-' + urutan + '" name="catatanproduk[]"></div></td>';
             item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
             item_pembelian += '<td onclick="showCategoryModalCatatan(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
             item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
@@ -790,21 +714,6 @@ function saveCatatan() {
             $('#tabel-pembelian').append(item_pembelian);
         }
 
-        function formatRupiah(angka, prefix = '') {
-            var number_string = angka.toString().replace(/[^,\d]/g, '');
-            var split = number_string.split(',');
-            var sisa = split[0].length % 3;
-            var rupiah = split[0].substr(0, sisa);
-            var ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-            if (ribuan) {
-                var separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-
-            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-            return prefix + rupiah;
-        }
     </script>
 
 
@@ -866,4 +775,70 @@ function saveCatatan() {
         }
     </script>
     
+    <script>
+        // Fungsi untuk menghapus format Rupiah dan mengembalikan nilai numerik
+        function removeRupiahFormat(value) {
+            return parseFloat(value.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
+        }
+
+        // Format angka menjadi format Rupiah
+        function formatRupiah(value) {
+            let numberString = value.toString().replace(/[^,\d]/g, ''),
+                split = numberString.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                let separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            return split[1] !== undefined ? 'Rp. ' + rupiah + ',' + split[1] : 'Rp. ' + rupiah;
+        }
+
+        // Format input dan update kembalian
+        function formatAndUpdateKembali() {
+            let subTotalElement = document.getElementById('sub_total');
+            let bayarElement = document.getElementById('bayar');
+            let kembaliElement = document.getElementById('kembali');
+
+            // Mengambil nilai sub_total
+            let subTotal = removeRupiahFormat(subTotalElement.value);
+
+            // Format dan ambil nilai bayar
+            let bayarValue = bayarElement.value.replace(/[^0-9,-]/g, '').replace(',', '.');
+            let bayar = parseFloat(bayarValue) || 0; // Jika tidak valid, set 0
+
+            // Format input 'bayar'
+            bayarElement.value = formatRupiah(bayarValue);
+
+            // Hitung kembalian
+            let kembali = bayar - subTotal;
+            
+            // Format hasil kembalian sebagai Rupiah
+            kembaliElement.value = kembali >= 0 ? formatRupiah(kembali) : 'Rp. 0';
+        }
+
+        // Panggil fungsi ini saat halaman dimuat untuk format sub_total yang mungkin sudah ada
+        document.addEventListener('DOMContentLoaded', function() {
+            let subTotalElement = document.getElementById('sub_total');
+            let subTotal = removeRupiahFormat(subTotalElement.value);
+            subTotalElement.value = formatRupiah(subTotal);
+        });
+
+        document.querySelector('form').addEventListener('submit', function(event) {
+            let subTotalElement = document.getElementById('sub_total');
+            let bayarElement = document.getElementById('bayar');
+            let kembaliElement = document.getElementById('kembali');
+
+            // Menghapus format Rupiah dari input sebelum submit
+            subTotalElement.value = removeRupiahFormat(subTotalElement.value);
+            bayarElement.value = removeRupiahFormat(bayarElement.value);
+            kembaliElement.value = removeRupiahFormat(kembaliElement.value);
+
+            // Formulir akan disubmit dengan nilai numerik
+        });
+
+    </script>
 @endsection
