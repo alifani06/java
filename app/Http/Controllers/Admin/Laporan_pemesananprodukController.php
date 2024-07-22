@@ -34,76 +34,383 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 class Laporan_pemesananprodukController extends Controller
 {
  
+
+    // public function index(Request $request)
+    // {
+    //     $status = $request->status;
+    //     $tanggal_pemesanan = $request->tanggal_pemesanan;
+    //     $tanggal_akhir = $request->tanggal_akhir;
+    //     $toko_id = $request->toko_id; // Ambil nilai toko_id dari request
+    
+    //     $inquery = Pemesananproduk::with(['toko', 'detailpemesananproduk.produk.klasifikasi'])
+    //         ->when($status, function ($query, $status) {
+    //             return $query->where('status', $status);
+    //         })
+    //         ->when($tanggal_pemesanan && $tanggal_akhir, function ($query) use ($tanggal_pemesanan, $tanggal_akhir) {
+    //             $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
+    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //             return $query->whereBetween('tanggal_pemesanan', [$tanggal_pemesanan, $tanggal_akhir]);
+    //         })
+    //         ->when($tanggal_pemesanan, function ($query, $tanggal_pemesanan) {
+    //             $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
+    //             return $query->where('tanggal_pemesanan', '>=', $tanggal_pemesanan);
+    //         })
+    //         ->when($tanggal_akhir, function ($query, $tanggal_akhir) {
+    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //             return $query->where('tanggal_pemesanan', '<=', $tanggal_akhir);
+    //         })
+    //         ->when(!$tanggal_pemesanan && !$tanggal_akhir, function ($query) {
+    //             return $query->whereDate('tanggal_pemesanan', Carbon::today());
+    //         })
+    //         ->when($toko_id && $toko_id != '0', function ($query) use ($toko_id) {
+    //             return $query->where('toko_id', $toko_id);
+    //         })
+    //         ->orderBy('id', 'DESC')
+    //         ->get();
+    
+    //     $groupedData = [];
+    //     foreach ($inquery as $item) {
+    //         foreach ($item->detailpemesananproduk as $detail) {
+    //             $key = $detail->kode_produk . '-' . ($detail->produk->klasifikasi->id ?? 'no-klasifikasi');
+    //             if (!isset($groupedData[$key])) {
+    //                 $groupedData[$key] = [
+    //                     'klasifikasi' => $detail->produk->klasifikasi->nama ?? 'Tidak ada',
+    //                     'kode_produk' => $detail->kode_produk,
+    //                     'nama_produk' => $detail->nama_produk,
+    //                     'catatanproduk' => $detail->catatanproduk,
+    //                     'kode_pemesanan' => $item->kode_pemesanan,
+    //                     'benjaran' => 0,
+    //                     'tegal' => 0,
+    //                     'slawi' => 0,
+    //                     'pemalang' => 0,
+    //                     'bumiayu' => 0,
+    //                 ];
+    //             }
+    //             $tokoFieldMap = [
+    //                 1 => 'benjaran',
+    //                 2 => 'tegal',
+    //                 3 => 'slawi',
+    //                 4 => 'pemalang',
+    //                 5 => 'bumiayu',
+    //             ];
+    //             $tokoField = $tokoFieldMap[$item->toko_id] ?? null;
+    //             if ($tokoField) {
+    //                 $groupedData[$key][$tokoField] += $detail->jumlah;
+    //             }
+    //         }
+    //     }
+    
+    //     return view('admin.laporan_pemesananproduk.index', [
+    //         'groupedData' => $groupedData,
+    //         'totalSubtotal' => array_sum(array_column($groupedData, 'subtotal')),
+    //         'toko_id' => $toko_id, // Kirimkan toko_id ke view
+    //     ]);
+    // }
+    // public function index(Request $request)
+    // {
+    //     $status = $request->status;
+    //     $tanggal_pemesanan = $request->tanggal_pemesanan;
+    //     $tanggal_akhir = $request->tanggal_akhir;
+    //     $toko_id = $request->toko_id; // Ambil nilai toko_id dari request
+
+    //     $inquery = Pemesananproduk::with(['toko', 'detailpemesananproduk.produk.klasifikasi'])
+    //         ->when($status, function ($query, $status) {
+    //             return $query->where('status', $status);
+    //         })
+    //         ->when($tanggal_pemesanan && $tanggal_akhir, function ($query) use ($tanggal_pemesanan, $tanggal_akhir) {
+    //             $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
+    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //             return $query->whereBetween('tanggal_pemesanan', [$tanggal_pemesanan, $tanggal_akhir]);
+    //         })
+    //         ->when($tanggal_pemesanan, function ($query, $tanggal_pemesanan) {
+    //             $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
+    //             return $query->where('tanggal_pemesanan', '>=', $tanggal_pemesanan);
+    //         })
+    //         ->when($tanggal_akhir, function ($query, $tanggal_akhir) {
+    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //             return $query->where('tanggal_pemesanan', '<=', $tanggal_akhir);
+    //         })
+    //         ->when(!$tanggal_pemesanan && !$tanggal_akhir, function ($query) {
+    //             return $query->whereDate('tanggal_pemesanan', Carbon::today());
+    //         })
+    //         ->when($toko_id && $toko_id != '0', function ($query) use ($toko_id) {
+    //             return $query->where('toko_id', $toko_id);
+    //         })
+    //         ->orderBy('id', 'DESC')
+    //         ->get();
+
+    //     $groupedData = [];
+    //     foreach ($inquery as $item) {
+    //         foreach ($item->detailpemesananproduk as $detail) {
+    //             $key = $item->kode_pemesanan . '-' . $detail->kode_produk . '-' . ($detail->produk->klasifikasi->id ?? 'no-klasifikasi');
+    //             if (!isset($groupedData[$key])) {
+    //                 $groupedData[$key] = [
+    //                     'klasifikasi' => $detail->produk->klasifikasi->nama ?? 'Tidak ada',
+    //                     'kode_pemesanan' => $item->kode_pemesanan,
+    //                     'kode_produk' => $detail->kode_produk,
+    //                     'nama_produk' => $detail->nama_produk,
+    //                     'catatanproduk' => $detail->catatanproduk,
+    //                     'benjaran' => 0,
+    //                     'tegal' => 0,
+    //                     'slawi' => 0,
+    //                     'pemalang' => 0,
+    //                     'bumiayu' => 0,
+    //                 ];
+    //             }
+    //             $tokoFieldMap = [
+    //                 1 => 'benjaran',
+    //                 2 => 'tegal',
+    //                 3 => 'slawi',
+    //                 4 => 'pemalang',
+    //                 5 => 'bumiayu',
+    //             ];
+    //             $tokoField = $tokoFieldMap[$item->toko_id] ?? null;
+    //             if ($tokoField) {
+    //                 $groupedData[$key][$tokoField] += $detail->jumlah;
+    //             }
+    //         }
+    //     }
+    //     $groupedData = collect($groupedData)->sortBy('nama_produk')->values()->all();
+
+    //     return view('admin.laporan_pemesananproduk.index', [
+    //         'groupedData' => $groupedData,
+    //         'totalSubtotal' => array_sum(array_column($groupedData, 'subtotal')),
+    //         'toko_id' => $toko_id, // Kirimkan toko_id ke view
+    //     ]);
+    // }
     public function index(Request $request)
+    {
+        $status = $request->status;
+        $tanggal_pemesanan = $request->tanggal_pemesanan;
+        $tanggal_akhir = $request->tanggal_akhir;
+        $toko_id = $request->toko_id; // Ambil nilai toko_id dari request
+    
+        $inquery = Pemesananproduk::with(['toko', 'detailpemesananproduk.produk.klasifikasi'])
+            ->when($status, function ($query, $status) {
+                return $query->where('status', $status);
+            })
+            ->when($tanggal_pemesanan && $tanggal_akhir, function ($query) use ($tanggal_pemesanan, $tanggal_akhir) {
+                $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
+                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+                return $query->whereBetween('tanggal_pemesanan', [$tanggal_pemesanan, $tanggal_akhir]);
+            })
+            ->when($tanggal_pemesanan, function ($query, $tanggal_pemesanan) {
+                $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
+                return $query->where('tanggal_pemesanan', '>=', $tanggal_pemesanan);
+            })
+            ->when($tanggal_akhir, function ($query, $tanggal_akhir) {
+                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+                return $query->where('tanggal_pemesanan', '<=', $tanggal_akhir);
+            })
+            ->when(!$tanggal_pemesanan && !$tanggal_akhir, function ($query) {
+                return $query->whereDate('tanggal_pemesanan', Carbon::today());
+            })
+            ->when($toko_id && $toko_id != '0', function ($query) use ($toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->orderBy('id', 'DESC')
+            ->get();
+    
+        $groupedData = [];
+        foreach ($inquery as $item) {
+            foreach ($item->detailpemesananproduk as $detail) {
+                $key = $item->kode_pemesanan . '-' . $detail->kode_produk . '-' . ($detail->produk->klasifikasi->id ?? 'no-klasifikasi');
+                if (!isset($groupedData[$key])) {
+                    $groupedData[$key] = [
+                        'klasifikasi' => $detail->produk->klasifikasi->nama ?? 'Tidak ada',
+                        // 'tanggal_pemesanan' => $item->tanggal_pemesanan,
+                        'tanggal_pemesanan' => Carbon::parse($item->tanggal_pemesanan)->format('d-m-Y H:i'), // Format tanggal dan jam
+                        'kode_pemesanan' => $item->kode_pemesanan,
+                        'kode_produk' => $detail->kode_produk,
+                        'nama_produk' => $detail->nama_produk,
+                        'catatanproduk' => $detail->catatanproduk,
+                        'benjaran' => 0,
+                        'tegal' => 0,
+                        'slawi' => 0,
+                        'pemalang' => 0,
+                        'bumiayu' => 0,
+                    ];
+                }
+                $tokoFieldMap = [
+                    1 => 'benjaran',
+                    2 => 'tegal',
+                    3 => 'slawi',
+                    4 => 'pemalang',
+                    5 => 'bumiayu',
+                ];
+                $tokoField = $tokoFieldMap[$item->toko_id] ?? null;
+                if ($tokoField) {
+                    $groupedData[$key][$tokoField] += $detail->jumlah;
+                }
+            }
+        }
+        $formattedStartDate = $tanggal_pemesanan ? Carbon::parse($tanggal_pemesanan)->format('d-m-Y') : null;
+        // Convert $groupedData to a collection and sort by 'nama_produk'
+        $groupedData = collect($groupedData)->sortBy('nama_produk')->values()->all();
+    
+        return view('admin.laporan_pemesananproduk.index', [
+            'groupedData' => $groupedData,
+            'totalSubtotal' => array_sum(array_column($groupedData, 'subtotal')),
+            'toko_id' => $toko_id, // Kirimkan toko_id ke view
+            'tanggal_pemesanan' => $formattedStartDate,
+        ]);
+    }
+    
+
+
+
+// public function print_pemesanan(Request $request)
+// {
+//     $status = $request->status;
+//     $tanggal_pemesanan = $request->start_date;
+//     $tanggal_akhir = $request->end_date;
+//     $toko_id = $request->toko_id;
+
+//     $inquery = Pemesananproduk::with(['toko', 'detailpemesananproduk.produk.klasifikasi'])
+//         ->when($status, function ($query, $status) {
+//             return $query->where('status', $status);
+//         })
+//         ->when($tanggal_pemesanan && $tanggal_akhir, function ($query) use ($tanggal_pemesanan, $tanggal_akhir) {
+//             $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
+//             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+//             return $query->whereBetween('tanggal_pemesanan', [$tanggal_pemesanan, $tanggal_akhir]);
+//         })
+//         ->when($tanggal_pemesanan, function ($query, $tanggal_pemesanan) {
+//             $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
+//             return $query->where('tanggal_pemesanan', '>=', $tanggal_pemesanan);
+//         })
+//         ->when($tanggal_akhir, function ($query, $tanggal_akhir) {
+//             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+//             return $query->where('tanggal_pemesanan', '<=', $tanggal_akhir);
+//         })
+//         ->when(!$tanggal_pemesanan && !$tanggal_akhir, function ($query) {
+//             return $query->whereDate('tanggal_pemesanan', Carbon::today());
+//         })
+//         ->when($toko_id && $toko_id != '0', function ($query) use ($toko_id) {
+//             return $query->where('toko_id', $toko_id);
+//         })
+//         ->orderBy('id', 'DESC')
+//         ->get();
+
+//     $groupedData = [];
+//     foreach ($inquery as $item) {
+//         foreach ($item->detailpemesananproduk as $detail) {
+//             $key = $detail->kode_produk . '-' . ($detail->produk->klasifikasi->id ?? 'no-klasifikasi');
+//             if (!isset($groupedData[$key])) {
+//                 $groupedData[$key] = [
+//                     'klasifikasi' => $detail->produk->klasifikasi->nama ?? 'Tidak ada',
+//                     'kode_produk' => $detail->kode_produk,
+//                     'nama_produk' => $detail->nama_produk,
+//                     'benjaran' => 0,
+//                     'tegal' => 0,
+//                     'slawi' => 0,
+//                     'pemalang' => 0,
+//                     'bumiayu' => 0,
+//                 ];
+//             }
+//             $tokoFieldMap = [
+//                 1 => 'benjaran',
+//                 2 => 'tegal',
+//                 3 => 'slawi',
+//                 4 => 'pemalang',
+//                 5 => 'bumiayu',
+//             ];
+//             $tokoField = $tokoFieldMap[$item->toko_id] ?? null;
+//             if ($tokoField) {
+//                 $groupedData[$key][$tokoField] += $detail->jumlah;
+//             }
+//         }
+//     }
+//     $formattedStartDate = Carbon::parse($tanggal_pemesanan)->format('d-m-Y');
+//     $formattedEndDate = Carbon::parse($tanggal_akhir)->format('d-m-Y');
+
+//     $pdf = FacadePdf::loadView('admin.laporan_pemesananproduk.print', [
+//         'groupedData' => $groupedData,
+//         'totalSubtotal' => array_sum(array_column($groupedData, 'subtotal')),
+//         'startDate' => $formattedStartDate, // Pastikan parameter ini diteruskan ke view
+//         'endDate' => $formattedEndDate, // Pastikan parameter ini diteruskan ke view
+//     ]);
+//     return $pdf->stream('Laporan_Pembelian_Ban.pdf');
+// }
+public function print_pemesanan(Request $request)
 {
     $status = $request->status;
-    $tanggal_pemesanan = $request->tanggal_pemesanan;
-    $tanggal_akhir = $request->tanggal_akhir;
+    $tanggal_pemesanan = $request->start_date;
+    $tanggal_akhir = $request->end_date;
+    $toko_id = $request->toko_id;
 
-    $inquery = Pemesananproduk::query();
+    $inquery = Pemesananproduk::with(['toko', 'detailpemesananproduk.produk.klasifikasi'])
+        ->when($status, function ($query, $status) {
+            return $query->where('status', $status);
+        })
+        ->when($tanggal_pemesanan && $tanggal_akhir, function ($query) use ($tanggal_pemesanan, $tanggal_akhir) {
+            $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            return $query->whereBetween('tanggal_pemesanan', [$tanggal_pemesanan, $tanggal_akhir]);
+        })
+        ->when($tanggal_pemesanan, function ($query, $tanggal_pemesanan) {
+            $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
+            return $query->where('tanggal_pemesanan', '>=', $tanggal_pemesanan);
+        })
+        ->when($tanggal_akhir, function ($query, $tanggal_akhir) {
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            return $query->where('tanggal_pemesanan', '<=', $tanggal_akhir);
+        })
+        ->when(!$tanggal_pemesanan && !$tanggal_akhir, function ($query) {
+            return $query->whereDate('tanggal_pemesanan', Carbon::today());
+        })
+        ->when($toko_id && $toko_id != '0', function ($query) use ($toko_id) {
+            return $query->where('toko_id', $toko_id);
+        })
+        ->orderBy('id', 'DESC')
+        ->get();
 
-    if ($status) {
-        $inquery->where('status', $status);
-    }
-
-    if ($tanggal_pemesanan && $tanggal_akhir) {
-        $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
-        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-        $inquery->whereBetween('tanggal_pemesanan', [$tanggal_pemesanan, $tanggal_akhir]);
-    } elseif ($tanggal_pemesanan) {
-        $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
-        $inquery->where('tanggal_pemesanan', '>=', $tanggal_pemesanan);
-    } elseif ($tanggal_akhir) {
-        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-        $inquery->where('tanggal_pemesanan', '<=', $tanggal_akhir);
-    } else {
-        // Jika tidak ada filter tanggal hari ini
-        $inquery->whereDate('tanggal_pemesanan', Carbon::today());
-    }
-
-    $inquery->orderBy('id', 'DESC');
-    $inquery = $inquery->get();
-
-    return view('admin.laporan_pemesananproduk.index', compact('inquery'));
-            
-}
-    public function print_pemesanan(Request $request)
-        {
-    
-            $status = $request->status;
-            $tanggal_pemesanan = $request->tanggal_pemesanan;
-            $tanggal_akhir = $request->tanggal_akhir;
-        
-            $inquery = Pemesananproduk::query();
-        
-            if ($status) {
-                $inquery->where('status', $status);
+    $groupedData = [];
+    foreach ($inquery as $item) {
+        foreach ($item->detailpemesananproduk as $detail) {
+            $key = $detail->kode_produk . '-' . ($detail->produk->klasifikasi->id ?? 'no-klasifikasi');
+            if (!isset($groupedData[$key])) {
+                $groupedData[$key] = [
+                    'klasifikasi' => $detail->produk->klasifikasi->nama ?? 'Tidak ada',
+                    'kode_produk' => $detail->kode_produk,
+                    'nama_produk' => $detail->nama_produk,
+                    'benjaran' => 0,
+                    'tegal' => 0,
+                    'slawi' => 0,
+                    'pemalang' => 0,
+                    'bumiayu' => 0,
+                    'subtotal' => 0,
+                ];
             }
-        
-            if ($tanggal_pemesanan && $tanggal_akhir) {
-                $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
-                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-                $inquery->whereBetween('tanggal_pemesanan', [$tanggal_pemesanan, $tanggal_akhir]);
-            } elseif ($tanggal_pemesanan) {
-                $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
-                $inquery->where('tanggal_pemesanan', '>=', $tanggal_pemesanan);
-            } elseif ($tanggal_akhir) {
-                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-                $inquery->where('tanggal_pemesanan', '<=', $tanggal_akhir);
-            } else {
-                // Jika tidak ada filter tanggal hari ini
-                $inquery->whereDate('tanggal_pemesanan', Carbon::today());
+            $tokoFieldMap = [
+                1 => 'benjaran',
+                2 => 'tegal',
+                3 => 'slawi',
+                4 => 'pemalang',
+                5 => 'bumiayu',
+            ];
+            $tokoField = $tokoFieldMap[$item->toko_id] ?? null;
+            if ($tokoField) {
+                $groupedData[$key][$tokoField] += $detail->jumlah;
+                $groupedData[$key]['subtotal'] += $detail->jumlah;
             }
-        
-            $inquery->orderBy('id', 'DESC');
-            $inquery = $inquery->get();
-        
-    
-                $pdf = FacadePdf::loadView('admin.laporan_pemesananproduk.print', compact('inquery'));
-                return $pdf->stream('Laporan_Pembelian_Ban.pdf');
-      
         }
-        
+    }
+    $formattedStartDate = $tanggal_pemesanan ? Carbon::parse($tanggal_pemesanan)->format('d-m-Y') : null;
+    $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : null;
+
+    $pdf = FacadePdf::loadView('admin.laporan_pemesananproduk.print', [
+        'groupedData' => $groupedData,
+        'totalSubtotal' => array_sum(array_column($groupedData, 'subtotal')),
+        'startDate' => $formattedStartDate,
+        'endDate' => $formattedEndDate,
+    ]);
+
+    return $pdf->stream('Laporan_Pembelian_Ban.pdf');
+}
+
+
+    
     public function create()
     {
 

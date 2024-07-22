@@ -45,5 +45,10 @@ class Klasifikasi extends Model
     {
         return $this->hasMany(Barang::class);
     }
+    
+    public function produks()
+    {
+        return $this->hasMany(Produk::class, 'klasifikasi_id');
+    }
 
 }

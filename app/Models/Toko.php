@@ -53,15 +53,19 @@ class Toko extends Model
     }
     public function tokoslawi()
     {
-        return $this->hasMany(Input::class);
+        return $this->hasMany(Tokoslawi::class);
     }
-    public function pemesananproduk()
-    {
-        return $this->hasMany(Input::class);
-    }
+    // public function pemesananproduk()
+    // {
+    //     return $this->hasMany(Input::class);
+    // }
 
     public function subsub()
     {
         return $this->belongsTo(Subsub::class);
+    }
+    public function pemesananproduks()
+    {
+        return $this->hasMany(Pemesananproduk::class, 'toko_id');
     }
 }

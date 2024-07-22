@@ -158,13 +158,13 @@
                                         </div>
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ url('admin/user/' . $user->id) }}" class="btn btn-info btn-sm">
+                                        {{-- <a href="{{ url('admin/user/' . $user->id) }}" class="btn btn-info btn-sm">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         <a href="{{ url('admin/user/' . $user->id . '/edit') }}"
                                             class="btn btn-warning btn-sm">
                                             <i class="fas fa-edit"></i>
-                                        </a>
+                                        </a> --}}
                                         <button type="submit" class="btn btn-danger btn-sm" data-toggle="modal"
                                             data-target="#modal-hapus-{{ $user->id }}">
                                             <i class="fas fa-trash"></i>

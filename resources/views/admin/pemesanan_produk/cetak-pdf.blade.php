@@ -176,7 +176,15 @@
             margin-bottom: 2px;
             border-bottom: 2px solid #0f0e0e;
         }
-
+    .terimakasih p{
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
+        text-align: center;
+        margin-bottom: 5px;
+        margin-top: 10px;
+        font-size: 10px;
+    }
         @media print {
     body {
         font-size: 10px;
@@ -354,7 +362,16 @@
                             @endphp
                         @endforeach
                         <tr>
-                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total Bayar</strong></td>
+                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total </strong></td>
+                            <td style="font-size: 8px;">{{ number_format($pemesanan->sub_total, 0, ',', '.') }}</td>
+                            
+                        </tr>
+                        <tr>
+                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong>DP </strong></td>
+                            <td style="font-size: 8px;">{{ number_format($pemesanan->sub_total, 0, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kekurangan  </strong></td>
                             <td style="font-size: 8px;">{{ number_format($pemesanan->sub_total, 0, ',', '.') }}</td>
                         </tr>
                     </tbody>
@@ -362,7 +379,7 @@
                 </table>
                 @endif
             </div>
-            <div class="signatures">
+            {{-- <div class="signatures">
                 <div class="signature1">
                     <p>Pelanggan</p>
                     <br><br>
@@ -378,12 +395,14 @@
                 <br><br>
                 <p style="text-decoration: underline;">{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</p>
                 </div>
+            </div> --}}
+            <div class="terimakasih">
+                <p>Untuk pemesanan, kritik dan saran Hubungi.082136638003</p>
             </div>
-            <div class="terimakasih" style="text-align: center; font-family: 'Courier'; margin-top: 10px" >
-                <strong>TERIMAKASIH</strong><br>
-                
+            <div class="terimakasihd" style="text-align: center; margin-top: -20px" >
+                <p>Terimakasih atas kunjungannya</p><br> 
             </div>
-            <div class="qr" style="display: flex; justify-content: center; align-items: center; margin-top: 10px; margin-left: 101px">
+            <div class="qr" style="display: flex; justify-content: center; align-items: center; margin-top: -10px; margin-left: 101px">
                 <div style="text-align: center;">
                     {!! DNS2D::getBarcodeHTML($pemesanan->qrcode_pemesanan, 'QRCODE', 1.5, 1.5) !!}
                 </div>

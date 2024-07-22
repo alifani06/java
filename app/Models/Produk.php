@@ -16,6 +16,8 @@ class Produk extends Model
 
     protected $fillable = [
         'kode_produk',
+        'klasifikasi_id',
+        'subklasifikasi_id',
         'nama_produk',
         'satuan',
         'harga',
@@ -81,5 +83,9 @@ class Produk extends Model
     public function detailbarangjadi()
     {
         return $this->hasMany(Detailbarangjadi::class,  'produk_id', 'id');
+    }
+    public function klasifikasi()
+    {
+        return $this->belongsTo(Klasifikasi::class, 'klasifikasi_id');
     }
 }

@@ -188,6 +188,7 @@ class PemesananprodukController extends Controller
                 }
 
                 $produk_id = is_null($request->produk_id[$i]) ? '' : $request->produk_id[$i];
+                $catatanproduk = is_null($request->catatanproduk[$i]) ? '' : $request->catatanproduk[$i];
                 $kode_produk = is_null($request->kode_produk[$i]) ? '' : $request->kode_produk[$i];
                 $nama_produk = is_null($request->nama_produk[$i]) ? '' : $request->nama_produk[$i];
                 $jumlah = is_null($request->jumlah[$i]) ? '' : $request->jumlah[$i];
@@ -198,6 +199,7 @@ class PemesananprodukController extends Controller
                 $data_pembelians->push([
                     'kode_produk' => $kode_produk,
                     'produk_id' => $produk_id,
+                    'catatanproduk' => $catatanproduk,
                     'nama_produk' => $nama_produk,
                     'jumlah' => $jumlah,
                     'diskon' => $diskon,
@@ -223,6 +225,7 @@ class PemesananprodukController extends Controller
             'alamat' => $request->alamat,
             'kategori' => $request->kategori,
             'sub_total' => $request->sub_total,
+            'catatan' => $request->catatan,
             'nama_penerima' => $request->nama_penerima,
             'telp_penerima' => $request->telp_penerima,
             'alamat_penerima' => $request->alamat_penerima,
@@ -243,6 +246,8 @@ class PemesananprodukController extends Controller
             foreach ($data_pembelians as $data_pesanan) {
                 $detailTagihan = Detailpemesananproduk::create([
                     'pemesananproduk_id' => $cetakpdf->id,
+                    'produk_id' => $data_pesanan['produk_id'],
+                    'catatanproduk' => $data_pesanan['catatanproduk'],
                     'kode_produk' => $data_pesanan['kode_produk'],
                     'nama_produk' => $data_pesanan['nama_produk'],
                     'jumlah' => $data_pesanan['jumlah'],
@@ -419,9 +424,9 @@ class PemesananprodukController extends Controller
                 'alamat_penerima' => $request->alamat_penerima,
                 'tanggal_kirim' => $request->tanggal_kirim,
                 'toko_id' => $request->toko,
-                'kode_pemesanan' => $request->kode_pemesanan,
-                'qrcode_pemesanan' => 'https://javabakery.id/pemesanan/' . $this->kode(),
-                'tanggal_pemesanan' => Carbon::now('Asia/Jakarta'),
+                // 'kode_pemesanan' => $request->kode_pemesanan,
+                // 'qrcode_pemesanan' => 'https://javabakery.id/pemesanan/' . $this->kode(),
+                // 'tanggal_pemesanan' => Carbon::now('Asia/Jakarta'),
                 'status' => 'posting',
             ]);
         

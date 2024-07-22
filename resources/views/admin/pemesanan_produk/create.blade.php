@@ -61,9 +61,8 @@
                         <h3 class="card-title">Detail Pelanggan</h3>
                     </div>
                     <div class="card-body">
-                       
                         <div class="row mb-3 align-items-center">
-                            <div class="col-auto mt-2">
+                            <div class="col-md-2 mt-2">
                                 <label class="form-label" for="kategori">Tipe Pelanggan</label>
                                 <select class="form-control" id="kategori" name="kategori">
                                     <option value="">- Pilih -</option>
@@ -71,7 +70,7 @@
                                     <option value="nonmember" {{ old('kategori') == 'nonmember' ? 'selected' : null }}>Non Member</option>
                                 </select>
                             </div>
-                            <div class="col-auto mt-2">
+                            <div class="col-md-2 mt-2">
                                 <label class="form-label" for="toko">Pilih Cabang</label>
                                 <select class="form-control" id="toko" name="toko">
                                     <option value="">- Pilih -</option>
@@ -81,25 +80,25 @@
                                 </select>
                             </div>
                        
-                            <div class="col-auto mt-2" id="kodePelangganRow" hidden>
+                            <div class="col-md-3 mt-2" id="kodePelangganRow" hidden>
                                 <label for="qrcode_pelanggan">Scan Kode Pelanggan</label>
                                 <input type="text" class="form-control" id="qrcode_pelanggan" name="qrcode_pelanggan" placeholder="scan kode Pelanggan" onchange="getData(this.value)">
                             </div>
                         </div>
                     
                         <div class="row mb-3 align-items-center" id="namaPelangganRow" style="display: none;">
-                            <div class="col-md-4">
+                            <div class="col-md">
                                 <button class="btn btn-outline-primary mb-3 btn-sm" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
                                     <i class="fas fa-search" style=""></i>Cari pelanggan
-                                </button>
+                                </button> 
                             </div>      
-                            <div class="col-md-4 mb-3 "> 
+                            <div class="col-md-6 mb-3 "> 
                                 <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" onclick="showCategoryModalpemesanan()">
                             </div>     
                         </div>
 
                         <div class="row  align-items-center" id="telpRow" hidden>
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <label for="telp">No. Telepon</label>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
@@ -111,7 +110,7 @@
                         </div>
                     
                         <div class="row mb-3 align-items-center" id="alamatRow" hidden>
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <label for="catatan">Alamat</label>
                                 <textarea placeholder="" type="text" class="form-control" id="alamat" name="alamat">{{ old('alamat') }}</textarea>
                             </div>
@@ -158,6 +157,54 @@
                         </div>
                     </div>
                 </div>
+
+
+                {{-- <div class="modal fade" id="tableCatatan" data-backdrop="static">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Catatan Produk</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="modalCatatanInput">Catatan:</label>
+                                    <input type="text" class="form-control" id="modalCatatanInput">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" onclick="saveCatatan()">Simpan</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 --}}
+                 <div class="modal fade" id="tableCatatan" data-backdrop="static">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Catatan Produk</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="modalCatatanInput">Catatan:</label>
+                                    <input type="text" class="form-control" id="modalCatatanInput">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" onclick="saveCatatan()">Simpan</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
 
                 {{-- detail pengiriman --}}
                 <div class="card">
@@ -264,14 +311,17 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($produks as $item)
-                                        <tr class="pilih-btn" data-id="{{ $item->id }}"
+                                        <tr class="pilih-btn" 
+                                            data-id="{{ $item->id }}"
                                             data-kode="{{ $item->kode_produk }}"
+                                            data-kode="{{ $item->catatanproduk }}"
                                             data-nama="{{ $item->nama_produk }}"
                                             data-member="{{ $item->tokoslawi->first()->member_harga_slw }}"
                                             data-diskonmember="{{ $item->tokoslawi->first()->member_diskon_slw }}"
                                             data-nonmember="{{ $item->tokoslawi->first()->non_harga_slw }}"
                                             data-diskonnonmember="{{ $item->tokoslawi->first()->non_diskon_slw }}">>
                                             <td class="text-center">{{ $loop->iteration }}</td>
+                                            {{-- <td>{{ $item->id }}</td> --}}
                                             <td>{{ $item->kode_produk }}</td>
                                             <td>{{ $item->nama_produk }}</td>
                                             <td>
@@ -290,6 +340,7 @@
                                                 <button type="button" class="btn btn-primary btn-sm pilih-btn"
                                                     data-id="{{ $item->id }}"
                                                     data-kode="{{ $item->kode_produk }}"
+                                                    data-kode="{{ $item->catatanproduk }}"
                                                     data-nama="{{ $item->nama_produk }}"
                                                     data-member="{{ $item->tokoslawi->first()->member_harga_slw }}"
                                                     data-diskonmember="{{ $item->tokoslawi->first()->member_diskon_slw }}"
@@ -312,20 +363,29 @@
                         <div class="row">
                             <div class="col-md-4 mb-3 ml-auto">
                                 <label for="sub_total">Sub Total</label>
-                                <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="{{ old('sub_total') }}">
+                                <input type="number" class="form-control large-font" id="sub_total" name="sub_total" value="{{ old('sub_total') }}">
                             </div>
                         </div>
+                        {{-- <div class="row">
+                            <div class="col-md-4 mb-3 ml-auto">
+                                <label for="sub_total">DP</label>
+                                <input type="number" class="form-control large-font" id="sub_total" name="sub_total" value="{{ old('sub_total') }}">
+                            </div>
+                        </div> --}}
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-header">
                         <div class="row">
-
+                            <div class="col-md-6 mb-3">
+                                <label for="catatan">Catatan</label>
+                                <textarea placeholder="" type="text" class="form-control" id="catatan" name="catatan">{{ old('catatan') }}</textarea>
+                            </div>
                             <div class="col-md-5 mb-3">
                                 <label for="catatan">Bagian Input :</label>
                                 <input type="text" class="form-control" readonly value="{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}">
-                            </div>
-                        </div>
+                            </div> 
+                        </div>     
                     </div>
                 </div>
                 <div class="card-footer text-right mt-3">
@@ -338,6 +398,108 @@
             </form>
         </div>
     </section>
+
+    {{-- <script>
+function showCategoryModalCatatan(urutan) {
+    // Tampilkan modal
+    $('#tableCatatan').modal('show');
+
+    // Simpan urutan yang dipilih di elemen tersembunyi di modal
+    $('#tableCatatan').data('urutan', urutan);
+}
+
+function saveCatatan() {
+    var urutan = $('#tableCatatan').data('urutan');
+    var catatan = $('#modalCatatanInput').val();
+
+    // Masukkan catatan ke input yang sesuai
+    $('#catatanproduk-' + urutan).val(catatan);
+
+    // Tutup modal
+    $('#tableCatatan').modal('hide');
+}
+    </script>
+    <script>
+        function showCategoryModalCatatan(urutan) {
+            $('#tableCatatan').modal('show');
+            $('#tableCatatan').data('urutan', urutan);
+        }
+    
+        function saveCatatan() {
+            var urutan = $('#tableCatatan').data('urutan');
+            var catatan = $('#modalCatatanInput').val();
+            $('#catatanproduk-' + urutan).val(catatan);
+            $('#tableCatatan').modal('hide');
+        }
+    </script> --}}
+    
+
+    <script>
+        function showCategoryModalCatatan(urutan) {
+            // Tampilkan modal
+            $('#tableCatatan').modal('show');
+    
+            // Simpan urutan yang dipilih di elemen tersembunyi di modal
+            $('#tableCatatan').data('urutan', urutan);
+    
+            // Kosongkan input catatan di modal
+            $('#modalCatatanInput').val('');
+        }
+    
+        function saveCatatan() {
+            var urutan = $('#tableCatatan').data('urutan');
+            var catatan = $('#modalCatatanInput').val();
+    
+            // Masukkan catatan ke input yang sesuai
+            $('#catatanproduk-' + urutan).val(catatan);
+    
+            // Tutup modal
+            $('#tableCatatan').modal('hide');
+        }
+    </script>
+    
+    <script>
+        $('#tableCatatan').on('show.bs.modal', function (event) {
+            var urutan = $(event.relatedTarget).data('urutan');
+            $(this).data('urutan', urutan);
+    
+            // Kosongkan input catatan di modal
+            $('#modalCatatanInput').val('');
+        });
+    
+        function showCategoryModalCatatan(urutan) {
+            // Tampilkan modal dan set data urutan
+            $('#tableCatatan').data('urutan', urutan).modal('show');
+        }
+    
+        function saveCatatan() {
+            var urutan = $('#tableCatatan').data('urutan');
+            var catatan = $('#modalCatatanInput').val();
+    
+            // Masukkan catatan ke input yang sesuai
+            $('#catatanproduk-' + urutan).val(catatan);
+    
+            // Tutup modal
+            $('#tableCatatan').modal('hide');
+        }
+    </script>
+    
+
+
+{{-- 
+<script>
+    function showCategoryModalCatatan(urutan) {
+        $('#tableCatatan').modal('show');
+        $('#tableCatatan').data('urutan', urutan);
+    }
+
+    function saveCatatan() {
+        var urutan = $('#tableCatatan').data('urutan');
+        var catatan = $('#modalCatatanInput').val();
+        $('#catatan-' + urutan).val(catatan);
+        $('#tableCatatan').modal('hide');
+    }
+</script> --}}
 
    <script>
         $(function () {
@@ -490,7 +652,7 @@
             // Simpan urutan untuk menyimpan data ke baris yang sesuai
             $('#tableProduk').attr('data-urutan', urutan);
         }
-
+       
         // Event listener for pilih-btn
         $(document).on('click', '.pilih-btn', function() {
             var id = $(this).data('id');
@@ -593,6 +755,7 @@
 
         function itemPembelian(urutan, key, value = null) {
             var produk_id = '';
+            var catatanproduk = '';
             var kode_produk = '';
             var nama_produk = '';
             var jumlah = '';
@@ -602,6 +765,7 @@
 
             if (value !== null) {
                 produk_id = value.produk_id;
+                catatanproduk = value.catatanproduk;
                 kode_produk = value.kode_produk;
                 nama_produk = value.nama_produk;
                 jumlah = value.jumlah;
@@ -611,10 +775,11 @@
             }
 
             var item_pembelian = '<tr  id="pembelian-' + urutan + '">';
-            item_pembelian += '<td style="width: 70px; font-size:14px" class="text-center" id="urutan-' + urutan + '">' + urutan + '</td>';
+            item_pembelian += '<td style="width: 70px; font-size:14px" class="text-center" id="urutan-' + urutan + '">' + urutan + '</td>'; 
             item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="produk_id-' + urutan + '" name="produk_id[]" value="' + produk_id + '"></div></td>';
+            item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="catatanproduk-' + urutan + '" name="catatanproduk[]"></div></td>';
             item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
-            item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
+            item_pembelian += '<td onclick="showCategoryModalCatatan(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
             item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
             item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')" style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" readonly id="diskon-' + urutan + '" name="diskon[]" value="' + diskon + '" ></div></td>';
             item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="harga-' + urutan + '" name="harga[]" value="' + harga + '"></div></td>';

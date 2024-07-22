@@ -92,61 +92,88 @@
 
 <body>
     <div class="container">
-        <h1>PEMESANAN PRODUK</h1>
+        <h1>LAPORAN PEMESANAN PRODUK</h1>
     </div>
     <div class="text">
-        @php
-            $startDate = request()->query('tanggal_pemesanan');
-            $endDate = request()->query('tanggal_akhir');
-        @endphp
         @if ($startDate && $endDate)
-            <p>Periode:{{ $startDate }} s/d {{ $endDate }}</p>
+            <p>Periode: {{ $startDate }} s/d {{ $endDate }}</p>
         @else
             <p>Periode: Tidak ada tanggal awal dan akhir yang diteruskan.</p>
         @endif
     </div>
+
     <table>
-        <tr>
-            <th>Kode Pemesanan</th>
-            <th>Tanggal Pemesanan</th>
-            <th>Nama Pelanggan</th>
-            <th>Produk</th>
-            <th>Subtotal</th>
-        </tr>
-    
-        @foreach ($inquery as $item)
+        <thead>
             <tr>
-                <td>{{ $item->kode_pemesanan }}</td>
-                <td>{{ $item->tanggal_pemesanan }}</td>
-                <td>{{ $item->nama_pelanggan }}</td>
-                <td>
-                    @if ($item->detailpemesananproduk->isNotEmpty())
-                        {{ $item->detailpemesananproduk->pluck('nama_produk')->implode(', ') }}
-                    @else
-                        tidak ada
-                    @endif
-                </td>
-                <td>{{ $item->sub_total }}</td>
+                <th>No</th>
+                <th>Divisi</th>
+                <th>Kode Produk</th>
+                <th>Nama Produk</th>
+                <th>Benjaran</th>
+                <th>Tegal</th>
+                <th>Slawi</th>
+                <th>Pemalang</th>
+                <th>Bumiayu</th>
+                <th>Total</th>
             </tr>
-        @endforeach
+        </thead>
+        <tbody>
+            @php
+                $no = 1;
+                $currentKodeProduk = null;
+                $currentTotal = 0;
+            @endphp
+            @foreach ($groupedData as $detail)
+                @if ($currentKodeProduk && $currentKodeProduk != $detail['kode_produk'])
+                    <tr>
+                        <td colspan="9" class="text-right"><strong>Total untuk Produk: {{ $currentKodeProduk }}</strong></td>
+                        <td>{{ number_format($currentTotal, 0, ',', '.') }}</td>
+                    </tr>
+                    @php
+                        $currentTotal = 0;
+                    @endphp
+                @endif
+
+                <tr>
+                    <td>{{ $no++ }}</td>
+                    <td>{{ $detail['klasifikasi'] }}</td>
+                    <td>{{ $detail['kode_produk'] }}</td>
+                    <td>{{ $detail['nama_produk'] }}</td>
+                    <td>{{ $detail['benjaran'] }}</td>
+                    <td>{{ $detail['tegal'] }}</td>
+                    <td>{{ $detail['slawi'] }}</td>
+                    <td>{{ $detail['pemalang'] }}</td>
+                    <td>{{ $detail['bumiayu'] }}</td>
+                    <td>{{ number_format($detail['subtotal'], 0, ',', '.') }}</td>
+                </tr>
+
+                @php
+                    $currentKodeProduk = $detail['kode_produk'];
+                    $currentTotal += $detail['subtotal'];
+                @endphp
+            @endforeach
+
+            @if ($currentKodeProduk)
+                <tr>
+                    <td colspan="9" class="text-right"><strong>Total untuk Produk: {{ $currentKodeProduk }}</strong></td>
+                    <td>{{ number_format($currentTotal, 0, ',', '.') }}</td>
+                </tr>
+            @endif
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="9" class="text-right"><strong>Total Keseluruhan</strong></td>
+                <td>{{ number_format($totalSubtotal, 0, ',', '.') }}</td>
+            </tr>
+        </tfoot>
     </table>
-
-    @php
-    // Filter out non-numeric values and handle nulls
-    $total = $inquery->filter(function($item) {
-        return is_numeric($item->sub_total);
-    })->sum(function($item) {
-        return (float) $item->sub_total;
-    });
-@endphp
-
 
     <div class="signature">
         <table>
-            <tr>
+            {{-- <tr>
                 <td class="label">Total :</td>
                 <td class="value">Rp. {{ number_format($total, 2) }}</td>
-            </tr>
+            </tr> --}}
             <!-- Tambahkan baris-baris lainnya jika diperlukan -->
             <tr>
                 <td class="separator" colspan="2">______________________________</td>

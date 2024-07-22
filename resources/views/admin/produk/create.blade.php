@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Tambah produk')
+@section('title', 'Tambah Produk')
 
 @section('content')
     <!-- Content Header (Page header) -->
@@ -36,7 +36,7 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Tambah produk</h3>
+                    <h3 class="card-title">Tambah Produk</h3>
                 </div>
                 <!-- /.card-header -->
                 <form action="{{ url('admin/produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
@@ -48,49 +48,45 @@
                                 <div class="d-flex align-items-center">
                                     <input type="text" class="form-control" id="nama_produk" name="nama_produk"
                                         placeholder="Masukan nama produk" value="{{ old('nama_produk') }}">
-                                    <button class="btn btn-primary ml-2" type="button" onclick="showCategoryModalmarketing(this.value)">
+                                    <button class="btn btn-primary ml-2" type="button" onclick="showCategoryModalmarketing()">
                                         <i class="fas fa-search"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
 
-                         <!-- Tambahkan input field tersembunyi untuk menyimpan subsub_id -->
-                         <input type="hidden" id="subsub_id" name="subsub_id">
-                         <input type="hidden" id="nama_input" name="nama_input">
-                     <div class="row">
-                        <div class="col mb-3">
-                            <label for="nama">Harga</label>
-                            <input type="number" class="form-control" id="harga" name="harga"
-                                placeholder="Masukan harga" value="{{ old('harga') }}">
-                        </div>
-                        <div class="col mb-3" hidden>
-                            <label for="nama">Diskon</label>
-                            <input type="number" class="form-control" id="diskon" name="diskon"
-                                placeholder="Masukan diskon" value="0">
-                        </div>
+                        <!-- Tambahkan input field tersembunyi untuk menyimpan subsub_id dan subklasifikasi_id -->
+                        <input type="hidden" id="subsub_id" name="subsub_id">
+                        <input type="hidden" id="subklasifikasi_id" name="subklasifikasi_id"> 
+                        <input type="hidden" id="klasifikasi_id" name="klasifikasi_id"> 
+                        <input type="hidden" id="nama_input" name="nama_input">
 
-                        <div class="col mb-3">
-                            <label class="form-label" for="satuan">Pilih Satuan</label>
-                            <select class="form-control" id="satuan" name="satuan">
-                                <option value="">- Pilih -</option>
-                                <option value="gr" {{ old('satuan') == 'gr' ? 'selected' : null }}>
-                                    gr</option>
-                                <option value="kg" {{ old('satuan') == 'kg' ? 'selected' : null }}>
-                                    kg</option>
-                                <option value="pcs" {{ old('satuan') == 'pcs' ? 'selected' : null }}>
-                                    pcs</option>
-                            </select>
+                        <div class="row">
+                            <div class="col mb-3">
+                                <label for="harga">Harga</label>
+                                <input type="number" class="form-control" id="harga" name="harga"
+                                    placeholder="Masukan harga" value="{{ old('harga') }}">
+                            </div>
+                            <div class="col mb-3" hidden>
+                                <label for="diskon">Diskon</label>
+                                <input type="number" class="form-control" id="diskon" name="diskon"
+                                    placeholder="Masukan diskon" value="0">
+                            </div>
+                            <div class="col mb-3">
+                                <label for="satuan">Pilih Satuan</label>
+                                <select class="form-control" id="satuan" name="satuan">
+                                    <option value="">- Pilih -</option>
+                                    <option value="gr" {{ old('satuan') == 'gr' ? 'selected' : '' }}>gr</option>
+                                    <option value="kg" {{ old('satuan') == 'kg' ? 'selected' : '' }}>kg</option>
+                                    <option value="pcs" {{ old('satuan') == 'pcs' ? 'selected' : '' }}>pcs</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                       
 
                         <div class="form-group">
-                            <label for="gambar">Gambar <small>(Kosongkan saja jika tidak
-                                    ingin menambahkan)</small></label>
+                            <label for="gambar">Gambar <small>(Kosongkan saja jika tidak ingin menambahkan)</small></label>
                             <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="gambar" name="gambar"
-                                    accept="image/*">
+                                <input type="file" class="custom-file-input" id="gambar" name="gambar" accept="image/*">
                                 <label class="custom-file-label" for="gambar">Masukkan gambar produk</label>
                             </div>
                         </div>
@@ -161,17 +157,15 @@
                                                                                     </thead>
                                                                                     <tbody>
                                                                                         @foreach ($memo->subsub as $itemIndex => $item)
-                                                                                        <tr>
-                                                                                            <td>{{ $item->nama }}</td>
-                                                                                            <td>
-                                                                                                <button type="button" class="btn btn-primary btn-sm"
-                                                                                                    onclick="getSelectedDatamarketing('{{ $item->id }}', '{{ $item->nama }}')">
-                                                                                                    <i class="fas fa-plus"></i>
-                                                                                                </button>
-                                                                                            </td>
-                                                                                        </tr>
+                                                                                            <tr>
+                                                                                                <td>{{ $item->nama }}</td>
+                                                                                                <td>
+                                                                                                    <button type="button" class="btn btn-primary btn-sm" onclick="getSelectedDatamarketing('{{ $item->id }}', '{{ $memo->id }}', '{{ $faktur->id }}', '{{ $item->nama }}')">
+                                                                                                        <i class="fas fa-plus"></i>
+                                                                                                    </button>
+                                                                                                </td>
+                                                                                            </tr>
                                                                                         @endforeach
-                                                                                        
                                                                                     </tbody>
                                                                                 </table>
                                                                             </div>
@@ -190,66 +184,67 @@
                         </div>
                     </div>
                 </div>   
-
             </div>
         </div>
-</section>
+    </section>
 
-<script>
-    $(document).ready(function() {
-        // Tambahkan event listener pada tombol "Simpan"
-        $('#btnSimpan').click(function() {
-            // Sembunyikan tombol "Simpan" dan "Reset", serta tampilkan elemen loading
-            $(this).hide();
-            $('#btnReset').hide();
-            $('#loading').show();
+    <script>
+        $(document).ready(function() {
+            // Tambahkan event listener pada tombol "Simpan"
+            $('#btnSimpan').click(function() {
+                // Sembunyikan tombol "Simpan" dan "Reset", serta tampilkan elemen loading
+                $(this).hide();
+                $('#btnReset').hide();
+                $('#loading').show();
 
-            // Lakukan pengiriman formulir
-            $('form').submit();
+                // Lakukan pengiriman formulir
+                $('form').submit();
+            });
         });
-    });
-</script>
+    </script>
 
-<script>
-    $(document).ready(function() {
-        $('#klasifikasi_id').on('change', function() {
-            var klasifikasiID = $(this).val();
-            if (klasifikasiID) {
-                $.ajax({
-                    url: "{{ url('admin/klasifikasi/get_subklasifikasi') }}" + '/' + klasifikasiID,
-                    type: "GET",
-                    dataType: "json",
-                    success: function(data) {
-                        $('#subklasifikasi_id').empty();
-                        $('#subklasifikasi_id').append('<option value="">- Pilih -</option>');
-                        $.each(data, function(key, value) {
-                            $('#subklasifikasi_id').append('<option value="' + value.id + '">' + value.nama + '</option>');
-                        });
-                    }
-                });
-            } else {
-                $('#subklasifikasi_id').empty();
-                $('#subklasifikasi_id').append('<option value="">- Pilih -</option>');
-            }
+    <script>
+        $(document).ready(function() {
+            $('#klasifikasi_id').on('change', function() {
+                var klasifikasiID = $(this).val();
+                if (klasifikasiID) {
+                    $.ajax({
+                        url: "{{ url('admin/klasifikasi/get_subklasifikasi') }}" + '/' + klasifikasiID,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            $('#subklasifikasi_id').empty();
+                            $('#subklasifikasi_id').append('<option value="">- Pilih -</option>');
+                            $.each(data, function(key, value) {
+                                $('#subklasifikasi_id').append('<option value="' + value.id + '">' + value.nama + '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('#subklasifikasi_id').empty();
+                    $('#subklasifikasi_id').append('<option value="">- Pilih -</option>');
+                }
+            });
         });
-    });
-</script>
+    </script>
 
-<script>
-function showCategoryModalmarketing(selectedCategory) {
-    $('#tableMarketing').modal('show');
-}
+    <script>
+        function showCategoryModalmarketing() {
+            $('#tableMarketing').modal('show');
+        }
 
-function getSelectedDatamarketing(subsub_id, nama) {
-    // Mengatur nilai pada input field tersembunyi
-    document.getElementById('subsub_id').value = subsub_id;
-    document.getElementById('nama_input').value = nama;
+        function getSelectedDatamarketing(subsub_id, subklasifikasi_id,klasifikasi_id, nama) {
+            // Mengatur nilai pada input field tersembunyi
+            document.getElementById('subsub_id').value = subsub_id;
+            document.getElementById('subklasifikasi_id').value = subklasifikasi_id;
+            document.getElementById('klasifikasi_id').value = klasifikasi_id;
+            document.getElementById('nama_input').value = nama;
 
-    // Memperbarui field form yang terlihat
-    document.getElementById('nama_produk').value = nama;
+            // Memperbarui field form yang terlihat
+            document.getElementById('nama_produk').value = nama;
 
-    // Menutup modal
-    $('#tableMarketing').modal('hide');
-}
-</script>
+            // Menutup modal
+            $('#tableMarketing').modal('hide');
+        }
+    </script>
 @endsection

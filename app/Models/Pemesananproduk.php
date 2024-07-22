@@ -27,6 +27,7 @@ class Pemesananproduk extends Model
         'qrcode_pemesanan',
         'tanggal_pemesanan',
         'cabang',
+        'catatan',
         'nama_penerima',
         'telp_penerima',
         'alamat_penerima',

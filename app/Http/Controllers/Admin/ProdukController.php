@@ -66,12 +66,15 @@ class ProdukController extends Controller
             $request->all(),
             [
                 'nama_produk' => 'required',
+                'klasifikasi_id' => 'required',
+                'subklasifikasi_id' => 'required',
                 'satuan' => 'required',
                 'harga' => 'required|numeric',
                 'gambar' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ],
             [
                 'nama_produk.required' => 'Masukan nama produk',
+                'klasifikasi_id.required' => 'Masukan nama produk',
                 'satuan.required' => 'Masukkan satuan',
                 'harga.required' => 'Masukkan harga',
                 'gambar.image' => 'Gambar yang dimasukan salah!',
@@ -100,22 +103,9 @@ class ProdukController extends Controller
                 'kode_produk' => $kode,
                 'qrcode_produk' => 'https://javabakery.id/produk/' . $kode,
                 'tanggal' => Carbon::now('Asia/Jakarta'),
-                // 'harga' =>$produk->subsub_id = $request->subsub_id,
             ]
         ));
-    
-        $hargaJual = HargaJual::create([
-            'produk_id' => $produk->id,
-            'member_harga_slw' => $request->harga,
-            'non_harga_slw' => $request->harga,
-            'member_diskon_slw' => 0,
-            'non_diskon_slw' => 0,
-            // 'member_harga_bnjr' => $request->harga,
-            // 'non_harga_bnjr' => $request->harga,
-            // 'diskon_bnjr' => 0,
-            // 'hargajual' => $request->harga,
-           
-        ]);
+  
     
         TokoSlawi::create([
             'produk_id' => $produk->id,

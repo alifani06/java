@@ -18,6 +18,8 @@ class Detailpemesananproduk extends Model
     
     protected $fillable = [
         'pemesananproduk_id',
+        'produk_id',
+        'catatanproduk',
         'kode_produk',
         'nama_produk',
         'jumlah',

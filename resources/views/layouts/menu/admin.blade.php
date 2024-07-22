@@ -108,13 +108,13 @@
         @endif
 
         {{-- @if (auth()->check() && auth()->user()->menu['barang']) --}}
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a href="{{ url('admin/barang') }}"
                 class="nav-link {{ request()->is('admin/barang*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Data Barang</p>
             </a>
-        </li>
+        </li> --}}
         {{-- @endif --}}
         {{-- @if (auth()->check() && auth()->user()->menu['produk']) --}}
         <li class="nav-item">

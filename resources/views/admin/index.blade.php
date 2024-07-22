@@ -3,6 +3,13 @@
 @section('title', 'Dashboard')
 
 @section('content')
+
+<style>
+.body{
+text-transform: uppercase;
+}
+</style>
+
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
@@ -25,8 +32,8 @@
             <div class="container-fluid">
                 <div class="card">
                     <div class="card-body text-center p-5">
-                        <h3>Selamat Datang <strong>{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</strong></h3>
-                        <h6>Anda login sebagai {{ ucfirst(auth()->user()->karyawan->departemen->nama) }}</h6>
+                        <h3 class="text-uppercase">Selamat Datang <strong>{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</strong></h3>
+                        <h6 class="text-uppercase" >Anda login sebagai {{ ucfirst(auth()->user()->karyawan->departemen->nama) }}</h6>
                     </div>
                 </div>
                 <!-- Main row -->

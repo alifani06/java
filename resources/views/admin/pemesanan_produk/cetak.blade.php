@@ -272,7 +272,7 @@
                 </table>
                 @endif
             </div>
-            <div class="signatures">
+            {{-- <div class="signatures">
                 <div class="signature1">
                     <p>Pelanggan</p>
                     <br><br>
@@ -288,7 +288,7 @@
                 <br><br>
                 <p style="text-decoration: underline;">{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</p>
                 </div>
-            </div>
+            </div> --}}
             <div class="terimakasih" style="text-align: center; font-family: 'Courier'; margin-top: 10px" >
                 <strong>TERIMAKASIH</strong><br>
                 
