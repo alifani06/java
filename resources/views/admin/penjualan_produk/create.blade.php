@@ -3,7 +3,24 @@
 @section('title', 'Pemesanan Produk')
 
 @section('content')
+<style>
+    .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
 
+.form-group label {
+    margin-right: 1rem;
+    white-space: nowrap; /* Prevents label text from wrapping */
+    width: 150px; /* Adjust based on your design */
+}
+
+.form-group input {
+    flex: 1; /* Allows input to fill the remaining space */
+}
+
+</style>
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
@@ -59,7 +76,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="float-right">
-                            <a href="{{ route('admin.penjualan_produk.pelunasan') }}"  class="btn btn-primary btn-sm">Pelunasan
+                            <a href="{{ route('admin.penjualan_produk.pelunasan') }}"  class="btn btn-primary btn-sm">Pelunasan Pemesanan
                                 {{-- <i class="fas fa-plus"></i>Pelunasan  --}}
                             </a>
                         </div>
@@ -384,29 +401,112 @@
                         </div>
                     </div>
                 </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
                         <div class="row">
-                            <div class="col-md-4 mb-3 ml-auto d-flex align-items-center">
+                            <div class="col mb-3 ml-auto d-flex align-items-center">
                                 <label for="sub_total" class="mr-2">Sub Total</label>
                                 <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="{{ old('sub_total') }}" readonly>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4 mb-3 ml-auto d-flex align-items-center">
+                            <div class="col mb-3 ml-auto d-flex align-items-center">
                                 <label for="bayar" class="mr-2">Uang Bayar</label>
                                 <input type="text" class="form-control large-font" id="bayar" name="bayar" value="{{ old('bayar') }}" oninput="formatAndUpdateKembali()">
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4 mb-3 ml-auto d-flex align-items-center">
+                            <div class="col mb-3 ml-auto d-flex align-items-center">
                                 <label for="kembali" class="mr-2">Kembali</label>
                                 <input type="text" class="form-control large-font" id="kembali" name="kembali" value="{{ old('kembali') }}" readonly>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <label class="form-label" for="metodebayar">Metode Pembayaran</label>
+                        <select class="form-control" id="metodebayar" name="metodebayar" onchange="showPaymentFields()">
+                            <option value="">- Pilih -</option>
+                            <option value="gobiz">GO-BIZ</option>
+                            <option value="mesinedc">MESIN EDC</option>
+                            <option value="transfer">TRANSFER</option>
+                            <option value="qris">QRIS</option>
+                            <option value="tunai">TUNAI</option>
+                            <option value="voucher">VOUCHER</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="payment-fields">
+                    <!-- Form untuk GO-BIZ -->
+                    <div id="gobiz-fields" class="payment-field" hidden>
+                        <div class="form-group">
+                            <label for="gobiz_code">No GoFood</label>
+                            <input type="text" id="gobiz_code" name="gobiz_code" class="form-control" placeholder="Masukkan kode GO-BIZ">
+                        </div>
+                        <div class="form-group">
+                            <label for="gobiz_fee">Fee (20%)</label>
+                            <input type="text" id="gobiz_fee" name="gobiz_fee" class="form-control" placeholder="Masukkan fee" readonly>
+                        </div>
+                    </div>
                 
+                    <!-- Form untuk MESIN EDC -->
+                    <div id="mesinedc-fields" class="payment-field" hidden>
+                        <div class="form-group">
+                            <label for="struk_edc">No Struk EDC</label>
+                            <input type="text" id="struk_edc" name="struk_edc" class="form-control" placeholder="Masukkan No Struk EDC">
+                        </div>
+                        <div class="form-group">
+                            <label for="struk_edc_fee">Fee (1%)</label>
+                            <input type="text" id="struk_edc_fee" name="struk_edc_fee" class="form-control" readonly>
+                        </div>
+                    </div>
+                
+                    <!-- Form untuk TRANSFER -->
+                    <div id="transfer-fields" class="payment-field" hidden>
+                        <div class="form-group">
+                            <label for="no_rek">No Rekening</label>
+                            <input type="text" id="no_rek" name="no_rek" class="form-control">
+                        </div>
+                    </div>
+                
+                    <!-- Form untuk QRIS -->
+                    <div id="qris-fields" class="payment-field" hidden>
+                        <div class="form-group">
+                            <label for="qris_code">No Referensi</label>
+                            <input type="text" id="qris_code" name="qris_code" class="form-control" placeholder="Masukkan kode QRIS">
+                        </div>
+                    </div>
+                
+                    <!-- Form untuk TUNAI -->
+                    <div id="tunai-fields" class="payment-field" hidden>
+                        <div class="form-group">
+                            <label for="tunai_amount">Jumlah Tunai</label>
+                            <input type="number" id="tunai_amount" name="tunai_amount" class="form-control" placeholder="Masukkan jumlah tunai">
+                        </div>
+                    </div>
+                
+                    <!-- Form untuk VOUCHER -->
+                    <div id="voucher-fields" class="payment-field" hidden>
+                        <div class="form-group">
+                            <label for="no_voucher">No Voucher</label>
+                            <input type="text" id="no_voucher" name="no_voucher" class="form-control" placeholder="Masukkan no voucher">
+                        </div>
+                        <div class="form-group">
+                            <label for="nominal_voucher">Nominal Voucher</label>
+                            <input type="text" id="nominal_voucher" name="nominal_voucher" class="form-control" placeholder="Masukkan nominal voucher">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
                 </div>
                 <div class="card">
                     <div class="card-header">
@@ -897,4 +997,69 @@
         });
 
     </script>
+
+<script>
+    function showPaymentFields() {
+        // Ambil nilai yang dipilih dari dropdown
+        var selectedMethod = document.getElementById('metodebayar').value;
+        
+        // Sembunyikan semua form inputan
+        var paymentFields = document.querySelectorAll('.payment-field');
+        paymentFields.forEach(function(field) {
+            field.hidden = true;
+        });
+    
+        // Tampilkan form inputan sesuai dengan metode pembayaran yang dipilih
+        if (selectedMethod) {
+            var methodField = document.getElementById(selectedMethod + '-fields');
+            if (methodField) {
+                methodField.hidden = false;
+            }
+        }
+    }
+</script>
+{{-- <script>
+    function showPaymentFields() {
+        var metodebayar = document.getElementById('metodebayar').value;
+        var subTotalInput = document.getElementById('sub_total');
+        var originalSubTotal = parseFloat(subTotalInput.getAttribute('data-original-subtotal')) || 0;
+        var subTotal = parseFloat(subTotalInput.value) || 0;
+
+        // Hide all payment fields
+        document.querySelectorAll('.payment-field').forEach(function(field) {
+            field.hidden = true;
+        });
+
+        if (metodebayar === 'gobiz') {
+            var fee = originalSubTotal * 0.20;
+            document.getElementById('gobiz_fee').value = fee.toFixed(2);
+            subTotalInput.value = (originalSubTotal + fee).toFixed(2);
+            document.getElementById('gobiz-fields').hidden = false;
+        } else if (metodebayar === 'mesinedc') {
+            var fee = originalSubTotal * 0.01;
+            document.getElementById('struk_edc_fee').value = fee.toFixed(2);
+            subTotalInput.value = (originalSubTotal + fee).toFixed(2);
+            document.getElementById('mesinedc-fields').hidden = false;
+        } else {
+            subTotalInput.value = originalSubTotal.toFixed(2);
+        }
+
+        // Show the selected payment field
+        if (metodebayar) {
+            document.getElementById(metodebayar + '-fields').hidden = false;
+        }
+    }
+
+    function formatAndUpdateKembali() {
+        var subTotal = parseFloat(document.getElementById('sub_total').value) || 0;
+        var bayar = parseFloat(document.getElementById('bayar').value) || 0;
+        var kembali = bayar - subTotal;
+        document.getElementById('kembali').value = kembali.toFixed(2);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var subTotalInput = document.getElementById('sub_total');
+        subTotalInput.setAttribute('data-original-subtotal', subTotalInput.value);
+    });
+</script> --}}
 @endsection

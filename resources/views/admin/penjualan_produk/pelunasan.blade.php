@@ -82,7 +82,11 @@
                 @csrf
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Pelunasan Pemesanan Produk</h3>
+                        <div class="float-right">
+                            <a href="{{ url('admin/penjualan_produk/create') }}"  class="btn btn-primary btn-sm">Penjualan Produk
+                                {{-- <i class="fas fa-plus"></i>Pelunasan  --}}
+                            </a>
+                        </div>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -111,7 +115,7 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="form-group" hidden>
-                                            <label for="pelanggan_id">Return Id</label>
+                                            <label for="pelanggan_id">Id</label>
                                             <input type="text" class="form-control form-control-full-width" id="pelanggan_id" readonly name="pelanggan_id" placeholder="" value="{{ old('pelanggan_id') }}">
                                         </div>
                                         <div class="form-group">
