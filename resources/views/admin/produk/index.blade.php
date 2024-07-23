@@ -75,7 +75,7 @@
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $produk->kode_produk }}</td>
                                     <td>{{ $produk->nama_produk}}</td>
-                                    <td>{{ 'Rp. ' . number_format($produk->harga, 0, ',', '.') }}</td> <!-- Format harga -->
+                                    <td>{{ 'Rp. ' .number_format($produk->harga, 0, ',', '.') }} </td> <!-- Format harga -->
                                     <td>{{ $produk->satuan }}</td>
                                     <td>
                                         @if ($produk->gambar)

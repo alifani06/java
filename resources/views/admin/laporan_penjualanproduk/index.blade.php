@@ -21,11 +21,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Pemesanan Produk</h1>
+                    <h1 class="m-0">Laporan penjualan Produk</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Pemesanan Produk</li>
+                        {{-- <li class="breadcrumb-item active">Laporan penjualan Produk</li> --}}
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -56,26 +56,51 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                    <div class="float-right">
-                        <a href="{{ url('admin/pemesanan_produk/create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus"></i> 
-                        </a>
-                    </div>
+                    <h3 class="card-title">Laporan Penjualan Produk</h3>
                 </div>
                 <!-- /.card-header -->
+                 
                 <div class="card-body">
+                    <form method="GET" id="form-action">
+                        <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <select class="custom-select form-control" id="status" name="status">
+                                <option value="">- Semua Status -</option>
+                                <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
+                                <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
+                            </select>
+                            <label for="status">(Pilih Status)</label>
+                        </div>
+                            <div class="col-md-3 mb-3">
+                                <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
+                                    value="{{ Request::get('tanggal_penjualan') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_penjualan">(Dari Tanggal)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
+                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_akhir">(Sampai Tanggal)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
+                                    <i class="fas fa-search"></i> Cari
+                                </button>
+                                
+                            </div>
+                        </div>
+                    </form>
+
+                   
                     <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
                         <thead class="">
                             <tr>
                                 {{-- <th> <input type="checkbox" name="" id="select_all_ids"></th> --}}
                                 <th class="text-center">No</th>
-                                <th>Kode Pemesanan</th>
-                                <th>Tanggal Pemesanan</th>
+                                <th>Kode penjualan</th>
+                                <th>Tanggal penjualan</th>
                                 <th>Nama Pelanggan</th>
                                 <th>Produk</th>
                                 <th>Total</th>
-                                <th>DP</th>
-                                <th class="text-center" width="20">Opsi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -84,33 +109,27 @@
                                    
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>
-                                        {{ $item->kode_pemesanan }}
+                                        {{ $item->kode_penjualan }}
                                     </td>
                                     <td>
-                                        {{ \Carbon\Carbon::parse($item->tanggal_pemesanan)->format('d/m/Y H:i') }}
+                                        {{ \Carbon\Carbon::parse($item->tanggal_penjualan)->format('d/m/Y H:i') }}
                                     </td>
                                     
                                     <td>
-                                        {{ $item->nama_pelanggan }}
+                                        {{ $item->nama_pelanggan ?? 'Non Member' }}
                                     </td>
                                     <td>
-                                        @if ($item->detailpemesananproduk->isNotEmpty())
-                                            {{ $item->detailpemesananproduk->pluck('nama_produk')->implode(', ') }}
+                                        @if ($item->detailpenjualanproduk->isNotEmpty())
+                                            {{ $item->detailpenjualanproduk->pluck('nama_produk')->implode(', ') }}
                                         @else
                                             tidak ada
                                         @endif
                                     </td>
+
                                     <td>
                                         {{ number_format($item->sub_total, 0, ',', '.') }}
                                     </td>
-                                    <td>
-                                        @if ($item->dppemesanan)
-                                            {{ number_format($item->dppemesanan->dp_pemesanan, 0, ',', '.') }}
-                                        @else
-                                            N/A
-                                        @endif
-                                    </td>
-
+{{-- 
                                     <td class="text-center">
                                         @if ($item->status == 'posting')
                                             <button type="button" class="btn btn-success btn-sm">
@@ -118,42 +137,34 @@
                                             </button>
                                         @endif
                                         @if ($item->status == 'unpost')
-                                        <form action="{{ route('pemesanan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="btn btn-danger btn-sm mt-2">
-                                                <i class="fas fa-trash-alt"></i> 
-                                            </button>
-                                        </form>
+                                      
                                         @endif
                                      
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($item->status == 'unpost')
-                                                <a class="dropdown-item posting-btn"
+                                               
+                                                    <a class="dropdown-item posting-btn"
                                                         data-memo-id="{{ $item->id }}">Posting</a>
                                              
                                                     <a class="dropdown-item"
-                                                        href="{{ url('admin/pemesanan_produk/' . $item->id . '/edit') }}">Update</a>
+                                                        href="{{ url('admin/inquery_penjualanproduk/' . $item->id . '/edit') }}">Update</a>
                                                 
                                                     <a class="dropdown-item"
-                                                        href="{{ url('/admin/pemesanan_produk/' . $item->id ) }}">Show</a>
-                                                      
-                                            @endif
+                                                    href="{{ url('/admin/penjualan_produk/' . $item->id ) }}">Show</a>
+                                                    @endif
                                             @if ($item->status == 'posting')
                                                     <a class="dropdown-item unpost-btn"
                                                         data-memo-id="{{ $item->id }}">Unpost</a>
                                                     <a class="dropdown-item"
-                                                        href="{{ url('/admin/pemesanan_produk/' . $item->id ) }}">Show</a>
+                                                    href="{{ url('/admin/penjualan_produk/' . $item->id ) }}">Show</a>
                                             @endif
                                            
                                         </div>
-                                    </td>
+                                    </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
                         aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">
@@ -175,32 +186,29 @@
 
     <!-- /.card -->
     <script>
-        var tanggalAwal = document.getElementById('tanggal_awal');
+        var tanggalAwal = document.getElementById('tanggal_penjualan');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
-
         if (tanggalAwal.value == "") {
             tanggalAkhir.readOnly = true;
         }
-
         tanggalAwal.addEventListener('change', function() {
             if (this.value == "") {
                 tanggalAkhir.readOnly = true;
             } else {
                 tanggalAkhir.readOnly = false;
-            }
-
+            };
             tanggalAkhir.value = "";
             var today = new Date().toISOString().split('T')[0];
             tanggalAkhir.value = today;
             tanggalAkhir.setAttribute('min', this.value);
         });
-
-        var form = document.getElementById('form-action');
+        var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('admin/inquery_pemesnanproduk') }}";
+            form.action = "{{ url('admin/inquery_penjualanproduk') }}";
             form.submit();
         }
+
     </script>
 
     <script>
@@ -240,7 +248,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan unpost
                 $.ajax({
-                    url: "{{ url('admin/inquery_pemesananproduk/unpost_pemesananproduk/') }}/" + memoId,
+                    url: "{{ url('admin/inquery_penjualanproduk/unpost_penjualanproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -281,7 +289,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan posting
                 $.ajax({
-                    url: "{{ url('admin/inquery_pemesananproduk/posting_pemesananproduk/') }}/" + memoId,
+                    url: "{{ url('admin/inquery_penjualanproduk/posting_penjualanproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -310,7 +318,7 @@
             });
         });
     </script>
-
+{{-- 
     <script>
         $(document).ready(function() {
             $('tbody tr.dropdown').click(function(e) {
@@ -365,6 +373,6 @@
                     ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
             });
         });
-    </script>
+    </script> --}}
 
 @endsection

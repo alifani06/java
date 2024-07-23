@@ -36,29 +36,23 @@ class PemesananprodukController extends Controller
 {
  
     public function index(Request $request)
-    // {
-    //     $today = Carbon::today();
-
-    //     $pemesanans = Detailpemesananproduk::whereDate('created_at', $today)->get();
-    //     return view('admin.pemesanan_produk.index', compact('pemesanans'));
-    // }
-
     {
-
-            $today = Carbon::today();
-            $inquery = Pemesananproduk::whereDate('created_at', $today)
-                ->orWhere(function ($query) use ($today) {
-                    $query->where('status', 'unpost')
-                        ->whereDate('created_at', '<', $today);
-                })
-                ->orderBy('created_at', 'desc')
-                ->get();
-
-            return view('admin.pemesanan_produk.index', compact('inquery'));
-            // tidak memiliki akses
-            return back()->with('error', array('Anda tidak memiliki akses'));
-        
+        $today = Carbon::today();
+    
+        $inquery = Pemesananproduk::with('dppemesanan') // Memuat relasi dppemesanan
+            ->whereDate('created_at', $today)
+            ->orWhere(function ($query) use ($today) {
+                $query->where('status', 'unpost')
+                    ->whereDate('created_at', '<', $today);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+    
+        // Kirim data ke view
+        return view('admin.pemesanan_produk.index', compact('inquery'));
     }
+    
+    
     // {
     //     $status = $request->status;
     //     $tanggal_awal = $request->tanggal_awal;
@@ -413,9 +407,11 @@ class PemesananprodukController extends Controller
         // Retrieve all pelanggans (assuming you need this for the view)
         $pelanggans = Pelanggan::all();
         $tokos = $pemesanan->toko;
+        $dp = $pemesanan->dppemesanan;
+
 
         // Pass the retrieved data to the view
-        return view('admin.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans', 'tokos'));
+        return view('admin.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans', 'tokos','dp'));
     }
     
     public function cetakPdf($id)

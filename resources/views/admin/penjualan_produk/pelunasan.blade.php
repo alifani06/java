@@ -83,9 +83,11 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="float-right">
-                            <a href="{{ url('admin/penjualan_produk/create') }}"  class="btn btn-primary btn-sm">Penjualan Produk
-                                {{-- <i class="fas fa-plus"></i>Pelunasan  --}}
-                            </a>
+                            <select class="form-control" id="kategori" name="kategori">
+                                <option value="">- Pilih -</option>
+                                <option value="penjualan" {{ old('kategori') == 'penjualan' ? 'selected' : '' }}>Penjualan Produk</option>
+                                <option value="pelunasan" {{ old('kategori') == 'pelunasan' ? 'selected' : '' }}>Pelunasan Pemesanan Produk</option>
+                            </select>
                         </div>
                     </div>
                     <!-- /.card-header -->
@@ -95,7 +97,7 @@
                             <input class="form-control" hidden id="dppemesanan_id" name="dppemesanan_id" type="text"
                                 placeholder="" value="{{ old('dppemesanan_id') }}" readonly
                                 style="margin-right: 10px; font-size:14px" />
-                            <input class="form-control" id="kode_dppemesanan" name="kode_dppemesanan" type="text" placeholder=""
+                            <input class="form-control col-md-4" id="kode_dppemesanan" name="kode_dppemesanan" type="text" placeholder=""
                                 value="{{ old('kode_dppemesanan') }}" readonly style="margin-right: 10px; font-size:14px" />
                            
                             <button class="btn btn-primary" type="button" onclick="showCategoryModalPelanggan(this.value)">
@@ -128,7 +130,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label style="font-size:14px" for="alamat">Alamat</label>
-                                            <input style="font-size:14px" type="text" class="form-control form-control-full-width" id="alamat" readonly name="alamat" placeholder="" value="{{ old('alamat') }}">
+                                            <textarea style="font-size:14px" type="text" class="form-control form-control-full-width" id="alamat" readonly name="alamat" placeholder="" value="">{{ old('alamat') }}</textarea>
                                         </div>
                                         <div class="form-check" style="color:white">
                                             <label class="form-check-label">
@@ -158,7 +160,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label style="font-size:14px" for="alamat_penerima">Alamat Penerima</label>
-                                            <input style="font-size:14px" type="text" class="form-control form-control-full-width" id="alamat_penerima" readonly name="alamat_penerima" placeholder="" value="{{ old('alamat_penerima') }}">
+                                            <textarea style="font-size:14px" type="text" class="form-control form-control-full-width" id="alamat_penerima" readonly name="alamat_penerima" placeholder="" value="">{{ old('alamat_penerima') }}</textarea>
                                         </div>
                                         <div class="form-check" style="color:white">
                                             <label class="form-check-label">
@@ -238,64 +240,15 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    {{-- <div class="modal-body">
-                        <table id="datatables4" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">No</th>
-                                    <th>Kode Deposit</th>
-                                    <th>kode pemesanan</th>
-                                    <th>dp</th>
-                                    <th>kekurangan</th>
-                               
-                                    <th>Opsi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($dppemesanans as $return)
-                                    <tr>
-                                        <td class="text-center">{{ $loop->iteration }}</td>
-                                 
-                                        <td>{{ $return->kode_dppemesanan }}</td>
-                                        <td>{{ $return->pemesananproduk->kode_pemesanan }}</td>
-                                        <td>{{ $return->dp_pemesanan }}</td>
-                                        <td>{{ $return->kekurangan_pemesanan }}</td>
-                                        <td class="text-center">
-                                            <button type="button" class="btn btn-primary btn-sm"
-                                                onclick="GetReturn(
-                                                '{{ $return->id }}',
-                                                '{{ $return->kode_dppemesanan }}',
-                                                '{{ $return->dp_pemesanan }}',
-                                                '{{ $return->pemesananproduk->nama_pelanggan }}',
-                                                '{{ $return->pemesananproduk->telp }}',
-                                                '{{ $return->pemesananproduk->alamat }}',
-                                                '{{ $return->pemesananproduk->tanggal_kirim }}',
-                                                '{{ $return->pemesananproduk->nama_penerima }}',
-                                                '{{ $return->pemesananproduk->telp_penerima }}',
-                                                '{{ $return->pemesananproduk->alamat_penerima }}',
-                                                '{{ $return->detailpemesananproduk->pluck('pemesananproduk_id')->implode(', ') }}',
-                                                '{{ $return->detailpemesananproduk->pluck('kode_produk')->implode(', ') }}',
-                                                '{{ $return->detailpemesananproduk->pluck('nama_produk')->implode(', ') }}',
-                                                '{{ $return->detailpemesananproduk->pluck('jumlah')->implode(', ') }}',
-                                                '{{ $return->detailpemesananproduk->pluck('total')->implode(', ') }}'
-                                 
-                                                )">
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div> --}}
+               
                     <div class="modal-body">
                         <table id="datatables4" class="table table-bordered table-striped">
                             <thead>
-                                <tr>
+                                <tr style="font-size: 13px">
                                     <th class="text-center">No</th>
                                     <th>Kode Deposit</th>
                                     <th>Kode Pemesanan</th>
+                                    <th>Total</th>
                                     <th>DP</th>
                                     <th>Kekurangan</th>
                                     <th>Opsi</th>
@@ -303,12 +256,13 @@
                             </thead>
                             <tbody>
                                 @foreach ($dppemesanans as $return)
-                                    <tr>
+                                    <tr style="font-size: 14px">
                                         <td class="text-center">{{ $loop->iteration }}</td>
                                         <td>{{ $return->kode_dppemesanan }}</td>
                                         <td>{{ $return->pemesananproduk->kode_pemesanan }}</td>
-                                        <td>{{ $return->dp_pemesanan }}</td>
-                                        <td>{{ $return->kekurangan_pemesanan }}</td>
+                                        <td>{{ 'Rp. ' .number_format($return->pemesananproduk->sub_total, 0, ',', '.') }}</td>
+                                        <td>{{ 'Rp. ' .number_format($return->dp_pemesanan, 0, ',', '.') }}</td>
+                                        <td>{{ 'Rp. ' .number_format($return->kekurangan_pemesanan, 0, ',', '.') }}</td>
                                         <td class="text-center">
                                             <button type="button" class="btn btn-primary btn-sm"
                                                 onclick="GetReturn(
@@ -621,5 +575,15 @@
             });
         });
     </script>
+<script>
+    document.getElementById('kategori').addEventListener('change', function() {
+        var selectedValue = this.value;
 
+        if (selectedValue === 'penjualan') {
+            window.location.href = "{{ route('admin.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
+        } else if (selectedValue === 'pelunasan') {
+            window.location.href = "{{ route('admin.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
+        }
+    });
+</script>
 @endsection
