@@ -11,30 +11,17 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class Pemesananproduk extends Model
+class Dppemesanan extends Model
 {
     use HasFactory;
 
     
     protected $fillable = [
-        'kode_pemesanan',
-        'nama_pelanggan',
-        'alamat',
-        'telp',
-        'kategori',
-        'sub_total',
-        'tanggal',
-        'qrcode_pemesanan',
-        'tanggal_pemesanan',
-        'cabang',
-        'catatan',
-        'nama_penerima',
-        'telp_penerima',
-        'alamat_penerima',
-        'tanggal_kirim',
-        'toko_id',
-        'status',
-        'tanggaL_akhir',
+        'kode_dppemesanan',
+        'pemesananproduk_id',
+        'dp_pemesanan',
+        'kekurangan_pemesanan',
+        
   
     ];
 
@@ -62,7 +49,7 @@ class Pemesananproduk extends Model
     }
     public function detailpemesananproduk()
     {
-        return $this->hasMany(Detailpemesananproduk::class, 'pemesananproduk_id');
+        return $this->hasMany(Detailpemesananproduk::class, 'pemesananproduk_id', 'pemesananproduk_id');
     }
     
     public function pelanggan()
@@ -74,10 +61,8 @@ class Pemesananproduk extends Model
     {
         return $this->belongsTo(Toko::class, 'toko_id');
     }
-    public function dppemesanan()
+    public function pemesananproduk()
     {
-        return $this->hasOne(Dppemesanan::class, 'pemesananproduk_id');
+        return $this->belongsTo(Pemesananproduk::class, 'pemesananproduk_id');
     }
-    
-
 }

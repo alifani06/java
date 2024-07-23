@@ -25,6 +25,7 @@ class Detailtokoslawi extends Model
    'harga_diskon_non',
    'harga_awal',
    'diskon_awal',
+   'tanggal_perubahan',
     ];
 
     use SoftDeletes;

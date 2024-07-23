@@ -22,7 +22,7 @@
             @endif
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">penjualan Produk</h1>
+                    <h1 class="m-0">Penjualan Produk</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -58,7 +58,11 @@
                 {{-- detail pelanggan --}}
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Detail Pelanggan</h3>
+                        <div class="float-right">
+                            <a href="{{ route('admin.penjualan_produk.pelunasan') }}"  class="btn btn-primary btn-sm">Pelunasan
+                                {{-- <i class="fas fa-plus"></i>Pelunasan  --}}
+                            </a>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="row mb-3 align-items-center">
@@ -84,6 +88,7 @@
                                 <label for="qrcode_pelanggan">Scan Kode Pelanggan</label>
                                 <input type="text" class="form-control" id="qrcode_pelanggan" name="qrcode_pelanggan" placeholder="scan kode Pelanggan" onchange="getData(this.value)">
                             </div>
+
                         </div>
                     
                         <div class="row mb-3 align-items-center" id="namaPelangganRow" style="display: none;">
@@ -192,6 +197,46 @@
                     </div>
                 </div>
                  --}}
+                 <div class="modal fade" id="tableDeposit" data-backdrop="static">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Data Deposit</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <table id="datatables6" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">No</th>
+                                            <th>Kode Deposit</th>
+                                            <th>Kode Pemesanan</th>
+                                            <th>Alamat</th>
+                                            <th>Opsi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($dppemesanans as $item)
+                                            <tr onclick="getSelectedDataDeposit('{{ $item->kode_dppemesanan }}', '{{ $item->dp_pemesanan }}', '{{ $item->kekurangan_pemesanan }}')">
+                                                <td class="text-center">{{ $loop->iteration }}</td>
+                                                <td>{{ $item->kode_dppemesanan }}</td>
+                                                <td>{{ $item->dp_pemesanan }}</td>
+                                                <td>{{ $item->kekurangan_pemesanan }}</td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-primary btn-sm" >
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @endforeach 
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="modal fade" id="tableMarketing" data-backdrop="static">
                     <div class="modal-dialog modal-lg">
@@ -565,6 +610,17 @@
             document.getElementById('telp').value = telp;
             document.getElementById('alamat').value = alamat;
             $('#tableMarketing').modal('hide');
+        }
+
+        function showCategoryModaldeposit() {
+            $('#tableDeposit').modal('show');
+        }
+    
+        function getSelectedDataDeposit(kode_dppemesanan, dp_pemesanan, kekurangan_pemesanan) {
+            document.getElementById('kode_dppemesanan').value = kode_dppemesanan;
+            document.getElementById('dp_pemesanan').value = dp_pemesanan;
+            document.getElementById('kekurangan_pemesanan').value = kekurangan_pemesanan;
+            $('#tableDeposit').modal('hide');
         }
     </script>
 

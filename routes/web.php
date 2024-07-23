@@ -10,6 +10,7 @@ use App\Http\Controllers\KlasifikasiController;
 use App\Http\Controllers\Admin\AddpelangganController;
 use App\Http\Controllers\Admin\HargajualController;
 use App\Http\Controllers\Admin\Inquery_pemesananprodukController;
+use App\Http\Controllers\Admin\Inquery_penjualanprodukController;
 use App\Http\Controllers\Admin\PemesananprodukController;
 use App\Http\Controllers\Admin\KlasifikasiController as AdminKlasifikasiController;
 use App\Http\Controllers\Admin\Laporan_pemesananprodukController;
@@ -111,6 +112,14 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('penjualan_produk', \App\Http\Controllers\Admin\PenjualanprodukController::class);
     Route::get('/admin/penjualan_produk/cetak/{id}', [PenjualanprodukController::class, 'cetak'])->name('admin.penjualan_produk.cetak');
     Route::get('/admin/penjualan_produk/cetak-pdf{id}', [PenjualanprodukController::class, 'cetakPdf'])->name('admin.penjualan_produk.cetak-pdf');
+    Route::get('/admin/penjualan_produk/pelunasan', [PenjualanprodukController::class, 'pelunasan'])->name('admin.penjualan_produk.pelunasan');
+
+    Route::resource('inquery_penjualanproduk', \App\Http\Controllers\Admin\Inquery_penjualanprodukController::class);
+    Route::get('/admin/inquery_penjualanproduk', [Inquery_penjualanprodukController::class, 'index'])->name('admin.inquery_penjualanproduk.index');
+    Route::get('inquery_penjualanproduk/unpost_penjualanproduk/{id}', [\App\Http\Controllers\Admin\Inquery_penjualanprodukController::class, 'unpost_penjualanproduk']);
+    Route::get('inquery_penjualanproduk/posting_penjualanproduk/{id}', [\App\Http\Controllers\Admin\Inquery_penjualanprodukController::class, 'posting_penjualanproduk']);
+
+    Route::resource('inquery_perubahanharga', \App\Http\Controllers\Admin\Inquery_perubahanhargaController::class);
 
     });
     Route::get('/toko/slawi', [SlawiController::class, 'index']);

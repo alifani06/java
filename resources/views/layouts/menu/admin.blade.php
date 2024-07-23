@@ -30,7 +30,7 @@
     // request()->is('admin/barang*')||
     request()->is('admin/produk*')||
     request()->is('admin/toko*')||
-    request()->is('admin/harga*')||
+    // request()->is('admin/harga*')||
     request()->is('admin/klasifikasi*')||
     request()->is('admin/input*')
   
@@ -45,7 +45,7 @@
         // request()->is('admin/barang*')||
         request()->is('admin/produk*')||
         request()->is('admin/toko*')||
-        request()->is('admin/harga*')||
+        // request()->is('admin/harga*')||
         request()->is('admin/klasifikasi*')||
         request()->is('admin/input*')
       
@@ -137,13 +137,13 @@
         {{-- @endif --}}
 
         {{-- @if (auth()->check() && auth()->user()->menu['harga']) --}}
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a href="{{ url('admin/hargajual') }}"
                 class="nav-link {{ request()->is('admin/hargajual*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Data Harga Jual</p>
             </a>
-        </li>
+        </li> --}}
         {{-- @endif --}}
 
         @if (auth()->check() && auth()->user()->menu['klasifikasi'])
@@ -171,14 +171,16 @@
 
 <li
     class="nav-item {{ request()->is('admin/pemesanan_produk*') ||
-    request()->is('admin/penjualan_produk*') 
+    request()->is('admin/penjualan_produk*') ||
+    request()->is('admin/hargajual*') 
     // request()->is('admin/input*')
   
         ? 'menu-open'
         : '' }}">
     <a href="#"
         class="nav-link {{ request()->is('admin/pemesanan_produk*') ||
-        request()->is('admin/penjualan_produk*') 
+        request()->is('admin/penjualan_produk*') ||
+        request()->is('admin/hargajual*') 
         // request()->is('admin/input*')
       
             ? 'active'
@@ -210,19 +212,30 @@
             </a>
         </li>
         {{-- @endif --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        <li class="nav-item">
+            <a href="{{ url('admin/hargajual') }}"
+                class="nav-link {{ request()->is('admin/hargajual*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Perubahan Harga Jual</p>
+            </a>
+        </li>
+        {{-- @endif --}}
     </ul>
 </li>
 
 <li
     class="nav-item {{ request()->is('admin/inquery_pemesananproduk*') ||
-    request()->is('admin/inquery_penjualanproduk*') 
+    request()->is('admin/inquery_penjualanproduk*')|| 
+    request()->is('admin/inquery_perubahanharga*') 
     // request()->is('admin/input*')
   
         ? 'menu-open'
         : '' }}">
     <a href="#"
         class="nav-link {{ request()->is('admin/inquery_pemesananproduk*') ||
-        request()->is('admin/inquery_penjualanproduk*')
+        request()->is('admin/inquery_penjualanproduk*')||
+        request()->is('admin/inquery_perubahanharga*')
         // request()->is('admin/input*')
       
             ? 'active'
@@ -244,6 +257,7 @@
             </a>
         </li>
         {{-- @endif --}}
+
         {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/inquery_penjualanproduk') }}"
@@ -253,19 +267,31 @@
             </a>
         </li>
         {{-- @endif --}}
+
+        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        <li class="nav-item">
+            <a href="{{ url('admin/inquery_perubahanharga') }}"
+                class="nav-link {{ request()->is('admin/inquery_perubahanharga*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Inquery Perubahan Harga</p>
+            </a>
+        </li>
+        {{-- @endif --}}
     </ul>
 </li>
 
 <li
     class="nav-item {{ request()->is('admin/laporan_pemesananproduk*') ||
-    request()->is('admin/laporan_penjualanproduk*')
+    request()->is('admin/laporan_penjualanproduk*')  ||
+    request()->is('admin/laporan_perubahanharga*')
     // request()->is('admin/input*')
   
         ? 'menu-open'
         : '' }}">
     <a href="#"
         class="nav-link {{ request()->is('admin/laporan_pemesananproduk*') ||
-        request()->is('admin/laporan_penjualanproduk*') 
+        request()->is('admin/laporan_penjualanproduk*')|| 
+        request()->is('admin/laporan_perubahanharga*') 
         // request()->is('admin/input*')
       
             ? 'active'
@@ -287,6 +313,7 @@
             </a>
         </li>
         {{-- @endif --}}
+
         {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/laporan_penjualanproduk') }}"
@@ -296,6 +323,16 @@
             </a>
         </li>
         {{-- @endif --}}
+
+              {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+              <li class="nav-item">
+                <a href="{{ url('admin/laporan_perubahanharga') }}"
+                    class="nav-link {{ request()->is('admin/laporan_perubahanharga*') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                    <p style="font-size: 14px;">Laporan Perubahan Harga</p>
+                </a>
+            </li>
+            {{-- @endif --}}
     </ul>
 </li>
 

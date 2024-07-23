@@ -23,6 +23,7 @@ class Tokoslawi extends Model
     'non_harga_slw', 
     'member_diskon_slw', 
     'non_diskon_slw', 
+    'tanggal_perubahan', 
    
 
   

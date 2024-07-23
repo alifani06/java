@@ -3,7 +3,16 @@
 @section('title', 'Pemesanan Produk')
 
 @section('content')
+<style>
+    .label-width {
+    width: 100px; /* Atur sesuai kebutuhan */
+}
 
+.input-width {
+    flex: 1;
+}
+
+</style>
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
@@ -158,30 +167,6 @@
                     </div>
                 </div>
 
-
-                {{-- <div class="modal fade" id="tableCatatan" data-backdrop="static">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Catatan Produk</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label for="modalCatatanInput">Catatan:</label>
-                                    <input type="text" class="form-control" id="modalCatatanInput">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" onclick="saveCatatan()">Simpan</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                 --}}
                  <div class="modal fade" id="tableCatatan" data-backdrop="static">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -361,19 +346,26 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="row">
-                            <div class="col-md-4 mb-3 ml-auto">
-                                <label for="sub_total">Sub Total</label>
-                                <input type="number" class="form-control large-font" id="sub_total" name="sub_total" value="{{ old('sub_total') }}">
+                            <div class="col-md-4 mb-3 ml-auto d-flex align-items-center">
+                                <label for="sub_total" class="mr-2 label-width">Sub Total</label>
+                                <input type="text" class="form-control large-font input-width" id="sub_total" name="sub_total" value="{{ old('sub_total') }}" readonly>
                             </div>
                         </div>
-                        {{-- <div class="row">
-                            <div class="col-md-4 mb-3 ml-auto">
-                                <label for="sub_total">DP</label>
-                                <input type="number" class="form-control large-font" id="sub_total" name="sub_total" value="{{ old('sub_total') }}">
+                        <div class="row">
+                            <div class="col-md-4 mb-3 ml-auto d-flex align-items-center">
+                                <label for="dp_pemesanan" class="mr-2 label-width">DP</label>
+                                <input type="text" class="form-control large-font input-width" id="dp_pemesanan" name="dp_pemesanan" value="{{ old('dp_pemesanan') }}" oninput="formatAndUpdateKembali()">
                             </div>
-                        </div> --}}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3 ml-auto d-flex align-items-center">
+                                <label for="kekurangan_pemesanan" class="mr-2 label-width">Kekurangan</label>
+                                <input type="text" class="form-control large-font input-width" id="kekurangan_pemesanan" name="kekurangan_pemesanan" value="{{ old('kekurangan_pemesanan') }}" readonly>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                
                 <div class="card">
                     <div class="card-header">
                         <div class="row">
@@ -790,21 +782,21 @@ function saveCatatan() {
             $('#tabel-pembelian').append(item_pembelian);
         }
 
-        function formatRupiah(angka, prefix = '') {
-            var number_string = angka.toString().replace(/[^,\d]/g, '');
-            var split = number_string.split(',');
-            var sisa = split[0].length % 3;
-            var rupiah = split[0].substr(0, sisa);
-            var ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+        // function formatRupiah(angka, prefix = '') {
+        //     var number_string = angka.toString().replace(/[^,\d]/g, '');
+        //     var split = number_string.split(',');
+        //     var sisa = split[0].length % 3;
+        //     var rupiah = split[0].substr(0, sisa);
+        //     var ribuan = split[0].substr(sisa).match(/\d{3}/gi);
 
-            if (ribuan) {
-                var separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
+        //     if (ribuan) {
+        //         var separator = sisa ? '.' : '';
+        //         rupiah += separator + ribuan.join('.');
+        //     }
 
-            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-            return prefix + rupiah;
-        }
+        //     rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        //     return prefix + rupiah;
+        // }
     </script>
 
 
@@ -866,4 +858,57 @@ function saveCatatan() {
         }
     </script>
     
+
+    <script>
+        // Fungsi untuk menghapus format Rupiah dan mengembalikan nilai numerik
+        function removeRupiahFormat(value) {
+            return parseFloat(value.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
+        }
+
+        // Format angka menjadi format Rupiah
+        function formatRupiah(value) {
+            let numberString = value.toString().replace(/[^,\d]/g, ''),
+                split = numberString.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                let separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            return split[1] !== undefined ? 'Rp. ' + rupiah + ',' + split[1] : 'Rp. ' + rupiah;
+        }
+
+        // Format input dan update kembalian
+        function formatAndUpdateKembali() {
+            let subTotalElement = document.getElementById('sub_total');
+            let bayarElement = document.getElementById('dp_pemesanan');
+            let kembaliElement = document.getElementById('kekurangan_pemesanan');
+
+            // Mengambil nilai sub_total
+            let subTotal = removeRupiahFormat(subTotalElement.value);
+
+            // Format dan ambil nilai bayar
+            let bayarValue = bayarElement.value.replace(/[^0-9,-]/g, '').replace(',', '.');
+            let bayar = parseFloat(bayarValue) || 0; // Jika tidak valid, set 0
+
+            // Format input 'bayar'
+            bayarElement.value = formatRupiah(bayarValue);
+
+            // Hitung kembalian
+            let kembali = subTotal - bayar;
+            
+            // Format hasil kembalian sebagai Rupiah
+            kembaliElement.value = kembali >= 0 ? formatRupiah(kembali) : 'Rp. 0';
+        }
+
+        // Panggil fungsi ini saat halaman dimuat untuk format sub_total yang mungkin sudah ada
+        document.addEventListener('DOMContentLoaded', function() {
+            let subTotalElement = document.getElementById('sub_total');
+            let subTotal = removeRupiahFormat(subTotalElement.value);
+            subTotalElement.value = formatRupiah(subTotal);
+        });
+    </script>
 @endsection

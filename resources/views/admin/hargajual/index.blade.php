@@ -77,7 +77,7 @@
                             <th colspan="4" style="text-align: center;">Toko Tegal</th>
                             <th colspan="4" style="text-align: center;">Toko Pemalang</th>
                             <th colspan="4" style="text-align: center;">Toko Bumiayu</th>
-                            <th colspan="4" style="text-align: center;">Toko Cilacap</th>
+                            {{-- <th colspan="4" style="text-align: center;">Toko Cilacap</th> --}}
                         </tr>
                         <tr>
                             <th colspan="2" style="text-align: center;">Member</th>
@@ -90,8 +90,8 @@
                             <th colspan="2" style="text-align: center;">Non Member</th>
                             <th colspan="2" style="text-align: center;">Member</th>
                             <th colspan="2" style="text-align: center;">Non Member</th>
-                            <th colspan="2" style="text-align: center;">Member</th>
-                            <th colspan="2" style="text-align: center;">Non Member</th>
+                            {{-- <th colspan="2" style="text-align: center;">Member</th>
+                            <th colspan="2" style="text-align: center;">Non Member</th> --}}
                         </tr>
                         <tr>
                             <th style="text-align: center;">Harga</th>
@@ -114,10 +114,10 @@
                             <th style="text-align: center;">Diskon (%)</th>
                             <th style="text-align: center;">Harga</th>
                             <th style="text-align: center;">Diskon (%)</th>
-                            <th style="text-align: center;">Harga</th>
+                            {{-- <th style="text-align: center;">Harga</th>
                             <th style="text-align: center;">Diskon (%)</th>
                             <th style="text-align: center;">Harga</th>
-                            <th style="text-align: center;">Diskon (%)</th>
+                            <th style="text-align: center;">Diskon (%)</th> --}}
                             
                         </tr>
                     </thead>
@@ -209,7 +209,7 @@
                                 </td>
 
                                  {{-- Cilacap --}}
-                                 <td style="text-align: center;">
+                                 {{-- <td style="text-align: center;">
                                     <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_harga_clc" id="member-harga-clc-{{ $loop->index }}" value="{{ $item->tokocilacap->first()->member_harga_clc ?? $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
                                 </td>
                                 <td>
@@ -220,7 +220,7 @@
                                 </td>
                                 <td>
                                     <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_diskon_clc" id="diskon-non-member-clc-{{ $loop->index }}" value="{{ $item->tokocilacap->first()->non_diskon_clc ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
-                                </td>
+                                </td> --}}
   
                             
                             </form>
@@ -236,37 +236,7 @@
 
 
 <script>
-    // function updateHarga(index, id) {
-    //     const form = document.getElementById(`update-harga-form-${index}`);
-    //     const formData = new FormData(form);
-    //     formData.append('id', id);
-
-    //     fetch('{{ route('update.harga') }}', {
-    //         method: 'POST',
-    //         body: formData,
-    //     }).then(response => response.json())
-    //     .then(data => {
-    //         if (data.success) {
-    //             Swal.fire({
-    //                 icon: 'success',
-    //                 title: 'Berhasil!',
-    //                 text: 'Harga berhasil diperbarui.',
-    //                 timer: 1000,
-    //                 showConfirmButton: false
-    //             });
-                
-    //             // Ubah kembali button dan icon setelah sukses update
-    //             const updateButton = document.getElementById(`update-button-${index}`);
-    //             const icon = document.getElementById(`icon-${index}`);
-    //             updateButton.classList.remove('btn-success');
-    //             updateButton.classList.add('btn-danger');
-    //             icon.classList.remove('fa-check');
-    //             icon.classList.add('fa-edit');
-    //         }
-    //     }).catch(error => {
-    //         console.error('Kesalahan:', error);
-    //     });
-    // }
+   
     function updateHarga(index, id) {
     const form = document.getElementById(`update-harga-form-${index}`);
     const formData = new FormData(form);

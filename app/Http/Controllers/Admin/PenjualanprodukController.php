@@ -24,6 +24,7 @@ use App\Models\Karyawan;
 use App\Models\Pemesananproduk;
 use App\Models\Penjualanproduk;
 use App\Models\Toko;
+use App\Models\Dppemesanan;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
@@ -72,12 +73,31 @@ class PenjualanprodukController extends Controller
         $details = Detailbarangjadi::all();
         $tokoslawis = Tokoslawi::all();
         $tokos = Toko::all();
+        $dppemesanans = Dppemesanan::all();
+        $pemesananproduks = Pemesananproduk::all();
     
         $produks = Produk::with('tokoslawi')->get();
 
         $kategoriPelanggan = 'member';
     
-        return view('admin.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan'));
+        return view('admin.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks'));
+    }
+    
+
+    public function pelunasan()
+    {
+        $barangs = Barang::all();
+        $pelanggans = Pelanggan::all();
+        $details = Detailbarangjadi::all();
+        $tokoslawis = Tokoslawi::all();
+        $tokos = Toko::all();
+        $dppemesanans = Dppemesanan::with('pemesananproduk', 'detailpemesananproduk')->get();
+        $pemesananproduks = Pemesananproduk::all();
+        $detailpemesananproduks = Detailpemesananproduk::all();
+        $produks = Produk::with('tokoslawi')->get();
+        $kategoriPelanggan = 'member';
+    
+        return view('admin.penjualan_produk.pelunasan', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks', 'detailpemesananproduks'));
     }
     
     public function getCustomerByKode($kode)
