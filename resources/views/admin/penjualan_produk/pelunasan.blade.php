@@ -202,8 +202,8 @@
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col mb-3 ml-auto d-flex align-items-center">
-                                                <label for="bayar" class="mr-2 label-width">Bayar</label>
-                                                <input type="number" class="form-control large-font input-width" id="bayar" name="bayar" value="{{ old('bayar') }}" oninput="formatAndUpdateKembali()">
+                                                <label for="pelunasan" class="mr-2 label-width">Bayar</label>
+                                                <input type="number" class="form-control large-font input-width" id="pelunasan" name="pelunasan" value="{{ old('pelunasan') }}" oninput="formatAndUpdateKembali()">
                                             </div>
                                         </div>
                                         <div class="row">
@@ -256,6 +256,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($dppemesanans as $return)
+                                @if (is_null($return->pelunasan))
                                     <tr style="font-size: 14px">
                                         <td class="text-center">{{ $loop->iteration }}</td>
                                         <td>{{ $return->kode_dppemesanan }}</td>
@@ -289,6 +290,7 @@
                                             </button>
                                         </td>
                                     </tr>
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
@@ -302,11 +304,11 @@
     <script>
         function formatAndUpdateKembali() {
             // Ambil nilai dari input fields
-            var bayar = parseFloat(document.getElementById('bayar').value) || 0;
+            var pelunasan = parseFloat(document.getElementById('pelunasan').value) || 0;
             var kekurangan = parseFloat(document.getElementById('kekurangan_pemesanan').value) || 0;
     
             // Hitung kembalian
-            var kembali = bayar - kekurangan;
+            var kembali = pelunasan - kekurangan;
     
             // Perbarui nilai input kembalian
             document.getElementById('kembali').value = kembali.toFixed(0);
@@ -340,21 +342,21 @@
         // Format input dan update kembalian
         function formatAndUpdateKembali() {
             let subTotalElement = document.getElementById('sub_total');
-            let bayarElement = document.getElementById('dp_pemesanan');
+            let pelunasanElement = document.getElementById('dp_pemesanan');
             let kembaliElement = document.getElementById('kekurangan_pemesanan');
 
             // Mengambil nilai sub_total
             let subTotal = removeRupiahFormat(subTotalElement.value);
 
-            // Format dan ambil nilai bayar
-            let bayarValue = bayarElement.value.replace(/[^0-9,-]/g, '').replace(',', '.');
-            let bayar = parseFloat(bayarValue) || 0; // Jika tidak valid, set 0
+            // Format dan ambil nilai pelunasan
+            let pelunasanValue = pelunasanElement.value.replace(/[^0-9,-]/g, '').replace(',', '.');
+            let pelunasan = parseFloat(pelunasanValue) || 0; // Jika tidak valid, set 0
 
-            // Format input 'bayar'
-            bayarElement.value = formatRupiah(bayarValue);
+            // Format input 'pelunasan'
+            pelunasanElement.value = formatRupiah(pelunasanValue);
 
             // Hitung kembalian
-            let kembali = subTotal - bayar;
+            let kembali = subTotal - pelunasan;
             
             // Format hasil kembalian sebagai Rupiah
             kembaliElement.value = kembali >= 0 ? formatRupiah(kembali) : 'Rp. 0';

@@ -399,21 +399,20 @@ class PemesananprodukController extends Controller
 }
 
 
-    public function cetak($id)
-    {
-        // Retrieve the specific pemesanan by ID along with its details
-        $pemesanan = Pemesananproduk::with('detailpemesananproduk', 'toko')->findOrFail($id);
-    
-        // Retrieve all pelanggans (assuming you need this for the view)
-        $pelanggans = Pelanggan::all();
-        $tokos = $pemesanan->toko;
-        $dp = $pemesanan->dppemesanan;
+public function cetak($id)
+{
+    // Mengambil pemesanan tertentu berdasarkan ID beserta detailnya
+    $pemesanan = Pemesananproduk::with('detailpemesananproduk', 'toko', 'dppemesanan')->findOrFail($id);
 
+    // Mengambil semua pelanggans (diasumsikan Anda memerlukan ini untuk view)
+    $pelanggans = Pelanggan::all();
+    $tokos = $pemesanan->toko;
+    $dp = $pemesanan->dppemesanan;
 
-        // Pass the retrieved data to the view
-        return view('admin.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans', 'tokos','dp'));
-    }
-    
+    // Mengirim data yang diambil ke view
+    return view('admin.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans', 'tokos', 'dp'));
+}
+
     public function cetakPdf($id)
     {
         $pemesanan = Pemesananproduk::findOrFail($id);

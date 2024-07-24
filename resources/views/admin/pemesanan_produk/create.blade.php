@@ -343,7 +343,7 @@
                     </div>
                 </div>
          
-                <div class="card">
+                {{-- <div class="card">
                     <div class="card-header">
                         <div class="row">
                             <div class="col-md-4 mb-3 ml-auto d-flex align-items-center">
@@ -364,8 +364,115 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
                 
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col mb-3 d-flex align-items-center">
+                                        <label for="sub_total" class="mr-2">Sub Total</label>
+                                        <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="Rp0" oninput="validateNumberInput(event); showPaymentFields()">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col mb-3 d-flex align-items-center">
+                                        <label for="bayar" class="mr-2">DP</label>
+                                        <input type="text" class="form-control large-font" id="dp_pemesanan" name="dp_pemesanan" value="{{ old('dp_pemesanan') }}" oninput="formatAndUpdateKembali()">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col mb-3 d-flex align-items-center">
+                                        <label for="kembali" class="mr-2">Kekurangan</label>
+                                        <input type="text" class="form-control large-font" id="kekurangan_pemesanan" name="kekurangan_pemesanan" value="{{ old('kekurangan_pemesanan') }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+        
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <label class="form-label" for="metodebayar">Metode Pembayaran</label>
+                                <select class="form-control" id="metodebayar" name="metodebayar" onchange="showPaymentFields()">
+                                    <option value="">- Pilih -</option>
+                                    <option value="mesinedc">MESIN EDC</option>
+                                    <option value="gobiz">GO-BIZ</option>
+                                    <option value="transfer">TRANSFER</option>
+                                    <option value="qris">QRIS</option>
+                                    <option value="tunai">TUNAI</option>
+                                    <option value="voucher">VOUCHER</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="payment-fields">
+                            <!-- Form untuk GO-BIZ -->
+                            <div id="gobiz-fields" class="payment-field" hidden>
+                                <div class="form-group">
+                                    <label for="gobiz_code">No GoFood</label>
+                                    <input type="text" id="gobiz_code" name="gobiz_code" class="form-control" placeholder="Masukkan kode GO-BIZ">
+                                </div>
+                                <div class="form-group">
+                                    <label for="gobiz_fee">Fee (20%)</label>
+                                    <input type="text" id="gobiz_fee" name="gobiz_fee" class="form-control" placeholder="Masukkan fee" readonly>
+                                </div>
+                            </div>
+                        
+                            <!-- Form untuk MESIN EDC -->
+                            <div id="mesinedc-fields" class="payment-field" hidden>
+                                <div class="form-group">
+                                    <label for="struk_edc">No Struk EDC</label>
+                                    <input type="text" id="struk_edc" name="struk_edc" class="form-control" placeholder="Masukkan No Struk EDC">
+                                </div>
+                                <div class="form-group">
+                                    <label for="struk_edc_fee">Fee (1%)</label>
+                                    <input type="text" id="struk_edc_fee" name="struk_edc_fee" class="form-control" readonly>
+                                </div>
+                            </div>
+                        
+                            <!-- Form untuk TRANSFER -->
+                            <div id="transfer-fields" class="payment-field" hidden>
+                                <div class="form-group">
+                                    <label for="no_rek">No Rekening</label>
+                                    <input type="text" id="no_rek" name="no_rek" class="form-control">
+                                </div>
+                            </div>
+                        
+                            <!-- Form untuk QRIS -->
+                            <div id="qris-fields" class="payment-field" hidden>
+                                <div class="form-group">
+                                    <label for="qris_code">No Referensi</label>
+                                    <input type="text" id="qris_code" name="qris_code" class="form-control" placeholder="Masukkan kode QRIS">
+                                </div>
+                            </div>
+                        
+                            <!-- Form untuk TUNAI -->
+                            <div id="tunai-fields" class="payment-field" hidden>
+                                <div class="form-group">
+                                    <label for="tunai_amount">Jumlah Tunai</label>
+                                    <input type="number" id="tunai_amount" name="tunai_amount" class="form-control" placeholder="Masukkan jumlah tunai">
+                                </div>
+                            </div>
+                        
+                            <!-- Form untuk VOUCHER -->
+                            <div id="voucher-fields" class="payment-field" hidden>
+                                <div class="form-group">
+                                    <label for="no_voucher">No Voucher</label>
+                                    <input type="text" id="no_voucher" name="no_voucher" class="form-control" placeholder="Masukkan no voucher">
+                                </div>
+                                <div class="form-group">
+                                    <label for="nominal_voucher">Nominal Voucher</label>
+                                    <input type="text" id="nominal_voucher" name="nominal_voucher" class="form-control" placeholder="Masukkan nominal voucher">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card">
                     <div class="card-header">
                         <div class="row">
@@ -492,6 +599,86 @@ function saveCatatan() {
         $('#tableCatatan').modal('hide');
     }
 </script> --}}
+
+<script>
+    let originalSubTotal = 0;
+
+    function cleanSubTotal(subTotal) {
+        // Hapus "Rp" dan titik
+        return parseFloat(subTotal.replace(/Rp|\.|,/g, '')) || 0;
+    }
+
+    function formatRupiah(angka) {
+        // Format angka ke format Rupiah
+        const numberString = angka.toString();
+        const sisa = numberString.length % 3;
+        let rupiah = numberString.substr(0, sisa);
+        const ribuan = numberString.substr(sisa).match(/\d{3}/g);
+
+        if (ribuan) {
+            const separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        return 'Rp' + rupiah;
+    }
+
+    function showPaymentFields() {
+        const paymentFields = document.querySelectorAll('.payment-field');
+        paymentFields.forEach(field => field.hidden = true);
+
+        const metodebayar = document.getElementById('metodebayar').value;
+        const subTotalField = document.getElementById('sub_total');
+        let subTotal = cleanSubTotal(subTotalField.value);
+
+        console.log('Sub Total:', subTotal);
+
+        // Simpan nilai asli dari subTotal saat pertama kali metode pembayaran dipilih
+        if (originalSubTotal === 0 && subTotal > 0) {
+            originalSubTotal = subTotal;
+        }
+
+        if (metodebayar === "gobiz") {
+            document.getElementById('gobiz-fields').hidden = false;
+            const feeField = document.getElementById('gobiz_fee');
+            const fee = Math.round(subTotal * 0.20);
+            feeField.value = fee;
+            subTotalField.value = formatRupiah(subTotal + fee);
+        } else if (metodebayar === "mesinedc") {
+            document.getElementById('mesinedc-fields').hidden = false;
+            const feeField = document.getElementById('struk_edc_fee');
+            const fee = Math.round(subTotal * 0.01);
+            feeField.value = fee;
+            subTotalField.value = formatRupiah(subTotal + fee);
+        } else if (metodebayar === "transfer") {
+            document.getElementById('transfer-fields').hidden = false;
+        } else if (metodebayar === "qris") {
+            document.getElementById('qris-fields').hidden = false;
+        } else if (metodebayar === "tunai") {
+            document.getElementById('tunai-fields').hidden = false;
+        } else if (metodebayar === "voucher") {
+            document.getElementById('voucher-fields').hidden = false;
+        } else {
+            // Kembalikan nilai subTotal ke nilai asli jika metode pembayaran dikosongkan
+            subTotalField.value = formatRupiah(originalSubTotal);
+            originalSubTotal = 0;
+        }
+    }
+
+    function validateNumberInput(event) {
+        const input = event.target;
+        const value = input.value;
+        const sanitizedValue = value.replace(/[^0-9.,Rp]/g, '');
+
+        if (sanitizedValue !== value) {
+            input.value = sanitizedValue;
+        }
+    }
+
+    document.getElementById('sub_total').addEventListener('input', validateNumberInput);
+    document.getElementById('sub_total').addEventListener('input', showPaymentFields);
+    window.onload = showPaymentFields;
+</script>
 
    <script>
         $(function () {
@@ -880,7 +1067,7 @@ function saveCatatan() {
 
             return split[1] !== undefined ? 'Rp. ' + rupiah + ',' + split[1] : 'Rp. ' + rupiah;
         }
-
+        
         // Format input dan update kembalian
         function formatAndUpdateKembali() {
             let subTotalElement = document.getElementById('sub_total');

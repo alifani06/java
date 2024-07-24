@@ -181,7 +181,15 @@
             margin-bottom: 2px;
             border-bottom: 2px solid #0f0e0e;
         }
-
+        .terimakasih p{
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
+        text-align: center;
+        margin-bottom: 5px;
+        margin-top: 10px;
+        font-size: 10px;
+    }
 
     </style>
 </head>
@@ -204,6 +212,9 @@
             <div class="detail-info">
                 <div class="pemesanan">
                     <p><span style="min-width: 100px; display: inline-flex; align-items: center;">No Pemesanan</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $pemesanan->kode_pemesanan }}</span></p>
+                </div>
+                <div class="kasir">
+                    <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Kasir</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</span></p>
                 </div>
                 <div class="pelanggan">
                     <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Pelanggan</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $pemesanan->nama_pelanggan }}</span></p>
@@ -269,8 +280,15 @@
                         </tr>
                         {{-- <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>DP </strong></td>
-                            <td style="font-size: 8px;">{{ number_format($dp->dp_pemesanan, 0, ',', '.') }}</td>
+                            <td style="font-size: 8px;">
+                                @if($dp)
+                                    {{ number_format($dp->dp_pemesanan, 0, ',', '.') }}
+                                @else
+                                    N/A
+                                @endif
+                            </td>
                         </tr>
+                        
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kekurangan  </strong></td>
                             <td style="font-size: 8px;">{{ number_format($dp->kekurangan_pemesanan, 0, ',', '.') }}</td>
@@ -297,11 +315,21 @@
                 <p style="text-decoration: underline;">{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</p>
                 </div>
             </div> --}}
-            <div class="terimakasih" style="text-align: center; font-family: 'Courier'; margin-top: 10px" >
-                <strong>TERIMAKASIH</strong><br>
-                
+            <div class="catatan">
+                <label>Catatan:</label>
+                <p>{{$pemesanan->catatan ?? '-'}}</p>
             </div>
-            <div class="qr" style="display: flex; justify-content: center; align-items: center; margin-top: 10px; margin-left: 4px">
+            <div class="terimakasih">
+                <p>Untuk pemesanan, kritik dan saran Hubungi.082136638003</p>
+            </div>
+           
+            <div class="note" style="text-align: left; margin-top: -5px ; font-size:9px; font-style: italic" >
+                <p>Down Payment(DP) yang sudah masuk tidak bisa diambil/ditukar dengan uang tunai/cash</p><br> 
+            </div>
+            <div class="terimakasihd" style="text-align: center; margin-top: -20px" >
+                <p>Terimakasih atas kunjungannya</p><br> 
+            </div>
+            <div class="qr" style="display: flex; justify-content: center; align-items: center; margin-top: -20px; margin-left: -14px">
                 <div style="text-align: center;">
                     {!! DNS2D::getBarcodeHTML($pemesanan->qrcode_pemesanan, 'QRCODE', 1.5, 1.5) !!}
                 </div>

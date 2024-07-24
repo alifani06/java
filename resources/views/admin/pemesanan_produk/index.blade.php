@@ -75,6 +75,8 @@
                                 <th>Produk</th>
                                 <th>Total</th>
                                 <th>DP</th>
+                                <th>Kekurangan</th>
+                                <th>Status</th>
                                 <th class="text-center" width="20">Opsi</th>
                             </tr>
                         </thead>
@@ -110,7 +112,24 @@
                                             N/A
                                         @endif
                                     </td>
-
+                                    <td>
+                                        @if ($item->dppemesanan)
+                                            {{ number_format($item->dppemesanan->kekurangan_pemesanan, 0, ',', '.') }}
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($item->dppemesanan)
+                                            @if ($item->dppemesanan->pelunasan >= $item->dppemesanan->kekurangan_pemesanan)
+                                                Lunas
+                                            @else
+                                                Pending
+                                            @endif
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
                                     <td class="text-center">
                                         @if ($item->status == 'posting')
                                             <button type="button" class="btn btn-success btn-sm">

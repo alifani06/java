@@ -303,6 +303,9 @@
                 <div class="pemesanan">
                     <p><span style="min-width: 100px; display: inline-flex; align-items: center;">No Pemesanan</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $pemesanan->kode_pemesanan }}</span></p>
                 </div>
+                <div class="kasir">
+                    <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Kasir</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</span></p>
+                </div>
                 <div class="pelanggan">
                     <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Pelanggan</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $pemesanan->nama_pelanggan }}</span></p>
                 </div>
@@ -396,13 +399,21 @@
                 <p style="text-decoration: underline;">{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</p>
                 </div>
             </div> --}}
+            <div class="catatan">
+                <label>Catatan:</label>
+                <p style="margin-top: 2px;">{{$pemesanan->catatan ?? '-'}}</p>
+            </div>
             <div class="terimakasih">
                 <p>Untuk pemesanan, kritik dan saran Hubungi.082136638003</p>
             </div>
-            <div class="terimakasihd" style="text-align: center; margin-top: -20px" >
+           
+            <div class="note" style="text-align: left; margin-top: -15px ; font-size:9px; font-style: italic" >
+                <p>Down Payment(DP) yang sudah masuk tidak bisa diambil/ditukar dengan uang tunai/cash</p><br> 
+            </div>
+            <div class="terimakasihd" style="text-align: center; margin-top: -30px" >
                 <p>Terimakasih atas kunjungannya</p><br> 
             </div>
-            <div class="qr" style="display: flex; justify-content: center; align-items: center; margin-top: -10px; margin-left: 101px">
+            <div class="qr" style="display: flex; justify-content: center; align-items: center; margin-top: -20px; margin-left: 101px">
                 <div style="text-align: center;">
                     {!! DNS2D::getBarcodeHTML($pemesanan->qrcode_pemesanan, 'QRCODE', 1.5, 1.5) !!}
                 </div>
