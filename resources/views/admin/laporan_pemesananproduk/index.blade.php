@@ -95,6 +95,7 @@
                             <tr>
                                 <th class="text-center">No</th>
                                 <th>Divisi</th>
+                                <th>Tanggal Kirim/Ambil</th>
                                 <th>Kode Produk</th>
                                 <th>Nama Produk</th>
                                 <th>Benjaran</th>
@@ -118,6 +119,7 @@
                                 <tr>
                                     <td class="text-center">{{ $no++ }}</td>
                                     <td>{{ $detail['klasifikasi'] }}</td>
+                                    <td>{{ $detail['tanggal_kirim'] }}</td>
                                     <td>{{ $detail['kode_produk'] }}</td>
                                     <td>{{ $detail['nama_produk'] }}</td>
                                     <td>{{ $detail['benjaran'] }}</td>
@@ -199,140 +201,248 @@
 
                     {{-- Tegal --}}
                     @if($toko_id == '2' )
-                    <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
+                    <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 12px">
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
+                                <th>Tanggal Pemesanan</th>
                                 <th>Divisi</th>
+                                <th>Kode Pemesanan</th>
                                 <th>Kode Produk</th>
                                 <th>Nama Produk</th>
                                 <th>Toko Tegal</th>
                                 <th>Catatan</th>
-                                <th>Total</th>
+                                {{-- <th>Total</th> --}}
                             </tr>
                         </thead>
                         <tbody>
                             @php
                                 $no = 1;
+                                $currentKodeProduk = null;
+                                $totalPerProduk = 0;
                             @endphp
                             @foreach ($groupedData as $detail)
                                 @if ($toko_id == '2')
+                                    @if ($currentKodeProduk && $currentKodeProduk != $detail['kode_produk'])
+                                        <tr>
+                                            <td colspan="6" class="text-right"><strong>Total untuk Produk: {{ $currentKodeProduk }}</strong></td>
+                                            <td>{{ $totalPerProduk }}</td>
+                                            <td colspan="2"></td>
+                                        </tr>
+                                        @php
+                                            $totalPerProduk = 0;
+                                        @endphp
+                                    @endif
                                     <tr>
                                         <td class="text-center">{{ $no++ }}</td>
+                                        <td>{{ $detail['tanggal_pemesanan'] }}</td>
                                         <td>{{ $detail['klasifikasi'] }}</td>
+                                        <td>{{ $detail['kode_pemesanan'] }}</td>
                                         <td>{{ $detail['kode_produk'] }}</td>
                                         <td>{{ $detail['nama_produk'] }}</td>
                                         <td>{{ $detail['tegal'] }}</td>
-                                        <td>{{ '-' }}</td>
-                                        <td>{{ $detail['tegal'] }}</td>
+                                        <td>{{ $detail['catatanproduk'] }}</td>
+                                        {{-- <td>{{ $detail['tegal'] }}</td> --}}
                                     </tr>
+                                    @php
+                                        $currentKodeProduk = $detail['kode_produk'];
+                                        $totalPerProduk += $detail['tegal'];
+                                    @endphp
                                 @endif
                             @endforeach
+                            @if ($currentKodeProduk)
+                                <tr>
+                                    <td colspan="6" class="text-right"><strong>Total untuk Produk: {{ $currentKodeProduk }}</strong></td>
+                                    <td>{{ $totalPerProduk }}</td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                     @endif
-
+                    
                     {{-- Slawi --}}
-                    @if($toko_id == '3')
-                    <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
+                    @if($toko_id == '3' )
+                    <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 12px">
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
+                                <th>Tanggal Pemesanan</th>
                                 <th>Divisi</th>
+                                <th>Kode Pemesanan</th>
                                 <th>Kode Produk</th>
                                 <th>Nama Produk</th>
                                 <th>Toko Slawi</th>
                                 <th>Catatan</th>
-                                <th>Total</th>
+                                {{-- <th>Total</th> --}}
                             </tr>
                         </thead>
                         <tbody>
                             @php
                                 $no = 1;
+                                $currentKodeProduk = null;
+                                $totalPerProduk = 0;
                             @endphp
                             @foreach ($groupedData as $detail)
-                                @if ($toko_id == '3' )
+                                @if ($toko_id == '3')
+                                    @if ($currentKodeProduk && $currentKodeProduk != $detail['kode_produk'])
+                                        <tr>
+                                            <td colspan="6" class="text-right"><strong>Total untuk Produk: {{ $currentKodeProduk }}</strong></td>
+                                            <td>{{ $totalPerProduk }}</td>
+                                            <td colspan="2"></td>
+                                        </tr>
+                                        @php
+                                            $totalPerProduk = 0;
+                                        @endphp
+                                    @endif
                                     <tr>
                                         <td class="text-center">{{ $no++ }}</td>
+                                        <td>{{ $detail['tanggal_pemesanan'] }}</td>
                                         <td>{{ $detail['klasifikasi'] }}</td>
+                                        <td>{{ $detail['kode_pemesanan'] }}</td>
                                         <td>{{ $detail['kode_produk'] }}</td>
                                         <td>{{ $detail['nama_produk'] }}</td>
                                         <td>{{ $detail['slawi'] }}</td>
-                                        <td>{{ '-' }}</td>
-                                        <td>{{ $detail['slawi'] }}</td>
+                                        <td>{{ $detail['catatanproduk'] }}</td>
+                                        {{-- <td>{{ $detail['slawi'] }}</td> --}}
                                     </tr>
+                                    @php
+                                        $currentKodeProduk = $detail['kode_produk'];
+                                        $totalPerProduk += $detail['slawi'];
+                                    @endphp
                                 @endif
                             @endforeach
+                            @if ($currentKodeProduk)
+                                <tr>
+                                    <td colspan="6" class="text-right"><strong>Total untuk Produk: {{ $currentKodeProduk }}</strong></td>
+                                    <td>{{ $totalPerProduk }}</td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                     @endif
 
                     {{-- Pemalang --}}
                     @if($toko_id == '4' )
-                    <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
+                    <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 12px">
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
+                                <th>Tanggal Pemesanan</th>
                                 <th>Divisi</th>
+                                <th>Kode Pemesanan</th>
                                 <th>Kode Produk</th>
                                 <th>Nama Produk</th>
                                 <th>Toko Pemalang</th>
                                 <th>Catatan</th>
-                                <th>Total</th>
+                                {{-- <th>Total</th> --}}
                             </tr>
                         </thead>
                         <tbody>
                             @php
                                 $no = 1;
+                                $currentKodeProduk = null;
+                                $totalPerProduk = 0;
                             @endphp
                             @foreach ($groupedData as $detail)
-                                @if ($toko_id == '4' )
+                                @if ($toko_id == '4')
+                                    @if ($currentKodeProduk && $currentKodeProduk != $detail['kode_produk'])
+                                        <tr>
+                                            <td colspan="6" class="text-right"><strong>Total untuk Produk: {{ $currentKodeProduk }}</strong></td>
+                                            <td>{{ $totalPerProduk }}</td>
+                                            <td colspan="2"></td>
+                                        </tr>
+                                        @php
+                                            $totalPerProduk = 0;
+                                        @endphp
+                                    @endif
                                     <tr>
                                         <td class="text-center">{{ $no++ }}</td>
+                                        <td>{{ $detail['tanggal_pemesanan'] }}</td>
                                         <td>{{ $detail['klasifikasi'] }}</td>
+                                        <td>{{ $detail['kode_pemesanan'] }}</td>
                                         <td>{{ $detail['kode_produk'] }}</td>
                                         <td>{{ $detail['nama_produk'] }}</td>
                                         <td>{{ $detail['pemalang'] }}</td>
-                                        <td>{{ '-' }}</td>
-                                        <td>{{ $detail['pemalang'] }}</td>
+                                        <td>{{ $detail['catatanproduk'] }}</td>
+                                        {{-- <td>{{ $detail['pemalang'] }}</td> --}}
                                     </tr>
+                                    @php
+                                        $currentKodeProduk = $detail['kode_produk'];
+                                        $totalPerProduk += $detail['pemalang'];
+                                    @endphp
                                 @endif
                             @endforeach
+                            @if ($currentKodeProduk)
+                                <tr>
+                                    <td colspan="6" class="text-right"><strong>Total untuk Produk: {{ $currentKodeProduk }}</strong></td>
+                                    <td>{{ $totalPerProduk }}</td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                     @endif
 
                     {{-- Bumiayu --}}
                     @if($toko_id == '5' )
-                    <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
+                    <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 12px">
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
+                                <th>Tanggal Pemesanan</th>
                                 <th>Divisi</th>
+                                <th>Kode Pemesanan</th>
                                 <th>Kode Produk</th>
                                 <th>Nama Produk</th>
-                                <th>Toko Bumiayu</th>
+                                <th>Toko bumiayu</th>
                                 <th>Catatan</th>
-                                <th>Total</th>
+                                {{-- <th>Total</th> --}}
                             </tr>
                         </thead>
                         <tbody>
                             @php
                                 $no = 1;
+                                $currentKodeProduk = null;
+                                $totalPerProduk = 0;
                             @endphp
                             @foreach ($groupedData as $detail)
-                                @if ($toko_id == '5' )
+                                @if ($toko_id == '5')
+                                    @if ($currentKodeProduk && $currentKodeProduk != $detail['kode_produk'])
+                                        <tr>
+                                            <td colspan="6" class="text-right"><strong>Total untuk Produk: {{ $currentKodeProduk }}</strong></td>
+                                            <td>{{ $totalPerProduk }}</td>
+                                            <td colspan="2"></td>
+                                        </tr>
+                                        @php
+                                            $totalPerProduk = 0;
+                                        @endphp
+                                    @endif
                                     <tr>
                                         <td class="text-center">{{ $no++ }}</td>
+                                        <td>{{ $detail['tanggal_pemesanan'] }}</td>
                                         <td>{{ $detail['klasifikasi'] }}</td>
+                                        <td>{{ $detail['kode_pemesanan'] }}</td>
                                         <td>{{ $detail['kode_produk'] }}</td>
                                         <td>{{ $detail['nama_produk'] }}</td>
                                         <td>{{ $detail['bumiayu'] }}</td>
-                                        <td>{{ '-' }}</td>
-                                        <td>{{ $detail['bumiayu'] }}</td>
+                                        <td>{{ $detail['catatanproduk'] }}</td>
+                                        {{-- <td>{{ $detail['bumiayu'] }}</td> --}}
                                     </tr>
+                                    @php
+                                        $currentKodeProduk = $detail['kode_produk'];
+                                        $totalPerProduk += $detail['bumiayu'];
+                                    @endphp
                                 @endif
                             @endforeach
+                            @if ($currentKodeProduk)
+                                <tr>
+                                    <td colspan="6" class="text-right"><strong>Total untuk Produk: {{ $currentKodeProduk }}</strong></td>
+                                    <td>{{ $totalPerProduk }}</td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                     @endif

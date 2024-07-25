@@ -87,20 +87,20 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <label style="font-size:14px" class="form-label" for="kode_dppemesanan">Kode Pemesanan</label>
+                        <label style="font-size:14px" class="form-label" for="kode_dppemesanan">Kode Deposit</label>
                         <div class="form-group d-flex">
                             <input class="form-control" hidden id="dppemesanan_id" name="dppemesanan_id" type="text"
                                 placeholder="" value="{{ old('dppemesanan_id') }}" readonly
                                 style="margin-right: 10px; font-size:14px" />
-                            <input class="form-control col-md-4" id="kode_dppemesanan" name="kode_pemesanan" type="text" placeholder="masukan kode pemesanan produk"
-                                value="{{ old('kode_pemesanan') }}" style="margin-right: 10px; font-size:14px" />
+                            <input class="form-control col-md-4" id="kode_dppemesanan" name="kode_dppemesanan" type="text" placeholder=""
+                                value="{{ old('kode_dppemesanan') }}" readonly style="margin-right: 10px; font-size:14px" />
+                           
+                            <button class="btn btn-primary" type="button" onclick="showCategoryModalPelanggan(this.value)">
+                                <i class="fas fa-search"></i>
+                            </button>
                         </div>
-                    </div>
-                    
 
-                  
-                    
-                    
+                    </div>
                 </div>
                 <div>
                     <div>
@@ -300,211 +300,6 @@
         </div>
 
     </section>
-
-    {{-- otomatis ketik kode pemesanan data tampil --}}
-    {{-- <script>
-        // Function to fetch data based on kode_dppemesanan
-        function fetchDataByKode(kode) {
-            $.ajax({
-                url: '{{ route("admin.penjualan_produk.fetchData") }}', // Adjust the route accordingly
-                method: 'GET',
-                data: { kode_pemesanan: kode },
-                success: function(response) {
-                    // Populate the form fields with the retrieved data
-                    document.getElementById('dppemesanan_id').value = response.id;
-                    document.getElementById('kode_dppemesanan').value = response.kode_dppemesanan;
-                    document.getElementById('dp_pemesanan').value = response.dp_pemesanan;
-                    document.getElementById('nama_pelanggan').value = response.nama_pelanggan;
-                    document.getElementById('telp').value = response.telp;
-                    document.getElementById('alamat').value = response.alamat;
-                    document.getElementById('tanggal_kirim').value = response.tanggal_kirim;
-                    document.getElementById('nama_penerima').value = response.nama_penerima;
-                    document.getElementById('telp_penerima').value = response.telp_penerima;
-                    document.getElementById('alamat_penerima').value = response.alamat_penerima;
-                    document.getElementById('sub_total').value = response.sub_total;
-                    document.getElementById('dp_pemesanan').value = response.dp_pemesanan;
-                    document.getElementById('kekurangan_pemesanan').value = response.kekurangan_pemesanan;
-    
-                    // Update the form with products details if available
-                    if (response.products) {
-                        var formHtml = '<div class="card mb-3">' +
-                            '<div class="card-header">' +
-                            '<h3 class="card-title">Detail Pemesanan</h3>' +
-                            '</div>' +
-                            '<div class="card-body">' +
-                            '<table class="table table-bordered table-striped">' +
-                            '<thead>' +
-                            '<tr>' +
-                            '<th style="font-size:14px" class="text-center">No</th>' +
-                            '<th style="font-size:14px">Kode Produk</th>' +
-                            '<th style="font-size:14px">Nama Produk</th>' +
-                            '<th style="font-size:14px">Jumlah</th>' +
-                            '<th style="font-size:14px">Total</th>' +
-                            '</tr>' +
-                            '</thead>' +
-                            '<tbody id="tabel-pembelian">';
-    
-                        response.products.forEach((product, index) => {
-                            formHtml += '<tr>' +
-                                '<td style="width: 70px; font-size:14px" class="text-center urutan">' + (index + 1) + '</td>' +
-                                '<td>' +
-                                '   <div class="form-group">' +
-                                '       <input style="font-size:14px" readonly type="text" class="form-control kode_produk" name="kode_produk[]" value="' + product.kode_produk + '">' +
-                                '   </div>' +
-                                '</td>' +
-                                '<td>' +
-                                '   <div class="form-group">' +
-                                '       <input style="font-size:14px" readonly type="text" class="form-control nama_produk" name="nama_produk[]" value="' + product.nama_produk + '">' +
-                                '   </div>' +
-                                '</td>' +
-                                '<td>' +
-                                '   <div class="form-group">' +
-                                '       <input style="font-size:14px" type="number" readonly class="form-control jumlah" name="jumlah[]" id="jumlah_' + index + '" value="' + product.jumlah + '">' +
-                                '   </div>' +
-                                '</td>' +
-                                '<td>' +
-                                '   <div class="form-group">' +
-                                '       <input style="font-size:14px" type="number" readonly class="form-control total" name="total[]" id="total_' + index + '" value="' + product.total + '">' +
-                                '   </div>' +
-                                '</td>' +
-                                '</tr>';
-                        });
-    
-                        formHtml += '</tbody>' +
-                            '</table>' +
-                            '</div>' +
-                            '</div>';
-    
-                        $('#forms-container').html(formHtml);
-                    }
-    
-                    updateGrandTotal();
-                },
-                error: function(xhr) {
-                    alert('Data tidak ditemukan.');
-                }
-            });
-        }
-    
-        $(document).ready(function() {
-            $('#kode_dppemesanan').on('blur', function() {
-                var kode = $(this).val();
-                if (kode) {
-                    fetchDataByKode(kode);
-                }
-            });
-    
-            // Fetch data when Enter key is pressed in kode_dppemesanan input field
-            $('#kode_dppemesanan').on('input', function(e) {
-                if (e.which === 13) { // Enter key
-                    var kode = $(this).val();
-                    if (kode) {
-                        fetchDataByKode(kode);
-                    }
-                    e.preventDefault(); // Prevent form submission
-                }
-            });
-        });
-    </script>
-     --}}
-     <script>
-        // Function to fetch data based on kode_dppemesanan
-        function fetchDataByKode(kode) {
-            $.ajax({
-                url: '{{ route("admin.penjualan_produk.fetchData") }}', // Adjust the route accordingly
-                method: 'GET',
-                data: { kode_pemesanan: kode },
-                success: function(response) {
-                    // Populate the form fields with the retrieved data
-                    document.getElementById('dppemesanan_id').value = response.id;
-                    document.getElementById('kode_dppemesanan').value = response.kode_dppemesanan;
-                    document.getElementById('dp_pemesanan').value = response.dp_pemesanan;
-                    document.getElementById('nama_pelanggan').value = response.nama_pelanggan;
-                    document.getElementById('telp').value = response.telp;
-                    document.getElementById('alamat').value = response.alamat;
-                    document.getElementById('tanggal_kirim').value = response.tanggal_kirim;
-                    document.getElementById('nama_penerima').value = response.nama_penerima;
-                    document.getElementById('telp_penerima').value = response.telp_penerima;
-                    document.getElementById('alamat_penerima').value = response.alamat_penerima;
-                    document.getElementById('sub_total').value = response.sub_total;
-                    document.getElementById('dp_pemesanan').value = response.dp_pemesanan;
-                    document.getElementById('kekurangan_pemesanan').value = response.kekurangan_pemesanan;
-    
-                    // Update the form with products details if available
-                    if (response.products) {
-                        var formHtml = '<div class="card mb-3">' +
-                            '<div class="card-header">' +
-                            '<h3 class="card-title">Detail Pemesanan</h3>' +
-                            '</div>' +
-                            '<div class="card-body">' +
-                            '<table class="table table-bordered table-striped">' +
-                            '<thead>' +
-                            '<tr>' +
-                            '<th style="font-size:14px" class="text-center">No</th>' +
-                            '<th style="font-size:14px">Kode Produk</th>' +
-                            '<th style="font-size:14px">Nama Produk</th>' +
-                            '<th style="font-size:14px">Jumlah</th>' +
-                            '<th style="font-size:14px">Total</th>' +
-                            '</tr>' +
-                            '</thead>' +
-                            '<tbody id="tabel-pembelian">';
-    
-                        response.products.forEach((product, index) => {
-                            formHtml += '<tr>' +
-                                '<td style="width: 70px; font-size:14px" class="text-center urutan">' + (index + 1) + '</td>' +
-                                '<td>' +
-                                '   <div class="form-group">' +
-                                '       <input style="font-size:14px" readonly type="text" class="form-control kode_produk" name="kode_produk[]" value="' + product.kode_produk + '">' +
-                                '   </div>' +
-                                '</td>' +
-                                '<td>' +
-                                '   <div class="form-group">' +
-                                '       <input style="font-size:14px" readonly type="text" class="form-control nama_produk" name="nama_produk[]" value="' + product.nama_produk + '">' +
-                                '   </div>' +
-                                '</td>' +
-                                '<td>' +
-                                '   <div class="form-group">' +
-                                '       <input style="font-size:14px" type="number" readonly class="form-control jumlah" name="jumlah[]" id="jumlah_' + index + '" value="' + product.jumlah + '">' +
-                                '   </div>' +
-                                '</td>' +
-                                '<td>' +
-                                '   <div class="form-group">' +
-                                '       <input style="font-size:14px" type="number" readonly class="form-control total" name="total[]" id="total_' + index + '" value="' + product.total + '">' +
-                                '   </div>' +
-                                '</td>' +
-                                '</tr>';
-                        });
-    
-                        formHtml += '</tbody>' +
-                            '</table>' +
-                            '</div>' +
-                            '</div>';
-    
-                        $('#forms-container').html(formHtml);
-                    }
-    
-                    updateGrandTotal();
-                },
-                error: function(xhr) {
-                    alert('Data tidak ditemukan.');
-                }
-            });
-        }
-    
-        $(document).ready(function() {
-            // Fetch data when input field value changes
-            $('#kode_dppemesanan').on('input', function() {
-                var kode = $(this).val();
-                if (kode) {
-                    fetchDataByKode(kode);
-                }
-            });
-        });
-    </script>
-    
-    
-
-
     <script>
         function formatAndUpdateKembali() {
             // Ambil nilai dari input fields

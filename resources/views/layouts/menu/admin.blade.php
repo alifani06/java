@@ -188,7 +188,7 @@
 
         <i class="nav-icon fas fa-grip-horizontal"></i>
         <p>
-            <strong style="color: rgb(255, 255, 255);">Transaksi</strong>
+            <strong style="color: rgb(255, 255, 255);">TRANSAKSI</strong>
             <i class="right fas fa-angle-left"></i>
         </p>
     </a>
@@ -243,7 +243,7 @@
 
         <i class="nav-icon fas fa-grip-horizontal"></i>
         <p>
-            <strong style="color: rgb(255, 255, 255);">Finance</strong>
+            <strong style="color: rgb(255, 255, 255);">FINANCE</strong>
             <i class="right fas fa-angle-left"></i>
         </p>
     </a>
@@ -299,7 +299,7 @@
 
         <i class="nav-icon fas fa-grip-horizontal"></i>
         <p>
-            <strong style="color: rgb(255, 255, 255);">Laporan</strong>
+            <strong style="color: rgb(255, 255, 255);">LAPORAN</strong>
             <i class="right fas fa-angle-left"></i>
         </p>
     </a>

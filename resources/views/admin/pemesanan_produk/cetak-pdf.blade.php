@@ -19,7 +19,7 @@
             background-color: #f2f2f2;
         }
             .container {
-            width: 68mm; /* Adjusted width */
+            width: 67mm; /* Adjusted width */
             margin: 0 auto;
             border: 1px solid #ddd;
             padding: 20px;
@@ -193,7 +193,7 @@
         padding: 0;
     }
     .container {
-        width: 68mm; /* Sesuaikan dengan lebar kertas thermal */
+        width: 67mm; /* Sesuaikan dengan lebar kertas thermal */
         margin: 0 auto;
         border: none;
         padding: 0;
@@ -276,7 +276,7 @@
         border-bottom: 1px solid #0f0e0e;
     }
     @page {
-        size: 68mm auto; /* Sesuaikan dengan ukuran kertas thermal */
+        size: 67mm auto; /* Sesuaikan dengan ukuran kertas thermal */
         margin: 0mm; /* Set margin ke 0 untuk semua sisi */
     }
 }
@@ -408,7 +408,7 @@
             </div>
            
             <div class="note" style="text-align: left; margin-top: -15px ; font-size:9px; font-style: italic" >
-                <p>Down Payment(DP) yang sudah masuk tidak bisa diambil/ditukar dengan uang tunai/cash</p><br> 
+                <p>Down Payment(DP) yang sudah masuk tidak bisa diambil / ditukar dengan uang tunai/cash</p><br> 
             </div>
             <div class="terimakasihd" style="text-align: center; margin-top: -30px" >
                 <p>Terimakasih atas kunjungannya</p><br> 

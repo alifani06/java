@@ -85,6 +85,10 @@
                                 <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
+                                <button type="button" class="btn btn-primary btn-block" onclick="printReport()"
+                                        target="_blank">
+                                        <i class="fas fa-print"></i> Cetak
+                                    </button>
                                 
                             </div>
                         </div>
@@ -129,38 +133,6 @@
                                     <td>
                                         {{ number_format($item->sub_total, 0, ',', '.') }}
                                     </td>
-{{-- 
-                                    <td class="text-center">
-                                        @if ($item->status == 'posting')
-                                            <button type="button" class="btn btn-success btn-sm">
-                                                <i class="fas fa-check"></i>
-                                            </button>
-                                        @endif
-                                        @if ($item->status == 'unpost')
-                                      
-                                        @endif
-                                     
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            @if ($item->status == 'unpost')
-                                               
-                                                    <a class="dropdown-item posting-btn"
-                                                        data-memo-id="{{ $item->id }}">Posting</a>
-                                             
-                                                    <a class="dropdown-item"
-                                                        href="{{ url('admin/inquery_penjualanproduk/' . $item->id . '/edit') }}">Update</a>
-                                                
-                                                    <a class="dropdown-item"
-                                                    href="{{ url('/admin/penjualan_produk/' . $item->id ) }}">Show</a>
-                                                    @endif
-                                            @if ($item->status == 'posting')
-                                                    <a class="dropdown-item unpost-btn"
-                                                        data-memo-id="{{ $item->id }}">Unpost</a>
-                                                    <a class="dropdown-item"
-                                                    href="{{ url('/admin/penjualan_produk/' . $item->id ) }}">Show</a>
-                                            @endif
-                                           
-                                        </div>
-                                    </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>
@@ -205,7 +177,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('admin/inquery_penjualanproduk') }}";
+            form.action = "{{ url('admin/laporan_penjualanproduk') }}";
             form.submit();
         }
 
@@ -318,61 +290,19 @@
             });
         });
     </script>
-{{-- 
-    <script>
-        $(document).ready(function() {
-            $('tbody tr.dropdown').click(function(e) {
-                // Memeriksa apakah yang diklik adalah checkbox
-                if ($(e.target).is('input[type="checkbox"]')) {
-                    return; // Jika ya, hentikan eksekusi
-                }
 
-                // Menghapus kelas 'selected' dan mengembalikan warna latar belakang ke warna default dari semua baris
-                $('tr.dropdown').removeClass('selected').css('background-color', '');
+<script>
+     function printReport() {
+            var startDate = tanggalAwal.value;
+            var endDate = tanggalAkhir.value;
 
-                // Menambahkan kelas 'selected' ke baris yang dipilih dan mengubah warna latar belakangnya
-                $(this).addClass('selected').css('background-color', '#b0b0b0');
-
-                // Menyembunyikan dropdown pada baris lain yang tidak dipilih
-                $('tbody tr.dropdown').not(this).find('.dropdown-menu').hide();
-
-                // Mencegah event klik menyebar ke atas (misalnya, saat mengklik dropdown)
-                e.stopPropagation();
-            });
-
-            $('tbody tr.dropdown').contextmenu(function(e) {
-                // Memeriksa apakah baris ini memiliki kelas 'selected'
-                if ($(this).hasClass('selected')) {
-                    // Menampilkan dropdown saat klik kanan
-                    var dropdownMenu = $(this).find('.dropdown-menu');
-                    dropdownMenu.show();
-
-                    // Mendapatkan posisi td yang diklik
-                    var clickedTd = $(e.target).closest('td');
-                    var tdPosition = clickedTd.position();
-
-                    // Menyusun posisi dropdown relatif terhadap td yang di klik
-                    dropdownMenu.css({
-                        'position': 'absolute',
-                        'top': tdPosition.top + clickedTd
-                            .height(), // Menempatkan dropdown sedikit di bawah td yang di klik
-                        'left': tdPosition
-                            .left // Menempatkan dropdown di sebelah kiri td yang di klik
-                    });
-
-                    // Mencegah event klik kanan menyebar ke atas (misalnya, saat mengklik dropdown)
-                    e.stopPropagation();
-                    e.preventDefault(); // Mencegah munculnya konteks menu bawaan browser
-                }
-            });
-
-            // Menyembunyikan dropdown saat klik di tempat lain
-            $(document).click(function() {
-                $('.dropdown-menu').hide();
-                $('tr.dropdown').removeClass('selected').css('background-color',
-                    ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
-            });
-        });
-    </script> --}}
+            if (startDate && endDate) {
+                form.action = "{{ url('admin/print_penjualan') }}" + "?start_date=" + startDate + "&end_date=" + endDate;
+                form.submit();
+            } else {
+                alert("Silakan isi kedua tanggal sebelum mencetak.");
+            }
+        }
+</script>
 
 @endsection

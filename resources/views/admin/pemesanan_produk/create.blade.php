@@ -5,13 +5,16 @@
 @section('content')
 <style>
     .label-width {
-    width: 100px; /* Atur sesuai kebutuhan */
-}
+        width: 100px; /* Atur sesuai kebutuhan */
+    }
 
-.input-width {
-    flex: 1;
-}
+    .input-width {
+        flex: 1;
+    }
 
+    .large-font {
+        font-size: 1rem; /* Atur ukuran font sesuai kebutuhan */
+    }
 </style>
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -373,20 +376,20 @@
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col mb-3 d-flex align-items-center">
-                                        <label for="sub_total" class="mr-2">Sub Total</label>
-                                        <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="Rp0" oninput="validateNumberInput(event); showPaymentFields()">
+                                        <label for="sub_total" class="label-width mr-2">Sub Total</label>
+                                        <input type="text" class="form-control large-font input-width" id="sub_total" name="sub_total" value="Rp0" oninput="validateNumberInput(event); showPaymentFields()">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col mb-3 d-flex align-items-center">
-                                        <label for="bayar" class="mr-2">DP</label>
-                                        <input type="text" class="form-control large-font" id="dp_pemesanan" name="dp_pemesanan" value="{{ old('dp_pemesanan') }}" oninput="formatAndUpdateKembali()">
+                                        <label for="dp_pemesanan" class="label-width mr-4">DP</label>
+                                        <input type="text" class="form-control large-font input-width" id="dp_pemesanan" name="dp_pemesanan" value="{{ old('dp_pemesanan') }}" oninput="formatAndUpdateKembali()">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col mb-3 d-flex align-items-center">
-                                        <label for="kembali" class="mr-2">Kekurangan</label>
-                                        <input type="text" class="form-control large-font" id="kekurangan_pemesanan" name="kekurangan_pemesanan" value="{{ old('kekurangan_pemesanan') }}" readonly>
+                                        <label for="kekurangan_pemesanan" class="label-width mr-2">Kekurangan</label>
+                                        <input type="text" class="form-control large-font input-width" id="kekurangan_pemesanan" name="kekurangan_pemesanan" value="{{ old('kekurangan_pemesanan') }}" readonly>
                                     </div>
                                 </div>
                             </div>

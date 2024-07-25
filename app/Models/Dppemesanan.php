@@ -49,7 +49,7 @@ class Dppemesanan extends Model
     }
     public function detailpemesananproduk()
     {
-        return $this->hasMany(Detailpemesananproduk::class, 'pemesananproduk_id', 'pemesananproduk_id');
+        return $this->hasMany(Detailpemesananproduk::class, 'pemesananproduk_id', 'pemesananproduk_id','dppemesanan_id');
     }
     
     public function pelanggan()

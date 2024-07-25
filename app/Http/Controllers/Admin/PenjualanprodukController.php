@@ -91,13 +91,12 @@ class PenjualanprodukController extends Controller
         $details = Detailbarangjadi::all();
         $tokoslawis = Tokoslawi::all();
         $tokos = Toko::all();
-        $dppemesanans = Dppemesanan::with('pemesananproduk', 'detailpemesananproduk')->get();
+        $dppemesanans = Dppemesanan::all();
         $pemesananproduks = Pemesananproduk::all();
-        $detailpemesananproduks = Detailpemesananproduk::all();
         $produks = Produk::with('tokoslawi')->get();
         $kategoriPelanggan = 'member';
-    
-        return view('admin.penjualan_produk.pelunasan', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks', 'detailpemesananproduks'));
+ 
+        return view('admin.penjualan_produk.pelunasan', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks'));
     }
     
     public function getCustomerByKode($kode)
@@ -131,6 +130,40 @@ class PenjualanprodukController extends Controller
         }
     }
    
+    public function fetchDataByKode(Request $request)
+    {
+        $kode = $request->input('kode_pemesanan');
+        $data = Dppemesanan::where('kode_dppemesanan', $kode)->with('pemesananproduk', 'detailpemesananproduk')->first();
+
+        if ($data) {
+            return response()->json([
+                'id' => $data->id,
+                'kode_dppemesanan' => $data->kode_dppemesanan,
+                'dp_pemesanan' => $data->dp_pemesanan,
+                'nama_pelanggan' => $data->pemesananproduk->nama_pelanggan ?? '',
+                'telp' => $data->pemesananproduk->telp ?? '',
+                'alamat' => $data->pemesananproduk->alamat ?? '',
+                'tanggal_kirim' => $data->pemesananproduk->tanggal_kirim ?? '',
+                'nama_penerima' => $data->pemesananproduk->nama_penerima ?? '',
+                'telp_penerima' => $data->pemesananproduk->telp_penerima ?? '',
+                'alamat_penerima' => $data->pemesananproduk->alamat_penerima ?? '',
+                'sub_total' => $data->pemesananproduk->sub_total ?? 0,
+                'dp_pemesanan' => $data->dp_pemesanan,
+                'kekurangan_pemesanan' => $data->kekurangan_pemesanan,
+                'products' => $data->detailpemesananproduk->map(function ($item) {
+                    return [
+                        'kode_produk' => $item->kode_produk,
+                        'nama_produk' => $item->nama_produk,
+                        'jumlah' => $item->jumlah,
+                        'total' => $item->total,
+                    ];
+                })
+            ]);
+        } else {
+            return response()->json([], 404);
+        }
+    }
+ 
     public function kode()
     {
         $lastPemesanan = Penjualanproduk::latest()->first();
@@ -294,6 +327,7 @@ class PenjualanprodukController extends Controller
     //         'details' => $details,
     //     ]);
     // }
+    
     public function store(Request $request)
     {
         // Validasi pelanggan

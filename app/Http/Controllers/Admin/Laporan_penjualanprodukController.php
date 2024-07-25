@@ -29,6 +29,8 @@ use App\Models\Toko;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+
 
 
 
@@ -36,37 +38,69 @@ class Laporan_penjualanprodukController extends Controller
 {
 
 public function index(Request $request)
-            {
-                $status = $request->status;
-                $tanggal_penjualan = $request->tanggal_penjualan;
-                $tanggal_akhir = $request->tanggal_akhir;
+    {
+        $status = $request->status;
+        $tanggal_penjualan = $request->tanggal_penjualan;
+        $tanggal_akhir = $request->tanggal_akhir;
 
-                $inquery = Penjualanproduk::query();
+        $inquery = Penjualanproduk::query();
 
-                if ($status) {
-                    $inquery->where('status', $status);
-                }
+        if ($status) {
+            $inquery->where('status', $status);
+        }
 
-                if ($tanggal_penjualan && $tanggal_akhir) {
-                    $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-                    $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-                    $inquery->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
-                } elseif ($tanggal_penjualan) {
-                    $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-                    $inquery->where('tanggal_penjualan', '>=', $tanggal_penjualan);
-                } elseif ($tanggal_akhir) {
-                    $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-                    $inquery->where('tanggal_penjualan', '<=', $tanggal_akhir);
-                } else {
+        if ($tanggal_penjualan && $tanggal_akhir) {
+            $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $inquery->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+        } elseif ($tanggal_penjualan) {
+            $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+            $inquery->where('tanggal_penjualan', '>=', $tanggal_penjualan);
+        } elseif ($tanggal_akhir) {
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $inquery->where('tanggal_penjualan', '<=', $tanggal_akhir);
+        } else {
                     // Jika tidak ada filter tanggal hari ini
-                    $inquery->whereDate('tanggal_penjualan', Carbon::today());
+            $inquery->whereDate('tanggal_penjualan', Carbon::today());
                 }
 
-                $inquery->orderBy('id', 'DESC');
-                $inquery = $inquery->get();
+            $inquery->orderBy('id', 'DESC');
+            $inquery = $inquery->get();
 
-                return view('admin.Laporan_penjualanproduk.index', compact('inquery'));
-            }
+            return view('admin.Laporan_penjualanproduk.index', compact('inquery'));
+    }
+
+    public function print_penjualan(Request $request)
+    {
+        $status = $request->status;
+        $tanggal_penjualan = $request->tanggal_penjualan;
+        $tanggal_akhir = $request->tanggal_akhir;
+    
+        $query = Penjualanproduk::orderBy('id', 'DESC')->with('detailpenjualanproduk');
+    
+        // Menyaring berdasarkan status
+        if ($status == "posting") {
+            $query->where('status', $status);
+        } else {
+            $query->where('status', 'posting');
+        }
+    
+        // Menyaring berdasarkan tanggal
+        if ($tanggal_penjualan && $tanggal_akhir) {
+            $query->whereDate('tanggal_penjualan', '>=', $tanggal_penjualan)
+                  ->whereDate('tanggal_penjualan', '<=', $tanggal_akhir);
+        }
+    
+        // Mendapatkan hasil query
+        $inquery = $query->get();
+    
+        // Memuat view dan menghasilkan PDF
+        $pdf = FacadePdf::loadView('admin.laporan_penjualanproduk.print', compact('inquery'));
+    
+        // Menampilkan PDF
+        return $pdf->stream('Laporan_PenjualanProduk.pdf');
+    }
+    
 
 public function unpost_penjualanproduk($id)
 {
