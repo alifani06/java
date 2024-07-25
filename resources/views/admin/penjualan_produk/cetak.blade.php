@@ -260,19 +260,21 @@
                         @endforeach
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total </strong></td>
-                            <td style="font-size: 8px;">{{'Rp.' .number_format($penjualan->sub_total, 0, ',', '.') }}</td>
+                            <td style="font-size: 8px;">{{ 'Rp.' . number_format($penjualan->sub_total, 0, ',', '.') }}</td>
                         </tr>
-                        <tr>
-                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Bayar</strong></td>
-                            <td style="font-size: 8px;">{{'Rp.' .number_format($penjualan->bayar, 0, ',', '.') }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kembalian</strong></td>
-                            <td style="font-size: 8px;">{{'Rp.' .number_format($penjualan->kembali, 0, ',', '.') }}</td>
-                        </tr>
+                        @if($penjualan->metode_bayar == 'tunai')
+                            <tr>
+                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Bayar</strong></td>
+                                <td style="font-size: 8px;">{{ 'Rp.' . number_format($penjualan->bayar, 0, ',', '.') }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kembalian</strong></td>
+                                <td style="font-size: 8px;">{{ 'Rp.' . number_format($penjualan->kembali, 0, ',', '.') }}</td>
+                            </tr>
+                        @endif
                     </tbody>
-                    
                 </table>
+                
                 @endif
             </div>
             {{-- <div class="signatures">
