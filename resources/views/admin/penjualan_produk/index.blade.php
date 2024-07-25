@@ -71,6 +71,7 @@
                                 <th>Kode penjualan</th>
                                 <th>Tanggal penjualan</th>
                                 <th>Nama Pelanggan</th>
+                                <th>Pembayaran</th>
                                 <th>Produk</th>
                                 <th>Total</th>
                                 <th class="text-center" width="20">Opsi</th>
@@ -92,12 +93,18 @@
                                         {{ $item->nama_pelanggan ?? 'Non Member'}}
                                     </td>
                                     <td>
+                                        {{ ucwords($item->metode_bayar) }}
+                                    </td>
+                                    
+                                    <td>
                                         @if ($item->detailpenjualanproduk->isNotEmpty())
-                                            {{ $item->detailpenjualanproduk->pluck('nama_produk')->implode(', ') }}
+                                            {{ ucwords(strtolower($item->detailpenjualanproduk->pluck('nama_produk')->implode(', '))) }}
                                         @else
                                             tidak ada
                                         @endif
                                     </td>
+                                    
+                                    
                                     <td>
                                         {{ number_format($item->sub_total, 0, ',', '.') }}
                                     </td>

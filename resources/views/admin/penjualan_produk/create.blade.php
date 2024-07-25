@@ -445,17 +445,17 @@
                             <option value="gobiz">GO-BIZ</option>
                             <option value="transfer">TRANSFER</option>
                             <option value="qris">QRIS</option>
-                            <option value="tunai">TUNAI</option>
-                            <option value="voucher">VOUCHER</option>
                         </select>
                     </div>
                 </div>
                 <div id="payment-fields">
                     <!-- Form untuk GO-BIZ -->
+                    <input type="hidden" id="metode_bayar_hidden" name="metodebayar" value="tunai">
+
                     <div id="gobiz-fields" class="payment-field" hidden>
                         <div class="form-group">
                             <label for="gobiz_code">No GoFood</label>
-                            <input type="text" id="gobiz_code" name="gobiz_code" class="form-control" placeholder="Masukkan kode GO-BIZ">
+                            <input type="text" id="gobiz_code" name="ket_gobiz" class="form-control" placeholder="Masukkan kode GO-BIZ">
                         </div>
                         <div class="form-group">
                             <label for="gobiz_fee">Fee (20%)</label>
@@ -467,7 +467,7 @@
                     <div id="mesinedc-fields" class="payment-field" hidden>
                         <div class="form-group">
                             <label for="struk_edc">No Struk EDC</label>
-                            <input type="text" id="struk_edc" name="struk_edc" class="form-control" placeholder="Masukkan No Struk EDC">
+                            <input type="text" id="struk_edc" name="ket_edc" class="form-control" placeholder="Masukkan No Struk EDC">
                         </div>
                         <div class="form-group">
                             <label for="struk_edc_fee">Fee (1%)</label>
@@ -479,7 +479,7 @@
                     <div id="transfer-fields" class="payment-field" hidden>
                         <div class="form-group">
                             <label for="no_rek">No Rekening</label>
-                            <input type="text" id="no_rek" name="no_rek" class="form-control">
+                            <input type="text" id="no_rek" name="ket_rekening" class="form-control">
                         </div>
                     </div>
                 
@@ -487,31 +487,12 @@
                     <div id="qris-fields" class="payment-field" hidden>
                         <div class="form-group">
                             <label for="qris_code">No Referensi</label>
-                            <input type="text" id="qris_code" name="qris_code" class="form-control" placeholder="Masukkan kode QRIS">
-                        </div>
-                    </div>
-                
-                    <!-- Form untuk TUNAI -->
-                    <div id="tunai-fields" class="payment-field" hidden>
-                        <div class="form-group">
-                            <label for="tunai_amount">Jumlah Tunai</label>
-                            <input type="number" id="tunai_amount" name="tunai_amount" class="form-control" placeholder="Masukkan jumlah tunai">
-                        </div>
-                    </div>
-                
-                    <!-- Form untuk VOUCHER -->
-                    <div id="voucher-fields" class="payment-field" hidden>
-                        <div class="form-group">
-                            <label for="no_voucher">No Voucher</label>
-                            <input type="text" id="no_voucher" name="no_voucher" class="form-control" placeholder="Masukkan no voucher">
-                        </div>
-                        <div class="form-group">
-                            <label for="nominal_voucher">Nominal Voucher</label>
-                            <input type="text" id="nominal_voucher" name="nominal_voucher" class="form-control" placeholder="Masukkan nominal voucher">
+                            <input type="text" id="qris_code" name="ket_qris" class="form-control" placeholder="Masukkan kode QRIS">
                         </div>
                     </div>
                 </div>
             </div>
+            
         </div>
     </div>
           
@@ -540,113 +521,52 @@
         </div>
     </section>
 
-{{-- 
-    <script>
-        function cleanSubTotal(subTotal) {
-            // Hapus "Rp" dan titik
-            return parseFloat(subTotal.replace(/Rp|\.|,/g, '')) || 0;
-        }
-
-        function formatRupiah(angka) {
-            // Format angka ke format Rupiah
-            const numberString = angka.toString();
-            const sisa = numberString.length % 3;
-            let rupiah = numberString.substr(0, sisa);
-            const ribuan = numberString.substr(sisa).match(/\d{3}/g);
-
-            if (ribuan) {
-                const separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-
-            return 'Rp' + rupiah;
-        }
-
-        function showPaymentFields() {
-            const paymentFields = document.querySelectorAll('.payment-field');
-            paymentFields.forEach(field => field.hidden = true);
-
-            const metodebayar = document.getElementById('metodebayar').value;
-            const subTotalField = document.getElementById('sub_total');
-            let subTotal = cleanSubTotal(subTotalField.value);
-
-            console.log('Sub Total:', subTotal);
-
-            if (metodebayar === "gobiz") {
-                document.getElementById('gobiz-fields').hidden = false;
-                const feeField = document.getElementById('gobiz_fee');
-                const fee = Math.round(subTotal * 0.20);
-                feeField.value = fee;
-                subTotalField.value = formatRupiah(subTotal + fee);
-            } else if (metodebayar === "mesinedc") {
-                document.getElementById('mesinedc-fields').hidden = false;
-                const feeField = document.getElementById('struk_edc_fee');
-                const fee = Math.round(subTotal * 0.01);
-                feeField.value = fee;
-                subTotalField.value = formatRupiah(subTotal + fee);
-            } else if (metodebayar === "transfer") {
-                document.getElementById('transfer-fields').hidden = false;
-            } else if (metodebayar === "qris") {
-                document.getElementById('qris-fields').hidden = false;
-            } else if (metodebayar === "tunai") {
-                document.getElementById('tunai-fields').hidden = false;
-            } else if (metodebayar === "voucher") {
-                document.getElementById('voucher-fields').hidden = false;
-            }
-        }
-
-        function validateNumberInput(event) {
-            const input = event.target;
-            const value = input.value;
-            const sanitizedValue = value.replace(/[^0-9.,Rp]/g, '');
-
-            if (sanitizedValue !== value) {
-                input.value = sanitizedValue;
-            }
-        }
-
-        document.getElementById('sub_total').addEventListener('input', validateNumberInput);
-        document.getElementById('sub_total').addEventListener('input', showPaymentFields);
-        window.onload = showPaymentFields;
-    </script> --}}
     <script>
         let originalSubTotal = 0;
-
+    
         function cleanSubTotal(subTotal) {
             // Hapus "Rp" dan titik
             return parseFloat(subTotal.replace(/Rp|\.|,/g, '')) || 0;
         }
-
+    
         function formatRupiah(angka) {
             // Format angka ke format Rupiah
             const numberString = angka.toString();
             const sisa = numberString.length % 3;
             let rupiah = numberString.substr(0, sisa);
             const ribuan = numberString.substr(sisa).match(/\d{3}/g);
-
+    
             if (ribuan) {
                 const separator = sisa ? '.' : '';
                 rupiah += separator + ribuan.join('.');
             }
-
+    
             return 'Rp' + rupiah;
         }
-
+    
         function showPaymentFields() {
             const paymentFields = document.querySelectorAll('.payment-field');
             paymentFields.forEach(field => field.hidden = true);
-
+    
             const metodebayar = document.getElementById('metodebayar').value;
             const subTotalField = document.getElementById('sub_total');
             let subTotal = cleanSubTotal(subTotalField.value);
-
+    
             console.log('Sub Total:', subTotal);
-
+    
             // Simpan nilai asli dari subTotal saat pertama kali metode pembayaran dipilih
             if (originalSubTotal === 0 && subTotal > 0) {
                 originalSubTotal = subTotal;
             }
-
+    
+            // Sembunyikan field Uang Bayar dan Kembali
+            document.getElementById('bayar').parentElement.parentElement.style.display = 'none';
+            document.getElementById('kembali').parentElement.parentElement.style.display = 'none';
+    
+            // Update hidden input field
+            const metodeBayarHidden = document.getElementById('metode_bayar_hidden');
+            metodeBayarHidden.value = metodebayar || 'tunai'; // Default to 'tunai'
+    
             if (metodebayar === "gobiz") {
                 document.getElementById('gobiz-fields').hidden = false;
                 const feeField = document.getElementById('gobiz_fee');
@@ -663,31 +583,35 @@
                 document.getElementById('transfer-fields').hidden = false;
             } else if (metodebayar === "qris") {
                 document.getElementById('qris-fields').hidden = false;
-            } else if (metodebayar === "tunai") {
-                document.getElementById('tunai-fields').hidden = false;
-            } else if (metodebayar === "voucher") {
-                document.getElementById('voucher-fields').hidden = false;
             } else {
+                // Tampilkan field Uang Bayar dan Kembali jika metode pembayaran dikosongkan
+                document.getElementById('bayar').parentElement.parentElement.style.display = 'block';
+                document.getElementById('kembali').parentElement.parentElement.style.display = 'block';
+    
                 // Kembalikan nilai subTotal ke nilai asli jika metode pembayaran dikosongkan
                 subTotalField.value = formatRupiah(originalSubTotal);
                 originalSubTotal = 0;
             }
         }
-
+    
         function validateNumberInput(event) {
             const input = event.target;
             const value = input.value;
             const sanitizedValue = value.replace(/[^0-9.,Rp]/g, '');
-
+    
             if (sanitizedValue !== value) {
                 input.value = sanitizedValue;
             }
         }
-
+    
         document.getElementById('sub_total').addEventListener('input', validateNumberInput);
         document.getElementById('sub_total').addEventListener('input', showPaymentFields);
+        document.getElementById('metodebayar').addEventListener('change', showPaymentFields);
+    
         window.onload = showPaymentFields;
     </script>
+    
+
     <script>
         function showCategoryModalCatatan(urutan) {
             // Tampilkan modal
