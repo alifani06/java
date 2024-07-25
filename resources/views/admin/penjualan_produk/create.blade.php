@@ -146,81 +146,7 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="row">
-                    <div class="col-md-8">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">Detail Pelanggan</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="row mb-3 align-items-center">
-                                    <div class="col-md-6 mt-2">
-                                        <label class="form-label" for="kategori">Tipe Pelanggan</label>
-                                        <select class="form-control" id="kategori" name="kategori">
-                                            <option value="">- Pilih -</option>
-                                            <option value="member" {{ old('kategori') == 'member' ? 'selected' : null }}>Member</option>
-                                            <option value="nonmember" {{ old('kategori') == 'nonmember' ? 'selected' : null }}>Non Member</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6 mt-2">
-                                        <label class="form-label" for="toko">Pilih Cabang</label>
-                                        <select class="form-control" id="toko" name="toko">
-                                            <option value="">- Pilih -</option>
-                                            @foreach ($tokos as $toko)
-                                                <option value="{{ $toko->id }}" {{ old('toko') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3 align-items-center" id="namaPelangganRow" style="display: none;">
-                                    <div class="col-md">
-                                        <button class="btn btn-outline-primary mb-3 btn-sm" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
-                                            <i class="fas fa-search" style=""></i>Cari pelanggan
-                                        </button> 
-                                    </div>      
-                                    <div class="col-md-6 mb-3 "> 
-                                        <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" onclick="showCategoryModalpemesanan()">
-                                    </div>     
-                                </div>
-                                <div class="row mb-3 align-items-center" id="kodePelangganRow" hidden>
-                                    <div class="col-md">
-                                        <label for="qrcode_pelanggan">Scan Kode Pelanggan</label>
-                                        <input type="text" class="form-control" id="qrcode_pelanggan" name="qrcode_pelanggan" placeholder="scan kode Pelanggan" onchange="getData(this.value)">
-                                    </div>
-                                </div>
-                                <div class="row mb-3 align-items-center" id="telpRow" hidden>
-                                    <div class="col-md-12 mb-3">
-                                        <label for="telp">No. Telepon</label>
-                                        <div class="input-group mb-3">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">+62</span>
-                                            </div>
-                                            <input type="number" id="telp" name="telp" class="form-control" placeholder="Masukan nomor telepon" value="{{ old('telp') }}">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-3 align-items-center" id="alamatRow" hidden>
-                                    <div class="col-md-12 mb-3">
-                                        <label for="catatan">Alamat</label>
-                                        <textarea placeholder="" type="text" class="form-control" id="alamat" name="alamat">{{ old('alamat') }}</textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">Informasi Tambahan</h3>
-                            </div>
-                            <div class="card-body">
-                                <!-- Tambahkan elemen-elemen tambahan yang diperlukan di sini -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                 --}}
+       
                  <div class="modal fade" id="tableDeposit" data-backdrop="static">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -800,6 +726,23 @@
                 document.getElementById('kekurangan_pemesanan').value = kekurangan_pemesanan;
                 $('#tableDeposit').modal('hide');
             }
+        </script>
+
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+            // Panggil fungsi itemPembelian dengan baris default
+            itemPembelian(1, 0); // Misalnya, menambahkan satu baris default
+            addPesanan(); // Memanggil addPesanan saat halaman dimuat
+
+            document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Mencegah aksi default dari tombol Enter
+                addPesanan(); // Memanggil addPesanan saat tombol Enter ditekan
+            }
+            });
+
+            });
         </script>
 
         <script>
