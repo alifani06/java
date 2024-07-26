@@ -121,7 +121,16 @@
                                     </td>
                                     <td>
                                         @if ($item->dppemesanan)
-                                            @if ($item->dppemesanan->pelunasan >= $item->dppemesanan->kekurangan_pemesanan)
+                                            @php
+                                                // Mendapatkan nilai pelunasan dan sub_total
+                                                $pelunasan = $item->dppemesanan->pelunasan;
+                                                $kekurangan_pemesanan = $item->dppemesanan->kekurangan_pemesanan;
+                                                $sub_total = $item->sub_total; // Pastikan sub_total diambil dari data yang relevan
+                                            @endphp
+                                            
+                                            @if ($pelunasan >= $sub_total)
+                                                Lunas
+                                            @elseif ($pelunasan >= $kekurangan_pemesanan)
                                                 Lunas
                                             @else
                                                 Pending
@@ -130,6 +139,7 @@
                                             N/A
                                         @endif
                                     </td>
+                                    
                                     <td class="text-center">
                                         @if ($item->status == 'posting')
                                             <button type="button" class="btn btn-success btn-sm">

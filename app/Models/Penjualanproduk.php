@@ -35,6 +35,8 @@ class Penjualanproduk extends Model
         'ket_edc',
         'ket_rekening',
         'ket_qris',
+        'struk_edc_fee',
+        'gobiz_fee',
         'nama_penerima',
         'telp_penerima',
         'alamat_penerima',

@@ -208,7 +208,7 @@
             <a href="{{ url('admin/penjualan_produk') }}"
                 class="nav-link {{ request()->is('admin/penjualan_produk*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">penjualan Produk</p>
+                <p style="font-size: 14px;">Penjualan Produk</p>
             </a>
         </li>
         {{-- @endif --}}

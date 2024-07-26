@@ -426,6 +426,8 @@ public function store(Request $request)
         'ket_edc' => $request->ket_edc, 
         'ket_rekening' => $request->ket_rekening, 
         'ket_qris' => $request->ket_qris, 
+        'struk_edc_fee' => $request->struk_edc_fee, 
+        'gobiz_fee' => $request->gobiz_fee, 
         'toko_id' => $request->toko,
         'kode_penjualan' => $this->kode(),
         'qrcode_penjualan' => 'https://javabakery.id/penjualan/' . $kode,

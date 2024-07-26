@@ -403,7 +403,7 @@
                             <div id="transfer-fields" class="payment-field" hidden>
                                 <div class="form-group">
                                     <label for="no_rek">No Rekening</label>
-                                    <input type="text" id="no_rek" name="ket_rekening" class="form-control">
+                                    <input type="text" id="no_rek" name="ket_rekening" value="362800800" class="form-control">
                                 </div>
                             </div>
                         
@@ -411,7 +411,7 @@
                             <div id="qris-fields" class="payment-field" hidden>
                                 <div class="form-group">
                                     <label for="qris_code">No Referensi</label>
-                                    <input type="text" id="qris_code" name="ket_qris" class="form-control" placeholder="Masukkan kode QRIS">
+                                    <input type="text" id="qris_code" name="ket_qris" value="713072924254" class="form-control" placeholder="Masukkan kode QRIS">
                                 </div>
                             </div>
                         </div>
@@ -445,7 +445,7 @@
         </div>
     </section>
 
-    <script>
+    {{-- <script>
         // Fungsi untuk menghapus format Rupiah dan mengembalikan nilai numerik
         function removeRupiahFormat(value) {
             return parseFloat(value.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
@@ -569,8 +569,144 @@
                 subTotalField.value = formatRupiah(originalSubTotal.toString());
             }
         }
+    </script> --}}
+    
+    <script>
+        // Fungsi untuk menghapus format Rupiah dan mengembalikan nilai numerik
+        function removeRupiahFormat(value) {
+            return parseFloat(value.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
+        }
+    
+        // Format angka menjadi format Rupiah
+        function formatRupiah(value) {
+            let numberString = value.toString().replace(/[^,\d]/g, ''),
+                split = numberString.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+    
+            if (ribuan) {
+                let separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+    
+            return split[1] !== undefined ? 'Rp. ' + rupiah + ',' + split[1] : 'Rp. ' + rupiah;
+        }
+    
+        // Format input dan update kembalian
+        function formatAndUpdateKembali() {
+            let subTotalElement = document.getElementById('sub_total');
+            let bayarElement = document.getElementById('bayar');
+            let kembaliElement = document.getElementById('kembali');
+    
+            // Mengambil nilai sub_total
+            let subTotal = removeRupiahFormat(subTotalElement.value);
+    
+            // Format dan ambil nilai bayar
+            let bayarValue = bayarElement.value.replace(/[^0-9,-]/g, '').replace(',', '.');
+            let bayar = parseFloat(bayarValue) || 0; // Jika tidak valid, set 0
+    
+            // Format input 'bayar'
+            bayarElement.value = formatRupiah(bayarValue);
+    
+            // Hitung kembalian
+            let kembali = bayar - subTotal;
+    
+            // Format hasil kembalian sebagai Rupiah
+            kembaliElement.value = kembali >= 0 ? formatRupiah(kembali) : 'Rp. 0';
+        }
+    
+        // Panggil fungsi ini saat halaman dimuat untuk format sub_total yang mungkin sudah ada
+        document.addEventListener('DOMContentLoaded', function() {
+            let subTotalElement = document.getElementById('sub_total');
+            let subTotal = removeRupiahFormat(subTotalElement.value);
+            subTotalElement.value = formatRupiah(subTotal);
+        });
+    
+        document.querySelector('form').addEventListener('submit', function(event) {
+            let subTotalElement = document.getElementById('sub_total');
+            let bayarElement = document.getElementById('bayar');
+            let kembaliElement = document.getElementById('kembali');
+            
+            // Menghapus format Rupiah dari input sebelum submit
+            subTotalElement.value = removeRupiahFormat(subTotalElement.value);
+            bayarElement.value = removeRupiahFormat(bayarElement.value);
+            kembaliElement.value = removeRupiahFormat(kembaliElement.value);
+            
+            // Hapus format Rupiah dari fee sebelum submit
+            let gobizFeeElement = document.getElementById('gobiz_fee');
+            let strukEdcFeeElement = document.getElementById('struk_edc_fee');
+            
+            if (gobizFeeElement) {
+                gobizFeeElement.value = removeRupiahFormat(gobizFeeElement.value);
+            }
+            if (strukEdcFeeElement) {
+                strukEdcFeeElement.value = removeRupiahFormat(strukEdcFeeElement.value);
+            }
+        });
+    
+        let originalSubTotal = 0;
+    
+        function cleanSubTotal(subTotal) {
+            // Hapus "Rp" dan titik
+            return parseFloat(subTotal.replace(/Rp|\.|,/g, '')) || 0;
+        }
+    
+        function showPaymentFields() {
+            const paymentFields = document.querySelectorAll('.payment-field');
+            paymentFields.forEach(field => field.hidden = true);
+    
+            const metodebayar = document.getElementById('metodebayar').value;
+            const subTotalField = document.getElementById('sub_total');
+            let subTotal = cleanSubTotal(subTotalField.value);
+    
+            console.log('Sub Total:', subTotal);
+    
+            // Simpan nilai asli dari subTotal saat pertama kali metode pembayaran dipilih
+            if (originalSubTotal === 0 && subTotal > 0) {
+                originalSubTotal = subTotal;
+            }
+    
+            // Sembunyikan field Uang Bayar dan Kembali
+            document.getElementById('bayar').parentElement.parentElement.style.display = 'none';
+            document.getElementById('kembali').parentElement.parentElement.style.display = 'none';
+    
+            // Update hidden input field
+            const metodeBayarHidden = document.getElementById('metode_bayar_hidden');
+            metodeBayarHidden.value = metodebayar || 'tunai'; // Default to 'tunai'
+    
+            if (metodebayar === "gobiz") {
+                document.getElementById('gobiz-fields').hidden = false;
+                const feeField = document.getElementById('gobiz_fee');
+                const fee = Math.round(subTotal * 0.20); // Fee 20%
+                feeField.value = formatRupiah(fee.toString());
+    
+                // Kurangi subTotal dengan fee
+                subTotalField.value = formatRupiah((originalSubTotal + fee).toString());
+            } else if (metodebayar === "mesinedc") {
+                document.getElementById('mesinedc-fields').hidden = false;
+                const feeField = document.getElementById('struk_edc_fee');
+                const fee = Math.round(subTotal * 0.01); // Fee 1%
+                feeField.value = formatRupiah(fee.toString());
+    
+                // Kurangi subTotal dengan fee
+                subTotalField.value = formatRupiah((originalSubTotal + fee).toString());
+            } else if (metodebayar === "transfer") {
+                document.getElementById('transfer-fields').hidden = false;
+                subTotalField.value = formatRupiah(originalSubTotal.toString());
+            } else if (metodebayar === "qris") {
+                document.getElementById('qris-fields').hidden = false;
+                subTotalField.value = formatRupiah(originalSubTotal.toString());
+            } else {
+                // Tampilkan field Uang Bayar dan Kembali jika tunai
+                document.getElementById('bayar').parentElement.parentElement.style.display = 'block';
+                document.getElementById('kembali').parentElement.parentElement.style.display = 'block';
+                subTotalField.value = formatRupiah(originalSubTotal.toString());
+            }
+        }
     </script>
     
+
     <script>
         function showCategoryModalCatatan(urutan) {
             // Tampilkan modal

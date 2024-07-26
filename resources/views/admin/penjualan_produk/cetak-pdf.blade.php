@@ -348,7 +348,7 @@
                                     @endif
                                 </td>
                                 <td style="font-size: 8px;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
-                                <td style="font-size: 8px;">{{ number_format($detail->total , 0, ',', '.')}}</td>
+                                <td style="font-size: 8px; text-align: right;">{{ number_format($detail->total , 0, ',', '.')}}</td>
                             </tr>
                             @php
                                 // Validasi dan konversi data menjadi numerik
@@ -356,6 +356,18 @@
                                 $subtotal += $total;
                             @endphp
                         @endforeach
+                        <tr>
+                            @if($penjualan->metode_bayar !== 'tunai')
+                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee</strong></td>
+                            <td style="font-size: 8px; text-align: right;">
+                                @if($penjualan->metode_bayar == 'mesinedc')
+                                    {{ number_format($penjualan->struk_edc_fee, 0, ',', '.') }}
+                                @elseif($penjualan->metode_bayar == 'gobiz')
+                                    {{ number_format($penjualan->gobiz_fee, 0, ',', '.') }}
+                                @endif
+                            </td>
+                            @endif
+                        </tr>
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total </strong></td>
                             <td style="font-size: 8px;">{{'Rp.'.number_format($penjualan->sub_total, 0, ',', '.') }}</td>
@@ -393,6 +405,10 @@
                 <p style="text-decoration: underline;">{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</p>
                 </div>
             </div> --}}
+            <div class="catatan">
+                <label>Catatan:</label>
+                <p>{{$penjualan->catatan ?? '-'}}</p>
+            </div>
             <div class="terimakasih">
                 <p>Untuk pemesanan, kritik dan saran Hubungi.082136638003.</p>
             </div>
