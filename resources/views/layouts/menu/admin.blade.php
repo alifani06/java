@@ -32,6 +32,7 @@
     request()->is('admin/toko*')||
     // request()->is('admin/harga*')||
     request()->is('admin/klasifikasi*')||
+    request()->is('admin/metode_pembayaran*')||
     request()->is('admin/input*')
   
         ? 'menu-open'
@@ -47,6 +48,7 @@
         request()->is('admin/toko*')||
         // request()->is('admin/harga*')||
         request()->is('admin/klasifikasi*')||
+        request()->is('admin/metode_pembayaran*')||
         request()->is('admin/input*')
       
             ? 'active'
@@ -121,7 +123,7 @@
             <a href="{{ url('admin/produk') }}"
                 class="nav-link {{ request()->is('admin/produk*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Data produk</p>
+                <p style="font-size: 14px;">Data Produk</p>
             </a>
         </li>
         {{-- @endif --}}
@@ -131,7 +133,7 @@
             <a href="{{ url('admin/toko') }}"
                 class="nav-link {{ request()->is('admin/toko*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Data toko</p>
+                <p style="font-size: 14px;">Data Toko</p>
             </a>
         </li>
         {{-- @endif --}}
@@ -155,8 +157,17 @@
             </a>
         </li>
         @endif
+        {{-- @if (auth()->check() && auth()->user()->menu['klasifikasi']) --}}
+        <li class="nav-item">
+            <a href="{{ url('admin/metode_pembayaran') }}"
+                class="nav-link {{ request()->is('admin/metode_pembayaran*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Data Jenis Pembayaran</p>
+            </a>
+        </li>
+        {{-- @endif --}}
 
-        @if (auth()->check() && auth()->user()->menu['input'])
+        {{-- @if (auth()->check() && auth()->user()->menu['input'])
         <li class="nav-item">
             <a href="{{ url('admin/input ') }}"
                 class="nav-link {{ request()->is('admin/input *') ? 'active' : '' }}">
@@ -164,7 +175,7 @@
                 <p style="font-size: 14px;">input stok barang jadi</p>
             </a>
         </li>
-        @endif
+        @endif --}}
 
     </ul>
 </li>

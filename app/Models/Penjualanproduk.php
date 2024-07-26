@@ -18,8 +18,13 @@ class Penjualanproduk extends Model
     
     protected $fillable = [
         'kode_penjualan',
+        'kode_pelanggan',
         'nama_pelanggan',
         'alamat',
+        'kasir',
+        'metode_id',
+        'total_fee',
+        'keterangan',
         'telp',
         'kategori',
         'sub_total',
@@ -31,12 +36,6 @@ class Penjualanproduk extends Model
         'cabang',
         'catatan',
         'metode_bayar',
-        'ket_gobiz',
-        'ket_edc',
-        'ket_rekening',
-        'ket_qris',
-        'struk_edc_fee',
-        'gobiz_fee',
         'nama_penerima',
         'telp_penerima',
         'alamat_penerima',
@@ -84,5 +83,9 @@ class Penjualanproduk extends Model
         return $this->belongsTo(Toko::class, 'toko_id');
     }
     
+    public function metodePembayaran()
+{
+    return $this->belongsTo(Metodepembayaran::class, 'metode_id');
+}
 
 }

@@ -117,6 +117,9 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/admin/penjualan_produk/pelunasan', [PenjualanprodukController::class, 'pelunasan'])->name('admin.penjualan_produk.pelunasan');
     Route::get('/products/{tokoId}', [PenjualanprodukController::class, 'getProductsByToko'])->name('products.byToko');
     Route::get('/fetch-data-by-kode', [PenjualanprodukController::class, 'fetchDataByKode'])->name('admin.penjualan_produk.fetchData');
+    Route::get('/metodepembayaran/{id}', [PenjualanprodukController::class, 'getMetodePembayaran']);
+    Route::get('metodebayar/metode/{id}', [\App\Http\Controllers\Admin\PenjualanprodukController::class, 'metode']);
+
 // web.php
 
     Route::resource('inquery_penjualanproduk', \App\Http\Controllers\Admin\Inquery_penjualanprodukController::class);
@@ -128,6 +131,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('print_penjualan', [\App\Http\Controllers\Admin\Laporan_penjualanprodukController::class, 'print_penjualan']);
 
     Route::resource('inquery_perubahanharga', \App\Http\Controllers\Admin\Inquery_perubahanhargaController::class);
+
+    Route::resource('metode_pembayaran', \App\Http\Controllers\Admin\Metode_pembayaranController::class);
 
     });
     Route::get('/toko/slawi', [SlawiController::class, 'index']);

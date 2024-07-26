@@ -295,28 +295,37 @@
         <hr class="divider">
         <hr class="divider">
         <div class="section">
-            <h2>Struk penjualan Produk</h2>
+            <h2>Struk penjualan</h2>
             <p style="text-align: right; font-size: 8px;">
                 {{ \Carbon\Carbon::parse($penjualan->tanggal_penjualan)->locale('id')->translatedFormat('l, d F Y H:i') }}
             </p><br>
             <div class="detail-info">
                 <div class="penjualan">
-                    <p><span style="min-width: 100px; display: inline-flex; align-items: center;">No penjualan</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $penjualan->kode_penjualan }}</span></p>
+                    <p>
+                        <span style="min-width: 100px; display: inline-flex; align-items: center;">No penjualan</span>
+                        <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $penjualan->kode_penjualan }}</span>
+                    </p>
                 </div>
-                
                 <div class="kasir">
-                    <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Kasir</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</span></p>
+                    <p>
+                        <span style="min-width: 100px; display: inline-flex; align-items: center;">Kasir</span>
+                        <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</span>
+                    </p>
                 </div>
                 <div class="pelanggan">
                     <p>
                         <span style="min-width: 100px; display: inline-flex; align-items: center;">Pelanggan</span>
-                        <span style="min-width: 100px; display: inline-flex; align-items: center;">
-                        : {{ $penjualan->nama_pelanggan ?? 'non member' }}
+                        <span style="min-width: 50px; display: inline-flex; align-items: center;">
+                            : 
+                            @if ($penjualan->kode_pelanggan && $penjualan->nama_pelanggan)
+                                {{ $penjualan->kode_pelanggan }} / {{ $penjualan->nama_pelanggan }}
+                            @else
+                                non member
+                            @endif
                         </span>
                     </p>
                 </div>
 
-                <h3 class="penjualan" style="text-decoration: underline;">Detail penjualan</h3>
                 @if($penjualan->detailpenjualanproduk->isEmpty())
                     <p>Tidak ada detail penjualan produk.</p>
                 @else
@@ -326,8 +335,8 @@
                             <th style="font-size: 8px;">Kode Produk</th>
                             <th style="font-size: 8px;">Nama Produk</th>
                             <th style="font-size: 8px;">Jumlah</th>
-                            <th style="font-size: 8px;">Diskon</th>
                             <th style="font-size: 8px;">Harga</th>
+                            <th style="font-size: 8px;">Diskon</th>
                             <th style="font-size: 8px;">Total</th>
                         </tr>
                     </thead>
@@ -340,6 +349,7 @@
                                 <td style="font-size: 8px;">{{ $detail->kode_produk }}</td>
                                 <td style="font-size: 8px;">{{ $detail->nama_produk }}</td>
                                 <td style="font-size: 8px;">{{ $detail->jumlah }}</td>
+                                <td style="font-size: 8px;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
                                 <td style="font-size: 8px;">
                                     @if ($detail->diskon > 0)
                                         {{ $detail->diskon }} %
@@ -347,7 +357,6 @@
                                         -
                                     @endif
                                 </td>
-                                <td style="font-size: 8px;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
                                 <td style="font-size: 8px; text-align: right;">{{ number_format($detail->total , 0, ',', '.')}}</td>
                             </tr>
                             @php
@@ -388,23 +397,7 @@
                 </table>
                 @endif
             </div>
-            {{-- <div class="signatures">
-                <div class="signature1">
-                    <p>Pelanggan</p>
-                    <br><br>
-                    <p style="text-decoration: underline;">{{ $penjualan->nama_pelanggan }}</p>
-                </div>
-                <div class="signature2">
-                    <p>Pemilik</p>
-                    <p>-</p>
-                    <p>__________________</p>
-                </div>
-                <div class="signature3">
-                <p>Admin</p>
-                <br><br>
-                <p style="text-decoration: underline;">{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</p>
-                </div>
-            </div> --}}
+           
             <div class="catatan">
                 <label>Catatan:</label>
                 <p>{{$penjualan->catatan ?? '-'}}</p>
@@ -425,7 +418,20 @@
                 </div>
             </div>  
         </div>
+        <script>
+            document.getElementById('printForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                window.print();
+            });
     
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Mencegah aksi default
+                    document.getElementById('printForm').submit();
+                }
+            });
+        </script>
+        
     </body>
     </html>
     

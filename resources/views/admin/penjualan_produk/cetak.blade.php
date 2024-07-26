@@ -126,20 +126,30 @@
             margin-top: -24px;
             flex-direction: column;
         }
-        .detail-info .pengiriman{
-            display: flex;
-            margin-top: 0px;
-            margin-bottom: 2px;
-            flex-direction: column;
-            /* border-bottom: 1px solid #ccc;
-            padding-bottom: 5px; */
-
-        }
+       
         .detail-info .penjualan{
             display: flex;
             margin-top: 2px;
             margin-bottom: 2px;
-            flex-direction: column;
+            /* flex-direction: column; */
+            /* border-bottom: 1px solid #ccc;
+            padding-bottom: 5px; */
+
+        }
+        .detail-info .pelanggan{
+            display: flex;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            /* flex-direction: column; */
+            /* border-bottom: 1px solid #ccc;
+            padding-bottom: 5px; */
+
+        }
+        .detail-info .kasir{
+            display: flex;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            /* flex-direction: column; */
             /* border-bottom: 1px solid #ccc;
             padding-bottom: 5px; */
 
@@ -160,18 +170,16 @@
             white-space: nowrap; /* Agar teks tidak pindah ke baris baru */
         }
         .penjualan p span {
-            margin-top: 3px;
+            margin-top: 1px;
         }
         .pelanggan p span {
-            margin-top: 3px;
+            margin-top: 1px;
             
         }
-        .telepon p span {
-            margin-top: 3px;
+        .kasir p span {
+            margin-top: 1px;
         }
-        .alamat p span {
-            margin-top: 3px;
-        }
+        
         .tanggal p span {
             margin-top: 3px;
         }
@@ -197,28 +205,37 @@
         <hr class="divider">
         <hr class="divider">
         <div class="section">
-            <h2>Struk penjualan Produk</h2>
+            <h2>Struk penjualan</h2>
             <p style="text-align: right; font-size: 8px;">
                 {{ \Carbon\Carbon::parse($penjualan->tanggal_penjualan)->locale('id')->translatedFormat('l, d F Y H:i') }}
             </p><br>
             <div class="detail-info">
                 <div class="penjualan">
-                    <p><span style="min-width: 100px; display: inline-flex; align-items: center;">No penjualan</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $penjualan->kode_penjualan }}</span></p>
+                    <p>
+                        <span style="min-width: 100px; display: inline-flex; align-items: center;">No penjualan</span>
+                        <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $penjualan->kode_penjualan }}</span>
+                    </p>
                 </div>
                 <div class="kasir">
-                    <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Kasir</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</span></p>
+                    <p>
+                        <span style="min-width: 100px; display: inline-flex; align-items: center;">Kasir</span>
+                        <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</span>
+                    </p>
                 </div>
                 <div class="pelanggan">
                     <p>
                         <span style="min-width: 100px; display: inline-flex; align-items: center;">Pelanggan</span>
-                        <span style="min-width: 100px; display: inline-flex; align-items: center;">
-                            : {{ $penjualan->nama_pelanggan ?? 'non member' }}
+                        <span style="min-width: 50px; display: inline-flex; align-items: center;">
+                            : 
+                            @if ($penjualan->kode_pelanggan && $penjualan->nama_pelanggan)
+                                {{ $penjualan->kode_pelanggan }} / {{ $penjualan->nama_pelanggan }}
+                            @else
+                                non member
+                            @endif
                         </span>
                     </p>
                 </div>
                 
-
-                <h3 class="penjualan" style="text-decoration: underline;">Detail penjualan</h3>
                 @if($penjualan->detailpenjualanproduk->isEmpty())
                     <p>Tidak ada detail penjualan produk.</p>
                 @else
@@ -228,8 +245,8 @@
                             <th style="font-size: 8px;">Kode Produk</th>
                             <th style="font-size: 8px;">Nama Produk</th>
                             <th style="font-size: 8px;">Jumlah</th>
-                            <th style="font-size: 8px;">Diskon</th>
                             <th style="font-size: 8px;">Harga</th>
+                            <th style="font-size: 8px;">Diskon</th>
                             <th style="font-size: 8px;">Total</th>
                         </tr>
                     </thead>
@@ -242,6 +259,7 @@
                                 <td style="font-size: 8px;">{{ $detail->kode_produk }}</td>
                                 <td style="font-size: 8px;">{{ $detail->nama_produk }}</td>
                                 <td style="font-size: 8px;">{{ $detail->jumlah }}</td>
+                                <td style="font-size: 8px;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
                                 <td style="font-size: 8px;">
                                     @if ($detail->diskon > 0)
                                         {{ $detail->diskon }} %
@@ -249,7 +267,6 @@
                                         -
                                     @endif
                                 </td>
-                                <td style="font-size: 8px;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
                                 <td style="font-size: 8px; text-align: right;">{{ number_format($detail->total , 0, ',', '.')}}</td>
                             </tr>
                             @php

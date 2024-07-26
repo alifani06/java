@@ -69,10 +69,10 @@
                                 {{-- <th> <input type="checkbox" name="" id="select_all_ids"></th> --}}
                                 <th class="text-center">No</th>
                                 <th>Kode penjualan</th>
-                                <th>Tanggal penjualan</th>
-                                <th>Nama Pelanggan</th>
+                                <th>Tanggal</th>
+                                <th>Kasir</th>
+                                <th>Pelanggan</th>
                                 <th>Pembayaran</th>
-                                <th>Produk</th>
                                 <th>Total</th>
                                 <th class="text-center" width="20">Opsi</th>
                             </tr>
@@ -88,21 +88,33 @@
                                     <td>
                                         {{ \Carbon\Carbon::parse($item->tanggal_penjualan)->format('d/m/Y H:i') }}
                                     </td>
-                                    
                                     <td>
-                                        {{ $item->nama_pelanggan ?? 'Non Member'}}
+                                        {{ $item->kasir }}
                                     </td>
                                     <td>
-                                        {{ ucwords($item->metode_bayar) }}
+                                        @if ($item->kode_pelanggan && $item->nama_pelanggan)
+                                            {{ $item->kode_pelanggan }} / {{ $item->nama_pelanggan }}
+                                        @else
+                                            Non Member
+                                        @endif
                                     </td>
                                     
                                     <td>
+                                        @if($item->metodePembayaran)
+                                            {{ $item->metodePembayaran->nama_metode }}
+                                        @else
+                                            Tunai
+                                        @endif
+                                    </td>
+                                    
+                                    
+                                    {{-- <td>
                                         @if ($item->detailpenjualanproduk->isNotEmpty())
                                             {{ ucwords(strtolower($item->detailpenjualanproduk->pluck('nama_produk')->implode(', '))) }}
                                         @else
                                             tidak ada
                                         @endif
-                                    </td>
+                                    </td> --}}
                                     
                                     
                                     <td>

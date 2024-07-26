@@ -25,6 +25,7 @@ use App\Models\Pemesananproduk;
 use App\Models\Penjualanproduk;
 use App\Models\Toko;
 use App\Models\Dppemesanan;
+use App\Models\Metodepembayaran;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
@@ -36,25 +37,39 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class PenjualanprodukController extends Controller
 {
- 
     public function index(Request $request)
-
     {
-
-            $today = Carbon::today();
-            $inquery = Penjualanproduk::whereDate('created_at', $today)
-                ->orWhere(function ($query) use ($today) {
-                    $query->where('status', 'unpost')
-                        ->whereDate('created_at', '<', $today);
-                })
-                ->orderBy('created_at', 'desc')
-                ->get();
-
-            return view('admin.penjualan_produk.index', compact('inquery'));
-            // tidak memiliki akses
-            return back()->with('error', array('Anda tidak memiliki akses'));
-        
+        $today = Carbon::today();
+        $inquery = Penjualanproduk::with('metodePembayaran')
+            ->whereDate('created_at', $today)
+            ->orWhere(function ($query) use ($today) {
+                $query->where('status', 'unpost')
+                    ->whereDate('created_at', '<', $today);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+    
+        return view('admin.penjualan_produk.index', compact('inquery'));
     }
+    
+    // public function index(Request $request)
+
+    // {
+
+    //         $today = Carbon::today();
+    //         $inquery = Penjualanproduk::whereDate('created_at', $today)
+    //             ->orWhere(function ($query) use ($today) {
+    //                 $query->where('status', 'unpost')
+    //                     ->whereDate('created_at', '<', $today);
+    //             })
+    //             ->orderBy('created_at', 'desc')
+    //             ->get();
+
+    //         return view('admin.penjualan_produk.index', compact('inquery'));
+    //         // tidak memiliki akses
+    //         return back()->with('error', array('Anda tidak memiliki akses'));
+        
+    // }
  
 
     public function pelanggan($id)
@@ -62,6 +77,26 @@ class PenjualanprodukController extends Controller
         $user = Pelanggan::where('id', $id)->first();
 
         return json_decode($user);
+    }
+
+    // public function getMetodePembayaran($id)
+    // {
+    //     $metode = Metodepembayaran::find($id);
+
+    //     if ($metode) {
+    //         return response()->json([
+    //             'diskon' => $metode->diskon,
+    //             'keterangan' => $metode->keterangan
+    //         ]);
+    //     } else {
+    //         return response()->json(['error' => 'Metode Pembayaran tidak ditemukan'], 404);
+    //     }
+    // }
+    public function metode($id)
+    {
+        $metode = Metodepembayaran::where('id', $id)->first();
+
+        return json_decode($metode);
     }
 
 
@@ -75,12 +110,13 @@ class PenjualanprodukController extends Controller
         $tokos = Toko::all();
         $dppemesanans = Dppemesanan::all();
         $pemesananproduks = Pemesananproduk::all();
+        $metodes = Metodepembayaran::all();
     
         $produks = Produk::with('tokoslawi')->get();
 
         $kategoriPelanggan = 'member';
     
-        return view('admin.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks'));
+        return view('admin.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
     }
     
 
@@ -207,9 +243,8 @@ class PenjualanprodukController extends Controller
     //     return $newCode;
     // }
 
- 
-    
-//     public function store(Request $request)
+
+// public function store(Request $request)
 // {
 //     // Validasi pelanggan
 //     $validasi_pelanggan = Validator::make(
@@ -219,12 +254,14 @@ class PenjualanprodukController extends Controller
 //             'telp' => 'nullable',
 //             'alamat' => 'nullable',
 //             'kategori' => 'nullable',
+//             'metodebayar' => 'nullable'
 //         ],
 //         [
 //             'nama_pelanggan.nullable' => 'Masukkan nama pelanggan',
 //             'telp.nullable' => 'Masukkan telepon',
 //             'alamat.nullable' => 'Masukkan alamat',
 //             'kategori.nullable' => 'Pilih kategori pelanggan',
+//             'metodebayar.nullable' => 'Pilih metode pembayaran',
 //         ]
 //     );
 
@@ -287,6 +324,7 @@ class PenjualanprodukController extends Controller
 //     // Buat pemesanan baru
 //     $cetakpdf = Penjualanproduk::create([
 //         'nama_pelanggan' => $request->nama_pelanggan ?? null,
+//         'kode_pelanggan' => $request->kode_pelanggan ?? null,
 //         'telp' => $request->telp ?? null,
 //         'alamat' => $request->alamat ?? null,
 //         'kategori' => $request->kategori,
@@ -294,12 +332,16 @@ class PenjualanprodukController extends Controller
 //         'bayar' => $request->bayar,
 //         'kembali' => $request->kembali,
 //         'catatan' => $request->catatan,
-//         'metode_bayar' => $request->metodebayar, 
+//         'metode_bayar' => $request->metodebayar ?? 'tunai',
 //         'ket_gobiz' => $request->ket_gobiz, 
 //         'ket_edc' => $request->ket_edc, 
 //         'ket_rekening' => $request->ket_rekening, 
 //         'ket_qris' => $request->ket_qris, 
-//         'toko_id' => $request->toko,
+//         'struk_edc_fee' => $request->struk_edc_fee, 
+//         'gobiz_fee' => $request->gobiz_fee, 
+//         'toko_id' => 1,
+//         'kasir' => ucfirst(auth()->user()->karyawan->nama_lengkap),
+//         // 'toko_id' => $request->toko,
 //         'kode_penjualan' => $this->kode(),
 //         'qrcode_penjualan' => 'https://javabakery.id/penjualan/' . $kode,
 //         'tanggal_penjualan' => Carbon::now('Asia/Jakarta'),
@@ -333,25 +375,28 @@ class PenjualanprodukController extends Controller
 //         'details' => $details,
 //     ]);
 // }
-
 public function store(Request $request)
 {
     // Validasi pelanggan
     $validasi_pelanggan = Validator::make(
         $request->all(),
         [
-            'nama_pelanggan' => 'nullable',
-            'telp' => 'nullable',
-            'alamat' => 'nullable',
-            'kategori' => 'nullable',
-            'metodebayar' => 'nullable'
+            'nama_pelanggan' => 'nullable|string',
+            'telp' => 'nullable|string',
+            'alamat' => 'nullable|string',
+            'kategori' => 'nullable|string',
+            'metode_id' => 'nullable|exists:metodepembayarans,id', // Validasi metode pembayaran
+            'total_fee' => 'nullable|numeric',
+            'keterangan' => 'nullable|string'
         ],
         [
             'nama_pelanggan.nullable' => 'Masukkan nama pelanggan',
             'telp.nullable' => 'Masukkan telepon',
             'alamat.nullable' => 'Masukkan alamat',
             'kategori.nullable' => 'Pilih kategori pelanggan',
-            'metodebayar.nullable' => 'Pilih metode pembayaran',
+            'metode_id.nullable' => 'Pilih metode pembayaran',
+            'total_fee.numeric' => 'Total fee harus berupa angka',
+            'keterangan.string' => 'Keterangan harus berupa string',
         ]
     );
 
@@ -371,8 +416,8 @@ public function store(Request $request)
                 'kode_produk.' . $i => 'required',
                 'produk_id.' . $i => 'required',
                 'nama_produk.' . $i => 'required',
-                'harga.' . $i => 'required',
-                'total.' . $i => 'required',
+                'harga.' . $i => 'required|numeric',
+                'total.' . $i => 'required|numeric',
             ]);
 
             if ($validasi_produk->fails()) {
@@ -398,22 +443,23 @@ public function store(Request $request)
             ]);
         }
     }
-
+ 
     // Handling errors for pelanggans or pesanans
-    if ($error_pelanggans || $error_pesanans) {
-        return back()
-            ->withInput()
-            ->withErrors([
-                'pelanggans' => $error_pelanggans,
-                'pesanans' => $error_pesanans,
-            ])
-            ->with('data_pembelians', $data_pembelians);
-    }
-
+    // if ($error_pelanggans || $error_pesanans) {
+    //     return back()
+    //         ->withInput()
+    //         ->withErrors([
+    //             'pelanggans' => $error_pelanggans,
+    //             'pesanans' => $error_pesanans,
+    //         ])
+    //         ->with('data_pembelians', $data_pembelians);
+    // }
+    
     $kode = $this->kode();
     // Buat pemesanan baru
     $cetakpdf = Penjualanproduk::create([
         'nama_pelanggan' => $request->nama_pelanggan ?? null,
+        'kode_pelanggan' => $request->kode_pelanggan ?? null,
         'telp' => $request->telp ?? null,
         'alamat' => $request->alamat ?? null,
         'kategori' => $request->kategori,
@@ -421,14 +467,12 @@ public function store(Request $request)
         'bayar' => $request->bayar,
         'kembali' => $request->kembali,
         'catatan' => $request->catatan,
+        'metode_id' => $request->metode_id, 
+        'total_fee' => $request->total_fee, 
+        'keterangan' => $request->keterangan, 
         'metode_bayar' => $request->metodebayar ?? 'tunai',
-        'ket_gobiz' => $request->ket_gobiz, 
-        'ket_edc' => $request->ket_edc, 
-        'ket_rekening' => $request->ket_rekening, 
-        'ket_qris' => $request->ket_qris, 
-        'struk_edc_fee' => $request->struk_edc_fee, 
-        'gobiz_fee' => $request->gobiz_fee, 
-        'toko_id' => $request->toko,
+        'toko_id' => 1,
+        'kasir' => ucfirst(auth()->user()->karyawan->nama_lengkap),
         'kode_penjualan' => $this->kode(),
         'qrcode_penjualan' => 'https://javabakery.id/penjualan/' . $kode,
         'tanggal_penjualan' => Carbon::now('Asia/Jakarta'),
