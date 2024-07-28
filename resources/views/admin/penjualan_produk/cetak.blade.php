@@ -189,6 +189,15 @@
             margin-bottom: 2px;
             border-bottom: 2px solid #0f0e0e;
         }
+        .terimakasih p{
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
+        text-align: center;
+        margin-bottom: 5px;
+        margin-top: 10px;
+        font-size: 10px;
+    }
 
 
     </style>
@@ -222,19 +231,22 @@
                         <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</span>
                     </p>
                 </div>
-                <div class="pelanggan">
-                    <p>
-                        <span style="min-width: 100px; display: inline-flex; align-items: center;">Pelanggan</span>
-                        <span style="min-width: 50px; display: inline-flex; align-items: center;">
-                            : 
-                            @if ($penjualan->kode_pelanggan && $penjualan->nama_pelanggan)
-                                {{ $penjualan->kode_pelanggan }} / {{ $penjualan->nama_pelanggan }}
-                            @else
-                                non member
-                            @endif
-                        </span>
-                    </p>
-                </div>
+                @if(!is_null($penjualan->nama_pelanggan))
+                    <div class="pelanggan">
+                        <p>
+                            <span style="min-width: 100px; display: inline-flex; align-items: center;">Pelanggan</span>
+                            <span style="min-width: 50px; display: inline-flex; align-items: center;">
+                                : 
+                                @if ($penjualan->kode_pelanggan && $penjualan->nama_pelanggan)
+                                    {{ $penjualan->kode_pelanggan }} / {{ $penjualan->nama_pelanggan }}
+                                @else
+                                    non member
+                                @endif
+                            </span>
+                        </p>
+                    </div>
+                @endif
+
                 
                 @if($penjualan->detailpenjualanproduk->isEmpty())
                     <p>Tidak ada detail penjualan produk.</p>
@@ -243,7 +255,7 @@
                     <thead>
                         <tr>
                             <th style="font-size: 8px;">Kode Produk</th>
-                            <th style="font-size: 8px;">Nama Produk</th>
+                            <th style="font-size: 8px;">Produk</th>
                             <th style="font-size: 8px;">Jumlah</th>
                             <th style="font-size: 8px;">Harga</th>
                             <th style="font-size: 8px;">Diskon</th>
@@ -267,7 +279,7 @@
                                         -
                                     @endif
                                 </td>
-                                <td style="font-size: 8px; text-align: right;">{{ number_format($detail->total , 0, ',', '.')}}</td>
+                                <td style="font-size: 8px; text-align: right;">{{'Rp.'. number_format($detail->total , 0, ',', '.')}}</td>
                             </tr>
                             @php
                                 $total = is_numeric($detail->total) ? $detail->total : 0;
@@ -275,22 +287,26 @@
                             @endphp
                         @endforeach
                         <tr>
-                            @if($penjualan->metode_bayar !== 'tunai')
-                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee</strong></td>
-                            <td style="font-size: 8px; text-align: right;">
-                                @if($penjualan->metode_bayar == 'mesinedc')
-                                    {{ number_format($penjualan->struk_edc_fee, 0, ',', '.') }}
-                                @elseif($penjualan->metode_bayar == 'gobiz')
-                                    {{ number_format($penjualan->gobiz_fee, 0, ',', '.') }}
-                                @endif
-                            </td>
+                            @if($penjualan->metode_id !== null)
+                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee</strong></td>
+                                <td style="font-size: 8px; text-align: right;">
+                                    @php
+                                        // Menghapus semua karakter kecuali angka
+                                        $total_fee = preg_replace('/[^\d]/', '', $penjualan->total_fee);
+                                        // Konversi ke tipe float
+                                        $total_fee = (float) $total_fee;
+                                    @endphp
+                                    {{ 'Rp. ' . number_format($total_fee, 0, ',', '.') }}
+                                </td>
                             @endif
                         </tr>
+                        
+                        
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total </strong></td>
                             <td style="font-size: 8px;">{{ 'Rp.' . number_format($penjualan->sub_total, 0, ',', '.') }}</td>
                         </tr>
-                        @if($penjualan->metode_bayar == 'tunai')
+                        @if($penjualan->metode_id == Null)
                             <tr>
                                 <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Bayar</strong></td>
                                 <td style="font-size: 8px;">{{ 'Rp.' . number_format($penjualan->bayar, 0, ',', '.') }}</td>
@@ -309,30 +325,30 @@
                 
                 @endif
             </div>
-            {{-- <div class="signatures">
-                <div class="signature1">
-                    <p>Pelanggan</p>
-                    <br><br>
-                    <p style="text-decoration: underline;">{{ $penjualan->nama_pelanggan }}</p>
-                </div>
-                <div class="signature2">
-                    <p>Pemilik</p>
-                    <p>-</p>
-                    <p>__________________</p>
-                </div>
-                <div class="signature3">
-                <p>Admin</p>
-                <br><br>
-                <p style="text-decoration: underline;">{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</p>
-                </div>
-            </div> --}}
+            
+            @if(!is_null($penjualan->catatan))
             <div class="catatan">
                 <label>Catatan:</label>
-                <p>{{$penjualan->catatan ?? '-'}}</p>
+                <p>{{$penjualan->catatan}}</p>
             </div>
-            <div class="terimakasih" style="text-align: center; font-family: 'Courier'; margin-top: 10px" >
-                <strong>TERIMAKASIH</strong><br>
-                
+             @endif
+             
+             @if($penjualan->sub_total < $detail->totalasli)
+             <div class="hemat">
+                 <label>Anda telah hemat: </label>
+                 <span><strong>{{ 'Rp. ' . number_format($detail->totalasli - $penjualan->sub_total, 0, ',', '.') }}</strong></span>
+             </div>
+            @endif
+         
+            <div class="terimakasih">
+                <p>Untuk pemesanan, kritik dan saran Hubungi.082136638003.</p>
+            </div>
+
+            <div class="terimakasihd" style="text-align: left; margin-top: 2px ; font-size: 10px; font-style: italic" >
+                <p>Barang yang sudah dibeli tidak bisa dikembalikan atau ditukar.</p><br> 
+            </div>
+            <div class="terimakasihd" style="text-align: center; margin-top: -35px" >
+                <p>Terimakasih atas kunjungannya</p><br> 
             </div>
             <div class="qr" style="display: flex; justify-content: center; align-items: center; margin-top: 10px; margin-left: 4px">
                 <div style="text-align: center;">

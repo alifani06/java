@@ -45,8 +45,8 @@ class Metode_pembayaranController extends Controller
             $request->all(),
             [
                 'nama_metode' => 'required',
-                // 'diskon' => 'required',
-                // 'keterangan' => 'required',
+                'fee' => 'nullable',
+                'keterangan' => 'nullable',
                
             ],
             [
@@ -132,7 +132,7 @@ class Metode_pembayaranController extends Controller
         
 
         $metode->nama_metode = $request->nama_metode;
-        $metode->diskon = $request->diskon;
+        $metode->fee = $request->fee;
         $metode->keterangan = $request->keterangan;
         
         $metode->save();

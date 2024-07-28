@@ -19,7 +19,7 @@
             background-color: #f2f2f2;
         }
             .container {
-            width: 68mm; /* Adjusted width */
+            width: 70mm; /* Adjusted width */
             margin: 0 auto;
             border: 1px solid #ddd;
             padding: 20px;
@@ -193,7 +193,7 @@
         padding: 0;
     }
     .container {
-        width: 68mm; /* Sesuaikan dengan lebar kertas thermal */
+        width: 70mm; /* Sesuaikan dengan lebar kertas thermal */
         margin: 0 auto;
         border: none;
         padding: 0;
@@ -276,7 +276,7 @@
         border-bottom: 1px solid #0f0e0e;
     }
     @page {
-        size: 68mm auto; /* Sesuaikan dengan ukuran kertas thermal */
+        size: 70mm auto; /* Sesuaikan dengan ukuran kertas thermal */
         margin: 0mm; /* Set margin ke 0 untuk semua sisi */
     }
 }
@@ -333,7 +333,7 @@
                     <thead>
                         <tr>
                             <th style="font-size: 8px;">Kode Produk</th>
-                            <th style="font-size: 8px;">Nama Produk</th>
+                            <th style="font-size: 8px;">Produk</th>
                             <th style="font-size: 8px;">Jumlah</th>
                             <th style="font-size: 8px;">Harga</th>
                             <th style="font-size: 8px;">Diskon</th>
@@ -357,51 +357,64 @@
                                         -
                                     @endif
                                 </td>
-                                <td style="font-size: 8px; text-align: right;">{{ number_format($detail->total , 0, ',', '.')}}</td>
+                                <td style="font-size: 8px; text-align: right;">{{'Rp.'. number_format($detail->total , 0, ',', '.')}}</td>
                             </tr>
                             @php
-                                // Validasi dan konversi data menjadi numerik
                                 $total = is_numeric($detail->total) ? $detail->total : 0;
                                 $subtotal += $total;
                             @endphp
                         @endforeach
                         <tr>
-                            @if($penjualan->metode_bayar !== 'tunai')
-                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee</strong></td>
-                            <td style="font-size: 8px; text-align: right;">
-                                @if($penjualan->metode_bayar == 'mesinedc')
-                                    {{ number_format($penjualan->struk_edc_fee, 0, ',', '.') }}
-                                @elseif($penjualan->metode_bayar == 'gobiz')
-                                    {{ number_format($penjualan->gobiz_fee, 0, ',', '.') }}
-                                @endif
-                            </td>
+                            @if($penjualan->metode_id !== null)
+                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee</strong></td>
+                                <td style="font-size: 8px; text-align: right;">
+                                    @php
+                                        // Menghapus semua karakter kecuali angka
+                                        $total_fee = preg_replace('/[^\d]/', '', $penjualan->total_fee);
+                                        // Konversi ke tipe float
+                                        $total_fee = (float) $total_fee;
+                                    @endphp
+                                    {{ 'Rp. ' . number_format($total_fee, 0, ',', '.') }}
+                                </td>
                             @endif
                         </tr>
+                        
+                        
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total </strong></td>
-                            <td style="font-size: 8px;">{{'Rp.'.number_format($penjualan->sub_total, 0, ',', '.') }}</td>
+                            <td style="font-size: 8px;">{{ 'Rp.' . number_format($penjualan->sub_total, 0, ',', '.') }}</td>
+                        </tr>
+                        @if($penjualan->metode_id == Null)
+                            <tr>
+                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Bayar</strong></td>
+                                <td style="font-size: 8px;">{{ 'Rp.' . number_format($penjualan->bayar, 0, ',', '.') }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kembalian</strong></td>
+                                <td style="font-size: 8px;">{{ 'Rp.' . number_format($penjualan->kembali, 0, ',', '.') }}</td>
+                            </tr>
+                        @elseif($penjualan->metode_bayar == 'mesinedc' || $penjualan->metode_bayar == 'gobiz')
                             
-                        </tr>
-                        @if($penjualan->metode_bayar == 'tunai')
-                        <tr>
-                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Bayar</strong></td>
-                            <td style="font-size: 8px;">{{ 'Rp.' . number_format($penjualan->bayar, 0, ',', '.') }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kembalian</strong></td>
-                            <td style="font-size: 8px;">{{ 'Rp.' . number_format($penjualan->kembali, 0, ',', '.') }}</td>
-                        </tr>
-                    @endif
+                        @endif
                     </tbody>
                     
                 </table>
                 @endif
             </div>
            
-            <div class="catatan">
-                <label>Catatan:</label>
-                <p>{{$penjualan->catatan ?? '-'}}</p>
-            </div>
+            @if(!is_null($penjualan->catatan))
+                <div class="catatan">
+                    <label>Catatan:</label>
+                    <p>{{$penjualan->catatan}}</p>
+                </div>
+            @endif
+
+            @if($penjualan->sub_total < $detail->totalasli)
+             <div class="hemat">
+                 <label>Anda telah hemat: </label>
+                 <span><strong>{{ 'Rp. ' . number_format($detail->totalasli - $penjualan->sub_total, 0, ',', '.') }}</strong></span>
+             </div>
+            @endif
             <div class="terimakasih">
                 <p>Untuk pemesanan, kritik dan saran Hubungi.082136638003.</p>
             </div>
@@ -412,7 +425,7 @@
             <div class="terimakasihd" style="text-align: center; margin-top: -35px" >
                 <p>Terimakasih atas kunjungannya</p><br> 
             </div>
-            <div class="qr" style="display: flex; justify-content: center; align-items: center; margin-top: -10px; margin-left: 101px">
+            <div class="qr" style="display: flex; justify-content: center; align-items: center; margin-top: -10px; margin-left: 120px">
                 <div style="text-align: center;">
                     {!! DNS2D::getBarcodeHTML($penjualan->qrcode_penjualan, 'QRCODE', 1.5, 1.5) !!}
                 </div>

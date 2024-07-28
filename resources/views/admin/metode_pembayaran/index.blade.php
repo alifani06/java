@@ -61,7 +61,7 @@
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $metode->kode_metode }}</td>
                                     <td>{{ $metode->nama_metode }}</td>
-                                    <td>{{ $metode->diskon ? $metode->diskon . '%' : '-' }}</td>
+                                    <td>{{ $metode->fee ? $metode->fee . '%' : '-' }}</td>
                                     <td>{{ $metode->keterangan }}</td>
                                     <td data-toggle="modal" data-target="#modal-qrcode-{{ $metode->id }}"
                                         style="text-align: center;">

@@ -51,8 +51,8 @@
 
                         <div class="form-group">
                             <label for="nama">Fee</label>
-                            <input type="text" class="form-control" id="diskon" name="diskon"
-                                placeholder="Masukan nama fee" value="{{ old('diskon') }}">
+                            <input type="text" class="form-control" id="fee" name="fee"
+                                placeholder="Masukan nama fee" value="{{ old('fee') }}">
                         </div>
 
                         <div class="form-group">

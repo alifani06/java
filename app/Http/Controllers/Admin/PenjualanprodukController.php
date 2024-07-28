@@ -418,6 +418,7 @@ public function store(Request $request)
                 'nama_produk.' . $i => 'required',
                 'harga.' . $i => 'required|numeric',
                 'total.' . $i => 'required|numeric',
+                'totalasli.' . $i => 'required|numeric',
             ]);
 
             if ($validasi_produk->fails()) {
@@ -431,6 +432,7 @@ public function store(Request $request)
             $diskon = $request->input('diskon.' . $i, '');
             $harga = $request->input('harga.' . $i, '');
             $total = $request->input('total.' . $i, '');
+            $totalasli = $request->input('totalasli.' . $i, '');
 
             $data_pembelians->push([
                 'kode_produk' => $kode_produk,
@@ -440,10 +442,11 @@ public function store(Request $request)
                 'diskon' => $diskon,
                 'harga' => $harga,
                 'total' => $total,
+                'totalasli' => $totalasli,
             ]);
         }
     }
- 
+
     // Handling errors for pelanggans or pesanans
     // if ($error_pelanggans || $error_pesanans) {
     //     return back()
@@ -454,7 +457,8 @@ public function store(Request $request)
     //         ])
     //         ->with('data_pembelians', $data_pembelians);
     // }
-    
+
+
     $kode = $this->kode();
     // Buat pemesanan baru
     $cetakpdf = Penjualanproduk::create([
@@ -470,7 +474,6 @@ public function store(Request $request)
         'metode_id' => $request->metode_id, 
         'total_fee' => $request->total_fee, 
         'keterangan' => $request->keterangan, 
-        'metode_bayar' => $request->metodebayar ?? 'tunai',
         'toko_id' => 1,
         'kasir' => ucfirst(auth()->user()->karyawan->nama_lengkap),
         'kode_penjualan' => $this->kode(),
@@ -493,6 +496,7 @@ public function store(Request $request)
             'diskon' => $data_pesanan['diskon'],
             'harga' => $data_pesanan['harga'],
             'total' => $data_pesanan['total'],
+            'totalasli' => $data_pesanan['totalasli'],
         ]);
     }
 

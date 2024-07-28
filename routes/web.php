@@ -128,7 +128,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('inquery_penjualanproduk/posting_penjualanproduk/{id}', [\App\Http\Controllers\Admin\Inquery_penjualanprodukController::class, 'posting_penjualanproduk']);
 
     Route::resource('laporan_penjualanproduk', \App\Http\Controllers\Admin\Laporan_penjualanprodukController::class);
-    Route::get('print_penjualan', [\App\Http\Controllers\Admin\Laporan_penjualanprodukController::class, 'print_penjualan']);
+    Route::get('admin/laporan_penjualanproduk/print', [\App\Http\Controllers\Admin\Laporan_penjualanprodukController::class, 'printReport']);
 
     Route::resource('inquery_perubahanharga', \App\Http\Controllers\Admin\Inquery_perubahanhargaController::class);
 

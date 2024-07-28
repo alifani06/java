@@ -98,8 +98,8 @@
                                 <th class="text-center">No</th>
                                 <th>Kode penjualan</th>
                                 <th>Tanggal penjualan</th>
-                                <th>Nama Pelanggan</th>
-                                <th>Produk</th>
+                                <th>Kasir</th>
+                                <th>Pelanggan</th>
                           
                                 <th>Total</th>
                                 <th class="text-center" width="20">Opsi</th>
@@ -116,17 +116,23 @@
                                     <td>
                                         {{ \Carbon\Carbon::parse($item->tanggal_penjualan)->format('d/m/Y H:i') }}
                                     </td>
-                                    
                                     <td>
-                                        {{ $item->nama_pelanggan ?? 'Non Member' }}
+                                        {{ $item->kasir }}
                                     </td>
                                     <td>
+                                        @if ($item->kode_pelanggan && $item->nama_pelanggan)
+                                            {{ $item->kode_pelanggan }} / {{ $item->nama_pelanggan }}
+                                        @else
+                                            Non Member
+                                        @endif
+                                    </td>
+                                    {{-- <td>
                                         @if ($item->detailpenjualanproduk->isNotEmpty())
                                             {{ $item->detailpenjualanproduk->pluck('nama_produk')->implode(', ') }}
                                         @else
                                             tidak ada
                                         @endif
-                                    </td>
+                                    </td> --}}
 
                                     <td>
                                         {{ number_format($item->sub_total, 0, ',', '.') }}

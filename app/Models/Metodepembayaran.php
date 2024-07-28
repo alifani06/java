@@ -19,7 +19,7 @@ class Metodepembayaran extends Model
         'nama_metode',
         'kode_metode',
         'qrcode_metode',
-        'diskon',
+        'fee',
         'keterangan',
     ];
 

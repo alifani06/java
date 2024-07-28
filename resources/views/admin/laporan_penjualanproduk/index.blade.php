@@ -16,6 +16,7 @@
             }, 10); // Adjust the delay time as needed
         });
     </script>
+
     <!-- Content Header (Page header) -->
     <div class="content-header" style="display: none;" id="mainContent">
         <div class="container-fluid">
@@ -63,14 +64,14 @@
                 <div class="card-body">
                     <form method="GET" id="form-action">
                         <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <select class="custom-select form-control" id="status" name="status">
-                                <option value="">- Semua Status -</option>
-                                <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
-                                <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
-                            </select>
-                            <label for="status">(Pilih Status)</label>
-                        </div>
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="status" name="status">
+                                    <option value="">- Semua Status -</option>
+                                    <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
+                                    <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
+                                </select>
+                                <label for="status">(Pilih Status)</label>
+                            </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
                                     value="{{ Request::get('tanggal_penjualan') }}" max="{{ date('Y-m-d') }}" />
@@ -82,27 +83,43 @@
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="produk" name="produk">
+                                    <option value="">- Semua Produk -</option>
+                                    @foreach ($produks as $produk)
+                                        <option value="{{ $produk->id }}" {{ Request::get('produk') == $produk->id ? 'selected' : '' }}>{{ $produk->nama_produk }}</option>
+                                    @endforeach
+                                </select>
+                                <label for="produk">(Pilih Produk)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="toko" name="toko_id">
+                                    <option value="">- Semua Toko -</option>
+                                    @foreach ($tokos as $toko)
+                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
+                                    @endforeach
+                                </select>
+                                <label for="toko">(Pilih Toko)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
                                 <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
                                 <button type="button" class="btn btn-primary btn-block" onclick="printReport()"
                                         target="_blank">
                                         <i class="fas fa-print"></i> Cetak
-                                    </button>
-                                
+                                </button>
                             </div>
                         </div>
                     </form>
-
                    
                     <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
                         <thead class="">
                             <tr>
-                                {{-- <th> <input type="checkbox" name="" id="select_all_ids"></th> --}}
                                 <th class="text-center">No</th>
                                 <th>Kode penjualan</th>
                                 <th>Tanggal penjualan</th>
-                                <th>Nama Pelanggan</th>
+                                <th>Cabang</th>
+                                {{-- <th>Pelanggan</th> --}}
                                 <th>Produk</th>
                                 <th>Total</th>
                             </tr>
@@ -110,18 +127,11 @@
                         <tbody>
                             @foreach ($inquery as $item)
                                 <tr class="dropdown"{{ $item->id }}>
-                                   
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>
-                                        {{ $item->kode_penjualan }}
-                                    </td>
-                                    <td>
-                                        {{ \Carbon\Carbon::parse($item->tanggal_penjualan)->format('d/m/Y H:i') }}
-                                    </td>
-                                    
-                                    <td>
-                                        {{ $item->nama_pelanggan ?? 'Non Member' }}
-                                    </td>
+                                    <td>{{ $item->kode_penjualan }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($item->tanggal_penjualan)->format('d/m/Y H:i') }}</td>
+                                    {{-- <td>{{ $item->nama_pelanggan ?? 'Non Member' }}</td> --}}
+                                    <td>{{ $item->toko->nama_toko}}</td>
                                     <td>
                                         @if ($item->detailpenjualanproduk->isNotEmpty())
                                             {{ $item->detailpenjualanproduk->pluck('nama_produk')->implode(', ') }}
@@ -129,10 +139,7 @@
                                             tidak ada
                                         @endif
                                     </td>
-
-                                    <td>
-                                        {{ number_format($item->sub_total, 0, ',', '.') }}
-                                    </td>
+                                    <td>{{ number_format($item->sub_total, 0, ',', '.') }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -154,7 +161,6 @@
             </div>
         </div>
     </section>
-
 
     <!-- /.card -->
     <script>
@@ -180,129 +186,37 @@
             form.action = "{{ url('admin/laporan_penjualanproduk') }}";
             form.submit();
         }
-
-    </script>
-
-    <script>
-        $(function(e) {
-            $("#select_all_ids").click(function() {
-                $('.checkbox_ids').prop('checked', $(this).prop('checked'))
-            })
-        });
-
-        function printSelectedData() {
-            var selectedIds = document.querySelectorAll(".checkbox_ids:checked");
-            if (selectedIds.length === 0) {
-                alert("Harap centang setidaknya satu item sebelum mencetak.");
-            } else {
-                var selectedCheckboxes = document.querySelectorAll('.checkbox_ids:checked');
-                var selectedIds = [];
-                selectedCheckboxes.forEach(function(checkbox) {
-                    selectedIds.push(checkbox.value);
-                });
-                document.getElementById('selectedIds').value = selectedIds.join(',');
-                var selectedIdsString = selectedIds.join(',');
-                window.location.href = "{{ url('admin/cetak_fakturekspedisifilter') }}?ids=" + selectedIdsString;
-                // var url = "{{ url('admin/ban/cetak_pdffilter') }}?ids=" + selectedIdsString;
-            }
-        }
-    </script>
-
-    {{-- unpost memo  --}}
-    <script>
-        $(document).ready(function() {
-            $('.unpost-btn').click(function() {
-                var memoId = $(this).data('memo-id');
-                $(this).addClass('disabled');
-
-                // Tampilkan modal loading saat permintaan AJAX diproses
-                $('#modal-loading').modal('show');
-
-                // Kirim permintaan AJAX untuk melakukan unpost
-                $.ajax({
-                    url: "{{ url('admin/inquery_penjualanproduk/unpost_penjualanproduk/') }}/" + memoId,
-                    type: 'GET',
-                    data: {
-                        id: memoId
-                    },
-                    success: function(response) {
-                        // Sembunyikan modal loading setelah permintaan selesai
-                        $('#modal-loading').modal('hide');
-
-                        // Tampilkan pesan sukses atau lakukan tindakan lain sesuai kebutuhan
-                        console.log(response);
-
-                        // Tutup modal setelah berhasil unpost
-                        $('#modal-posting-' + memoId).modal('hide');
-
-                        // Reload the page to refresh the table
-                        location.reload();
-                    },
-                    error: function(error) {
-                        // Sembunyikan modal loading setelah permintaan selesai
-                        $('#modal-loading').modal('hide');
-
-                        // Tampilkan pesan error atau lakukan tindakan lain sesuai kebutuhan
-                        console.log(error);
-                    }
-                });
-            });
-        });
-    </script>
-    {{-- posting memo --}}
-    <script>
-        $(document).ready(function() {
-            $('.posting-btn').click(function() {
-                var memoId = $(this).data('memo-id');
-                $(this).addClass('disabled');
-
-                // Tampilkan modal loading saat permintaan AJAX diproses
-                $('#modal-loading').modal('show');
-
-                // Kirim permintaan AJAX untuk melakukan posting
-                $.ajax({
-                    url: "{{ url('admin/inquery_penjualanproduk/posting_penjualanproduk/') }}/" + memoId,
-                    type: 'GET',
-                    data: {
-                        id: memoId
-                    },
-                    success: function(response) {
-                        // Sembunyikan modal loading setelah permintaan selesai
-                        $('#modal-loading').modal('hide');
-
-                        // Tampilkan pesan sukses atau lakukan tindakan lain sesuai kebutuhan
-                        console.log(response);
-
-                        // Tutup modal setelah berhasil posting
-                        $('#modal-posting-' + memoId).modal('hide');
-
-                        // Reload the page to refresh the table
-                        location.reload();
-                    },
-                    error: function(error) {
-                        // Sembunyikan modal loading setelah permintaan selesai
-                        $('#modal-loading').modal('hide');
-
-                        // Tampilkan pesan error atau lakukan tindakan lain sesuai kebutuhan
-                        console.log(error);
-                    }
-                });
-            });
-        });
     </script>
 
 <script>
-     function printReport() {
-            var startDate = tanggalAwal.value;
-            var endDate = tanggalAkhir.value;
+    function printReport() {
+    const form = document.getElementById('form-action');
+    form.action = "{{ url('admin/laporan_penjualanproduk/print') }}";
+    form.target = "_blank";
+    form.submit();
+}
 
-            if (startDate && endDate) {
-                form.action = "{{ url('admin/print_penjualan') }}" + "?start_date=" + startDate + "&end_date=" + endDate;
-                form.submit();
-            } else {
-                alert("Silakan isi kedua tanggal sebelum mencetak.");
-            }
-        }
 </script>
-
+{{-- <script>
+    function printReport() {
+        // Ambil nilai dari form
+        var status = document.getElementById('status').value;
+        var tanggal_penjualan = document.getElementById('tanggal_penjualan').value;
+        var tanggal_akhir = document.getElementById('tanggal_akhir').value;
+        var produk = document.getElementById('produk').value;
+        var toko_id = document.getElementById('toko').value;
+    
+        // Buat URL untuk halaman cetak dengan parameter yang sesuai
+        var url = "{{ url('admin/laporan_penjualanproduk/print') }}?" +
+            "status=" + encodeURIComponent(status) +
+            "&tanggal_penjualan=" + encodeURIComponent(tanggal_penjualan) +
+            "&tanggal_akhir=" + encodeURIComponent(tanggal_akhir) +
+            "&produk=" + encodeURIComponent(produk) +
+            "&toko_id=" + encodeURIComponent(toko_id);
+    
+        // Buka halaman cetak di tab baru
+        window.open(url, '_blank');
+    }
+    </script> --}}
+    
 @endsection
