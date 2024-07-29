@@ -28,6 +28,7 @@ class Penjualanproduk extends Model
         'telp',
         'kategori',
         'sub_total',
+        'sub_totalasli',
         'bayar',
         'kembali',
         'tanggal',

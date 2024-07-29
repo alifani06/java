@@ -76,29 +76,7 @@
             padding: 5px;
             font-size: 8px;
         }
-        .signatures {
-            margin-top: 15px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .signature1 {
-            text-align: left;
-            font-size: 7px;
-        }
-        .signature2 {
-            text-align: center;
-            font-size: 7px;
-            margin-top: -65px;
-        }
-        .signature3 {
-            text-align: right;
-            font-size: 6px;
-            margin-top: -65px;
-        }
-        .signature p {
-            margin-top: 10px;
-            line-height: 1.2;
-        }
+        
         .float-right {
             text-align: right;
             margin-top: 10px;
@@ -282,6 +260,8 @@
 }
 
     </style>
+
+    
 </head>
 <body>
     <div class="container">
@@ -312,19 +292,21 @@
                         <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</span>
                     </p>
                 </div>
-                <div class="pelanggan">
-                    <p>
-                        <span style="min-width: 100px; display: inline-flex; align-items: center;">Pelanggan</span>
-                        <span style="min-width: 50px; display: inline-flex; align-items: center;">
-                            : 
-                            @if ($penjualan->kode_pelanggan && $penjualan->nama_pelanggan)
-                                {{ $penjualan->kode_pelanggan }} / {{ $penjualan->nama_pelanggan }}
-                            @else
-                                non member
-                            @endif
-                        </span>
-                    </p>
-                </div>
+                @if(!is_null($penjualan->nama_pelanggan))
+                    <div class="pelanggan">
+                        <p>
+                            <span style="min-width: 100px; display: inline-flex; align-items: center;">Pelanggan</span>
+                            <span style="min-width: 50px; display: inline-flex; align-items: center;">
+                                : 
+                                @if ($penjualan->kode_pelanggan && $penjualan->nama_pelanggan)
+                                    {{ $penjualan->kode_pelanggan }} / {{ $penjualan->nama_pelanggan }}
+                                @else
+                                    non member
+                                @endif
+                            </span>
+                        </p>
+                    </div>
+                @endif
 
                 @if($penjualan->detailpenjualanproduk->isEmpty())
                     <p>Tidak ada detail penjualan produk.</p>
@@ -366,7 +348,7 @@
                         @endforeach
                         <tr>
                             @if($penjualan->metode_id !== null)
-                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee</strong></td>
+                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee {{$penjualan->metodepembayaran->fee}}%</strong></td>
                                 <td style="font-size: 8px; text-align: right;">
                                     @php
                                         // Menghapus semua karakter kecuali angka
@@ -409,11 +391,11 @@
                 </div>
             @endif
 
-            @if($penjualan->sub_total < $detail->totalasli)
-             <div class="hemat">
-                 <label>Anda telah hemat: </label>
-                 <span><strong>{{ 'Rp. ' . number_format($detail->totalasli - $penjualan->sub_total, 0, ',', '.') }}</strong></span>
-             </div>
+            @if(preg_replace('/[^0-9]/', '', $penjualan->sub_total) < preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli))
+            <div class="hemat">
+                <label>Anda telah hemat: </label>
+                <span><strong>{{ 'Rp. ' . number_format(preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli) - preg_replace('/[^0-9]/', '', $penjualan->sub_total), 0, ',', '.') }}</strong></span>
+            </div>
             @endif
             <div class="terimakasih">
                 <p>Untuk pemesanan, kritik dan saran Hubungi.082136638003.</p>
@@ -431,19 +413,7 @@
                 </div>
             </div>  
         </div>
-        <script>
-            document.getElementById('printForm').addEventListener('submit', function(event) {
-                event.preventDefault();
-                window.print();
-            });
-    
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault(); // Mencegah aksi default
-                    document.getElementById('printForm').submit();
-                }
-            });
-        </script>
+        
         
     </body>
     </html>

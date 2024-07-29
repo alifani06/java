@@ -347,6 +347,12 @@
                                         <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="Rp0" oninput="updateCalculations();">
                                     </div>
                                 </div>
+                                <div class="row"hidden>
+                                    <div class="col mb-3 d-flex align-items-center">
+                                        <label for="sub_totalasli" class="mr-2">Sub Total Asli</label>
+                                        <input type="text" class="form-control large-font" id="sub_totalasli" name="sub_totalasli" value="Rp0" oninput="updateCalculations();">
+                                    </div>
+                                </div>
                                 <div class="row" id="payment-row">
                                     <div class="col mb-3 d-flex align-items-center">
                                         <label for="bayar" class="mr-2">Uang Bayar</label>
@@ -361,39 +367,54 @@
                                 </div>
                             </div>
                         </div>
-                        
-        
                     </div>
                     
                     <div class="col-md-6">
                         <div class="form-group" style="flex: 8;">
                             <label for="metode_id">Jenis Pembayaran</label>
-                            <select class="select2bs4 select2-hidden-accessible" name="metode_id" data-placeholder="" style="width: 100%;" data-select2-id="23" tabindex="-1" aria-hidden="true" id="nama_metode" onchange="getData1()">
+                            <select class="select2bs4 select2-hidden-accessible" name="metode_id" style="width: 100%;" id="nama_metode" onchange="getData1()">
                                 <option value="">- Pilih -</option>
                                 @foreach ($metodes as $metode)
-                                    <option value="{{ $metode->id }}" {{ old('metode_id') == $metode->id ? 'selected' : '' }}>
+                                    <option value="{{ $metode->id }}" data-fee="{{ $metode->fee }}" {{ old('metode_id') == $metode->id ? 'selected' : '' }}>
                                         {{ $metode->nama_metode }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
-                        
                         <div id="payment-fields" class="form-group" style="display: none; margin-top: 20px;">
-                            <label for="fee">Fee (%)</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="fee" readonly name="fee" placeholder="" value="{{ old('fee') }}">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">%</span>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="fee">Fee (%)</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="fee" readonly name="fee" placeholder="" value="{{ old('fee') }}">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">%</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <label for="total_fee">Total Fee</label>
-                            <input type="text" class="form-control" id="total_fee" name="total_fee" placeholder="" value="{{ old('total_fee') }}" readonly>
-                            <label for="keterangan">Keterangan</label>
-                            <input type="text" class="form-control" id="keterangan" name="keterangan" placeholder="" value="{{ old('keterangan') }}">
-                        </div>
+                            <div class="row mt-2">
+                                <div class="col-md-4">
+                                    <label for="total_fee">Total Fee</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" id="total_fee" name="total_fee" placeholder="" value="{{ old('total_fee') }}" readonly>
+                                </div>
+                            </div>
+                        
+                            <div class="row mt-2">
+                                <div class="col-md-4">
+                                    <label for="keterangan">Keterangan</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" id="keterangan" name="keterangan" placeholder="" value="{{ old('keterangan') }}">
+                                </div>
+                            </div>
+                        </div> 
                     </div>
                 </div>
-                
             </div>
                 <div class="card">
                     <div class="card-header">
@@ -507,7 +528,7 @@
             getData1();
         });
     </script>
-        
+    
     <script>
         function showCategoryModalCatatan(urutan) {
             // Tampilkan modal
@@ -817,7 +838,115 @@
     });
 
     
-    var data_pembelian = @json(session('data_pembelians'));
+//     var data_pembelian = @json(session('data_pembelians'));
+// var jumlah_ban = 0;
+
+// if (data_pembelian != null) {
+//     jumlah_ban = data_pembelian.length;
+//     $('#tabel-pembelian').empty();
+//     var urutan = 0;
+//     $.each(data_pembelian, function(key, value) {
+//         urutan = urutan + 1;
+//         itemPembelian(urutan, key, value);
+//     });
+// }
+
+// // Fungsi untuk menampilkan modal barang
+// function showCategoryModal(urutan) {
+//     $('#tableProduk').modal('show');
+//     // Simpan urutan untuk menyimpan data ke baris yang sesuai
+//     $('#tableProduk').attr('data-urutan', urutan);
+// }
+
+// // Event listener for pilih-btn
+// $(document).on('click', '.pilih-btn', function() {
+//     var id = $(this).data('id');
+//     var kode = $(this).data('kode');
+//     var nama = $(this).data('nama');
+//     var member = $(this).data('member');
+//     var diskonmember = $(this).data('diskonmember');
+//     var nonmember = $(this).data('nonmember');
+//     var diskonnonmember = $(this).data('diskonnonmember');
+    
+//     getSelectedData(id, kode, nama, member, diskonmember, nonmember, diskonnonmember);
+// });
+
+// // Fungsi untuk memilih data barang dari modal
+// function getSelectedData(id, kode_produk, nama_produk, member, diskonmember, nonmember, diskonnonmember) {
+//     var urutan = $('#tableProduk').attr('data-urutan');
+//     var kategori = $('#kategori').val();
+//     var harga = kategori === 'member' ? member : nonmember;
+//     var diskon = kategori === 'member' ? diskonmember : diskonnonmember;
+
+//     // Set nilai input pada baris yang sesuai
+//     $('#produk_id-' + urutan).val(id);
+//     $('#kode_produk-' + urutan).val(kode_produk);
+//     $('#nama_produk-' + urutan).val(nama_produk);
+//     $('#harga-' + urutan).val(harga);
+//     $('#diskon-' + urutan).val(diskon);
+//     // Hitung total
+//     hitungTotal(urutan);
+//     // Tutup modal
+//     $('#tableProduk').modal('hide');
+
+//     // Setelah menambahkan data dari modal, fokuskan ke input jumlah
+//     document.getElementById('jumlah-' + urutan).focus();
+// }
+
+// // Fungsi untuk menghitung total berdasarkan harga dan jumlah
+// function hitungTotal(urutan) {
+//     var harga = parseFloat($('#harga-' + urutan).val().replace(/[^0-9]/g, '')) || 0;
+//     var diskon = parseFloat($('#diskon-' + urutan).val()) || 0;
+//     var jumlah = parseFloat($('#jumlah-' + urutan).val()) || 0;
+
+//     var hargaSetelahDiskon = harga - (harga * (diskon / 100));
+//     var total = hargaSetelahDiskon * jumlah;
+//     var totalasli = harga * jumlah;
+
+//     // Format total ke dalam format rupiah dan set nilai input total
+//     $('#total-' + urutan).val(total);
+//     $('#totalasli-' + urutan).val(totalasli);
+//     // Hitung subtotal setiap kali total di baris berubah
+//     hitungSubTotal();
+// }
+
+// // Fungsi untuk menghitung subtotal semua barang
+// function hitungSubTotal() {
+//     var subTotal = 0;
+//     $('[id^=total-]').each(function() {
+//         var total = parseFloat($(this).val().replace(/[^0-9]/g, '')) || 0;
+//         subTotal += total;
+//     });
+//     $('#sub_total').val(formatRupiah(subTotal));
+// }
+
+// function addPesanan() {
+//     jumlah_ban = jumlah_ban + 1;
+//     if (jumlah_ban === 1) {
+//         $('#tabel-pembelian').empty();
+//     }
+//     itemPembelian(jumlah_ban, jumlah_ban - 1);
+// }
+
+// function removeBan(params) {
+//     jumlah_ban = jumlah_ban - 1;
+//     var tabel_pesanan = document.getElementById('tabel-pembelian');
+//     var pembelian = document.getElementById('pembelian-' + params);
+//     tabel_pesanan.removeChild(pembelian);
+//     if (jumlah_ban === 0) {
+//         var item_pembelian = '<tr>';
+//         item_pembelian += '<td class="text-center" colspan="5">- Barang Jadi belum ditambahkan -</td>';
+//         item_pembelian += '</tr>';
+//         $('#tabel-pembelian').html(item_pembelian);
+//     } else {
+//         var urutan = document.querySelectorAll('#urutan');
+//         for (let i = 0; i < urutan.length; i++) {
+//             urutan[i].innerText = i + 1;
+//         }
+//     }
+//     hitungSubTotal();
+// }
+var data_pembelian = @json(session('data_pembelians'));
 var jumlah_ban = 0;
 
 if (data_pembelian != null) {
@@ -892,11 +1021,20 @@ function hitungTotal(urutan) {
 // Fungsi untuk menghitung subtotal semua barang
 function hitungSubTotal() {
     var subTotal = 0;
+    var subTotalAsli = 0;
+
     $('[id^=total-]').each(function() {
         var total = parseFloat($(this).val().replace(/[^0-9]/g, '')) || 0;
         subTotal += total;
     });
+
+    $('[id^=totalasli-]').each(function() {
+        var totalAsli = parseFloat($(this).val().replace(/[^0-9]/g, '')) || 0;
+        subTotalAsli += totalAsli;
+    });
+
     $('#sub_total').val(formatRupiah(subTotal));
+    $('#sub_totalasli').val(formatRupiah(subTotalAsli));
 }
 
 function addPesanan() {

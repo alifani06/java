@@ -22,7 +22,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan penjualan Produk</h1>
+                    <h1 class="m-0">Laporan Penjualan Produk</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -64,14 +64,14 @@
                 <div class="card-body">
                     <form method="GET" id="form-action">
                         <div class="row">
-                            <div class="col-md-3 mb-3">
+                            {{-- <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="status" name="status">
                                     <option value="">- Semua Status -</option>
                                     <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
                                     <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
                                 </select>
                                 <label for="status">(Pilih Status)</label>
-                            </div>
+                            </div> --}}
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
                                     value="{{ Request::get('tanggal_penjualan') }}" max="{{ date('Y-m-d') }}" />
@@ -191,7 +191,7 @@
 <script>
     function printReport() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/laporan_penjualanproduk/print') }}";
+    form.action = "{{ url('admin/printReport') }}";
     form.target = "_blank";
     form.submit();
 }
@@ -207,7 +207,7 @@
         var toko_id = document.getElementById('toko').value;
     
         // Buat URL untuk halaman cetak dengan parameter yang sesuai
-        var url = "{{ url('admin/laporan_penjualanproduk/print') }}?" +
+        var url = "{{ url('admin/printReport') }}?" +
             "status=" + encodeURIComponent(status) +
             "&tanggal_penjualan=" + encodeURIComponent(tanggal_penjualan) +
             "&tanggal_akhir=" + encodeURIComponent(tanggal_akhir) +

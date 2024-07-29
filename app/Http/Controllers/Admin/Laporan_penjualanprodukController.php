@@ -263,9 +263,17 @@ class Laporan_penjualanprodukController extends Controller
 
     $inquery = $query->with('toko', 'detailpenjualanproduk')->get();
 
-    $pdf = FacadePdf::loadView('admin.Laporan_penjualanproduk.print', compact('inquery'));
+      // Format tanggal untuk tampilan PDF
+      $formattedStartDate = $tanggal_penjualan ? Carbon::parse($tanggal_penjualan)->format('d-m-Y') : null;
+      $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : null;
 
-    return $pdf->download('laporan_penjualan_produk.pdf');
+      $pdf = FacadePdf::loadView('admin.laporan_penjualanproduk.print', [
+        'inquery' => $inquery,
+        'startDate' => $formattedStartDate,
+        'endDate' => $formattedEndDate,
+    ]);
+
+    return $pdf->stream('laporan_penjualan_produk.pdf');
 }
     
 public function unpost_penjualanproduk($id)

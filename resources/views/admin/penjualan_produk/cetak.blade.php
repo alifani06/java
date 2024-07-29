@@ -79,31 +79,7 @@
             padding: 5px;
             font-size: 8px;
         }
-        .signatures {
-            margin-top: 15px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .signature1 {
-            text-align: left;
-            font-size: 7px;
-        }
-        .signature2 {
-            font-size: 7px;
-            margin-top: 5px;
-            margin-left: 40px;
-            text-align: center;
-
-        }
-        .signature3 {
-            text-align: right;
-            font-size: 6px;
-            margin-top: 5px;
-        }
-        .signature p {
-            margin-top: 10px;
-            line-height: 1.2;
-        }
+     
         .float-right {
             text-align: right;
             margin-top: 10px;
@@ -286,20 +262,20 @@
                                 $subtotal += $total;
                             @endphp
                         @endforeach
-                        <tr>
-                            @if($penjualan->metode_id !== null)
-                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee</strong></td>
-                                <td style="font-size: 8px; text-align: right;">
-                                    @php
-                                        // Menghapus semua karakter kecuali angka
-                                        $total_fee = preg_replace('/[^\d]/', '', $penjualan->total_fee);
-                                        // Konversi ke tipe float
-                                        $total_fee = (float) $total_fee;
-                                    @endphp
-                                    {{ 'Rp. ' . number_format($total_fee, 0, ',', '.') }}
-                                </td>
-                            @endif
-                        </tr>
+                            <tr>
+                                @if($penjualan->metode_id !== null)
+                                    <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee {{$penjualan->metodepembayaran->fee}}%</strong></td>
+                                    <td style="font-size: 8px; text-align: right;">
+                                        @php
+                                            // Menghapus semua karakter kecuali angka
+                                            $total_fee = preg_replace('/[^\d]/', '', $penjualan->total_fee);
+                                            // Konversi ke tipe float
+                                            $total_fee = (float) $total_fee;
+                                        @endphp
+                                        {{ 'Rp. ' . number_format($total_fee, 0, ',', '.') }}
+                                    </td>
+                                @endif
+                            </tr>
                         
                         
                         <tr>
@@ -333,12 +309,13 @@
             </div>
              @endif
              
-             @if($penjualan->sub_total < $detail->totalasli)
+             @if(preg_replace('/[^0-9]/', '', $penjualan->sub_total) < preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli))
              <div class="hemat">
                  <label>Anda telah hemat: </label>
-                 <span><strong>{{ 'Rp. ' . number_format($detail->totalasli - $penjualan->sub_total, 0, ',', '.') }}</strong></span>
+                 <span><strong>{{ 'Rp. ' . number_format(preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli) - preg_replace('/[^0-9]/', '', $penjualan->sub_total), 0, ',', '.') }}</strong></span>
              </div>
-            @endif
+             @endif
+             
          
             <div class="terimakasih">
                 <p>Untuk pemesanan, kritik dan saran Hubungi.082136638003.</p>
@@ -363,7 +340,7 @@
                     </a>
                 </div>
                 <div>
-                    <a href="{{ route('admin.penjualan_produk.cetak-pdf', $penjualan->id) }}" target="_blank" class="btn btn-primary btn-sm">
+                    <a href="{{ route('admin.penjualan_produk.cetak-pdf', $penjualan->id) }}"  id="printButton" target="_blank" class="btn btn-primary btn-sm">
                         <i class="fas fa-print"></i> Cetak PDF
                     </a>
                 </div>
@@ -372,6 +349,28 @@
     
     </body>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("keydown", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    document.getElementById("printButton").click();
+                }
+            });
+        });
+    </script>
 
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                document.getElementById("printButton").click();
+            }
+        });
+    });
+</script>
     </html>
     

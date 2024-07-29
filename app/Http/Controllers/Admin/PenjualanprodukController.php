@@ -468,6 +468,7 @@ public function store(Request $request)
         'alamat' => $request->alamat ?? null,
         'kategori' => $request->kategori,
         'sub_total' => $request->sub_total,
+        'sub_totalasli' => $request->sub_totalasli,
         'bayar' => $request->bayar,
         'kembali' => $request->kembali,
         'catatan' => $request->catatan,

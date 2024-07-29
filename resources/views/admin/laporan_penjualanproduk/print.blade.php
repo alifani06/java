@@ -22,14 +22,44 @@
         }
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-top: 3px ;
+        }
+        .header span {
+            display: block;
+        }
+        .header .title {
+            font-weight: bold;
+            font-size: 28px;
+        }
+        .header .address, .header .contact {
+            font-size: 12px;
+        }
+        .divider {
+            border: 0.5px solid;
+            margin-top: 3px;
+            margin-bottom: 1px;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h2>Laporan Penjualan Produk</h2>
-        <p>{{ date('d/m/Y') }}</p>
+        <div>
+            <span class="title">PT JAVA BAKERY</span>
+            <span class="address">JL. HOS COKRO AMINOTO NO 5 SLAWI TEGAL</span>
+            <span class="contact">Telp / Fax, Email :</span>
+        </div>
+        <hr class="divider">
+        <hr class="divider">
+    </div>
+    <div class="container">
+        <h1 style="text-align: center">LAPORAN PENJUALAN PRODUK</h1>
+    </div>
+    <div class="text">
+        @if ($startDate && $endDate)
+            <p>Periode: {{ $startDate }} s/d {{ $endDate }}</p>
+        @else
+            <p>Periode: Tidak ada tanggal awal dan akhir yang diteruskan.</p>
+        @endif
     </div>
 
     <table>
@@ -44,7 +74,9 @@
             </tr>
         </thead>
         <tbody>
+            @php $grandTotal = 0; @endphp
             @foreach ($inquery as $item)
+                @php $grandTotal += $item->sub_total; @endphp
                 <tr>
                     <td class="text-center">{{ $loop->iteration }}</td>
                     <td>{{ $item->kode_penjualan }}</td>
@@ -60,6 +92,10 @@
                     <td>{{ number_format($item->sub_total, 0, ',', '.') }}</td>
                 </tr>
             @endforeach
+            <tr>
+                <td colspan="5" class="text-right"><strong>Grand Total</strong></td>
+                <td>{{ number_format($grandTotal, 0, ',', '.') }}</td>
+            </tr>
         </tbody>
     </table>
 </body>
