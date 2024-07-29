@@ -41,4 +41,9 @@ class Metodepembayaran extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function penjualanProduk()
+{
+    return $this->hasMany(Penjualanproduk::class, 'metode_id');
+}
 }

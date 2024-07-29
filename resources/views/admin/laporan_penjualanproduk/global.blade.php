@@ -22,7 +22,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Penjualan Produk</h1>
+                    <h1 class="m-0">Laporan Penjualan Produk global</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -57,21 +57,8 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                        <div class="float-right">
-                            <select class="form-control" id="kategori1" name="kategori">
-                                <option value="">- Pilih -</option>
-                                <option value="global" {{ old('kategori1') == 'global' ? 'selected' : '' }}>Laporan Penjualan Global</option>
-                                <option value="rinci" {{ old('kategori1') == 'rinci' ? 'selected' : '' }}>Laporan Penjualan Rinci</option>
-                            </select>
-                        </div>
-                        {{-- <div class="float-right">
-                            <a href="{{ route('admin.penjualan_produk.pelunasan') }}"  class="btn btn-primary btn-sm">Pelunasan Pemesanan
-                            </a>
-                        </div> --}}
-       
                     <h3 class="card-title">Laporan Penjualan Produk</h3>
                 </div>
-
                 <!-- /.card-header -->
                  
                 <div class="card-body">
@@ -117,7 +104,7 @@
                                 <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
-                                <button type="button" class="btn btn-primary btn-block" onclick="printReport()"
+                                <button type="button" class="btn btn-primary btn-block" onclick="printReportglobal()"
                                         target="_blank">
                                         <i class="fas fa-print"></i> Cetak
                                 </button>
@@ -196,31 +183,19 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('admin/laporan_penjualanproduk') }}";
+            form.action = "{{ url('admin/indexglobal') }}";
             form.submit();
         }
     </script>
 
 <script>
-    function printReport() {
+    function printReportglobal() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printReport') }}";
+    form.action = "{{ url('admin/printReportglobal') }}";
     form.target = "_blank";
     form.submit();
 }
 
 </script>
-
-<script>
-    document.getElementById('kategori1').addEventListener('change', function() {
-        var selectedValue = this.value;
-
-        if (selectedValue === 'global') {
-            window.location.href = "{{ url('admin/indexglobal') }}";
-        } else if (selectedValue === 'rinci') {
-            window.location.href = "{{ url('admin/laporan_penjualanproduk') }}";
-        }
-    });
-</script>
-
+    
 @endsection

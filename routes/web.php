@@ -129,6 +129,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::resource('laporan_penjualanproduk', \App\Http\Controllers\Admin\Laporan_penjualanprodukController::class);
     Route::get('printReport', [\App\Http\Controllers\Admin\Laporan_penjualanprodukController::class, 'printReport']);
+    Route::get('printReportglobal', [\App\Http\Controllers\Admin\Laporan_penjualanprodukController::class, 'printReportglobal']);
+    Route::get('indexglobal', [\App\Http\Controllers\Admin\Laporan_penjualanprodukController::class, 'indexglobal']);
 
     Route::resource('inquery_perubahanharga', \App\Http\Controllers\Admin\Inquery_perubahanhargaController::class);
 
