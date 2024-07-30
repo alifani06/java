@@ -183,7 +183,8 @@
 <li
     class="nav-item {{ request()->is('admin/pemesanan_produk*') ||
     request()->is('admin/penjualan_produk*') ||
-    request()->is('admin/hargajual*') 
+    request()->is('admin/hargajual*') || 
+    request()->is('admin/permintaan_produk*')  
     // request()->is('admin/input*')
   
         ? 'menu-open'
@@ -191,7 +192,8 @@
     <a href="#"
         class="nav-link {{ request()->is('admin/pemesanan_produk*') ||
         request()->is('admin/penjualan_produk*') ||
-        request()->is('admin/hargajual*') 
+        request()->is('admin/hargajual*') || 
+        request()->is('admin/permintaan_produk*')  
         // request()->is('admin/input*')
       
             ? 'active'
@@ -229,6 +231,16 @@
                 class="nav-link {{ request()->is('admin/hargajual*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Perubahan Harga Jual</p>
+            </a>
+        </li>
+        {{-- @endif --}}
+
+          {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+          <li class="nav-item">
+            <a href="{{ url('admin/permintaan_produk') }}"
+                class="nav-link {{ request()->is('admin/permintaan_produk*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Permintaan Produk</p>
             </a>
         </li>
         {{-- @endif --}}

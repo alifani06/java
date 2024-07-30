@@ -88,4 +88,8 @@ class Produk extends Model
     {
         return $this->belongsTo(Klasifikasi::class, 'klasifikasi_id');
     }
+    public function permintaanproduk()
+    {
+        return $this->hasMany(Permintaanproduk::class);
+    }
 }

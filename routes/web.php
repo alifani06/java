@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\KlasifikasiController as AdminKlasifikasiControll
 use App\Http\Controllers\Admin\Laporan_pemesananprodukController;
 use App\Http\Controllers\Admin\PelangganController;
 use App\Http\Controllers\Admin\PenjualanprodukController;
+use App\Http\Controllers\Admin\PermintaanprodukController;
 use App\Http\Controllers\KategoriDropdownController;
 use App\Http\Controllers\SubcategoryController;
 use Illuminate\Support\Facades\Route;
@@ -131,6 +132,9 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('printReport', [\App\Http\Controllers\Admin\Laporan_penjualanprodukController::class, 'printReport']);
     Route::get('printReportglobal', [\App\Http\Controllers\Admin\Laporan_penjualanprodukController::class, 'printReportglobal']);
     Route::get('indexglobal', [\App\Http\Controllers\Admin\Laporan_penjualanprodukController::class, 'indexglobal']);
+
+    Route::resource('permintaan_produk', \App\Http\Controllers\Admin\PermintaanprodukController::class);
+    Route::post('admin/permintaan_produk', [PermintaanprodukController::class, 'store']);
 
     Route::resource('inquery_perubahanharga', \App\Http\Controllers\Admin\Inquery_perubahanhargaController::class);
 
