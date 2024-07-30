@@ -22,7 +22,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Penjualan Produk global</h1>
+                    <h1 class="m-0">Laporan Penjualan Produk Global</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -57,6 +57,13 @@
             @endif
             <div class="card">
                 <div class="card-header">
+                    <div class="float-right">
+                        <select class="form-control" id="kategori1" name="kategori">
+                            <option value="">- Pilih -</option>
+                            <option value="global" {{ old('kategori1') == 'global' ? 'selected' : '' }}>Laporan Penjualan Global</option>
+                            <option value="rinci" {{ old('kategori1') == 'rinci' ? 'selected' : '' }}>Laporan Penjualan Rinci</option>
+                        </select>
+                    </div>
                     <h3 class="card-title">Laporan Penjualan Produk</h3>
                 </div>
                 <!-- /.card-header -->
@@ -64,14 +71,6 @@
                 <div class="card-body">
                     <form method="GET" id="form-action">
                         <div class="row">
-                            {{-- <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="status" name="status">
-                                    <option value="">- Semua Status -</option>
-                                    <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
-                                    <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
-                                </select>
-                                <label for="status">(Pilih Status)</label>
-                            </div> --}}
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
                                     value="{{ Request::get('tanggal_penjualan') }}" max="{{ date('Y-m-d') }}" />
@@ -83,15 +82,6 @@
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="produk" name="produk">
-                                    <option value="">- Semua Produk -</option>
-                                    @foreach ($produks as $produk)
-                                        <option value="{{ $produk->id }}" {{ Request::get('produk') == $produk->id ? 'selected' : '' }}>{{ $produk->nama_produk }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="produk">(Pilih Produk)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="toko" name="toko_id">
                                     <option value="">- Semua Toko -</option>
                                     @foreach ($tokos as $toko)
@@ -101,12 +91,29 @@
                                 <label for="toko">(Pilih Toko)</label>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
+                                <select class="custom-select form-control" id="klasifikasi" name="klasifikasi_id" onchange="filterProduk()">
+                                    <option value="">- Semua Divisi -</option>
+                                    @foreach ($klasifikasis as $klasifikasi)
+                                        <option value="{{ $klasifikasi->id }}" {{ Request::get('klasifikasi_id') == $klasifikasi->id ? 'selected' : '' }}>{{ $klasifikasi->nama }}</option>
+                                    @endforeach
+                                </select>
+                                <label for="klasifikasi">(Pilih Divisi)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="produk" name="produk">
+                                    <option value="">- Semua Produk -</option>
+                                    @foreach ($produks as $produk)
+                                        <option value="{{ $produk->id }}" data-klasifikasi="{{ $produk->klasifikasi_id }}" {{ Request::get('produk') == $produk->id ? 'selected' : '' }}>{{ $produk->nama_produk }}</option>
+                                    @endforeach
+                                </select>
+                                <label for="produk">(Pilih Produk)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <button type="submit" class="btn btn-outline-primary btn-block">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
-                                <button type="button" class="btn btn-primary btn-block" onclick="printReportglobal()"
-                                        target="_blank">
-                                        <i class="fas fa-print"></i> Cetak
+                                <button type="button" class="btn btn-primary btn-block" onclick="printReport()" target="_blank">
+                                    <i class="fas fa-print"></i> Cetak
                                 </button>
                             </div>
                         </div>
@@ -119,19 +126,34 @@
                                 <th>Kode penjualan</th>
                                 <th>Tanggal penjualan</th>
                                 <th>Cabang</th>
-                                {{-- <th>Pelanggan</th> --}}
+                                <th>Divisi</th>
                                 <th>Produk</th>
                                 <th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                            $grandTotal = 0;
+                            $grandTotalFee = 0;
+                        @endphp
                             @foreach ($inquery as $item)
+                            @php
+                            $grandTotal += $item->sub_total;
+                 
+                            @endphp
                                 <tr class="dropdown"{{ $item->id }}>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $item->kode_penjualan }}</td>
                                     <td>{{ \Carbon\Carbon::parse($item->tanggal_penjualan)->format('d/m/Y H:i') }}</td>
                                     {{-- <td>{{ $item->nama_pelanggan ?? 'Non Member' }}</td> --}}
                                     <td>{{ $item->toko->nama_toko}}</td>
+                                    <td>
+                                        @if ($item->detailpenjualanproduk->isNotEmpty())
+                                            {{ $item->detailpenjualanproduk->pluck('produk.klasifikasi.nama')->implode(', ') }}
+                                        @else
+                                            tidak ada
+                                        @endif
+                                    </td>
                                     <td>
                                         @if ($item->detailpenjualanproduk->isNotEmpty())
                                             {{ $item->detailpenjualanproduk->pluck('nama_produk')->implode(', ') }}
@@ -142,6 +164,10 @@
                                     <td>{{ number_format($item->sub_total, 0, ',', '.') }}</td>
                                 </tr>
                             @endforeach
+                            <tr>
+                                <td colspan="6" class="text-right"><strong>Grand Total</strong></td>
+                                <td>{{ 'Rp. ' .  number_format($grandTotal, 0, ',', '.') }}</td>
+                            </tr>
                         </tbody>
                     </table>
                     <!-- Modal Loading -->
@@ -198,4 +224,36 @@
 
 </script>
     
+
+<script>
+    document.getElementById('kategori1').addEventListener('change', function() {
+        var selectedValue = this.value;
+
+        if (selectedValue === 'global') {
+            window.location.href = "{{ url('admin/indexglobal') }}";
+        } else if (selectedValue === 'rinci') {
+            window.location.href = "{{ url('admin/laporan_penjualanproduk') }}";
+        }
+    });
+</script>
+
+<script>
+    function filterProduk() {
+        var klasifikasiId = document.getElementById('klasifikasi').value;
+        var produkSelect = document.getElementById('produk');
+        var produkOptions = produkSelect.options;
+    
+        for (var i = 0; i < produkOptions.length; i++) {
+            var option = produkOptions[i];
+            if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
+                option.style.display = "block";
+            } else {
+                option.style.display = "none";
+            }
+        }
+    
+        // Reset the selected value of the product select box
+        produkSelect.selectedIndex = 0;
+    }
+    </script>
 @endsection

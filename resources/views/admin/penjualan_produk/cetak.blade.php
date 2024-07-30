@@ -264,7 +264,7 @@
                         @endforeach
                             <tr>
                                 @if($penjualan->metode_id !== null)
-                                    <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee {{$penjualan->metodepembayaran->fee}}%</strong></td>
+                                    <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee {{$penjualan->metodepembayaran->nama_metode}} {{$penjualan->metodepembayaran->fee}}%</strong></td>
                                     <td style="font-size: 8px; text-align: right;">
                                         @php
                                             // Menghapus semua karakter kecuali angka

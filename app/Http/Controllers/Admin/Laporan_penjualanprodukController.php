@@ -45,15 +45,16 @@ class Laporan_penjualanprodukController extends Controller
         $tanggal_akhir = $request->tanggal_akhir;
         $produk = $request->produk;
         $toko_id = $request->toko_id;
-    
+        $klasifikasi_id = $request->klasifikasi_id;
+
         // Query dasar untuk mengambil data penjualan produk
         $query = Penjualanproduk::query();
-    
+
         // Filter berdasarkan status
         if ($status) {
             $query->where('status', $status);
         }
-    
+
         // Filter berdasarkan tanggal penjualan
         if ($tanggal_penjualan && $tanggal_akhir) {
             $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
@@ -69,35 +70,45 @@ class Laporan_penjualanprodukController extends Controller
             // Jika tidak ada filter tanggal, tampilkan data untuk hari ini
             $query->whereDate('tanggal_penjualan', Carbon::today());
         }
-    
+
         // Filter berdasarkan produk
         if ($produk) {
             $query->whereHas('detailpenjualanproduk', function ($query) use ($produk) {
                 $query->where('produk_id', $produk);
             });
         }
-    
+
         // Filter berdasarkan toko
         if ($toko_id) {
             $query->where('toko_id', $toko_id);
         }
-    
+
+        // Filter berdasarkan klasifikasi
+        if ($klasifikasi_id) {
+            $query->whereHas('detailpenjualanproduk.produk.klasifikasi', function ($query) use ($klasifikasi_id) {
+                $query->where('id', $klasifikasi_id);
+            });
+        }
+
         // Urutkan data berdasarkan ID secara descending
         $query->orderBy('id', 'DESC');
-    
+
         // Ambil data penjualan produk
-        $inquery = $query->with('toko', 'detailpenjualanproduk')->get();
-    
+        $inquery = $query->with(['toko', 'detailpenjualanproduk.produk.klasifikasi'])->get();
+
         // Ambil semua data produk untuk dropdown
         $produks = Produk::all();
-    
+
         // Ambil semua data toko untuk dropdown
         $tokos = Toko::all();
-    
-        // Kembalikan view dengan data penjualan produk, produk, dan toko
-        return view('admin.Laporan_penjualanproduk.index', compact('inquery', 'produks', 'tokos'));
+
+        // Ambil semua klasifikasi untuk dropdown
+        $klasifikasis = Klasifikasi::all();
+
+        // Kembalikan view dengan data penjualan produk, produk, toko, dan klasifikasi
+        return view('admin.laporan_penjualanproduk.index', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
     }
- 
+
 
     public function indexglobal(Request $request)
     {
@@ -106,6 +117,8 @@ class Laporan_penjualanprodukController extends Controller
         $tanggal_akhir = $request->tanggal_akhir;
         $produk = $request->produk;
         $toko_id = $request->toko_id;
+        $klasifikasi_id = $request->klasifikasi_id;
+
     
         // Query dasar untuk mengambil data penjualan produk
         $query = Penjualanproduk::query();
@@ -142,12 +155,18 @@ class Laporan_penjualanprodukController extends Controller
         if ($toko_id) {
             $query->where('toko_id', $toko_id);
         }
-    
-        // Urutkan data berdasarkan ID secara descending
+        
+        // Filter berdasarkan klasifikasi
+        if ($klasifikasi_id) {
+            $query->whereHas('detailpenjualanproduk.produk.klasifikasi', function ($query) use ($klasifikasi_id) {
+                $query->where('id', $klasifikasi_id);
+            });
+        }
+            // Urutkan data berdasarkan ID secara descending
         $query->orderBy('id', 'DESC');
     
         // Ambil data penjualan produk
-        $inquery = $query->with('toko', 'detailpenjualanproduk')->get();
+        $inquery = $query->with('toko', 'detailpenjualanproduk.produk.klasifikasi')->get();
     
         // Ambil semua data produk untuk dropdown
         $produks = Produk::all();
@@ -155,13 +174,78 @@ class Laporan_penjualanprodukController extends Controller
         // Ambil semua data toko untuk dropdown
         $tokos = Toko::all();
     
+        $klasifikasis = Klasifikasi::all();
+
         // Kembalikan view dengan data penjualan produk, produk, dan toko
-        return view('admin.Laporan_penjualanproduk.global', compact('inquery', 'produks', 'tokos'));
+        return view('admin.laporan_penjualanproduk.global', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
     }
  
 
 
 //   rinci  
+// public function printReport(Request $request)
+// {
+//     $status = $request->input('status');
+//     $tanggalPenjualan = $request->input('tanggal_penjualan');
+//     $tanggalAkhir = $request->input('tanggal_akhir');
+//     $produk = $request->input('produk');
+//     $tokoId = $request->input('toko_id');
+
+//     // Initialize the query
+//     $query = Penjualanproduk::query();
+
+//     // Apply status filter
+//     if ($status) {
+//         $query->where('status', $status);
+//     }
+
+//     // Apply date range filter
+//     if ($tanggalPenjualan && $tanggalAkhir) {
+//         $tanggalPenjualan = Carbon::parse($tanggalPenjualan)->startOfDay();
+//         $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
+//         $query->whereBetween('tanggal_penjualan', [$tanggalPenjualan, $tanggalAkhir]);
+//     } elseif ($tanggalPenjualan) {
+//         $tanggalPenjualan = Carbon::parse($tanggalPenjualan)->startOfDay();
+//         $query->where('tanggal_penjualan', '>=', $tanggalPenjualan);
+//     } elseif ($tanggalAkhir) {
+//         $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
+//         $query->where('tanggal_penjualan', '<=', $tanggalAkhir);
+//     } else {
+//         // Default to today's date if no date filter is provided
+//         $query->whereDate('tanggal_penjualan', Carbon::today());
+//     }
+
+//     // Apply product filter
+//     if ($produk) {
+//         $query->whereHas('detailpenjualanproduk', function ($q) use ($produk) {
+//             $q->where('produk_id', $produk);
+//         });
+//     }
+
+//     // Apply store filter
+//     if ($tokoId) {
+//         $query->where('toko_id', $tokoId);
+//     }
+
+//     // Order results
+//     $query->orderBy('id', 'DESC');
+
+//     // Load related data
+//     $inquery = $query->with('toko', 'detailpenjualanproduk', 'metodePembayaran')->get();
+
+//     // Format dates for PDF view
+//     $formattedStartDate = $tanggalPenjualan ? Carbon::parse($tanggalPenjualan)->format('d-m-Y') : 'N/A';
+//     $formattedEndDate = $tanggalAkhir ? Carbon::parse($tanggalAkhir)->format('d-m-Y') : 'N/A';
+
+//     // Generate PDF
+//     $pdf = FacadePdf::loadView('admin.laporan_penjualanproduk.print', [
+//         'inquery' => $inquery,
+//         'startDate' => $formattedStartDate,
+//         'endDate' => $formattedEndDate,
+//     ]);
+
+//     return $pdf->stream('laporan_penjualan_produk.pdf');
+// }
 public function printReport(Request $request)
 {
     $status = $request->input('status');
@@ -169,6 +253,7 @@ public function printReport(Request $request)
     $tanggalAkhir = $request->input('tanggal_akhir');
     $produk = $request->input('produk');
     $tokoId = $request->input('toko_id');
+    $klasifikasiId = $request->input('klasifikasi_id');
 
     // Initialize the query
     $query = Penjualanproduk::query();
@@ -206,11 +291,18 @@ public function printReport(Request $request)
         $query->where('toko_id', $tokoId);
     }
 
+    // Apply classification filter
+    if ($klasifikasiId) {
+        $query->whereHas('detailpenjualanproduk.produk.klasifikasi', function ($q) use ($klasifikasiId) {
+            $q->where('id', $klasifikasiId);
+        });
+    }
+
     // Order results
     $query->orderBy('id', 'DESC');
 
     // Load related data
-    $inquery = $query->with('toko', 'detailpenjualanproduk', 'metodePembayaran')->get();
+    $inquery = $query->with(['toko', 'detailpenjualanproduk.produk.klasifikasi', 'metodePembayaran'])->get();
 
     // Format dates for PDF view
     $formattedStartDate = $tanggalPenjualan ? Carbon::parse($tanggalPenjualan)->format('d-m-Y') : 'N/A';
@@ -225,6 +317,7 @@ public function printReport(Request $request)
 
     return $pdf->stream('laporan_penjualan_produk.pdf');
 }
+
 
 // global
 public function printReportglobal(Request $request)

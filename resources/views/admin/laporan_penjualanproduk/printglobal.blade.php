@@ -74,9 +74,19 @@
             </tr>
         </thead>
         <tbody style="font-size: 10px;">
-            @php $grandTotal = 0; @endphp
+            @php
+                $grandTotal = 0;
+                $grandTotalFee = 0;
+            @endphp
             @foreach ($inquery as $item)
-                @php $grandTotal += $item->sub_total; @endphp
+                @php
+                    $grandTotal += $item->sub_total;
+                    // Menghapus semua karakter kecuali angka
+                    $total_fee = preg_replace('/[^\d]/', '', $item->total_fee);
+                    // Konversi ke tipe float
+                    $total_fee = (float) $total_fee;
+                    $grandTotalFee += $total_fee;
+                @endphp
                 <tr>
                     <td class="text-center">{{ $loop->iteration }}</td>
                     <td>{{ $item->kode_penjualan }}</td>
@@ -84,22 +94,20 @@
                     <td>{{ $item->nama_pelanggan ?? 'Non Member' }}</td>
                     <td>{{ $item->metodepembayaran->nama_metode ?? 'Tunai' }}</td>
                     <td>
-                        @php
-                            // Menghapus semua karakter kecuali angka
-                            $total_fee = preg_replace('/[^\d]/', '', $item->total_fee);
-                            // Konversi ke tipe float
-                            $total_fee = (float) $total_fee;
-                        @endphp
                         @if ($total_fee == 0)
                             -
                         @else
                             {{ 'Rp. ' . number_format($total_fee, 0, ',', '.') }}
                         @endif
                     </td>
-  
                     <td>{{ 'Rp. ' .  number_format($item->sub_total, 0, ',', '.') }}</td>
                 </tr>
             @endforeach
+            <tr>
+                <td colspan="5" class="text-right"><strong>Total Fee Penjualan</strong></td>
+                <td >{{ 'Rp. ' .  number_format($grandTotalFee, 0, ',', '.') }}</td>
+                <td></td>
+            </tr>
             <tr>
                 <td colspan="6" class="text-right"><strong>Grand Total</strong></td>
                 <td>{{ 'Rp. ' .  number_format($grandTotal, 0, ',', '.') }}</td>

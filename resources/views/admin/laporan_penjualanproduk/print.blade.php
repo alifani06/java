@@ -111,12 +111,13 @@
             <table>
                 <tr>
                     <td colspan="3" class="text-left"><strong>Kode Penjualan : {{ $kodePenjualan }}</strong></td>
-                    <td colspan="3" class="text-right"><strong>Tanggal : {{ \Carbon\Carbon::now()->format('d/m/Y H:i') }}</strong></td>
-                    <td colspan="1" class="text-right"><strong>{{ $items->first()->toko->nama_toko }}</strong></td>
+                    <td colspan="3" class="text-right"><strong>Tanggal : {{ $formattedDate}}</strong></td>
+                    <td colspan="2" class="text-right"><strong>{{ $items->first()->toko->nama_toko }}</strong></td>
                 </tr>              
                 <thead>
                     <tr>
                         <th class="text-center">No</th>
+                        <th>Divisi</th>
                         <th>Kode Produk</th>
                         <th>Produk</th>
                         <th>Qty</th>
@@ -137,6 +138,13 @@
                             @endphp
                             <tr>
                                 <td class="text-center">{{ $globalCounter++ }}</td>
+                                <td>
+                                    @if ($item->detailpenjualanproduk->isNotEmpty())
+                                        {{ $item->detailpenjualanproduk->pluck('produk.klasifikasi.nama')->implode(', ') }}
+                                    @else
+                                        tidak ada
+                                    @endif
+                                </td>  
                                 <td>{{ $detail->kode_produk }}</td>
                                 <td>{{ $detail->nama_produk }}</td>
                                 <td>{{ $detail->jumlah }}</td>
@@ -148,12 +156,12 @@
                     @endforeach
 
                     <tr>
-                        <td colspan="6" class="text-right"><strong>Sub Total</strong></td>
+                        <td colspan="7" class="text-right"><strong>Sub Total</strong></td>
                         <td>{{'Rp. ' .  number_format($subTotal, 0, ',', '.') }}</td>
                     </tr>
                     <tr>
                         @if($item->metode_id !== null)
-                        <td colspan="6" class="text-right"><strong> Fee {{$item->metodepembayaran->fee}}%</strong></td>
+                        <td colspan="7" class="text-right"><strong> Fee {{$item->metodepembayaran->fee}}%</strong></td>
                         <td>
                             @php
                                 // Menghapus semua karakter kecuali angka
@@ -166,20 +174,20 @@
                     @endif
                     </tr>
                     <tr>
-                        <td colspan="6" class="text-right"><strong>Metode Pembayaran</strong></td>
+                        <td colspan="7" class="text-right"><strong>Metode Pembayaran</strong></td>
                         <td>{{ $item->metodePembayaran ? $item->metodePembayaran->nama_metode : 'Tunai' }}</td>
                     </tr>
                     <tr>
-                        <td colspan="6" class="text-right"><strong>Total Bayar</strong></td>
+                        <td colspan="7" class="text-right"><strong>Total Bayar</strong></td>
                         <td>{{'Rp. ' .  number_format($item->sub_total, 0, ',', '.') }}</td>
                     </tr>
                     @if($item->metode_id == Null)
                     <tr>
-                        <td colspan="6" class="text-right"><strong>Uang Bayar</strong></td>
+                        <td colspan="7" class="text-right"><strong>Uang Bayar</strong></td>
                         <td>{{'Rp. ' .  number_format($item->bayar, 0, ',', '.') }}</td>
                     </tr>
                     <tr>
-                        <td colspan="6" class="text-right"><strong>Kembali</strong></td>
+                        <td colspan="7" class="text-right"><strong>Kembali</strong></td>
                         <td>{{'Rp. ' .  number_format($item->kembali, 0, ',', '.') }}</td>
                     </tr>
                   @endif
