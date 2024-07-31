@@ -33,17 +33,26 @@ use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use App\Imports\ProdukImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 
 
 class PermintaanprodukController extends Controller{
 
-    public function index(Request $request)
-    {
-      
-        return view('admin.permintaan_produk.index');
-    }
+    public function index()
+{
+    $today = \Carbon\Carbon::today();
+
+    $permintaanProduks = PermintaanProduk::with('detailpermintaanproduks')
+        ->whereDate('created_at', $today)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return view('admin.permintaan_produk.index', compact('permintaanProduks'));
+}
+
     
 
     public function create()
@@ -52,46 +61,7 @@ class PermintaanprodukController extends Controller{
         
         return view('admin.permintaan_produk.create', compact('klasifikasis'));
     }
-    
 
-    // public function store(Request $request)
-    // {
-    
-    //     $kode = $this->kode();
-    //     $produkData = $request->input('produk', []);
-    //     // $klasifikasiId = $request->input('klasifikasi_id'); // Ambil klasifikasi_id dari input
-
-    //     foreach ($produkData as $produkId => $data) {
-    //         $jumlah = $data['jumlah'] ?? null; 
-
-    //         if (!is_null($jumlah) && $jumlah !== '') {
-    //             PermintaanProduk::create([
-    //                 'produk_id' => $produkId,
-    //                 // 'klasifikasi_id' => $klasifikasiId, // Tambahkan klasifikasi_id
-    //                 'jumlah' => $jumlah,
-    //                 'kode_permintaan' => $this->kode(),
-    //                 'qrcode_permintaan' => 'https://javabakery.id/permintaan_produk/' . $kode,
-    //             ]);
-    //         }
-    //     }
-
-    //     return redirect()->back()->with('success', 'Data berhasil disimpan.');
-    // }
-
-    // public function kode()
-    // {
-    //     $lastBarang = Permintaanproduk::latest()->first();
-    //     if (!$lastBarang) {
-    //         $num = 1;
-    //     } else {
-    //         $lastCode = $lastBarang->kode_permintaan;
-    //         $num = (int) substr($lastCode, strlen('FE')) + 1;
-    //     }
-    //     $formattedNum = sprintf("%06s", $num);
-    //     $prefix = 'PB';
-    //     $newCode = $prefix . $formattedNum;
-    //     return $newCode;
-    // }
     public function store(Request $request)
     {
         // Generate a new kode_permintaan
@@ -101,27 +71,26 @@ class PermintaanprodukController extends Controller{
         $permintaanProduk = PermintaanProduk::create([
             'kode_permintaan' => $kode,
             'qrcode_permintaan' => 'https://javabakery.id/permintaan_produk/' . $kode,
-            // Include other necessary fields if needed
+            
         ]);
     
-        // Get produk data from the request
         $produkData = $request->input('produk', []);
     
-        // Save each product with the same kode_permintaan
         foreach ($produkData as $produkId => $data) {
             $jumlah = $data['jumlah'] ?? null;
     
             if (!is_null($jumlah) && $jumlah !== '') {
-                // Create the detail entry with the same kode_permintaan
                 Detailpermintaanproduk::create([
                     'permintaanproduk_id' => $permintaanProduk->id,
                     'produk_id' => $produkId,
                     'jumlah' => $jumlah,
+                    'status' => 'posting',
+                    'tanggal_permintaan' => Carbon::now('Asia/Jakarta'),
                 ]);
             }
         }
     
-        return redirect()->back()->with('success', 'Data berhasil disimpan.');
+        return redirect('admin/permintaan_produk/show')->with('success', 'Berhasil menambahkan permintaan produk');
     }
     
     public function kode()
@@ -139,10 +108,35 @@ class PermintaanprodukController extends Controller{
         return $newCode;
     }
     
+
     public function show($id)
-    {   
-     
+    {
+        $permintaanProduk = PermintaanProduk::where('id', $id)->firstOrFail();
+        
+        $detailPermintaanProduks = $permintaanProduk->detailpermintaanproduks;
+
+        return view('admin.permintaan_produk.show', compact('permintaanProduk', 'detailPermintaanProduks'));
     }
+
+    public function print($id)
+    {
+        $permintaanProduk = PermintaanProduk::where('id', $id)->firstOrFail();
+        
+        $detailPermintaanProduks = $permintaanProduk->detailpermintaanproduks;
+
+        $pdf = FacadePdf::loadView('admin.permintaan_produk.print', compact('permintaanProduk', 'detailPermintaanProduks'));
+
+        return $pdf->stream('surat_permintaan_produk.pdf');
+    }
+    // public function lihat($id)
+    // {
+    //     $permintaanProduk = PermintaanProduk::where('kode_permintaan', $id)->firstOrFail();
+        
+    //     $detailPermintaanProduks = $permintaanProduk->detailpermintaanproduks;
+
+    //     return view('admin.permintaan_produk.show', compact('permintaanProduk', 'detailPermintaanProduks'));
+    // }
+
     
 
     public function edit($id)
@@ -150,6 +144,7 @@ class PermintaanprodukController extends Controller{
            
     }
         
+    
 
     public function update(Request $request, $id)
     {
@@ -172,5 +167,22 @@ class PermintaanprodukController extends Controller{
             return redirect('admin/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
         }
         
-
+        public function import(Request $request)
+        {
+            $request->validate([
+                'file' => 'required|mimes:xlsx,xls',
+            ]);
+    
+            Excel::import(new ProdukImport, $request->file('file'));
+    
+            // Redirect to the form with success message
+            return redirect()->route('form.produk')->with('success', 'Data produk berhasil diimpor.');
+        }
+    
+        public function formProduk()
+        {
+            $klasifikasis = Klasifikasi::with('produks')->get();
+            $importedData = session('imported_data', []);
+            return view('admin.permintaan_produk.form', compact('klasifikasis', 'importedData'));
+        }
 }

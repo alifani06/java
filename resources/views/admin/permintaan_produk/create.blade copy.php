@@ -72,7 +72,55 @@
                 <!-- /.card-header -->
                 <div class="card-body">
                     
-
+                    {{-- <form action="{{ url('admin/permintaan_produk') }}" method="POST">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Form Permintaan Produk</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($klasifikasis as $klasifikasi)
+                                            <tr class="klasifikasi-header" data-klasifikasi-id="{{ $klasifikasi->id }}">
+                                                <th>{{ $klasifikasi->nama }}</th>
+                                            </tr>
+                                            <tr class="produk-table" id="produk-table-{{ $klasifikasi->id }}">
+                                                <td colspan="1">
+                                                    <table class="table table-bordered" style="font-size: 13px;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>No</th>
+                                                                <th>Kode Produk</th>
+                                                                <th>Produk</th>
+                                                                <th>Jumlah</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach ($klasifikasi->produks as $produk)
+                                                                <tr>
+                                                                    <td class="text-center">{{ $loop->iteration }}</td>
+                                                                    <td>{{ $produk->kode_produk }}</td>
+                                                                    <td>{{ $produk->nama_produk }}</td>
+                                                                    <td>
+                                                                        
+                                                                        <input type="number" class="form-control" id="produk-{{ $produk->id }}" name="produk[{{ $produk->id }}][jumlah]"  min="0" style="width: 100px; height: 30px;">
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </form> --}}
                     <form action="{{ url('admin/permintaan_produk') }}" method="POST">
                         @csrf
                         <div class="row">
@@ -121,7 +169,14 @@
                         </div>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </form>
-             
+                    <form action="{{ route('permintaan_produk.import') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="form-group">
+                            <label for="file">Import Excel</label>
+                            <input type="file" name="file" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Import</button>
+                    </form>
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
                         aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">

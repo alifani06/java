@@ -19,6 +19,8 @@ use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use App\Imports\ProdukImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 
@@ -269,5 +271,47 @@ class ProdukController extends Controller
         $prefix = 'PR';
         $newCode = $prefix . $formattedNum;
         return $newCode;
+    }
+
+
+    // public function import(Request $request)
+    // {
+    //     $request->validate([
+    //         'file' => 'required|mimes:xlsx,xls',
+    //     ]);
+
+    //     Excel::import(new ProdukImport, $request->file('file'));
+
+    //     return redirect()->route('form.produk')->with('success', 'Data produk berhasil diimpor.');
+    // }
+
+    // public function formProduk()
+    // {
+    //     $klasifikasis = Klasifikasi::with('produks')->get();
+    //     $importedData = session('imported_data', []);
+    //     return view('admin.permintaan_produk.form', compact('klasifikasis', 'importedData'));
+    // }
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        // Import data
+        $import = new ProdukImport();
+        Excel::import($import, $request->file('file'));
+
+        // Save imported data to session
+        session()->put('imported_data', $import->getImportedData());
+
+        // Redirect to the form with success message
+        return redirect()->route('form.produk')->with('success', 'Data produk berhasil diimpor.');
+    }
+
+    public function formProduk()
+    {
+        $klasifikasis = Klasifikasi::with('produks')->get();
+        $importedData = session('imported_data', []);
+        return view('admin.permintaan_produk.form', compact('klasifikasis', 'importedData'));
     }
 }

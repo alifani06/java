@@ -19,6 +19,7 @@ class Permintaanproduk extends Model
     protected $fillable = [
         'produk_id',
         'jumlah',
+        'status',
         'kode_permintaan',
         'qrcode_permintaan',
     ];
@@ -70,4 +71,12 @@ class Permintaanproduk extends Model
         return $this->belongsTo(Produk::class);
     }
 
+    public function detailpermintaanproduks()
+    {
+        return $this->hasMany(DetailPermintaanProduk::class, 'permintaanproduk_id');
+    }
+    public function klasifikasi()
+    {
+        return $this->hasMany(Klasifikasi::class, 'produk_id');
+    }
 }

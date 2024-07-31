@@ -291,47 +291,51 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($produks as $item)
-                                        <tr class="pilih-btn" 
-                                            data-id="{{ $item->id }}"
-                                            data-kode="{{ $item->kode_produk }}"
-                                            data-kode="{{ $item->catatanproduk }}"
-                                            data-nama="{{ $item->nama_produk }}"
-                                            data-member="{{ $item->tokoslawi->first()->member_harga_slw }}"
-                                            data-diskonmember="{{ $item->tokoslawi->first()->member_diskon_slw }}"
-                                            data-nonmember="{{ $item->tokoslawi->first()->non_harga_slw }}"
-                                            data-diskonnonmember="{{ $item->tokoslawi->first()->non_diskon_slw }}">>
-                                            <td class="text-center">{{ $loop->iteration }}</td>
-                                            <td>{{ $item->kode_produk }}</td>
-                                            <td>{{ $item->nama_produk }}</td>
-                                            <td>
-                                                <span class="member_harga_slw">{{$item->tokoslawi->first()->member_harga_slw}}</span>
-                                            </td>
-                                            <td>
-                                                <span class="member_diskon_slw">{{ $item->tokoslawi->first()->member_diskon_slw }}</span>
-                                            </td>
-                                            <td>
-                                                <span class="non_harga_slw">{{$item->tokoslawi->first()->non_harga_slw}}</span>
-                                            </td>
-                                            <td>
-                                                <span class="non_diskon_slw">{{ $item->tokoslawi->first()->non_diskon_slw }}</span>
-                                            </td>
-                                            <td class="text-center">
-                                                <button type="button" class="btn btn-primary btn-sm pilih-btn"
-                                                    data-id="{{ $item->id }}"
-                                                    data-kode="{{ $item->kode_produk }}"
-                                                    data-kode="{{ $item->catatanproduk }}"
-                                                    data-nama="{{ $item->nama_produk }}"
-                                                    data-member="{{ $item->tokoslawi->first()->member_harga_slw }}"
-                                                    data-diskonmember="{{ $item->tokoslawi->first()->member_diskon_slw }}"
-                                                    data-nonmember="{{ $item->tokoslawi->first()->non_harga_slw }}"
-                                                    data-diskonnonmember="{{ $item->tokoslawi->first()->non_diskon_slw }}">
-                                                    <i class="fas fa-plus"></i> 
-                                                </button>
-                                            </td>
-                                        </tr>
+                                            @php
+                                                $tokoslawi = $item->tokoslawi->first();
+                                            @endphp
+                                            <tr class="pilih-btn"
+                                                data-id="{{ $item->id }}"
+                                                data-kode="{{ $item->kode_produk }}"
+                                                data-catatan="{{ $item->catatanproduk }}"
+                                                data-nama="{{ $item->nama_produk }}"
+                                                data-member="{{ $tokoslawi ? $tokoslawi->member_harga_slw : '' }}"
+                                                data-diskonmember="{{ $tokoslawi ? $tokoslawi->member_diskon_slw : '' }}"
+                                                data-nonmember="{{ $tokoslawi ? $tokoslawi->non_harga_slw : '' }}"
+                                                data-diskonnonmember="{{ $tokoslawi ? $tokoslawi->non_diskon_slw : '' }}">
+                                                <td class="text-center">{{ $loop->iteration }}</td>
+                                                <td>{{ $item->kode_produk }}</td>
+                                                <td>{{ $item->nama_produk }}</td>
+                                                <td>
+                                                    <span class="member_harga_slw">{{ $tokoslawi ? $tokoslawi->member_harga_slw : '' }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="member_diskon_slw">{{ $tokoslawi ? $tokoslawi->member_diskon_slw : '' }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="non_harga_slw">{{ $tokoslawi ? $tokoslawi->non_harga_slw : '' }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="non_diskon_slw">{{ $tokoslawi ? $tokoslawi->non_diskon_slw : '' }}</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-primary btn-sm pilih-btn"
+                                                        data-id="{{ $item->id }}"
+                                                        data-kode="{{ $item->kode_produk }}"
+                                                        data-catatan="{{ $item->catatanproduk }}"
+                                                        data-nama="{{ $item->nama_produk }}"
+                                                        data-member="{{ $tokoslawi ? $tokoslawi->member_harga_slw : '' }}"
+                                                        data-diskonmember="{{ $tokoslawi ? $tokoslawi->member_diskon_slw : '' }}"
+                                                        data-nonmember="{{ $tokoslawi ? $tokoslawi->non_harga_slw : '' }}"
+                                                        data-diskonnonmember="{{ $tokoslawi ? $tokoslawi->non_diskon_slw : '' }}">
+                                                        <i class="fas fa-plus"></i> 
+                                                    </button>
+                                                </td>
+                                            </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
+                                
                             </div>
                  
                         </div>

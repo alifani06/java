@@ -20,6 +20,7 @@ class Detailpermintaanproduk extends Model
         'permintaanproduk_id',
         'produk_id',
         'jumlah',
+        'tanggal_permintaan',
     ];
 
     use SoftDeletes;
@@ -30,28 +31,9 @@ class Detailpermintaanproduk extends Model
         return $getId = DB::table('inputs')->orderBy('id', 'DESC')->take(1)->get();
     }
 
-    public function barang()
-    {
-        return $this->belongsTo(Barang::class);
-    }
-
     public function subsub()
     {
         return $this->belongsTo(Subsub::class);
-    }
-
-    public function details()
-    {
-        return $this->hasMany(Detailbarangjadi::class, 'input_id', 'id');
-    }
-    public function detailpenjualanproduk()
-    {
-        return $this->hasMany(Detailpenjualanproduk::class, 'penjualanproduk_id');
-    }
-    
-    public function pelanggan()
-    {
-        return $this->belongsTo(Pelanggan::class, 'pelanggan_id');
     }
     
     public function toko()
@@ -59,14 +41,15 @@ class Detailpermintaanproduk extends Model
         return $this->belongsTo(Toko::class, 'toko_id');
     }
     
-    public function metodePembayaran()
-    {
-        return $this->belongsTo(Metodepembayaran::class, 'metode_id');
-    }
 
     public function produk()
     {
-        return $this->belongsTo(Produk::class);
+        return $this->belongsTo(Produk::class, 'produk_id');
+    }
+
+    public function permintaanproduk()
+    {
+        return $this->belongsTo(PermintaanProduk::class, 'permintaanproduk_id');
     }
 
 }

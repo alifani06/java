@@ -157,7 +157,7 @@
                                                         href="{{ url('/admin/penjualan_produk/' . $item->id ) }}">Show</a>
                                             @endif
                                            
-                                        </div>
+                                          </div>
                                     </td>
                                 </tr>
                             @endforeach

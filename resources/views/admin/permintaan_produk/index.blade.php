@@ -6,7 +6,18 @@
     <div id="loadingSpinner" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
         <i class="fas fa-spinner fa-spin" style="font-size: 3rem;"></i>
     </div>
-
+    <style>
+        .permintaan-header {
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .permintaan-header:hover {
+            background-color: #f0f0f0;
+        }
+        .permintaan-header.active {
+            background-color: #e0e0e0;
+        }
+    </style>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             setTimeout(function() {
@@ -16,6 +27,7 @@
             }, 10); // Adjust the delay time as needed
         });
     </script>
+
     <!-- Content Header (Page header) -->
     <div class="content-header" style="display: none;" id="mainContent">
         <div class="container-fluid">
@@ -63,97 +75,67 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
-                        <thead class="">
+                    <!-- Tabel -->
+<table id="datatables66" class="table table-bordered" style="font-size: 13px">
+    <thead>
+        <tr>
+            <th class="text-center">No</th>
+            <th>Kode Permintaan</th>
+            <th>Tanggal Permintaan</th>
+            <th>Jumlah Produk</th>
+            <th>Opsi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($permintaanProduks as $permintaan)
+            <tr class="permintaan-header" data-permintaan-id="{{ $permintaan->id }}">
+                <td class="text-center">{{ $loop->iteration }}</td>
+                <td>{{ $permintaan->kode_permintaan }}</td>
+                <td>{{ $permintaan->created_at->format('d-m-Y') }}</td>
+                <td>{{ $permintaan->detailpermintaanproduks->count() }}</td>
+                <td class="text-center">
+                    {{-- <button type="button" class="btn btn-info btn-sm show-btn" data-permintaan-id="{{ $permintaan->id }}" data-href="{{ url('admin/permintaan_produk/lihat/' . $permintaan->kode_permintaan) }}">
+                        <i class="fas fa-eye"></i> Show
+                    </button> --}}
+
+                    <a href="{{ url('admin/permintaan_produk/' . $permintaan->id) }}" class="btn btn-info btn-sm">
+                        <i class="fas fa-print"></i>
+                    </a>
+                  
+                </td>
+                
+            </tr>
+            <tr class="permintaan-details" id="details-{{ $permintaan->id }}" style="display: none;">
+                <td colspan="5">
+                    <table class="table table-bordered" style="font-size: 13px;">
+                        <thead>
                             <tr>
-                                {{-- <th> <input type="checkbox" name="" id="select_all_ids"></th> --}}
-                                <th class="text-center">No</th>
-                                <th>Kode penjualan</th>
-                                <th>Tanggal</th>
-                                <th>Kasir</th>
-                                <th>Pelanggan</th>
-                                <th>Pembayaran</th>
-                                <th>Total</th>
-                                <th class="text-center" width="20">Opsi</th>
+                                <th>No</th>
+                                <th>Divisi</th>
+                                <th>Kode Produk</th>
+                                <th>Produk</th>
+                                <th>Jumlah</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- @foreach ($inquery as $item)
-                                <tr class="dropdown"{{ $item->id }}>
-                                   
-                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>
-                                        {{ $item->kode_penjualan }}
-                                    </td>
-                                    <td>
-                                        {{ \Carbon\Carbon::parse($item->tanggal_penjualan)->format('d/m/Y H:i') }}
-                                    </td>
-                                    <td>
-                                        {{ $item->kasir }}
-                                    </td>
-                                    <td>
-                                        @if ($item->kode_pelanggan && $item->nama_pelanggan)
-                                            {{ $item->kode_pelanggan }} / {{ $item->nama_pelanggan }}
-                                        @else
-                                            Non Member
-                                        @endif
-                                    </td>
-                                    
-                                    <td>
-                                        @if($item->metodePembayaran)
-                                            {{ $item->metodePembayaran->nama_metode }}
-                                        @else
-                                            Tunai
-                                        @endif
-                                    </td>
-                                    
-                                    <td>
-                                        {{ number_format($item->sub_total, 0, ',', '.') }}
-                                    </td>
-
-                                    <td class="text-center">
-                                        @if ($item->status == 'posting')
-                                            <button type="button" class="btn btn-success btn-sm">
-                                                <i class="fas fa-check"></i>
-                                            </button>
-                                        @endif
-                                        @if ($item->status == 'unpost')
-                                        <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="btn btn-danger btn-sm mt-2">
-                                                <i class="fas fa-trash-alt"></i> 
-                                            </button>
-                                        </form>
-                                        @endif
-                                     
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            @if ($item->status == 'unpost')
-                                                <a class="dropdown-item posting-btn"
-                                                        data-memo-id="{{ $item->id }}">Posting</a>
-                                             
-                                                    <a class="dropdown-item"
-                                                        href="{{ url('admin/penjualan_produk/' . $item->id . '/edit') }}">Update</a>
-                                                
-                                                    <a class="dropdown-item"
-                                                        href="{{ url('/admin/penjualan_produk/' . $item->id ) }}">Show</a>
-                                                      
-                                            @endif
-                                            @if ($item->status == 'posting')
-                                                    <a class="dropdown-item unpost-btn"
-                                                        data-memo-id="{{ $item->id }}">Unpost</a>
-                                                    <a class="dropdown-item"
-                                                        href="{{ url('/admin/penjualan_produk/' . $item->id ) }}">Show</a>
-                                            @endif
-                                           
-                                        </div>
-                                    </td>
+                            @foreach ($permintaan->detailpermintaanproduks as $detail)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $detail->produk->klasifikasi->nama }}</td>
+                                    <td>{{ $detail->produk->kode_produk }}</td>
+                                    <td>{{ $detail->produk->nama_produk }}</td>
+                                    <td>{{ $detail->jumlah }}</td>
                                 </tr>
-                            @endforeach --}}
+                            @endforeach
                         </tbody>
                     </table>
+                </td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
 
+                    
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
                         aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">
@@ -172,199 +154,103 @@
         </div>
     </section>
 
-
-    <!-- /.card -->
     <script>
-        var tanggalAwal = document.getElementById('tanggal_awal');
-        var tanggalAkhir = document.getElementById('tanggal_akhir');
+       document.addEventListener("DOMContentLoaded", function() {
+    // Handle click event for permintaan-header
+    const permintaanHeaders = document.querySelectorAll('.permintaan-header');
+    
+    permintaanHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+            const permintaanId = header.dataset.permintaanId;
+            const detailsRow = document.getElementById(`details-${permintaanId}`);
+            
+            // Hide all details rows and remove active class from all headers
+            const allDetailsRows = document.querySelectorAll('.permintaan-details');
+            const allHeaders = document.querySelectorAll('.permintaan-header');
+            
+            // Check if the clicked row is already open
+            const isActive = header.classList.contains('active');
 
-        if (tanggalAwal.value == "") {
-            tanggalAkhir.readOnly = true;
-        }
+            allDetailsRows.forEach(row => row.style.display = 'none');
+            allHeaders.forEach(h => h.classList.remove('active'));
+            
+            // Toggle the clicked row only if it wasn't already active
+            if (!isActive) {
+                detailsRow.style.display = '';
+                header.classList.add('active');
+            }
+        });
+    });
 
-        tanggalAwal.addEventListener('change', function() {
-            if (this.value == "") {
-                tanggalAkhir.readOnly = true;
-            } else {
-                tanggalAkhir.readOnly = false;
+    // Handle click event for show-btn
+    document.querySelectorAll('.show-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const permintaanId = this.dataset.permintaanId;
+            const href = this.dataset.href;
+
+            // Redirect to the specified URL
+            window.location.href = href;
+        });
+    });
+});
+
+    </script>
+
+
+<script>
+    $(document).ready(function() {
+        $('tbody tr.dropdown').click(function(e) {
+            // Memeriksa apakah yang diklik adalah checkbox
+            if ($(e.target).is('input[type="checkbox"]')) {
+                return; // Jika ya, hentikan eksekusi
             }
 
-            tanggalAkhir.value = "";
-            var today = new Date().toISOString().split('T')[0];
-            tanggalAkhir.value = today;
-            tanggalAkhir.setAttribute('min', this.value);
+            // Menghapus kelas 'selected' dan mengembalikan warna latar belakang ke warna default dari semua baris
+            $('tr.dropdown').removeClass('selected').css('background-color', '');
+
+            // Menambahkan kelas 'selected' ke baris yang dipilih dan mengubah warna latar belakangnya
+            $(this).addClass('selected').css('background-color', '#b0b0b0');
+
+            // Menyembunyikan dropdown pada baris lain yang tidak dipilih
+            $('tbody tr.dropdown').not(this).find('.dropdown-menu').hide();
+
+            // Mencegah event klik menyebar ke atas (misalnya, saat mengklik dropdown)
+            e.stopPropagation();
         });
 
-        var form = document.getElementById('form-action');
+        $('tbody tr.dropdown').contextmenu(function(e) {
+            // Memeriksa apakah baris ini memiliki kelas 'selected'
+            if ($(this).hasClass('selected')) {
+                // Menampilkan dropdown saat klik kanan
+                var dropdownMenu = $(this).find('.dropdown-menu');
+                dropdownMenu.show();
 
-        function cari() {
-            form.action = "{{ url('admin/inquery_pemesnanproduk') }}";
-            form.submit();
-        }
-    </script>
+                // Mendapatkan posisi td yang diklik
+                var clickedTd = $(e.target).closest('td');
+                var tdPosition = clickedTd.position();
 
-    <script>
-        $(function(e) {
-            $("#select_all_ids").click(function() {
-                $('.checkbox_ids').prop('checked', $(this).prop('checked'))
-            })
-        });
-
-        function printSelectedData() {
-            var selectedIds = document.querySelectorAll(".checkbox_ids:checked");
-            if (selectedIds.length === 0) {
-                alert("Harap centang setidaknya satu item sebelum mencetak.");
-            } else {
-                var selectedCheckboxes = document.querySelectorAll('.checkbox_ids:checked');
-                var selectedIds = [];
-                selectedCheckboxes.forEach(function(checkbox) {
-                    selectedIds.push(checkbox.value);
+                // Menyusun posisi dropdown relatif terhadap td yang di klik
+                dropdownMenu.css({
+                    'position': 'absolute',
+                    'top': tdPosition.top + clickedTd
+                        .height(), // Menempatkan dropdown sedikit di bawah td yang di klik
+                    'left': tdPosition
+                        .left // Menempatkan dropdown di sebelah kiri td yang di klik
                 });
-                document.getElementById('selectedIds').value = selectedIds.join(',');
-                var selectedIdsString = selectedIds.join(',');
-                window.location.href = "{{ url('admin/cetak_fakturekspedisifilter') }}?ids=" + selectedIdsString;
-                // var url = "{{ url('admin/ban/cetak_pdffilter') }}?ids=" + selectedIdsString;
-            }
-        }
-    </script>
 
-    {{-- unpost memo  --}}
-    <script>
-        $(document).ready(function() {
-            $('.unpost-btn').click(function() {
-                var memoId = $(this).data('memo-id');
-                $(this).addClass('disabled');
-
-                // Tampilkan modal loading saat permintaan AJAX diproses
-                $('#modal-loading').modal('show');
-
-                // Kirim permintaan AJAX untuk melakukan unpost
-                $.ajax({
-                    url: "{{ url('admin/inquery_penjualanproduk/unpost_penjualanproduk/') }}/" + memoId,
-                    type: 'GET',
-                    data: {
-                        id: memoId
-                    },
-                    success: function(response) {
-                        // Sembunyikan modal loading setelah permintaan selesai
-                        $('#modal-loading').modal('hide');
-
-                        // Tampilkan pesan sukses atau lakukan tindakan lain sesuai kebutuhan
-                        console.log(response);
-
-                        // Tutup modal setelah berhasil unpost
-                        $('#modal-posting-' + memoId).modal('hide');
-
-                        // Reload the page to refresh the table
-                        location.reload();
-                    },
-                    error: function(error) {
-                        // Sembunyikan modal loading setelah permintaan selesai
-                        $('#modal-loading').modal('hide');
-
-                        // Tampilkan pesan error atau lakukan tindakan lain sesuai kebutuhan
-                        console.log(error);
-                    }
-                });
-            });
-        });
-    </script>
-    {{-- posting memo --}}
-    <script>
-        $(document).ready(function() {
-            $('.posting-btn').click(function() {
-                var memoId = $(this).data('memo-id');
-                $(this).addClass('disabled');
-
-                // Tampilkan modal loading saat permintaan AJAX diproses
-                $('#modal-loading').modal('show');
-
-                // Kirim permintaan AJAX untuk melakukan posting
-                $.ajax({
-                    url: "{{ url('admin/inquery_penjualanproduk/posting_penjualanproduk/') }}/" + memoId,
-                    type: 'GET',
-                    data: {
-                        id: memoId
-                    },
-                    success: function(response) {
-                        // Sembunyikan modal loading setelah permintaan selesai
-                        $('#modal-loading').modal('hide');
-
-                        // Tampilkan pesan sukses atau lakukan tindakan lain sesuai kebutuhan
-                        console.log(response);
-
-                        // Tutup modal setelah berhasil posting
-                        $('#modal-posting-' + memoId).modal('hide');
-
-                        // Reload the page to refresh the table
-                        location.reload();
-                    },
-                    error: function(error) {
-                        // Sembunyikan modal loading setelah permintaan selesai
-                        $('#modal-loading').modal('hide');
-
-                        // Tampilkan pesan error atau lakukan tindakan lain sesuai kebutuhan
-                        console.log(error);
-                    }
-                });
-            });
-        });
-    </script>
-
-    <script>
-        $(document).ready(function() {
-            $('tbody tr.dropdown').click(function(e) {
-                // Memeriksa apakah yang diklik adalah checkbox
-                if ($(e.target).is('input[type="checkbox"]')) {
-                    return; // Jika ya, hentikan eksekusi
-                }
-
-                // Menghapus kelas 'selected' dan mengembalikan warna latar belakang ke warna default dari semua baris
-                $('tr.dropdown').removeClass('selected').css('background-color', '');
-
-                // Menambahkan kelas 'selected' ke baris yang dipilih dan mengubah warna latar belakangnya
-                $(this).addClass('selected').css('background-color', '#b0b0b0');
-
-                // Menyembunyikan dropdown pada baris lain yang tidak dipilih
-                $('tbody tr.dropdown').not(this).find('.dropdown-menu').hide();
-
-                // Mencegah event klik menyebar ke atas (misalnya, saat mengklik dropdown)
+                // Mencegah event klik kanan menyebar ke atas (misalnya, saat mengklik dropdown)
                 e.stopPropagation();
-            });
-
-            $('tbody tr.dropdown').contextmenu(function(e) {
-                // Memeriksa apakah baris ini memiliki kelas 'selected'
-                if ($(this).hasClass('selected')) {
-                    // Menampilkan dropdown saat klik kanan
-                    var dropdownMenu = $(this).find('.dropdown-menu');
-                    dropdownMenu.show();
-
-                    // Mendapatkan posisi td yang diklik
-                    var clickedTd = $(e.target).closest('td');
-                    var tdPosition = clickedTd.position();
-
-                    // Menyusun posisi dropdown relatif terhadap td yang di klik
-                    dropdownMenu.css({
-                        'position': 'absolute',
-                        'top': tdPosition.top + clickedTd
-                            .height(), // Menempatkan dropdown sedikit di bawah td yang di klik
-                        'left': tdPosition
-                            .left // Menempatkan dropdown di sebelah kiri td yang di klik
-                    });
-
-                    // Mencegah event klik kanan menyebar ke atas (misalnya, saat mengklik dropdown)
-                    e.stopPropagation();
-                    e.preventDefault(); // Mencegah munculnya konteks menu bawaan browser
-                }
-            });
-
-            // Menyembunyikan dropdown saat klik di tempat lain
-            $(document).click(function() {
-                $('.dropdown-menu').hide();
-                $('tr.dropdown').removeClass('selected').css('background-color',
-                    ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
-            });
+                e.preventDefault(); // Mencegah munculnya konteks menu bawaan browser
+            }
         });
-    </script>
+
+        // Menyembunyikan dropdown saat klik di tempat lain
+        $(document).click(function() {
+            $('.dropdown-menu').hide();
+            $('tr.dropdown').removeClass('selected').css('background-color',
+                ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
+        });
+    });
+</script>
 
 @endsection
