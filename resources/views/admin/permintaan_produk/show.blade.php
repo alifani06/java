@@ -61,16 +61,30 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
-            
         }
         th, td {
             padding: 6px;
             border: 1px solid #ccc;
             text-align: left;
+            width: 20%; /* Atur lebar kolom ke nilai persentase yang sesuai */
         }
         th {
             background-color: #f2f2f2;
         }
+        table th:nth-child(1),
+        table td:nth-child(1) { width: 10%; } /* Lebar untuk kolom No */
+
+        table th:nth-child(2),
+        table td:nth-child(2) { width: 25%; } /* Lebar untuk kolom Divisi */
+
+        table th:nth-child(3),
+        table td:nth-child(3) { width: 25%; } /* Lebar untuk kolom Kode Produk */
+
+        table th:nth-child(4),
+        table td:nth-child(4) { width: 30%; } /* Lebar untuk kolom Produk */
+
+        table th:nth-child(5),
+        table td:nth-child(5) { width: 10%; } /* Lebar untuk kolom Jumlah */
         .signature-container {
             margin-top: 60px;
             text-align: center;
@@ -86,8 +100,9 @@
         .row p {
             margin: 0;
         }
-
-        
+        .total-row {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -99,9 +114,13 @@
             </div>
             <div>
                 <span class="title">PT JAVA BAKERY</span><br>
-                <span class="address">JL. HOS COKRO AMINOTO NO 5 SLAWI TEGAL</span><br>
-                <span class="contact">Telp / Fax, Email :</span>
+                @if($toko)
+                <span class="toko-name">Cabang: {{ $toko->nama_toko }}</span><br>
+                <span class="address">{{$toko->alamat}}</span><br>
+                @endif
+
             </div>
+            <br>
             <hr class="divider">
         </div>
 
@@ -126,31 +145,56 @@
           
         </div>
 
-        <!-- Detail Produk -->
-        <table >
+       
+        @foreach ($produkByDivisi as $divisi => $produks)
+        <div class="section-title">{{ $divisi }}</div>
+        
+        <table>
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Divisi</th>
+                    <th>Kategori</th>
                     <th>Kode Produk</th>
                     <th>Produk</th>
                     <th>Jumlah</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($detailPermintaanProduks as $detail)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $detail->produk->klasifikasi->nama }}</td>
-                        <td>{{ $detail->produk->kode_produk }}</td>
-                        <td>{{ $detail->produk->nama_produk }}</td>
-                        <td>{{ $detail->jumlah }}</td>
-                    </tr>
+                @php
+                $no = 1; 
+                @endphp
+                @foreach ($produks->groupBy(function($item) {
+                    return $item->produk->subklasifikasi->nama; 
+                    }) as $subklasifikasi => $produkList)
+                        @foreach ($produkList as $detail)
+                            <tr>
+                                <td>{{ $no++ }}</td> 
+                                <td>{{ $subklasifikasi }}</td>
+                                <td>{{ $detail->produk->kode_produk }}</td>
+                                <td>{{ $detail->produk->nama_produk }}</td>
+                                <td>{{ $detail->jumlah }}</td>
+                            </tr>
+                        @endforeach
+                    {{-- Menampilkan total untuk subklasifikasi --}}
+                    {{-- <tr class="total-row">
+                        <td colspan="4">Total {{ $subklasifikasi }}</td>
+                        <td>{{ $produkList->sum('jumlah') }}</td>
+                    </tr> --}}
                 @endforeach
             </tbody>
-        </table><br>
 
-   
+            {{-- Menampilkan total untuk divisi --}}
+            <tfoot>
+                <tr class="total-row">
+                    <td colspan="4">Total </td>
+                    <td>{{ $produks->sum('jumlah') }}</td>
+                </tr>
+            </tfoot>
+        </table><br>
+    @endforeach
+    
+
+
         <div class="d-flex justify-content-between">
             <div>
                 <a href="{{ url('admin/permintaan_produk') }}" class="btn btn-primary btn-sm">

@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\Laporan_pemesananprodukController;
 use App\Http\Controllers\Admin\PelangganController;
 use App\Http\Controllers\Admin\PenjualanprodukController;
 use App\Http\Controllers\Admin\PermintaanprodukController;
+use App\Http\Controllers\Admin\Laporan_permintaanprodukController;
 use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\KategoriDropdownController;
 use App\Http\Controllers\SubcategoryController;
@@ -142,6 +143,9 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/permintaan-produk/{id}/print', [PermintaanProdukController::class, 'print'])->name('permintaan_produk.print');
 
     Route::resource('inquery_permintaanproduk', \App\Http\Controllers\Admin\Inquery_permintaanprodukController::class);
+
+    Route::resource('laporan_permintaanproduk', \App\Http\Controllers\Admin\Laporan_permintaanprodukController::class);
+    Route::get('printReport', [\App\Http\Controllers\Admin\Laporan_permintaanprodukController::class, 'printReport']);
 
 
     Route::resource('inquery_perubahanharga', \App\Http\Controllers\Admin\Inquery_perubahanhargaController::class);

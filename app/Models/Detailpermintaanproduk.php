@@ -19,6 +19,7 @@ class Detailpermintaanproduk extends Model
     protected $fillable = [
         'permintaanproduk_id',
         'produk_id',
+        'toko_id',
         'jumlah',
         'tanggal_permintaan',
     ];

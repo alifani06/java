@@ -63,35 +63,36 @@ class PermintaanprodukController extends Controller{
     }
 
     public function store(Request $request)
-    {
-        // Generate a new kode_permintaan
-        $kode = $this->kode();
-    
-        // Create the main PermintaanProduk entry
-        $permintaanProduk = PermintaanProduk::create([
-            'kode_permintaan' => $kode,
-            'qrcode_permintaan' => 'https://javabakery.id/permintaan_produk/' . $kode,
-            
-        ]);
-    
-        $produkData = $request->input('produk', []);
-    
-        foreach ($produkData as $produkId => $data) {
-            $jumlah = $data['jumlah'] ?? null;
-    
-            if (!is_null($jumlah) && $jumlah !== '') {
-                Detailpermintaanproduk::create([
-                    'permintaanproduk_id' => $permintaanProduk->id,
-                    'produk_id' => $produkId,
-                    'jumlah' => $jumlah,
-                    'status' => 'posting',
-                    'tanggal_permintaan' => Carbon::now('Asia/Jakarta'),
-                ]);
-            }
+{
+    // Generate a new kode_permintaan
+    $kode = $this->kode();
+
+    // Create the main PermintaanProduk entry
+    $permintaanProduk = PermintaanProduk::create([
+        'kode_permintaan' => $kode,
+        'qrcode_permintaan' => 'https://javabakery.id/permintaan_produk/' . $kode,
+    ]);
+
+    $produkData = $request->input('produk', []);
+
+    foreach ($produkData as $produkId => $data) {
+        $jumlah = $data['jumlah'] ?? null;
+
+        if (!is_null($jumlah) && $jumlah !== '') {
+            Detailpermintaanproduk::create([
+                'permintaanproduk_id' => $permintaanProduk->id,
+                'produk_id' => $produkId,
+                'toko_id' => '1', 
+                'jumlah' => $jumlah,
+                'status' => 'posting',
+                'tanggal_permintaan' => Carbon::now('Asia/Jakarta'),
+            ]);
         }
-    
-        return redirect()->route('permintaan_produk.show', $permintaanProduk->id)->with('success', 'Berhasil menambahkan permintaan produk');
     }
+
+    return redirect()->route('permintaan_produk.show', $permintaanProduk->id)->with('success', 'Berhasil menambahkan permintaan produk');
+}
+
     
     public function kode()
     {
@@ -107,24 +108,80 @@ class PermintaanprodukController extends Controller{
         $newCode = $prefix . $formattedNum;
         return $newCode;
     }
+
     
+//     public function show($id)
+// {
+//     $permintaanProduk = PermintaanProduk::find($id);
+//     $detailPermintaanProduks = DetailPermintaanProduk::where('permintaanproduk_id', $id)->get();
 
-    public function show($id)
-    {
-        $permintaanProduk = PermintaanProduk::where('id', $id)->firstOrFail();
-        
-        $detailPermintaanProduks = $permintaanProduk->detailpermintaanproduks;
+//     // Mengelompokkan produk berdasarkan klasifikasi
+//     $produkByDivisi = $detailPermintaanProduks->groupBy(function($item) {
+//         return $item->produk->klasifikasi->nama; // Ganti dengan nama klasifikasi jika diperlukan
+//     });
 
-        return view('admin.permintaan_produk.show', compact('permintaanProduk', 'detailPermintaanProduks'));
-    }
+//     // Menghitung total jumlah per klasifikasi
+//     $totalPerDivisi = $produkByDivisi->map(function($produks) {
+//         return $produks->sum('jumlah');
+//     });
+
+//     // Ambil data Subklasifikasi berdasarkan Klasifikasi
+//     $subklasifikasiByDivisi = $produkByDivisi->map(function($produks) {
+//         return $produks->groupBy(function($item) {
+//             return $item->produk->subklasifikasi->nama; // Ganti dengan nama subklasifikasi jika diperlukan
+//         });
+//     });
+
+//     return view('admin.permintaan_produk.show', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi', 'subklasifikasiByDivisi'));
+// }
+public function show($id)
+{
+    $permintaanProduk = PermintaanProduk::find($id);
+    $detailPermintaanProduks = DetailPermintaanProduk::with('toko')->where('permintaanproduk_id', $id)->get();
+
+    // Mengelompokkan produk berdasarkan klasifikasi
+    $produkByDivisi = $detailPermintaanProduks->groupBy(function($item) {
+        return $item->produk->klasifikasi->nama;
+    });
+
+    // Menghitung total jumlah per klasifikasi
+    $totalPerDivisi = $produkByDivisi->map(function($produks) {
+        return $produks->sum('jumlah');
+    });
+
+    // Ambil data Subklasifikasi berdasarkan Klasifikasi
+    $subklasifikasiByDivisi = $produkByDivisi->map(function($produks) {
+        return $produks->groupBy(function($item) {
+            return $item->produk->subklasifikasi->nama;
+        });
+    });
+
+    // Mengambil nama toko dari salah satu detail permintaan produk
+    $toko = $detailPermintaanProduks->first()->toko;
+
+    return view('admin.permintaan_produk.show', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi', 'subklasifikasiByDivisi', 'toko'));
+}
+
 
     public function print($id)
     {
-        $permintaanProduk = PermintaanProduk::where('id', $id)->firstOrFail();
+        // $permintaanProduk = PermintaanProduk::where('id', $id)->firstOrFail();
         
-        $detailPermintaanProduks = $permintaanProduk->detailpermintaanproduks;
+        // $detailPermintaanProduks = $permintaanProduk->detailpermintaanproduks;
+        $permintaanProduk = PermintaanProduk::find($id);
+        $detailPermintaanProduks = DetailPermintaanProduk::where('permintaanproduk_id', $id)->get();
+    
+        // Mengelompokkan produk berdasarkan divisi
+        $produkByDivisi = $detailPermintaanProduks->groupBy(function($item) {
+            return $item->produk->klasifikasi->nama; // Ganti dengan nama divisi jika diperlukan
+        });
+    
+        // Menghitung total jumlah per divisi
+        $totalPerDivisi = $produkByDivisi->map(function($produks) {
+            return $produks->sum('jumlah');
+        });
 
-        $pdf = FacadePdf::loadView('admin.permintaan_produk.print', compact('permintaanProduk', 'detailPermintaanProduks'));
+        $pdf = FacadePdf::loadView('admin.permintaan_produk.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
     }

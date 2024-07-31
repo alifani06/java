@@ -75,6 +75,7 @@
 
                     <form action="{{ url('admin/permintaan_produk') }}" method="POST">
                         @csrf
+                        <input type="hidden" name="toko_id" > <!-- Assuming $toko is passed from the controller -->
                         <div class="row">
                             <div class="col-md-12 mb-3">
                                 <table class="table table-bordered">
@@ -119,8 +120,11 @@
                                 </table>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <div class="form-group text-right">
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
                     </form>
+                    
              
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
@@ -141,7 +145,7 @@
     </section>
 
 
-    <script>
+    {{-- <script>
         $(document).ready(function(){
             $('.klasifikasi-header').click(function(){
                 var klasifikasiId = $(this).data('klasifikasi-id');
@@ -161,5 +165,47 @@
                 }
             });
         });
+    </script> --}}
+    <script>
+        $(document).ready(function(){
+            $('.klasifikasi-header').click(function(){
+                var klasifikasiId = $(this).data('klasifikasi-id');
+                var $produkTable = $('#produk-table-' + klasifikasiId);
+    
+                if ($produkTable.is(':visible')) {
+                    $produkTable.hide();
+                    $(this).removeClass('active');
+                } else {
+                    // Hide all produk tables and remove active class from all headers
+                    $('.produk-table').hide();
+                    $('.klasifikasi-header').removeClass('active');
+    
+                    // Show the selected produk table and add active class to the clicked header
+                    $produkTable.show();
+                    $(this).addClass('active');
+                }
+            });
+    
+            // Handle Enter key press on input fields
+            $('input[type="number"]').on('keypress', function(e) {
+                if (e.which == 13) { // Enter key pressed
+                    e.preventDefault(); // Prevent form submission
+    
+                    // Get the next input element
+                    var inputs = $('input[type="number"]');
+                    var index = inputs.index(this);
+                    
+                    if (index + 1 < inputs.length) {
+                        // Focus on the next input
+                        $(inputs[index + 1]).focus();
+                    } else {
+                        // Optionally handle case where there's no next input
+                        // e.g., focus on a specific element or alert user
+                    }
+                }
+            });
+        });
     </script>
+    
+    
 @endsection

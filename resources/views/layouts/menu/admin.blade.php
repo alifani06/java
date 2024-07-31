@@ -250,7 +250,8 @@
 <li
     class="nav-item {{ request()->is('admin/inquery_pemesananproduk*') ||
     request()->is('admin/inquery_penjualanproduk*')|| 
-    request()->is('admin/inquery_perubahanharga*') 
+    request()->is('admin/inquery_perubahanharga*')|| 
+    request()->is('admin/inquery_permintaanproduk*') 
     // request()->is('admin/input*')
   
         ? 'menu-open'
@@ -258,7 +259,8 @@
     <a href="#"
         class="nav-link {{ request()->is('admin/inquery_pemesananproduk*') ||
         request()->is('admin/inquery_penjualanproduk*')||
-        request()->is('admin/inquery_perubahanharga*')
+        request()->is('admin/inquery_perubahanharga*')||
+        request()->is('admin/inquery_permintaanproduk*')
         // request()->is('admin/input*')
       
             ? 'active'
@@ -315,7 +317,8 @@
 <li
     class="nav-item {{ request()->is('admin/laporan_pemesananproduk*') ||
     request()->is('admin/laporan_penjualanproduk*')  ||
-    request()->is('admin/laporan_perubahanharga*')
+    request()->is('admin/laporan_perubahanharga*')||
+    request()->is('admin/laporan_permintaanproduk*')
     // request()->is('admin/input*')
   
         ? 'menu-open'
@@ -323,7 +326,8 @@
     <a href="#"
         class="nav-link {{ request()->is('admin/laporan_pemesananproduk*') ||
         request()->is('admin/laporan_penjualanproduk*')|| 
-        request()->is('admin/laporan_perubahanharga*') 
+        request()->is('admin/laporan_perubahanharga*') ||
+        request()->is('admin/laporan_permintaanproduk*') 
         // request()->is('admin/input*')
       
             ? 'active'
@@ -362,6 +366,16 @@
                     class="nav-link {{ request()->is('admin/laporan_perubahanharga*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                     <p style="font-size: 14px;">Laporan Perubahan Harga</p>
+                </a>
+            </li>
+            {{-- @endif --}}
+
+              {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+              <li class="nav-item">
+                <a href="{{ url('admin/laporan_permintaanproduk') }}"
+                    class="nav-link {{ request()->is('admin/laporan_permintaanproduk*') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                    <p style="font-size: 14px;">Laporan Permintaan Produk</p>
                 </a>
             </li>
             {{-- @endif --}}

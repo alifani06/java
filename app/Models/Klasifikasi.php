@@ -37,10 +37,9 @@ class Klasifikasi extends Model
 
     public function subklasifikasi()
     {
-        return $this->hasMany(Subklasifikasi::class);
+        return $this->hasMany(Subklasifikasi::class, 'klasifikasi_id');
     }
-
-
+    
     public function barangs()
     {
         return $this->hasMany(Barang::class);

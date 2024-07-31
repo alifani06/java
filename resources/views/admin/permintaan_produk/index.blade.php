@@ -94,10 +94,6 @@
                 <td>{{ $permintaan->created_at->format('d-m-Y') }}</td>
                 <td>{{ $permintaan->detailpermintaanproduks->count() }}</td>
                 <td class="text-center">
-                    {{-- <button type="button" class="btn btn-info btn-sm show-btn" data-permintaan-id="{{ $permintaan->id }}" data-href="{{ url('admin/permintaan_produk/lihat/' . $permintaan->kode_permintaan) }}">
-                        <i class="fas fa-eye"></i> Show
-                    </button> --}}
-
                     <a href="{{ url('admin/permintaan_produk/' . $permintaan->id) }}" class="btn btn-info btn-sm">
                         <i class="fas fa-print"></i>
                     </a>
@@ -119,8 +115,8 @@
                         </thead>
                         <tbody>
                             @foreach ($permintaan->detailpermintaanproduks as $detail)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
+                            <tr >
+                                <td>{{ $loop->iteration }}</td>
                                     <td>{{ $detail->produk->klasifikasi->nama }}</td>
                                     <td>{{ $detail->produk->kode_produk }}</td>
                                     <td>{{ $detail->produk->nama_produk }}</td>
@@ -130,6 +126,7 @@
                         </tbody>
                     </table>
                 </td>
+
             </tr>
         @endforeach
     </tbody>
@@ -196,8 +193,7 @@
 
     </script>
 
-
-<script>
+{{-- <script>
     $(document).ready(function() {
         $('tbody tr.dropdown').click(function(e) {
             // Memeriksa apakah yang diklik adalah checkbox
@@ -251,6 +247,5 @@
                 ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
         });
     });
-</script>
-
+</script> --}}
 @endsection

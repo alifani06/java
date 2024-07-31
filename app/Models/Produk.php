@@ -92,4 +92,8 @@ class Produk extends Model
     {
         return $this->hasMany(Permintaanproduk::class);
     }
+    public function subklasifikasi()
+    {
+        return $this->belongsTo(Subklasifikasi::class, 'subklasifikasi_id');
+    }
 }
