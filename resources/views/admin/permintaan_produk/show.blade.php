@@ -86,6 +86,8 @@
         .row p {
             margin: 0;
         }
+
+        
     </style>
 </head>
 <body>
@@ -148,8 +150,18 @@
             </tbody>
         </table><br>
 
-        <div class="mt-4">
-            <button class="btn btn-primary btn-sm" onclick="window.open('{{ route('permintaan_produk.print', $permintaanProduk->id) }}', '_blank')">Cetak PDF</button>
+   
+        <div class="d-flex justify-content-between">
+            <div>
+                <a href="{{ url('admin/permintaan_produk') }}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus"></i> Kembali
+                </a>
+            </div>
+            <div>
+                <a href="{{ route('permintaan_produk.print', $permintaanProduk->id) }}"  id="printButton" target="_blank" class="btn btn-primary btn-sm">
+                    <i class="fas fa-print"></i> Cetak 
+                </a>
+            </div>
         </div>
     </div>
 </body>

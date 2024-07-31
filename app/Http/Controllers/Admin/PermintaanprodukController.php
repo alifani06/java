@@ -90,7 +90,7 @@ class PermintaanprodukController extends Controller{
             }
         }
     
-        return redirect('admin/permintaan_produk/show')->with('success', 'Berhasil menambahkan permintaan produk');
+        return redirect()->route('permintaan_produk.show', $permintaanProduk->id)->with('success', 'Berhasil menambahkan permintaan produk');
     }
     
     public function kode()
