@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Permintaan Produk - Global</h1>
+                    <h1 class="m-0">Laporan Permintaan Produk - Rinci</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -80,7 +80,7 @@
                             </a>
                         </div> --}}
        
-                    <h3 class="card-title">Laporan Permintaan Produk</h3>
+                    <h3 class="card-title">Laporan Permintaan Produk - Rinci</h3>
                 </div>
 
                 <!-- /.card-header -->
@@ -297,7 +297,7 @@
 <script>
     function printReport() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printReport1') }}";
+    form.action = "{{ url('admin/printReportRinci') }}";
     form.target = "_blank";
     form.submit();
 }
