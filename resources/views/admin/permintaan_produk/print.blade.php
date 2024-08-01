@@ -234,7 +234,8 @@
             text-align: center;
             font-size: 24px;
             font-weight: bold;
-            margin-top: 40px;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
         .tanggal {
             text-align: left;
@@ -243,7 +244,7 @@
             margin-top: 20px;
         }
         .section-title {
-            margin-top: 30px;
+            margin-top: 10px;
             margin-bottom: 10px;
             font-weight: bold;
             font-size: 16px;
@@ -292,13 +293,15 @@
         .row p {
             margin: 0;
         }
+        p {
+            margin: 5px 0;
+        }
         .total-row {
             font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div class="container">
         <!-- Kop Surat -->
         <div class="header">
             <div class="logo">
@@ -336,36 +339,6 @@
           
         </div>
 
-        <!-- Detail Produk -->
-        {{-- @foreach ($produkByDivisi as $divisi => $produks)
-            <div class="section-title">{{ $divisi }}</div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Subklasifikasi</th>
-                        <th>Kode Produk</th>
-                        <th>Produk</th>
-                        <th>Jumlah</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($produks as $detail)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{'subklasifikasi' }}</td>
-                            <td>{{ $detail->produk->kode_produk }}</td>
-                            <td>{{ $detail->produk->nama_produk }}</td>
-                            <td>{{ $detail->jumlah }}</td>
-                        </tr>
-                    @endforeach
-                    <tr class="total-row">
-                        <td colspan="3">Total</td>
-                        <td>{{ $totalPerDivisi[$divisi] }}</td>
-                    </tr>
-                </tbody>
-            </table><br>
-        @endforeach --}}
         @foreach ($produkByDivisi as $divisi => $produks)
         <div class="section-title">{{ $divisi }}</div>
         
@@ -416,7 +389,7 @@
 
 
        
-    </div>
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 

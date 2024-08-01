@@ -180,19 +180,13 @@ public function show($id)
         $totalPerDivisi = $produkByDivisi->map(function($produks) {
             return $produks->sum('jumlah');
         });
+        $toko = $detailPermintaanProduks->first()->toko;
 
-        $pdf = FacadePdf::loadView('admin.permintaan_produk.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi'));
+        $pdf = FacadePdf::loadView('admin.permintaan_produk.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi','toko'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
     }
-    // public function lihat($id)
-    // {
-    //     $permintaanProduk = PermintaanProduk::where('kode_permintaan', $id)->firstOrFail();
-        
-    //     $detailPermintaanProduks = $permintaanProduk->detailpermintaanproduks;
 
-    //     return view('admin.permintaan_produk.show', compact('permintaanProduk', 'detailPermintaanProduks'));
-    // }
 
     
 
