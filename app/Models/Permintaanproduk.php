@@ -73,7 +73,7 @@ class Permintaanproduk extends Model
 
     public function detailpermintaanproduks()
     {
-        return $this->hasMany(DetailPermintaanProduk::class, 'permintaanproduk_id');
+        return $this->hasMany(Detailpermintaanproduk::class, 'permintaanproduk_id');
     }
     public function klasifikasi()
     {
