@@ -153,8 +153,8 @@
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Kategori</th>
                     <th>Kode Produk</th>
+                    <th>Kategori</th>
                     <th>Produk</th>
                     <th>Jumlah</th>
                 </tr>
@@ -169,8 +169,8 @@
                         @foreach ($produkList as $detail)
                             <tr>
                                 <td>{{ $no++ }}</td> 
-                                <td>{{ $subklasifikasi }}</td>
                                 <td>{{ $detail->produk->kode_produk }}</td>
+                                <td>{{ $subklasifikasi }}</td>
                                 <td>{{ $detail->produk->nama_produk }}</td>
                                 <td>{{ $detail->jumlah }}</td>
                             </tr>

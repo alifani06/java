@@ -187,7 +187,20 @@ public function show($id)
         return $pdf->stream('surat_permintaan_produk.pdf');
     }
 
-
+    public function unpost(Request $request, $id)
+    {
+        $permintaan = Detailpermintaanproduk::find($id);
+    
+        if ($permintaan) {
+            $permintaan->status = 'posting';
+            $permintaan->save();
+    
+            return response()->json(['success' => true]);
+        }
+    
+        return response()->json(['success' => false], 404);
+    }
+    
     
 
     public function edit($id)

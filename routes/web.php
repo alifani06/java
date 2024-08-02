@@ -141,6 +141,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::post('admin/permintaan_produk/import', [ProdukController::class, 'import'])->name('permintaan_produk.import');
     // Route::get('admin/permintaan_produk/lihat/{id}', [PermintaanProdukController::class, 'lihat'])->name('permintaan_produk.show');
     Route::get('/permintaan-produk/{id}/print', [PermintaanProdukController::class, 'print'])->name('permintaan_produk.print');
+    // Route::get('permintaannproduk/unpost_permintaanproduk/{id}', [\App\Http\Controllers\Admin\PermintaanprodukController::class, 'unpost_permintaanproduk']);
+    Route::post('/admin/permintaan_produk/{id}/unpost', [PermintaanProdukController::class, 'unpost'])->name('permintaan_produk.unpost');
 
     Route::resource('inquery_permintaanproduk', \App\Http\Controllers\Admin\Inquery_permintaanprodukController::class);
 

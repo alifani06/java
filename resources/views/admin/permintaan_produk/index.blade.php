@@ -97,9 +97,19 @@
                     <a href="{{ url('admin/permintaan_produk/' . $permintaan->id) }}" class="btn btn-info btn-sm">
                         <i class="fas fa-print"></i>
                     </a>
-                  
+                    {{-- @if ($permintaan->status == 'posting')
+                    <button type="button" class="btn btn-success btn-sm">
+                        <i class="fas fa-check"></i> 
+                    </button>
+                        @elseif ($permintaan->status == 'unpost')
+                            <button type="button" class="unpost-btn" data-memo-id="{{ $permintaan->id }}">
+                                <i class="fas fa-times"></i> 
+                            </button>
+                            <button type="button" class="btn btn-primary btn-sm edit-btn" data-memo-id="{{ $permintaan->id }}">
+                                <i class="fas fa-edit"></i> 
+                            </button>
+                        @endif --}}
                 </td>
-                
             </tr>
             <tr class="permintaan-details" id="details-{{ $permintaan->id }}" style="display: none;">
                 <td colspan="5">
@@ -121,6 +131,7 @@
                                     <td>{{ $detail->produk->kode_produk }}</td>
                                     <td>{{ $detail->produk->nama_produk }}</td>
                                     <td>{{ $detail->jumlah }}</td>
+                                    
                                 </tr>
                             @endforeach
                         </tbody>
@@ -192,6 +203,89 @@
 });
 
     </script>
+
+{{-- 
+<script>
+    $(document).ready(function() {
+        $('.unpost-btn').click(function() {
+            var memoId = $(this).data('memo-id');
+            $(this).addClass('disabled');
+
+            // Tampilkan modal loading saat permintaan AJAX diproses
+            $('#modal-loading').modal('show');
+
+            // Kirim permintaan AJAX untuk melakukan unpost
+            $.ajax({
+                url: "{{ url('admin/permintaanproduk/unpost_permintaanproduk/') }}/" + memoId,
+                type: 'GET',
+                data: {
+                    id: memoId
+                },
+                success: function(response) {
+                    // Sembunyikan modal loading setelah permintaan selesai
+                    $('#modal-loading').modal('hide');
+
+                    if (response.success) {
+                        // Tampilkan pesan sukses atau lakukan tindakan lain sesuai kebutuhan
+                        console.log(response.message);
+
+                        // Tutup modal setelah berhasil unpost
+                        $('#modal-posting-' + memoId).modal('hide');
+
+                        // Ubah status tombol
+                        var $btn = $('.unpost-btn[data-memo-id="' + memoId + '"]');
+                        $btn.removeClass('btn-danger').addClass('btn-success');
+                        $btn.html('<i class="fas fa-check"></i>');
+                        $btn.attr('title', 'Posted');
+                        $btn.removeClass('unpost-btn');
+
+                        // Reload the page to refresh the table
+                        // location.reload(); // Uncomment if you want to reload the page
+                    } else {
+                        console.log(response.message);
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function(error) {
+                    // Sembunyikan modal loading setelah permintaan selesai
+                    $('#modal-loading').modal('hide');
+
+                    // Tampilkan pesan error atau lakukan tindakan lain sesuai kebutuhan
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script> --}}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.unpost-btn').click(function() {
+            var id = $(this).data('memo-id');
+
+            $.ajax({
+                url: '/admin/permintaan_produk/' + id + '/unpost',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Update the button and status display
+                        $('button[data-memo-id="' + id + '"]').closest('td').find('.btn-success').removeClass('d-none');
+                        $('button[data-memo-id="' + id + '"]').remove();
+                    } else {
+                        alert('Failed to update status.');
+                    }
+                },
+                error: function() {
+                    alert('An error occurred.');
+                }
+            });
+        });
+    });
+</script>
+
 
 {{-- <script>
     $(document).ready(function() {

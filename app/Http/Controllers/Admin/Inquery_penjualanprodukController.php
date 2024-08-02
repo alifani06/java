@@ -69,16 +69,6 @@ class Inquery_penjualanprodukController extends Controller
     return view('admin.inquery_penjualanproduk.index', compact('inquery'));
 }
 
-public function unpost_penjualanproduk($id)
-{
-    $item = Penjualanproduk::where('id', $id)->first();
-
-    
-        $item->update([
-            'status' => 'unpost'
-        ]);
-    return back()->with('success', 'Berhasil');
-}
 
 public function posting_penjualanproduk($id)
 {
