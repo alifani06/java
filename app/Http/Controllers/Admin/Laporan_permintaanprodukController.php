@@ -186,58 +186,6 @@ public function indexrinci(Request $request)
     return view('admin.laporan_permintaanproduk.indexrinci', compact('inquery', 'produks', 'tokos', 'klasifikasis', 'klasifikasi_id'));
 }
 
-
-
-
-// public function printReport(Request $request)
-// {
-//     $klasifikasi_id = $request->get('klasifikasi_id');
-//     $toko_id = $request->get('toko_id');
-//     $tanggal_permintaan = $request->get('tanggal_permintaan');
-//     $tanggal_akhir = $request->get('tanggal_akhir');
-
-//     $query = PermintaanProduk::with(['detailpermintaanproduks.produk.klasifikasi.subklasifikasi', 'detailpermintaanproduks.toko']);
-
-//     if ($tanggal_permintaan && $tanggal_akhir) {
-//         $tanggal_permintaan = Carbon::parse($tanggal_permintaan)->startOfDay();
-//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-//         $query->whereHas('detailpermintaanproduks', function ($query) use ($tanggal_permintaan, $tanggal_akhir) {
-//             $query->whereBetween('tanggal_permintaan', [$tanggal_permintaan, $tanggal_akhir]);
-//         });
-//     } elseif ($tanggal_permintaan) {
-//         $tanggal_permintaan = Carbon::parse($tanggal_permintaan)->startOfDay();
-//         $query->whereHas('detailpermintaanproduks', function ($query) use ($tanggal_permintaan) {
-//             $query->where('tanggal_permintaan', '>=', $tanggal_permintaan);
-//         });
-//     } elseif ($tanggal_akhir) {
-//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-//         $query->whereHas('detailpermintaanproduks', function ($query) use ($tanggal_akhir) {
-//             $query->where('tanggal_permintaan', '<=', $tanggal_akhir);
-//         });
-//     } else {
-//         $query->whereHas('detailpermintaanproduks', function ($query) {
-//             $query->whereDate('tanggal_permintaan', Carbon::today());
-//         });
-//     }
-
-//     if ($toko_id) {
-//         $query->whereHas('detailpermintaanproduks', function ($query) use ($toko_id) {
-//             $query->where('toko_id', $toko_id);
-//         });
-//     }
-
-//     if ($klasifikasi_id) {
-//         $query->whereHas('detailpermintaanproduks.produk.klasifikasi', function ($query) use ($klasifikasi_id) {
-//             $query->where('id', $klasifikasi_id);
-//         });
-//     }
-
-//     $permintaanProduk = $query->get();
-//     $tokoData = Toko::all();
-
-//     $pdf = FacadePdf::loadView('admin.laporan_permintaanproduk.print', compact('permintaanProduk', 'tokoData', 'klasifikasi_id', 'tanggal_permintaan', 'tanggal_akhir'));
-//     return $pdf->stream('laporan_permintaan_produk.pdf');
-// }
 public function printReport(Request $request)
 {
     $klasifikasi_id = $request->get('klasifikasi_id');
@@ -292,87 +240,6 @@ public function printReport(Request $request)
     $pdf = FacadePdf::loadView('admin.laporan_permintaanproduk.print', compact('permintaanProduk', 'tokoData', 'klasifikasi_id', 'tanggal_permintaan', 'tanggal_akhir', 'filteredKlasifikasi'));
     return $pdf->stream('laporan_permintaan_produk.pdf');
 }
-
-
-// public function printReportRinci(Request $request)
-// {
-//     $klasifikasi_id = $request->get('klasifikasi_id');
-//     $toko_id = $request->get('toko_id');
-//     $tanggal_permintaan = $request->get('tanggal_permintaan');
-//     $tanggal_akhir = $request->get('tanggal_akhir');
-
-//     $query = PermintaanProduk::with([
-//         'detailpermintaanproduks.produk.klasifikasi.subklasifikasi',
-//         'detailpermintaanproduks.toko'
-//     ]);
-
-//     if ($tanggal_permintaan && $tanggal_akhir) {
-//         $tanggal_permintaan = Carbon::parse($tanggal_permintaan)->startOfDay();
-//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-//         $query->whereHas('detailpermintaanproduks', function ($query) use ($tanggal_permintaan, $tanggal_akhir) {
-//             $query->whereBetween('tanggal_permintaan', [$tanggal_permintaan, $tanggal_akhir]);
-//         });
-//     } elseif ($tanggal_permintaan) {
-//         $tanggal_permintaan = Carbon::parse($tanggal_permintaan)->startOfDay();
-//         $query->whereHas('detailpermintaanproduks', function ($query) use ($tanggal_permintaan) {
-//             $query->where('tanggal_permintaan', '>=', $tanggal_permintaan);
-//         });
-//     } elseif ($tanggal_akhir) {
-//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-//         $query->whereHas('detailpermintaanproduks', function ($query) use ($tanggal_akhir) {
-//             $query->where('tanggal_permintaan', '<=', $tanggal_akhir);
-//         });
-//     } else {
-//         $query->whereHas('detailpermintaanproduks', function ($query) {
-//             $query->whereDate('tanggal_permintaan', Carbon::today());
-//         });
-//     }
-
-//     if ($toko_id) {
-//         $query->whereHas('detailpermintaanproduks', function ($query) use ($toko_id) {
-//             $query->where('toko_id', $toko_id);
-//         });
-//     }
-
-//     if ($klasifikasi_id) {
-//         $query->whereHas('detailpermintaanproduks.produk.klasifikasi', function ($query) use ($klasifikasi_id) {
-//             $query->where('id', $klasifikasi_id);
-//         });
-//     }
-
-//     $permintaanProduk = $query->get();
-//     $tokoData = Toko::all();
-
-//     // Group products by division and store
-//     $produkByTokoAndDivisi = [];
-//     foreach ($permintaanProduk as $permintaan) {
-//         foreach ($permintaan->detailpermintaanproduks as $detail) {
-//             $toko = $detail->toko->nama_toko;
-//             $divisi = $detail->produk->klasifikasi->nama;
-//             $subklasifikasi = $detail->produk->klasifikasi->subklasifikasi->first()->nama ?? '-';
-//             $kodeProduk = $detail->produk->kode_produk;
-//             $namaProduk = $detail->produk->nama_produk;
-
-//             if (!isset($produkByTokoAndDivisi[$toko][$divisi])) {
-//                 $produkByTokoAndDivisi[$toko][$divisi] = collect();
-//             }
-
-//             $produkByTokoAndDivisi[$toko][$divisi]->push([
-//                 'kode_produk' => $kodeProduk,
-//                 'nama_produk' => $namaProduk,
-//                 'subklasifikasi' => $subklasifikasi,
-//                 'jumlah' => $detail->jumlah
-//             ]);
-//         }
-//     }
-
-//     // Pass 'permintaan' as well to the view
-//     $pdf = FacadePdf::loadView('admin.laporan_permintaanproduk.printrinci', compact('permintaanProduk', 'produkByTokoAndDivisi', 'tokoData', 'klasifikasi_id', 'tanggal_permintaan', 'tanggal_akhir', 'permintaan'));
-//     return $pdf->stream('laporan_permintaan_produk.pdf');
-// }
-
-
-
 
 public function printReportRinci(Request $request)
 {
@@ -451,10 +318,6 @@ public function printReportRinci(Request $request)
     return $pdf->stream('laporan_permintaan_produk.pdf');
 }
 
-
-
-
-
 public function unpost_penjualanproduk($id)
 {
     $item = Penjualanproduk::where('id', $id)->first();
@@ -478,15 +341,10 @@ public function posting_penjualanproduk($id)
     return back()->with('success', 'Berhasil');
 }
 
-
-
-
-
-    public function create()
-    {
-
+public function create()
+{
        
-    }
+}
     
  
     

@@ -96,4 +96,8 @@ class Produk extends Model
     {
         return $this->belongsTo(Subklasifikasi::class, 'subklasifikasi_id');
     }
+    public function stok_barangjadi()
+    {
+        return $this->hasMany(Stok_barangjadi::class);
+    }
 }

@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\PenjualanprodukController;
 use App\Http\Controllers\Admin\PermintaanprodukController;
 use App\Http\Controllers\Admin\Laporan_permintaanprodukController;
 use App\Http\Controllers\Admin\ProdukController;
+use App\Http\Controllers\Admin\Stok_barangjadiController;
 use App\Http\Controllers\KategoriDropdownController;
 use App\Http\Controllers\SubcategoryController;
 use Illuminate\Support\Facades\Route;
@@ -150,6 +151,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('printReport1', [\App\Http\Controllers\Admin\Laporan_permintaanprodukController::class, 'printReport']);
     Route::get('indexrinci', [\App\Http\Controllers\Admin\Laporan_permintaanprodukController::class, 'indexrinci']);
     Route::get('printReportRinci', [\App\Http\Controllers\Admin\Laporan_permintaanprodukController::class, 'printReportRinci']);
+
+    Route::resource('stok_barangjadi', \App\Http\Controllers\Admin\Stok_barangjadiController::class);
 
 
     Route::resource('inquery_perubahanharga', \App\Http\Controllers\Admin\Inquery_perubahanhargaController::class);
