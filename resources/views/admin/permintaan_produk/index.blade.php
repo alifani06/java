@@ -97,18 +97,6 @@
                     <a href="{{ url('admin/permintaan_produk/' . $permintaan->id) }}" class="btn btn-info btn-sm">
                         <i class="fas fa-print"></i>
                     </a>
-                    {{-- @if ($permintaan->status == 'posting')
-                    <button type="button" class="btn btn-success btn-sm">
-                        <i class="fas fa-check"></i> 
-                    </button>
-                        @elseif ($permintaan->status == 'unpost')
-                            <button type="button" class="unpost-btn" data-memo-id="{{ $permintaan->id }}">
-                                <i class="fas fa-times"></i> 
-                            </button>
-                            <button type="button" class="btn btn-primary btn-sm edit-btn" data-memo-id="{{ $permintaan->id }}">
-                                <i class="fas fa-edit"></i> 
-                            </button>
-                        @endif --}}
                 </td>
             </tr>
             <tr class="permintaan-details" id="details-{{ $permintaan->id }}" style="display: none;">
@@ -204,59 +192,6 @@
 
     </script>
 
-{{-- 
-<script>
-    $(document).ready(function() {
-        $('.unpost-btn').click(function() {
-            var memoId = $(this).data('memo-id');
-            $(this).addClass('disabled');
-
-            // Tampilkan modal loading saat permintaan AJAX diproses
-            $('#modal-loading').modal('show');
-
-            // Kirim permintaan AJAX untuk melakukan unpost
-            $.ajax({
-                url: "{{ url('admin/permintaanproduk/unpost_permintaanproduk/') }}/" + memoId,
-                type: 'GET',
-                data: {
-                    id: memoId
-                },
-                success: function(response) {
-                    // Sembunyikan modal loading setelah permintaan selesai
-                    $('#modal-loading').modal('hide');
-
-                    if (response.success) {
-                        // Tampilkan pesan sukses atau lakukan tindakan lain sesuai kebutuhan
-                        console.log(response.message);
-
-                        // Tutup modal setelah berhasil unpost
-                        $('#modal-posting-' + memoId).modal('hide');
-
-                        // Ubah status tombol
-                        var $btn = $('.unpost-btn[data-memo-id="' + memoId + '"]');
-                        $btn.removeClass('btn-danger').addClass('btn-success');
-                        $btn.html('<i class="fas fa-check"></i>');
-                        $btn.attr('title', 'Posted');
-                        $btn.removeClass('unpost-btn');
-
-                        // Reload the page to refresh the table
-                        // location.reload(); // Uncomment if you want to reload the page
-                    } else {
-                        console.log(response.message);
-                        alert('Error: ' + response.message);
-                    }
-                },
-                error: function(error) {
-                    // Sembunyikan modal loading setelah permintaan selesai
-                    $('#modal-loading').modal('hide');
-
-                    // Tampilkan pesan error atau lakukan tindakan lain sesuai kebutuhan
-                    console.log(error);
-                }
-            });
-        });
-    });
-</script> --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
@@ -286,60 +221,4 @@
     });
 </script>
 
-
-{{-- <script>
-    $(document).ready(function() {
-        $('tbody tr.dropdown').click(function(e) {
-            // Memeriksa apakah yang diklik adalah checkbox
-            if ($(e.target).is('input[type="checkbox"]')) {
-                return; // Jika ya, hentikan eksekusi
-            }
-
-            // Menghapus kelas 'selected' dan mengembalikan warna latar belakang ke warna default dari semua baris
-            $('tr.dropdown').removeClass('selected').css('background-color', '');
-
-            // Menambahkan kelas 'selected' ke baris yang dipilih dan mengubah warna latar belakangnya
-            $(this).addClass('selected').css('background-color', '#b0b0b0');
-
-            // Menyembunyikan dropdown pada baris lain yang tidak dipilih
-            $('tbody tr.dropdown').not(this).find('.dropdown-menu').hide();
-
-            // Mencegah event klik menyebar ke atas (misalnya, saat mengklik dropdown)
-            e.stopPropagation();
-        });
-
-        $('tbody tr.dropdown').contextmenu(function(e) {
-            // Memeriksa apakah baris ini memiliki kelas 'selected'
-            if ($(this).hasClass('selected')) {
-                // Menampilkan dropdown saat klik kanan
-                var dropdownMenu = $(this).find('.dropdown-menu');
-                dropdownMenu.show();
-
-                // Mendapatkan posisi td yang diklik
-                var clickedTd = $(e.target).closest('td');
-                var tdPosition = clickedTd.position();
-
-                // Menyusun posisi dropdown relatif terhadap td yang di klik
-                dropdownMenu.css({
-                    'position': 'absolute',
-                    'top': tdPosition.top + clickedTd
-                        .height(), // Menempatkan dropdown sedikit di bawah td yang di klik
-                    'left': tdPosition
-                        .left // Menempatkan dropdown di sebelah kiri td yang di klik
-                });
-
-                // Mencegah event klik kanan menyebar ke atas (misalnya, saat mengklik dropdown)
-                e.stopPropagation();
-                e.preventDefault(); // Mencegah munculnya konteks menu bawaan browser
-            }
-        });
-
-        // Menyembunyikan dropdown saat klik di tempat lain
-        $(document).click(function() {
-            $('.dropdown-menu').hide();
-            $('tr.dropdown').removeClass('selected').css('background-color',
-                ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
-        });
-    });
-</script> --}}
 @endsection

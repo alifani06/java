@@ -103,6 +103,6 @@ class Produk extends Model
 
     public function stok_barangjadii()
     {
-        return $this->hasOne(Stok_barangjadi::class, 'produk_id');
+        return $this->hasMany(Stok_barangjadi::class, 'produk_id');
     }
 }

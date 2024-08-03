@@ -40,24 +40,44 @@ use Maatwebsite\Excel\Facades\Excel;
 class Data_stokbarangjadiController extends Controller{
 
     public function index()
-        {
-            // Ambil data produk dengan stok yang relevan
-            $produks = Produk::with(['stok_barangjadii' => function($query) {
-                $query->select('produk_id', 'stok', 'status');
-            }])
-            ->get()
-            ->sortBy(function($produk) {
-                // Ambil stok terkait
-                $stok = $produk->stok_barangjadii;
-                
-                // Tentukan stok yang ditampilkan
-                $displayedStock = ($stok && $stok->status == 'unpost') ? 0 : ($stok->stok ?? 0);
-                
-                return $displayedStock;
-            }, SORT_REGULAR, true); // Mengurutkan secara descending, true berarti terbesar di atas
+    {
+        // Mengambil data produk beserta stok_barangjadi dan detail_stokbarangjadi
+        $produks = Produk::with(['stok_barangjadii.detail_stokbarangjadi'])->get();
+        
+        return view('admin.data_stokbarangjadi.index', compact('produks'));
+    }
+    
+    // public function index()
+    // {
+    //     // Mengambil data produk beserta stok_barangjadi dan detail_stokbarangjadi
+    //     $produks = Produk::with(['stok_barangjadii.detail_stokbarangjadi'])
+    //         ->get()
+    //         ->groupBy('kode_produk') // Mengelompokkan berdasarkan kode produk
+    //         ->map(function ($group) {
+    //             // Untuk setiap grup produk dengan kode yang sama
+    //             $firstProduct = $group->first(); // Ambil data produk dari item pertama di grup
+    
+    //             // Menghitung stok yang ditampilkan berdasarkan status
+    //             $totalStock = $group->flatMap(function ($produk) {
+    //                 return $produk->stok_barangjadii;
+    //             })->flatMap(function ($stok) {
+    //                 return $stok->detail_stokbarangjadi->filter(function ($detailStok) {
+    //                     return $detailStok->status == 'posting';
+    //                 });
+    //             })->sum('stok');
+    
+    //             // Menambahkan atribut sementara untuk stok
+    //             $firstProduct->displayed_stock = $totalStock;
+    //             return $firstProduct;
+    //         })
+    //         ->sortByDesc('displayed_stock'); // Mengurutkan berdasarkan stok yang ditampilkan secara descending
+    
+    //     return view('admin.data_stokbarangjadi.index', compact('produks'));
+    // }
+    
+    
 
-            return view('admin.data_stokbarangjadi.index', compact('produks'));
-        }
+    
  
     }
 

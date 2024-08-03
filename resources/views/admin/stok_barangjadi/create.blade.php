@@ -108,7 +108,7 @@
                                                                 <th>No</th>
                                                                 <th>Kode Produk</th>
                                                                 <th>Produk</th>
-                                                                <th>Stok</th>
+                                                                <th>Stok</th>   
                                                             </tr>
                                                         </thead>
                                                         <tbody>

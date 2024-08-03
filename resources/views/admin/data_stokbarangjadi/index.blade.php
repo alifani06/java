@@ -23,28 +23,19 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            {{-- @if (session('success'))
-                <div class="alert alert-success alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <h5>
-                        <i class="icon fas fa-check"></i> Success!
-                    </h5>
-                    {{ session('success') }}
-                </div>
-            @endif --}}
             @if (session('success'))
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: '{{ session('success') }}',
-                        timer: 1000,
-                        showConfirmButton: false
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: '{{ session('success') }}',
+                            timer: 1000,
+                            showConfirmButton: false
+                        });
                     });
-                });
-            </script>
-        @endif
+                </script>
+            @endif
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Data produk</h3>
@@ -63,26 +54,30 @@
                                 <th>Kode Produk</th>
                                 <th>Nama Produk</th>
                                 <th>Stok</th>
-                           
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($produks as $produk)
-                                @php
-                                    $stok = $produk->stok_barangjadii; // Ambil stok terkait dengan produk
-                                    $displayedStock = ($stok && $stok->status == 'unpost') ? 0 : ($stok->stok ?? '0');
-                                @endphp
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $produk->kode_produk }}</td>
                                     <td>{{ $produk->nama_produk }}</td>
-                                    <td>{{ $displayedStock }}</td>     
+                                    <td>
+                                        @php
+                                            $totalStok = 0;
+                                            foreach ($produk->stok_barangjadii as $stokBarangjadi) {
+                                                foreach ($stokBarangjadi->detail_stokbarangjadi as $detailStok) {
+                                                    $totalStok += $detailStok->stok;
+                                                }
+                                            }
+                                        @endphp
+                                        {{ $totalStok }}
+                                    </td>     
                                 </tr>
                             @endforeach
                         </tbody>
-                        
-                        
                     </table>
+                    
                 </div>
                 <!-- /.card-body -->
             </div>

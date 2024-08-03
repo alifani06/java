@@ -24,6 +24,7 @@ use App\Models\Permintaanproduk;
 use App\Models\Permintaanprodukdetail;
 use App\Models\Klasifikasi;
 use App\Models\Pemesananproduk;
+use App\Models\Detail_stokbarangjadi;
 use App\Models\Stok_barangjadi;
 use App\Models\Penjualanproduk;
 use App\Models\Toko;
@@ -42,14 +43,15 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class Stok_barangjadiController extends Controller{
 
-    public function index()
-    {
-        $stokBarangJadi = Stok_barangjadi::with(['produk.klasifikasi'])->get();
-        
-        return view('admin.stok_barangjadi.index', compact('stokBarangJadi'));
-    }
-    
-    
+public function index()
+{
+    // Mengambil data stok_barangjadi beserta relasi detail_stokbarangjadi dan produk, lalu group by kode_input
+    $stokBarangJadi = Stok_barangjadi::with('detail_stokbarangjadi.produk.klasifikasi')
+        ->get()
+        ->groupBy('kode_input');
+
+    return view('admin.stok_barangjadi.index', compact('stokBarangJadi'));
+}
 
     public function create()
     {
@@ -59,119 +61,60 @@ class Stok_barangjadiController extends Controller{
         return view('admin.stok_barangjadi.create', compact('klasifikasis'));    
     }
 
+public function store(Request $request)
+{
+    $kode = $this->kode();
 
+    $produkData = $request->input('produk', []);
 
+    $detailData = [];
 
-    // public function store(Request $request)
-    // {
-    //     // Validasi input
-    //     $validator = Validator::make(
-    //         $request->all(),
-    //         [
-    //             'klasifikasi_id' => 'required|exists:klasifikasis,id',
-    //             'produk' => 'required|array',
-    //             'produk.*.stok' => 'nullable|numeric|min:0',
-    //         ],
-    //         [
-    //             'klasifikasi_id.required' => 'Pilih klasifikasi yang valid',
-    //             'produk.required' => 'Pilih produk dan masukkan stok',
-    //             'produk.*.stok.numeric' => 'Stok harus berupa angka',
-    //             'produk.*.stok.min' => 'Stok tidak boleh kurang dari 0',
-    //         ]
-    //     );
-    
-    //     if ($validator->fails()) {
-    //         // Mengambil kesalahan validasi
-    //         $errors = $validator->errors()->all();
-    //         return back()->withInput()->with('error', $errors);
-    //     }
-    
-    //     // Simpan data stok
-    //     foreach ($request->input('produk') as $produkId => $data) {
-    //         // Pastikan $data['stok'] memiliki nilai sebelum mencoba menyimpannya
-    //         if (isset($data['stok']) && $data['stok'] !== '') {
-    //             Stok_barangjadi::updateOrCreate(
-    //                 ['produk_id' => $produkId, 'klasifikasi_id' => $request->input('klasifikasi_id')],
-    //                 ['stok' => $data['stok'], 'status' => 'unpost']
-    //             );
-    //         }
-    //     }
-    
-    //     return redirect('admin/stok_barangjadi')->with('success', 'Berhasil menambahkan stok barang jadi');
-    // }
-    public function store(Request $request)
-    {
-        // Validasi input
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'klasifikasi_id' => 'required|exists:klasifikasis,id',
-                'produk' => 'required|array',
-                'produk.*.stok' => 'nullable|numeric|min:0',
-            ],
-            [
-                'klasifikasi_id.required' => 'Pilih klasifikasi yang valid',
-                'produk.required' => 'Pilih produk dan masukkan stok',
-                'produk.*.stok.numeric' => 'Stok harus berupa angka',
-                'produk.*.stok.min' => 'Stok tidak boleh kurang dari 0',
-            ]
-        );
-    
-        if ($validator->fails()) {
-            // Mengambil kesalahan validasi
-            $errors = $validator->errors()->all();
-            return back()->withInput()->with('error', $errors);
+    foreach ($produkData as $produkId => $data) {
+        $stok = $data['stok'] ?? null;
+
+        if (!is_null($stok) && $stok !== '') {
+            $stokBarangJadi = Stok_barangjadi::create([
+                'produk_id' => $produkId,
+                'klasifikasi_id' => $request->input('klasifikasi_id'),
+                'stok' => $stok,
+                'kode_input' => $kode,
+                'tanggal_input' => Carbon::now('Asia/Jakarta'),
+            ]);
+
+            $detailData[] = [
+                'stokbarangjadi_id' => $stokBarangJadi->id,
+                'produk_id' => $produkId,
+                'klasifikasi_id' => $request->input('klasifikasi_id'),
+                'stok' => $stok,
+                'status' => 'unpost',
+            ];
         }
-    
-        // Simpan data stok
-        foreach ($request->input('produk') as $produkId => $data) {
-            // Pastikan $data['stok'] memiliki nilai sebelum mencoba menyimpannya
-            if (isset($data['stok']) && $data['stok'] !== '') {
-                $stokBarangJadi = Stok_barangjadi::where('produk_id', $produkId)
-                    ->where('klasifikasi_id', $request->input('klasifikasi_id'))
-                    ->first();
-    
-                if ($stokBarangJadi) {
-                    // Tambahkan stok yang sudah ada dengan stok yang baru
-                    $stokBarangJadi->stok += $data['stok'];
-                    $stokBarangJadi->save();
-                } else {
-                    // Buat entri baru jika belum ada
-                    Stok_barangjadi::create([
-                        'produk_id' => $produkId,
-                        'klasifikasi_id' => $request->input('klasifikasi_id'),
-                        'stok' => $data['stok'],
-                        'status' => 'unpost',
-                    ]);
-                }
-            }
-        }
-    
-        return redirect('admin/stok_barangjadi')->with('success', 'Berhasil menambahkan stok barang jadi');
     }
-    
-     
-    
-    
-    
-    
-    
+
+    if (!empty($detailData)) {
+        Detail_stokbarangjadi::insert($detailData);
+    }
+
+    return redirect('admin/stok_barangjadi')->with('success', 'Berhasil menambahkan stok barang jadi');
+}
+
 
 
     public function kode()
     {
-        $lastBarang = PermintaanProduk::latest()->first();
+        $lastBarang = Stok_barangjadi::latest()->first();
         if (!$lastBarang) {
             $num = 1;
         } else {
-            $lastCode = $lastBarang->kode_permintaan;
-            $num = (int) substr($lastCode, strlen('PB')) + 1; // Updated the prefix
+            $lastCode = $lastBarang->kode_input;
+            $num = (int) substr($lastCode, strlen('SB')) + 1; 
         }
         $formattedNum = sprintf("%06s", $num);
-        $prefix = 'PB';
+        $prefix = 'SB';
         $newCode = $prefix . $formattedNum;
         return $newCode;
     }
+    
 
     
 //     public function show($id)

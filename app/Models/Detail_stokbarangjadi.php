@@ -11,19 +11,19 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class Stok_barangjadi extends Model
+class Detail_stokbarangjadi extends Model
 {
     use HasFactory;
 
     
     protected $fillable = [
-     
+        'produk_id',
+        'stokbarangjadi_id',
+        'klasifikasi_id',
+        'stok',
+        'status',
         'kode_input',
         'tanggal_input',
-        'stok',
-        'klasifikasi_id',
-        'produk_id',
-        'status',
      
     ];
 
@@ -83,8 +83,9 @@ class Stok_barangjadi extends Model
         return $this->hasMany(Klasifikasi::class, 'produk_id');
     }
 
-    public function detail_stokbarangjadi()
-{
-    return $this->hasMany(Detail_stokbarangjadi::class, 'stokbarangjadi_id');
-}
+      // Relasi balik jika diperlukan
+      public function stok_barangjadi()
+      {
+          return $this->belongsTo(Stok_barangjadi::class, 'stok_barangjadi_id');
+      }
 }
