@@ -25,6 +25,7 @@ use App\Models\Permintaanprodukdetail;
 use App\Models\Klasifikasi;
 use App\Models\Pemesananproduk;
 use App\Models\Stok_barangjadi;
+use App\Models\Detail_stokbarangjadi;
 use App\Models\Penjualanproduk;
 use App\Models\Toko;
 use App\Models\Dppemesanan;
@@ -42,13 +43,17 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class Inquery_stokbarangjadiController extends Controller{
 
-    public function index()
-    {
-        $stokBarangJadi = Stok_barangjadi::with(['produk.klasifikasi'])->get();
-        
-        return view('admin.inquery_stokbarangjadi.index', compact('stokBarangJadi'));
-    }
     
+    public function index()
+{
+    // Mengambil data stok_barangjadi beserta relasi detail_stokbarangjadi dan produk, lalu group by kode_input
+    $stokBarangJadi = Stok_barangjadi::with('produk.klasifikasi')
+        ->get()
+        ->groupBy('kode_input');
+
+    return view('admin.inquery_stokbarangjadi.index', compact('stokBarangJadi'));
+}
+
     
 
     public function create()
@@ -59,78 +64,194 @@ class Inquery_stokbarangjadiController extends Controller{
         return view('admin.stok_barangjadi.create', compact('klasifikasis'));    
     }
 
-    public function store(Request $request)
+    // public function store(Request $request)
+    // {
+    //     // Validasi input
+    //     $validator = Validator::make(
+    //         $request->all(),
+    //         [
+    //             'klasifikasi_id' => 'required|exists:klasifikasis,id',
+    //             'produk' => 'required|array',
+    //             'produk.*.stok' => 'nullable|numeric|min:0',
+    //         ],
+    //         [
+    //             'klasifikasi_id.required' => 'Pilih klasifikasi yang valid',
+    //             'produk.required' => 'Pilih produk dan masukkan stok',
+    //             'produk.*.stok.numeric' => 'Stok harus berupa angka',
+    //             'produk.*.stok.min' => 'Stok tidak boleh kurang dari 0',
+    //         ]
+    //     );
+    
+    //     if ($validator->fails()) {
+    //         // Mengambil kesalahan validasi
+    //         $errors = $validator->errors()->all();
+    //         return back()->withInput()->with('error', $errors);
+    //     }
+    
+    //     // Simpan data stok
+    //     foreach ($request->input('produk') as $produkId => $data) {
+    //         // Pastikan $data['stok'] memiliki nilai sebelum mencoba menyimpannya
+    //         if (isset($data['stok']) && $data['stok'] !== '') {
+    //             $stokBarangJadi = Stok_barangjadi::where('produk_id', $produkId)
+    //                 ->where('klasifikasi_id', $request->input('klasifikasi_id'))
+    //                 ->first();
+    
+    //             if ($stokBarangJadi) {
+    //                 // Tambahkan stok yang sudah ada dengan stok yang baru
+    //                 $stokBarangJadi->stok += $data['stok'];
+    //                 $stokBarangJadi->save();
+    //             } else {
+    //                 // Buat entri baru jika belum ada
+    //                 Stok_barangjadi::create([
+    //                     'produk_id' => $produkId,
+    //                     'klasifikasi_id' => $request->input('klasifikasi_id'),
+    //                     'stok' => $data['stok'],
+    //                     'status' => 'unpost',
+    //                 ]);
+    //             }
+    //         }
+    //     }
+    
+    //     return redirect('admin/stok_barangjadi')->with('success', 'Berhasil menambahkan stok barang jadi');
+    // }
+    
+    public function show($id)
     {
-        // Validasi input
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'klasifikasi_id' => 'required|exists:klasifikasis,id',
-                'produk' => 'required|array',
-                'produk.*.stok' => 'nullable|numeric|min:0',
-            ],
-            [
-                'klasifikasi_id.required' => 'Pilih klasifikasi yang valid',
-                'produk.required' => 'Pilih produk dan masukkan stok',
-                'produk.*.stok.numeric' => 'Stok harus berupa angka',
-                'produk.*.stok.min' => 'Stok tidak boleh kurang dari 0',
-            ]
-        );
-    
-        if ($validator->fails()) {
-            // Mengambil kesalahan validasi
-            $errors = $validator->errors()->all();
-            return back()->withInput()->with('error', $errors);
+        
+        // Ambil kode_input dari detail_stokbarangjadi berdasarkan id
+        $kodeInput = Stok_barangjadi::where('id', $id)->value('kode_input');
+        
+        // Jika kode_input tidak ditemukan, tampilkan pesan error
+        if (!$kodeInput) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
         }
-    
-        // Simpan data stok
-        foreach ($request->input('produk') as $produkId => $data) {
-            // Pastikan $data['stok'] memiliki nilai sebelum mencoba menyimpannya
-            if (isset($data['stok']) && $data['stok'] !== '') {
-                $stokBarangJadi = Stok_barangjadi::where('produk_id', $produkId)
-                    ->where('klasifikasi_id', $request->input('klasifikasi_id'))
-                    ->first();
-    
-                if ($stokBarangJadi) {
-                    // Tambahkan stok yang sudah ada dengan stok yang baru
-                    $stokBarangJadi->stok += $data['stok'];
-                    $stokBarangJadi->save();
-                } else {
-                    // Buat entri baru jika belum ada
-                    Stok_barangjadi::create([
-                        'produk_id' => $produkId,
-                        'klasifikasi_id' => $request->input('klasifikasi_id'),
-                        'stok' => $data['stok'],
-                        'status' => 'unpost',
-                    ]);
-                }
-            }
-        }
-    
-        return redirect('admin/stok_barangjadi')->with('success', 'Berhasil menambahkan stok barang jadi');
+        
+        // Ambil semua data dengan kode_input yang sama
+        $detailStokBarangJadi = Stok_barangjadi::with(['produk.subklasifikasi'])->where('kode_input', $kodeInput)->get();
+        $klasifikasi = $detailStokBarangJadi->first()->produk->klasifikasi->nama ?? 'Tidak Diketahui';
+
+        return view('admin.inquery_stokbarangjadi.show', compact('detailStokBarangJadi', 'klasifikasi'));
     }
-    
 
-    public function unpost_stokbarangjadi($id)
-{
-    $stok = Stok_barangjadi::where('id', $id)->first();
+//     public function unpost_stokbarangjadi($id)
+// {
+//     $stok = Stok_barangjadi::where('id', $id)->first();
 
-        $stok->update([
-            'status' => 'unpost'
-        ]);
-    return back()->with('success', 'Berhasil');
-}
+//         $stok->update([
+//             'status' => 'unpost'
+//         ]);
+//     return back()->with('success', 'Berhasil');
+// }
+
+
+        // public function unpost_stokbarangjadi($id)
+        // {
+        //     // Ambil data stok barang berdasarkan ID
+        //     $stok = Stok_barangjadi::where('id', $id)->first();
+
+        //     // Pastikan data ditemukan
+        //     if (!$stok) {
+        //         return back()->with('error', 'Data tidak ditemukan.');
+        //     }
+
+        //     // Ambil kode_input dari stok yang diambil
+        //     $kodeInput = $stok->kode_input;
+
+        //     // Update status untuk semua stok dengan kode_input yang sama
+        //     Stok_barangjadi::where('kode_input', $kodeInput)->update([
+        //         'status' => 'unpost'
+        //     ]);
+
+        //     // Redirect kembali dengan pesan sukses
+        //     return back()->with('success', 'Berhasil mengubah status semua produk dengan kode_input yang sama.');
+        // }
+        public function unpost_stokbarangjadi($id)
+        {
+            // Ambil data stok barang berdasarkan ID
+            $stok = Stok_barangjadi::where('id', $id)->first();
+        
+            // Pastikan data ditemukan
+            if (!$stok) {
+                return back()->with('error', 'Data tidak ditemukan.');
+            }
+        
+            // Ambil kode_input dari stok yang diambil
+            $kodeInput = $stok->kode_input;
+        
+            // Update status untuk semua stok dengan kode_input yang sama di tabel stok_barangjadi
+            Stok_barangjadi::where('kode_input', $kodeInput)->update([
+                'status' => 'unpost'
+            ]);
+            Detail_stokbarangjadi::where('kode_input', $kodeInput)->update([
+                'status' => 'unpost'
+            ]);
+        
+            // Update status untuk semua detail_stokbarangjadi terkait dengan kode_input yang sama
+            // Detail_stokbarangjadi::whereHas('stok_barangjadi', function ($query) use ($kodeInput) {
+            //     $query->where('kode_input', $kodeInput);
+            // })->update([
+            //     'status' => 'unpost'
+            // ]);
+        
+            // Redirect kembali dengan pesan sukses
+            return back()->with('success', 'Berhasil mengubah status semua produk dan detail terkait dengan kode_input yang sama.');
+        }
+        
+
+
+// public function posting_stokbarangjadi($id)
+// {
+//     // Ambil data stok barang berdasarkan ID
+//     $stok = Stok_barangjadi::where('id', $id)->first();
+
+//     // Pastikan data ditemukan
+//     if (!$stok) {
+//         return back()->with('error', 'Data tidak ditemukan.');
+//     }
+
+//     // Ambil kode_input dari stok yang diambil
+//     $kodeInput = $stok->kode_input;
+
+//     // Update status untuk semua stok dengan kode_input yang sama
+//     Stok_barangjadi::where('kode_input', $kodeInput)->update([
+//         'status' => 'posting'
+//     ]);
+
+//     // Redirect kembali dengan pesan sukses
+//     return back()->with('success', 'Berhasil mengubah status semua produk dengan kode_input yang sama.');
+// }
 
 public function posting_stokbarangjadi($id)
 {
+    // Ambil data stok barang berdasarkan ID
     $stok = Stok_barangjadi::where('id', $id)->first();
 
-            $stok->update([
-            'status' => 'posting'
-        ]);
-    return back()->with('success', 'Berhasil');
-}
+    // Pastikan data ditemukan
+    if (!$stok) {
+        return back()->with('error', 'Data tidak ditemukan.');
+    }
 
+    // Ambil kode_input dari stok yang diambil
+    $kodeInput = $stok->kode_input;
+
+    // Update status untuk semua stok dengan kode_input yang sama di tabel stok_barangjadi
+    Stok_barangjadi::where('kode_input', $kodeInput)->update([
+        'status' => 'posting'
+    ]);
+    Detail_stokbarangjadi::where('kode_input', $kodeInput)->update([
+        'status' => 'posting'
+    ]);
+
+    // Update status untuk semua detail_stokbarangjadi terkait dengan kode_input yang sama
+    // Detail_stokbarangjadi::whereHas('stok_barangjadi', function ($query) use ($kodeInput) {
+    //     $query->where('kode_input', $kodeInput);
+    // })->update([
+    //     'status' => 'posting'
+    // ]);
+
+    // Redirect kembali dengan pesan sukses
+    return back()->with('success', 'Berhasil mengubah status semua produk dan detail terkait dengan kode_input yang sama.');
+}
 
      
     
@@ -155,58 +276,6 @@ public function posting_stokbarangjadi($id)
         return $newCode;
     }
 
-    
-//     public function show($id)
-// {
-//     $permintaanProduk = PermintaanProduk::find($id);
-//     $detailPermintaanProduks = DetailPermintaanProduk::where('permintaanproduk_id', $id)->get();
-
-//     // Mengelompokkan produk berdasarkan klasifikasi
-//     $produkByDivisi = $detailPermintaanProduks->groupBy(function($item) {
-//         return $item->produk->klasifikasi->nama; // Ganti dengan nama klasifikasi jika diperlukan
-//     });
-
-//     // Menghitung total jumlah per klasifikasi
-//     $totalPerDivisi = $produkByDivisi->map(function($produks) {
-//         return $produks->sum('jumlah');
-//     });
-
-//     // Ambil data Subklasifikasi berdasarkan Klasifikasi
-//     $subklasifikasiByDivisi = $produkByDivisi->map(function($produks) {
-//         return $produks->groupBy(function($item) {
-//             return $item->produk->subklasifikasi->nama; // Ganti dengan nama subklasifikasi jika diperlukan
-//         });
-//     });
-
-//     return view('admin.permintaan_produk.show', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi', 'subklasifikasiByDivisi'));
-// }
-public function show($id)
-{
-    $permintaanProduk = PermintaanProduk::find($id);
-    $detailPermintaanProduks = DetailPermintaanProduk::with('toko')->where('permintaanproduk_id', $id)->get();
-
-    // Mengelompokkan produk berdasarkan klasifikasi
-    $produkByDivisi = $detailPermintaanProduks->groupBy(function($item) {
-        return $item->produk->klasifikasi->nama;
-    });
-
-    // Menghitung total jumlah per klasifikasi
-    $totalPerDivisi = $produkByDivisi->map(function($produks) {
-        return $produks->sum('jumlah');
-    });
-
-    // Ambil data Subklasifikasi berdasarkan Klasifikasi
-    $subklasifikasiByDivisi = $produkByDivisi->map(function($produks) {
-        return $produks->groupBy(function($item) {
-            return $item->produk->subklasifikasi->nama;
-        });
-    });
-
-    // Mengambil nama toko dari salah satu detail permintaan produk
-    $toko = $detailPermintaanProduks->first()->toko;
-
-    return view('admin.permintaan_produk.show', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi', 'subklasifikasiByDivisi', 'toko'));
-}
 
 
     public function print($id)

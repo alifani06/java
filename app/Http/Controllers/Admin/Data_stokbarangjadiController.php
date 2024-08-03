@@ -39,48 +39,37 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class Data_stokbarangjadiController extends Controller{
 
-    public function index()
-    {
-        // Mengambil data produk beserta stok_barangjadi dan detail_stokbarangjadi
-        $produks = Produk::with(['stok_barangjadii.detail_stokbarangjadi'])->get();
-        
-        return view('admin.data_stokbarangjadi.index', compact('produks'));
-    }
-    
     // public function index()
+ 
     // {
     //     // Mengambil data produk beserta stok_barangjadi dan detail_stokbarangjadi
-    //     $produks = Produk::with(['stok_barangjadii.detail_stokbarangjadi'])
-    //         ->get()
-    //         ->groupBy('kode_produk') // Mengelompokkan berdasarkan kode produk
-    //         ->map(function ($group) {
-    //             // Untuk setiap grup produk dengan kode yang sama
-    //             $firstProduct = $group->first(); // Ambil data produk dari item pertama di grup
-    
-    //             // Menghitung stok yang ditampilkan berdasarkan status
-    //             $totalStock = $group->flatMap(function ($produk) {
-    //                 return $produk->stok_barangjadii;
-    //             })->flatMap(function ($stok) {
-    //                 return $stok->detail_stokbarangjadi->filter(function ($detailStok) {
-    //                     return $detailStok->status == 'posting';
-    //                 });
-    //             })->sum('stok');
-    
-    //             // Menambahkan atribut sementara untuk stok
-    //             $firstProduct->displayed_stock = $totalStock;
-    //             return $firstProduct;
-    //         })
-    //         ->sortByDesc('displayed_stock'); // Mengurutkan berdasarkan stok yang ditampilkan secara descending
-    
+    //     $produks = Produk::with(['stok_barangjadii.detail_stokbarangjadi.produk.klasifikasi'])->get();
+        
     //     return view('admin.data_stokbarangjadi.index', compact('produks'));
     // }
-    
-    
-
-    
  
-    }
+//     public function index()
+// {
+//     // Mengambil data produk beserta stok_barangjadi dan detail_stokbarangjadi, hanya untuk status 'posting'
+//     $produks = Produk::whereHas('stok_barangjadii', function ($query) {
+//         $query->where('status', 'posting');
+//     })->with(['stok_barangjadii.detail_stokbarangjadi.produk.klasifikasi'])
+//       ->get();
 
+//     return view('admin.data_stokbarangjadi.index', compact('produks'));
+// }
+
+//     }
+public function index()
+{
+    // Mengambil semua produk beserta stok_barangjadi dan detail_stokbarangjadi
+    $produks = Produk::with(['stok_barangjadii.detail_stokbarangjadi.produk.klasifikasi'])
+      ->get();
+
+    return view('admin.data_stokbarangjadi.index', compact('produks'));
+}
+
+}
 
 
  

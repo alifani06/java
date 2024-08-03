@@ -68,9 +68,9 @@
             <div class="card">
                 <div class="card-header">
                     <div class="float-right">
-                        <a href="{{ url('admin/stok_barangjadi/create') }}" class="btn btn-primary btn-sm">
+                        {{-- <a href="{{ url('admin/stok_barangjadi/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> 
-                        </a>
+                        </a> --}}
                     </div>
                 </div>
                 <!-- /.card-header -->
@@ -80,59 +80,58 @@
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
-                                <th>Divisi</th>
-                                <th>Kode Produk</th>
-                                <th>Produk</th>
-                                <th>Stok</th>
-                                <th>Opsi</th>
+                                <th>Kode Inputan</th>
+                                <th>Tanggal Inputan</th>
+                                <th>Status</th>
+                              
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($stokBarangJadi as $index => $stok)
-                            <tr class="dropdown"{{ $stok->id }}>
-                                <td class="text-center">{{ $index + 1 }}</td>
-                                <td>{{ $stok->produk->klasifikasi->nama }}</td>
-                                <td>{{ $stok->produk->kode_produk }}</td>
-                                <td>{{ $stok->produk->nama_produk }}</td>
-                                <td>
-                                    @if ($stok->status == 'unpost')
-                                        0
-                                    @else
-                                        {{ $stok->stok }}
-                                    @endif
-                                </td>
+                            @foreach ($stokBarangJadi as $kodeInput => $stokBarangJadiItems)
+                            @php
+                                $firstItem = $stokBarangJadiItems->first();
+                            @endphp
+                                <tr class="dropdown"{{$firstItem->id }}>
+                                    <td class="text-center">{{ $loop->iteration }}</td>
+                                <td>{{ $firstItem->kode_input }}</td>
+                                <td>{{ $firstItem->tanggal_input }}</td>
                                 <td class="text-center">
-                                    @if ($stok->status == 'posting')
+                                    @if ($firstItem->status == 'posting')
                                         <button type="button" class="btn btn-success btn-sm">
                                             <i class="fas fa-check"></i>
                                         </button>
                                     @endif
-                                    @if ($stok->status == 'unpost')
-                                    <button type="button" class="unpost-btn btn btn-danger btn-sm" data-memo-id="{{ $stok->id }}">
-                                        <i class="fas fa-times"></i> 
+                                    @if ($firstItem->status == 'unpost')
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-times"></i>
                                     </button>
-                                    
-                                    
                                     @endif
+                                 
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        @if ($stok->status == 'unpost')
-                                            <a class="dropdown-item posting-btn"
-                                                data-memo-id="{{ $stok->id }}">Posting</a>
-                                            <a class="dropdown-item"
-                                                href="{{ url('admin/inquery_pemesananproduk/' . $stok->id . '/edit') }}">Update</a>
-                                            <a class="dropdown-item"
-                                                href="{{ url('/admin/pemesanan_produk/' . $stok->id ) }}">Show</a>
+                                        @if ($firstItem->status == 'unpost')
+                                           
+                                                <a class="dropdown-item posting-btn"
+                                                    data-memo-id="{{ $firstItem->id }}">Posting</a>
+                                         
+                                                <a class="dropdown-item"
+                                                    href="{{ url('admin/inquery_penjualanproduk/' . $firstItem->id . '/edit') }}">Update</a>
+                                            
+                                                <a class="dropdown-item"
+                                                href="{{ url('/admin/inquery_stokbarangjadi/' . $firstItem->id ) }}">Show</a>
+                                                @endif
+                                        @if ($firstItem->status == 'posting')
+                                                <a class="dropdown-item unpost-btn"
+                                                    data-memo-id="{{ $firstItem->id }}">Unpost</a>
+                                                <a class="dropdown-item"
+                                                href="{{ url('admin/inquery_stokbarangjadi/' . $firstItem->id ) }}">Show</a>
                                         @endif
-                                        @if ($stok->status == 'posting')
-                                            <a class="dropdown-item unpost-btn"
-                                                data-memo-id="{{ $stok->id }}">Unpost</a>
-                                            <a class="dropdown-item"
-                                                href="{{ url('/admin/pemesanan_produk/' . $stok->id ) }}">Show</a>
-                                        @endif
+                                       
                                     </div>
                                 </td>
+                            
                             </tr>
-                            @endforeach
+                     
+                        @endforeach
                         </tbody>
                     </table> 
                
@@ -154,48 +153,6 @@
             </div>
         </div>
     </section>
-
-    <script>
-        $(document).ready(function() {
-            $('tbody tr.dropdown').click(function(e) {
-                if ($(e.target).is('input[type="checkbox"]')) {
-                    return;
-                }
-
-                $('tr.dropdown').removeClass('selected').css('background-color', '');
-
-                $(this).addClass('selected').css('background-color', '#b0b0b0');
-
-                $('tbody tr.dropdown').not(this).find('.dropdown-menu').hide();
-
-                e.stopPropagation();
-            });
-
-            $('tbody tr.dropdown').contextmenu(function(e) {
-                if ($(this).hasClass('selected')) {
-                    var dropdownMenu = $(this).find('.dropdown-menu');
-                    dropdownMenu.show();
-
-                    var clickedTd = $(e.target).closest('td');
-                    var tdPosition = clickedTd.position();
-
-                    dropdownMenu.css({
-                        'position': 'absolute',
-                        'top': tdPosition.top + clickedTd.height(),
-                        'left': tdPosition.left
-                    });
-
-                    e.stopPropagation();
-                    e.preventDefault();
-                }
-            });
-
-            $(document).click(function() {
-                $('.dropdown-menu').hide();
-                $('tr.dropdown').removeClass('selected').css('background-color', '');
-            });
-        });
-    </script>
 
     {{-- unpost stok  --}}
     <script>
@@ -256,6 +213,60 @@
             });
         });
     </script>
+<script>
+    $(document).ready(function() {
+        $('tbody tr.dropdown').click(function(e) {
+            // Memeriksa apakah yang diklik adalah checkbox
+            if ($(e.target).is('input[type="checkbox"]')) {
+                return; // Jika ya, hentikan eksekusi
+            }
 
+            // Menghapus kelas 'selected' dan mengembalikan warna latar belakang ke warna default dari semua baris
+            $('tr.dropdown').removeClass('selected').css('background-color', '');
+
+            // Menambahkan kelas 'selected' ke baris yang dipilih dan mengubah warna latar belakangnya
+            $(this).addClass('selected').css('background-color', '#b0b0b0');
+
+            // Menyembunyikan dropdown pada baris lain yang tidak dipilih
+            $('tbody tr.dropdown').not(this).find('.dropdown-menu').hide();
+
+            // Mencegah event klik menyebar ke atas (misalnya, saat mengklik dropdown)
+            e.stopPropagation();
+        });
+
+        $('tbody tr.dropdown').contextmenu(function(e) {
+            // Memeriksa apakah baris ini memiliki kelas 'selected'
+            if ($(this).hasClass('selected')) {
+                // Menampilkan dropdown saat klik kanan
+                var dropdownMenu = $(this).find('.dropdown-menu');
+                dropdownMenu.show();
+
+                // Mendapatkan posisi td yang diklik
+                var clickedTd = $(e.target).closest('td');
+                var tdPosition = clickedTd.position();
+
+                // Menyusun posisi dropdown relatif terhadap td yang di klik
+                dropdownMenu.css({
+                    'position': 'absolute',
+                    'top': tdPosition.top + clickedTd
+                        .height(), // Menempatkan dropdown sedikit di bawah td yang di klik
+                    'left': tdPosition
+                        .left // Menempatkan dropdown di sebelah kiri td yang di klik
+                });
+
+                // Mencegah event klik kanan menyebar ke atas (misalnya, saat mengklik dropdown)
+                e.stopPropagation();
+                e.preventDefault(); // Mencegah munculnya konteks menu bawaan browser
+            }
+        });
+
+        // Menyembunyikan dropdown saat klik di tempat lain
+        $(document).click(function() {
+            $('.dropdown-menu').hide();
+            $('tr.dropdown').removeClass('selected').css('background-color',
+                ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
+        });
+    });
+</script>
   
 @endsection

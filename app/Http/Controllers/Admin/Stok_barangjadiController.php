@@ -77,6 +77,7 @@ public function store(Request $request)
                 'produk_id' => $produkId,
                 'klasifikasi_id' => $request->input('klasifikasi_id'),
                 'stok' => $stok,
+                'status' => 'unpost',
                 'kode_input' => $kode,
                 'tanggal_input' => Carbon::now('Asia/Jakarta'),
             ]);
@@ -87,6 +88,8 @@ public function store(Request $request)
                 'klasifikasi_id' => $request->input('klasifikasi_id'),
                 'stok' => $stok,
                 'status' => 'unpost',
+                'kode_input' => $kode,
+                'tanggal_input' => Carbon::now('Asia/Jakarta'),
             ];
         }
     }
@@ -97,8 +100,6 @@ public function store(Request $request)
 
     return redirect('admin/stok_barangjadi')->with('success', 'Berhasil menambahkan stok barang jadi');
 }
-
-
 
     public function kode()
     {
@@ -115,84 +116,43 @@ public function store(Request $request)
         return $newCode;
     }
     
-
+    public function show($id)
+    {
+        // Ambil kode_input dari detail_stokbarangjadi berdasarkan id
+        $kodeInput = Stok_barangjadi::where('id', $id)->value('kode_input');
+        
+        // Jika kode_input tidak ditemukan, tampilkan pesan error
+        if (!$kodeInput) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        }
+        
+        // Ambil semua data dengan kode_input yang sama
+        $detailStokBarangJadi = Stok_barangjadi::with(['produk.subklasifikasi'])->where('kode_input', $kodeInput)->get();
+        
+        return view('admin.stok_barangjadi.show', compact('detailStokBarangJadi'));
+    }
     
-//     public function show($id)
-// {
-//     $permintaanProduk = PermintaanProduk::find($id);
-//     $detailPermintaanProduks = DetailPermintaanProduk::where('permintaanproduk_id', $id)->get();
-
-//     // Mengelompokkan produk berdasarkan klasifikasi
-//     $produkByDivisi = $detailPermintaanProduks->groupBy(function($item) {
-//         return $item->produk->klasifikasi->nama; // Ganti dengan nama klasifikasi jika diperlukan
-//     });
-
-//     // Menghitung total jumlah per klasifikasi
-//     $totalPerDivisi = $produkByDivisi->map(function($produks) {
-//         return $produks->sum('jumlah');
-//     });
-
-//     // Ambil data Subklasifikasi berdasarkan Klasifikasi
-//     $subklasifikasiByDivisi = $produkByDivisi->map(function($produks) {
-//         return $produks->groupBy(function($item) {
-//             return $item->produk->subklasifikasi->nama; // Ganti dengan nama subklasifikasi jika diperlukan
-//         });
-//     });
-
-//     return view('admin.permintaan_produk.show', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi', 'subklasifikasiByDivisi'));
-// }
-public function show($id)
-{
-    $permintaanProduk = PermintaanProduk::find($id);
-    $detailPermintaanProduks = DetailPermintaanProduk::with('toko')->where('permintaanproduk_id', $id)->get();
-
-    // Mengelompokkan produk berdasarkan klasifikasi
-    $produkByDivisi = $detailPermintaanProduks->groupBy(function($item) {
-        return $item->produk->klasifikasi->nama;
-    });
-
-    // Menghitung total jumlah per klasifikasi
-    $totalPerDivisi = $produkByDivisi->map(function($produks) {
-        return $produks->sum('jumlah');
-    });
-
-    // Ambil data Subklasifikasi berdasarkan Klasifikasi
-    $subklasifikasiByDivisi = $produkByDivisi->map(function($produks) {
-        return $produks->groupBy(function($item) {
-            return $item->produk->subklasifikasi->nama;
-        });
-    });
-
-    // Mengambil nama toko dari salah satu detail permintaan produk
-    $toko = $detailPermintaanProduks->first()->toko;
-
-    return view('admin.permintaan_produk.show', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi', 'subklasifikasiByDivisi', 'toko'));
-}
-
 
     public function print($id)
-    {
-        // $permintaanProduk = PermintaanProduk::where('id', $id)->firstOrFail();
-        
-        // $detailPermintaanProduks = $permintaanProduk->detailpermintaanproduks;
-        $permintaanProduk = PermintaanProduk::find($id);
-        $detailPermintaanProduks = DetailPermintaanProduk::where('permintaanproduk_id', $id)->get();
+{
+    $kodeInput = Stok_barangjadi::where('id', $id)->value('kode_input');
     
-        // Mengelompokkan produk berdasarkan divisi
-        $produkByDivisi = $detailPermintaanProduks->groupBy(function($item) {
-            return $item->produk->klasifikasi->nama; // Ganti dengan nama divisi jika diperlukan
-        });
-    
-        // Menghitung total jumlah per divisi
-        $totalPerDivisi = $produkByDivisi->map(function($produks) {
-            return $produks->sum('jumlah');
-        });
-        $toko = $detailPermintaanProduks->first()->toko;
-
-        $pdf = FacadePdf::loadView('admin.permintaan_produk.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi','toko'));
-
-        return $pdf->stream('surat_permintaan_produk.pdf');
+    // Jika kode_input tidak ditemukan, tampilkan pesan error
+    if (!$kodeInput) {
+        return redirect()->back()->with('error', 'Data tidak ditemukan.');
     }
+    
+    // Ambil semua data dengan kode_input yang sama
+    $detailStokBarangJadi = Stok_barangjadi::with(['produk.subklasifikasi'])->where('kode_input', $kodeInput)->get();
+
+    // Ambil nama klasifikasi/divisi, misalnya dari produk atau tabel klasifikasi
+    $klasifikasi = $detailStokBarangJadi->first()->produk->klasifikasi->nama ?? 'Tidak Diketahui';
+
+    $pdf = FacadePdf::loadView('admin.stok_barangjadi.print', compact('kodeInput', 'detailStokBarangJadi', 'klasifikasi'));
+
+    return $pdf->stream('surat_permintaan_produk.pdf');
+}
+
 
     public function unpost(Request $request, $id)
     {
