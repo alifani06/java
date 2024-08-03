@@ -33,7 +33,8 @@
     // request()->is('admin/harga*')||
     request()->is('admin/klasifikasi*')||
     request()->is('admin/metode_pembayaran*')||
-    request()->is('admin/input*')
+    request()->is('admin/input*')||
+    request()->is('admin/data_stokbarangjadi*')
   
         ? 'menu-open'
         : '' }}">
@@ -49,7 +50,8 @@
         // request()->is('admin/harga*')||
         request()->is('admin/klasifikasi*')||
         request()->is('admin/metode_pembayaran*')||
-        request()->is('admin/input*')
+        request()->is('admin/input*')||
+        request()->is('admin/data_stokbarangjadi*')
       
             ? 'active'
             : '' }}">
@@ -167,6 +169,16 @@
         </li>
         {{-- @endif --}}
 
+        {{-- @if (auth()->check() && auth()->user()->menu['klasifikasi']) --}}
+        <li class="nav-item">
+            <a href="{{ url('admin/data_stokbarangjadi') }}"
+                class="nav-link {{ request()->is('admin/data_stokbarangjadi*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Data Stok Barang Jadi</p>
+            </a>
+        </li>
+        {{-- @endif --}}
+
         {{-- @if (auth()->check() && auth()->user()->menu['input'])
         <li class="nav-item">
             <a href="{{ url('admin/input ') }}"
@@ -262,7 +274,8 @@
     class="nav-item {{ request()->is('admin/inquery_pemesananproduk*') ||
     request()->is('admin/inquery_penjualanproduk*')|| 
     request()->is('admin/inquery_perubahanharga*')|| 
-    request()->is('admin/inquery_permintaanproduk*') 
+    request()->is('admin/inquery_permintaanproduk*')|| 
+    request()->is('admin/inquery_stokbarangjadi*') 
     // request()->is('admin/input*')
   
         ? 'menu-open'
@@ -271,7 +284,8 @@
         class="nav-link {{ request()->is('admin/inquery_pemesananproduk*') ||
         request()->is('admin/inquery_penjualanproduk*')||
         request()->is('admin/inquery_perubahanharga*')||
-        request()->is('admin/inquery_permintaanproduk*')
+        request()->is('admin/inquery_permintaanproduk*')||
+        request()->is('admin/inquery_stokbarangjadi*')
         // request()->is('admin/input*')
       
             ? 'active'
@@ -319,6 +333,15 @@
                 class="nav-link {{ request()->is('admin/inquery_permintaanproduk*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Inquery Permintaan Produk</p>
+            </a>
+        </li>
+        {{-- @endif --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        <li class="nav-item">
+            <a href="{{ url('admin/inquery_stokbarangjadi') }}"
+                class="nav-link {{ request()->is('admin/inquery_stokbarangjadi*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Inquery Stok Barang Jadi</p>
             </a>
         </li>
         {{-- @endif --}}

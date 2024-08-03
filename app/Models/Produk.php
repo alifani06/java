@@ -100,4 +100,9 @@ class Produk extends Model
     {
         return $this->hasMany(Stok_barangjadi::class);
     }
+
+    public function stok_barangjadii()
+    {
+        return $this->hasOne(Stok_barangjadi::class, 'produk_id');
+    }
 }
