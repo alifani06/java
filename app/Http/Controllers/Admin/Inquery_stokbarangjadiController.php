@@ -43,18 +43,8 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class Inquery_stokbarangjadiController extends Controller{
 
-//     public function index(Request $request)
-
-//         Mengambil data stok_barangjadi beserta relasi detail_stokbarangjadi dan produk, lalu group by kode_input
-//     $stokBarangJadi = Stok_barangjadi::with('produk.klasifikasi')
-//         ->get()
-//         ->groupBy('kode_input');
-
-//     return view('admin.inquery_stokbarangjadi.index', compact('stokBarangJadi'));
-// }
-
-        public function index(Request $request)
-        {
+    public function index(Request $request)
+    {
             $status = $request->status;
             $tanggal_input = $request->tanggal_input;
             $tanggal_akhir = $request->tanggal_akhir;
@@ -84,7 +74,8 @@ class Inquery_stokbarangjadiController extends Controller{
             $stokBarangJadi = $query->get()->groupBy('kode_input');
 
             return view('admin.inquery_stokbarangjadi.index', compact('stokBarangJadi'));
-        }
+    }
+
 
     public function create()
     {
