@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AddpelangganController;
 use App\Http\Controllers\Admin\HargajualController;
 use App\Http\Controllers\Admin\Inquery_pemesananprodukController;
 use App\Http\Controllers\Admin\Inquery_penjualanprodukController;
+use App\Http\Controllers\Admin\Inquery_stokbarangjadiController;
 use App\Http\Controllers\Admin\PemesananprodukController;
 use App\Http\Controllers\Admin\KlasifikasiController as AdminKlasifikasiController;
 use App\Http\Controllers\Admin\Laporan_pemesananprodukController;
@@ -158,6 +159,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('inquery_stokbarangjadi', \App\Http\Controllers\Admin\Inquery_stokbarangjadiController::class);
     Route::get('inquery_stokbarangjadi/unpost_stokbarangjadi/{id}', [\App\Http\Controllers\Admin\Inquery_stokbarangjadiController::class, 'unpost_stokbarangjadi']);
     Route::get('inquery_stokbarangjadi/posting_stokbarangjadi/{id}', [\App\Http\Controllers\Admin\Inquery_stokbarangjadiController::class, 'posting_stokbarangjadi']);
+    Route::get('admin/inquery_stokbarangjadi/{id}/edit', [Inquery_stokbarangjadiController::class, 'edit'])->name('stokbarangjadi.edit');
+    Route::put('admin/inquery_stokbarangjadi/{id}', [Inquery_stokbarangjadiController::class, 'update'])->name('stokbarangjadi.update');
 
     Route::resource('data_stokbarangjadi', \App\Http\Controllers\Admin\Data_stokbarangjadiController::class);
 

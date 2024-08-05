@@ -66,16 +66,37 @@
                 </div>
             @endif
             <div class="card">
-                <div class="card-header">
-                    <div class="float-right">
-                        {{-- <a href="{{ url('admin/stok_barangjadi/create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus"></i> 
-                        </a> --}}
-                    </div>
-                </div>
-                <!-- /.card-header -->
+            
+                
                 <div class="card-body">
                     <!-- Tabel -->
+                    <form method="GET" id="form-action">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="status" name="status">
+                                    <option value="">- Semua Status -</option>
+                                    <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
+                                    <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
+                                </select>
+                                <label for="status">(Pilih Status)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <input class="form-control" id="tanggal_input" name="tanggal_input" type="date"
+                                    value="{{ Request::get('tanggal_input') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_input">(Dari Tanggal)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
+                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_akhir">(Sampai Tanggal)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
+                                    <i class="fas fa-search"></i> Cari
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                     <table id="datatables66" class="table table-bordered" style="font-size: 13px">
                         <thead>
                             <tr>
@@ -114,7 +135,7 @@
                                                     data-memo-id="{{ $firstItem->id }}">Posting</a>
                                          
                                                 <a class="dropdown-item"
-                                                    href="{{ url('admin/inquery_penjualanproduk/' . $firstItem->id . '/edit') }}">Update</a>
+                                                    href="{{ url('admin/inquery_stokbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
                                             
                                                 <a class="dropdown-item"
                                                 href="{{ url('/admin/inquery_stokbarangjadi/' . $firstItem->id ) }}">Show</a>
@@ -153,6 +174,34 @@
             </div>
         </div>
     </section>
+
+    <script>
+        var tanggalAwal = document.getElementById('tanggal_input');
+        var tanggalAkhir = document.getElementById('tanggal_akhir');
+        if (tanggalAwal.value == "") {
+            tanggalAkhir.readOnly = true;
+        }
+        tanggalAwal.addEventListener('change', function() {
+            if (this.value == "") {
+                tanggalAkhir.readOnly = true;
+            } else {
+                tanggalAkhir.readOnly = false;
+            };
+            tanggalAkhir.value = "";
+            var today = new Date().toISOString().split('T')[0];
+            tanggalAkhir.value = today;
+            tanggalAkhir.setAttribute('min', this.value);
+        });
+        var form = document.getElementById('form-action')
+
+        function cari() {
+            form.action = "{{ url('admin/inquery_stokbarangjadi') }}";
+            form.submit();
+        }
+
+    </script>
+
+
 
     {{-- unpost stok  --}}
     <script>

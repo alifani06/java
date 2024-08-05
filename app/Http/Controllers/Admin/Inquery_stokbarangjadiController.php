@@ -43,18 +43,48 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class Inquery_stokbarangjadiController extends Controller{
 
-    
-    public function index()
-{
-    // Mengambil data stok_barangjadi beserta relasi detail_stokbarangjadi dan produk, lalu group by kode_input
-    $stokBarangJadi = Stok_barangjadi::with('produk.klasifikasi')
-        ->get()
-        ->groupBy('kode_input');
+//     public function index(Request $request)
 
-    return view('admin.inquery_stokbarangjadi.index', compact('stokBarangJadi'));
-}
+//         Mengambil data stok_barangjadi beserta relasi detail_stokbarangjadi dan produk, lalu group by kode_input
+//     $stokBarangJadi = Stok_barangjadi::with('produk.klasifikasi')
+//         ->get()
+//         ->groupBy('kode_input');
 
-    
+//     return view('admin.inquery_stokbarangjadi.index', compact('stokBarangJadi'));
+// }
+
+        public function index(Request $request)
+        {
+            $status = $request->status;
+            $tanggal_input = $request->tanggal_input;
+            $tanggal_akhir = $request->tanggal_akhir;
+
+            $query = Stok_barangjadi::with('produk.klasifikasi');
+
+            if ($status) {
+                $query->where('status', $status);
+            }
+
+            if ($tanggal_input && $tanggal_akhir) {
+                $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
+                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+                $query->whereBetween('tanggal_input', [$tanggal_input, $tanggal_akhir]);
+            } elseif ($tanggal_input) {
+                $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
+                $query->where('tanggal_input', '>=', $tanggal_input);
+            } elseif ($tanggal_akhir) {
+                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+                $query->where('tanggal_input', '<=', $tanggal_akhir);
+            } else {
+                // Jika tidak ada filter tanggal, tampilkan data hari ini
+                $query->whereDate('tanggal_input', Carbon::today());
+            }
+
+            // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
+            $stokBarangJadi = $query->get()->groupBy('kode_input');
+
+            return view('admin.inquery_stokbarangjadi.index', compact('stokBarangJadi'));
+        }
 
     public function create()
     {
@@ -133,38 +163,6 @@ class Inquery_stokbarangjadiController extends Controller{
         return view('admin.inquery_stokbarangjadi.show', compact('detailStokBarangJadi', 'klasifikasi'));
     }
 
-//     public function unpost_stokbarangjadi($id)
-// {
-//     $stok = Stok_barangjadi::where('id', $id)->first();
-
-//         $stok->update([
-//             'status' => 'unpost'
-//         ]);
-//     return back()->with('success', 'Berhasil');
-// }
-
-
-        // public function unpost_stokbarangjadi($id)
-        // {
-        //     // Ambil data stok barang berdasarkan ID
-        //     $stok = Stok_barangjadi::where('id', $id)->first();
-
-        //     // Pastikan data ditemukan
-        //     if (!$stok) {
-        //         return back()->with('error', 'Data tidak ditemukan.');
-        //     }
-
-        //     // Ambil kode_input dari stok yang diambil
-        //     $kodeInput = $stok->kode_input;
-
-        //     // Update status untuk semua stok dengan kode_input yang sama
-        //     Stok_barangjadi::where('kode_input', $kodeInput)->update([
-        //         'status' => 'unpost'
-        //     ]);
-
-        //     // Redirect kembali dengan pesan sukses
-        //     return back()->with('success', 'Berhasil mengubah status semua produk dengan kode_input yang sama.');
-        // }
         public function unpost_stokbarangjadi($id)
         {
             // Ambil data stok barang berdasarkan ID
@@ -185,41 +183,10 @@ class Inquery_stokbarangjadiController extends Controller{
             Detail_stokbarangjadi::where('kode_input', $kodeInput)->update([
                 'status' => 'unpost'
             ]);
-        
-            // Update status untuk semua detail_stokbarangjadi terkait dengan kode_input yang sama
-            // Detail_stokbarangjadi::whereHas('stok_barangjadi', function ($query) use ($kodeInput) {
-            //     $query->where('kode_input', $kodeInput);
-            // })->update([
-            //     'status' => 'unpost'
-            // ]);
-        
-            // Redirect kembali dengan pesan sukses
+
             return back()->with('success', 'Berhasil mengubah status semua produk dan detail terkait dengan kode_input yang sama.');
         }
         
-
-
-// public function posting_stokbarangjadi($id)
-// {
-//     // Ambil data stok barang berdasarkan ID
-//     $stok = Stok_barangjadi::where('id', $id)->first();
-
-//     // Pastikan data ditemukan
-//     if (!$stok) {
-//         return back()->with('error', 'Data tidak ditemukan.');
-//     }
-
-//     // Ambil kode_input dari stok yang diambil
-//     $kodeInput = $stok->kode_input;
-
-//     // Update status untuk semua stok dengan kode_input yang sama
-//     Stok_barangjadi::where('kode_input', $kodeInput)->update([
-//         'status' => 'posting'
-//     ]);
-
-//     // Redirect kembali dengan pesan sukses
-//     return back()->with('success', 'Berhasil mengubah status semua produk dengan kode_input yang sama.');
-// }
 
 public function posting_stokbarangjadi($id)
 {
@@ -253,14 +220,7 @@ public function posting_stokbarangjadi($id)
     return back()->with('success', 'Berhasil mengubah status semua produk dan detail terkait dengan kode_input yang sama.');
 }
 
-     
     
-    
-    
-    
-    
-
-
     public function kode()
     {
         $lastBarang = PermintaanProduk::latest()->first();
@@ -320,16 +280,34 @@ public function posting_stokbarangjadi($id)
 
     public function edit($id)
     {
-           
-    }
-        
-    
+        $stok_barangjadi = Stok_Barangjadi::findOrFail($id);
+        $klasifikasis = Klasifikasi::all(); // Menyediakan daftar klasifikasi
 
+        return view('admin.stok_barangjadi.edit', compact('stok_barangjadi', 'klasifikasis'));
+    }
+
+    // Method untuk memproses update data
     public function update(Request $request, $id)
     {
-           
-    }
+        $request->validate([
+            'klasifikasi_id' => 'required|exists:klasifikasis,id',
+            'produk' => 'required|array',
+            'produk.*.stok' => 'required|integer|min:0',
+        ]);
 
+        $stok_barangjadi = Stok_Barangjadi::findOrFail($id);
+        $stok_barangjadi->klasifikasi_id = $request->klasifikasi_id;
+        $stok_barangjadi->save();
+
+        // Update stok produk
+        foreach ($request->produk as $produkId => $data) {
+            // Lakukan update stok produk sesuai kebutuhan
+            // Misalnya, update stok produk dalam pivot table jika ada
+            $stok_barangjadi->produks()->updateExistingPivot($produkId, ['stok' => $data['stok']]);
+        }
+
+        return redirect()->route('stokbarangjadi.edit', $id)->with('success', 'Data berhasil diperbarui!');
+    }
 
         public function destroy($id)
         {
