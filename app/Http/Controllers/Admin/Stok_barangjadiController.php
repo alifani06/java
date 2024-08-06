@@ -43,16 +43,20 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class Stok_barangjadiController extends Controller{
 
-public function index()
-{
-    // Mengambil data stok_barangjadi beserta relasi detail_stokbarangjadi dan produk, lalu group by kode_input
-    $stokBarangJadi = Stok_barangjadi::with('detail_stokbarangjadi.produk.klasifikasi')
-        ->get()
-        ->groupBy('kode_input');
-
-    return view('admin.stok_barangjadi.index', compact('stokBarangJadi'));
-}
-
+    public function index()
+    {
+        $today = Carbon::now('Asia/Jakarta')->toDateString();
+    
+        $stokBarangJadi = Stok_barangjadi::with('detail_stokbarangjadi.produk.klasifikasi')
+            ->whereDate('tanggal_input', $today)
+            ->orWhere('status', 'unpost')
+            ->orderBy('tanggal_input', 'desc')  
+            ->get()
+            ->groupBy('kode_input');
+    
+        return view('admin.stok_barangjadi.index', compact('stokBarangJadi'));
+    }
+    
     public function create()
     {
         
@@ -100,6 +104,57 @@ public function store(Request $request)
 
     return redirect('admin/stok_barangjadi')->with('success', 'Berhasil menambahkan stok barang jadi');
 }
+// public function store(Request $request)
+// {
+//     $kode = $this->kode();
+
+//     $produkData = $request->input('produk', []);
+//     $detailData = [];
+
+//     foreach ($produkData as $produkId => $data) {
+//         $stok = $data['stok'] ?? null;
+
+//         if (!is_null($stok) && $stok !== '') {
+//             // Check if the product already exists in Detail_stokbarangjadi
+//             $existingDetail = Detail_stokbarangjadi::where('produk_id', $produkId)
+//                 ->where('klasifikasi_id', $request->input('klasifikasi_id'))
+//                 ->first();
+
+//             if ($existingDetail) {
+//                 // If it exists, update the existing stock
+//                 $existingDetail->stok += $stok;
+//                 $existingDetail->save();
+//             } else {
+//                 // If it does not exist, create a new entry
+//                 $stokBarangJadi = Stok_barangjadi::create([
+//                     'produk_id' => $produkId,
+//                     'klasifikasi_id' => $request->input('klasifikasi_id'),
+//                     'stok' => $stok,
+//                     'status' => 'unpost',
+//                     'kode_input' => $kode,
+//                     'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//                 ]);
+
+//                 $detailData[] = [
+//                     'stokbarangjadi_id' => $stokBarangJadi->id,
+//                     'produk_id' => $produkId,
+//                     'klasifikasi_id' => $request->input('klasifikasi_id'),
+//                     'stok' => $stok,
+//                     'status' => 'unpost',
+//                     'kode_input' => $kode,
+//                     'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//                 ];
+//             }
+//         }
+//     }
+
+//     if (!empty($detailData)) {
+//         Detail_stokbarangjadi::insert($detailData);
+//     }
+
+//     return redirect('admin/stok_barangjadi')->with('success', 'Berhasil menambahkan stok barang jadi');
+// }
+
 
     public function kode()
     {

@@ -115,8 +115,8 @@
                                 <tr class="dropdown"{{$firstItem->id }}>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $firstItem->kode_input }}</td>
-                                <td>{{ $firstItem->tanggal_input }}</td>
-                                <td class="text-center">
+                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_input)->format('d/m/Y H:i') }}
+                                    <td class="text-center">
                                     @if ($firstItem->status == 'posting')
                                         <button type="button" class="btn btn-success btn-sm">
                                             <i class="fas fa-check"></i>

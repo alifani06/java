@@ -62,12 +62,16 @@ class Data_stokbarangjadiController extends Controller{
 //     }
 public function index()
 {
-    // Mengambil semua produk beserta stok_barangjadi dan detail_stokbarangjadi
+    // Mengambil semua produk beserta stok_barangjadi dan detail_stokbarangjadi, diurutkan berdasarkan klasifikasi
     $produks = Produk::with(['stok_barangjadii.detail_stokbarangjadi.produk.klasifikasi'])
-      ->get();
+        ->get()
+        ->sortBy(function($produk) {
+            return $produk->stok_barangjadii->first()->detail_stokbarangjadi->first()->produk->klasifikasi->nama_klasifikasi; // ganti 'nama_klasifikasi' sesuai dengan field yang digunakan untuk klasifikasi
+        });
 
     return view('admin.data_stokbarangjadi.index', compact('produks'));
 }
+
 
 }
 
