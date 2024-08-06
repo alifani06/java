@@ -42,23 +42,44 @@ class PengirimanbarangjadiController extends Controller{
     
 
 
+// public function create()
+// {
+//     $detailStokBarangjadi = Detail_stokbarangjadi::select('produk_id', 'klasifikasi_id')
+//         ->distinct()
+//         ->get();
+    
+//     $produkIds = $detailStokBarangjadi->pluck('produk_id')->toArray();
+//     $klasifikasiIds = $detailStokBarangjadi->pluck('klasifikasi_id')->toArray();
+    
+//     $klasifikasis = Klasifikasi::whereIn('id', $klasifikasiIds)
+//         ->with(['produks' => function ($query) use ($produkIds) {
+//             $query->whereIn('id', $produkIds);
+//         }])
+//         ->get();
+    
+//     return view('admin.pengiriman_barangjadi.create', compact('klasifikasis'));
+// }
+
 public function create()
 {
     $detailStokBarangjadi = Detail_stokbarangjadi::select('produk_id', 'klasifikasi_id')
         ->distinct()
         ->get();
-    
+
     $produkIds = $detailStokBarangjadi->pluck('produk_id')->toArray();
     $klasifikasiIds = $detailStokBarangjadi->pluck('klasifikasi_id')->toArray();
-    
+
     $klasifikasis = Klasifikasi::whereIn('id', $klasifikasiIds)
         ->with(['produks' => function ($query) use ($produkIds) {
             $query->whereIn('id', $produkIds);
         }])
         ->get();
-    
-    return view('admin.pengiriman_barangjadi.create', compact('klasifikasis'));
+
+    $tokos = Toko::all();
+
+    return view('admin.pengiriman_barangjadi.create', compact('klasifikasis', 'tokos'));
 }
+
 
 // public function store(Request $request)
 // {
@@ -105,6 +126,8 @@ public function store(Request $request)
 {
     $kode = $this->kode();
     $produkData = $request->input('produk', []);
+    $tokoId = $request->input('toko_id');
+
 
     foreach ($produkData as $produkId => $data) {
         $jumlah = $data['jumlah'] ?? null;
@@ -136,7 +159,7 @@ public function store(Request $request)
                     'kode_pengiriman' => $kode,
                     'qrcode_pengiriman' => 'https://javabakery.id/permintaan_produk/' . $kode,
                     'produk_id' => $produkId,
-                    'toko_id' => '1', 
+                    'toko_id' => $tokoId,
                     'jumlah' => $jumlah,
                     'tanggal_pengiriman' => Carbon::now('Asia/Jakarta'),
                 ]);

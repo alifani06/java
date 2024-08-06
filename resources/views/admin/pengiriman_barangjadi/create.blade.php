@@ -80,9 +80,14 @@
                             <div class="col-md-12 mb-3">
                                 <table class="table table-bordered">
                                     <thead>
-                                        <tr>
-                                            <th>Form Pengirman Barang Jadi</th>
-                                        </tr>
+                                        <div class="col-md-3 mb-3">
+                                            <select class="custom-select form-control" id="toko" name="toko_id">
+                                                <option value="">- Pilih Toko -</option>
+                                                @foreach ($tokos as $toko)
+                                                    <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </thead>
                                     <tbody>
                                         @foreach ($klasifikasis as $klasifikasi)
