@@ -378,7 +378,8 @@
     request()->is('admin/laporan_penjualanproduk*')  ||
     request()->is('admin/laporan_perubahanharga*')||
     request()->is('admin/laporan_permintaanproduk*')||
-    request()->is('admin/laporan_stokbarangjadi*')
+    request()->is('admin/laporan_stokbarangjadi*')||
+    request()->is('admin/laporan_pengirimanbarangjadi*')
     // request()->is('admin/input*')
   
         ? 'menu-open'
@@ -388,7 +389,8 @@
         request()->is('admin/laporan_penjualanproduk*')|| 
         request()->is('admin/laporan_perubahanharga*') ||
         request()->is('admin/laporan_permintaanproduk*')|| 
-        request()->is('admin/laporan_stokbarangjadi*') 
+        request()->is('admin/laporan_stokbarangjadi*')|| 
+        request()->is('admin/laporan_spengirimanarangjadi*') 
         // request()->is('admin/input*')
       
             ? 'active'
@@ -447,6 +449,16 @@
                     class="nav-link {{ request()->is('admin/laporan_stokbarangjadi*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                     <p style="font-size: 14px;">Laporan Stok Barang Jadi</p>
+                </a>
+            </li>
+            {{-- @endif --}}
+
+              {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+              <li class="nav-item">
+                <a href="{{ url('admin/laporan_pengirimanbarangjadi') }}"
+                    class="nav-link {{ request()->is('admin/laporan_pengirimanbarangjadi*') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                    <p style="font-size: 14px;">Laporan Pengiriman Barang</p>
                 </a>
             </li>
             {{-- @endif --}}

@@ -109,31 +109,6 @@ class PermintaanprodukController extends Controller{
         return $newCode;
     }
 
-    
-//     public function show($id)
-// {
-//     $permintaanProduk = PermintaanProduk::find($id);
-//     $detailPermintaanProduks = DetailPermintaanProduk::where('permintaanproduk_id', $id)->get();
-
-//     // Mengelompokkan produk berdasarkan klasifikasi
-//     $produkByDivisi = $detailPermintaanProduks->groupBy(function($item) {
-//         return $item->produk->klasifikasi->nama; // Ganti dengan nama klasifikasi jika diperlukan
-//     });
-
-//     // Menghitung total jumlah per klasifikasi
-//     $totalPerDivisi = $produkByDivisi->map(function($produks) {
-//         return $produks->sum('jumlah');
-//     });
-
-//     // Ambil data Subklasifikasi berdasarkan Klasifikasi
-//     $subklasifikasiByDivisi = $produkByDivisi->map(function($produks) {
-//         return $produks->groupBy(function($item) {
-//             return $item->produk->subklasifikasi->nama; // Ganti dengan nama subklasifikasi jika diperlukan
-//         });
-//     });
-
-//     return view('admin.permintaan_produk.show', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi', 'subklasifikasiByDivisi'));
-// }
 public function show($id)
 {
     $permintaanProduk = PermintaanProduk::find($id);
@@ -202,34 +177,77 @@ public function show($id)
     }
     
     
+    public function unpost_permintaanproduk($id)
+{
+    $item = Permintaanproduk::where('id', $id)->first();
 
-    public function edit($id)
-    {
-           
-    }
-        
     
+        $item->update([
+            'status' => 'unpost'
+        ]);
+    return back()->with('success', 'Berhasil');
+}
 
-    public function update(Request $request, $id)
-    {
-           
+public function posting_permintaanproduk($id)
+{
+    $item = Permintaanproduk::where('id', $id)->first();
+
+    
+        // Update status deposit_driver menjadi 'posting'
+        $item->update([
+            'status' => 'posting'
+        ]);
+    return back()->with('success', 'Berhasil');
+}
+
+public function edit($id)
+{
+    $permintaanProduk = PermintaanProduk::findOrFail($id);
+    $klasifikasis = Klasifikasi::with('produks')->get();
+    $detailPermintaanProduk = $permintaanProduk->detailpermintaanproduks()->get();
+
+    return view('admin.permintaan_produk.update', compact('permintaanProduk', 'klasifikasis', 'detailPermintaanProduk'));
+}
+
+
+public function update(Request $request, $id)
+{
+    $permintaanProduk = PermintaanProduk::findOrFail($id);
+
+    // Loop through the produk input and update the jumlah accordingly
+    foreach ($request->produk as $produkId => $detail) {
+        $jumlah = $detail['jumlah'];
+        $detailPermintaan = $permintaanProduk->detailPermintaanProduks()->where('produk_id', $produkId)->first();
+
+        if ($detailPermintaan) {
+            if ($jumlah == 0) {
+                $detailPermintaan->delete();
+            } else {
+                $detailPermintaan->update(['jumlah' => $jumlah]);
+            }
+        } else if ($jumlah > 0) {
+            $permintaanProduk->detailPermintaanProduks()->create([
+                'produk_id' => $produkId,
+                'jumlah' => $jumlah,
+            ]);
+        }
     }
 
+    return redirect()->route('permintaan_produk.index')->with('success', 'Permintaan produk berhasil diperbarui.');
+}
 
-        public function destroy($id)
-        {
-            DB::transaction(function () use ($id) {
-                $pemesanan = Pemesananproduk::findOrFail($id);
-        
-                // Menghapus (soft delete) detail pemesanan terkait
-                DetailPemesananProduk::where('pemesananproduk_id', $id)->delete();
-        
-                // Menghapus (soft delete) data pemesanan
-                $pemesanan->delete();
-            });
-        
-            return redirect('admin/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
-        }
+public function destroy($id)
+{
+    $permintaanProduk = PermintaanProduk::findOrFail($id);
+
+    // Hapus detail permintaan produk terkait
+    $permintaanProduk->detailPermintaanProduks()->delete();
+
+    // Hapus permintaan produk itu sendiri
+    $permintaanProduk->delete();
+
+    return redirect()->route('permintaan_produk.index')->with('success', 'Permintaan produk dan detail terkait berhasil dihapus.');
+}
         
         public function import(Request $request)
         {

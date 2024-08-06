@@ -81,7 +81,7 @@ class Inquery_permintaanprodukController extends Controller
     
     
 
-public function unpost_penjualanproduk($id)
+public function unpost_permintaanproduk($id)
 {
     $item = Penjualanproduk::where('id', $id)->first();
 
@@ -92,7 +92,7 @@ public function unpost_penjualanproduk($id)
     return back()->with('success', 'Berhasil');
 }
 
-public function posting_penjualanproduk($id)
+public function posting_permintaanproduk($id)
 {
     $item = Penjualanproduk::where('id', $id)->first();
 

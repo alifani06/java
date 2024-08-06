@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Produks')
+@section('title', 'Update Permintaan Produk')
 
 @section('content')
     <div id="loadingSpinner" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
@@ -35,7 +35,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Permintaan Produk</h1>
+                    <h1 class="m-0">Update Permintaan Produk</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -68,14 +68,12 @@
                 </div>
             @endif
             <div class="card">
-                
                 <!-- /.card-header -->
                 <div class="card-body">
-                    
-
-                    <form action="{{ url('admin/permintaan_produk') }}" method="POST">
+                    <form action="{{ url('admin/permintaan_produk/'.$permintaanProduk->id) }}" method="POST">
                         @csrf
-                        <input type="hidden" name="toko_id" > <!-- Assuming $toko is passed from the controller -->
+                        @method('PUT')
+                        <input type="hidden" name="toko_id" value="{{ $permintaanProduk->toko_id }}">
                         <div class="row">
                             <div class="col-md-12 mb-3">
                                 <table class="table table-bordered">
@@ -102,15 +100,17 @@
                                                         </thead>
                                                         <tbody>
                                                             @foreach ($klasifikasi->produks as $produk)
+                                                                @php
+                                                                    $jumlah = $detailPermintaanProduk->where('produk_id', $produk->id)->first()->jumlah ?? 0;
+                                                                @endphp
                                                                 <tr>
                                                                     <td class="text-center">{{ $loop->iteration }}</td>
                                                                     <td>{{ $produk->kode_produk }}</td>
                                                                     <td>{{ $produk->nama_produk }}</td>
                                                                     <td>
-                                                                        <input type="number" class="form-control" id="produk-{{ $produk->id }}" name="produk[{{ $produk->id }}][jumlah]" min="0" style="width: 100px; height: 30px;">
+                                                                        <input type="number" class="form-control" id="produk-{{ $produk->id }}" name="produk[{{ $produk->id }}][jumlah]" min="0" style="width: 100px; height: 30px;" value="{{ $jumlah }}">
                                                                     </td>
-                                                                </tr>
-                                                            @endforeach
+                                                                @endforeach
                                                         </tbody>
                                                     </table>
                                                 </td>
@@ -121,11 +121,10 @@
                             </div>
                         </div>
                         <div class="form-group text-right">
-                            <button type="submit" class="btn btn-primary">Simpan</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
                         </div>
                     </form>
                     
-             
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
                         aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">
@@ -184,6 +183,4 @@
             });
         });
     </script>
-    
-    
 @endsection

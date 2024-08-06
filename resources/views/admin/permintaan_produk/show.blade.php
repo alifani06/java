@@ -114,10 +114,10 @@
             </div>
             <div>
                 <span class="title">PT JAVA BAKERY</span><br>
-                {{-- @if($toko)
+                @if($toko)
                 <span class="toko-name">Cabang: {{ $toko->nama_toko }}</span><br>
                 <span class="address">{{$toko->alamat}}</span><br>
-                @endif --}}
+                @endif
 
             </div>
             <br>

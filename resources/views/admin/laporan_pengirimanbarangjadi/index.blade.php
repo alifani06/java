@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Stok Barang Jadi</h1>
+                    <h1 class="m-0">Laporan Pengiriman Barang Jadi</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -68,7 +68,7 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Laporan Stok Barang Jadi</h3>
+                    <h3 class="card-title">Laporan Pengiriman Barang Jadi</h3>
                 </div>
 
                 <!-- /.card-header -->
@@ -85,9 +85,9 @@
                                 <label for="status">(Pilih Status)</label>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_input" name="tanggal_input" type="date"
-                                    value="{{ Request::get('tanggal_input') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_input">(Dari Tanggal)</label>
+                                <input class="form-control" id="tanggal_pengiriman" name="tanggal_pengiriman" type="date"
+                                    value="{{ Request::get('tanggal_pengiriman') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_pengiriman">(Dari Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
@@ -111,8 +111,8 @@
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
-                                <th>Kode Inputan</th>
-                                <th>Tanggal Inputan</th>
+                                <th>Kode Pengiriman</th>
+                                <th>Tanggal Pengiriman</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -123,8 +123,8 @@
                             @endphp
                                 <tr class="dropdown"{{$firstItem->id }}>
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                <td>{{ $firstItem->kode_input }}</td>
-                                <td>{{ $firstItem->tanggal_input }}</td>
+                                <td>{{ $firstItem->kode_pengiriman }}</td>
+                                <td>{{ $firstItem->tanggal_pengiriman }}</td>
                                 <td class="text-center">
                                     @if ($firstItem->status == 'posting')
                                         <button type="button" class="btn btn-success btn-sm">
@@ -162,7 +162,7 @@
 
     <!-- /.card -->
     <script>
-        var tanggalAwal = document.getElementById('tanggal_input');
+        var tanggalAwal = document.getElementById('tanggal_pengiriman');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
         if (tanggalAwal.value == "") {
             tanggalAkhir.readOnly = true;
@@ -180,13 +180,25 @@
         });
     </script>
 
-    <script>
+    {{-- <script>
         function printReport() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/print1') }}";
+    form.action = "{{ url('admin/print') }}";
+    form.target = "_blank";
+    form.submit();
+    }
+    </script> --}}
+<script>
+    function printReport() {
+    const form = document.getElementById('form-action');
+    const tanggalPengiriman = document.getElementById('tanggal_pengiriman').value;
+    const tanggalAkhir = document.getElementById('tanggal_akhir').value;
+    const status = document.getElementById('status').value;
+
+    form.action = `{{ url('admin/print') }}?tanggal_pengiriman=${tanggalPengiriman}&tanggal_akhir=${tanggalAkhir}&status=${status}`;
     form.target = "_blank";
     form.submit();
 }
-    </script>
 
+</script>
 @endsection
