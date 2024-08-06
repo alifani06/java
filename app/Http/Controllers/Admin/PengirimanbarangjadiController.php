@@ -161,6 +161,7 @@ public function store(Request $request)
                     'produk_id' => $produkId,
                     'toko_id' => $tokoId,
                     'jumlah' => $jumlah,
+                    'status' => 'posting',
                     'tanggal_pengiriman' => Carbon::now('Asia/Jakarta'),
                 ]);
             } else {

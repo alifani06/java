@@ -153,6 +153,11 @@
                     <i class="fas fa-plus"></i> Kembali
                 </a>
             </div>
+            <div>
+                <a href="{{ route('stok_barangjadi.print', $detailStokBarangJadi->first()->id) }}"  id="printButton" target="_blank" class="btn btn-primary btn-sm">
+                    <i class="fas fa-print"></i> Cetak 
+                </a>
+            </div>
         
         </div>
     </div>

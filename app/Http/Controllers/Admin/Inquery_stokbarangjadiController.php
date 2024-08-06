@@ -274,31 +274,89 @@ public function posting_stokbarangjadi($id)
         $stok_barangjadi = Stok_Barangjadi::findOrFail($id);
         $klasifikasis = Klasifikasi::all(); // Menyediakan daftar klasifikasi
 
-        return view('admin.stok_barangjadi.edit', compact('stok_barangjadi', 'klasifikasis'));
+        return view('admin.inquery_stokbarangjadi.edit', compact('stok_barangjadi', 'klasifikasis'));
     }
 
-    // Method untuk memproses update data
+    // public function update(Request $request, $id)
+    // {
+    //     // Find the Stok_Barangjadi record by ID
+    //     $stokBarangjadi = Stok_Barangjadi::findOrFail($id);
+    
+    //     // Loop through the produk input and update or delete records accordingly
+    //     foreach ($request->input('produk', []) as $produkId => $detail) {
+    //         $stok = $detail['stok'];
+    
+    //         // Find the existing record for the given produk_id
+    //         $existingStok = $stokBarangjadi->where('produk_id', $produkId)->first();
+    
+    //         if ($stok == 0) {
+    //             // If stock is 0, delete the record if it exists
+    //             if ($existingStok) {
+    //                 $existingStok->delete();
+    //             }
+    //         } else {
+    //             // If stock is greater than 0
+    //             if ($existingStok) {
+    //                 // Update the existing record
+    //                 $existingStok->update(['stok' => $stok]);
+    //             } else {
+    //                 // Create a new record if it does not exist
+    //                 $stokBarangjadi->Stok_barangjadi()->create([
+    //                     'produk_id' => $produkId,
+    //                     'stok' => $stok,
+    //                 ]);
+    //             }
+    //         }
+    //     }
+    
+    //     // Redirect back with a success message
+    //     return redirect()->route('inquery_stokbarangjadi.index')->with('success', 'Permintaan produk berhasil diperbarui.');
+    // }
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'klasifikasi_id' => 'required|exists:klasifikasis,id',
-            'produk' => 'required|array',
-            'produk.*.stok' => 'required|integer|min:0',
-        ]);
-
-        $stok_barangjadi = Stok_Barangjadi::findOrFail($id);
-        $stok_barangjadi->klasifikasi_id = $request->klasifikasi_id;
-        $stok_barangjadi->save();
-
-        // Update stok produk
-        foreach ($request->produk as $produkId => $data) {
-            // Lakukan update stok produk sesuai kebutuhan
-            // Misalnya, update stok produk dalam pivot table jika ada
-            $stok_barangjadi->produks()->updateExistingPivot($produkId, ['stok' => $data['stok']]);
+        // Find the Stok_Barangjadi record by ID
+        $stokBarangjadi = Stok_Barangjadi::findOrFail($id);
+        
+        // Loop through the produk input and update or delete records accordingly
+        foreach ($request->input('produk', []) as $produkId => $detail) {
+            $stok = $detail['stok'];
+        
+            // Find the existing record for the given produk_id
+            $existingStok = $stokBarangjadi->where('produk_id', $produkId)->first();
+        
+            if ($stok == 0) {
+                // If stock is 0, delete the record if it exists
+                if ($existingStok) {
+                    $existingStok->delete();
+                }
+            } else {
+                // If stock is greater than 0
+                if ($existingStok) {
+                    // Update the existing record
+                    $existingStok->update(['stok' => $stok]);
+                } else {
+                    // Create a new record if it does not exist
+                    Stok_Barangjadi::create([
+                        'id' => $stokBarangjadi->id, // Assuming you have a foreign key reference to `stok_barangjadi`
+                        'produk_id' => $produkId,
+                        'stok' => $stok,
+                        'klasifikasi_id' => $request->input('klasifikasi_id'),
+                        'kode_input' => $stokBarangjadi->kode_input, 
+                        'tanggal_input' => $stokBarangjadi->tanggal_input, 
+                        'status' => 'unpost', 
+                    ]);
+                }
+            }
         }
-
-        return redirect()->route('stokbarangjadi.edit', $id)->with('success', 'Data berhasil diperbarui!');
+        
+        // Redirect back with a success message
+        return redirect()->route('inquery_stokbarangjadi.index')->with('success', 'Permintaan produk berhasil diperbarui.');
     }
+    
+
+
+
+
 
         public function destroy($id)
         {
