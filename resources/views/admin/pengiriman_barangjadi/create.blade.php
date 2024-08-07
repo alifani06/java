@@ -132,8 +132,8 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <div class="form-group">
-                                            <input type="text" id="searchProduk" class="form-control" placeholder="Cari berdasarkan kode atau nama produk">
+                                        <div class="col-sm-12 text-right">
+                                            <input type="text" id="searchProduk" class="form-control" placeholder="Cari produk..." style="display: inline-block; width: auto; margin-bottom: 10px;">
                                         </div>
                                         <table id="tableproduk" class="table table-bordered table-striped">
                                             <thead>

@@ -65,18 +65,57 @@ class Stok_barangjadiController extends Controller{
         return view('admin.stok_barangjadi.create', compact('klasifikasis'));    
     }
 
+// public function store(Request $request)
+// {
+//     $kode = $this->kode();
+
+//     $produkData = $request->input('produk', []);
+
+//     $detailData = [];
+
+//     foreach ($produkData as $produkId => $data) {
+//         $stok = $data['stok'] ?? null;
+
+//         if (!is_null($stok) && $stok !== '') {
+//             $stokBarangJadi = Stok_barangjadi::create([
+//                 'produk_id' => $produkId,
+//                 'klasifikasi_id' => $request->input('klasifikasi_id'),
+//                 'stok' => $stok,
+//                 'status' => 'unpost',
+//                 'kode_input' => $kode,
+//                 'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//             ]);
+
+//             $detailData[] = [
+//                 'stokbarangjadi_id' => $stokBarangJadi->id,
+//                 'produk_id' => $produkId,
+//                 'klasifikasi_id' => $request->input('klasifikasi_id'),
+//                 'stok' => $stok,
+//                 'status' => 'unpost',
+//                 'kode_input' => $kode,
+//                 'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//             ];
+//         }
+//     }
+
+//     if (!empty($detailData)) {
+//         Detail_stokbarangjadi::insert($detailData);
+//     }
+
+//     return redirect('admin/stok_barangjadi')->with('success', 'Berhasil menambahkan stok barang jadi');
+// }
+
 public function store(Request $request)
 {
     $kode = $this->kode();
-
     $produkData = $request->input('produk', []);
-
     $detailData = [];
 
     foreach ($produkData as $produkId => $data) {
         $stok = $data['stok'] ?? null;
 
         if (!is_null($stok) && $stok !== '') {
+            // Create a new record in Stok_barangjadi
             $stokBarangJadi = Stok_barangjadi::create([
                 'produk_id' => $produkId,
                 'klasifikasi_id' => $request->input('klasifikasi_id'),
@@ -86,15 +125,28 @@ public function store(Request $request)
                 'tanggal_input' => Carbon::now('Asia/Jakarta'),
             ]);
 
-            $detailData[] = [
-                'stokbarangjadi_id' => $stokBarangJadi->id,
-                'produk_id' => $produkId,
-                'klasifikasi_id' => $request->input('klasifikasi_id'),
-                'stok' => $stok,
-                'status' => 'unpost',
-                'kode_input' => $kode,
-                'tanggal_input' => Carbon::now('Asia/Jakarta'),
-            ];
+            // Check if a record with the same produk_id and klasifikasi_id exists in Detail_stokbarangjadi
+            $existingDetail = Detail_stokbarangjadi::where('produk_id', $produkId)
+                ->where('klasifikasi_id', $request->input('klasifikasi_id'))
+                ->where('status', 'unpost')
+                ->first();
+
+            if ($existingDetail) {
+                // Update existing record
+                $existingDetail->stok += $stok;
+                $existingDetail->save();
+            } else {
+                // Create a new record in Detail_stokbarangjadi
+                $detailData[] = [
+                    'stokbarangjadi_id' => $stokBarangJadi->id,
+                    'produk_id' => $produkId,
+                    'klasifikasi_id' => $request->input('klasifikasi_id'),
+                    'stok' => $stok,
+                    'status' => 'unpost',
+                    'kode_input' => $kode,
+                    'tanggal_input' => Carbon::now('Asia/Jakarta'),
+                ];
+            }
         }
     }
 
@@ -104,6 +156,8 @@ public function store(Request $request)
 
     return redirect('admin/stok_barangjadi')->with('success', 'Berhasil menambahkan stok barang jadi');
 }
+
+
 // public function store(Request $request)
 // {
 //     $kode = $this->kode();

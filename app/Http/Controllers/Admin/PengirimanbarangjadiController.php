@@ -80,41 +80,49 @@ public function create()
 }
 
 
-
-
 // public function store(Request $request)
 // {
 //     $kode = $this->kode();
+//     $produkData = $request->input('produk_id', []);
+//     $jumlahData = $request->input('jumlah', []);
+//     $tokoId = $request->input('toko_id');
 
-//     $produkData = $request->input('produk', []);
-
-//     foreach ($produkData as $produkId => $data) {
-//         $jumlah = $data['jumlah'] ?? null;
+//     foreach ($produkData as $key => $produkId) {
+//         $jumlah = $jumlahData[$key] ?? null;
 
 //         if (!is_null($jumlah) && $jumlah !== '') {
-//             // Create the Pengiriman_barangjadi entry
-//             Pengiriman_barangjadi::create([
-//                 'kode_pengiriman' => $kode,
-//                 'qrcode_pengiriman' => 'https://javabakery.id/permintaan_produk/' . $kode,
-//                 'produk_id' => $produkId,
-//                 'toko_id' => '1', // If needed, otherwise remove this line
-//                 'jumlah' => $jumlah,
-//                 'tanggal_pengiriman' => Carbon::now('Asia/Jakarta'),
-//             ]);
+//             $detailStoks = Detail_stokbarangjadi::where('produk_id', $produkId)->get();
+//             $totalStok = $detailStoks->sum('stok');
 
-//             $detailStok = Detail_stokbarangjadi::where('produk_id', $produkId)->first();
+//             $kodeProduk = Produk::where('id', $produkId)->value('kode_produk');
 
-//             if ($detailStok) {
-//                 if ($detailStok->stok >= $jumlah) {
-//                     $detailStok->stok -= $jumlah;
-//                     $detailStok->save();
-//                 } else {
-//                     return redirect()->back()
-//                         ->with('error', 'Stok tidak cukup untuk produk ID ' . $produkId);
+//             if ($totalStok >= $jumlah) {
+//                 $remaining = $jumlah;
+
+//                 foreach ($detailStoks as $detailStok) {
+//                     if ($detailStok->stok >= $remaining) {
+//                         $detailStok->stok -= $remaining;
+//                         $detailStok->save();
+//                         break;
+//                     } else {
+//                         $remaining -= $detailStok->stok;
+//                         $detailStok->stok = 0;
+//                         $detailStok->save();
+//                     }
 //                 }
+
+//                 Pengiriman_barangjadi::create([
+//                     'kode_pengiriman' => $kode,
+//                     'qrcode_pengiriman' => 'https://javabakery.id/permintaan_produk/' . $kode,
+//                     'produk_id' => $produkId,
+//                     'toko_id' => $tokoId,
+//                     'jumlah' => $jumlah,
+//                     'status' => 'posting',
+//                     'tanggal_pengiriman' => Carbon::now('Asia/Jakarta'),
+//                 ]);
 //             } else {
 //                 return redirect()->back()
-//                     ->with('error', 'Detail stok untuk produk ID ' . $produkId . ' tidak ditemukan.');
+//                     ->with('error', 'Stok tidak cukup untuk kode produk ' . $kodeProduk);
 //             }
 //         }
 //     }
@@ -122,13 +130,15 @@ public function create()
 //     return redirect()->route('pengiriman_barangjadi.index')
 //         ->with('success', 'Berhasil menambahkan permintaan produk');
 // }
-
 public function store(Request $request)
 {
     $kode = $this->kode();
     $produkData = $request->input('produk_id', []);
     $jumlahData = $request->input('jumlah', []);
     $tokoId = $request->input('toko_id');
+
+    // Array untuk menyimpan ID pengiriman
+    $pengirimanIds = [];
 
     foreach ($produkData as $key => $produkId) {
         $jumlah = $jumlahData[$key] ?? null;
@@ -154,7 +164,7 @@ public function store(Request $request)
                     }
                 }
 
-                Pengiriman_barangjadi::create([
+                $pengiriman = Pengiriman_barangjadi::create([
                     'kode_pengiriman' => $kode,
                     'qrcode_pengiriman' => 'https://javabakery.id/permintaan_produk/' . $kode,
                     'produk_id' => $produkId,
@@ -163,11 +173,21 @@ public function store(Request $request)
                     'status' => 'posting',
                     'tanggal_pengiriman' => Carbon::now('Asia/Jakarta'),
                 ]);
+
+                // Simpan ID pengiriman yang baru dibuat
+                $pengirimanIds[] = $pengiriman->id;
             } else {
                 return redirect()->back()
                     ->with('error', 'Stok tidak cukup untuk kode produk ' . $kodeProduk);
             }
         }
+    }
+
+    // Jika ada ID pengiriman yang baru dibuat, arahkan ke halaman show
+    if (!empty($pengirimanIds)) {
+        $firstId = $pengirimanIds[0]; // Ambil ID pengiriman yang pertama
+        return redirect()->route('pengiriman_barangjadi.show', $firstId)
+            ->with('success', 'Berhasil menambahkan permintaan produk');
     }
 
     return redirect()->route('pengiriman_barangjadi.index')
