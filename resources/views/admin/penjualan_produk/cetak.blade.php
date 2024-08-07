@@ -288,7 +288,7 @@
                                 <td style="font-size: 8px;">{{ 'Rp.' . number_format($penjualan->bayar, 0, ',', '.') }}</td>
                             </tr>
                             <tr>
-                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kembalian</strong></td>
+                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kembali</strong></td>
                                 <td style="font-size: 8px;">{{ 'Rp.' . number_format($penjualan->kembali, 0, ',', '.') }}</td>
                             </tr>
                         @elseif($penjualan->metode_bayar == 'mesinedc' || $penjualan->metode_bayar == 'gobiz')

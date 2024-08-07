@@ -40,31 +40,30 @@ class PengirimanbarangjadiController extends Controller{
         return view('admin.pengiriman_barangjadi.index', compact('pengirimanBarangJadi'));
     }
     
-
-
+// create lama
 // public function create()
 // {
 //     $detailStokBarangjadi = Detail_stokbarangjadi::select('produk_id', 'klasifikasi_id')
 //         ->distinct()
 //         ->get();
-    
+
 //     $produkIds = $detailStokBarangjadi->pluck('produk_id')->toArray();
 //     $klasifikasiIds = $detailStokBarangjadi->pluck('klasifikasi_id')->toArray();
-    
+
 //     $klasifikasis = Klasifikasi::whereIn('id', $klasifikasiIds)
 //         ->with(['produks' => function ($query) use ($produkIds) {
 //             $query->whereIn('id', $produkIds);
 //         }])
 //         ->get();
-    
-//     return view('admin.pengiriman_barangjadi.create', compact('klasifikasis'));
+
+//     $tokos = Toko::all();
+
+//     return view('admin.pengiriman_barangjadi.create', compact('klasifikasis', 'tokos'));
 // }
 
 public function create()
 {
-    $detailStokBarangjadi = Detail_stokbarangjadi::select('produk_id', 'klasifikasi_id')
-        ->distinct()
-        ->get();
+    $detailStokBarangjadi = Detail_stokbarangjadi::with('produk')->distinct()->get();
 
     $produkIds = $detailStokBarangjadi->pluck('produk_id')->toArray();
     $klasifikasiIds = $detailStokBarangjadi->pluck('klasifikasi_id')->toArray();
@@ -77,8 +76,10 @@ public function create()
 
     $tokos = Toko::all();
 
-    return view('admin.pengiriman_barangjadi.create', compact('klasifikasis', 'tokos'));
+    return view('admin.pengiriman_barangjadi.create', compact('klasifikasis', 'tokos', 'detailStokBarangjadi'));
 }
+
+
 
 
 // public function store(Request $request)
@@ -125,17 +126,15 @@ public function create()
 public function store(Request $request)
 {
     $kode = $this->kode();
-    $produkData = $request->input('produk', []);
+    $produkData = $request->input('produk_id', []);
+    $jumlahData = $request->input('jumlah', []);
     $tokoId = $request->input('toko_id');
 
-
-    foreach ($produkData as $produkId => $data) {
-        $jumlah = $data['jumlah'] ?? null;
+    foreach ($produkData as $key => $produkId) {
+        $jumlah = $jumlahData[$key] ?? null;
 
         if (!is_null($jumlah) && $jumlah !== '') {
-
             $detailStoks = Detail_stokbarangjadi::where('produk_id', $produkId)->get();
-
             $totalStok = $detailStoks->sum('stok');
 
             $kodeProduk = Produk::where('id', $produkId)->value('kode_produk');
@@ -174,6 +173,7 @@ public function store(Request $request)
     return redirect()->route('pengiriman_barangjadi.index')
         ->with('success', 'Berhasil menambahkan permintaan produk');
 }
+
 
     public function kode()
     {

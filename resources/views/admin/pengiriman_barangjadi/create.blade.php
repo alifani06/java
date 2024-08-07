@@ -89,41 +89,84 @@
                                             </select>
                                         </div>
                                     </thead>
-                                    <tbody>
-                                        @foreach ($klasifikasis as $klasifikasi)
-                                            <tr class="klasifikasi-header" data-klasifikasi-id="{{ $klasifikasi->id }}">
-                                                <th>{{ $klasifikasi->nama }}</th>
-                                            </tr>
-                                            <tr class="produk-table" id="produk-table-{{ $klasifikasi->id }}">
-                                                <td colspan="1">
-                                                    <table class="table table-bordered" style="font-size: 13px;">
-                                                        <div class="col-sm-12 text-right">
-                                                            <input type="text" id="searchInput" class="form-control" placeholder="Cari produk..." style="display: inline-block; width: auto; margin-bottom: 10px;">
-                                                        </div>
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3 class="card-title"><span></span></h3>
+                                            <div class="float-right">
+                                                <button  type="button" class="btn btn-primary btn-sm" onclick="addPesanan()">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <table class="table table-bordered table-striped">
                                                         <thead>
                                                             <tr>
-                                                                <th>No</th>
-                                                                <th>Kode Produk</th>
-                                                                <th>Jumlah</th>
+                                                                <th style="font-size:14px" class="text-center">No</th>
+                                                                <th style="font-size:14px">Kode Produk</th>
+                                                                <th style="font-size:14px">Nama Produk</th>
+                                                                <th style="font-size:14px">Jumlah</th>
+                                                                <th style="font-size:14px; text-align:center">Opsi</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody>
-                                                            @foreach ($klasifikasi->produks as $produk)
-                                                                <tr class="produk-row">
-                                                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                                                    <td class="kode-produk">{{ $produk->kode_produk }}</td>
-                                                                    <td>
-                                                                        <input type="number" class="form-control" id="produk-{{ $produk->id }}" name="produk[{{ $produk->id }}][jumlah]" min="0" style="width: 100px; height: 30px;">
-                                                                    </td>
-                                                                </tr>
-                                                            @endforeach
+                                                        <tbody id="tabel-pembelian">
                                                         </tbody>
                                                     </table>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </table>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="tableProduk" data-backdrop="static">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Data Stok Barang Jadi</h4>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <input type="text" id="searchProduk" class="form-control" placeholder="Cari berdasarkan kode atau nama produk">
+                                        </div>
+                                        <table id="tableproduk" class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center">No</th>
+                                                    <th>Kode Produk</th>
+                                                    <th>Nama Produk</th>
+                                                    <th>Opsi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($detailStokBarangjadi as $item)
+                                                    <tr class="pilih-btn"
+                                                        data-id="{{ $item->produk->id }}"
+                                                        data-kode="{{ $item->produk->kode_produk }}"
+                                                        data-nama="{{ $item->produk->nama_produk }}">
+                                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                                        <td>{{ $item->produk ? $item->produk->kode_produk : 'N/A' }}</td>
+                                                        <td>{{ $item->produk ? $item->produk->nama_produk : 'N/A' }}</td>
+                                                        <td class="text-center">
+                                                            <button type="button" class="btn btn-primary btn-sm pilih-btn"
+                                                                    data-id="{{ $item->produk->id }}"
+                                                                    data-kode="{{ $item->produk->kode_produk }}"
+                                                                    data-nama="{{ $item->produk->nama_produk }}">
+                                                                <i class="fas fa-plus"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group text-right">
@@ -149,68 +192,141 @@
             </div>
         </div>
     </section>
+<script>
 
-    <script>
-        $(document).ready(function(){
-            $('.klasifikasi-header').click(function(){
-                var klasifikasiId = $(this).data('klasifikasi-id');
-                var $produkTable = $('#produk-table-' + klasifikasiId);
-    
-                if ($produkTable.is(':visible')) {
-                    $produkTable.hide();
-                    $(this).removeClass('active');
-                } else {
-                    // Hide all produk tables and remove active class from all headers
-                    $('.produk-table').hide();
-                    $('.klasifikasi-header').removeClass('active');
-    
-                    // Show the selected produk table and add active class to the clicked header
-                    $produkTable.show();
-                    $(this).addClass('active');
-                }
-            });
-    
-           
+document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Mencegah aksi default dari tombol Enter
+                addPesanan(); // Memanggil addPesanan saat tombol Enter ditekan
+            }
+            if (event.key === 'F1') { // Misalnya, F1 untuk menampilkan modal produk
+                event.preventDefault(); // Mencegah aksi default dari tombol F1
+                var urutan = $('#tabel-pembelian tr').length; // Ambil urutan terakhir atau default
+                showCategoryModal(urutan); // Menampilkan modal produk
+            }
         });
-    </script>
-    
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('keyup', function() {
-                var searchValue = searchInput.value.toLowerCase();
-                var produkRows = document.querySelectorAll('.produk-row');
-                
-                produkRows.forEach(function(row) {
-                    var kodeProduk = row.querySelector('.kode-produk').textContent.toLowerCase();
-                    if (kodeProduk.includes(searchValue)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
-        });
-    </script>
-    
+    });
+    // Event listener untuk input pencarian
+    $("#searchProduk").on("keyup", function(e) {
+           if (e.key === "Enter") {
+               e.preventDefault(); // Mencegah submit default
+               var value = $(this).val().toLowerCase();
+               var visibleRow = $("#tableproduk tbody tr:visible").first();
+   
+               if (visibleRow.length) {
+                   var id = visibleRow.data('id');
+                   var kode = visibleRow.data('kode');
+                   var nama = visibleRow.data('nama');
+   
+                   getSelectedData(id, kode, nama);
+               }
+           } else {
+               var value = $(this).val().toLowerCase();
+               $("#tableproduk tbody tr").filter(function() {
+                   $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+               });
+           }
+       });
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('keyup', function() {
-                var searchValue = searchInput.value.toLowerCase();
-                var produkRows = document.querySelectorAll('.produk-row');
-                
-                produkRows.forEach(function(row) {
-                    var kodeProduk = row.querySelector('.kode-produk').textContent.toLowerCase();
-                    var namaProduk = row.querySelector('.nama-produk').textContent.toLowerCase();
-                    if (kodeProduk.includes(searchValue) || namaProduk.includes(searchValue)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
-        });
-    </script>
+   </script>
+   
+   <script>
+   var data_pembelian = @json(session('data_pembelians'));
+   var jumlah_ban = 0;
+   
+   if (data_pembelian != null) {
+       jumlah_ban = data_pembelian.length;
+       $('#tabel-pembelian').empty();
+       var urutan = 0;
+       $.each(data_pembelian, function(key, value) {
+           urutan = urutan + 1;
+           itemPembelian(urutan, key, value);
+       });
+   }
+   
+   // Fungsi untuk menampilkan modal barang
+   function showCategoryModal(urutan) {
+       $('#tableProduk').modal('show');
+       // Simpan urutan untuk menyimpan data ke baris yang sesuai
+       $('#tableProduk').attr('data-urutan', urutan);
+       $('#searchProduk').focus();
+   }
+   
+   // Event listener for pilih-btn
+   $(document).on('click', '.pilih-btn', function() {
+       var id = $(this).data('id');
+       var kode = $(this).data('kode');
+       var nama = $(this).data('nama');
+   
+       getSelectedData(id, kode, nama);
+   });
+   
+   // Fungsi untuk memilih data barang dari modal
+   function getSelectedData(id, kode_produk, nama_produk) {
+       var urutan = $('#tableProduk').attr('data-urutan');
+   
+       // Set nilai input pada baris yang sesuai
+       $('#produk_id-' + urutan).val(id);
+       $('#kode_produk-' + urutan).val(kode_produk);
+       $('#nama_produk-' + urutan).val(nama_produk);
+   
+       $('#tableProduk').modal('hide');
+   
+       // Setelah menambahkan data dari modal, fokuskan ke input jumlah
+       document.getElementById('jumlah-' + urutan).focus();
+   }
+   
+   function addPesanan() {
+       jumlah_ban = jumlah_ban + 1;
+       if (jumlah_ban === 1) {
+           $('#tabel-pembelian').empty();
+       }
+       itemPembelian(jumlah_ban, jumlah_ban - 1);
+   }
+   
+   function removeBan(params) {
+       jumlah_ban = jumlah_ban - 1;
+       var tabel_pesanan = document.getElementById('tabel-pembelian');
+       var pembelian = document.getElementById('pembelian-' + params);
+       tabel_pesanan.removeChild(pembelian);
+       if (jumlah_ban === 0) {
+           var item_pembelian = '<tr>';
+           item_pembelian += '<td class="text-center" colspan="5">- Barang Jadi belum ditambahkan -</td>';
+           item_pembelian += '</tr>';
+           $('#tabel-pembelian').html(item_pembelian);
+       } else {
+           var urutan = document.querySelectorAll('#urutan');
+           for (let i = 0; i < urutan.length; i++) {
+               urutan[i].innerText = i + 1;
+           }
+       }
+       hitungSubTotal();
+   }
+   
+   function itemPembelian(urutan, key, value = null) {
+       var produk_id = '';
+       var kode_produk = '';
+       var nama_produk = '';
+       var jumlah = '';
+   
+       if (value !== null) {
+           produk_id = value.produk_id;
+           kode_produk = value.kode_produk;
+           nama_produk = value.nama_produk;
+           jumlah = value.jumlah;
+       }
+   
+       var item_pembelian = '<tr id="pembelian-' + urutan + '">';
+       item_pembelian += '<td style="width: 70px; font-size:14px" class="text-center" id="urutan-' + urutan + '">' + urutan + '</td>'; 
+       item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="produk_id-' + urutan + '" name="produk_id[]" value="' + produk_id + '"></div></td>';
+       item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
+       item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
+       item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
+       item_pembelian += '<td style="width: 100px"><button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(' + urutan + ')"><i class="fas fa-plus"></i></button><button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' + urutan + ')"><i class="fas fa-trash"></i></button></td>';
+       item_pembelian += '</tr>';
+   
+       $('#tabel-pembelian').append(item_pembelian);
+   }
+   </script>
 @endsection
