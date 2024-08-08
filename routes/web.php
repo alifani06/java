@@ -181,6 +181,19 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('laporan_pengirimanbarangjadi', \App\Http\Controllers\Admin\Laporan_pengirimanbarangjadiController::class);
     Route::get('print', [\App\Http\Controllers\Admin\Laporan_pengirimanbarangjadiController::class, 'printReport']);
 
+
+    Route::resource('retur_barangjadi', \App\Http\Controllers\Admin\ReturbarangjadiController::class);
+
+
+
+    //TOKO SLAWI
+    Route::resource('stok_tokoslawi', \App\Http\Controllers\Admin\Stok_tokoslawiController::class);
+
+
+    Route::resource('pengiriman_tokoslawi', \App\Http\Controllers\Admin\Pengiriman_tokoslawiController::class);
+    Route::get('pengiriman_tokoslawi/unpost_pengiriman/{id}', [\App\Http\Controllers\Admin\Pengiriman_tokoslawiController::class, 'unpost_pengiriman']);
+    Route::get('pengiriman_tokoslawi/posting_pengiriman/{id}', [\App\Http\Controllers\Admin\Pengiriman_tokoslawiController::class, 'posting_pengiriman']);
+
     Route::resource('inquery_perubahanharga', \App\Http\Controllers\Admin\Inquery_perubahanhargaController::class);
 
     Route::resource('metode_pembayaran', \App\Http\Controllers\Admin\Metode_pembayaranController::class);

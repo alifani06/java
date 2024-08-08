@@ -11,22 +11,18 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class Pengiriman_barangjadi extends Model
+class Stok_tokoslawi extends Model
 {
     use HasFactory;
 
     
     protected $fillable = [
-     
-        'kode_pengiriman',
-        'qrcode_pengiriman',
-        'tanggal_pengiriman',
-        'tanggal_akhir',
-        'jumlah',
-        'toko_id',
         'produk_id',
+        'jumlah',
+        'pengiriman_barangjadi_id',
+        'tanggal_input',
         'status',
-      
+        'kode_pengiriman',
      
     ];
 
@@ -86,19 +82,14 @@ class Pengiriman_barangjadi extends Model
         return $this->hasMany(Klasifikasi::class, 'produk_id');
     }
 
-    public function detail_stokbarangjadi()
-{
-    return $this->hasMany(Detail_stokbarangjadi::class, 'stokbarangjadi_id');
-}
+      // Relasi balik jika diperlukan
+      public function stok_barangjadi()
+      {
+          return $this->belongsTo(Stok_barangjadi::class, 'stok_barangjadi_id');
+      }
 
-public function produks()
-{
-    return $this->hasMany(Produk::class, 'stok_barangjadi_id'); // Gantilah 'stok_barangjadi_id' dengan nama foreign key yang benar
-}
-
-public function stok_tokoslawi()
-{
-    return $this->hasMany(Stok_tokoslawi::class, 'pengiriman_barangjadi_id');
-}
-
+      public function pengiriman_barangjadi()
+      {
+          return $this->belongsTo(Pengiriman_barangjadi::class, 'pengiriman_barangjadi_id');
+      }
 }

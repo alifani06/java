@@ -379,81 +379,49 @@
                     
         
                     <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <label class="form-label" for="metodebayar">Metode Pembayaran</label>
-                                <select class="form-control" id="metodebayar" name="metodebayar" onchange="showPaymentFields()">
-                                    <option value="">- Pilih -</option>
-                                    <option value="mesinedc">MESIN EDC</option>
-                                    <option value="gobiz">GO-BIZ</option>
-                                    <option value="transfer">TRANSFER</option>
-                                    <option value="qris">QRIS</option>
-                                    <option value="tunai">TUNAI</option>
-                                    <option value="voucher">VOUCHER</option>
-                                </select>
-                            </div>
+                        <div class="form-group" style="flex: 8;">
+                            <label for="metode_id">Jenis Pembayaran</label>
+                            <select class="select2bs4 select2-hidden-accessible" name="metode_id" style="width: 100%;" id="nama_metode" onchange="getData1()">
+                                <option value="">- Pilih -</option>
+                                @foreach ($metodes as $metode)
+                                    <option value="{{ $metode->id }}" data-fee="{{ $metode->fee }}" {{ old('metode_id') == $metode->id ? 'selected' : '' }}>
+                                        {{ $metode->nama_metode }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
-                        <div id="payment-fields">
-                            <!-- Form untuk GO-BIZ -->
-                            <div id="gobiz-fields" class="payment-field" hidden>
-                                <div class="form-group">
-                                    <label for="gobiz_code">No GoFood</label>
-                                    <input type="text" id="gobiz_code" name="gobiz_code" class="form-control" placeholder="Masukkan kode GO-BIZ">
+                        <div id="payment-fields" class="form-group" style="display: none; margin-top: 20px;">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="fee">Fee (%)</label>
                                 </div>
-                                <div class="form-group">
-                                    <label for="gobiz_fee">Fee (20%)</label>
-                                    <input type="text" id="gobiz_fee" name="gobiz_fee" class="form-control" placeholder="Masukkan fee" readonly>
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="fee" readonly name="fee" placeholder="" value="{{ old('fee') }}">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-4">
+                                    <label for="total_fee">Total Fee</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" id="total_fee" name="total_fee" placeholder="" value="{{ old('total_fee') }}" readonly>
                                 </div>
                             </div>
                         
-                            <!-- Form untuk MESIN EDC -->
-                            <div id="mesinedc-fields" class="payment-field" hidden>
-                                <div class="form-group">
-                                    <label for="struk_edc">No Struk EDC</label>
-                                    <input type="text" id="struk_edc" name="struk_edc" class="form-control" placeholder="Masukkan No Struk EDC">
+                            <div class="row mt-2">
+                                <div class="col-md-4">
+                                    <label for="keterangan">Keterangan</label>
                                 </div>
-                                <div class="form-group">
-                                    <label for="struk_edc_fee">Fee (1%)</label>
-                                    <input type="text" id="struk_edc_fee" name="struk_edc_fee" class="form-control" readonly>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" id="keterangan" name="keterangan" placeholder="" value="{{ old('keterangan') }}">
                                 </div>
                             </div>
-                        
-                            <!-- Form untuk TRANSFER -->
-                            <div id="transfer-fields" class="payment-field" hidden>
-                                <div class="form-group">
-                                    <label for="no_rek">No Rekening</label>
-                                    <input type="text" id="no_rek" name="no_rek" class="form-control">
-                                </div>
-                            </div>
-                        
-                            <!-- Form untuk QRIS -->
-                            <div id="qris-fields" class="payment-field" hidden>
-                                <div class="form-group">
-                                    <label for="qris_code">No Referensi</label>
-                                    <input type="text" id="qris_code" name="qris_code" class="form-control" placeholder="Masukkan kode QRIS">
-                                </div>
-                            </div>
-                        
-                            <!-- Form untuk TUNAI -->
-                            <div id="tunai-fields" class="payment-field" hidden>
-                                <div class="form-group">
-                                    <label for="tunai_amount">Jumlah Tunai</label>
-                                    <input type="number" id="tunai_amount" name="tunai_amount" class="form-control" placeholder="Masukkan jumlah tunai">
-                                </div>
-                            </div>
-                        
-                            <!-- Form untuk VOUCHER -->
-                            <div id="voucher-fields" class="payment-field" hidden>
-                                <div class="form-group">
-                                    <label for="no_voucher">No Voucher</label>
-                                    <input type="text" id="no_voucher" name="no_voucher" class="form-control" placeholder="Masukkan no voucher">
-                                </div>
-                                <div class="form-group">
-                                    <label for="nominal_voucher">Nominal Voucher</label>
-                                    <input type="text" id="nominal_voucher" name="nominal_voucher" class="form-control" placeholder="Masukkan nominal voucher">
-                                </div>
-                            </div>
-                        </div>
+                        </div> 
                     </div>
                 </div>
 
@@ -482,40 +450,6 @@
         </div>
     </section>
 
-    {{-- <script>
-function showCategoryModalCatatan(urutan) {
-    // Tampilkan modal
-    $('#tableCatatan').modal('show');
-
-    // Simpan urutan yang dipilih di elemen tersembunyi di modal
-    $('#tableCatatan').data('urutan', urutan);
-}
-
-function saveCatatan() {
-    var urutan = $('#tableCatatan').data('urutan');
-    var catatan = $('#modalCatatanInput').val();
-
-    // Masukkan catatan ke input yang sesuai
-    $('#catatanproduk-' + urutan).val(catatan);
-
-    // Tutup modal
-    $('#tableCatatan').modal('hide');
-}
-    </script>
-    <script>
-        function showCategoryModalCatatan(urutan) {
-            $('#tableCatatan').modal('show');
-            $('#tableCatatan').data('urutan', urutan);
-        }
-    
-        function saveCatatan() {
-            var urutan = $('#tableCatatan').data('urutan');
-            var catatan = $('#modalCatatanInput').val();
-            $('#catatanproduk-' + urutan).val(catatan);
-            $('#tableCatatan').modal('hide');
-        }
-    </script> --}}
-    
 
     <script>
         function showCategoryModalCatatan(urutan) {

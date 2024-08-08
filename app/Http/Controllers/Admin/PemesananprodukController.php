@@ -22,6 +22,7 @@ use App\Models\Input;
 use App\Models\Karyawan;
 use App\Models\Pemesananproduk;
 use App\Models\Dppemesanan;
+use App\Models\Metodepembayaran;
 use App\Models\Toko;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
@@ -98,12 +99,13 @@ class PemesananprodukController extends Controller
         $details = Detailbarangjadi::all();
         $tokoslawis = Tokoslawi::all();
         $tokos = Toko::all();
-    
+        $metodes = Metodepembayaran::all();
+
         $produks = Produk::with('tokoslawi')->get();
 
         $kategoriPelanggan = 'member';
     
-        return view('admin.pemesanan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan'));
+        return view('admin.pemesanan_produk.create', compact('barangs','metodes', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan'));
     }
     
     public function getCustomerByKode($kode)

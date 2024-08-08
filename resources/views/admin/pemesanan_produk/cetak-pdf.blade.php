@@ -19,7 +19,7 @@
             background-color: #f2f2f2;
         }
             .container {
-            width: 67mm; /* Adjusted width */
+            width: 69mm; /* Adjusted width */
             margin: 0 auto;
             border: 1px solid #ddd;
             padding: 20px;
@@ -193,7 +193,7 @@
         padding: 0;
     }
     .container {
-        width: 67mm; /* Sesuaikan dengan lebar kertas thermal */
+        width: 69mm; /* Sesuaikan dengan lebar kertas thermal */
         margin: 0 auto;
         border: none;
         padding: 0;
@@ -276,7 +276,7 @@
         border-bottom: 1px solid #0f0e0e;
     }
     @page {
-        size: 67mm auto; /* Sesuaikan dengan ukuran kertas thermal */
+        size: 69mm auto; /* Sesuaikan dengan ukuran kertas thermal */
         margin: 0mm; /* Set margin ke 0 untuk semua sisi */
     }
 }
@@ -309,8 +309,8 @@
                 <div class="pelanggan">
                     <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Pelanggan</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $pemesanan->nama_pelanggan }}</span></p>
                 </div>
-
-                <h3 class="pengiriman" style="text-decoration: underline;">Detail Pengiriman</h3>
+<hr>
+                <h3 class="pengiriman" style="text-decoration: underline;"></h3>
                     <div class="pelanggan">
                         <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Penerima</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $pemesanan->nama_penerima ?? $pemesanan->nama_pelanggan }}</span></p>
                     </div>
@@ -324,7 +324,7 @@
                         <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Tanggal Pengiriman</span><span style="min-width: 100px; display: inline-flex; align-items: center;"><span>: {{ $pemesanan->tanggal_kirim }}</span></p>
                     </div>
 
-                <h3 class="pemesanan" style="text-decoration: underline;">Detail Pemesanan</h3>
+                <h3 class="pemesanan" style="text-decoration: underline;"></h3>
                 @if($pemesanan->detailpemesananproduk->isEmpty())
                     <p>Tidak ada detail pemesanan produk.</p>
                 @else
@@ -334,8 +334,8 @@
                             <th style="font-size: 8px;">Kode Produk</th>
                             <th style="font-size: 8px;">Nama Produk</th>
                             <th style="font-size: 8px;">Jumlah</th>
-                            <th style="font-size: 8px;">Diskon</th>
                             <th style="font-size: 8px;">Harga</th>
+                            <th style="font-size: 8px;">Diskon</th>
                             <th style="font-size: 8px;">Total</th>
                         </tr>
                     </thead>
@@ -348,6 +348,7 @@
                                 <td style="font-size: 8px;">{{ $detail->kode_produk }}</td>
                                 <td style="font-size: 8px;">{{ $detail->nama_produk }}</td>
                                 <td style="font-size: 8px;">{{ $detail->jumlah }}</td>
+                                <td style="font-size: 8px;">{{'Rp.'.  number_format($detail->harga, 0, ',', '.') }}</td>
                                 <td style="font-size: 8px;">
                                     @if ($detail->diskon > 0)
                                         {{ $detail->diskon }} %
@@ -355,8 +356,7 @@
                                         -
                                     @endif
                                 </td>
-                                <td style="font-size: 8px;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
-                                <td style="font-size: 8px;">{{ number_format($detail->total , 0, ',', '.')}}</td>
+                                <td style="font-size: 8px;">{{'Rp.'.  number_format($detail->total , 0, ',', '.')}}</td>
                             </tr>
                             @php
                                 // Validasi dan konversi data menjadi numerik
@@ -366,16 +366,16 @@
                         @endforeach
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total </strong></td>
-                            <td style="font-size: 8px;">{{ number_format($pemesanan->sub_total, 0, ',', '.') }}</td>
+                            <td style="font-size: 8px;">{{'Rp.'.  number_format($pemesanan->sub_total, 0, ',', '.') }}</td>
                             
                         </tr>
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>DP </strong></td>
-                            <td style="font-size: 8px;">{{ number_format($dp->dp_pemesanan, 0, ',', '.') }}</td>
+                            <td style="font-size: 8px;">{{'Rp.'.  number_format($dp->dp_pemesanan, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kekurangan  </strong></td>
-                            <td style="font-size: 8px;">{{ number_format($dp->kekurangan_pemesanan, 0, ',', '.') }}</td>
+                            <td style="font-size: 8px;">{{'Rp.'.  number_format($dp->kekurangan_pemesanan, 0, ',', '.') }}</td>
                         </tr>
                     </tbody>
                     

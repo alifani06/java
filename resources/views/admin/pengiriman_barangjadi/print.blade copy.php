@@ -24,7 +24,7 @@
         .header {
             width: 100%;
             border-bottom: 1px solid #000;
-            margin-top: 5px;
+            margin-top: 20px;
             padding: 0 10px;
         }
         .header td {
@@ -32,7 +32,7 @@
         }
         .header .title {
             font-weight: bold;
-            font-size: 28px;
+            font-size: 14px;
         }
         .header .address, .header .contact {
             font-size: 12px;
@@ -46,13 +46,8 @@
             text-align: center;
             font-size: 24px;
             font-weight: bold;
-            margin-top: 10px;
-            margin-bottom: 5px;
-        }
-        .change-header1 {
-            text-align: center;
-            font-size: 12px;
-            margin-top: 5px;
+            margin-top: 20px;
+            margin-bottom: 10px;
         }
         .tanggal {
             text-align: left;
@@ -153,51 +148,39 @@
 </head>
 <body>
     <!-- Kop Surat -->
-    <div class="header row">
-        <div class="col-2 text-right">
-            <div class="logo">
-                {{-- <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY"> --}}
-            </div>
-            {{-- <div>
-                <span class="title">PT JAVA BAKERY FACTORY</span><br>
-                <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
-            
-            </div> --}}
-        </div>
-    
-        <div class="col-8 text-center">
-            <div class="logo">
-                <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
-            </div>
-            <span class="title">PT JAVA BAKERY FACTORY</span><br>
-            <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
-        </div>
-        {{-- <div class="col-2 text-left">
-            <div class="title">JAVA BAKERY</div>
-            <p>Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
-            <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
-        </div> --}}
-    </div>
+    <table class="header" style="margin-top: 2px;">
+        <tr>
+            <td style="text-align: left;">
+                <div>
+                    <span class="title">PT JAVA BAKERY</span><br>
+                    <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
+                </div>
+            </td>
+            <td style="text-align: center;">
+                <div>
+                    <p style="color: white">Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
+                </div>                
+            </td>
+            <td style="text-align: left;">
+                <div class="title">JAVA BAKERY</div>
+                <p style="margin-bottom: 2px;">Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
+                <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
+            </td>
+        </tr>
+    </table>
     {{-- <hr class="divider"> --}}
 
     <!-- Judul Surat -->
     <div class="change-header">SURAT PENGIRIMAN BARANG JADI</div>
-    <div class="change-header1">
-        <p style="margin-bottom: 2px;">Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
-        <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
-    </div>
+
     <!-- Informasi Permintaan -->
     <div>
         <p style="margin-bottom: 2px;">
             <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Pengiriman</strong></span>
             <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $pengirimanBarangJadi->first()->kode_pengiriman }}</span>
         </p>
-        <p style="margin-bottom: 2px;">
-            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal Kirim</strong> </span>
-            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ \Carbon\Carbon::now()->format('d-m-Y H:m') }}</span>
-        </p>
         <p>
-            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal Terima</strong> </span>
+            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal</strong> </span>
             <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ \Carbon\Carbon::now()->format('d-m-Y') }}</span>
         </p>
     </div>
@@ -229,19 +212,19 @@
     <div class="signature-container">
         <div class="signature-row">
             <div class="signaturea">
-                <p style="margin-left: 30px;"><strong>Pengirim</strong></p><br><br>
-                <p style="margin-bottom: 2px;">____________________</p>
-                <p>Admin Barang Jadi</p>
+                {{-- <p style="margin-left: 30px;"><strong>Gudang</strong></p><br><br> --}}
+                <p>____________________</p>
+                {{-- <p>Nama Gudang</p> --}}
             </div>
             <div class="signatureb">
-                <p><strong>Sopir</strong></p><br><br>
-                <p style="margin-bottom: 2px;">____________________</p>
-                <p>Sopir</p>
+                {{-- <p><strong>Accounting</strong></p><br><br> --}}
+                <p>____________________</p>
+                {{-- <p>Nama Accounting</p> --}}
             </div>
             <div class="signaturec">
-                <p style="margin-right: 60px;"><strong>Penerima</strong></p><br><br>
-                <p style="margin-bottom: 2px;">____________________</p>
-                <p style="margin-right: 49px;">Admin Toko</p>
+                {{-- <p style="margin-right: 60px;"><strong>Baker</strong></p><br><br> --}}
+                <p>____________________</p>
+                {{-- <p>Nama Karyawan</p> --}}
             </div>
         </div>
     </div>
