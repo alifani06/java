@@ -182,7 +182,7 @@ public function store(Request $request)
 
                 $pengiriman = Pengiriman_barangjadi::create([
                     'kode_pengiriman' => $kode,
-                    'qrcode_pengiriman' => 'https://javabakery.id/permintaan_produk/' . $kode,
+                    'qrcode_pengiriman' => 'https://javabakery.id/pengiriman_produk/' . $kode,
                     'produk_id' => $produkId,
                     'toko_id' => $tokoId,
                     'jumlah' => $jumlah,

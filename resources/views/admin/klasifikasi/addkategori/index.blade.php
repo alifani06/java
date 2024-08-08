@@ -25,32 +25,28 @@
     <section class="content">
         <div class="container-fluid">
             @if (session('success'))
-                <div class="alert alert-success alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <h5>
-                        <i class="icon fas fa-check"></i> Success!
-                    </h5>
-                    {{ session('success') }}
-                </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: '{{ session('success') }}',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+                });
+            </script>
             @endif
             <div class="card">
                 <div class="card-header mb-3" >
                     <h3 class="card-title">Data Kategori</h3>
                     <div class="float-right">
-                        {{-- <a href="{{ url('admin/addkategori/create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus"></i> Tambah Sub
-                        </a>
-                        <a href="{{ url('admin/addsub/create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus"></i> Tambah sub1
-                        </a> --}}
                         <a href="{{ url('admin/klasifikasi/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i>
                         </a>
                     </div>
                    
                 </div>
-
-                
                 <div class="card-body">
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>
@@ -68,13 +64,6 @@
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $klasifikasi->kode_klasifikasi }}</td>
                                 <td>{{ $klasifikasi->nama }}</td>
-                                {{-- <td>@if ($klasifikasi->subklasifikasi)
-                                    @foreach($klasifikasi->subklasifikasi as $item)
-                                    {{ $item->nama }}, <br>
-                                    @endforeach
-                                @else
-                                    tidak
-                                @endif</td> --}}
                                 <td data-toggle="modal" data-target="#modal-qrcode-{{ $klasifikasi->id }}"
                                     style="text-align: center;">
                                     <div style="display: inline-block;">

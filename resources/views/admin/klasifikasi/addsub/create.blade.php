@@ -59,49 +59,7 @@
                                 <th>Opsi</th>
                             </tr>
                         </thead>
-                        {{-- <tbody id="tabel-pembelian">
-                            <tr id="pembelian-0">
-                                <td style="width: 70px" class="text-center" id="urutan">1</td>
-                                <td style="width: 150px">
-                                    <div class="form-group">
-                                        <select class="select2bs4 select2-hidden-accessible" name="klasifikasi_id[]"
-                                            data-placeholder="Pilih Kategori.." style="width: 100%;" data-select2-id="23"
-                                            tabindex="-1" aria-hidden="true" id="klasifikasi_id-0">
-                                            <option value="">Pilih Kategori</option>
-                                            @foreach ($klasifikasis as $ukuran)
-                                                <option value="{{ $ukuran->id }}">{{ $ukuran->nama }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </td>
 
-                                <td style="width: 150px">
-                                    <div class="form-group">
-                                        <select class="select2bs4 select2-hidden-accessible" name="subklasifikasi[]"
-                                            data-placeholder="Pilih Kategori.." style="width: 100%;" data-select2-id="23"
-                                            tabindex="-1" aria-hidden="true" id="subklasifikasi_id-0">
-                                            <option value="">Pilih Kategori</option>
-                                            @foreach ($subklasifikasis as $ukuran)
-                                                <option value="{{ $ukuran->id }}">{{ $ukuran->nama }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </td>
-
-                                <td>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="nama_barang-0" 
-                                            name="nama_barang[]">
-                                    </div>
-                                </td>
-                                <td style="width: 120px">
-                                    <button style="margin-left:5px" type="button" class="btn btn-danger"
-                                        onclick="removeBan(0)">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody> --}}
                         <tbody id="tabel-pembelian">
                             <tr id="pembelian-0">
                                 <td style="width: 70px" class="text-center" id="urutan">1</td>
@@ -151,33 +109,10 @@
                 </div>
             </div>
         </form>
-
-
-            {{-- <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Tambah Kategori</h3>
-                </div>
-                <form action="{{ url('admin/addkategori') }}" method="POST" enctype="multipart/form-data"
-                    autocomplete="off">
-                    @csrf
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="nama">Nama</label>
-                            <input type="text" class="form-control" id="nama" name="nama"
-                                placeholder="Masukan nama kategori" value="{{ old('nama') }}">
-                        </div>
-                    </div>
-                    <div class="card-footer text-right">
-                        <button type="reset" class="btn btn-secondary">Reset</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
-                </form>
-            </div> --}}
         </div>
     </section>
 
 <script>
-
 function getData(id) {
             var supplier_id = document.getElementById('supplier_id');
             $.ajax({
@@ -328,30 +263,6 @@ function getData(id) {
             });
         }
 </script>
-{{-- <script>
-    $(document).ready(function() {
-        $('#klasifikasi_id').on('change', function() {
-            var klasifikasiID = $(this).val();
-            if (klasifikasiID) {
-                $.ajax({
-                    url: "{{ url('admin/addsub/get_subklasifikasi') }}" + '/' + klasifikasiID,
-                    type: "GET",
-                    dataType: "json",
-                    success: function(data) {
-                        $('#subklasifikasi_id').empty();
-                        $('#subklasifikasi_id').append('<option value="">- Pilih -</option>');
-                        $.each(data, function(key, value) {
-                            $('#subklasifikasi_id').append('<option value="' + value.id + '">' + value.nama + '</option>');
-                        });
-                    }
-                });
-            } else {
-                $('#subklasifikasi_id').empty();
-                $('#subklasifikasi_id').append('<option value="">- Pilih -</option>');
-            }
-        });
-    });
-</script> --}}
 <script>
     $(document).ready(function() {
         function getSubklasifikasi(klasifikasiID, target) {

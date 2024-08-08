@@ -189,10 +189,12 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     //TOKO SLAWI
     Route::resource('stok_tokoslawi', \App\Http\Controllers\Admin\Stok_tokoslawiController::class);
 
-
     Route::resource('pengiriman_tokoslawi', \App\Http\Controllers\Admin\Pengiriman_tokoslawiController::class);
     Route::get('pengiriman_tokoslawi/unpost_pengiriman/{id}', [\App\Http\Controllers\Admin\Pengiriman_tokoslawiController::class, 'unpost_pengiriman']);
     Route::get('pengiriman_tokoslawi/posting_pengiriman/{id}', [\App\Http\Controllers\Admin\Pengiriman_tokoslawiController::class, 'posting_pengiriman']);
+
+    Route::resource('retur_tokoslawi', \App\Http\Controllers\Admin\Retur_tokoslawiController::class);
+
 
     Route::resource('inquery_perubahanharga', \App\Http\Controllers\Admin\Inquery_perubahanhargaController::class);
 

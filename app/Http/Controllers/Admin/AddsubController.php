@@ -85,6 +85,16 @@ public function store(Request $request)
         ]);
     }
 
-    return back()->with('success', 'Data berhasil disimpan.');
+    return redirect()->route('addsub.index')->with('success', 'Berhasil menambahkan Kategori');
 }
+
+
+public function destroy($id)
+{
+    $subsubs = Subsub::find($id);
+    $subsubs->delete();
+    return redirect()->route('addsub.index')->with('success', 'Berhasil menghapus Kategori');
+
+}
+
 }

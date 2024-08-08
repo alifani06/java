@@ -25,13 +25,17 @@
     <section class="content">
         <div class="container-fluid">
             @if (session('success'))
-                <div class="alert alert-success alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <h5>
-                        <i class="icon fas fa-check"></i> Success!
-                    </h5>
-                    {{ session('success') }}
-                </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: '{{ session('success') }}',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+                });
+            </script>
             @endif
             <div class="card">
                 <div class="card-header mb-3" >
@@ -107,7 +111,7 @@
                                             <div class="modal-footer justify-content-between">
                                                 <button type="button" class="btn btn-default"
                                                     data-dismiss="modal">Batal</button>
-                                                <form action="{{ url('admin/subsub/' . $subsub->id) }}"
+                                                <form action="{{ url('admin/addsub/' . $subsub->id) }}"
                                                     method="POST">
                                                     @csrf
                                                     @method('delete')

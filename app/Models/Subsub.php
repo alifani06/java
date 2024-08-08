@@ -21,12 +21,6 @@ class Subsub extends Model
 
     use SoftDeletes;
     protected $dates = ['deleted_at'];
-
-    // public function getActivitylogOptions(): LogOptions
-    // {
-    //     return LogOptions::defaults()
-    //         ->logFillable('*');
-    // }
     
     public static function getId()
     {
