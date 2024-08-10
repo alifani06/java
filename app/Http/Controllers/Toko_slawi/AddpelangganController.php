@@ -14,12 +14,12 @@ class AddpelangganController extends Controller
     public function index()
     {
         $pelanggans = Pelanggan::get();
-        return view('admin/pelanggan/add.index', compact('pelanggans'));
+        return view('toko_slawi/pelanggan/add.index', compact('pelanggans'));
     }
 
     public function create()
     {
-        return view('admin/pelanggan/add/index');
+        return view('toko_slawi/pelanggan/add/index');
         
     }
 
@@ -77,7 +77,7 @@ class AddpelangganController extends Controller
             return back()->withInput()->with('error', $errors);
         }  
     
-        return redirect('admin/pelanggan/')->with('success', 'Berhasil menambahkan pelanggan');
+        return redirect('toko_slawi/pelanggan/')->with('success', 'Berhasil menambahkan pelanggan');
     }
 
     // public function kode()
@@ -102,7 +102,7 @@ class AddpelangganController extends Controller
     // {
 
     //     $barang = Barang::where('id', $id)->first();
-    //     return view('admin/barang.update', compact('barang'));
+    //     return view('toko_slawi/barang.update', compact('barang'));
     // }
 
     // public function update(Request $request, $id)
@@ -140,7 +140,7 @@ class AddpelangganController extends Controller
     //         'harga' => $request->harga,
     //     ]);
 
-    //     return redirect('admin/barang')->with('success', 'Berhasil memperbarui barang');
+    //     return redirect('toko_slawi/barang')->with('success', 'Berhasil memperbarui barang');
     // }
 
 
@@ -148,7 +148,7 @@ class AddpelangganController extends Controller
     // {
     //     $barangs = Barang::find($id);
     //     $pdf = app('dompdf.wrapper');
-    //     $pdf->loadView('admin.barang.cetak_pdf', compact('barangs'));
+    //     $pdf->loadView('toko_slawi.barang.cetak_pdf', compact('barangs'));
     //     $pdf->setPaper('letter', 'portrait');
     //     return $pdf->stream('QrCodeBarang.pdf');
     // }
@@ -158,7 +158,7 @@ class AddpelangganController extends Controller
 
 
     //     $barang = Barang::where('id', $id)->first();
-    //     return view('admin/barang.show', compact('barang'));
+    //     return view('toko_slawi/barang.show', compact('barang'));
     // }
 
 
@@ -167,6 +167,6 @@ class AddpelangganController extends Controller
         $tipe = Pelanggan::find($id);
         $tipe->delete();
 
-        return redirect('admin/pelanggan')->with('success', 'Berhasil menghapus barang');
+        return redirect('toko_slawi/pelanggan')->with('success', 'Berhasil menghapus barang');
     }
 }

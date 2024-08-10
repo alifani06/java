@@ -20,7 +20,7 @@ class TokoController extends Controller
     public function index()
     {
         $tokos = Toko::all();
-        return view('admin.toko.index', compact('tokos'));
+        return view('toko_slawi.toko.index', compact('tokos'));
     }
 
     /**
@@ -31,7 +31,7 @@ class TokoController extends Controller
     public function create()
     {
         $tokos = Toko::all();
-        return view('admin/toko.create', compact('tokos'));
+        return view('toko_slawi/toko.create', compact('tokos'));
     }
 
     /**
@@ -81,7 +81,7 @@ class TokoController extends Controller
             ]
         ));
 
-        return redirect('admin/toko')->with('success', 'Berhasil menambahkan toko');
+        return redirect('toko_slawi/toko')->with('success', 'Berhasil menambahkan toko');
     }
 
     /**
@@ -104,7 +104,7 @@ class TokoController extends Controller
     public function edit($id)
     {
         $tokos = Toko::where('id', $id)->first();
-        return view('admin/toko.update', compact('tokos')); 
+        return view('toko_slawi/toko.update', compact('tokos')); 
     }
 
     /**
@@ -150,7 +150,7 @@ class TokoController extends Controller
 
         $tokos->save();
 
-        return redirect('admin/toko')->with('success', 'Berhasil mengubah toko');
+        return redirect('toko_slawi/toko')->with('success', 'Berhasil mengubah toko');
     }
 
     /**
@@ -164,7 +164,7 @@ class TokoController extends Controller
         $tokos = Toko::find($id);
         $tokos->delete();
 
-        return redirect('admin/toko')->with('success', 'Berhasil menghapus toko');
+        return redirect('toko_slawi/toko')->with('success', 'Berhasil menghapus toko');
     }
     
 

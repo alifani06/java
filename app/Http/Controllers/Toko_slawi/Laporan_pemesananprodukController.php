@@ -105,7 +105,7 @@ class Laporan_pemesananprodukController extends Controller
         // Convert $groupedData to a collection and sort by 'nama_produk'
         $groupedData = collect($groupedData)->sortBy('nama_produk')->values()->all();
     
-        return view('admin.laporan_pemesananproduk.index', [
+        return view('toko_slawi.laporan_pemesananproduk.index', [
             'groupedData' => $groupedData,
             'totalSubtotal' => array_sum(array_column($groupedData, 'subtotal')),
             'toko_id' => $toko_id, // Kirimkan toko_id ke view
@@ -180,7 +180,7 @@ class Laporan_pemesananprodukController extends Controller
     //     $formattedStartDate = $tanggal_pemesanan ? Carbon::parse($tanggal_pemesanan)->format('d-m-Y') : null;
     //     $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : null;
 
-    //     $pdf = FacadePdf::loadView('admin.laporan_pemesananproduk.print', [
+    //     $pdf = FacadePdf::loadView('toko_slawi.laporan_pemesananproduk.print', [
     //         'groupedData' => $groupedData,
     //         'totalSubtotal' => array_sum(array_column($groupedData, 'subtotal')),
     //         'startDate' => $formattedStartDate,
@@ -265,7 +265,7 @@ class Laporan_pemesananprodukController extends Controller
         $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : null;
     
         // Buat PDF
-        $pdf = FacadePdf::loadView('admin.laporan_pemesananproduk.print', [
+        $pdf = FacadePdf::loadView('toko_slawi.laporan_pemesananproduk.print', [
             'groupedData' => $groupedData,
             'totalSubtotal' => array_sum(array_column($groupedData, 'subtotal')),
             'startDate' => $formattedStartDate,

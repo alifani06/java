@@ -76,7 +76,7 @@ class Inquery_permintaanprodukController extends Controller
     
         // Menggunakan with untuk eager loading relasi detailpermintaanproduks
         $permintaanProduks = $inquery->with('detailpermintaanproduks')->get();
-        return view('admin.inquery_permintaanproduk.index', compact('permintaanProduks'));
+        return view('toko_slawi.inquery_permintaanproduk.index', compact('permintaanProduks'));
     }
     
     
@@ -138,7 +138,7 @@ public function posting_permintaanproduk($id)
             $inquery = Pemesananproduk::with('detailpemesananproduk')->where('id', $id)->first();
             $selectedTokoId = $inquery->toko_id; // ID toko yang dipilih
 
-            return view('admin.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
+            return view('toko_slawi.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
         }
         
         public function update(Request $request, $id)
@@ -266,7 +266,7 @@ public function posting_permintaanproduk($id)
             $details = Detailpemesananproduk::where('pemesananproduk_id', $pemesanan->id)->get();
         
             // Redirect ke halaman indeks pemesananproduk
-            return redirect('admin/inquery_pemesananproduk');
+            return redirect('toko_slawi/inquery_pemesananproduk');
 
         }
         

@@ -106,7 +106,7 @@ class Laporan_penjualanprodukController extends Controller
         $klasifikasis = Klasifikasi::all();
 
         // Kembalikan view dengan data penjualan produk, produk, toko, dan klasifikasi
-        return view('admin.laporan_penjualanproduk.index', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
+        return view('toko_slawi.laporan_penjualanproduk.index', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
     }
 
 
@@ -177,7 +177,7 @@ class Laporan_penjualanprodukController extends Controller
         $klasifikasis = Klasifikasi::all();
 
         // Kembalikan view dengan data penjualan produk, produk, dan toko
-        return view('admin.laporan_penjualanproduk.global', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
+        return view('toko_slawi.laporan_penjualanproduk.global', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
     }
  
 
@@ -238,7 +238,7 @@ class Laporan_penjualanprodukController extends Controller
 //     $formattedEndDate = $tanggalAkhir ? Carbon::parse($tanggalAkhir)->format('d-m-Y') : 'N/A';
 
 //     // Generate PDF
-//     $pdf = FacadePdf::loadView('admin.laporan_penjualanproduk.print', [
+//     $pdf = FacadePdf::loadView('toko_slawi.laporan_penjualanproduk.print', [
 //         'inquery' => $inquery,
 //         'startDate' => $formattedStartDate,
 //         'endDate' => $formattedEndDate,
@@ -309,7 +309,7 @@ public function printReport(Request $request)
     $formattedEndDate = $tanggalAkhir ? Carbon::parse($tanggalAkhir)->format('d-m-Y') : 'N/A';
 
     // Generate PDF
-    $pdf = FacadePdf::loadView('admin.laporan_penjualanproduk.print', [
+    $pdf = FacadePdf::loadView('toko_slawi.laporan_penjualanproduk.print', [
         'inquery' => $inquery,
         'startDate' => $formattedStartDate,
         'endDate' => $formattedEndDate,
@@ -371,7 +371,7 @@ public function printReportglobal(Request $request)
       $formattedStartDate = $tanggal_penjualan ? Carbon::parse($tanggal_penjualan)->format('d-m-Y') : null;
       $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : null;
 
-      $pdf = FacadePdf::loadView('admin.laporan_penjualanproduk.printglobal', [
+      $pdf = FacadePdf::loadView('toko_slawi.laporan_penjualanproduk.printglobal', [
         'inquery' => $inquery,
         'startDate' => $formattedStartDate,
         'endDate' => $formattedEndDate,
@@ -439,7 +439,7 @@ public function posting_penjualanproduk($id)
             $inquery = Pemesananproduk::with('detailpemesananproduk')->where('id', $id)->first();
             $selectedTokoId = $inquery->toko_id; // ID toko yang dipilih
 
-            return view('admin.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
+            return view('toko_slawi.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
         }
         
         public function update(Request $request, $id)
@@ -567,7 +567,7 @@ public function posting_penjualanproduk($id)
             $details = Detailpemesananproduk::where('pemesananproduk_id', $pemesanan->id)->get();
         
             // Redirect ke halaman indeks pemesananproduk
-            return redirect('admin/inquery_pemesananproduk');
+            return redirect('toko_slawi/inquery_pemesananproduk');
 
         }
         

@@ -44,7 +44,7 @@ class Retur_tokoslawiController extends Controller{
         // Ambil data retur_tokoslawi beserta relasi produk
         $retur_tokoslawi = Retur_tokoslawi::with('produk')->where('status', 'posting')->get();
     
-        return view('admin.retur_tokoslawi.index', compact('retur_tokoslawi'));
+        return view('toko_slawi.retur_tokoslawi.index', compact('retur_tokoslawi'));
     }
     
 
@@ -54,7 +54,7 @@ public function create()
     $produks = Produk::all();
     $tokos = Toko::all();
 
-    return view('admin.retur_tokoslawi.create', compact('produks', 'tokos'));
+    return view('toko_slawi.retur_tokoslawi.create', compact('produks', 'tokos'));
 }
 
 // public function store(Request $request)

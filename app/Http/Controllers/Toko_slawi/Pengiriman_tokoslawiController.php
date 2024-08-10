@@ -55,7 +55,7 @@ class Pengiriman_tokoslawiController extends Controller{
     //             return $item->pengiriman_barangjadi->kode_pengiriman; // Mengelompokkan berdasarkan kode_pengiriman
     //         });
     
-    //     return view('admin.pengiriman_tokoslawi.index', compact('stokBarangJadi'));
+    //     return view('toko_slawi.pengiriman_tokoslawi.index', compact('stokBarangJadi'));
     // }
     public function index(Request $request)
 {
@@ -68,7 +68,7 @@ class Pengiriman_tokoslawiController extends Controller{
             return $item->pengiriman_barangjadi ? $item->pengiriman_barangjadi->kode_pengiriman : 'undefined';
         });
 
-    return view('admin.pengiriman_tokoslawi.index', compact('stokBarangJadi'));
+    return view('toko_slawi.pengiriman_tokoslawi.index', compact('stokBarangJadi'));
 }
 
 
@@ -89,7 +89,7 @@ class Pengiriman_tokoslawiController extends Controller{
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        return view('admin.inquery_pengirimanbarangjadi.show', compact('pengirimanBarangJadi', 'firstItem'));
+        return view('toko_slawi.inquery_pengirimanbarangjadi.show', compact('pengirimanBarangJadi', 'firstItem'));
     }
         
         // public function posting_pengiriman($id)
@@ -190,7 +190,7 @@ public function posting_pengiriman($id)
         });
         $toko = $detailPermintaanProduks->first()->toko;
 
-        $pdf = FacadePdf::loadView('admin.permintaan_produk.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi','toko'));
+        $pdf = FacadePdf::loadView('toko_slawi.permintaan_produk.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi','toko'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
     }
@@ -216,7 +216,7 @@ public function posting_pengiriman($id)
         $stok_barangjadi = Stok_Barangjadi::findOrFail($id);
         $klasifikasis = Klasifikasi::all(); // Menyediakan daftar klasifikasi
 
-        return view('admin.stok_barangjadi.edit', compact('stok_barangjadi', 'klasifikasis'));
+        return view('toko_slawi.stok_barangjadi.edit', compact('stok_barangjadi', 'klasifikasis'));
     }
 
     // Method untuk memproses update data
@@ -254,7 +254,7 @@ public function posting_pengiriman($id)
                 $pemesanan->delete();
             });
         
-            return redirect('admin/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
+            return redirect('toko_slawi/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
         }
         
         public function import(Request $request)
@@ -273,6 +273,6 @@ public function posting_pengiriman($id)
         {
             $klasifikasis = Klasifikasi::with('produks')->get();
             $importedData = session('imported_data', []);
-            return view('admin.permintaan_produk.form', compact('klasifikasis', 'importedData'));
+            return view('toko_slawi.permintaan_produk.form', compact('klasifikasis', 'importedData'));
         }
 }

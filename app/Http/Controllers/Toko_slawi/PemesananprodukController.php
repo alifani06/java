@@ -50,7 +50,7 @@ class PemesananprodukController extends Controller
             ->get();
     
         // Kirim data ke view
-        return view('admin.pemesanan_produk.index', compact('inquery'));
+        return view('toko_slawi.pemesanan_produk.index', compact('inquery'));
     }
     
     
@@ -79,7 +79,7 @@ class PemesananprodukController extends Controller
     //     $inquery->orderBy('id', 'DESC');
     //     $inquery = $inquery->get();
     
-    //     return view('admin.pemesanan_produk.index', compact('inquery'));
+    //     return view('toko_slawi.pemesanan_produk.index', compact('inquery'));
     // }
     
 
@@ -105,7 +105,7 @@ class PemesananprodukController extends Controller
 
         $kategoriPelanggan = 'member';
     
-        return view('admin.pemesanan_produk.create', compact('barangs','metodes', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan'));
+        return view('toko_slawi.pemesanan_produk.create', compact('barangs','metodes', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan'));
     }
     
     public function getCustomerByKode($kode)
@@ -263,7 +263,7 @@ class PemesananprodukController extends Controller
     //     $details = Detailpemesananproduk::where('pemesananproduk_id', $cetakpdf->id)->get();
     
     //     // Redirect ke halaman cetak dengan menyertakan data sukses dan detail pemesanan
-    //     return redirect()->route('admin.pemesanan_produk.cetak', ['id' => $cetakpdf->id])->with([
+    //     return redirect()->route('toko_slawi.pemesanan_produk.cetak', ['id' => $cetakpdf->id])->with([
     //         'success' => 'Berhasil menambahkan barang jadi',
     //         'pemesanan' => $cetakpdf,
     //         'details' => $details,
@@ -396,7 +396,7 @@ class PemesananprodukController extends Controller
         $details = Detailpemesananproduk::where('pemesananproduk_id', $cetakpdf->id)->get();
 
         // Redirect ke halaman cetak dengan menyertakan data sukses dan detail pemesanan
-        return redirect()->route('admin.pemesanan_produk.cetak', ['id' => $cetakpdf->id])->with([
+        return redirect()->route('toko_slawi.pemesanan_produk.cetak', ['id' => $cetakpdf->id])->with([
             'success' => 'Berhasil menambahkan barang jadi',
             'pemesanan' => $cetakpdf,
             'details' => $details,
@@ -415,7 +415,7 @@ class PemesananprodukController extends Controller
         $dp = $pemesanan->dppemesanan;
 
         // Mengirim data yang diambil ke view
-        return view('admin.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans', 'tokos', 'dp'));
+        return view('toko_slawi.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans', 'tokos', 'dp'));
     }
 
     public function cetakPdf($id)
@@ -426,7 +426,7 @@ class PemesananprodukController extends Controller
         $dp = $pemesanan->dppemesanan;
         $tokos = $pemesanan->toko;
     
-        $pdf = FacadePdf::loadView('admin.pemesanan_produk.cetak-pdf', compact('pemesanan', 'tokos', 'pelanggans','dp'));
+        $pdf = FacadePdf::loadView('toko_slawi.pemesanan_produk.cetak-pdf', compact('pemesanan', 'tokos', 'pelanggans','dp'));
         $pdf->setPaper('a4', 'portrait');
     
         return $pdf->stream('pemesanan.pdf');
@@ -477,7 +477,7 @@ class PemesananprodukController extends Controller
         $dp = $pemesanan->dppemesanan;
 
         // Mengirim data yang diambil ke view
-        return view('admin.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans', 'tokos', 'dp'));
+        return view('toko_slawi.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans', 'tokos', 'dp'));
     }
 
 
@@ -493,7 +493,7 @@ class PemesananprodukController extends Controller
         //     $metodes = Metodepembayaran::all();
 
 
-        //     return view('admin.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId','metodes'));
+        //     return view('toko_slawi.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId','metodes'));
         // }
         public function edit($id)
         {
@@ -513,7 +513,7 @@ class PemesananprodukController extends Controller
             $metodes = Metodepembayaran::all();
         
             // Mengembalikan view dengan data yang diperlukan
-            return view('admin.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks', 'selectedTokoId', 'metodes'));
+            return view('toko_slawi.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks', 'selectedTokoId', 'metodes'));
         }
         
 
@@ -642,7 +642,7 @@ class PemesananprodukController extends Controller
             $details = Detailpemesananproduk::where('pemesananproduk_id', $pemesanan->id)->get();
         
             // Redirect ke halaman indeks pemesananproduk
-            return redirect('admin/pemesanan_produk');
+            return redirect('toko_slawi/pemesanan_produk');
 
         }
         
@@ -659,7 +659,7 @@ class PemesananprodukController extends Controller
                 $pemesanan->delete();
             });
         
-            return redirect('admin/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
+            return redirect('toko_slawi/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
         }
         
 

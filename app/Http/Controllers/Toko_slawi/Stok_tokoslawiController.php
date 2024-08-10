@@ -51,7 +51,7 @@ class Stok_tokoslawiController extends Controller{
 //         }
 //     }
 
-//     return view('admin.stok_tokoslawi.index', compact('stok_tokoslawi'));
+//     return view('toko_slawi.stok_tokoslawi.index', compact('stok_tokoslawi'));
 // }
 
 public function index()
@@ -73,7 +73,7 @@ public function index()
     // Kumpulkan data hasil pengelompokan ke dalam array
     $stokGrouped = $stokGrouped->values();
 
-    return view('admin.stok_tokoslawi.index', compact('stokGrouped'));
+    return view('toko_slawi.stok_tokoslawi.index', compact('stokGrouped'));
 }
 
 public function create()
@@ -82,7 +82,7 @@ public function create()
     $produks = Produk::all();
     $tokos = Toko::all();
 
-    return view('admin.stok_tokoslawi.create', compact('produks', 'tokos'));
+    return view('toko_slawi.stok_tokoslawi.create', compact('produks', 'tokos'));
 }
 
 

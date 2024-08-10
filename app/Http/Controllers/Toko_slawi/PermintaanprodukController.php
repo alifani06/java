@@ -50,7 +50,7 @@ class PermintaanprodukController extends Controller{
         ->orderBy('created_at', 'desc')
         ->get();
 
-    return view('admin.permintaan_produk.index', compact('permintaanProduks'));
+    return view('toko_slawi.permintaan_produk.index', compact('permintaanProduks'));
 }
 
     
@@ -59,7 +59,7 @@ class PermintaanprodukController extends Controller{
     {
         $klasifikasis = Klasifikasi::with('produks')->get();
         
-        return view('admin.permintaan_produk.create', compact('klasifikasis'));
+        return view('toko_slawi.permintaan_produk.create', compact('klasifikasis'));
     }
 
     public function store(Request $request)
@@ -134,7 +134,7 @@ public function show($id)
     // Mengambil nama toko dari salah satu detail permintaan produk
     $toko = $detailPermintaanProduks->first()->toko;
 
-    return view('admin.permintaan_produk.show', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi', 'subklasifikasiByDivisi', 'toko'));
+    return view('toko_slawi.permintaan_produk.show', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi', 'subklasifikasiByDivisi', 'toko'));
 }
 
 
@@ -157,7 +157,7 @@ public function show($id)
         });
         $toko = $detailPermintaanProduks->first()->toko;
 
-        $pdf = FacadePdf::loadView('admin.permintaan_produk.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi','toko'));
+        $pdf = FacadePdf::loadView('toko_slawi.permintaan_produk.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi','toko'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
     }
@@ -206,7 +206,7 @@ public function edit($id)
     $klasifikasis = Klasifikasi::with('produks')->get();
     $detailPermintaanProduk = $permintaanProduk->detailpermintaanproduks()->get();
 
-    return view('admin.permintaan_produk.update', compact('permintaanProduk', 'klasifikasis', 'detailPermintaanProduk'));
+    return view('toko_slawi.permintaan_produk.update', compact('permintaanProduk', 'klasifikasis', 'detailPermintaanProduk'));
 }
 
 
@@ -265,6 +265,6 @@ public function destroy($id)
         {
             $klasifikasis = Klasifikasi::with('produks')->get();
             $importedData = session('imported_data', []);
-            return view('admin.permintaan_produk.form', compact('klasifikasis', 'importedData'));
+            return view('toko_slawi.permintaan_produk.form', compact('klasifikasis', 'importedData'));
         }
 }
