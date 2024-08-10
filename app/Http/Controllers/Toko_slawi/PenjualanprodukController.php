@@ -49,7 +49,7 @@ class PenjualanprodukController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
     
-        return view('admin.penjualan_produk.index', compact('inquery'));
+        return view('toko_slawi.penjualan_produk.index', compact('inquery'));
     }
     
 
@@ -86,7 +86,7 @@ class PenjualanprodukController extends Controller
 
         $kategoriPelanggan = 'member';
     
-        return view('admin.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
+        return view('toko_slawi.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
     }
     
 
@@ -102,7 +102,7 @@ class PenjualanprodukController extends Controller
         $produks = Produk::with('tokoslawi')->get();
         $kategoriPelanggan = 'member';
  
-        return view('admin.penjualan_produk.pelunasan', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks'));
+        return view('toko_slawi.penjualan_produk.pelunasan', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks'));
     }
     
     public function getCustomerByKode($kode)
@@ -288,7 +288,7 @@ public function store(Request $request)
         'metode_id' => $request->metode_id, 
         'total_fee' => $request->total_fee, 
         'keterangan' => $request->keterangan, 
-        'toko_id' => 1,
+        'toko_id' => 3,
         'kasir' => ucfirst(auth()->user()->karyawan->nama_lengkap),
         'kode_penjualan' => $this->kode(),
         'qrcode_penjualan' => 'https://javabakery.id/penjualan/' . $kode,
@@ -318,7 +318,7 @@ public function store(Request $request)
     $details = Detailpenjualanproduk::where('penjualanproduk_id', $cetakpdf->id)->get();
 
     // Redirect ke halaman cetak dengan menyertakan data sukses dan detail pemesanan
-    return redirect()->route('admin.penjualan_produk.cetak', ['id' => $cetakpdf->id])->with([
+    return redirect()->route('toko_slawi.penjualan_produk.cetak', ['id' => $cetakpdf->id])->with([
         'success' => 'Berhasil menambahkan barang jadi',
         'penjualan' => $cetakpdf,
         'details' => $details,
@@ -337,7 +337,7 @@ public function store(Request $request)
         $tokos = $penjualan->toko;
 
         // Pass the retrieved data to the view
-        return view('admin.penjualan_produk.cetak', compact('penjualan', 'pelanggans', 'tokos'));
+        return view('toko_slawi.penjualan_produk.cetak', compact('penjualan', 'pelanggans', 'tokos'));
     }
     
     public function cetakPdf($id)
@@ -348,7 +348,7 @@ public function store(Request $request)
     
         $tokos = $penjualan->toko;
     
-        $pdf = FacadePdf::loadView('admin.penjualan_produk.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans'));
+        $pdf = FacadePdf::loadView('toko_slawi.penjualan_produk.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans'));
         $pdf->setPaper('a4', 'portrait');
     
         return $pdf->stream('penjualan.pdf');
@@ -365,7 +365,7 @@ public function store(Request $request)
       $tokos = $penjualan->toko;
 
       // Pass the retrieved data to the view
-      return view('admin.penjualan_produk.cetak', compact('penjualan', 'pelanggans', 'tokos'));
+      return view('toko_slawi.penjualan_produk.cetak', compact('penjualan', 'pelanggans', 'tokos'));
     }
     
 
@@ -379,7 +379,7 @@ public function store(Request $request)
             $inquery = Pemesananproduk::with('detailpemesananproduk')->where('id', $id)->first();
             $selectedTokoId = $inquery->toko_id; // ID toko yang dipilih
 
-            return view('admin.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
+            return view('toko_slawi.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
         }
         
 
@@ -508,7 +508,7 @@ public function store(Request $request)
             $details = Detailpemesananproduk::where('pemesananproduk_id', $pemesanan->id)->get();
         
             // Redirect ke halaman indeks pemesananproduk
-            return redirect('admin/pemesanan_produk');
+            return redirect('toko_slawi/pemesanan_produk');
 
         }
         
@@ -535,7 +535,7 @@ public function store(Request $request)
                 $pemesanan->delete();
             });
         
-            return redirect('admin/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
+            return redirect('toko_slawi/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
         }
         
 

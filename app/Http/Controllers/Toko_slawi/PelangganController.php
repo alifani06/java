@@ -35,14 +35,14 @@ class PelangganController extends Controller
         $pelanggans = Pelanggan::whereNotNull('kode_pelanggan')->get();
     }
 
-      return view('admin.pelanggan.index', compact('pelanggans'));
+      return view('toko_slawi.pelanggan.index', compact('pelanggans'));
         
     // }
     }
     public function create()
     {
         $pelanggans = Pelanggan::all();
-        return view('admin/pelanggan.create', compact('pelanggans'));
+        return view('toko_slawi/pelanggan.create', compact('pelanggans'));
         // tidak memiliki akses
     }
    
@@ -114,7 +114,7 @@ class PelangganController extends Controller
             ]
         ));
 
-        return redirect('admin/pelanggan')->with('success', 'Berhasil menambahkan karyawan');
+        return redirect('toko_slawi/pelanggan')->with('success', 'Berhasil menambahkan karyawan');
     }
 
 
@@ -142,7 +142,7 @@ class PelangganController extends Controller
         $pelangganfirst = Pelanggan::where('id', $id)->first();
 
         $pelanggans = Pelanggan::where('kode_pelanggan', null)->get();
-        return view('admin/pelanggan.update', compact('pelanggans', 'pelangganfirst'));
+        return view('toko_slawi/pelanggan.update', compact('pelanggans', 'pelangganfirst'));
     }
 
     public function update(Request $request, $id)
@@ -247,7 +247,7 @@ class PelangganController extends Controller
             'alamat' => $request->alamat,
         ]);
 
-        return redirect('admin/pelanggan')->with('success', 'Berhasil memperbarui Pelanggan');
+        return redirect('toko_slawi/pelanggan')->with('success', 'Berhasil memperbarui Pelanggan');
     }
 
 
@@ -255,7 +255,7 @@ class PelangganController extends Controller
     {
         $pelanggans = Pelanggan::find($id);
         $pdf = app('dompdf.wrapper');
-        $pdf->loadView('admin.pelanggan.cetak_pdf', compact('pelanggans'));
+        $pdf->loadView('toko_slawi.pelanggan.cetak_pdf', compact('pelanggans'));
         $pdf->setPaper('letter', 'portrait');
         return $pdf->stream('QrCodePelanggan.pdf');
     }
@@ -263,7 +263,7 @@ class PelangganController extends Controller
     public function show($id)
     {
         $pelanggan = Pelanggan::where('id', $id)->first();
-        return view('admin/pelanggan.show', compact('pelanggan'));
+        return view('toko_slawi/pelanggan.show', compact('pelanggan'));
     }
 
     public function getpelanggan($id)
@@ -278,14 +278,14 @@ class PelangganController extends Controller
         $pelanggan = Pelanggan::find($id);
         $pelanggan->delete();
 
-        return redirect('admin/pelanggan')->with('success', 'Berhasil menghapus data pelanggan');
+        return redirect('toko_slawi/pelanggan')->with('success', 'Berhasil menghapus data pelanggan');
     }
     
     // public function cetak_pdf($id)
     // {
     //     $pelanggan = Pelanggan::findOrFail($id);
 
-    //     $pdf = FacadePdf::loadView('admin.pelanggan.cetak_pdf', compact('pelanggan'));
+    //     $pdf = FacadePdf::loadView('toko_slawi.pelanggan.cetak_pdf', compact('pelanggan'));
     //     return $pdf->download('kartu_member.pdf');
     // }
     public function cetak_pdf($id)
@@ -293,7 +293,7 @@ class PelangganController extends Controller
         $pelanggan = Pelanggan::findOrFail($id);
 
         // Membuat PDF dan menetapkan ukuran kertas kustom
-        $pdf = FacadePdf::loadView('admin.pelanggan.cetak_pdf', compact('pelanggan'))
+        $pdf = FacadePdf::loadView('toko_slawi.pelanggan.cetak_pdf', compact('pelanggan'))
                         ->setPaper([0, 0, 500, 270]); // [left, top, width, height]
 
         // Mengirimkan view PDF sebagai respons
