@@ -12,7 +12,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ url('admin/pemesanan_produk') }}">Pemesanan Produk</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('toko_slawi/pemesanan_produk') }}">Pemesanan Produk</a></li>
                         <li class="breadcrumb-item active">Pemesanan Produk</li>
                     </ol>
                 </div><!-- /.col -->
@@ -61,7 +61,7 @@
                     @endforeach
                 </div>
             @endif
-            <form action="{{ url('admin/pemesanan_produk/' . $inquery->id) }}" method="post" autocomplete="off">
+            <form action="{{ url('toko_slawi/pemesanan_produk/' . $inquery->id) }}" method="post" autocomplete="off">
                 @csrf
                 @method('put')
                 <div class="container">
@@ -524,7 +524,7 @@
                 paymentFields.style.display = 'none';
             } else if (metodeId) {
                 $.ajax({
-                    url: "{{ url('admin/metodebayar/metode') }}" + "/" + metodeId,
+                    url: "{{ url('toko_slawi/metodebayar/metode') }}" + "/" + metodeId,
                     type: "GET",
                     dataType: "json",
                     success: function(response) {
@@ -576,7 +576,7 @@
             paymentFields.style.display = 'none';
         } else if (metodeId) {
             $.ajax({
-                url: "{{ url('admin/metodebayar/metode') }}" + "/" + metodeId,
+                url: "{{ url('toko_slawi/metodebayar/metode') }}" + "/" + metodeId,
                 type: "GET",
                 dataType: "json",
                 success: function(response) {
@@ -803,7 +803,7 @@
 
             if (detailId) {
                 $.ajax({
-                    url: "{{ url('admin/inquery_pembelianpart/deletepart/') }}/" + detailId,
+                    url: "{{ url('toko_slawi/inquery_pembelianpart/deletepart/') }}/" + detailId,
                     type: "POST",
                     data: {
                         _method: 'DELETE',

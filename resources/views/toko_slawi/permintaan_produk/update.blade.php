@@ -70,7 +70,7 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ url('admin/permintaan_produk/'.$permintaanProduk->id) }}" method="POST">
+                    <form action="{{ url('toko_slawi/permintaan_produk/'.$permintaanProduk->id) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <input type="hidden" name="toko_id" value="{{ $permintaanProduk->toko_id }}">

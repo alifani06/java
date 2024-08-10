@@ -12,7 +12,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ url('admin/produk') }}">Produk</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('toko_slawi/produk') }}">Produk</a></li>
                         <li class="breadcrumb-item active">Tambah</li>
                     </ol>
                 </div><!-- /.col -->
@@ -39,7 +39,7 @@
                     <h3 class="card-title">Tambah Produk</h3>
                 </div>
                 <!-- /.card-header -->
-                <form action="{{ url('admin/produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+                <form action="{{ url('toko_slawi/produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                     @csrf
                     <div class="card-body">
                         <div class="row mb-3 align-items-center">
@@ -209,7 +209,7 @@
                 var klasifikasiID = $(this).val();
                 if (klasifikasiID) {
                     $.ajax({
-                        url: "{{ url('admin/klasifikasi/get_subklasifikasi') }}" + '/' + klasifikasiID,
+                        url: "{{ url('toko_slawi/klasifikasi/get_subklasifikasi') }}" + '/' + klasifikasiID,
                         type: "GET",
                         dataType: "json",
                         success: function(data) {

@@ -57,7 +57,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="float-right">
-                        <a href="{{ url('admin/pemesanan_produk/create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url('toko_slawi/pemesanan_produk/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> 
                         </a>
                     </div>
@@ -163,10 +163,10 @@
                                                         data-memo-id="{{ $item->id }}">Posting</a>
                                              
                                                     <a class="dropdown-item"
-                                                        href="{{ url('admin/pemesanan_produk/' . $item->id . '/edit') }}">Update</a>
+                                                        href="{{ url('toko_slawi/pemesanan_produk/' . $item->id . '/edit') }}">Update</a>
                                                 
                                                     <a class="dropdown-item" 
-                                                    href="{{ route('admin.pemesanan_produk.cetak', $item->id) }}">Show</a>
+                                                    href="{{ route('toko_slawi.pemesanan_produk.cetak', $item->id) }}">Show</a>
 
                                                       
                                             @endif
@@ -174,7 +174,7 @@
                                                     <a class="dropdown-item unpost-btn"
                                                         data-memo-id="{{ $item->id }}">Unpost</a>
                                                     <a class="dropdown-item"
-                                                        href="{{ url('/admin/pemesanan_produk/' . $item->id ) }}">Show</a>
+                                                        href="{{ url('/toko_slawi/pemesanan_produk/' . $item->id ) }}">Show</a>
                                             @endif
                                            
                                         </div>
@@ -228,7 +228,7 @@
         var form = document.getElementById('form-action');
 
         function cari() {
-            form.action = "{{ url('admin/inquery_pemesnanproduk') }}";
+            form.action = "{{ url('toko_slawi/inquery_pemesnanproduk') }}";
             form.submit();
         }
     </script>
@@ -252,8 +252,8 @@
                 });
                 document.getElementById('selectedIds').value = selectedIds.join(',');
                 var selectedIdsString = selectedIds.join(',');
-                window.location.href = "{{ url('admin/cetak_fakturekspedisifilter') }}?ids=" + selectedIdsString;
-                // var url = "{{ url('admin/ban/cetak_pdffilter') }}?ids=" + selectedIdsString;
+                window.location.href = "{{ url('toko_slawi/cetak_fakturekspedisifilter') }}?ids=" + selectedIdsString;
+                // var url = "{{ url('toko_slawi/ban/cetak_pdffilter') }}?ids=" + selectedIdsString;
             }
         }
     </script>
@@ -270,7 +270,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan unpost
                 $.ajax({
-                    url: "{{ url('admin/inquery_pemesananproduk/unpost_pemesananproduk/') }}/" + memoId,
+                    url: "{{ url('toko_slawi/inquery_pemesananproduk/unpost_pemesananproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -311,7 +311,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan posting
                 $.ajax({
-                    url: "{{ url('admin/inquery_pemesananproduk/posting_pemesananproduk/') }}/" + memoId,
+                    url: "{{ url('toko_slawi/inquery_pemesananproduk/posting_pemesananproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

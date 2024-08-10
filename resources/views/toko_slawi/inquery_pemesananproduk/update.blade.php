@@ -26,7 +26,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ url('admin/subklasifikasi') }}">Pemesanan Produk</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('toko_slawi/subklasifikasi') }}">Pemesanan Produk</a></li>
                         <li class="breadcrumb-item active">Ubah</li>
                     </ol>
                 </div><!-- /.col -->
@@ -53,7 +53,7 @@
                     @endforeach
                 </div>
             @endif
-            <form action="{{ url('admin/pemesanan_produk/' . $inquery->id) }}" method="post" autocomplete="off">
+            <form action="{{ url('toko_slawi/pemesanan_produk/' . $inquery->id) }}" method="post" autocomplete="off">
                 @csrf
                 @method('put')
                 {{-- detail pelanggan --}}

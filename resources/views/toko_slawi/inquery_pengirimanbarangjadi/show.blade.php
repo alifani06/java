@@ -160,7 +160,7 @@
 
         <div class="d-flex justify-content-between">
             <div>
-                <a href="{{ url('admin/inquery_pengirimanbarangjadi') }}" class="btn btn-primary btn-sm">
+                <a href="{{ url('toko_slawi/inquery_pengirimanbarangjadi') }}" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus"></i> Kembali
                 </a>
             </div>

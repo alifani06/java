@@ -12,7 +12,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ url('admin/pelanggan') }}">Pelanggan</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('toko_slawi/pelanggan') }}">Pelanggan</a></li>
                         <li class="breadcrumb-item active">Perbarui</li>
                     </ol>
                 </div><!-- /.col -->
@@ -34,7 +34,7 @@
                     @endforeach
                 </div>
             @endif
-            <form action="{{ url('admin/pelanggan/' . $pelangganfirst->id) }}" method="POST" enctype="multipart/form-data"
+            <form action="{{ url('toko_slawi/pelanggan/' . $pelangganfirst->id) }}" method="POST" enctype="multipart/form-data"
                 autocomplete="off">
                 @csrf
                 @method('put')
@@ -228,7 +228,7 @@
             function getData(id) {
                 var pelanggan_id = document.getElementById('pelanggan_id');
                 $.ajax({
-                    url: "{{ url('admin/pelanggan/getpelanggan') }}" + "/" + pelanggan_id.value,
+                    url: "{{ url('toko_slawi/pelanggan/getpelanggan') }}" + "/" + pelanggan_id.value,
                     type: "GET",
                     dataType: "json",
                     success: function(pelanggan_id) {

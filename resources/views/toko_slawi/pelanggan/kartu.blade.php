@@ -38,7 +38,7 @@
                  
 
                   
-                {{-- <form action="{{ url('admin/kartu') }}" method="POST" enctype="multipart/form-data"
+                {{-- <form action="{{ url('toko_slawi/kartu') }}" method="POST" enctype="multipart/form-data"
                     autocomplete="off">
                     @csrf
               
@@ -71,11 +71,11 @@
                                         </div>
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ url('admin/pelanggan/' . $pelanggan->id) }}"
+                                        <a href="{{ url('toko_slawi/pelanggan/' . $pelanggan->id) }}"
                                             class="btn btn-info btn-sm">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ url('admin/pelanggan/' . $pelanggan->id . '/edit') }}"
+                                        <a href="{{ url('toko_slawi/pelanggan/' . $pelanggan->id . '/edit') }}"
                                             class="btn btn-warning btn-sm">
                                             <i class="fas fa-edit"></i>
                                         </a>
@@ -102,7 +102,7 @@
                                             <div class="modal-footer justify-content-between">
                                                 <button type="button" class="btn btn-default"
                                                     data-dismiss="modal">Batal</button>
-                                                <form action="{{ url('admin/pelanggan/' . $pelanggan->id) }}"
+                                                <form action="{{ url('toko_slawi/pelanggan/' . $pelanggan->id) }}"
                                                     method="POST">
                                                     @csrf
                                                     @method('delete')
@@ -135,7 +135,7 @@
                                                 <div class="modal-footer justify-content-between">
                                                     <button type="button" class="btn btn-default"
                                                         data-bs-dismiss="modal">Batal</button>
-                                                    <a href="{{ url('admin/pelanggan/cetak-qrcode/' . $pelanggan->id) }}"
+                                                    <a href="{{ url('toko_slawi/pelanggan/cetak-qrcode/' . $pelanggan->id) }}"
                                                         class="btn btn-primary btn-sm">
                                                         <i class=""></i> Cetak
                                                     </a>

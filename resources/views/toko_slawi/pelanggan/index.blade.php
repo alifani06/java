@@ -82,11 +82,11 @@
                                         </div>
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ url('admin/pelanggan/' . $pelanggan->id) }}"
+                                        <a href="{{ url('toko_slawi/pelanggan/' . $pelanggan->id) }}"
                                             class="btn btn-info btn-sm">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ url('admin/pelanggan/' . $pelanggan->id . '/edit') }}"
+                                        <a href="{{ url('toko_slawi/pelanggan/' . $pelanggan->id . '/edit') }}"
                                             class="btn btn-warning btn-sm">
                                             <i class="fas fa-edit"></i>
                                         </a>
@@ -113,7 +113,7 @@
                                             <div class="modal-footer justify-content-between">
                                                 <button type="button" class="btn btn-default"
                                                     data-dismiss="modal">Batal</button>
-                                                <form action="{{ url('admin/pelanggan/' . $pelanggan->id) }}"
+                                                <form action="{{ url('toko_slawi/pelanggan/' . $pelanggan->id) }}"
                                                     method="POST">
                                                     @csrf
                                                     @method('delete')
@@ -146,7 +146,7 @@
                                                 <div class="modal-footer justify-content-between">
                                                     <button type="button" class="btn btn-default"
                                                         data-bs-dismiss="modal">Batal</button>
-                                                    <a href="{{ url('admin/pelanggan/cetak-qrcode/' . $pelanggan->id) }}"
+                                                    <a href="{{ url('toko_slawi/pelanggan/cetak-qrcode/' . $pelanggan->id) }}"
                                                         class="btn btn-primary btn-sm">
                                                         <i class=""></i> Cetak
                                                     </a>
@@ -174,7 +174,7 @@
                     </div>
                     <div class="modal-body">
                         <div style="text-align: center;">
-                            <form action="{{ url('admin/pelanggan') }}" enctype="multipart/form-data"
+                            <form action="{{ url('toko_slawi/pelanggan') }}" enctype="multipart/form-data"
                                 autocomplete="off" method="post">
                                 @csrf
                                 <div class="card">
@@ -225,7 +225,7 @@
         function getData(id) {
             var pelanggan_id = document.getElementById('pelanggan_id');
             $.ajax({
-                url: "{{ url('admin/pelanggan/getpelanggan') }}" + "/" + pelanggan_id.value,
+                url: "{{ url('toko_slawi/pelanggan/getpelanggan') }}" + "/" + pelanggan_id.value,
                 type: "GET",
                 dataType: "json",
                 success: function(pelanggan_id) {

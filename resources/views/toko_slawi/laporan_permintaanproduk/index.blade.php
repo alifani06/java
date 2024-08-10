@@ -76,7 +76,7 @@
                             </select>
                         </div>
                         {{-- <div class="float-right">
-                            <a href="{{ route('admin.penjualan_produk.pelunasan') }}"  class="btn btn-primary btn-sm">Pelunasan Pemesanan
+                            <a href="{{ route('toko_slawi.penjualan_produk.pelunasan') }}"  class="btn btn-primary btn-sm">Pelunasan Pemesanan
                             </a>
                         </div> --}}
        
@@ -156,7 +156,7 @@
                                     <td>{{ $permintaan->created_at->format('d-m-Y') }}</td>
                                     <td>{{ $permintaan->detailpermintaanproduks->count() }}</td>
                                     <td class="text-center">
-                                        <a href="{{ url('admin/permintaan_produk/' . $permintaan->id) }}" class="btn btn-info btn-sm">
+                                        <a href="{{ url('toko_slawi/permintaan_produk/' . $permintaan->id) }}" class="btn btn-info btn-sm">
                                             <i class="fas fa-print"></i>
                                         </a>
                                       
@@ -289,7 +289,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('admin/laporan_penjualanproduk') }}";
+            form.action = "{{ url('toko_slawi/laporan_penjualanproduk') }}";
             form.submit();
         }
     </script>
@@ -297,7 +297,7 @@
 <script>
     function printReport() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printReport1') }}";
+    form.action = "{{ url('toko_slawi/printReport1') }}";
     form.target = "_blank";
     form.submit();
 }
@@ -309,9 +309,9 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'global') {
-            window.location.href = "{{ url('admin/laporan_permintaanproduk') }}";
+            window.location.href = "{{ url('toko_slawi/laporan_permintaanproduk') }}";
         } else if (selectedValue === 'rinci') {
-            window.location.href = "{{ url('admin/indexrinci') }}";
+            window.location.href = "{{ url('toko_slawi/indexrinci') }}";
         }
     });
 </script>

@@ -52,7 +52,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form id="form-action" method="GET" action="{{ url('admin/laporan_pemesananproduk/print') }}">
+                    <form id="form-action" method="GET" action="{{ url('toko_slawi/laporan_pemesananproduk/print') }}">
                         <div class="row">
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="toko_id" name="toko_id">
@@ -473,7 +473,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('admin/laporan_pemesananproduk') }}";
+            form.action = "{{ url('toko_slawi/laporan_pemesananproduk') }}";
             form.submit();
         }
 
@@ -488,7 +488,7 @@
         if (startDate && endDate) {
             var form = document.createElement('form');
             form.method = 'GET';
-            form.action = "{{ url('admin/print_pemesanan') }}";
+            form.action = "{{ url('toko_slawi/print_pemesanan') }}";
     
             var startDateInput = document.createElement('input');
             startDateInput.type = 'hidden';

@@ -209,7 +209,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('admin/indexglobal') }}";
+            form.action = "{{ url('toko_slawi/indexglobal') }}";
             form.submit();
         }
     </script>
@@ -217,7 +217,7 @@
 <script>
     function printReportglobal() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printReportglobal') }}";
+    form.action = "{{ url('toko_slawi/printReportglobal') }}";
     form.target = "_blank";
     form.submit();
 }
@@ -230,9 +230,9 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'global') {
-            window.location.href = "{{ url('admin/indexglobal') }}";
+            window.location.href = "{{ url('toko_slawi/indexglobal') }}";
         } else if (selectedValue === 'rinci') {
-            window.location.href = "{{ url('admin/laporan_penjualanproduk') }}";
+            window.location.href = "{{ url('toko_slawi/laporan_penjualanproduk') }}";
         }
     });
 </script>
