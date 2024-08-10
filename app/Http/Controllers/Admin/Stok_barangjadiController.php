@@ -65,46 +65,6 @@ class Stok_barangjadiController extends Controller{
         return view('admin.stok_barangjadi.create', compact('klasifikasis'));    
     }
 
-// public function store(Request $request)
-// {
-//     $kode = $this->kode();
-
-//     $produkData = $request->input('produk', []);
-
-//     $detailData = [];
-
-//     foreach ($produkData as $produkId => $data) {
-//         $stok = $data['stok'] ?? null;
-
-//         if (!is_null($stok) && $stok !== '') {
-//             $stokBarangJadi = Stok_barangjadi::create([
-//                 'produk_id' => $produkId,
-//                 'klasifikasi_id' => $request->input('klasifikasi_id'),
-//                 'stok' => $stok,
-//                 'status' => 'unpost',
-//                 'kode_input' => $kode,
-//                 'tanggal_input' => Carbon::now('Asia/Jakarta'),
-//             ]);
-
-//             $detailData[] = [
-//                 'stokbarangjadi_id' => $stokBarangJadi->id,
-//                 'produk_id' => $produkId,
-//                 'klasifikasi_id' => $request->input('klasifikasi_id'),
-//                 'stok' => $stok,
-//                 'status' => 'unpost',
-//                 'kode_input' => $kode,
-//                 'tanggal_input' => Carbon::now('Asia/Jakarta'),
-//             ];
-//         }
-//     }
-
-//     if (!empty($detailData)) {
-//         Detail_stokbarangjadi::insert($detailData);
-//     }
-
-//     return redirect('admin/stok_barangjadi')->with('success', 'Berhasil menambahkan stok barang jadi');
-// }
-
 public function store(Request $request)
 {
     $kode = $this->kode();
@@ -156,58 +116,6 @@ public function store(Request $request)
 
     return redirect('admin/stok_barangjadi')->with('success', 'Berhasil menambahkan stok barang jadi');
 }
-
-
-// public function store(Request $request)
-// {
-//     $kode = $this->kode();
-
-//     $produkData = $request->input('produk', []);
-//     $detailData = [];
-
-//     foreach ($produkData as $produkId => $data) {
-//         $stok = $data['stok'] ?? null;
-
-//         if (!is_null($stok) && $stok !== '') {
-//             // Check if the product already exists in Detail_stokbarangjadi
-//             $existingDetail = Detail_stokbarangjadi::where('produk_id', $produkId)
-//                 ->where('klasifikasi_id', $request->input('klasifikasi_id'))
-//                 ->first();
-
-//             if ($existingDetail) {
-//                 // If it exists, update the existing stock
-//                 $existingDetail->stok += $stok;
-//                 $existingDetail->save();
-//             } else {
-//                 // If it does not exist, create a new entry
-//                 $stokBarangJadi = Stok_barangjadi::create([
-//                     'produk_id' => $produkId,
-//                     'klasifikasi_id' => $request->input('klasifikasi_id'),
-//                     'stok' => $stok,
-//                     'status' => 'unpost',
-//                     'kode_input' => $kode,
-//                     'tanggal_input' => Carbon::now('Asia/Jakarta'),
-//                 ]);
-
-//                 $detailData[] = [
-//                     'stokbarangjadi_id' => $stokBarangJadi->id,
-//                     'produk_id' => $produkId,
-//                     'klasifikasi_id' => $request->input('klasifikasi_id'),
-//                     'stok' => $stok,
-//                     'status' => 'unpost',
-//                     'kode_input' => $kode,
-//                     'tanggal_input' => Carbon::now('Asia/Jakarta'),
-//                 ];
-//             }
-//         }
-//     }
-
-//     if (!empty($detailData)) {
-//         Detail_stokbarangjadi::insert($detailData);
-//     }
-
-//     return redirect('admin/stok_barangjadi')->with('success', 'Berhasil menambahkan stok barang jadi');
-// }
 
 
     public function kode()
@@ -263,20 +171,28 @@ public function store(Request $request)
 }
 
 
-    public function unpost(Request $request, $id)
-    {
-        $permintaan = Detailpermintaanproduk::find($id);
+public function unpost_stokbarangjadi($id)
+{
+    $item = Stok_barangjadi::where('id', $id)->first();
+
     
-        if ($permintaan) {
-            $permintaan->status = 'posting';
-            $permintaan->save();
+        $item->update([
+            'status' => 'unpost'
+        ]);
+    return back()->with('success', 'Berhasil');
+}
+
+public function posting_stokbarangjadi($id)
+{
+    $item = Stok_barangjadi::where('id', $id)->first();
+
     
-            return response()->json(['success' => true]);
-        }
-    
-        return response()->json(['success' => false], 404);
-    }
-    
+        // Update status deposit_driver menjadi 'posting'
+        $item->update([
+            'status' => 'posting'
+        ]);
+    return back()->with('success', 'Berhasil');
+}
     
 
     public function edit($id)

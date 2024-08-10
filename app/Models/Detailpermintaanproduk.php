@@ -21,6 +21,7 @@ class Detailpermintaanproduk extends Model
         'produk_id',
         'toko_id',
         'jumlah',
+        'status',
         'tanggal_permintaan',
     ];
 

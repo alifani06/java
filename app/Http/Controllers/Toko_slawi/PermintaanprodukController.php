@@ -70,6 +70,7 @@ class PermintaanprodukController extends Controller{
     // Create the main PermintaanProduk entry
     $permintaanProduk = PermintaanProduk::create([
         'kode_permintaan' => $kode,
+        'status' => 'unpost',
         'qrcode_permintaan' => 'https://javabakery.id/permintaan_produk/' . $kode,
     ]);
 
@@ -82,9 +83,9 @@ class PermintaanprodukController extends Controller{
             Detailpermintaanproduk::create([
                 'permintaanproduk_id' => $permintaanProduk->id,
                 'produk_id' => $produkId,
-                'toko_id' => '1', 
+                'toko_id' => '3', 
                 'jumlah' => $jumlah,
-                'status' => 'posting',
+                'status' => 'unpost',
                 'tanggal_permintaan' => Carbon::now('Asia/Jakarta'),
             ]);
         }
@@ -162,20 +163,6 @@ public function show($id)
         return $pdf->stream('surat_permintaan_produk.pdf');
     }
 
-    public function unpost(Request $request, $id)
-    {
-        $permintaan = Detailpermintaanproduk::find($id);
-    
-        if ($permintaan) {
-            $permintaan->status = 'posting';
-            $permintaan->save();
-    
-            return response()->json(['success' => true]);
-        }
-    
-        return response()->json(['success' => false], 404);
-    }
-    
     
     public function unpost_permintaanproduk($id)
 {

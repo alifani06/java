@@ -160,7 +160,9 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::resource('stok_barangjadi', \App\Http\Controllers\Admin\Stok_barangjadiController::class);
     Route::get('/stok_barangjadi/{id}/print', [Stok_barangjadiController::class, 'print'])->name('stok_barangjadi.print');
-
+    Route::get('stok_barangjadi/unpost_stokbarangjadi/{id}', [\App\Http\Controllers\Admin\Stok_barangjadiController::class, 'unpost_stokbarangjadi']);
+    Route::get('stok_barangjadi/posting_stokbarangjadi/{id}', [\App\Http\Controllers\Admin\Stok_barangjadiController::class, 'posting_stokbarangjadi']);
+   
     Route::resource('inquery_stokbarangjadi', \App\Http\Controllers\Admin\Inquery_stokbarangjadiController::class);
     Route::get('inquery_stokbarangjadi/unpost_stokbarangjadi/{id}', [\App\Http\Controllers\Admin\Inquery_stokbarangjadiController::class, 'unpost_stokbarangjadi']);
     Route::get('inquery_stokbarangjadi/posting_stokbarangjadi/{id}', [\App\Http\Controllers\Admin\Inquery_stokbarangjadiController::class, 'posting_stokbarangjadi']);
@@ -209,8 +211,6 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
     // Route::get('/', [\App\Http\Controllers\Toko_slawi\DashboardController::class, 'index']);
     // Route::resource('karyawan', \App\Http\Controllers\Toko_slawi\KaryawanController::class);
     Route::get('/', [\App\Http\Controllers\Toko_slawi\DashboardController::class, 'index']);
-
-    Route::resource('karyawan', \App\Http\Controllers\Toko_slawi\KaryawanController::class);
 
     Route::resource('pelanggan', \App\Http\Controllers\Toko_slawi\PelangganController::class);
     Route::get('pelanggan/getpelanggan/{id}', [\App\Http\Controllers\Toko_slawi\PelangganController::class, 'getpelanggan']);
@@ -277,23 +277,11 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
     Route::get('indexrinci', [\App\Http\Controllers\Toko_slawi\Laporan_permintaanprodukController::class, 'indexrinci']);
     Route::get('printReportRinci', [\App\Http\Controllers\Toko_slawi\Laporan_permintaanprodukController::class, 'printReportRinci']);
 
-    Route::resource('data_stokbarangjadi', \App\Http\Controllers\Toko_slawi\Data_stokbarangjadiController::class);
-
-    Route::resource('pengiriman_barangjadi', \App\Http\Controllers\Toko_slawi\PengirimanbarangjadiController::class);
-    Route::get('/pengiriman_barangjadi/{id}/print', [PengirimanbarangjadiController::class, 'print'])->name('pengiriman_barangjadi.print');
-
     Route::resource('inquery_pengirimanbarangjadi', \App\Http\Controllers\Toko_slawi\Inquery_pengirimanbarangjadiController::class);
     Route::get('inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_slawi\Inquery_pengirimanbarangjadiController::class, 'unpost_pengirimanbarangjadi']);
     Route::get('inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_slawi\Inquery_pengirimanbarangjadiController::class, 'posting_pengirimanbarangjadi']);
 
-    Route::resource('laporan_pengirimanbarangjadi', \App\Http\Controllers\Toko_slawi\Laporan_pengirimanbarangjadiController::class);
-    Route::get('print', [\App\Http\Controllers\Toko_slawi\Laporan_pengirimanbarangjadiController::class, 'printReport']);
-
-
-    Route::resource('retur_barangjadi', \App\Http\Controllers\Toko_slawi\ReturbarangjadiController::class);
     Route::resource('metode_pembayaran', \App\Http\Controllers\Toko_slawi\Metode_pembayaranController::class);
-
-
 
     //TOKO SLAWI
     Route::resource('stok_tokoslawi', \App\Http\Controllers\Toko_slawi\Stok_tokoslawiController::class);

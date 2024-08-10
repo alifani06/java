@@ -39,21 +39,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class Stok_tokoslawiController extends Controller{
 
-// public function index()
-// {
-//     // Ambil data stok_tokoslawi beserta relasi produk
-//     $stok_tokoslawi = Stok_tokoslawi::with('produk')->get();
-
-//     // Loop untuk memeriksa status dan mengatur jumlah yang ditampilkan
-//     foreach ($stok_tokoslawi as $stok) {
-//         if ($stok->status == 'unpost') {
-//             $stok->jumlah = 0;
-//         }
-//     }
-
-//     return view('toko_slawi.stok_tokoslawi.index', compact('stok_tokoslawi'));
-// }
-
 public function index()
 {
     // Ambil data stok_tokoslawi beserta relasi produk

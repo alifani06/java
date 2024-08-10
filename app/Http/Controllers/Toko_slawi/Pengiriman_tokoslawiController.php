@@ -45,18 +45,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class Pengiriman_tokoslawiController extends Controller{
 
-    // public function index(Request $request)
-    // {
-    //     // Mengambil data stok_tokoslawi dengan relasi pengiriman_barangjadi
-    //     $stokBarangJadi = Stok_tokoslawi::with('pengiriman_barangjadi')
-    //         ->orderBy('created_at', 'desc')
-    //         ->get()
-    //         ->groupBy(function ($item) {
-    //             return $item->pengiriman_barangjadi->kode_pengiriman; // Mengelompokkan berdasarkan kode_pengiriman
-    //         });
-    
-    //     return view('toko_slawi.pengiriman_tokoslawi.index', compact('stokBarangJadi'));
-    // }
     public function index(Request $request)
 {
     // Mengambil data stok_tokoslawi dengan relasi pengiriman_barangjadi

@@ -358,7 +358,9 @@
             <a href="{{ url('admin/inquery_permintaanproduk') }}"
                 class="nav-link {{ request()->is('admin/inquery_permintaanproduk*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Inquery Permintaan Produk</p>
+                <p style="font-size: 14px;">Inquery Permintaan Produk
+                    
+                </p>
             </a>
         </li>
         {{-- @endif --}}

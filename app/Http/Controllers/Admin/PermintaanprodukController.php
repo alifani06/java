@@ -53,8 +53,6 @@ class PermintaanprodukController extends Controller{
     return view('admin.permintaan_produk.index', compact('permintaanProduks'));
 }
 
-    
-
     public function create()
     {
         $klasifikasis = Klasifikasi::with('produks')->get();
