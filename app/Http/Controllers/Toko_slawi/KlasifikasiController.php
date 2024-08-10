@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Toko_slawi;
 
 use App\Console\Kernel;
 use Carbon\Carbon;

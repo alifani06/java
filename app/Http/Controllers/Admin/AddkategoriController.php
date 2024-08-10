@@ -102,19 +102,7 @@ class AddkategoriController extends Controller
         return Klasifikasi::whereQrcodeDepartemen($number)->exists();
     }
 
-    // public function cetakpdf($id)
-    // {
-    //     $cetakpdf = Departemen::where('id', $id)->first();
-    //     $html = view('admin/departemen.cetak_pdf', compact('cetakpdf'));
 
-    //     $dompdf = new Dompdf();
-    //     $dompdf->loadHtml($html);
-    //     $dompdf->setPaper('A4', 'landscape');
-
-    //     $dompdf->render();
-
-    //     $dompdf->stream();
-    // }
 
     public function edit($id)
     {
@@ -143,19 +131,6 @@ class AddkategoriController extends Controller
         return redirect('admin/addkategori')->with('success', 'Berhasil memperbarui Kategori');
     }
 
-    // public function show($id)
-    // {
-    //     $klasifikasis = Klasifikasi::all();
-    //     // $subs = Subklasifikasi::all();
-    //     return view('admin/addkategori', compact('klasifikasis')); 
-    // }
-
-    // public function show($id){
-        
-    //     $klasifikasis = Klasifikasi::all();
-
-    //     return view('admin.klasifikasi.addkategori.createsub', compact('klasifikasis'));
-    // }
     public function destroy($id)
     {
         $klasifikasis = Klasifikasi::find($id);
