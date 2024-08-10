@@ -105,6 +105,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/admin/pemesanan_produk/update/{id}', [PemesananprodukController::class, 'edit'])->name('pemesanan_produk.update');
     Route::get('/admin/pemesanan_produk/cetak-pdf{id}', [PemesananprodukController::class, 'cetakPdf'])->name('admin.pemesanan_produk.cetak-pdf');
     Route::delete('admin/pemesanan_produk/{id}', [PemesananProdukController::class, 'destroy'])->name('pemesanan_produk.destroy');
+    Route::get('/admin/pemesanan_produk/{id}/cetak', [PemesananProdukController::class, 'cetak'])->name('admin.pemesanan_produk.cetak');
+
 
 
     Route::resource('inquery_pemesananproduk', \App\Http\Controllers\Admin\Inquery_pemesananprodukController::class);
@@ -127,7 +129,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/metodepembayaran/{id}', [PenjualanprodukController::class, 'getMetodePembayaran']);
     Route::get('metodebayar/metode/{id}', [\App\Http\Controllers\Admin\PenjualanprodukController::class, 'metode']);
 
-// web.php
+
 
     Route::resource('inquery_penjualanproduk', \App\Http\Controllers\Admin\Inquery_penjualanprodukController::class);
     Route::get('/admin/inquery_penjualanproduk', [Inquery_penjualanprodukController::class, 'index'])->name('admin.inquery_penjualanproduk.index');
@@ -201,10 +203,19 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('metode_pembayaran', \App\Http\Controllers\Admin\Metode_pembayaranController::class);
 
     });
-    Route::get('/toko/slawi', [SlawiController::class, 'index']);
-    Route::get('/addpelanggan', [AddpelangganController::class, 'create']);
-    Route::post('/tambah', [AddpelangganController::class, 'store']);
-    Route::get('/tambah', [AddpelangganController::class, 'getbarang']);
+
+
+Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Toko_slawi\DashboardController::class, 'index']);
+    Route::resource('karyawan', \App\Http\Controllers\Toko_slawi\KaryawanController::class);
+
+
+    });
+
+    // Route::get('/toko/slawi', [SlawiController::class, 'index']);
+    // Route::get('/addpelanggan', [AddpelangganController::class, 'create']);
+    // Route::post('/tambah', [AddpelangganController::class, 'store']);
+    // Route::get('/tambah', [AddpelangganController::class, 'getbarang']);
     
 
 

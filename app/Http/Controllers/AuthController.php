@@ -101,11 +101,60 @@ class AuthController extends Controller
 
         User::where('kode_user', $request->kode_user)->update([
             'password' => bcrypt($request->password),
-            'level' => 'admin',
+            // 'level' => $request->level,
         ]);
+        
 
         return redirect('login')->with('success', 'Berhasil mendaftar');
     }
+
+
+    // public function registerslawi(Request $request)
+    // {
+    //     $user = User::where('kode_user', $request->kode_user)->first();
+
+    //     if (is_null($user)) {
+    //         return redirect('register')->with('error', array('Kode tidak ditemukan'));
+    //     }
+
+    //     if (!is_null($user->password)) {
+    //         return redirect('register')->with('error', array('Anda tidak dapat registrasi 2 kali'));
+    //     }
+
+    //     $validator = Validator::make(
+    //         $request->all(),
+    //         [
+    //             'kode_user' => 'required',
+    //             'password' => 'required|min:6|confirmed',
+    //         ],
+    //         [
+    //             'kode_user.required' => 'Kode tidak boleh kosong',
+    //             'password.required' => 'Password tidak boleh kosong',
+    //             'password.min' => 'Password minimum 6 karakter',
+    //             'password.confirmed' => 'Konfirmasi password tidak sesuai!',
+    //         ]
+    //     );
+
+    //     $user = User::where('kode_user', $request->kode_user)->first();
+    //     if (is_null($user)) {
+    //         return redirect('register')->with('error', array('Kode tidak ditemukan'));
+    //     }
+
+    //     if ($validator->fails()) {
+    //         $errors = $validator->errors()->all();
+    //         return back()->withInput()->with('error', $errors);
+    //     }
+
+    //     User::where('kode_user', $request->kode_user)->update([
+    //         'password' => bcrypt($request->password),
+    //         'level' => 'tokoslawi',
+    //     ]);
+
+    //     return redirect('login')->with('success', 'Berhasil mendaftar');
+    // }
+
+
+
     public function logout()
     {
         Auth::logout();

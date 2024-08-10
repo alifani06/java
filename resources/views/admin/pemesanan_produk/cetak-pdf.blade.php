@@ -19,7 +19,7 @@
             background-color: #f2f2f2;
         }
             .container {
-            width: 69mm; /* Adjusted width */
+            width: 70mm; /* Adjusted width */
             margin: 0 auto;
             border: 1px solid #ddd;
             padding: 20px;
@@ -193,7 +193,7 @@
         padding: 0;
     }
     .container {
-        width: 69mm; /* Sesuaikan dengan lebar kertas thermal */
+        width: 70mm; /* Sesuaikan dengan lebar kertas thermal */
         margin: 0 auto;
         border: none;
         padding: 0;
@@ -276,7 +276,7 @@
         border-bottom: 1px solid #0f0e0e;
     }
     @page {
-        size: 69mm auto; /* Sesuaikan dengan ukuran kertas thermal */
+        size: 70mm auto; /* Sesuaikan dengan ukuran kertas thermal */
         margin: 0mm; /* Set margin ke 0 untuk semua sisi */
     }
 }
@@ -364,6 +364,21 @@
                                 $subtotal += $total;
                             @endphp
                         @endforeach
+
+                        <tr>
+                            @if($pemesanan->metode_id !== null)
+                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee {{$pemesanan->metodepembayaran->nama_metode}} {{$pemesanan->metodepembayaran->fee}}%</strong></td>
+                                <td style="font-size: 8px; text-align: right;">
+                                    @php
+                                        // Menghapus semua karakter kecuali angka
+                                        $total_fee = preg_replace('/[^\d]/', '', $pemesanan->total_fee);
+                                        // Konversi ke tipe float
+                                        $total_fee = (float) $total_fee;
+                                    @endphp
+                                    {{ 'Rp. ' . number_format($total_fee, 0, ',', '.') }}
+                                </td>
+                            @endif
+                        </tr>
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total </strong></td>
                             <td style="font-size: 8px;">{{'Rp.'.  number_format($pemesanan->sub_total, 0, ',', '.') }}</td>
@@ -403,6 +418,12 @@
                 <label>Catatan:</label>
                 <p style="margin-top: 2px;">{{$pemesanan->catatan ?? '-'}}</p>
             </div>
+            @if(preg_replace('/[^0-9]/', '', $pemesanan->sub_total) < preg_replace('/[^0-9]/', '', $pemesanan->sub_totalasli))
+            <div class="hemat">
+                <label>Anda telah hemat: </label>
+                <span><strong>{{ 'Rp. ' . number_format(preg_replace('/[^0-9]/', '', $pemesanan->sub_totalasli) - preg_replace('/[^0-9]/', '', $pemesanan->sub_total), 0, ',', '.') }}</strong></span>
+            </div>
+            @endif
             <div class="terimakasih">
                 <p>Untuk pemesanan, kritik dan saran Hubungi.082136638003</p>
             </div>

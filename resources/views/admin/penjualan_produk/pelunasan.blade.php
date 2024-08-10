@@ -407,6 +407,7 @@
         });
     </script>
      --}}
+
      <script>
         // Function to fetch data based on kode_dppemesanan
         function fetchDataByKode(kode) {
@@ -502,9 +503,6 @@
         });
     </script>
     
-    
-
-
     <script>
         function formatAndUpdateKembali() {
             // Ambil nilai dari input fields

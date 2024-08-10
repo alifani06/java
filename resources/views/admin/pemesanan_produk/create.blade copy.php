@@ -450,6 +450,7 @@
         </div>
     </section>
 
+
     <script>
         function showCategoryModalCatatan(urutan) {
             // Tampilkan modal
@@ -500,22 +501,6 @@
         }
     </script>
     
-
-
-{{-- 
-<script>
-    function showCategoryModalCatatan(urutan) {
-        $('#tableCatatan').modal('show');
-        $('#tableCatatan').data('urutan', urutan);
-    }
-
-    function saveCatatan() {
-        var urutan = $('#tableCatatan').data('urutan');
-        var catatan = $('#modalCatatanInput').val();
-        $('#catatan-' + urutan).val(catatan);
-        $('#tableCatatan').modal('hide');
-    }
-</script> --}}
 
 <script>
     let originalSubTotal = 0;

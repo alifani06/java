@@ -35,6 +35,10 @@ class Pemesananproduk extends Model
         'toko_id',
         'status',
         'tanggaL_akhir',
+        'metode_id',
+        'sub_totalasli',
+        'total_fee',
+        'keterangan',
   
     ];
 
@@ -79,6 +83,15 @@ class Pemesananproduk extends Model
         return $this->hasOne(Dppemesanan::class, 'pemesananproduk_id');
     }
     
+    public function dppemesanans()
+    {
+        return $this->hasOne(DpPemesanan::class, 'pemesananproduk_id', 'id');
+    }
     
+    public function metodepembayaran()
+{
+    return $this->belongsTo(Metodepembayaran::class, 'metode_id');
+}
+
 
 }

@@ -165,8 +165,9 @@
                                                     <a class="dropdown-item"
                                                         href="{{ url('admin/pemesanan_produk/' . $item->id . '/edit') }}">Update</a>
                                                 
-                                                    <a class="dropdown-item"
-                                                        href="{{ url('/admin/pemesanan_produk/' . $item->id ) }}">Show</a>
+                                                    <a class="dropdown-item" 
+                                                    href="{{ route('admin.pemesanan_produk.cetak', $item->id) }}">Show</a>
+
                                                       
                                             @endif
                                             @if ($item->status == 'posting')

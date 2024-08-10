@@ -77,9 +77,9 @@ class User extends Authenticatable
         return false;
     }
 
-    public function isOwner()
+    public function isTokoslawi()
     {
-        if ($this->level == 'owner') {
+        if ($this->level == 'toko_slawi') {
             return true;
         }
         return false;

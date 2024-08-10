@@ -60,9 +60,7 @@
                         <input type="password" class="form-control" name="password" placeholder="password"
                             value="{{ old('password') }}">
                         <div class="input-group-append">
-                            {{-- <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
-                            </div> --}}
+                        
                             <div class="input-group-text" style="cursor: pointer;" id="password-toggle">
                                 <span id="password-icon" class="fas fa-eye"></span>
                             </div>

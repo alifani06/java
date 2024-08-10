@@ -261,7 +261,7 @@
                                 $total = is_numeric($detail->total) ? $detail->total : 0;
                                 $subtotal += $total;
                             @endphp
-                        @endforeach
+                            @endforeach
                             <tr>
                                 @if($penjualan->metode_id !== null)
                                     <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee {{$penjualan->metodepembayaran->nama_metode}} {{$penjualan->metodepembayaran->fee}}%</strong></td>

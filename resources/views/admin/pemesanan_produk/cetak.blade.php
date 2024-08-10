@@ -274,6 +274,22 @@
                                 $subtotal += $total;
                             @endphp
                         @endforeach
+
+                        <tr>
+                            @if($pemesanan->metode_id !== null)
+                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee {{$pemesanan->metodepembayaran->nama_metode}} {{$pemesanan->metodepembayaran->fee}}%</strong></td>
+                                <td style="font-size: 8px; text-align: right;">
+                                    @php
+                                        // Menghapus semua karakter kecuali angka
+                                        $total_fee = preg_replace('/[^\d]/', '', $pemesanan->total_fee);
+                                        // Konversi ke tipe float
+                                        $total_fee = (float) $total_fee;
+                                    @endphp
+                                    {{ 'Rp. ' . number_format($total_fee, 0, ',', '.') }}
+                                </td>
+                            @endif
+                        </tr>
+
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total Bayar</strong></td>
                             <td style="font-size: 8px;">{{'Rp.'.  number_format($pemesanan->sub_total, 0, ',', '.') }}</td>
@@ -298,27 +314,17 @@
                 </table>
                 @endif
             </div>
-            {{-- <div class="signatures">
-                <div class="signature1">
-                    <p>Pelanggan</p>
-                    <br><br>
-                    <p style="text-decoration: underline;">{{ $pemesanan->nama_pelanggan }}</p>
-                </div>
-                <div class="signature2">
-                    <p>Pemilik</p>
-                    <p>-</p>
-                    <p>__________________</p>
-                </div>
-                <div class="signature3">
-                <p>Admin</p>
-                <br><br>
-                <p style="text-decoration: underline;">{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</p>
-                </div>
-            </div> --}}
             <div class="catatan">
                 <label>Catatan:</label>
                 <p>{{$pemesanan->catatan ?? '-'}}</p>
             </div>
+
+            @if(preg_replace('/[^0-9]/', '', $pemesanan->sub_total) < preg_replace('/[^0-9]/', '', $pemesanan->sub_totalasli))
+            <div class="hemat">
+                <label>Anda telah hemat: </label>
+                <span><strong>{{ 'Rp. ' . number_format(preg_replace('/[^0-9]/', '', $pemesanan->sub_totalasli) - preg_replace('/[^0-9]/', '', $pemesanan->sub_total), 0, ',', '.') }}</strong></span>
+            </div>
+            @endif
             <div class="terimakasih">
                 <p>Untuk pemesanan, kritik dan saran Hubungi.082136638003</p>
             </div>
