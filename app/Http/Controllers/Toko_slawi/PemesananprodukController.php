@@ -36,24 +36,40 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 class PemesananprodukController extends Controller
 {
  
+    // public function index(Request $request)
+    // {
+    //     $today = Carbon::today();
+    
+    //     $inquery = Pemesananproduk::with('dppemesanan') // Memuat relasi dppemesanan
+    //         ->whereDate('created_at', $today)
+    //         ->orWhere(function ($query) use ($today) {
+    //             $query->where('status', 'unpost')
+    //                 ->whereDate('created_at', '<', $today);
+    //         })
+    //         ->orderBy('created_at', 'desc')
+    //         ->get();
+    
+    //     // Kirim data ke view
+    //     return view('toko_slawi.pemesanan_produk.index', compact('inquery'));
+    // }
+    
     public function index(Request $request)
-    {
-        $today = Carbon::today();
-    
-        $inquery = Pemesananproduk::with('dppemesanan') // Memuat relasi dppemesanan
-            ->whereDate('created_at', $today)
-            ->orWhere(function ($query) use ($today) {
-                $query->where('status', 'unpost')
-                    ->whereDate('created_at', '<', $today);
-            })
-            ->orderBy('created_at', 'desc')
-            ->get();
-    
-        // Kirim data ke view
-        return view('toko_slawi.pemesanan_produk.index', compact('inquery'));
-    }
-    
-    
+{
+    $today = Carbon::today();
+
+    $inquery = Pemesananproduk::with(['dppemesanan', 'toko']) // Memuat relasi dppemesanan dan toko
+        ->whereDate('created_at', $today)
+        ->orWhere(function ($query) use ($today) {
+            $query->where('status', 'unpost')
+                ->whereDate('created_at', '<', $today);
+        })
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    // Kirim data ke view
+    return view('toko_slawi.pemesanan_produk.index', compact('inquery'));
+}
+
     // {
     //     $status = $request->status;
     //     $tanggal_awal = $request->tanggal_awal;
@@ -228,7 +244,7 @@ class PemesananprodukController extends Controller
             'telp_penerima' => $request->telp_penerima,
             'alamat_penerima' => $request->alamat_penerima,
             'tanggal_kirim' => $request->tanggal_kirim,
-            'toko_id' => '1',
+            'toko_id' => '3',
             'metode_id' => $request->metode_id, 
             'sub_totalasli' => $request->sub_totalasli,
             'total_fee' => $request->total_fee, 

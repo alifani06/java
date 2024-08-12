@@ -39,28 +39,65 @@
             margin-top: 3px;
             margin-bottom: 1px;
         }
+
+        /* CSS untuk nomor halaman */
+        @page {
+            margin: 20mm;
+            @bottom-right {
+                content: "Halaman " counter(page);
+                font-size: 10px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="header">
+    {{-- <div class="header">
         <div>
-            <span class="title">PT JAVA BAKERY</span>
+            <span class="title">PT JAVA BAKERY FACTORY</span>
             <span class="address">JL. HOS COKRO AMINOTO NO 5 SLAWI TEGAL</span>
             <span class="contact">Telp / Fax, Email :</span>
         </div>
         <hr class="divider">
         <hr class="divider">
-    </div>
+    </div> --}}
     <div class="container">
-        <h1 style="text-align: center">LAPORAN PENJUALAN PRODUK</h1>
+        <h1 style="text-align: center; margin-bottom: 5px;">LAPORAN PENJUALAN PRODUK</h1>
+        <p style="text-align: center; font-size: 28px; font-weight: bold; margin-top: 0;">GLOBAL</p>
     </div>
-    <div class="text">
+    
+    {{-- <div class="text">
         @if ($startDate && $endDate)
-            <p>Periode: {{ $startDate }} s/d {{ $endDate }}</p>
+            <p>Periode: {{ $startDate }} s/d {{ $endDate }} &nbsp;&nbsp;&nbsp; Cabang: {{ $branchName }}</p>
         @else
-            <p>Periode: Tidak ada tanggal awal dan akhir yang diteruskan.</p>
+            <p>Periode: Tidak ada tanggal awal dan akhir yang diteruskan. &nbsp;&nbsp;&nbsp; Cabang: {{ $branchName }}</p>
+        @endif
+    </div> --}}
+    <div class="text">
+        @php
+            \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
+    
+            $formattedStartDate = \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y');
+            $formattedEndDate = \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y');
+            $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
+        @endphp
+    
+        @if ($startDate && $endDate)
+            <p>
+                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }} &nbsp;&nbsp;&nbsp; Cabang: {{ $branchName }}
+                <span style="float: right;">{{ $currentDateTime }}</span>
+            </p>
+        @else
+            <p>
+                Periode: Tidak ada tanggal awal dan akhir yang diteruskan. &nbsp;&nbsp;&nbsp; Cabang: {{ $branchName }}
+                <span style="float: right;">{{ $currentDateTime }}</span>
+            </p>
         @endif
     </div>
+    
+    
+    </div>
+
+    <!-- Tabel utama -->
     <table>
         <thead>
             <tr>
@@ -91,8 +128,14 @@
                     <td class="text-center">{{ $loop->iteration }}</td>
                     <td>{{ $item->kode_penjualan }}</td>
                     <td>{{ $item->kasir ?? '-' }}</td>
-                    <td>{{ $item->nama_pelanggan ?? 'Non Member' }}</td>
-                    <td>{{ $item->metodepembayaran->nama_metode ?? 'Tunai' }}</td>
+                    <td>
+                        @if($item->kode_pelanggan)
+                            {{ $item->kode_pelanggan }} / {{ $item->nama_pelanggan }}
+                        @else
+                            Non Member
+                        @endif
+                    </td>
+                                        <td>{{ $item->metodepembayaran->nama_metode ?? 'Tunai' }}</td>
                     <td>
                         @if ($total_fee == 0)
                             -
@@ -103,16 +146,23 @@
                     <td>{{ 'Rp. ' .  number_format($item->sub_total, 0, ',', '.') }}</td>
                 </tr>
             @endforeach
+        </tbody>
+    </table>
+
+    <!-- Tabel total penjualan fee dan grand total -->
+    <table style="width: 50%; margin-left: auto; margin-right: 0; background-color: yellow">
+        <tbody>
             <tr>
-                <td colspan="5" class="text-right"><strong>Total Fee Penjualan</strong></td>
-                <td >{{ 'Rp. ' .  number_format($grandTotalFee, 0, ',', '.') }}</td>
-                <td></td>
+                <td style="text-align: right;  width: 70%;">Total Fee Penjualan</td>
+                <td style="text-align: left; font-weight: bold; width: 30%;">{{ 'Rp. ' .  number_format($grandTotalFee, 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <td colspan="6" class="text-right"><strong>Grand Total</strong></td>
-                <td>{{ 'Rp. ' .  number_format($grandTotal, 0, ',', '.') }}</td>
+                <td style="text-align: right; ">Grand Total</td>
+                <td style="text-align: left; font-weight: bold;">{{ 'Rp. ' .  number_format($grandTotal, 0, ',', '.') }}</td>
             </tr>
         </tbody>
     </table>
+    
+    
 </body>
 </html>

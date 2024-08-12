@@ -19,11 +19,14 @@ use App\Http\Controllers\Admin\PelangganController;
 use App\Http\Controllers\Admin\PenjualanprodukController;
 use App\Http\Controllers\Admin\PermintaanprodukController;
 use App\Http\Controllers\Admin\Laporan_permintaanprodukController;
+use App\Http\Controllers\Admin\Pengiriman_tokoslawiController;
 use App\Http\Controllers\Admin\PengirimanbarangjadiController;
 use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\Admin\Stok_barangjadiController;
 use App\Http\Controllers\KategoriDropdownController;
 use App\Http\Controllers\SubcategoryController;
+use App\Http\Controllers\Toko_slawi\Pengiriman_tokoslawiController as Toko_slawiPengiriman_tokoslawiController;
+use App\Http\Controllers\Toko_slawi\Retur_tokoslawiController;
 use App\Models\Pengiriman_barangjadi;
 use Illuminate\Support\Facades\Route;
 
@@ -289,8 +292,12 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
     Route::resource('pengiriman_tokoslawi', \App\Http\Controllers\Toko_slawi\Pengiriman_tokoslawiController::class);
     Route::get('pengiriman_tokoslawi/unpost_pengiriman/{id}', [\App\Http\Controllers\Toko_slawi\Pengiriman_tokoslawiController::class, 'unpost_pengiriman']);
     Route::get('pengiriman_tokoslawi/posting_pengiriman/{id}', [\App\Http\Controllers\Toko_slawi\Pengiriman_tokoslawiController::class, 'posting_pengiriman']);
+    Route::get('/pengiriman_tokoslawi/{id}/print', [Toko_slawiPengiriman_tokoslawiController::class, 'print'])->name('pengiriman_tokoslawi.print');
 
     Route::resource('retur_tokoslawi', \App\Http\Controllers\Toko_slawi\Retur_tokoslawiController::class);
+    Route::get('retur_tokoslawi/unpost_retur/{id}', [\App\Http\Controllers\Toko_slawi\Retur_tokoslawiController::class, 'unpost_retur']);
+    Route::get('retur_tokoslawi/posting_retur/{id}', [\App\Http\Controllers\Toko_slawi\Retur_tokoslawiController::class, 'posting_retur']);
+    Route::get('/retur_tokoslawi/{id}/print', [Retur_tokoslawiController::class, 'print'])->name('retur_tokoslawi.print');
 
 });
 

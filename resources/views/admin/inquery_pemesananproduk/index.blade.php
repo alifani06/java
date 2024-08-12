@@ -97,6 +97,7 @@
                                 {{-- <th> <input type="checkbox" name="" id="select_all_ids"></th> --}}
                                 <th class="text-center">No</th>
                                 <th>Kode Pemesanan</th>
+                                <th>Cabang</th>
                                 <th>Tanggal Pemesanan</th>
                                 <th>Nama Pelanggan</th>
                                 <th>Produk</th>
@@ -112,6 +113,9 @@
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>
                                         {{ $item->kode_pemesanan }}
+                                    </td>
+                                    <td>
+                                        {{ $item->toko ? $item->toko->nama_toko : 'Non Member' }} {{-- Ganti nama_toko sesuai nama kolom yang ada pada tabel toko --}}
                                     </td>
                                     <td>
                                         {{ \Carbon\Carbon::parse($item->tanggal_pemesanan)->format('d/m/Y H:i') }}
@@ -139,7 +143,9 @@
                                             </button>
                                         @endif
                                         @if ($item->status == 'unpost')
-                                      
+                                        <button type="button" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-times"></i>
+                                        </button>
                                         @endif
                                      
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">

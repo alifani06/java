@@ -145,7 +145,10 @@
                                             </button>
                                         @endif
                                         @if ($item->status == 'unpost')
-                                      
+                                        <button type="submit"
+                                                class="btn btn-danger btn-sm mt-2">
+                                                <i class="fas fa-times"></i> 
+                                            </button>
                                         @endif
                                      
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">

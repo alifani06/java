@@ -257,6 +257,15 @@
             </a>
         </li>
         {{-- @endif --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        <li class="nav-item">
+            <a href="{{ url('toko_slawi/retur_tokoslawi') }}"
+                class="nav-link {{ request()->is('toko_slawi/retur_tokoslawi*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Inquery Retur Slawi</p>
+            </a>
+        </li>
+        {{-- @endif --}}
 
     </ul>
 </li>

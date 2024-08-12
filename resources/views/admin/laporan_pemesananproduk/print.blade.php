@@ -17,8 +17,9 @@
             font-size: 24px;
         }
         .text {
-            text-align: center;
+            /* text-align: center; */
             margin-bottom: 20px;
+            font-size: 12px;
         }
         table {
             width: 100%;
@@ -58,10 +59,24 @@
         <h1>LAPORAN PEMESANAN PRODUK</h1>
     </div>
     <div class="text">
+        @php
+            \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
+    
+            $formattedStartDate = \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y');
+            $formattedEndDate = \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y');
+            $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
+        @endphp
+    
         @if ($startDate && $endDate)
-            <p>Periode: {{ $startDate }} s/d {{ $endDate }}</p>
+            <p>
+                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }} &nbsp;&nbsp;&nbsp;
+                <span style="float: right;">{{ $currentDateTime }}</span>
+            </p>
         @else
-            <p>Periode: Tidak ada tanggal awal dan akhir yang diteruskan.</p>
+            <p>
+                Periode: Tidak ada tanggal awal dan akhir yang diteruskan. &nbsp;&nbsp;&nbsp; 
+                <span style="float: right;">{{ $currentDateTime }}</span>
+            </p>
         @endif
     </div>
 
@@ -75,7 +90,7 @@
                     <th>Tanggal Kirim/Ambil</th>
                     <th>Kode Produk</th>
                     <th>Nama Produk</th>
-                    <th>Benjaran</th>
+                    <th>Banjaran</th>
                     <th>Tegal</th>
                     <th>Slawi</th>
                     <th>Pemalang</th>
@@ -120,7 +135,7 @@
                     <th>Kode Pemesanan</th>
                     <th>Kode Produk</th>
                     <th>Nama Produk</th>
-                    <th>Toko Benjaran</th>
+                    <th>Toko Banjaran</th>
                     <th>Catatan</th>
                 </tr>
             </thead>

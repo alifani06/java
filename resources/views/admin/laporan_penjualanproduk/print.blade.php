@@ -44,8 +44,8 @@
         }
 
         table.no-border {
-        border-collapse: collapse;
-        width: 100%;
+            border-collapse: collapse;
+            width: 100%;
         }
 
         table.no-border, 
@@ -53,60 +53,88 @@
         table.no-border td {
             border: none !important;
         }
-    </style>
 
+        /* Tabel untuk total fee penjualan dan grand total */
+        .summary-table {
+            width: 50%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 20px;
+            border: none;
+        }
+        .summary-table td {
+            padding: 8px;
+            font-size: 12px;
+            border: none !important;
+        }
+        .summary-table .text-right {
+            text-align: right;
+        }
+        .summary-table .text-left {
+            text-align: left;
+        }
+        .summary-table .bold {
+            font-weight: bold;
+        }
+
+    </style>
 </head>
 <body>
    
     <div class="container">
-        <h1 style="text-align: center">LAPORAN PENJUALAN PRODUK</h1>
+        <h1 style="text-align: center; margin-bottom: 5px;">LAPORAN PENJUALAN PRODUK</h1>
+        <p style="text-align: center; font-size: 28px; font-weight: bold; margin-top: 0;">RINCI</p>
     </div>
-    <div class="text">
+    {{-- <div class="text">
         @if ($startDate && $endDate)
-            <p><strong>Periode: {{ $startDate }} s/d {{ $endDate }}</strong></p>
+            <p>
+                Periode: {{ $startDate }} s/d {{ $endDate }} &nbsp;&nbsp;&nbsp; Cabang: {{ $branchName }}
+                <span style="float: right;">{{ \Carbon\Carbon::now()->format('d-m-Y H:s') }}</span>
+            </p>
         @else
-            <p>Periode: Tidak ada tanggal awal dan akhir yang diteruskan.</p>
+            <p>
+                Periode: Tidak ada tanggal awal dan akhir yang diteruskan. &nbsp;&nbsp;&nbsp; Cabang: {{ $branchName }}
+                <span style="float: right;">{{ \Carbon\Carbon::now()->format('d-m-Y H:s') }}</span>
+            </p>
+        @endif
+    </div> --}}
+    
+    <div class="text">
+        @php
+            \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
+    
+            $formattedStartDate = \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y');
+            $formattedEndDate = \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y');
+            $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
+        @endphp
+    
+        @if ($startDate && $endDate)
+            <p>
+                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }} &nbsp;&nbsp;&nbsp; Cabang: {{ $branchName }}
+                <span style="float: right;">{{ $currentDateTime }}</span>
+            </p>
+        @else
+            <p>
+                Periode: Tidak ada tanggal awal dan akhir yang diteruskan. &nbsp;&nbsp;&nbsp; Cabang: {{ $branchName }}
+                <span style="float: right;">{{ $currentDateTime }}</span>
+            </p>
         @endif
     </div>
+    
+    
 
-    @php $globalCounter = 1; @endphp
+    @php 
+        $grandTotal = 0;
+        $grandTotalFee = 0;
+        $globalCounter = 1;
+    @endphp
 
     @foreach ($inquery->groupBy('kode_penjualan') as $kodePenjualan => $items)
         <div class="table-container">
             @php
                 $firstItem = $items->first();
                 $formattedDate = \Carbon\Carbon::parse($firstItem->tanggal_penjualan)->format('d/m/Y H:i');
-                $paymentMethod = $firstItem->payment_method ?? 'N/A'; 
-                $totalPayment = $firstItem->total_payment ?? 0; 
-                $amountPaid = $firstItem->amount_paid ?? 0; 
-                $change = $amountPaid - $totalPayment; 
             @endphp
-
-            @foreach ($items as $item)
-                <table class="no-border" cellpadding="2" cellspacing="0" style="width: 100%; margin-bottom: 0px;">
-                    <tr>
-                        <td style="text-align: left; font-size: 12px; width: 20%;">Kode Pelanggan</td>
-                        <td style="text-align: left; font-size: 12px; width: 30%;">
-                            <span class="content2">: {{ $item->kode_pelanggan ?? '-' }}</span>
-                        </td>
-                        <td style="text-align: left; font-size: 12px; width: 20%;">Alamat</td>
-                        <td style="text-align: left; font-size: 12px; width: 30%;">
-                            <span class="content2">: {{ $item->alamat ?? '-' }}</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: left; font-size: 12px; width: 20%;">Nama</td>
-                        <td style="text-align: left; font-size: 12px; width: 30%;">
-                            <span class="content2">: {{ $item->nama_pelanggan ? $item->nama_pelanggan : 'Non Member' }}</span>
-                        </td>
-                        <td style="text-align: left; font-size: 12px; width: 20%;">Handphone</td>
-                        <td style="text-align: left; font-size: 12px; width: 30%;">
-                            <span class="content2">: {{ $item->telp ?? '-' }}</span>
-                        </td>
-                    </tr>  
-                </table>
-            @endforeach
-
 
             <table>
                 <tr>
@@ -133,7 +161,7 @@
                             @php
                                 $totalForDetail = $detail->jumlah * $detail->harga;
                                 $subTotal += $totalForDetail;
-                                // Convert diskon to float for proper formatting
+                                $grandTotal += $totalForDetail; // Tambahkan ke grand total
                                 $diskon = floatval($detail->diskon);
                             @endphp
                             <tr>
@@ -164,10 +192,9 @@
                         <td colspan="7" class="text-right"><strong> Fee {{$item->metodepembayaran->fee}}%</strong></td>
                         <td>
                             @php
-                                // Menghapus semua karakter kecuali angka
                                 $total_fee = preg_replace('/[^\d]/', '', $item->total_fee);
-                                // Konversi ke tipe float
                                 $total_fee = (float) $total_fee;
+                                $grandTotalFee += $total_fee; // Tambahkan ke grand total fee
                             @endphp
                             {{ 'Rp. ' . number_format($total_fee, 0, ',', '.') }}
                         </td>
@@ -193,12 +220,24 @@
                   @endif
                 </tbody>
             </table>
+
+            
         </div>
     @endforeach
 
-    {{-- <div class="text">
-        <h3>Grand Total</h3>
-        <p>{{ number_format($inquery->sum('sub_total'), 0, ',', '.') }}</p>
-    </div> --}}
+ <!-- Tabel total penjualan fee dan grand total -->
+ <table style="width: 50%; margin-left: auto; margin-right: 0; background-color: yellow">
+    <tbody>
+        <tr>
+            <td style="text-align: right;  width: 70%;">Total Fee Penjualan</td>
+            <td style="text-align: left; font-weight: bold; width: 30%;">{{ 'Rp. ' .  number_format($grandTotalFee, 0, ',', '.') }}</td>
+        </tr>
+        <tr>
+            <td style="text-align: right; ">Grand Total</td>
+            <td style="text-align: left; font-weight: bold;">{{ 'Rp. ' .  number_format($grandTotal, 0, ',', '.') }}</td>
+        </tr>
+    </tbody>
+</table>
+
 </body>
 </html>

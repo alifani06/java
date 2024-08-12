@@ -21,7 +21,7 @@
             background-color: #f2f2f2;
         }
             .container {
-            width: 80mm; /* Adjusted width */
+            width: 85mm; /* Adjusted width */
             margin: 0 auto;
             border: 1px solid #ddd;
             padding: 20px;
@@ -306,7 +306,7 @@
                         </tr>
                         
                         <tr>
-                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kekurangan  </strong></td>
+                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kurang  </strong></td>
                             <td style="font-size: 8px;">{{'Rp.'.  number_format($dp->kekurangan_pemesanan, 0, ',', '.') }}</td>
                         </tr>
                     </tbody>

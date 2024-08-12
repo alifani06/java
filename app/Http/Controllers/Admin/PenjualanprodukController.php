@@ -136,39 +136,75 @@ class PenjualanprodukController extends Controller
         }
     }
    
-    public function fetchDataByKode(Request $request)
-    {
-        $kode = $request->input('kode_pemesanan');
-        $data = Dppemesanan::where('kode_dppemesanan', $kode)->with('pemesananproduk', 'detailpemesananproduk')->first();
+    // public function fetchDataByKode(Request $request)
+    // {
+    //     $kode = $request->input('kode_pemesanan');
+    //     $data = Dppemesanan::where('kode_dppemesanan', $kode)->with('pemesananproduk', 'detailpemesananproduk')->first();
 
-        if ($data) {
-            return response()->json([
-                'id' => $data->id,
-                'kode_dppemesanan' => $data->kode_dppemesanan,
-                'dp_pemesanan' => $data->dp_pemesanan,
-                'nama_pelanggan' => $data->pemesananproduk->nama_pelanggan ?? '',
-                'telp' => $data->pemesananproduk->telp ?? '',
-                'alamat' => $data->pemesananproduk->alamat ?? '',
-                'tanggal_kirim' => $data->pemesananproduk->tanggal_kirim ?? '',
-                'nama_penerima' => $data->pemesananproduk->nama_penerima ?? '',
-                'telp_penerima' => $data->pemesananproduk->telp_penerima ?? '',
-                'alamat_penerima' => $data->pemesananproduk->alamat_penerima ?? '',
-                'sub_total' => $data->pemesananproduk->sub_total ?? 0,
-                'dp_pemesanan' => $data->dp_pemesanan,
-                'kekurangan_pemesanan' => $data->kekurangan_pemesanan,
-                'products' => $data->detailpemesananproduk->map(function ($item) {
-                    return [
-                        'kode_produk' => $item->kode_produk,
-                        'nama_produk' => $item->nama_produk,
-                        'jumlah' => $item->jumlah,
-                        'total' => $item->total,
-                    ];
-                })
-            ]);
-        } else {
-            return response()->json([], 404);
-        }
+    //     if ($data) {
+    //         return response()->json([
+    //             'id' => $data->id,
+    //             'kode_dppemesanan' => $data->kode_dppemesanan,
+    //             'dp_pemesanan' => $data->dp_pemesanan,
+    //             'nama_pelanggan' => $data->pemesananproduk->nama_pelanggan ?? '',
+    //             'telp' => $data->pemesananproduk->telp ?? '',
+    //             'alamat' => $data->pemesananproduk->alamat ?? '',
+    //             'tanggal_kirim' => $data->pemesananproduk->tanggal_kirim ?? '',
+    //             'nama_penerima' => $data->pemesananproduk->nama_penerima ?? '',
+    //             'telp_penerima' => $data->pemesananproduk->telp_penerima ?? '',
+    //             'alamat_penerima' => $data->pemesananproduk->alamat_penerima ?? '',
+    //             'sub_total' => $data->pemesananproduk->sub_total ?? 0,
+    //             'dp_pemesanan' => $data->dp_pemesanan,
+    //             'kekurangan_pemesanan' => $data->kekurangan_pemesanan,
+    //             'products' => $data->detailpemesananproduk->map(function ($item) {
+    //                 return [
+    //                     'kode_produk' => $item->kode_produk,
+    //                     'nama_produk' => $item->nama_produk,
+    //                     'jumlah' => $item->jumlah,
+    //                     'total' => $item->total,
+    //                 ];
+    //             })
+    //         ]);
+    //     } else {
+    //         return response()->json([], 404);
+    //     }
+    // }
+    public function fetchDataByKode(Request $request)
+{
+    $kode = $request->input('kode_pemesanan');
+    $data = Dppemesanan::whereHas('pemesananproduk', function($query) use ($kode) {
+        $query->where('kode_pemesanan', $kode);
+    })->with('pemesananproduk', 'detailpemesananproduk')->first();
+
+    if ($data) {
+        return response()->json([
+            'id' => $data->id,
+            'kode_pemesanan' => $data->pemesananproduk->kode_pemesanan ?? '',
+            'dp_pemesanan' => $data->dp_pemesanan,
+            'nama_pelanggan' => $data->pemesananproduk->nama_pelanggan ?? '',
+            'telp' => $data->pemesananproduk->telp ?? '',
+            'alamat' => $data->pemesananproduk->alamat ?? '',
+            'tanggal_kirim' => $data->pemesananproduk->tanggal_kirim ?? '',
+            'nama_penerima' => $data->pemesananproduk->nama_penerima ?? '',
+            'telp_penerima' => $data->pemesananproduk->telp_penerima ?? '',
+            'alamat_penerima' => $data->pemesananproduk->alamat_penerima ?? '',
+            'sub_total' => $data->pemesananproduk->sub_total ?? 0,
+            'dp_pemesanan' => $data->dp_pemesanan,
+            'kekurangan_pemesanan' => $data->kekurangan_pemesanan,
+            'products' => $data->detailpemesananproduk->map(function ($item) {
+                return [
+                    'kode_produk' => $item->kode_produk,
+                    'nama_produk' => $item->nama_produk,
+                    'jumlah' => $item->jumlah,
+                    'total' => $item->total,
+                ];
+            })
+        ]);
+    } else {
+        return response()->json([], 404);
     }
+}
+
  
     public function kode()
     {

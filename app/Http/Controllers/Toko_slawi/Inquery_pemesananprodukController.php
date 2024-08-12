@@ -41,7 +41,7 @@ class Inquery_pemesananprodukController extends Controller
     $tanggal_pemesanan = $request->tanggal_pemesanan;
     $tanggal_akhir = $request->tanggal_akhir;
 
-    $inquery = Pemesananproduk::query();
+    $inquery = Pemesananproduk::with('toko');
 
     if ($status) {
         $inquery->where('status', $status);

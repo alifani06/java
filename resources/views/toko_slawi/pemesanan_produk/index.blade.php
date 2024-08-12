@@ -147,14 +147,12 @@
                                             </button>
                                         @endif
                                         @if ($item->status == 'unpost')
-                                        <form action="{{ route('pemesanan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
-                                            @csrf
-                                            @method('DELETE')
+                                      
                                             <button type="submit"
                                                 class="btn btn-danger btn-sm mt-2">
-                                                <i class="fas fa-trash-alt"></i> 
+                                                <i class="fas fa-times"></i> 
                                             </button>
-                                        </form>
+                                      
                                         @endif
                                      
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">

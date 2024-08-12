@@ -22,11 +22,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan pemesanan Produk</h1>
+                    <h1 class="m-0">Laporan Pemesanan Produk</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Laporan pemesanan Produk</li>
+                        <li class="breadcrumb-item active">Laporan Pemesanan Produk</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -58,7 +58,7 @@
                                 <select class="custom-select form-control" id="toko_id" name="toko_id">
                                     <option value="">- Pilih -</option>
                                     <option value="0" {{ $toko_id == '0' ? 'selected' : '' }}>Global</option>
-                                    <option value="1" {{ $toko_id == '1' ? 'selected' : '' }}>Benjaran</option>
+                                    <option value="1" {{ $toko_id == '1' ? 'selected' : '' }}>Banjaran</option>
                                     <option value="2" {{ $toko_id == '2' ? 'selected' : '' }}>Tegal</option>
                                     <option value="3" {{ $toko_id == '3' ? 'selected' : '' }}>Slawi</option>
                                     <option value="4" {{ $toko_id == '4' ? 'selected' : '' }}>Pemalang</option>
@@ -146,7 +146,7 @@
                                 <th>Kode Pemesanan</th>
                                 <th>Kode Produk</th>
                                 <th>Nama Produk</th>
-                                <th>Toko Benjaran</th>
+                                <th>Toko Banjaran</th>
                                 <th>Catatan</th>
                                 {{-- <th>Total</th> --}}
                             </tr>
@@ -489,6 +489,8 @@
             var form = document.createElement('form');
             form.method = 'GET';
             form.action = "{{ url('admin/print_pemesanan') }}";
+            form.target = "_blank";
+
     
             var startDateInput = document.createElement('input');
             startDateInput.type = 'hidden';

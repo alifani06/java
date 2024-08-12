@@ -30,6 +30,8 @@ use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Dompdf\Options;
+
 
 
 
@@ -181,8 +183,6 @@ class Laporan_penjualanprodukController extends Controller
     }
  
 
-
-//   rinci  
 // public function printReport(Request $request)
 // {
 //     $status = $request->input('status');
@@ -190,6 +190,7 @@ class Laporan_penjualanprodukController extends Controller
 //     $tanggalAkhir = $request->input('tanggal_akhir');
 //     $produk = $request->input('produk');
 //     $tokoId = $request->input('toko_id');
+//     $klasifikasiId = $request->input('klasifikasi_id');
 
 //     // Initialize the query
 //     $query = Penjualanproduk::query();
@@ -227,11 +228,18 @@ class Laporan_penjualanprodukController extends Controller
 //         $query->where('toko_id', $tokoId);
 //     }
 
+//     // Apply classification filter
+//     if ($klasifikasiId) {
+//         $query->whereHas('detailpenjualanproduk.produk.klasifikasi', function ($q) use ($klasifikasiId) {
+//             $q->where('id', $klasifikasiId);
+//         });
+//     }
+
 //     // Order results
 //     $query->orderBy('id', 'DESC');
 
 //     // Load related data
-//     $inquery = $query->with('toko', 'detailpenjualanproduk', 'metodePembayaran')->get();
+//     $inquery = $query->with(['toko', 'detailpenjualanproduk.produk.klasifikasi', 'metodePembayaran'])->get();
 
 //     // Format dates for PDF view
 //     $formattedStartDate = $tanggalPenjualan ? Carbon::parse($tanggalPenjualan)->format('d-m-Y') : 'N/A';
@@ -298,6 +306,15 @@ public function printReport(Request $request)
         });
     }
 
+    // Menentukan nama toko
+    if ($tokoId) {
+        $query->where('toko_id', $tokoId);
+        $toko = Toko::find($tokoId); // Ambil nama toko berdasarkan ID
+        $branchName = $toko ? $toko->nama_toko : 'Semua Toko'; // Nama toko atau default jika tidak ditemukan
+    } else {
+        $branchName = 'Semua Toko'; // Default jika tidak ada filter toko
+    }
+
     // Order results
     $query->orderBy('id', 'DESC');
 
@@ -308,18 +325,147 @@ public function printReport(Request $request)
     $formattedStartDate = $tanggalPenjualan ? Carbon::parse($tanggalPenjualan)->format('d-m-Y') : 'N/A';
     $formattedEndDate = $tanggalAkhir ? Carbon::parse($tanggalAkhir)->format('d-m-Y') : 'N/A';
 
-    // Generate PDF
-    $pdf = FacadePdf::loadView('admin.laporan_penjualanproduk.print', [
+    // Inisialisasi DOMPDF
+    $options = new Options();
+    $options->set('isHtml5ParserEnabled', true);
+    $options->set('isRemoteEnabled', true); // Jika menggunakan URL eksternal untuk gambar atau CSS
+
+    $dompdf = new Dompdf($options);
+
+    // Memuat konten HTML dari view
+    $html = view('admin.laporan_penjualanproduk.print', [
         'inquery' => $inquery,
         'startDate' => $formattedStartDate,
         'endDate' => $formattedEndDate,
-    ]);
+        'branchName' => $branchName, // Sertakan variabel nama cabang toko
+    ])->render();
 
-    return $pdf->stream('laporan_penjualan_produk.pdf');
+    $dompdf->loadHtml($html);
+
+    // Set ukuran kertas dan orientasi
+    $dompdf->setPaper('A4', 'portrait');
+
+    // Render PDF
+    $dompdf->render();
+
+    // Menambahkan nomor halaman di kanan bawah
+    $canvas = $dompdf->getCanvas();
+    $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+        $text = "Halaman $pageNumber dari $pageCount";
+        $font = $fontMetrics->getFont('Arial', 'normal');
+        $size = 10;
+
+        // Menghitung lebar teks
+        $width = $fontMetrics->getTextWidth($text, $font, $size);
+
+        // Mengatur koordinat X dan Y
+        $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+        $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+
+        // Menambahkan teks ke posisi yang ditentukan
+        $canvas->text($x, $y, $text, $font, $size);
+    });
+
+    // Output PDF ke browser
+    return $dompdf->stream('laporan_penjualan_produk.pdf', ['Attachment' => false]);
 }
 
 
-// global
+// public function printReportglobal(Request $request)
+// {
+//     $status = $request->status;
+//     $tanggal_penjualan = $request->tanggal_penjualan;
+//     $tanggal_akhir = $request->tanggal_akhir;
+//     $produk = $request->produk;
+//     $toko_id = $request->toko_id;
+
+//     // Query dasar untuk mengambil data penjualan produk
+//     $query = Penjualanproduk::query();
+
+//     // Filter berdasarkan status
+//     if ($status) {
+//         $query->where('status', $status);
+//     }
+
+//     // Filter berdasarkan tanggal penjualan
+//     if ($tanggal_penjualan && $tanggal_akhir) {
+//         $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+//         $query->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+//     } elseif ($tanggal_penjualan) {
+//         $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+//         $query->where('tanggal_penjualan', '>=', $tanggal_penjualan);
+//     } elseif ($tanggal_akhir) {
+//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+//         $query->where('tanggal_penjualan', '<=', $tanggal_akhir);
+//     } else {
+//         $query->whereDate('tanggal_penjualan', Carbon::today());
+//     }
+
+//     // Filter berdasarkan produk
+//     if ($produk) {
+//         $query->whereHas('detailpenjualanproduk', function ($query) use ($produk) {
+//             $query->where('produk_id', $produk);
+//         });
+//     }
+
+//     // Filter berdasarkan toko
+//     if ($toko_id) {
+//         $query->where('toko_id', $toko_id);
+//     }
+
+//     $query->orderBy('id', 'DESC');
+
+//     $inquery = $query->with('toko', 'detailpenjualanproduk')->get();
+
+//     // Format tanggal untuk tampilan PDF
+//     $formattedStartDate = $tanggal_penjualan ? Carbon::parse($tanggal_penjualan)->format('d-m-Y') : null;
+//     $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : null;
+//         // Inisialisasi DOMPDF
+//         $options = new Options();
+//         $options->set('isHtml5ParserEnabled', true);
+//         $options->set('isRemoteEnabled', true); // Jika menggunakan URL eksternal untuk gambar atau CSS
+    
+//         $dompdf = new Dompdf($options);
+    
+//         // Memuat konten HTML dari view
+//         $html = view('admin.laporan_penjualanproduk.printglobal', [
+//             'inquery' => $inquery,
+//             'startDate' => $formattedStartDate,
+//             'endDate' => $formattedEndDate,
+//         ])->render();
+    
+//         $dompdf->loadHtml($html);
+    
+//         // Set ukuran kertas dan orientasi
+//         $dompdf->setPaper('A4', 'portrait');
+    
+//         // Render PDF
+//         $dompdf->render();
+    
+//         // Menambahkan nomor halaman di kanan bawah
+//         $canvas = $dompdf->getCanvas();
+//         $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+//             $text = "Halaman $pageNumber dari $pageCount";
+//             $font = $fontMetrics->getFont('Arial', 'normal');
+//             $size = 10;
+            
+//             // Menghitung lebar teks
+//             $width = $fontMetrics->getTextWidth($text, $font, $size);
+            
+//             // Mengatur koordinat X dan Y
+//             $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+//             $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+        
+//             // Menambahkan teks ke posisi yang ditentukan
+//             $canvas->text($x, $y, $text, $font, $size);
+//         });
+        
+    
+//         // Output PDF ke browser
+//         return $dompdf->stream('laporan_penjualan_produk.pdf', ['Attachment' => false]);
+// }
+    
 public function printReportglobal(Request $request)
 {
     $status = $request->status;
@@ -361,26 +507,64 @@ public function printReportglobal(Request $request)
     // Filter berdasarkan toko
     if ($toko_id) {
         $query->where('toko_id', $toko_id);
+        $toko = Toko::find($toko_id); // Ambil nama toko berdasarkan ID
+        $branchName = $toko ? $toko->nama_toko : 'Semua Toko'; // Nama toko atau default jika tidak ditemukan
+    } else {
+        $branchName = 'Semua Toko'; // Default jika tidak ada filter toko
     }
 
     $query->orderBy('id', 'DESC');
 
     $inquery = $query->with('toko', 'detailpenjualanproduk')->get();
 
-      // Format tanggal untuk tampilan PDF
-      $formattedStartDate = $tanggal_penjualan ? Carbon::parse($tanggal_penjualan)->format('d-m-Y') : null;
-      $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : null;
+    // Format tanggal untuk tampilan PDF
+    $formattedStartDate = $tanggal_penjualan ? Carbon::parse($tanggal_penjualan)->format('d-m-Y') : null;
+    $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : null;
 
-      $pdf = FacadePdf::loadView('admin.laporan_penjualanproduk.printglobal', [
+    // Inisialisasi DOMPDF
+    $options = new Options();
+    $options->set('isHtml5ParserEnabled', true);
+    $options->set('isRemoteEnabled', true); // Jika menggunakan URL eksternal untuk gambar atau CSS
+
+    $dompdf = new Dompdf($options);
+
+    // Memuat konten HTML dari view
+    $html = view('admin.laporan_penjualanproduk.printglobal', [
         'inquery' => $inquery,
         'startDate' => $formattedStartDate,
         'endDate' => $formattedEndDate,
-    ]);
+        'branchName' => $branchName, // Sertakan variabel nama cabang toko
+    ])->render();
 
-    return $pdf->stream('laporan_penjualan_produk.pdf');
+    $dompdf->loadHtml($html);
+
+    // Set ukuran kertas dan orientasi
+    $dompdf->setPaper('A4', 'portrait');
+
+    // Render PDF
+    $dompdf->render();
+
+    // Menambahkan nomor halaman di kanan bawah
+    $canvas = $dompdf->getCanvas();
+    $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+        $text = "Halaman $pageNumber dari $pageCount";
+        $font = $fontMetrics->getFont('Arial', 'normal');
+        $size = 10;
+
+        // Menghitung lebar teks
+        $width = $fontMetrics->getTextWidth($text, $font, $size);
+
+        // Mengatur koordinat X dan Y
+        $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+        $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+
+        // Menambahkan teks ke posisi yang ditentukan
+        $canvas->text($x, $y, $text, $font, $size);
+    });
+
+    // Output PDF ke browser
+    return $dompdf->stream('laporan_penjualan_produk.pdf', ['Attachment' => false]);
 }
-   
-
 
 public function unpost_penjualanproduk($id)
 {

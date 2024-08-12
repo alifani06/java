@@ -24,6 +24,7 @@ class Retur_tokoslawi extends Model
         'status',
         'oper',
         'kode_retur',
+        'toko_id',
      
     ];
 

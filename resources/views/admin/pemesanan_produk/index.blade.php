@@ -70,12 +70,13 @@
                                 {{-- <th> <input type="checkbox" name="" id="select_all_ids"></th> --}}
                                 <th class="text-center">No</th>
                                 <th>Kode Pemesanan</th>
+                                <th>Cabang</th>
                                 <th>Tanggal Pemesanan</th>
                                 <th>Nama Pelanggan</th>
                                 <th>Produk</th>
                                 <th>Total</th>
                                 <th>DP</th>
-                                <th>Kekurangan</th>
+                                {{-- <th>Kekurangan</th> --}}
                                 <th>Status</th>
                                 <th class="text-center" width="20">Opsi</th>
                             </tr>
@@ -87,6 +88,9 @@
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>
                                         {{ $item->kode_pemesanan }}
+                                    </td>
+                                    <td>
+                                        {{ $item->toko ? $item->toko->nama_toko : 'Non Member' }} {{-- Ganti nama_toko sesuai nama kolom yang ada pada tabel toko --}}
                                     </td>
                                     <td>
                                         {{ \Carbon\Carbon::parse($item->tanggal_pemesanan)->format('d/m/Y H:i') }}
@@ -112,13 +116,13 @@
                                             N/A
                                         @endif
                                     </td>
-                                    <td>
+                                    {{-- <td>
                                         @if ($item->dppemesanan)
                                             {{ number_format($item->dppemesanan->kekurangan_pemesanan, 0, ',', '.') }}
                                         @else
                                             N/A
                                         @endif
-                                    </td>
+                                    </td> --}}
                                     <td>
                                         @if ($item->dppemesanan)
                                             @php
@@ -147,14 +151,12 @@
                                             </button>
                                         @endif
                                         @if ($item->status == 'unpost')
-                                        <form action="{{ route('pemesanan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
-                                            @csrf
-                                            @method('DELETE')
+                                       
                                             <button type="submit"
                                                 class="btn btn-danger btn-sm mt-2">
-                                                <i class="fas fa-trash-alt"></i> 
+                                                <i class="fas fa-times"></i> 
                                             </button>
-                                        </form>
+                                  
                                         @endif
                                      
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">

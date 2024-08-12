@@ -83,6 +83,19 @@ public function posting_penjualanproduk($id)
 }
 
 
+public function unpost_penjualanproduk($id)
+{
+    $item = Penjualanproduk::where('id', $id)->first();
+
+    
+        // Update status deposit_driver menjadi 'posting'
+        $item->update([
+            'status' => 'unpost'
+        ]);
+    return back()->with('success', 'Berhasil');
+}
+
+
 
 
 

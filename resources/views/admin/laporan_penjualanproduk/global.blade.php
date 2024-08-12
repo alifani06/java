@@ -109,10 +109,10 @@
                                 <label for="produk">(Pilih Produk)</label>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <button type="submit" class="btn btn-outline-primary btn-block">
+                                <button type="submit" class="btn btn-outline-primary btn-block" onclick="return validateDates()">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
-                                <button type="button" class="btn btn-primary btn-block" onclick="printReport()" target="_blank">
+                                <button type="button" class="btn btn-primary btn-block" onclick="return validateDates() && printReportglobal()" target="_blank">
                                     <i class="fas fa-print"></i> Cetak
                                 </button>
                             </div>
@@ -187,6 +187,21 @@
             </div>
         </div>
     </section>
+
+    <script>
+        function validateDates() {
+            const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
+            const tanggalAkhir = document.getElementById('tanggal_akhir').value;
+    
+            if (!tanggalPenjualan || !tanggalAkhir) {
+                alert('Harap atur tanggal penjualan dan tanggal akhir terlebih dahulu.');
+                return false; // Cegah pengiriman formulir
+            }
+            return true; // Lanjutkan pengiriman formulir jika valid
+        }
+    
+  
+    </script>
 
     <!-- /.card -->
     <script>

@@ -178,57 +178,9 @@
                                     </td>
                                 </tr>
                             @endforeach
-                        </tbody>
-                        {{-- <tbody>
-                            @foreach ($stokBarangJadi as $kodeInput => $stokBarangJadiItems)
-                            @php
-                                $firstItem = $stokBarangJadiItems->first();
-                            @endphp
-                                <tr class="dropdown"{{$firstItem->id }}>
-                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                <td>{{ $firstItem->kode_input }}</td>
-                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_input)->format('d/m/Y H:i') }}
-                                <td class="text-center">
-                                    @if ($firstItem->status == 'posting')
-                                        <button type="button" class="btn btn-success btn-sm">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                    @endif
-                                    @if ($firstItem->status == 'unpost')
-                                    <button type="button" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                    @endif
-                                 
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        @if ($firstItem->status == 'unpost')
-                                           
-                                                <a class="dropdown-item posting-btn"
-                                                    data-memo-id="{{ $firstItem->id }}">Posting</a>
-                                         
-                                                <a class="dropdown-item"
-                                                    href="{{ url('admin/inquery_stokbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
-                                            
-                                                <a class="dropdown-item"
-                                                href="{{ url('/admin/inquery_stokbarangjadi/' . $firstItem->id ) }}">Show</a>
-                                                @endif
-                                        @if ($firstItem->status == 'posting')
-                                                <a class="dropdown-item unpost-btn"
-                                                    data-memo-id="{{ $firstItem->id }}">Unpost</a>
-                                                <a class="dropdown-item"
-                                                href="{{ url('admin/inquery_stokbarangjadi/' . $firstItem->id ) }}">Show</a>
-                                        @endif
-                                       
-                                    </div>
-                                </td>
-                            
-                            </tr>
-                     
-                        @endforeach
-                        </tbody> --}}
+                            </tbody>
                     </table> 
                
-                    
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
                         aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">

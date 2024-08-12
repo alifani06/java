@@ -107,6 +107,7 @@
                             <tr>
                                 <th class="text-center">No</th>
                                 <th>Kode Permintaan</th>
+                                <th>Cabang</th>
                                 <th>Tanggal Permintaan</th>
                                 <th>Jumlah Produk</th>
                                 <th>Status</th>
@@ -117,6 +118,12 @@
                                 <tr class="dropdown" data-permintaan-id="{{ $permintaan->id }}">
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $permintaan->kode_permintaan }}</td>
+                                    <td>
+                                        @php
+                                            $tokoNames = $permintaan->detailpermintaanproduks->pluck('toko.nama_toko')->unique()->implode(', ');
+                                        @endphp
+                                        {{ $tokoNames ?: 'Non Member' }}
+                                    </td>
                                     <td>{{ $permintaan->created_at->format('d-m-Y') }}</td>
                                     <td>{{ $permintaan->detailpermintaanproduks->count() }}</td>
                                     <td class="text-center">

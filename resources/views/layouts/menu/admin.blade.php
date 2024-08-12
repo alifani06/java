@@ -384,6 +384,15 @@
             </a>
         </li>
         {{-- @endif --}}
+
+          <li class="nav-item">
+            <a href="{{ url('admin/inquery_returbarangjadi') }}"
+                class="nav-link {{ request()->is('admin/inquery_returbarangjadi*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Inquery Retur Barang</p>
+            </a>
+        </li>
+        {{-- @endif --}}
     </ul>
 </li>
 
@@ -479,11 +488,10 @@
     </ul>
 </li>
 
-<li
+{{-- <li
     class="nav-item {{ request()->is('admin/stok_tokoslawi*') ||
     request()->is('admin/retur_tokoslawi*')||
     request()->is('admin/pengiriman_tokoslawi*')
-    // request()->is('admin/input*')
   
         ? 'menu-open'
         : '' }}">
@@ -491,7 +499,6 @@
         class="nav-link {{ request()->is('admin/stok_tokoslawi*') ||
         request()->is('admin/retur_tokoslawi*')|| 
         request()->is('admin/rpengirimantokoslawi*') 
-        // request()->is('admin/input*')
       
             ? 'active'
             : '' }}">
@@ -503,7 +510,7 @@
         </p>
     </a>
     <ul class="nav nav-treeview">
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        @if (auth()->check() && auth()->user()->menu['karyawan'])
         <li class="nav-item">
             <a href="{{ url('admin/stok_tokoslawi') }}"
                 class="nav-link {{ request()->is('admin/stok_tokoslawi*') ? 'active' : '' }}">
@@ -511,9 +518,9 @@
                 <p style="font-size: 14px;">Stok Toko Slawi</p>
             </a>
         </li>
-        {{-- @endif --}}
+        @endif
 
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        @if (auth()->check() && auth()->user()->menu['karyawan'])
         <li class="nav-item">
             <a href="{{ url('admin/retur_tokoslawi') }}"
                 class="nav-link {{ request()->is('admin/retur_tokoslawi*') ? 'active' : '' }}">
@@ -521,9 +528,9 @@
                 <p style="font-size: 14px;">Retur Toko Slawi</p>
             </a>
         </li>
-        {{-- @endif --}}
+        @endif
 
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        @if (auth()->check() && auth()->user()->menu['karyawan'])
         <li class="nav-item">
             <a href="{{ url('admin/pengiriman_tokoslawi') }}"
                 class="nav-link {{ request()->is('admin/pengiriman_tokoslawi*') ? 'active' : '' }}">
@@ -531,9 +538,9 @@
                 <p style="font-size: 14px;">Pengiriman Toko Slawi</p>
             </a>
         </li>
-        {{-- @endif --}}
+        @endif
     </ul>
-</li>
+</li> --}}
 
 
 
