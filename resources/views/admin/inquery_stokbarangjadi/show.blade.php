@@ -98,7 +98,9 @@
                 <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
             </div>
             <div>
-                <span class="title">PT JAVA BAKERY</span><br>
+                <span class="title">PT JAVA BAKERY FACTORY</span><br>
+                <span class="address">JL. HOS COKRO AMINOTO NO 5 SLAWI TEGAL</span><br>
+                <span class="contact">Telp / Fax, Email :</span>
             </div>
             <br>
             <hr class="divider">
@@ -121,6 +123,7 @@
                 <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Divisi</strong> </span>
                 <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $klasifikasi }}</span>
             </p>
+        
         </div>
 
         <!-- Detail Produk -->

@@ -111,7 +111,7 @@
         @if ($startDate && $endDate)
             <p>
                 Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }} &nbsp;&nbsp;&nbsp; Cabang: {{ $branchName }}
-                <span style="float: right;">{{ $currentDateTime }}</span>
+                <span style="float: right; font-style: italic">{{ $currentDateTime }}</span>
             </p>
         @else
             <p>

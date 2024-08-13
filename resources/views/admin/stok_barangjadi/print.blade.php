@@ -110,6 +110,20 @@
         .notes p {
             margin: 0;
         }
+        .footer {
+            position: absolute;
+            bottom: 2;
+            width: 100%;
+            text-align: left;
+            font-size: 12px;
+         
+        }
+        .info-table {
+            border: none;
+        }
+        .info-table td {
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -119,7 +133,7 @@
             <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
         </div>
         <div>
-            <span class="title">PT JAVA BAKERY</span><br>
+            <span class="title">PT JAVA BAKERY FACTORY</span><br>
             <span class="address">JL. HOS COKRO AMINOTO NO 5 SLAWI TEGAL</span><br>
             <span class="contact">Telp / Fax, Email :</span>
         </div>
@@ -130,21 +144,25 @@
     <!-- Judul Surat -->
     <div class="change-header">LAPORAN STOK BARANG JADI</div>
 
-    <!-- Informasi Permintaan -->
-    <div>
-        <p>
-            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Permintaan</strong></span>
-            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $detailStokBarangJadi->first()->kode_input }}</span>
-        </p>
-        <p>
-            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal</strong> </span>
-            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ \Carbon\Carbon::now()->format('d-m-Y') }}</span>
-        </p>
-        <p>
-            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Divisi</strong> </span>
-            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $klasifikasi }}</span>
-        </p>
-    </div>
+
+    <table class="info-table" style="width: 100%; margin-bottom: 10px;">
+        <tr>
+            <td style="width: 20%;"><strong>Kode Permintaan</strong></td>
+            <td style="width: 40%;">: {{ $detailStokBarangJadi->first()->kode_input }}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><strong>Tanggal</strong></td>
+            <td>: {{ \Carbon\Carbon::now()->format('d-m-Y') }}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><strong>Divisi</strong></td>
+            <td>: {{ $klasifikasi }}</td>
+            <td style="text-align: right; width: 30%; font-style: italic"><strong>Cetak :</strong> {{ \Carbon\Carbon::now()->format('d-m-Y H:i') }}</td>
+
+        </tr>
+    </table>
 
     <!-- Detail Produk -->
     <table>
@@ -158,7 +176,13 @@
             </tr>
         </thead>
         <tbody>
+            @php
+                $totalJumlah = 0;
+            @endphp
             @foreach($detailStokBarangJadi as $key => $detail)
+            @php
+                $totalJumlah += $detail->stok;
+            @endphp
             <tr>
                 <td>{{ $key + 1 }}</td> 
                 <td>{{ $detail->produk->kode_produk }}</td>
@@ -167,9 +191,12 @@
                 <td>{{ $detail->stok }}</td>
             </tr>
             @endforeach
+            <tr class="total-row">
+                <td colspan="4">Total</td>
+                <td>{{ $totalJumlah }}</td>
+            </tr>
         </tbody>
     </table>
-
     <!-- Tanda Tangan -->
     <div class="signature-container">
         <div class="signature-row">
@@ -190,6 +217,9 @@
             </div>
         </div>
     </div>
+    {{-- <div class="footer">
+        Dicetak pada: {{ \Carbon\Carbon::now()->format('d-m-Y H:i:s') }}
+    </div> --}}
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </html>

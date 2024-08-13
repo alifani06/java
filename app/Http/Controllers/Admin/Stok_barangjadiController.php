@@ -37,6 +37,7 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Dompdf\Options;
 
 
 
@@ -165,10 +166,51 @@ public function store(Request $request)
     // Ambil nama klasifikasi/divisi, misalnya dari produk atau tabel klasifikasi
     $klasifikasi = $detailStokBarangJadi->first()->produk->klasifikasi->nama ?? 'Tidak Diketahui';
 
-    $pdf = FacadePdf::loadView('admin.stok_barangjadi.print', compact('kodeInput', 'detailStokBarangJadi', 'klasifikasi'));
+    // Inisialisasi DOMPDF
+    $options = new Options();
+    $options->set('isHtml5ParserEnabled', true);
+    $options->set('isRemoteEnabled', true); // Jika menggunakan URL eksternal untuk gambar atau CSS
 
-    return $pdf->stream('surat_permintaan_produk.pdf');
-}
+    $dompdf = new Dompdf($options);
+
+    // Memuat konten HTML dari view
+    $html = view('admin.stok_barangjadi.print', [
+        'detailStokBarangJadi' => $detailStokBarangJadi,
+        'klasifikasi' => $klasifikasi,
+        'kodeInput' => $kodeInput,
+
+    ])->render();
+
+    $dompdf->loadHtml($html);
+
+    // Set ukuran kertas dan orientasi
+    $dompdf->setPaper('A4', 'portrait');
+
+    // Render PDF
+    $dompdf->render();
+
+    // Menambahkan nomor halaman di kanan bawah
+    $canvas = $dompdf->getCanvas();
+    $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+        $text = "Page $pageNumber of $pageCount";
+        $font = $fontMetrics->getFont('Arial', 'normal');
+        $size = 10;
+
+        // Menghitung lebar teks
+        $width = $fontMetrics->getTextWidth($text, $font, $size);
+
+        // Mengatur koordinat X dan Y
+        $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+        $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+
+        // Menambahkan teks ke posisi yang ditentukan
+        $canvas->text($x, $y, $text, $font, $size);
+    });
+
+    // Output PDF ke browser
+    return $dompdf->stream('laporan_stok_barangjadi.pdf', ['Attachment' => false]);
+
+    }
 
 
 public function unpost_stokbarangjadi($id)

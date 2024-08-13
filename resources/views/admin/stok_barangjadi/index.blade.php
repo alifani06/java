@@ -111,8 +111,8 @@
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($firstItem->status == 'unpost')
                                                     <a class="dropdown-item posting-btn"data-memo-id="{{ $firstItem->id }}">Posting</a>
-                                                    <a class="dropdown-item" href="{{ url('admin/tok_barangjadi/' . $firstItem->id . '/edit') }}">Update</a>
-                                                    <a class="dropdown-item" href="{{ url('admin/tok_barangjadi/' . $firstItem->id) }}">Show</a>
+                                                    <a class="dropdown-item" href="{{ url('admin/stok_barangjadi/' . $firstItem->id . '/edit') }}">Update</a>
+                                                    <a class="dropdown-item" href="{{ url('admin/stok_barangjadi/' . $firstItem->id) }}">Show</a>
                                                     <form action="{{ url('admin/tok_barangjadi/' . $firstItem->id) }}" method="POST" style="display: inline;">
                                                         @csrf
                                                         @method('DELETE')
