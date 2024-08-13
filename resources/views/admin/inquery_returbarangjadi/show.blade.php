@@ -121,7 +121,7 @@
         {{-- <hr class="divider"> --}}
 
         <!-- Judul Surat -->
-        <div class="change-header">SURAT RETUR BARANG JADI</div>
+        <div class="change-header">SURAT PEMUSNAHAN BARANG JADI</div>
 
         <!-- Informasi Permintaan -->
         <div>

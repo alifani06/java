@@ -228,31 +228,14 @@ public function unpost_retur($id)
     Retur_barangjadi::where('kode_retur', $kodeInput)->update([
         'status' => 'unpost'
     ]);
+    
+    // Update status untuk semua retur_tokoslawi dengan kode_retur yang sama
+    Retur_tokoslawi::where('kode_retur', $kodeInput)->update([
+        'status' => 'unpost'
+    ]);
+
     return back()->with('success', 'Berhasil mengubah status semua produk dan detail terkait dengan kode_input yang sama.');
 }
-
-
-// public function posting_retur($id)
-// {
-//    // Ambil data Retur_tokoslawi berdasarkan ID
-//     $pengiriman = Retur_barangjadi::where('id', $id)->first();
-
-//     // Pastikan data ditemukan
-//     if (!$pengiriman) {
-//         return response()->json(['error' => 'Data tidak ditemukan.'], 404);
-//     }
-
-//     // Ambil kode_retur dari pengiriman yang diambil
-//     $kodePengiriman = $pengiriman->kode_retur;
-
-//     // Update status untuk semua Retur_barangjadi dengan kode_retur yang sama
-//     Retur_barangjadi::where('kode_retur', $kodePengiriman)->update([
-//         'status' => 'posting'
-//     ]);
-
-
-//     return response()->json(['success' => 'Berhasil mengubah status semua produk dan detail terkait dengan kode_retur yang sama.']);
-// }
 
 public function posting_retur($id)
 {
@@ -283,7 +266,7 @@ public function posting_retur($id)
 public function show($id)
 {
     // Ambil kode_retur dari pengiriman_barangjadi berdasarkan id
-    $detailStokBarangJadi = Retur_tokoslawi::where('id', $id)->value('kode_retur');
+    $detailStokBarangJadi = Retur_barangjadi::where('id', $id)->value('kode_retur');
     
     // Jika kode_retur tidak ditemukan, tampilkan pesan error
     if (!$detailStokBarangJadi) {
@@ -291,17 +274,17 @@ public function show($id)
     }
     
     // Ambil semua data dengan kode_retur yang sama
-    $pengirimanBarangJadi = Retur_tokoslawi::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
+    $pengirimanBarangJadi = Retur_barangjadi::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
     
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    return view('tok.inquery_returslawi.show', compact('pengirimanBarangJadi', 'firstItem'));
+    return view('admin.inquery_returbarangjadi.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
 public function print($id)
     {
-        $detailStokBarangJadi = Retur_tokoslawi::where('id', $id)->value('kode_retur');
+        $detailStokBarangJadi = Retur_barangjadi::where('id', $id)->value('kode_retur');
     
         // Jika kode_retur tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -309,12 +292,12 @@ public function print($id)
         }
         
         // Ambil semua data dengan kode_retur yang sama
-        $pengirimanBarangJadi = Retur_tokoslawi::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
+        $pengirimanBarangJadi = Retur_barangjadi::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
         
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        $pdf = FacadePdf::loadView('toko_slawi.inquery_returslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
+        $pdf = FacadePdf::loadView('admin.inquery_returbarangjadi.print', compact('pengirimanBarangJadi', 'firstItem'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
         
