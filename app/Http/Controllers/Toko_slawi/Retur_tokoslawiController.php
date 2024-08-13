@@ -278,7 +278,7 @@ public function store(Request $request)
         }
     }
 
-    return redirect()->route('toko_slawi.retur_tokoslawi.index')->with('success', 'Data retur barang berhasil disimpan.');
+    return redirect()->route('retur_tokoslawi.index')->with('success', 'Data retur barang berhasil disimpan.');
 }
 
 

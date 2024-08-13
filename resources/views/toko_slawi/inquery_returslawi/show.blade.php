@@ -161,12 +161,12 @@
 
         <div class="d-flex justify-content-between">
             <div>
-                <a href="{{ url('admin/inquery_returbarangjadi') }}" class="btn btn-primary btn-sm">
+                <a href="{{ url('toko_slawi/inquery_returslawi') }}" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus"></i> Kembali
                 </a>
             </div>
             <div>
-                <a href="{{ route('inquery_returbarangjadi.print', $pengirimanBarangJadi->first()->id) }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
+                <a href="{{ route('inquery_returslawi.print', $pengirimanBarangJadi->first()->id) }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
                     <i class="fas fa-print"></i> Cetak 
                 </a>
             </div>  
