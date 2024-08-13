@@ -32,7 +32,7 @@
         }
         .header .title {
             font-weight: bold;
-            font-size: 40px;
+            font-size: 30px;
         }
         .header .address, .header .contact {
             font-size: 12px;
@@ -86,19 +86,19 @@
         .signaturea {
             flex: 1;
             text-align: left;
-            margin: 0 10px; /* Space between signatures */
+            margin: 0 10px;
         }
         .signatureb {
             flex: 1;
             text-align: center;
             margin: 0 10px;
-            margin-top: -200px; /* Space between signatures */
+            margin-top: -200px;
         }
         .signaturec {
             flex: 1;
             text-align: right;
-            margin: 0 10px; 
-            margin-top: -200px; /* Space between signatures */
+            margin: 0 10px;
+            margin-top: -200px;
         }
         .signature p {
             margin: 0;
@@ -150,65 +150,58 @@
     <!-- Kop Surat -->
     <table class="header" style="margin-top: 2px;">
         <tr>
-            {{-- <td style="text-align: left; color: white">
-                <div>
-                    <span class="title">PT JAVA BAKERY</span><br>
-                    <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
-                </div>
-            </td> --}}
             <td style="text-align: center;">
                 <div>
-                    <span class="title">PT JAVA BAKERY</span><br>
+                    <span class="title">PT JAVA BAKERY FACTORY</span><br>
                     <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
                 </div>                
             </td>
-            {{-- <td style="text-align: left; color: white" >
-                <div class="title">JAVA BAKERY</div>
-                <p style="margin-bottom: 2px;">Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
-                <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
-            </td> --}}
         </tr>
     </table>
-    {{-- <hr class="divider"> --}}
 
-    <!-- Judul Surat -->
     <div class="change-header">LAPORAN PENGIRIMAN BARANG JADI</div>
 
     <!-- Informasi Permintaan -->
-    <div>
+    {{-- <div>
         <p style="margin-bottom: 2px;">
             <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Pengiriman</strong></span>
-            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $pengirimanBarangJadi->first()->kode_pengiriman }}</span>
+            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $firstItem->first()->kode_pengiriman }}</span>
         </p>
         <p>
             <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal</strong> </span>
             <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ \Carbon\Carbon::now()->format('d-m-Y') }}</span>
         </p>
-    </div>
+    </div> --}}
 
     <!-- Detail Produk -->
-    <table>
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Kode Produk</th>
-                <th>Kategori</th>
-                <th>Produk</th>
-                <th>Jumlah</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($pengirimanBarangJadi as $key => $detail)
-            <tr>
-                <td>{{ $key + 1 }}</td> 
-                <td>{{ $detail->produk->kode_produk }}</td>
-                <td>{{ $detail->produk->subklasifikasi->nama }}</td>
-                <td>{{ $detail->produk->nama_produk }}</td>
-                <td>{{ $detail->jumlah }}</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table><br>
+    @foreach($groupedData as $kode_pengiriman => $items)
+        <div>
+            <p><strong>Kode Pengiriman:</strong> {{ $kode_pengiriman }}</p>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Kode Produk</th>
+                    <th>Kategori</th>
+                    <th>Produk</th>
+                    <th>Jumlah</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($items as $key => $detail)
+                <tr>
+                    <td>{{ $key + 1 }}</td> 
+                    <td>{{ $detail->produk->kode_produk }}</td>
+                    <td>{{ $detail->produk->subklasifikasi->nama }}</td>
+                    <td>{{ $detail->produk->nama_produk }}</td>
+                    <td>{{ $detail->jumlah }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        <br>
+    @endforeach
 
     <div class="signature-container">
         <div class="signature-row">

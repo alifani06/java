@@ -74,6 +74,38 @@ class Laporan_pengirimanbarangjadiController extends Controller
 
     
 
+    // public function printReport(Request $request)
+    // {
+    //     // Ambil parameter dari request
+    //     $tanggalPengiriman = $request->input('tanggal_pengiriman');
+    //     $tanggalAkhir = $request->input('tanggal_akhir');
+    //     $status = $request->input('status');
+    
+    //     // Buat query untuk ambil data berdasarkan filter
+    //     $query = Pengiriman_barangjadi::query();
+    
+    //     if ($tanggalPengiriman) {
+    //         $query->whereDate('tanggal_pengiriman', '>=', $tanggalPengiriman);
+    //     }
+    
+    //     if ($tanggalAkhir) {
+    //         $query->whereDate('tanggal_pengiriman', '<=', $tanggalAkhir);
+    //     }
+    
+    //     if ($status) {
+    //         $query->where('status', $status);
+    //     }
+    
+    //     // Ambil data yang telah difilter
+    //     $pengirimanBarangJadi = $query->with(['produk.subklasifikasi', 'toko'])->get();
+    
+    //     // Ambil item pertama untuk informasi toko
+    //     $firstItem = $pengirimanBarangJadi->first();
+    //     $pdf = FacadePdf::loadView('admin.laporan_pengirimanbarangjadi.print', compact('pengirimanBarangJadi', 'firstItem'));
+    
+    //     return $pdf->stream('laporan_pengiriman_barang_jadi.pdf');
+    // }
+    
     public function printReport(Request $request)
     {
         // Ambil parameter dari request
@@ -99,32 +131,18 @@ class Laporan_pengirimanbarangjadiController extends Controller
         // Ambil data yang telah difilter
         $pengirimanBarangJadi = $query->with(['produk.subklasifikasi', 'toko'])->get();
     
+        // Kelompokkan data berdasarkan kode_pengiriman
+        $groupedData = $pengirimanBarangJadi->groupBy('kode_pengiriman');
+    
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
-        $pdf = FacadePdf::loadView('admin.laporan_pengirimanbarangjadi.print', compact('pengirimanBarangJadi', 'firstItem'));
+    
+        // Kirim data ke tampilan PDF
+        $pdf = FacadePdf::loadView('admin.laporan_pengirimanbarangjadi.print', compact('groupedData', 'firstItem'));
     
         return $pdf->stream('laporan_pengiriman_barang_jadi.pdf');
     }
     
-    // public function printReport($id)
-    // {
-    //     // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-    //     $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_pengiriman');
-                
-    //     // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
-    //     if (!$detailStokBarangJadi) {
-    //         return redirect()->back()->with('error', 'Data tidak ditemukan.');
-    //     }
-
-    //     // Ambil semua data dengan kode_pengiriman yang sama
-    //     $pengirimanBarangJadi = Pengiriman_barangjadi::with(['produk.subklasifikasi', 'toko'])->where('kode_pengiriman', $detailStokBarangJadi)->get();
-
-    //     // Ambil item pertama untuk informasi toko
-    //     $firstItem = $pengirimanBarangJadi->first();
-    //     $pdf = FacadePdf::loadView('admin.laporan_pengirimanbarangjadi.print', compact('detailStokBarangJadi', 'pengirimanBarangJadi', 'firstItem'));
-
-    //     return $pdf->stream('surat_permintaan_produk.pdf');
-    // }
 
     
 }

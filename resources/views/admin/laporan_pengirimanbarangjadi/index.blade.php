@@ -121,10 +121,10 @@
                             @php
                                 $firstItem = $stokBarangJadiItems->first();
                             @endphp
-                                <tr class="dropdown"{{$firstItem->id }}>
+                                <tr class="dropdown" data-permintaan-id="{{ $firstItem->id }}">
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $firstItem->kode_pengiriman }}</td>
-                                <td>{{ $firstItem->tanggal_pengiriman }}</td>
+                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_pengiriman)->format('d-m-Y H:i') }}</td>
                                 <td class="text-center">
                                     @if ($firstItem->status == 'posting')
                                         <button type="button" class="btn btn-success btn-sm">
@@ -137,6 +137,33 @@
                                     </button>
                                     @endif
                                 </td> 
+                            </tr>
+
+                            <tr class="permintaan-details" id="details-{{ $firstItem->id }}" style="display: none;">
+                                <td colspan="5">
+                                    <table class="table table-bordered" style="font-size: 13px;">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Divisi</th>
+                                                <th>Kode Produk</th>
+                                                <th>Produk</th>
+                                                <th>Jumlah</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($stokBarangJadiItems as $detail)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $detail->produk->klasifikasi->nama }}</td>
+                                                <td>{{ $detail->produk->kode_produk }}</td>
+                                                <td>{{ $detail->produk->nama_produk }}</td>
+                                                <td>{{ $detail->jumlah }}</td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -180,14 +207,73 @@
         });
     </script>
 
-    {{-- <script>
-        function printReport() {
-    const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/print') }}";
-    form.target = "_blank";
-    form.submit();
-    }
-    </script> --}}
+<script>
+    $(document).ready(function() {
+    $('tbody tr.dropdown').click(function(e) {
+        // Memeriksa apakah yang diklik adalah checkbox
+        if ($(e.target).is('input[type="checkbox"]')) {
+            return; // Jika ya, hentikan eksekusi
+        }
+
+        // Menyembunyikan detail untuk baris yang tidak dipilih
+        $('tbody tr.dropdown').not(this).removeClass('selected').css('background-color', '');
+        $('.permintaan-details').not('#details-' + $(this).data('permintaan-id')).hide();
+
+        // Toggle visibility untuk detail baris yang dipilih
+        var detailRowId = $(this).data('permintaan-id');
+        var detailRow = $('#details-' + detailRowId);
+        var isActive = detailRow.is(':visible');
+
+        // Menghapus kelas 'selected' dan mengembalikan warna latar belakang ke warna default dari semua baris
+        $('tr.dropdown').removeClass('selected').css('background-color', '');
+        
+        if (isActive) {
+            detailRow.hide(); // Menyembunyikan detail jika sudah ditampilkan
+        } else {
+            $(this).addClass('selected').css('background-color', '#b0b0b0'); // Menambahkan kelas 'selected' dan mengubah warna latar belakangnya
+            detailRow.show(); // Menampilkan detail jika belum ditampilkan
+        }
+
+        // Menyembunyikan dropdown pada baris lain yang tidak dipilih
+        $('tbody tr.dropdown').not(this).find('.dropdown-menu').hide();
+
+        // Mencegah event klik menyebar ke atas (misalnya, saat mengklik dropdown)
+        e.stopPropagation();
+    });
+
+    $('tbody tr.dropdown').contextmenu(function(e) {
+        // Memeriksa apakah baris ini memiliki kelas 'selected'
+        if ($(this).hasClass('selected')) {
+            // Menampilkan dropdown saat klik kanan
+            var dropdownMenu = $(this).find('.dropdown-menu');
+            dropdownMenu.show();
+
+            // Mendapatkan posisi td yang diklik
+            var clickedTd = $(e.target).closest('td');
+            var tdPosition = clickedTd.position();
+
+            // Menyusun posisi dropdown relatif terhadap td yang di klik
+            dropdownMenu.css({
+                'position': 'absolute',
+                'top': tdPosition.top + clickedTd.height(), // Menempatkan dropdown sedikit di bawah td yang di klik
+                'left': tdPosition.left // Menempatkan dropdown di sebelah kiri td yang di klik
+            });
+
+            // Mencegah event klik kanan menyebar ke atas (misalnya, saat mengklik dropdown)
+            e.stopPropagation();
+            e.preventDefault(); // Mencegah munculnya konteks menu bawaan browser
+        }
+    });
+
+    // Menyembunyikan dropdown saat klik di tempat lain
+    $(document).click(function() {
+        $('.dropdown-menu').hide();
+        $('tr.dropdown').removeClass('selected').css('background-color', ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
+    });
+});
+</script> 
+
+
 <script>
     function printReport() {
     const form = document.getElementById('form-action');
