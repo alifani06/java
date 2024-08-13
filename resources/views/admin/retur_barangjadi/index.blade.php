@@ -68,7 +68,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="float-right">
-                        <a href="{{ url('admin/pengiriman_barangjadi/create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url('admin/retur_barangjadi/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> 
                         </a>
                     </div>

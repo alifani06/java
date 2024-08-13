@@ -42,75 +42,17 @@ class ReturbarangjadiController extends Controller{
     
 
 
-public function create()
-{
-    $detailStokBarangjadi = Detail_stokbarangjadi::with('produk')->distinct()->get();
-
-    $produkIds = $detailStokBarangjadi->pluck('produk_id')->toArray();
-    $klasifikasiIds = $detailStokBarangjadi->pluck('klasifikasi_id')->toArray();
-
-    $klasifikasis = Klasifikasi::whereIn('id', $klasifikasiIds)
-        ->with(['produks' => function ($query) use ($produkIds) {
-            $query->whereIn('id', $produkIds);
-        }])
-        ->get();
-
-    $tokos = Toko::all();
-
-    return view('admin.pengiriman_barangjadi.create', compact('klasifikasis', 'tokos', 'detailStokBarangjadi'));
-}
+    public function create()
+    {
+        // Fetch all products
+        $produks = Produk::all();
+        $tokos = Toko::all();
+    
+        return view('admin.retur_barangjadi.create', compact('produks', 'tokos'));
+    }
+    
 
 
-// public function store(Request $request)
-// {
-//     $kode = $this->kode();
-//     $produkData = $request->input('produk_id', []);
-//     $jumlahData = $request->input('jumlah', []);
-//     $tokoId = $request->input('toko_id');
-
-//     foreach ($produkData as $key => $produkId) {
-//         $jumlah = $jumlahData[$key] ?? null;
-
-//         if (!is_null($jumlah) && $jumlah !== '') {
-//             $detailStoks = Detail_stokbarangjadi::where('produk_id', $produkId)->get();
-//             $totalStok = $detailStoks->sum('stok');
-
-//             $kodeProduk = Produk::where('id', $produkId)->value('kode_produk');
-
-//             if ($totalStok >= $jumlah) {
-//                 $remaining = $jumlah;
-
-//                 foreach ($detailStoks as $detailStok) {
-//                     if ($detailStok->stok >= $remaining) {
-//                         $detailStok->stok -= $remaining;
-//                         $detailStok->save();
-//                         break;
-//                     } else {
-//                         $remaining -= $detailStok->stok;
-//                         $detailStok->stok = 0;
-//                         $detailStok->save();
-//                     }
-//                 }
-
-//                 Pengiriman_barangjadi::create([
-//                     'kode_pengiriman' => $kode,
-//                     'qrcode_pengiriman' => 'https://javabakery.id/permintaan_produk/' . $kode,
-//                     'produk_id' => $produkId,
-//                     'toko_id' => $tokoId,
-//                     'jumlah' => $jumlah,
-//                     'status' => 'posting',
-//                     'tanggal_pengiriman' => Carbon::now('Asia/Jakarta'),
-//                 ]);
-//             } else {
-//                 return redirect()->back()
-//                     ->with('error', 'Stok tidak cukup untuk kode produk ' . $kodeProduk);
-//             }
-//         }
-//     }
-
-//     return redirect()->route('pengiriman_barangjadi.index')
-//         ->with('success', 'Berhasil menambahkan permintaan produk');
-// }
 public function store(Request $request)
 {
     $kode = $this->kode();

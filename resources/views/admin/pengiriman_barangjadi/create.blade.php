@@ -72,7 +72,6 @@
                 <!-- /.card-header -->
                 <div class="card-body">
                     
-
                     <form action="{{ url('admin/pengiriman_barangjadi') }}" method="POST">
                         @csrf
                         <input type="hidden" name="toko_id" > <!-- Assuming $toko is passed from the controller -->

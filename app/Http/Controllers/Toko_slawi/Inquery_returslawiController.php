@@ -76,7 +76,7 @@ class Inquery_returslawiController extends Controller{
             }
 
             // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
-            $stokBarangJadi = $query->get()->groupBy('kode_retur');
+            $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_retur');
 
             return view('toko_slawi.inquery_returslawi.index', compact('stokBarangJadi'));
     }

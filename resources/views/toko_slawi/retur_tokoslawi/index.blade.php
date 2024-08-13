@@ -55,7 +55,6 @@
                                 <th>Kode Produk</th>
                                 <th>Nama Produk</th>
                                 <th>Keterangan</th>
-                                {{-- <th>Stok</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -65,12 +64,18 @@
                                     <td>{{ $stok->kode_retur }}</td>
                                     <td>{{ $stok->produk->kode_produk }}</td>
                                     <td>{{ $stok->produk->nama_produk }}</td>
-                                    <td>{{ $stok->keterangan }}</td>
-                                    {{-- <td>{{ $stok->jumlah }}</td> --}}
+                                    <td style="text-transform: uppercase;">
+                                        @if ($stok->keterangan === 'oper')
+                                            {{ $stok->keterangan }} - {{ $stok->oper ?? '-' }} <!-- Tampilkan keterangan dan oper jika keterangan adalah oper -->
+                                        @else
+                                            {{ $stok->keterangan }} <!-- Tampilkan hanya keterangan jika bukan oper -->
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
+                    
                     
                 </div>
                 <!-- /.card-body -->

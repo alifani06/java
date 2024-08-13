@@ -97,8 +97,6 @@
     <div class="container">
         <!-- Kop Surat -->
         <div class="header row">
-        
-            
             <div class="col-4 text-left">
                 <div class="title">JAVA BAKERY</div>
                 <p>Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
@@ -143,6 +141,7 @@
                     <th>Kode Produk</th>
                     <th>Kategori</th>
                     <th>Produk</th>
+                    <th>Keterangan</th>
                     <th>Jumlah</th>
                 </tr>
             </thead>
@@ -153,6 +152,7 @@
                     <td>{{ $detail->produk->kode_produk }}</td>
                     <td>{{ $detail->produk->subklasifikasi->nama }}</td>
                     <td>{{ $detail->produk->nama_produk }}</td>
+                    <td>{{ $detail->keterangan }}</td>
                     <td>{{ $detail->jumlah }}</td>
                 </tr>
                 @endforeach

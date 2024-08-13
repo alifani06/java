@@ -73,13 +73,21 @@
                 <div class="card-body">
                     
 
-                    <form action="{{ url('toko_slawi/retur_tokoslawi') }}" method="POST">
+                    <form action="{{ url('admin/retur_barangjadi') }}" method="POST">
                         @csrf
                         <input type="hidden" name="toko_id" > <!-- Assuming $toko is passed from the controller -->
                         <div class="row">
                             <div class="col-md-12 mb-3">
                                 <table class="table table-bordered">
                                     <thead>
+                                        <div class="col-md-3 mb-3">
+                                            <select class="custom-select form-control" id="toko" name="toko_id">
+                                                <option value="">- Pilih Toko -</option>
+                                                @foreach ($tokos as $toko)
+                                                    <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </thead>
                                     <div class="card">
                                         <div class="card-header">
@@ -331,14 +339,12 @@ function checkKeterangan(urutan, selectedKeterangan = null) {
     var tokoSelectContainer = $('#tokoSelectContainer-' + urutan);
 
     if (keterangan === 'oper') {
-        var tokoSelect = '<select class="form-control" style="font-size:14px; margin-top: 10px" id="toko-' + urutan + '" name="oper[]"><option value="banjaran">Banjaran</option><option value="tegal">Tegal</option><option value="slawi">Slawi</option></select>';
+        var tokoSelect = '<select class="form-control" style="font-size:14px; margin-top: 10px" id="toko-' + urutan + '" name="toko[]"><option value="banjaran">Banjaran</option><option value="tegal">Tegal</option><option value="slawi">Slawi</option></select>';
         tokoSelectContainer.html(tokoSelect);
     } else {
         tokoSelectContainer.html('');
     }
 }
-
-
 
    </script>
 @endsection
