@@ -258,7 +258,6 @@ public function store(Request $request)
 
                 // Simpan data ke tabel retur_barangjadis dengan nama produk yang telah dimodifikasi
                 Retur_barangjadi::create([
-                    'kode_retur' => $kode,
                     'produk_id' => $produk_id,
                     'toko_id' => '3',
                     'nama_produk' => $nama_produk_retur,
