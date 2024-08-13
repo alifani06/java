@@ -197,7 +197,7 @@
 
         <div class="d-flex justify-content-between">
             <div>
-                <a href="{{ url('admin/permintaan_produk') }}" class="btn btn-primary btn-sm">
+                <a href="{{ url('admin/inquery_permintaanproduk') }}" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus"></i> Kembali
                 </a>
             </div>

@@ -276,7 +276,7 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
     Route::post('toko_slawi/permintaan_produk', [PermintaanprodukController::class, 'store']);
     Route::get('toko_slawi/permintaan_produk', [PermintaanprodukController::class, 'show']);
     Route::post('toko_slawi/permintaan_produk/import', [ProdukController::class, 'import'])->name('permintaan_produk.import');
-    Route::get('/permintaan-produk/{id}/print', [PermintaanProdukController::class, 'print'])->name('permintaan_produk.print');
+    // Route::get('/permintaan-produk/{id}/print', [PermintaanProdukController::class, 'print'])->name('permintaan_produk.print');
     Route::get('permintaan_produk/unpost_permintaanproduk/{id}', [\App\Http\Controllers\Toko_slawi\PermintaanprodukController::class, 'unpost_permintaanproduk']);
     Route::get('permintaan_produk/posting_permintaanproduk/{id}', [\App\Http\Controllers\Toko_slawi\PermintaanprodukController::class, 'posting_permintaanproduk']);
     Route::delete('toko_slawi/permintaan_produk/{id}', [PermintaanProdukController::class, 'destroy'])->name('toko_slawi.permintaan_produk.destroy');

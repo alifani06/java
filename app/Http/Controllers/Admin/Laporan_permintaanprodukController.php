@@ -32,6 +32,7 @@ use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Dompdf\Options;
 
 
 
@@ -237,10 +238,186 @@ public function printReport(Request $request)
         $filteredKlasifikasi = Klasifikasi::find($klasifikasi_id);
     }
 
-    $pdf = FacadePdf::loadView('admin.laporan_permintaanproduk.print', compact('permintaanProduk', 'tokoData', 'klasifikasi_id', 'tanggal_permintaan', 'tanggal_akhir', 'filteredKlasifikasi'));
-    return $pdf->stream('laporan_permintaan_produk.pdf');
+    $formattedStartDate = $tanggal_permintaan ? Carbon::parse($tanggal_permintaan)->format('d-m-Y') : 'N/A';
+    $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : 'N/A';
+
+    // Inisialisasi DOMPDF
+    $options = new Options();
+    $options->set('isHtml5ParserEnabled', true);
+    $options->set('isRemoteEnabled', true); // Jika menggunakan URL eksternal untuk gambar atau CSS
+
+    $dompdf = new Dompdf($options);
+
+    // Memuat konten HTML dari view
+    $html = view('admin.laporan_permintaanproduk.print', [
+        'query' => $query,
+        'permintaanProduk' => $permintaanProduk,
+        'tokoData' => $tokoData,
+        'klasifikasi_id' => $klasifikasi_id,
+        'filteredKlasifikasi' => $filteredKlasifikasi,    
+        'startDate' => $formattedStartDate,
+        'endDate' => $formattedEndDate,
+        // 'kodeInput' => $kodeInput,
+
+    ])->render();
+
+    $dompdf->loadHtml($html);
+
+    // Set ukuran kertas dan orientasi
+    $dompdf->setPaper('A4', 'portrait');
+
+    // Render PDF
+    $dompdf->render();
+
+    // Menambahkan nomor halaman di kanan bawah
+    $canvas = $dompdf->getCanvas();
+    $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+        $text = "Page $pageNumber of $pageCount";
+        $font = $fontMetrics->getFont('Arial', 'normal');
+        $size = 10;
+
+        // Menghitung lebar teks
+        $width = $fontMetrics->getTextWidth($text, $font, $size);
+
+        // Mengatur koordinat X dan Y
+        $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+        $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+
+        // Menambahkan teks ke posisi yang ditentukan
+        $canvas->text($x, $y, $text, $font, $size);
+    });
+
+    // Output PDF ke browser
+    return $dompdf->stream('laporan_stok_barangjadi.pdf', ['Attachment' => false]);
+
 }
 
+// public function printReportRinci(Request $request)
+// {
+//     $klasifikasi_id = $request->get('klasifikasi_id');
+//     $toko_id = $request->get('toko_id');
+//     $tanggal_permintaan = $request->get('tanggal_permintaan');
+//     $tanggal_akhir = $request->get('tanggal_akhir');
+
+//     $query = PermintaanProduk::with([
+//         'detailpermintaanproduks.produk.klasifikasi.subklasifikasi',
+//         'detailpermintaanproduks.toko'
+//     ]);
+
+//     if ($tanggal_permintaan && $tanggal_akhir) {
+//         $tanggal_permintaan = Carbon::parse($tanggal_permintaan)->startOfDay();
+//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+//         $query->whereHas('detailpermintaanproduks', function ($query) use ($tanggal_permintaan, $tanggal_akhir) {
+//             $query->whereBetween('tanggal_permintaan', [$tanggal_permintaan, $tanggal_akhir]);
+//         });
+//     } elseif ($tanggal_permintaan) {
+//         $tanggal_permintaan = Carbon::parse($tanggal_permintaan)->startOfDay();
+//         $query->whereHas('detailpermintaanproduks', function ($query) use ($tanggal_permintaan) {
+//             $query->where('tanggal_permintaan', '>=', $tanggal_permintaan);
+//         });
+//     } elseif ($tanggal_akhir) {
+//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+//         $query->whereHas('detailpermintaanproduks', function ($query) use ($tanggal_akhir) {
+//             $query->where('tanggal_permintaan', '<=', $tanggal_akhir);
+//         });
+//     } else {
+//         $query->whereHas('detailpermintaanproduks', function ($query) {
+//             $query->whereDate('tanggal_permintaan', Carbon::today());
+//         });
+//     }
+
+//     if ($toko_id) {
+//         $query->whereHas('detailpermintaanproduks', function ($query) use ($toko_id) {
+//             $query->where('toko_id', $toko_id);
+//         });
+//     }
+
+//     if ($klasifikasi_id) {
+//         $query->whereHas('detailpermintaanproduks.produk.klasifikasi', function ($query) use ($klasifikasi_id) {
+//             $query->where('id', $klasifikasi_id);
+//         });
+//     }
+
+//     $permintaanProduk = $query->get();
+//     $tokoData = Toko::all();
+
+//     // Group products by division and store
+//     $produkByTokoAndDivisi = [];
+//     foreach ($permintaanProduk as $permintaan) {
+//         foreach ($permintaan->detailpermintaanproduks as $detail) {
+//             $toko = $detail->toko->nama_toko;
+//             $divisi = $detail->produk->klasifikasi->nama;
+//             $subklasifikasi = $detail->produk->klasifikasi->subklasifikasi->first()->nama ?? '-';
+//             $kodeProduk = $detail->produk->kode_produk;
+//             $namaProduk = $detail->produk->nama_produk;
+
+//             if (!isset($produkByTokoAndDivisi[$toko][$divisi])) {
+//                 $produkByTokoAndDivisi[$toko][$divisi] = collect();
+//             }
+
+//             $produkByTokoAndDivisi[$toko][$divisi]->push([
+//                 'kode_produk' => $kodeProduk,
+//                 'nama_produk' => $namaProduk,
+//                 'subklasifikasi' => $subklasifikasi,
+//                 'jumlah' => $detail->jumlah
+//             ]);
+//         }
+//     }
+//     $formattedStartDate = $tanggal_permintaan ? Carbon::parse($tanggal_permintaan)->format('d-m-Y') : 'N/A';
+//     $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : 'N/A';
+
+//     // Inisialisasi DOMPDF
+//     $options = new Options();
+//     $options->set('isHtml5ParserEnabled', true);
+//     $options->set('isRemoteEnabled', true); // Jika menggunakan URL eksternal untuk gambar atau CSS
+
+//     $dompdf = new Dompdf($options);
+
+//     // Memuat konten HTML dari view
+//     $html = view('admin.laporan_permintaanproduk.printrinci', [
+//         'query' => $query,
+//         'permintaanProduk' => $permintaanProduk,
+//         'tokoData' => $tokoData,
+//         'klasifikasi_id' => $klasifikasi_id,
+//         'produkByTokoAndDivisi' => $produkByTokoAndDivisi,    
+//         'startDate' => $formattedStartDate,
+//         'endDate' => $formattedEndDate,
+//         // 'kodeInput' => $kodeInput,
+
+//     ])->render();
+
+//     $dompdf->loadHtml($html);
+
+//     // Set ukuran kertas dan orientasi
+//     $dompdf->setPaper('A4', 'portrait');
+
+//     // Render PDF
+//     $dompdf->render();
+
+//     // Menambahkan nomor halaman di kanan bawah
+//     $canvas = $dompdf->getCanvas();
+//     $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+//         $text = "Page $pageNumber of $pageCount";
+//         $font = $fontMetrics->getFont('Arial', 'normal');
+//         $size = 10;
+
+//         // Menghitung lebar teks
+//         $width = $fontMetrics->getTextWidth($text, $font, $size);
+
+//         // Mengatur koordinat X dan Y
+//         $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+//         $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+
+//         // Menambahkan teks ke posisi yang ditentukan
+//         $canvas->text($x, $y, $text, $font, $size);
+//     });
+
+//     // Output PDF ke browser
+//     return $dompdf->stream('laporan_stok_barangjadi.pdf', ['Attachment' => false]);
+//     // Pass 'permintaan' as well to the view
+//     // $pdf = FacadePdf::loadView('admin.laporan_permintaanproduk.printrinci', compact('permintaanProduk', 'produkByTokoAndDivisi', 'tokoData', 'klasifikasi_id', 'tanggal_permintaan', 'tanggal_akhir'));
+//     // return $pdf->stream('laporan_permintaan_produk.pdf');
+// }
 public function printReportRinci(Request $request)
 {
     $klasifikasi_id = $request->get('klasifikasi_id');
@@ -290,9 +467,14 @@ public function printReportRinci(Request $request)
     $permintaanProduk = $query->get();
     $tokoData = Toko::all();
 
-    // Group products by division and store
-    $produkByTokoAndDivisi = [];
+    // Group products by request code, store, and division
+    $produkByKodePermintaan = [];
     foreach ($permintaanProduk as $permintaan) {
+        $kodePermintaan = $permintaan->kode_permintaan;
+        if (!isset($produkByKodePermintaan[$kodePermintaan])) {
+            $produkByKodePermintaan[$kodePermintaan] = [];
+        }
+
         foreach ($permintaan->detailpermintaanproduks as $detail) {
             $toko = $detail->toko->nama_toko;
             $divisi = $detail->produk->klasifikasi->nama;
@@ -300,11 +482,11 @@ public function printReportRinci(Request $request)
             $kodeProduk = $detail->produk->kode_produk;
             $namaProduk = $detail->produk->nama_produk;
 
-            if (!isset($produkByTokoAndDivisi[$toko][$divisi])) {
-                $produkByTokoAndDivisi[$toko][$divisi] = collect();
+            if (!isset($produkByKodePermintaan[$kodePermintaan][$toko][$divisi])) {
+                $produkByKodePermintaan[$kodePermintaan][$toko][$divisi] = collect();
             }
 
-            $produkByTokoAndDivisi[$toko][$divisi]->push([
+            $produkByKodePermintaan[$kodePermintaan][$toko][$divisi]->push([
                 'kode_produk' => $kodeProduk,
                 'nama_produk' => $namaProduk,
                 'subklasifikasi' => $subklasifikasi,
@@ -313,10 +495,58 @@ public function printReportRinci(Request $request)
         }
     }
 
-    // Pass 'permintaan' as well to the view
-    $pdf = FacadePdf::loadView('admin.laporan_permintaanproduk.printrinci', compact('permintaanProduk', 'produkByTokoAndDivisi', 'tokoData', 'klasifikasi_id', 'tanggal_permintaan', 'tanggal_akhir'));
-    return $pdf->stream('laporan_permintaan_produk.pdf');
+    $formattedStartDate = $tanggal_permintaan ? Carbon::parse($tanggal_permintaan)->format('d-m-Y') : 'N/A';
+    $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : 'N/A';
+
+    // Inisialisasi DOMPDF
+    $options = new Options();
+    $options->set('isHtml5ParserEnabled', true);
+    $options->set('isRemoteEnabled', true); // Jika menggunakan URL eksternal untuk gambar atau CSS
+
+    $dompdf = new Dompdf($options);
+
+    // Memuat konten HTML dari view
+    $html = view('admin.laporan_permintaanproduk.printrinci', [
+        'query' => $query,
+        'permintaanProduk' => $permintaanProduk,
+        'tokoData' => $tokoData,
+        'klasifikasi_id' => $klasifikasi_id,
+        'produkByKodePermintaan' => $produkByKodePermintaan,    
+        'startDate' => $formattedStartDate,
+        'endDate' => $formattedEndDate,
+    ])->render();
+
+    $dompdf->loadHtml($html);
+
+    // Set ukuran kertas dan orientasi
+    $dompdf->setPaper('A4', 'portrait');
+
+    // Render PDF
+    $dompdf->render();
+
+    // Menambahkan nomor halaman di kanan bawah
+    $canvas = $dompdf->getCanvas();
+    $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+        $text = "Page $pageNumber of $pageCount";
+        $font = $fontMetrics->getFont('Arial', 'normal');
+        $size = 10;
+
+        // Menghitung lebar teks
+        $width = $fontMetrics->getTextWidth($text, $font, $size);
+
+        // Mengatur koordinat X dan Y
+        $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+        $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+
+        // Menambahkan teks ke posisi yang ditentukan
+        $canvas->text($x, $y, $text, $font, $size);
+    });
+
+    // Output PDF ke browser
+    return $dompdf->stream('laporan_stok_barangjadi.pdf', ['Attachment' => false]);
 }
+
+
 
 public function unpost_penjualanproduk($id)
 {

@@ -47,10 +47,10 @@
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
+            text-align: left;
         }
         th {
             background-color: #f2f2f2;
-            text-align: left;
         }
         .text-center {
             text-align: center;
@@ -74,77 +74,98 @@
             <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
         </div>
         <div>
-            <span class="title">PT JAVA BAKERY</span><br>
-            @if(isset($tokoData) && $tokoData->isNotEmpty())
-                <span class="toko-name">Cabang: {{ $tokoData->first()->nama_toko }}</span><br>
-                <span class="address">{{ $tokoData->first()->alamat }}</span><br>
-            @endif
+            <span class="title">PT JAVA BAKERY FACTORY</span><br>
+            <span class="address">JL. HOS COKRO AMINOTO NO 5 SLAWI TEGAL</span><br>
+            <span class="contact">Telp / Fax, Email :</span>
         </div>
         <hr class="divider">
     </div>
 
     <!-- Judul Surat -->
     <div class="change-header">LAPORAN PERMINTAAN PRODUK</div>
-    <p>Periode: {{ $tanggal_permintaan ? date('d-m-Y', strtotime($tanggal_permintaan)) : 'Tidak ditentukan' }} - {{ $tanggal_akhir ? date('d-m-Y', strtotime($tanggal_akhir)) : 'Tidak ditentukan' }}</p>
+    <div class="text" style="margin-bottom: 1px;">
+        @php
+            \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
+    
+            $formattedStartDate = \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y');
+            $formattedEndDate = \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y');
+            $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
+        @endphp
+    
+        @if ($startDate && $endDate)
+            <p>
+                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }} &nbsp;&nbsp;&nbsp;
+                <span style="float: right; font-style: italic">{{ $currentDateTime }}</span>
+            </p>
+        @else
+            <p>
+                Periode: Tidak ada tanggal awal dan akhir yang diteruskan. &nbsp;&nbsp;&nbsp;
+                <span style="float: right;">{{ $currentDateTime }}</span>
+            </p>
+        @endif
+    </div>
 
-    @foreach ($produkByTokoAndDivisi as $toko => $divisiData)
-    <!-- Pembatas Cabang -->
+    @foreach ($produkByKodePermintaan as $kodePermintaan => $tokoDivisiData)
+    <!-- Pembatas Kode Permintaan -->
     <hr class="branch-divider">
     <div>
-        {{-- <p>
-            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Permintaan</strong></span>
-            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->first()->kode_permintaan }}</span>
-        </p> --}}
         <p>
-            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Cabang</strong></span>
-            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $toko }}</span>
+            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Permintaan</strong></span>
+            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $kodePermintaan }}</span>
         </p>
     </div>
-    @foreach ($divisiData as $divisi => $produks)
+
+    @foreach ($tokoDivisiData as $toko => $divisiData)
+        <!-- Pembatas Cabang -->
         <div>
             <p>
-                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Divisi</strong></span>
-                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $divisi }}</span>
+                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Cabang</strong></span>
+                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $toko }}</span>
             </p>
         </div>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Kategori</th>
-                    <th>Kode Produk</th>
-                    <th>Produk</th>
-                    <th>Jumlah</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php
-                $no = 1; 
-                @endphp
-                @foreach ($produks as $detail)
+        @foreach ($divisiData as $divisi => $produks)
+            <div>
+                <p>
+                    <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Divisi</strong></span>
+                    <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $divisi }}</span>
+                </p>
+            </div>
+            
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ $no++ }}</td> 
-                        <td>{{ $detail['subklasifikasi'] }}</td>
-                        <td>{{ $detail['kode_produk'] }}</td>
-                        <td>{{ $detail['nama_produk'] }}</td>
-                        <td>{{ $detail['jumlah'] }}</td>
+                        <th>No</th>
+                        <th>Kategori</th>
+                        <th>Kode Produk</th>
+                        <th>Produk</th>
+                        <th>Jumlah</th>
                     </tr>
-                @endforeach
-            </tbody>
-            <tfoot>
-                <tr class="total-row">
-                    <td colspan="4">Total</td>
-                    <td>{{ collect($produks)->sum('jumlah') }}</td>
-                </tr>
-            </tfoot>
-        </table><br>
+                </thead>
+                <tbody>
+                    @php
+                    $no = 1; 
+                    @endphp
+                    @foreach ($produks as $detail)
+                        <tr>
+                            <td>{{ $no++ }}</td> 
+                            <td>{{ $detail['subklasifikasi'] }}</td>
+                            <td>{{ $detail['kode_produk'] }}</td>
+                            <td>{{ $detail['nama_produk'] }}</td>
+                            <td>{{ $detail['jumlah'] }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="4">Total</td>
+                        <td>{{ collect($produks)->sum('jumlah') }}</td>
+                    </tr>
+                </tfoot>
+            </table><br>
+        @endforeach
     @endforeach
-@endforeach
-
+    @endforeach
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </html>
-
-
 
