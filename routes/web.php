@@ -180,6 +180,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::resource('data_stokbarangjadi', \App\Http\Controllers\Admin\Data_stokbarangjadiController::class);
 
+    Route::resource('data_stokretur', \App\Http\Controllers\Admin\Data_stokreturController::class);
+
     Route::resource('pengiriman_barangjadi', \App\Http\Controllers\Admin\PengirimanbarangjadiController::class);
     Route::get('/pengiriman_barangjadi/{id}/print', [PengirimanbarangjadiController::class, 'print'])->name('pengiriman_barangjadi.print');
 

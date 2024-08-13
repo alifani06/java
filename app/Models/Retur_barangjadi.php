@@ -73,7 +73,7 @@ class Retur_barangjadi extends Model
 
     public function produk()
     {
-        return $this->belongsTo(Produk::class);
+        return $this->belongsTo(Produk::class, 'produk_id');
     }
 
     public function detailpermintaanproduks()
