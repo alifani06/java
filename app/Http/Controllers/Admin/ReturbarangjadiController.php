@@ -40,26 +40,7 @@ class ReturbarangjadiController extends Controller{
         return view('admin.retur_barangjadi.index', compact('pengirimanBarangJadi'));
     }
     
-// create lama
-// public function create()
-// {
-//     $detailStokBarangjadi = Detail_stokbarangjadi::select('produk_id', 'klasifikasi_id')
-//         ->distinct()
-//         ->get();
 
-//     $produkIds = $detailStokBarangjadi->pluck('produk_id')->toArray();
-//     $klasifikasiIds = $detailStokBarangjadi->pluck('klasifikasi_id')->toArray();
-
-//     $klasifikasis = Klasifikasi::whereIn('id', $klasifikasiIds)
-//         ->with(['produks' => function ($query) use ($produkIds) {
-//             $query->whereIn('id', $produkIds);
-//         }])
-//         ->get();
-
-//     $tokos = Toko::all();
-
-//     return view('admin.pengiriman_barangjadi.create', compact('klasifikasis', 'tokos'));
-// }
 
 public function create()
 {

@@ -40,7 +40,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Data Retur Toko Slawi</h3>
                     <div class="float-right">
-                        <a href="{{ url('toko_slawi/retur_tokoslawi/create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url('admin/retur_tokoslawi/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> 
                         </a>
                     </div>
@@ -55,7 +55,7 @@
                                 <th>Kode Produk</th>
                                 <th>Nama Produk</th>
                                 <th>Keterangan</th>
-                                {{-- <th>Stok</th> --}}
+                                <th>Stok</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -66,7 +66,7 @@
                                     <td>{{ $stok->produk->kode_produk }}</td>
                                     <td>{{ $stok->produk->nama_produk }}</td>
                                     <td>{{ $stok->keterangan }}</td>
-                                    {{-- <td>{{ $stok->jumlah }}</td> --}}
+                                    <td>{{ $stok->jumlah }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

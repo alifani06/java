@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AddpelangganController;
 use App\Http\Controllers\Admin\HargajualController;
 use App\Http\Controllers\Admin\Inquery_pemesananprodukController;
 use App\Http\Controllers\Admin\Inquery_penjualanprodukController;
+use App\Http\Controllers\Admin\Inquery_returbarangjadiController;
 use App\Http\Controllers\Admin\Inquery_stokbarangjadiController;
 use App\Http\Controllers\Admin\PemesananprodukController;
 use App\Http\Controllers\Admin\KlasifikasiController as AdminKlasifikasiController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\Admin\Stok_barangjadiController;
 use App\Http\Controllers\KategoriDropdownController;
 use App\Http\Controllers\SubcategoryController;
+use App\Http\Controllers\Toko_slawi\Inquery_returslawiController;
 use App\Http\Controllers\Toko_slawi\Pengiriman_tokoslawiController as Toko_slawiPengiriman_tokoslawiController;
 use App\Http\Controllers\Toko_slawi\Retur_tokoslawiController;
 use App\Models\Pengiriman_barangjadi;
@@ -191,6 +193,11 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::resource('retur_barangjadi', \App\Http\Controllers\Admin\ReturbarangjadiController::class);
 
+    Route::resource('inquery_returbarangjadi', \App\Http\Controllers\Admin\Inquery_returbarangjadiController::class);
+    Route::get('inquery_returbarangjadi/unpost_retur/{id}', [\App\Http\Controllers\Admin\Inquery_returbarangjadiController::class, 'unpost_retur']);
+    Route::get('inquery_returbarangjadi/posting_retur/{id}', [\App\Http\Controllers\Admin\Inquery_returbarangjadiController::class, 'posting_retur']);
+    Route::get('/inquery_returbarangjadi/{id}/print', [Inquery_returbarangjadiController::class, 'print'])->name('inquery_returbarangjadi.print');
+
 
 
     //TOKO SLAWI
@@ -295,9 +302,11 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
     Route::get('/pengiriman_tokoslawi/{id}/print', [Toko_slawiPengiriman_tokoslawiController::class, 'print'])->name('pengiriman_tokoslawi.print');
 
     Route::resource('retur_tokoslawi', \App\Http\Controllers\Toko_slawi\Retur_tokoslawiController::class);
-    Route::get('retur_tokoslawi/unpost_retur/{id}', [\App\Http\Controllers\Toko_slawi\Retur_tokoslawiController::class, 'unpost_retur']);
-    Route::get('retur_tokoslawi/posting_retur/{id}', [\App\Http\Controllers\Toko_slawi\Retur_tokoslawiController::class, 'posting_retur']);
-    Route::get('/retur_tokoslawi/{id}/print', [Retur_tokoslawiController::class, 'print'])->name('retur_tokoslawi.print');
+  
+    Route::resource('inquery_returslawi', \App\Http\Controllers\Toko_slawi\Inquery_returslawiController::class);
+    Route::get('inquery_returslawi/unpost_retur/{id}', [\App\Http\Controllers\Toko_slawi\Inquery_returslawiController::class, 'unpost_retur']);
+    Route::get('inquery_returslawi/posting_retur/{id}', [\App\Http\Controllers\Toko_slawi\Inquery_returslawiController::class, 'posting_retur']);
+    Route::get('/inquery_returslawi/{id}/print', [Inquery_returslawiController::class, 'print'])->name('inquery_returslawi.print');
 
 });
 
