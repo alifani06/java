@@ -117,10 +117,18 @@ class Inquery_permintaanprodukController extends Controller
 
     // Menggunakan with untuk eager loading relasi detailpermintaanproduks dan toko
     $permintaanProduks = $inquery->with(['detailpermintaanproduks.toko'])->get();
-    return view('admin.inquery_permintaanproduk.index', compact('permintaanProduks'));
+
+     // Menghitung jumlah data dengan status 'unpost'
+     $unpostedCount = Permintaanproduk::where('status', 'unpost')->count();
+
+    return view('admin.inquery_permintaanproduk.index', compact('permintaanProduks','unpostedCount'));
 }
 
-    
+public function getUnpostedCount()
+{
+    return Permintaanproduk::where('status', 'unpost')->count();
+}
+
 
 public function unpost_permintaanproduk($id)
 {

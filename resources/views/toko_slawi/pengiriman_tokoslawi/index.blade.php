@@ -131,11 +131,11 @@
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($status == 'unpost')
                                                 <a class="dropdown-item posting-btn" data-memo-id="{{ $firstItem->id }}">Posting</a>
-                                                <a class="dropdown-item" href="{{ url('toko_slawi/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
-                                                <a class="dropdown-item" href="{{ url('/toko_slawi/inquery_pengirimanbarangjadi/' . $firstItem->id) }}">Show</a>
+                                                {{-- <a class="dropdown-item" href="{{ url('toko_slawi/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
+                                                <a class="dropdown-item" href="{{ url('/toko_slawi/inquery_pengirimanbarangjadi/' . $firstItem->id) }}">Show</a> --}}
                                             @elseif ($status == 'posting')
                                                 <a class="dropdown-item unpost-btn" data-memo-id="{{ $firstItem->id }}">Unpost</a>
-                                                <a class="dropdown-item" href="{{ url('toko_slawi/inquery_pengirimanbarangjadi/' . $firstItem->id) }}">Show</a>
+                                                {{-- <a class="dropdown-item" href="{{ url('toko_slawi/inquery_pengirimanbarangjadi/' . $firstItem->id) }}">Show</a> --}}
                                             @endif
                                         </div>
                                     </td>

@@ -99,24 +99,29 @@
         <div class="header row">
         
             
-            <div class="col-4 text-left">
-                <div class="title">JAVA BAKERY</div>
-                <p>Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
-                <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
-            </div>
-            <div class="col-4 text-center">
-              
-            </div>
-            <div class="col-4 text-right">
+            <div class="col-2 text-right">
                 <div class="logo">
                     {{-- <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY"> --}}
                 </div>
-                <div>
-                    <span class="title">PT JAVA BAKERY</span><br>
+                {{-- <div>
+                    <span class="title">PT JAVA BAKERY FACTORY</span><br>
                     <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
                 
-                </div>
+                </div> --}}
             </div>
+        
+            <div class="col-8 text-center">
+                <div class="logo">
+                    <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
+                </div>
+                <span class="title">PT JAVA BAKERY FACTORY</span><br>
+                <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
+            </div>
+            {{-- <div class="col-2 text-left">
+                <div class="title">JAVA BAKERY</div>
+                <p>Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
+                <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
+            </div> --}}
         </div>
         {{-- <hr class="divider"> --}}
 

@@ -1,3 +1,12 @@
+<style>
+    .badge-small {
+    font-size: 10px; /* Ukuran font badge kecil */
+    margin-left: 10px; /* Jarak antara teks dan badge */
+    padding: 2px 5px; /* Padding untuk badge */
+    vertical-align: middle; /* Menyelaraskan badge dengan teks */
+}
+
+</style>
 <li class="nav-header">
     Dashboard</li>
 <li class="nav-item">
@@ -306,6 +315,11 @@
     </ul>
 </li>
 
+
+@php
+    // Anggap $unpostedCount dikirim dari kontroler
+    $unpostedCount = $unpostedCount ?? 0; // Pastikan default jika null
+@endphp
 <li
     class="nav-item {{ request()->is('admin/inquery_pemesananproduk*') ||
     request()->is('admin/inquery_penjualanproduk*')|| 
@@ -365,13 +379,14 @@
             </a>
         </li>
         {{-- @endif --}}
+        
         {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/inquery_permintaanproduk') }}"
                 class="nav-link {{ request()->is('admin/inquery_permintaanproduk*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Inquery Permintaan Produk
-                    
+              
                 </p>
             </a>
         </li>
