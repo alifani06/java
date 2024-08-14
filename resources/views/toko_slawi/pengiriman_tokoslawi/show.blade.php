@@ -45,7 +45,12 @@
             text-align: center;
             font-size: 24px;
             font-weight: bold;
-            margin-top: 40px;
+            margin-top: 20px;
+        }
+        .change-header1 {
+            text-align: center;
+            font-size: 12px;
+            margin-top: 10px;
         }
         .tanggal {
             text-align: left;
@@ -97,41 +102,51 @@
     <div class="container">
         <!-- Kop Surat -->
         <div class="header row">
-        
-            
-            <div class="col-4 text-left">
-                <div class="title">JAVA BAKERY</div>
-                <p>Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
-                <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
-            </div>
-            <div class="col-4 text-center">
-              
-            </div>
-            <div class="col-4 text-right">
+            <div class="col-2 text-right">
                 <div class="logo">
                     {{-- <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY"> --}}
                 </div>
-                <div>
-                    <span class="title">PT JAVA BAKERY</span><br>
+                {{-- <div>
+                    <span class="title">PT JAVA BAKERY FACTORY</span><br>
                     <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
                 
-                </div>
+                </div> --}}
             </div>
+        
+            <div class="col-8 text-center">
+                <div class="logo">
+                    <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
+                </div>
+                <span class="title">PT JAVA BAKERY FACTORY</span><br>
+                <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
+            </div>
+            {{-- <div class="col-2 text-left">
+                <div class="title">JAVA BAKERY</div>
+                <p>Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
+                <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
+            </div> --}}
         </div>
         {{-- <hr class="divider"> --}}
 
         <!-- Judul Surat -->
-        <div class="change-header">SURAT RETUR BARANG JADI</div>
-
+        <div class="change-header">SURAT PENGIRIMAN BARANG JADI</div>
+        <div class="change-header1">
+                <p style="margin-bottom: 2px;">Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
+                <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
+        </div>
         <!-- Informasi Permintaan -->
         <div>
             <p style="margin-bottom: 2px;">
                 <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Pengiriman</strong></span>
-                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $pengirimanBarangJadi->first()->kode_retur }}</span>
+                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $pengirimanBarangJadi->first()->kode_pengiriman }}</span>
+            </p>
+            <p style="margin-bottom: 2px;">
+                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal Kirim</strong> </span>
+                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ \Carbon\Carbon::now()->format('d-m-Y H:m') }}</span>
             </p>
             <p>
-                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal</strong> </span>
-                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ \Carbon\Carbon::now()->format('d-m-Y') }}</span>
+                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal Terima</strong> </span>
+                <span style="min-width: 50px; display: inline-flex; align-items: center;">: </span>
             </p>
         </div>
 
@@ -157,11 +172,17 @@
                 </tr>
                 @endforeach
             </tbody>
+            {{-- <tfoot>
+                <tr class="total-row">
+                    <td colspan="4">Total </td>
+                    <td>{{ $detail->sum('jumlah') }}</td>
+                </tr>
+            </tfoot> --}}
         </table><br>
 
         <div class="d-flex justify-content-between">
             <div>
-                <a href="{{ url('admin/inquery_pengirimanbarangjadi') }}" class="btn btn-primary btn-sm">
+                <a href="{{ url('toko_slawi/pengiriman_tokoslawi') }}" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus"></i> Kembali
                 </a>
             </div>

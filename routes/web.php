@@ -302,6 +302,7 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
     Route::get('pengiriman_tokoslawi/unpost_pengiriman/{id}', [\App\Http\Controllers\Toko_slawi\Pengiriman_tokoslawiController::class, 'unpost_pengiriman']);
     Route::get('pengiriman_tokoslawi/posting_pengiriman/{id}', [\App\Http\Controllers\Toko_slawi\Pengiriman_tokoslawiController::class, 'posting_pengiriman']);
     Route::get('/pengiriman_tokoslawi/{id}/print', [Toko_slawiPengiriman_tokoslawiController::class, 'print'])->name('pengiriman_tokoslawi.print');
+    // Route::get('/toko_slawi/pengiriman_tokoslawi/{id}', [Pengiriman_tokoslawiController::class, 'show'])->name('pengiriman_tokoslawi.show');
 
     Route::resource('retur_tokoslawi', \App\Http\Controllers\Toko_slawi\Retur_tokoslawiController::class);
   

@@ -112,11 +112,6 @@
         .total-row {
             font-weight: bold;
         }
-        .change-header1 {
-            text-align: center;
-            font-size: 12px;
-            margin-top: 5px;
-        }
           /* CSS untuk tampilan cetak */
           @media print {
             body {
@@ -153,39 +148,36 @@
     </style>
 </head>
 <body>
-    <div class="header row">
-        <div class="col-2 text-right">
-            <div class="logo">
-                {{-- <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY"> --}}
-            </div>
-            {{-- <div>
-                <span class="title">PT JAVA BAKERY FACTORY</span><br>
-                <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
-            
-            </div> --}}
-        </div>
-    
-        <div class="col-8 text-center">
-            <div class="logo">
-                <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
-            </div>
-            <span class="title" style="font-size: 20px; font-weight: bold;">PT JAVA BAKERY FACTORY</span><br>
-            <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
-        </div>
-        {{-- <div class="col-2 text-left">
-            <div class="title">JAVA BAKERY</div>
-            <p>Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
-            <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
-        </div> --}}
-    </div>
-    {{-- <hr class="divider"> --}}
 
-    <!-- Judul Surat -->
-    <div class="change-header">SURAT PENGIRIMAN BARANG JADI</div>
-    <div class="change-header1">
-        <p style="margin-bottom: 2px;">Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
-        <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
-    </div>
+    <table class="tab">
+        <tr>
+            <td style="text-align: left;">
+                <div class="title">JAVA BAKERY</div>
+                <p>Cabang: {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
+                <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
+            </td>
+            <td style="text-align: center;">
+                <div>
+                    <p style="color: white">Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
+                </div> 
+             
+            </td>
+            <td style="text-align: right;">
+                <div class="logo">
+                    {{-- <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY"> --}}
+                </div>
+                <div>
+                    <span class="title">PT JAVA BAKERY FACTORY</span><br>
+                    <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
+                </div>
+            </td>
+        </tr>
+    </table>
+    
+        <hr class="divider" style="margin-bottom: 2px;">
+
+        <!-- Judul Surat -->
+        <div class="change-header">SURAT RETUR BARANG JADI</div>
 
         <!-- Informasi Permintaan -->
         <div>
@@ -223,12 +215,6 @@
                 </tr>
                 @endforeach
             </tbody>
-            <tfoot>
-                <tr class="total-row">
-                    <td colspan="5">Total </td>
-                    <td>{{ $detail->sum('jumlah') }}</td>
-                </tr>
-            </tfoot>
         </table><br>
     </div>
     <div class="signature-container">

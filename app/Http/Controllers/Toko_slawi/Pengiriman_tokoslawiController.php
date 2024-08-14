@@ -46,25 +46,57 @@ use Maatwebsite\Excel\Facades\Excel;
 class Pengiriman_tokoslawiController extends Controller{
 
     public function index(Request $request)
-{
-    // Mengambil data stok_tokoslawi dengan relasi pengiriman_barangjadi
-    $stokBarangJadi = Stok_tokoslawi::with('pengiriman_barangjadi')
-        ->orderBy('created_at', 'desc')
-        ->get()
-        ->groupBy(function ($item) {
-            // Memeriksa apakah pengiriman_barangjadi ada sebelum mengakses kode_pengiriman
-            return $item->pengiriman_barangjadi ? $item->pengiriman_barangjadi->kode_pengiriman : 'undefined';
-        });
+    {
+        // Mengambil data stok_tokoslawi dengan relasi pengiriman_barangjadi dan produk
+        $stokBarangJadi = Stok_tokoslawi::with(['pengiriman_barangjadi.produk'])
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->groupBy(function ($item) {
+                // Memeriksa apakah pengiriman_barangjadi ada sebelum mengakses kode_pengiriman
+                return $item->pengiriman_barangjadi ? $item->pengiriman_barangjadi->kode_pengiriman : 'undefined';
+            });
+    
+        return view('toko_slawi.pengiriman_tokoslawi.index', compact('stokBarangJadi'));
+    }
+    
+// public function index(Request $request)
+// {
+//         $status = $request->status;
+//         $tanggal_input = $request->tanggal_input;
+//         $tanggal_akhir = $request->tanggal_akhir;
 
-    return view('toko_slawi.pengiriman_tokoslawi.index', compact('stokBarangJadi'));
-}
+//         $query = Stok_tokoslawi::with('produk.klasifikasi');
 
+//         if ($status) {
+//             $query->where('status', $status);
+//         }
+
+//         if ($tanggal_input && $tanggal_akhir) {
+//             $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
+//             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+//             $query->whereBetween('tanggal_input', [$tanggal_input, $tanggal_akhir]);
+//         } elseif ($tanggal_input) {
+//             $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
+//             $query->where('tanggal_input', '>=', $tanggal_input);
+//         } elseif ($tanggal_akhir) {
+//             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+//             $query->where('tanggal_input', '<=', $tanggal_akhir);
+//         } else {
+//             // Jika tidak ada filter tanggal, tampilkan data hari ini
+//             $query->whereDate('tanggal_input', Carbon::today());
+//         }
+
+//         // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
+//         $stokBarangJadi = $query->get()->groupBy('kode_input');
+
+//         return view('toko_slawi.pengiriman_tokoslawi.index', compact('stokBarangJadi'));
+// }
 
     
     public function show($id)
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-        $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_pengiriman');
+        $detailStokBarangJadi = Stok_tokoslawi::where('id', $id)->value('kode_pengiriman');
         
         // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -72,34 +104,14 @@ class Pengiriman_tokoslawiController extends Controller{
         }
         
         // Ambil semua data dengan kode_pengiriman yang sama
-        $pengirimanBarangJadi = Pengiriman_barangjadi::with(['produk.subklasifikasi', 'toko'])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+        $pengirimanBarangJadi = Stok_tokoslawi::with(['produk.subklasifikasi', 'toko'])->where('kode_pengiriman', $detailStokBarangJadi)->get();
         
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        return view('toko_slawi.inquery_pengirimanbarangjadi.show', compact('pengirimanBarangJadi', 'firstItem'));
+        return view('toko_slawi.pengiriman_tokoslawi.show', compact('pengirimanBarangJadi', 'firstItem'));
     }
-        
-        // public function posting_pengiriman($id)
-        // {
-        //     // Ambil data stok_tokoslawi berdasarkan ID
-        //     $stok = Stok_tokoslawi::where('id', $id)->first();
-        
-        //     // Pastikan data ditemukan
-        //     if (!$stok) {
-        //         return response()->json(['error' => 'Data tidak ditemukan.'], 404);
-        //     }
-        
-        //     // Ambil kode_pengiriman dari stok yang diambil
-        //     $kodePengiriman = $stok->kode_pengiriman;
-        
-        //     // Update status untuk semua stok_tokoslawi dengan kode_pengiriman yang sama
-        //     Stok_tokoslawi::where('kode_pengiriman', $kodePengiriman)->update([
-        //         'status' => 'posting'
-        //     ]);
-        
-        //     return response()->json(['success' => 'Berhasil mengubah status di stok_tokoslawi.']);
-        // }
+
 
 public function posting_pengiriman($id)
 {
@@ -119,18 +131,22 @@ public function posting_pengiriman($id)
 
     // Update status untuk semua stok_tokoslawi dengan kode_pengiriman yang sama
     Stok_tokoslawi::where('kode_pengiriman', $kodePengiriman)->update([
-        'status' => 'posting'
+        'status' => 'posting',
+        'tanggal_terima' => Carbon::now('Asia/Jakarta'),
     ]);
 
     // Update status untuk pengiriman_barangjadi berdasarkan pengiriman_barangjadi_id
     Pengiriman_barangjadi::where('id', $pengirimanId)->update([
-        'status' => 'posting'
+        'status' => 'posting',
+        'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+
     ]);
 
     return response()->json(['success' => 'Berhasil mengubah status di stok_tokoslawi dan pengiriman_barangjadi.']);
 }
 
-        public function unpost_pengiriman($id)
+
+public function unpost_pengiriman($id)
         {
             // Ambil data stok_tokoslawi berdasarkan ID
     $stok = Stok_tokoslawi::where('id', $id)->first();

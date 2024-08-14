@@ -23,6 +23,7 @@ class Stok_tokoslawi extends Model
         'tanggal_input',
         'status',
         'kode_pengiriman',
+        'kode_terima',
      
     ];
 

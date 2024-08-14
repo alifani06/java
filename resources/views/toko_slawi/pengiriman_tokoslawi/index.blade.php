@@ -103,9 +103,12 @@
                                 <th class="text-center">No</th>
                                 <th>Kode Pengiriman</th>
                                 <th>Tanggal Pengiriman</th>
+                                <th>Tanggal Terima</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
+                    
+                       
                         <tbody>
                             @foreach ($stokBarangJadi as $kodePengiriman => $stokItems)
                                 @php
@@ -113,10 +116,11 @@
                                     $tanggalPengiriman = $stokItems->min('tanggal_pengiriman'); // Mengambil tanggal pengiriman terkecil
                                     $status = $stokItems->first()->status; // Mengambil status dari item pertama
                                 @endphp
-                                <tr class="dropdown" data-id="{{ $firstItem->id }}">
+                                <tr class="dropdown" data-permintaan-id="{{ $firstItem->id }}">
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $kodePengiriman }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($tanggalPengiriman)->format('d/m/Y H:i') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_input)->format('d/m/Y H:i') }} </td>
+                                    <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') }} </td>
                                     <td class="text-center">
                                         @if ($status == 'posting')
                                             <button type="button" class="btn btn-success btn-sm">
@@ -127,21 +131,51 @@
                                                 <i class="fas fa-times"></i>
                                             </button>
                                         @endif
-                    
+                        
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($status == 'unpost')
                                                 <a class="dropdown-item posting-btn" data-memo-id="{{ $firstItem->id }}">Posting</a>
-                                                {{-- <a class="dropdown-item" href="{{ url('toko_slawi/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
-                                                <a class="dropdown-item" href="{{ url('/toko_slawi/inquery_pengirimanbarangjadi/' . $firstItem->id) }}">Show</a> --}}
+                                                {{-- <a class="dropdown-item" href="{{ url('/toko_slawi/pengiriman_tokoslawi/' . $firstItem->id) }}">Show</a> --}}
                                             @elseif ($status == 'posting')
                                                 <a class="dropdown-item unpost-btn" data-memo-id="{{ $firstItem->id }}">Unpost</a>
-                                                {{-- <a class="dropdown-item" href="{{ url('toko_slawi/inquery_pengirimanbarangjadi/' . $firstItem->id) }}">Show</a> --}}
+                                                {{-- <a class="dropdown-item" href="{{ url('/toko_slawi/pengiriman_tokoslawi/' . $firstItem->id)  }}">Show</a> --}}
                                             @endif
                                         </div>
                                     </td>
                                 </tr>
+                                <tr class="permintaan-details" id="details-{{ $firstItem->id }}" style="display: none;">
+                                    <td colspan="5">
+                                        <table class="table table-bordered" style="font-size: 13px;">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Divisi</th>
+                                                    <th>Kode Produk</th>
+                                                    <th>Produk</th>
+                                                    <th>Jumlah</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($stokItems as $stokItem)
+                                                    @php
+                                                        $produk = $stokItem->pengiriman_barangjadi->produk;
+                                                    @endphp
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $produk->klasifikasi->nama }}</td>
+                                                        <td>{{ $produk->kode_produk }}</td>
+                                                        <td>{{ $produk->nama_produk }}</td>
+                                                        <td>{{ $stokItem->jumlah }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                        </table>
+                                    </td>
+                                </tr>
                             @endforeach
                         </tbody>
+                        
                     </table>
                     
                
@@ -249,60 +283,71 @@
             });
         });
     </script>
-<script>
+
+   <script>
     $(document).ready(function() {
-        $('tbody tr.dropdown').click(function(e) {
-            // Memeriksa apakah yang diklik adalah checkbox
-            if ($(e.target).is('input[type="checkbox"]')) {
-                return; // Jika ya, hentikan eksekusi
-            }
+    $('tbody tr.dropdown').click(function(e) {
+        // Memeriksa apakah yang diklik adalah checkbox
+        if ($(e.target).is('input[type="checkbox"]')) {
+            return; // Jika ya, hentikan eksekusi
+        }
 
-            // Menghapus kelas 'selected' dan mengembalikan warna latar belakang ke warna default dari semua baris
-            $('tr.dropdown').removeClass('selected').css('background-color', '');
+        // Menyembunyikan detail untuk baris yang tidak dipilih
+        $('tbody tr.dropdown').not(this).removeClass('selected').css('background-color', '');
+        $('.permintaan-details').not('#details-' + $(this).data('permintaan-id')).hide();
 
-            // Menambahkan kelas 'selected' ke baris yang dipilih dan mengubah warna latar belakangnya
-            $(this).addClass('selected').css('background-color', '#b0b0b0');
+        // Toggle visibility untuk detail baris yang dipilih
+        var detailRowId = $(this).data('permintaan-id');
+        var detailRow = $('#details-' + detailRowId);
+        var isActive = detailRow.is(':visible');
 
-            // Menyembunyikan dropdown pada baris lain yang tidak dipilih
-            $('tbody tr.dropdown').not(this).find('.dropdown-menu').hide();
+        // Menghapus kelas 'selected' dan mengembalikan warna latar belakang ke warna default dari semua baris
+        $('tr.dropdown').removeClass('selected').css('background-color', '');
+        
+        if (isActive) {
+            detailRow.hide(); // Menyembunyikan detail jika sudah ditampilkan
+        } else {
+            $(this).addClass('selected').css('background-color', '#b0b0b0'); // Menambahkan kelas 'selected' dan mengubah warna latar belakangnya
+            detailRow.show(); // Menampilkan detail jika belum ditampilkan
+        }
 
-            // Mencegah event klik menyebar ke atas (misalnya, saat mengklik dropdown)
-            e.stopPropagation();
-        });
+        // Menyembunyikan dropdown pada baris lain yang tidak dipilih
+        $('tbody tr.dropdown').not(this).find('.dropdown-menu').hide();
 
-        $('tbody tr.dropdown').contextmenu(function(e) {
-            // Memeriksa apakah baris ini memiliki kelas 'selected'
-            if ($(this).hasClass('selected')) {
-                // Menampilkan dropdown saat klik kanan
-                var dropdownMenu = $(this).find('.dropdown-menu');
-                dropdownMenu.show();
-
-                // Mendapatkan posisi td yang diklik
-                var clickedTd = $(e.target).closest('td');
-                var tdPosition = clickedTd.position();
-
-                // Menyusun posisi dropdown relatif terhadap td yang di klik
-                dropdownMenu.css({
-                    'position': 'absolute',
-                    'top': tdPosition.top + clickedTd
-                        .height(), // Menempatkan dropdown sedikit di bawah td yang di klik
-                    'left': tdPosition
-                        .left // Menempatkan dropdown di sebelah kiri td yang di klik
-                });
-
-                // Mencegah event klik kanan menyebar ke atas (misalnya, saat mengklik dropdown)
-                e.stopPropagation();
-                e.preventDefault(); // Mencegah munculnya konteks menu bawaan browser
-            }
-        });
-
-        // Menyembunyikan dropdown saat klik di tempat lain
-        $(document).click(function() {
-            $('.dropdown-menu').hide();
-            $('tr.dropdown').removeClass('selected').css('background-color',
-                ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
-        });
+        // Mencegah event klik menyebar ke atas (misalnya, saat mengklik dropdown)
+        e.stopPropagation();
     });
+
+    $('tbody tr.dropdown').contextmenu(function(e) {
+        // Memeriksa apakah baris ini memiliki kelas 'selected'
+        if ($(this).hasClass('selected')) {
+            // Menampilkan dropdown saat klik kanan
+            var dropdownMenu = $(this).find('.dropdown-menu');
+            dropdownMenu.show();
+
+            // Mendapatkan posisi td yang diklik
+            var clickedTd = $(e.target).closest('td');
+            var tdPosition = clickedTd.position();
+
+            // Menyusun posisi dropdown relatif terhadap td yang di klik
+            dropdownMenu.css({
+                'position': 'absolute',
+                'top': tdPosition.top + clickedTd.height(), // Menempatkan dropdown sedikit di bawah td yang di klik
+                'left': tdPosition.left // Menempatkan dropdown di sebelah kiri td yang di klik
+            });
+
+            // Mencegah event klik kanan menyebar ke atas (misalnya, saat mengklik dropdown)
+            e.stopPropagation();
+            e.preventDefault(); // Mencegah munculnya konteks menu bawaan browser
+        }
+    });
+
+    // Menyembunyikan dropdown saat klik di tempat lain
+    $(document).click(function() {
+        $('.dropdown-menu').hide();
+        $('tr.dropdown').removeClass('selected').css('background-color', ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
+    });
+});
 </script>
   
 @endsection

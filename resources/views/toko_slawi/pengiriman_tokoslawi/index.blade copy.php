@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Inquery Pengiriman Barang Jadi</h1>
+                    <h1 class="m-0">Pengiriman Toko Slawi</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -70,7 +70,7 @@
                 
                 <div class="card-body">
                     <!-- Tabel -->
-                    <form method="GET" id="form-action">
+                    {{-- <form method="GET" id="form-action">
                         <div class="row">
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="status" name="status">
@@ -96,93 +96,54 @@
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    </form> --}}
                     <table id="datatables66" class="table table-bordered" style="font-size: 13px">
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
                                 <th>Kode Pengiriman</th>
                                 <th>Tanggal Pengiriman</th>
-                                <th>Tanggal Terima</th>
                                 <th>Status</th>
-                              
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($stokBarangJadi as $kodeInput => $stokBarangJadiItems)
-                            @php
-                                $firstItem = $stokBarangJadiItems->first();
-                            @endphp
-                                <tr class="dropdown" data-permintaan-id="{{ $firstItem->id }}">
+                            @foreach ($stokBarangJadi as $kodePengiriman => $stokItems)
+                                @php
+                                    $firstItem = $stokItems->first(); // Mengambil item pertama untuk informasi
+                                    $tanggalPengiriman = $stokItems->min('tanggal_pengiriman'); // Mengambil tanggal pengiriman terkecil
+                                    $status = $stokItems->first()->status; // Mengambil status dari item pertama
+                                @endphp
+                                <tr class="dropdown" data-id="{{ $firstItem->id }}">
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                <td>{{ $firstItem->kode_pengiriman }}</td>
-                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_pengiriman)->format('d/m/Y H:i') }} </td>
-                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') }} </td>
-                                  
-                                <td class="text-center">
-                                    @if ($firstItem->status == 'posting')
-                                        <button type="button" class="btn btn-success btn-sm">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                    @endif
-                                    @if ($firstItem->status == 'unpost')
-                                    <button type="button" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                    @endif
-                                 
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        @if ($firstItem->status == 'unpost')
-                                           
-                                                <a class="dropdown-item posting-btn"
-                                                    data-memo-id="{{ $firstItem->id }}">Posting</a>
-                                         
-                                                <a class="dropdown-item"
-                                                    href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
-                                            
-                                                <a class="dropdown-item"
-                                                href="{{ url('/admin/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
-                                                @endif
-                                        @if ($firstItem->status == 'posting')
-                                                <a class="dropdown-item unpost-btn"
-                                                    data-memo-id="{{ $firstItem->id }}">Unpost</a>
-                                                <a class="dropdown-item"
-                                                href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
+                                    <td>{{ $kodePengiriman }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($tanggalPengiriman)->format('d/m/Y H:i') }}</td>
+                                    <td class="text-center">
+                                        @if ($status == 'posting')
+                                            <button type="button" class="btn btn-success btn-sm">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        @elseif ($status == 'unpost')
+                                            <button type="button" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-times"></i>
+                                            </button>
                                         @endif
-                                       
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="permintaan-details" id="details-{{ $firstItem->id }}" style="display: none;">
-                                <td colspan="5">
-                                    <table class="table table-bordered" style="font-size: 13px;">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Divisi</th>
-                                                <th>Kode Produk</th>
-                                                <th>Produk</th>
-                                                <th>Jumlah</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($stokBarangJadiItems as $detail)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $detail->produk->klasifikasi->nama }}</td>
-                                                <td>{{ $detail->produk->kode_produk }}</td>
-                                                <td>{{ $detail->produk->nama_produk }}</td>
-                                                <td>{{ $detail->jumlah }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                     
-                        @endforeach
+                    
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            @if ($status == 'unpost')
+                                                <a class="dropdown-item posting-btn" data-memo-id="{{ $firstItem->id }}">Posting</a>
+                                                {{-- <a class="dropdown-item" href="{{ url('toko_slawi/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
+                                                <a class="dropdown-item" href="{{ url('/toko_slawi/inquery_pengirimanbarangjadi/' . $firstItem->id) }}">Show</a> --}}
+                                            @elseif ($status == 'posting')
+                                                <a class="dropdown-item unpost-btn" data-memo-id="{{ $firstItem->id }}">Unpost</a>
+                                                {{-- <a class="dropdown-item" href="{{ url('toko_slawi/inquery_pengirimanbarangjadi/' . $firstItem->id) }}">Show</a> --}}
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
-                    </table> 
+                    </table>
+                    
                
                     
                     <!-- Modal Loading -->
@@ -202,7 +163,7 @@
             </div>
         </div>
     </section>
-
+{{-- 
     <script>
         var tanggalAwal = document.getElementById('tanggal_pengiriman');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
@@ -223,13 +184,11 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('admin/inquery_pengirimanbarangjadi') }}";
+            form.action = "{{ url('toko_slawi/inquery_pengirimanbarangjadi') }}";
             form.submit();
         }
 
-    </script>
-
-
+    </script> --}}
 
     {{-- unpost stok  --}}
     <script>
@@ -241,7 +200,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('admin/inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/') }}/" + memoId,
+                    url: "{{ url('toko_slawi/pengiriman_tokoslawi/unpost_pengiriman/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -271,7 +230,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('admin/inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/') }}/" + memoId,
+                    url: "{{ url('toko_slawi/pengiriman_tokoslawi/posting_pengiriman/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -290,69 +249,60 @@
             });
         });
     </script>
- <script>
+<script>
     $(document).ready(function() {
-    $('tbody tr.dropdown').click(function(e) {
-        // Memeriksa apakah yang diklik adalah checkbox
-        if ($(e.target).is('input[type="checkbox"]')) {
-            return; // Jika ya, hentikan eksekusi
-        }
+        $('tbody tr.dropdown').click(function(e) {
+            // Memeriksa apakah yang diklik adalah checkbox
+            if ($(e.target).is('input[type="checkbox"]')) {
+                return; // Jika ya, hentikan eksekusi
+            }
 
-        // Menyembunyikan detail untuk baris yang tidak dipilih
-        $('tbody tr.dropdown').not(this).removeClass('selected').css('background-color', '');
-        $('.permintaan-details').not('#details-' + $(this).data('permintaan-id')).hide();
+            // Menghapus kelas 'selected' dan mengembalikan warna latar belakang ke warna default dari semua baris
+            $('tr.dropdown').removeClass('selected').css('background-color', '');
 
-        // Toggle visibility untuk detail baris yang dipilih
-        var detailRowId = $(this).data('permintaan-id');
-        var detailRow = $('#details-' + detailRowId);
-        var isActive = detailRow.is(':visible');
+            // Menambahkan kelas 'selected' ke baris yang dipilih dan mengubah warna latar belakangnya
+            $(this).addClass('selected').css('background-color', '#b0b0b0');
 
-        // Menghapus kelas 'selected' dan mengembalikan warna latar belakang ke warna default dari semua baris
-        $('tr.dropdown').removeClass('selected').css('background-color', '');
-        
-        if (isActive) {
-            detailRow.hide(); // Menyembunyikan detail jika sudah ditampilkan
-        } else {
-            $(this).addClass('selected').css('background-color', '#b0b0b0'); // Menambahkan kelas 'selected' dan mengubah warna latar belakangnya
-            detailRow.show(); // Menampilkan detail jika belum ditampilkan
-        }
+            // Menyembunyikan dropdown pada baris lain yang tidak dipilih
+            $('tbody tr.dropdown').not(this).find('.dropdown-menu').hide();
 
-        // Menyembunyikan dropdown pada baris lain yang tidak dipilih
-        $('tbody tr.dropdown').not(this).find('.dropdown-menu').hide();
-
-        // Mencegah event klik menyebar ke atas (misalnya, saat mengklik dropdown)
-        e.stopPropagation();
-    });
-
-    $('tbody tr.dropdown').contextmenu(function(e) {
-        // Memeriksa apakah baris ini memiliki kelas 'selected'
-        if ($(this).hasClass('selected')) {
-            // Menampilkan dropdown saat klik kanan
-            var dropdownMenu = $(this).find('.dropdown-menu');
-            dropdownMenu.show();
-
-            // Mendapatkan posisi td yang diklik
-            var clickedTd = $(e.target).closest('td');
-            var tdPosition = clickedTd.position();
-
-            // Menyusun posisi dropdown relatif terhadap td yang di klik
-            dropdownMenu.css({
-                'position': 'absolute',
-                'top': tdPosition.top + clickedTd.height(), // Menempatkan dropdown sedikit di bawah td yang di klik
-                'left': tdPosition.left // Menempatkan dropdown di sebelah kiri td yang di klik
-            });
-
-            // Mencegah event klik kanan menyebar ke atas (misalnya, saat mengklik dropdown)
+            // Mencegah event klik menyebar ke atas (misalnya, saat mengklik dropdown)
             e.stopPropagation();
-            e.preventDefault(); // Mencegah munculnya konteks menu bawaan browser
-        }
-    });
+        });
 
-    // Menyembunyikan dropdown saat klik di tempat lain
-    $(document).click(function() {
-        $('.dropdown-menu').hide();
-        $('tr.dropdown').removeClass('selected').css('background-color', ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
+        $('tbody tr.dropdown').contextmenu(function(e) {
+            // Memeriksa apakah baris ini memiliki kelas 'selected'
+            if ($(this).hasClass('selected')) {
+                // Menampilkan dropdown saat klik kanan
+                var dropdownMenu = $(this).find('.dropdown-menu');
+                dropdownMenu.show();
+
+                // Mendapatkan posisi td yang diklik
+                var clickedTd = $(e.target).closest('td');
+                var tdPosition = clickedTd.position();
+
+                // Menyusun posisi dropdown relatif terhadap td yang di klik
+                dropdownMenu.css({
+                    'position': 'absolute',
+                    'top': tdPosition.top + clickedTd
+                        .height(), // Menempatkan dropdown sedikit di bawah td yang di klik
+                    'left': tdPosition
+                        .left // Menempatkan dropdown di sebelah kiri td yang di klik
+                });
+
+                // Mencegah event klik kanan menyebar ke atas (misalnya, saat mengklik dropdown)
+                e.stopPropagation();
+                e.preventDefault(); // Mencegah munculnya konteks menu bawaan browser
+            }
+        });
+
+        // Menyembunyikan dropdown saat klik di tempat lain
+        $(document).click(function() {
+            $('.dropdown-menu').hide();
+            $('tr.dropdown').removeClass('selected').css('background-color',
+                ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
+        });
     });
-});
 </script>
+  
 @endsection
