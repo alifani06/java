@@ -347,31 +347,32 @@
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col mb-3 d-flex align-items-center">
-                                        <label for="sub_total" class="mr-2">Sub Total</label>
-                                        <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="Rp0" oninput="updateCalculations();">
+                                        <label for="sub_total" class="col-form-label mr-2">Sub Total</label>
+                                        <input type="text" class="form-control large-font w-100" id="sub_total" name="sub_total" value="Rp0" oninput="updateCalculations();">
                                     </div>
                                 </div>
-                                <div class="row"hidden>
+                                <div class="row" hidden>
                                     <div class="col mb-3 d-flex align-items-center">
-                                        <label for="sub_totalasli" class="mr-2">Sub Total Asli</label>
-                                        <input type="text" class="form-control large-font" id="sub_totalasli" name="sub_totalasli" value="Rp0" oninput="updateCalculations();">
+                                        <label for="sub_totalasli" class="col-form-label mr-2">Sub Total Asli</label>
+                                        <input type="text" class="form-control large-font w-100" id="sub_totalasli" name="sub_totalasli" value="Rp0" oninput="updateCalculations();">
                                     </div>
                                 </div>
                                 <div class="row" id="payment-row">
                                     <div class="col mb-3 d-flex align-items-center">
-                                        <label for="bayar" class="mr-2">Uang Bayar</label>
-                                        <input type="text" class="form-control large-font" id="bayar" name="bayar" value="{{ old('bayar') }}" oninput="formatAndUpdateKembali()">
+                                        <label for="bayar" class="col-form-label mr-2">Uang Bayar</label>
+                                        <input type="text" class="form-control large-font w-100" id="bayar" name="bayar" value="{{ old('bayar') }}" oninput="formatAndUpdateKembali()">
                                     </div>
                                 </div>
                                 <div class="row" id="change-row">
                                     <div class="col mb-3 d-flex align-items-center">
-                                        <label for="kembali" class="mr-2">Kembali</label>
-                                        <input type="text" class="form-control large-font" id="kembali" name="kembali" value="{{ old('kembali') }}" readonly>
+                                        <label for="kembali" class="col-form-label mr-2">Kembali</label>
+                                        <input type="text" class="form-control large-font w-100" id="kembali" name="kembali" value="{{ old('kembali') }}" readonly>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
                     
                     <div class="col-md-6">
                         <div class="form-group" style="flex: 8;">
@@ -436,7 +437,7 @@
                 </div>
                 <div class="card-footer text-right mt-3">
                     <button type="reset" class="btn btn-secondary" id="btnReset">Reset</button>
-                    <button type="" class="btn btn-primary" id="simpanButton">Simpan</button>
+                    <button type="" class="btn btn-primary" id="simpanButton"  onclick="return validatePayment();">Simpan</button>
                     <div id="loading" style="display: none;">
                         <i class="fas fa-spinner fa-spin"></i> Sedang Menyimpan...
                     </div>
@@ -445,6 +446,59 @@
         </div>
     </section>
   
+<script>
+  function validatePayment() {
+    const metodeId = document.getElementById('nama_metode').value;
+    const subTotal = parseInt(document.getElementById('sub_total').value.replace(/[^\d]/g, '')); // Hilangkan simbol dan konversi ke angka
+    const bayarValue = document.getElementById('bayar').value.replace(/[^\d]/g, ''); // Hilangkan simbol dan konversi ke angka
+    const bayar = bayarValue ? parseInt(bayarValue) : 0;
+
+    // Jika metode pembayaran dipilih dan bayar kosong, izinkan transaksi
+    if (metodeId && (!bayarValue || bayar <= 0)) {
+        return true; // Lanjutkan submit form
+    }
+
+    // Jika metode pembayaran tidak dipilih dan bayar kosong
+    if (!bayarValue || bayar <= 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Uang Bayar Kosong',
+            text: 'Masukkan jumlah uang bayar sebelum melanjutkan transaksi.',
+        });
+        return false; // Batalkan submit form
+    }
+
+    if (bayar < subTotal) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Uang Bayar Kurang',
+            text: 'Uang bayar tidak cukup untuk melakukan transaksi.',
+        });
+        return false; // Batalkan submit form
+    }
+
+    return true; // Lanjutkan submit form
+}
+
+}
+
+function formatAndUpdateKembali() {
+    // Format input uang bayar sesuai kebutuhan (misal: menambahkan format Rupiah)
+    const bayarElement = document.getElementById('bayar');
+    const kembaliElement = document.getElementById('kembali');
+    let bayarValue = bayarElement.value.replace(/[^\d]/g, ''); // Hilangkan simbol non-angka
+
+    bayarElement.value = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(bayarValue);
+
+    // Hitung kembalian
+    const subTotal = parseInt(document.getElementById('sub_total').value.replace(/[^\d]/g, ''));
+    const kembali = bayarValue - subTotal;
+
+    kembaliElement.value = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(kembali);
+}
+
+</script>
+
     <script>
         function getData1() {
             var metodeId = document.getElementById('nama_metode').value;
@@ -785,6 +839,7 @@
                 kembaliElement.value = kembali >= 0 ? formatRupiah(kembali) : 'Rp. 0';
             }
 
+            
             // Panggil fungsi ini saat halaman dimuat untuk format sub_total yang mungkin sudah ada
             document.addEventListener('DOMContentLoaded', function() {
                 let subTotalElement = document.getElementById('sub_total');

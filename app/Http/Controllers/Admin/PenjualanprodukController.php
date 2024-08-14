@@ -296,7 +296,7 @@ public function store(Request $request)
         }
     }
 
-    // Handling errors for pelanggans or pesanans
+    //Handling errors for pelanggans or pesanans
     // if ($error_pelanggans || $error_pesanans) {
     //     return back()
     //         ->withInput()

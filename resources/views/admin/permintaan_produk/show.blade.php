@@ -201,8 +201,13 @@
                     <i class="fas fa-plus"></i> Kembali
                 </a>
             </div>
-            <div>
+            {{-- <div>
                 <a href="{{ route('permintaan_produk.print', $permintaanProduk->id) }}"  id="printButton" target="_blank" class="btn btn-primary btn-sm">
+                    <i class="fas fa-print"></i> Cetak 
+                </a>
+            </div> --}}
+            <div>
+                <a href="{{ url('admin/permintaan-produk/' . $permintaanProduk->id . '/print') }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
                     <i class="fas fa-print"></i> Cetak 
                 </a>
             </div>

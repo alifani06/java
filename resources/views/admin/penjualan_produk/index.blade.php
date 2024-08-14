@@ -139,11 +139,11 @@
                                                 <a class="dropdown-item posting-btn"
                                                         data-memo-id="{{ $item->id }}">Posting</a>
                                              
+                                                        <a class="dropdown-item"
+                                                            href="{{ url('/admin/penjualan_produk/' . $item->id ) }}">Show</a>
                                                     <a class="dropdown-item"
-                                                        href="{{ url('admin/penjualan_produk/' . $item->id . '/edit') }}">Update</a>
+                                                        href="{{ url('admin/penjualan_produk/' . $item->id . '/edit') }}">Delete</a>
                                                 
-                                                    <a class="dropdown-item"
-                                                        href="{{ url('/admin/penjualan_produk/' . $item->id ) }}">Show</a>
                                                       
                                             @endif
                                             @if ($item->status == 'posting')

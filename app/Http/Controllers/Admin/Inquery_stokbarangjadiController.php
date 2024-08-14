@@ -312,6 +312,7 @@ public function posting_stokbarangjadi($id)
     //     // Redirect back with a success message
     //     return redirect()->route('inquery_stokbarangjadi.index')->with('success', 'Permintaan produk berhasil diperbarui.');
     // }
+
     public function update(Request $request, $id)
     {
         // Find the Stok_Barangjadi record by ID
@@ -352,6 +353,8 @@ public function posting_stokbarangjadi($id)
         // Redirect back with a success message
         return redirect()->route('inquery_stokbarangjadi.index')->with('success', 'Permintaan produk berhasil diperbarui.');
     }
+
+    
     
 
 

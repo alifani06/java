@@ -124,7 +124,7 @@
                                         @endphp
                                         {{ $tokoNames ?: 'Non Member' }}
                                     </td>
-                                    <td>{{ $permintaan->created_at->format('d-m-Y') }}</td>
+                                    <td>{{ $permintaan->detailpermintaanproduks->first()->tanggal_permintaan ?? 'N/A' }}</td>
                                     <td>{{ $permintaan->detailpermintaanproduks->count() }}</td>
                                     <td class="text-center">
                                         @if ($permintaan->status == 'posting')

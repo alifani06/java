@@ -95,7 +95,7 @@
                         <tr class="dropdown" data-permintaan-id="{{ $permintaan->id }}">
                             <td class="text-center">{{ $loop->iteration }}</td>
                             <td>{{ $permintaan->kode_permintaan }}</td>
-                            <td>{{ $permintaan->created_at->format('d-m-Y') }}</td>
+                            <td>{{ $permintaan->detailpermintaanproduks->first()->tanggal_permintaan ?? 'N/A' }}</td>
                             <td>{{ $permintaan->detailpermintaanproduks->count() }}</td>
                             <td class="text-center">
                                 @if ($permintaan->status == 'posting')
@@ -110,7 +110,7 @@
                                 @endif
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     @if ($permintaan->status == 'unpost')
-                                            <a class="dropdown-item posting-btn"data-memo-id="{{ $permintaan->id }}">Posting</a>
+                                            {{-- <a class="dropdown-item posting-btn"data-memo-id="{{ $permintaan->id }}">Posting</a> --}}
                                             <a class="dropdown-item" href="{{ url('toko_slawi/permintaan_produk/' . $permintaan->id . '/edit') }}">Update</a>
                                             <a class="dropdown-item" href="{{ url('toko_slawi/permintaan_produk/' . $permintaan->id) }}">Show</a>
                                             <form action="{{ url('toko_slawi/permintaan_produk/' . $permintaan->id) }}" method="POST" style="display: inline;">
@@ -120,7 +120,7 @@
                                             </form>
                                             @endif
                                     @if ($permintaan->status == 'posting')
-                                            <a class="dropdown-item unpost-btn" data-memo-id="{{ $permintaan->id }}">Unpost</a>
+                                            {{-- <a class="dropdown-item unpost-btn" data-memo-id="{{ $permintaan->id }}">Unpost</a> --}}
                                             <a class="dropdown-item" href="{{ url('toko_slawi/permintaan_produk/' . $permintaan->id) }}">Show</a>
                                     @endif
                                 </div>

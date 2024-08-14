@@ -201,12 +201,12 @@
     <div class="signature-container">
         <div class="signature-row">
             <div class="signaturea">
-                <p style="margin-left: 30px;"><strong>Gudang</strong></p><br><br>
+                <p style="margin-left: 10px;"><strong>Gudang Barang Jadi</strong></p><br><br>
                 <p>____________________</p>
                 {{-- <p>Nama Gudang</p> --}}
             </div>
             <div class="signatureb">
-                <p><strong>Accounting</strong></p><br><br>
+                <p><strong>Produksi</strong></p><br><br>
                 <p>____________________</p>
                 {{-- <p>Nama Accounting</p> --}}
             </div>
