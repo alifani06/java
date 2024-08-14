@@ -78,7 +78,52 @@ class Inquery_permintaanprodukController extends Controller
     //     $permintaanProduks = $inquery->with('detailpermintaanproduks')->get();
     //     return view('admin.inquery_permintaanproduk.index', compact('permintaanProduks'));
     // }
-    public function index(Request $request)
+//     public function index(Request $request)
+// {
+//     $status = $request->status;
+//     $tanggal_permintaan = $request->tanggal_permintaan;
+//     $tanggal_akhir = $request->tanggal_akhir;
+
+//     $inquery = Permintaanproduk::query();
+
+//     if ($status) {
+//         $inquery->where('status', $status);
+//     }
+
+//     if ($tanggal_permintaan && $tanggal_akhir) {
+//         $tanggal_permintaan = Carbon::parse($tanggal_permintaan)->startOfDay();
+//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+//         $inquery->whereHas('detailpermintaanproduks', function($query) use ($tanggal_permintaan, $tanggal_akhir) {
+//             $query->whereBetween('tanggal_permintaan', [$tanggal_permintaan, $tanggal_akhir]);
+//         });
+//     } elseif ($tanggal_permintaan) {
+//         $tanggal_permintaan = Carbon::parse($tanggal_permintaan)->startOfDay();
+//         $inquery->whereHas('detailpermintaanproduks', function($query) use ($tanggal_permintaan) {
+//             $query->where('tanggal_permintaan', '>=', $tanggal_permintaan);
+//         });
+//     } elseif ($tanggal_akhir) {
+//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+//         $inquery->whereHas('detailpermintaanproduks', function($query) use ($tanggal_akhir) {
+//             $query->where('tanggal_permintaan', '<=', $tanggal_akhir);
+//         });
+//     } else {
+//         // Jika tidak ada filter tanggal, ambil data hari ini
+//         $inquery->whereHas('detailpermintaanproduks', function($query) {
+//             $query->whereDate('tanggal_permintaan', Carbon::today());
+//         });
+//     }
+
+//     $inquery->orderBy('id', 'DESC');
+
+//     // Menggunakan with untuk eager loading relasi detailpermintaanproduks dan toko
+//     $permintaanProduks = $inquery->with ->get();
+
+//      // Menghitung jumlah data dengan status 'unpost'
+
+//     return view('admin.inquery_permintaanproduk.index', compact('permintaanProduks','unpostedCount'));
+// }
+
+public function index(Request $request)
 {
     $status = $request->status;
     $tanggal_permintaan = $request->tanggal_permintaan;
@@ -116,12 +161,12 @@ class Inquery_permintaanprodukController extends Controller
     $inquery->orderBy('id', 'DESC');
 
     // Menggunakan with untuk eager loading relasi detailpermintaanproduks dan toko
-    $permintaanProduks = $inquery->with(['detailpermintaanproduks.toko'])->get();
+    $permintaanProduks = $inquery->with(['detailpermintaanproduks', 'toko'])->get();
 
-     // Menghitung jumlah data dengan status 'unpost'
-     $unpostedCount = Permintaanproduk::where('status', 'unpost')->count();
+    // Menghitung jumlah data dengan status 'unpost'
+    $unpostedCount = $permintaanProduks->where('status', 'unpost')->count();
 
-    return view('admin.inquery_permintaanproduk.index', compact('permintaanProduks','unpostedCount'));
+    return view('admin.inquery_permintaanproduk.index', compact('permintaanProduks', 'unpostedCount'));
 }
 
 public function getUnpostedCount()

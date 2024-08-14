@@ -103,6 +103,7 @@
                                 <th class="text-center">No</th>
                                 <th>Kode Retur</th>
                                 <th>Tanggal Pengiriman</th>
+                                <th>Tanggal Terima</th>
                                 <th>Status</th>
                               
                             </tr>
@@ -115,7 +116,14 @@
                                 <tr class="dropdown" data-permintaan-id="{{ $firstItem->id }}">
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $firstItem->kode_retur }}</td>
-                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_input)->format('d/m/Y H:i') }}
+                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_input)->format('d/m/Y H:i') }}</td>
+                                <td>
+                                    @if ($firstItem->tanggal_terima)
+                                        {{ \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                                     <td class="text-center">
                                     @if ($firstItem->status == 'posting')
                                         <button type="button" class="btn btn-success btn-sm">

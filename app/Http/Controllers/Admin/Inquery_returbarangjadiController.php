@@ -226,7 +226,7 @@ public function unpost_retur($id)
 
     // Update status untuk semua stok dengan kode_input yang sama di tabel stok_barangjadi
     Retur_barangjadi::where('kode_retur', $kodeInput)->update([
-        'status' => 'unpost'
+        'status' => 'unpost',
     ]);
     
     // Update status untuk semua retur_tokoslawi dengan kode_retur yang sama
@@ -252,12 +252,16 @@ public function posting_retur($id)
 
     // Update status untuk semua Retur_barangjadi dengan kode_retur yang sama
     Retur_barangjadi::where('kode_retur', $kodePengiriman)->update([
-        'status' => 'posting'
+        'status' => 'posting',
+        'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+
     ]);
 
     // Update status untuk semua retur_tokoslawi dengan kode_retur yang sama
     Retur_tokoslawi::where('kode_retur', $kodePengiriman)->update([
-        'status' => 'posting'
+        'status' => 'posting',
+        'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+
     ]);
 
     return response()->json(['success' => 'Berhasil mengubah status semua produk dan detail terkait dengan kode_retur yang sama.']);

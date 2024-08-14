@@ -122,7 +122,7 @@
                                         @php
                                             $tokoNames = $permintaan->detailpermintaanproduks->pluck('toko.nama_toko')->unique()->implode(', ');
                                         @endphp
-                                        {{ $tokoNames ?: 'Non Member' }}
+                                        {{ $tokoNames ?: '-' }}
                                     </td>
                                     <td>{{ $permintaan->detailpermintaanproduks->first()->tanggal_permintaan ?? 'N/A' }}</td>
                                     <td>{{ $permintaan->detailpermintaanproduks->count() }}</td>

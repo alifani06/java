@@ -200,6 +200,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('inquery_returbarangjadi/posting_retur/{id}', [\App\Http\Controllers\Admin\Inquery_returbarangjadiController::class, 'posting_retur']);
     Route::get('/inquery_returbarangjadi/{id}/print', [Inquery_returbarangjadiController::class, 'print'])->name('inquery_returbarangjadi.print');
 
+    Route::resource('estimasi_produksi', \App\Http\Controllers\Admin\EstimasiproduksiController::class);
+
 
 
     //TOKO SLAWI

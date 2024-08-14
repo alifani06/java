@@ -220,7 +220,8 @@
     request()->is('admin/stok_barangjadi*')||  
     request()->is('admin/permintaan_produk*')|| 
     request()->is('admin/pengiriman_barangjadi*')|| 
-    request()->is('adminreturn_barangjadi*') 
+    request()->is('admin/return_barangjadi*')|| 
+    request()->is('admin/estimasi_produksi*') 
     // request()->is('admin/input*')
   
         ? 'menu-open'
@@ -232,7 +233,8 @@
         request()->is('admin/stok_barangjadi*')||  
         request()->is('admin/permintaan_produk*')||  
         request()->is('admin/pengiriman_barangjadi*')||  
-        request()->is('admin/retur_barangjadi*')  
+        request()->is('admin/retur_barangjadi*')||  
+        request()->is('admin/estimasi_produksi')  
         // request()->is('admin/input*')
       
             ? 'active'
@@ -309,6 +311,16 @@
                 class="nav-link {{ request()->is('admin/retur_barangjadi*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Retur Barang Jadi</p>
+            </a>
+        </li>
+        {{-- @endif --}}
+
+        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        <li class="nav-item">
+            <a href="{{ url('admin/estimasi_produksi') }}"
+                class="nav-link {{ request()->is('admin/estimasi_produksi*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Estimasi Produksi</p>
             </a>
         </li>
         {{-- @endif --}}

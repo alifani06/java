@@ -104,6 +104,7 @@
                                 <th>Cabang</th>
                                 <th>Kode Retur</th>
                                 <th>Tanggal Retur</th>
+                                <th>Tanggal Terima</th>
                                 <th>Nama Produk</th>
                                 <th>Status</th>
                               
@@ -120,8 +121,15 @@
                                         {{ $firstItem->toko ? $firstItem->toko->nama_toko : '-' }} {{-- Ganti nama_toko sesuai nama kolom yang ada pada tabel toko --}}
                                     </td>
                                 <td>{{ $firstItem->kode_retur }}</td>
-                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_retur)->format('d/m/Y H:i') }}
-                                    <td>{{ $firstItem->nama_produk }}</td>
+                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_retur)->format('d/m/Y H:i') }}</td>
+                                <td>
+                                    @if ($firstItem->tanggal_terima)
+                                        {{ \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>                                    
+                                <td>{{ $firstItem->nama_produk }}</td>
                                     <td class="text-center">
                                     @if ($firstItem->status == 'posting')
                                         <button type="button" class="btn btn-success btn-sm">

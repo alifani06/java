@@ -79,4 +79,6 @@ class Permintaanproduk extends Model
     {
         return $this->hasMany(Klasifikasi::class, 'produk_id');
     }
+
+    
 }
