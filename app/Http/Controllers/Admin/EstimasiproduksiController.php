@@ -46,7 +46,7 @@ public function index()
     $today = \Carbon\Carbon::today();
     $tomorrow = $today->copy()->addDay();  // Mendapatkan tanggal besok
 
-    // Query pemesanan produk
+    // Query pemesanan produk dengan relasi ke toko dan produk
     $pemesananProduk = DetailPemesananProduk::with(['pemesananProduk.toko', 'produk'])
         ->whereHas('pemesananProduk', function($query) use ($tomorrow) {
             $query->whereDate('tanggal_kirim', $tomorrow);
@@ -60,12 +60,13 @@ public function index()
                     'jumlah' => $details->sum('jumlah'),
                     'toko' => $details->first()->pemesananProduk->toko,
                     'produk' => $details->first()->produk,
-                    'kode_pemesanan' => $details->first()->pemesananProduk->kode_pemesanan,
+                    'kode_pemesanan' => $details->pluck('pemesananProduk.kode_pemesanan')->unique()->values(),
                     'detail' => $details
                 ];
             });
         });
 
+    // Query permintaan produk dengan relasi ke toko, produk, dan detail permintaan produk
     $permintaanProduks = PermintaanProduk::with(['detailPermintaanProduks.toko', 'detailPermintaanProduks.produk'])
         ->where('status', 'posting')
         ->whereDate('created_at', $today)
@@ -80,7 +81,8 @@ public function index()
                 return [
                     'jumlah' => $details->sum('jumlah'),
                     'toko' => $details->first()->toko,
-                    'produk' => $details->first()->produk,  // Pastikan produk dimuat
+                    'produk' => $details->first()->produk,
+                    'tanggal_permintaan' => $details->first()->tanggal_permintaan,  // Ambil tanggal_permintaan
                 ];
             });
         });

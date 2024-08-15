@@ -83,60 +83,55 @@
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
-                                <th>Cabang</th>
-                                <th>Kode Pemesanan</th>
-                                <th>Tanggal Pemesanan</th>
-                                <th>Jumlah Produk</th>
-                                <th>Opsi</th>
+                                <th>Produk</th>
+                                <th>Kode Produk</th>
+                                <th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($pemesananProduk as $pemesanan)
-                            <tr class="dropdown" data-pemesanan-id="{{ $pemesanan->id }}">
-                                <td class="text-center">{{ $loop->iteration }}</td>
-                                <td>
-                                    {{ $pemesanan->pemesananproduk->toko->nama_toko ?? '-' }}
-                                </td>
-                                <td>{{ $pemesanan->pemesananproduk->kode_pemesanan }}</td>                            
-                                <td>{{ \Carbon\Carbon::parse($pemesanan->pemesananproduk->tanggal_kirim)->format('d/m/Y H:i') }}</td>
-                                <td>{{ $pemesanan->count() }}</td>
-
-                            </tr>
-                                    
+                            @foreach ($pemesananProduk as $produkId => $tokoDetails)
+                                @php
+                                    $produk = $tokoDetails->first()['produk'];
+                                    $totalJumlah = $tokoDetails->sum('jumlah');
+                                @endphp
+                                <tr class="dropdown" data-pemesanan-id="{{ $produkId }}">
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $produk->nama_produk }}</td>
+                                    <td>{{ $produk->kode_produk }}</td>
+                                    <td>{{ $totalJumlah }}</td>
                                 </tr>
-                                <tr class="permintaan-details1" id="details1-{{ $pemesanan->id }}" style="display: none;">
-                                    <td colspan="5">
+                                <tr class="permintaan-details1" id="details1-{{ $produkId }}" style="display: none;">
+                                    <td colspan="6">
                                         <table class="table table-bordered" style="font-size: 13px;">
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
-                                                    <th>Divisi</th>
-                                                    <th>Kode Produk</th>
-                                                    <th>Produk</th>
+                                                    <th>Cabang</th>
+                                                    <th>Tanggal</th>
+                                                    <th>Kode Pemesanan</th>
                                                     <th>Jumlah</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($pemesananProduk as $detail)
-                                                <tr >
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    
-                                                        <td>{{ $detail->produk->klasifikasi->nama }}</td>
-                                                        <td>{{ $detail->kode_produk }}</td>
-                                                        <td>{{ $detail->nama_produk }}</td>
-                                                        <td>{{ $detail->jumlah }}</td>
-                                                        
-                                                    </tr>
+                                                @foreach ($tokoDetails as $tokoDetail)
+                                                    @foreach ($tokoDetail['detail'] as $detail)
+                                                        <tr>
+                                                            <td>{{ $loop->iteration }}</td>
+                                                            <td>{{ $tokoDetail['toko']->nama_toko }}</td>
+                                                            <td>{{ \Carbon\Carbon::parse($detail->pemesananProduk->tanggal_kirim)->format('d-m-Y H:i') }}</td>
+                                                            <td>{{ $detail->pemesananProduk->kode_pemesanan }}</td>
+                                                            <td>{{ $detail->jumlah }}</td>
+                                                        </tr>
+                                                    @endforeach
                                                 @endforeach
                                             </tbody>
                                         </table>
                                     </td>
-
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-
+                    
                     
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
@@ -162,91 +157,70 @@
                 </div>
             </div>
             <div class="card-body">
+            
                 <table id="datatables67" class="table table-bordered" style="font-size: 13px">
                     <thead>
                         <tr>
-                            <th class="text-center">No</th>
-                            <th>Cabang</th>
-                            <th>Kode Permintaan</th>
-                            <th>Tanggal Permintaan</th>
-                            <th>Jumlah Produk</th>
-                            <th>Opsi</th>
+                            <th>No</th>
+                            <th>Produk</th>
+                            <th>Kode Produk</th>
+                            <th>Total</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($permintaanProduks as $permintaan)
-                            <tr class="dropdown" data-permintaan-id="{{ $permintaan->id }}">
-                                <td class="text-center">{{ $loop->iteration }}</td>
-                                <td>
-                                    @php
-                                        $tokoNames = $permintaan->detailpermintaanproduks->pluck('toko.nama_toko')->unique()->implode(', ');
-                                    @endphp
-                                    {{ $tokoNames ?: '-' }}
-                                </td>
-                                <td>{{ $permintaan->kode_permintaan }}</td>
-                                
-                                <td>{{ \Carbon\Carbon::parse($permintaan->detailpermintaanproduks->first()->tanggal_permintaan)->format('d/m/Y H:i') ?? 'N/A' }}</td>
-                                <td>{{ $permintaan->detailpermintaanproduks->count() }}</td>
-                                <td class="text-center">
-                                    @if ($permintaan->status == 'posting')
-                                        <button type="button" class="btn btn-success btn-sm">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                    @endif
-                                    @if ($permintaan->status == 'unpost')
-                                    <button type="button" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                    @endif
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        @if ($permintaan->status == 'unpost')
-                                                <a class="dropdown-item posting-btn"data-memo-id="{{ $permintaan->id }}">Posting</a>
-                                                <a class="dropdown-item" href="{{ url('admin/permintaan_produk/' . $permintaan->id . '/edit') }}">Update</a>
-                                                <a class="dropdown-item" href="{{ url('admin/permintaan_produk/' . $permintaan->id) }}">Show</a>
-                                                <form action="{{ url('admin/permintaan_produk/' . $permintaan->id) }}" method="POST" style="display: inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="dropdown-item" onclick="return confirm('Apakah Anda yakin ingin menghapus permintaan produk ini?')">Delete</button>
-                                                </form>
-                                                @endif
-                                        @if ($permintaan->status == 'posting')
-                                                <a class="dropdown-item unpost-btn" data-memo-id="{{ $permintaan->id }}">Unpost</a>
-                                                <a class="dropdown-item" href="{{ url('admin/permintaan_produk/' . $permintaan->id) }}">Show</a>
-                                        @endif
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="permintaan-details" id="details-{{ $permintaan->id }}" style="display: none;">
-                                <td colspan="5">
-                                    <table class="table table-bordered" style="font-size: 13px;">
-                                        <thead>
+                        @foreach ($permintaanProduks as $produkId => $tokoDetails)
+                        @php
+                        // Cek apakah $tokoDetails memiliki data dan apakah produk ada
+                        $firstDetail = $tokoDetails->first();
+                        $produk = $firstDetail ? $firstDetail['produk'] : null;
+                        $totalJumlah = $tokoDetails->sum('jumlah');
+                    @endphp
+                    <tr class="dropdown" data-permintaan-id="{{ $produkId }}">
+                        <td>{{ $loop->iteration }}</td>
+                        <td>
+                            @if ($produk)
+                                {{ $produk->nama_produk }}
+                            @else
+                                Produk Tidak Ditemukan
+                            @endif
+                        </td>
+                        <td>
+                            @if ($produk)
+                                {{ $produk->kode_produk }}
+                            @else
+                                N/A
+                            @endif
+                        </td>
+                        <td>{{ $totalJumlah }}</td>
+                    </tr>
+                    
+                        <tr class="permintaan-details" id="details-{{ $produkId }}" style="display: none;">
+                            <td colspan="4">
+                                <table class="table table-bordered" style="font-size: 13px;">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Cabang</th>
+                                            <th>Jumlah</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($tokoDetails as $tokoDetail)
                                             <tr>
-                                                <th>No</th>
-                                                <th>Divisi</th>
-                                                <th>Kode Produk</th>
-                                                <th>Produk</th>
-                                                <th>Jumlah</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($permintaan->detailpermintaanproduks as $detail)
-                                            <tr >
                                                 <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $detail->produk->klasifikasi->nama }}</td>
-                                                    <td>{{ $detail->produk->kode_produk }}</td>
-                                                    <td>{{ $detail->produk->nama_produk }}</td>
-                                                    <td>{{ $detail->jumlah }}</td>
-                                                    
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </td>
-
-                            </tr>
-                        @endforeach
+                                                <td>{{ $tokoDetail['toko']->nama_toko }}</td>
+                                                <td>{{ $tokoDetail['jumlah'] }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    @endforeach
+                    
                     </tbody>
                 </table>
+                
             </div>
         </div>
     </section>
@@ -383,65 +357,7 @@
 });
 </script>
 
-  {{-- unpost stok  --}}
-  <script>
-    $(document).ready(function() {
-        $('.unpost-btn').click(function() {
-            var memoId = $(this).data('memo-id');
-            $(this).addClass('disabled');
 
-            $('#modal-loading').modal('show');
-
-            $.ajax({
-                url: "{{ url('admin/permintaan_produk/unpost_permintaanproduk/') }}/" + memoId,
-                type: 'GET',
-                data: {
-                    id: memoId
-                },
-                success: function(response) {
-                    $('#modal-loading').modal('hide');
-                    console.log(response);
-                    $('#modal-posting-' + memoId).modal('hide');
-                    location.reload();
-                },
-                error: function(error) {
-                    $('#modal-loading').modal('hide');
-                    console.log(error);
-                }
-            });
-        });
-    });
-</script>
-
-{{-- posting stok --}}
-<script>
-    $(document).ready(function() {
-        $('.posting-btn').click(function() {
-            var memoId = $(this).data('memo-id');
-            $(this).addClass('disabled');
-
-            $('#modal-loading').modal('show');
-
-            $.ajax({
-                url: "{{ url('admin/permintaan_produk/posting_permintaanproduk/') }}/" + memoId,
-                type: 'GET',
-                data: {
-                    id: memoId
-                },
-                success: function(response) {
-                    $('#modal-loading').modal('hide');
-                    console.log(response);
-                    $('#modal-posting-' + memoId).modal('hide');
-                    location.reload();
-                },
-                error: function(error) {
-                    $('#modal-loading').modal('hide');
-                    console.log(error);
-                }
-            });
-        });
-    });
-</script>
 
 @endsection
 

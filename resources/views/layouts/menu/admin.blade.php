@@ -338,7 +338,8 @@
     request()->is('admin/inquery_perubahanharga*')|| 
     request()->is('admin/inquery_permintaanproduk*')|| 
     request()->is('admin/inquery_stokbarangjadi*')|| 
-    request()->is('admin/inquery_pengirimanbarangjadi*') 
+    request()->is('admin/inquery_pengirimanbarangjadi*')|| 
+    request()->is('admin/inquery_estimasiproduksi')  
     // request()->is('admin/input*')
   
         ? 'menu-open'
@@ -349,7 +350,8 @@
         request()->is('admin/inquery_perubahanharga*')||
         request()->is('admin/inquery_permintaanproduk*')||
         request()->is('admin/inquery_stokbarangjadi*')||
-        request()->is('admin/inquerypengirimankbarangjadi*')
+        request()->is('admin/inquery_pengirimanbarangjadi*')||
+        request()->is('admin/inquery_estimasiproduksi*') 
         // request()->is('admin/input*')
       
             ? 'active'
@@ -429,6 +431,15 @@
                 class="nav-link {{ request()->is('admin/inquery_returbarangjadi*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Inquery Retur Barang</p>
+            </a>
+        </li>
+        {{-- @endif --}}
+
+          <li class="nav-item">
+            <a href="{{ url('admin/inquery_estimasiproduksi') }}"
+                class="nav-link {{ request()->is('admin/inquery_estimasiproduksi*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Inquery Estimasi Produksi</p>
             </a>
         </li>
         {{-- @endif --}}
