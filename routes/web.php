@@ -202,6 +202,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::resource('estimasi_produksi', \App\Http\Controllers\Admin\EstimasiproduksiController::class);
 
+    Route::resource('inquery_estimasiproduksi', \App\Http\Controllers\Admin\Inquery_estimasiproduksiController::class);
+
 
 
     //TOKO SLAWI

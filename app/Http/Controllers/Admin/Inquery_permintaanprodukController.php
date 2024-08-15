@@ -163,10 +163,7 @@ public function index(Request $request)
     // Menggunakan with untuk eager loading relasi detailpermintaanproduks dan toko
     $permintaanProduks = $inquery->with(['detailpermintaanproduks', 'toko'])->get();
 
-    // Menghitung jumlah data dengan status 'unpost'
-    $unpostedCount = $permintaanProduks->where('status', 'unpost')->count();
-
-    return view('admin.inquery_permintaanproduk.index', compact('permintaanProduks', 'unpostedCount'));
+   return view('admin.inquery_permintaanproduk.index', compact('permintaanProduks'));
 }
 
 public function getUnpostedCount()
