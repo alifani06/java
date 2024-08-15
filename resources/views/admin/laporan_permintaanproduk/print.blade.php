@@ -90,7 +90,7 @@
             </p>
         @endif
     </div>
-    <table style="font-size: 9px;">
+    {{-- <table style="font-size: 9px;">
         <thead>
             <tr>
                 <th class="text-center">No</th>
@@ -143,6 +143,75 @@
                     <td>{{ $data['nama_produk'] }}</td>
                     @foreach ($tokoData as $toko)
                         <td>{{ $data['jumlah'][$toko->nama_toko] }}</td>
+                    @endforeach
+                    <td>{{ $data['total'] }}</td> <!-- Tampilkan total per produk -->
+                </tr>
+            @endforeach
+        </tbody>
+    </table> --}}
+    <table style="font-size: 9px;">
+        <thead>
+            <tr>
+                <th class="text-center">No</th>
+                {{-- <th>Kode Permintaan</th> --}}
+                <th>Divisi</th>
+                <th>Kategori</th>
+                <th>Produk</th>
+                @foreach ($tokoData as $toko)
+                    <th colspan="2">{{ $toko->nama_toko }}</th>
+                @endforeach
+                <th>Total</th> <!-- Tambahkan kolom untuk total per produk -->
+            </tr>
+            <tr>
+                @foreach ($tokoData as $toko)
+                    <th>Stok</th>
+                    <th>Pesanan</th>
+                @endforeach
+                <th></th> <!-- Kosongkan untuk menyesuaikan dengan total -->
+            </tr>
+        </thead>
+        <tbody>
+            @php
+                $no = 1;
+                $produkData = [];
+                $filterKlasifikasiId = $klasifikasi_id; // Ambil ID klasifikasi yang difilter dari controller
+            @endphp
+            @foreach ($permintaanProduk as $permintaan)
+                @foreach ($permintaan->detailpermintaanproduks as $detail)
+                    @php
+                        $produkKey = $detail->produk->kode_produk . '-' . $detail->produk->klasifikasi_id . '-' . ($detail->produk->klasifikasi->subklasifikasi->first()->id ?? '');
+            
+                        // Hanya tambahkan data jika klasifikasi_id cocok dengan filter yang dipilih
+                        if (!$filterKlasifikasiId || $detail->produk->klasifikasi_id == $filterKlasifikasiId) {
+                            if (!isset($produkData[$produkKey])) {
+                                $produkData[$produkKey] = [
+                                    'kode_permintaan' => $permintaan->kode_permintaan,
+                                    'klasifikasi' => $detail->produk->klasifikasi->nama,
+                                    'subklasifikasi' => $detail->produk->klasifikasi->subklasifikasi->first()->nama ?? '-',
+                                    'nama_produk' => $detail->produk->nama_produk,
+                                    'stok' => array_fill_keys($tokoData->pluck('nama_toko')->toArray(), 0),
+                                    'pesanan' => array_fill_keys($tokoData->pluck('nama_toko')->toArray(), 0),
+                                    'total' => 0, // Tambahkan field untuk total per produk
+                                ];
+                            }
+                            // Update stok dan pesanan
+                            $produkData[$produkKey]['pesanan'][$detail->toko->nama_toko] += $detail->jumlah;
+                            $produkData[$produkKey]['total'] += $detail->jumlah; // Update total per produk
+                        }
+                    @endphp
+                @endforeach
+            @endforeach
+        
+            @foreach ($produkData as $produkKey => $data)
+                <tr>
+                    <td class="text-center">{{ $no++ }}</td>
+                    {{-- <td>{{ $data['kode_permintaan'] }}</td> --}}
+                    <td>{{ $data['klasifikasi'] }}</td>
+                    <td>{{ $data['subklasifikasi'] }}</td>
+                    <td>{{ $data['nama_produk'] }}</td>
+                    @foreach ($tokoData as $toko)
+                        <td>{{ $data['stok'][$toko->nama_toko] }}</td>
+                        <td>{{ $data['pesanan'][$toko->nama_toko] }}</td>
                     @endforeach
                     <td>{{ $data['total'] }}</td> <!-- Tampilkan total per produk -->
                 </tr>

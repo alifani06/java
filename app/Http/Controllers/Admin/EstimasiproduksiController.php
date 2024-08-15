@@ -41,24 +41,53 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class EstimasiproduksiController extends Controller{
 
+public function index()
+{
+    $today = \Carbon\Carbon::today();
+    $tomorrow = $today->copy()->addDay();  // Mendapatkan tanggal besok
 
-    public function index()
-    {
-        $today = \Carbon\Carbon::today();
-        $tomorrow = $today->copy()->addDay();  // Mendapatkan tanggal besok
-    
-        $pemesananProduk = Detailpemesananproduk::with(['pemesananproduk.toko'])
-            ->whereHas('pemesananproduk', function($query) use ($tomorrow) {
-                $query->whereDate('tanggal_kirim', $tomorrow);
-            })
-            ->get();
-    
-        $permintaanProduks = PermintaanProduk::with(['detailpermintaanproduks.toko'])
-            ->whereDate('created_at', $today)
-            ->orderBy('created_at', 'desc')
-            ->get();
-    
-        return view('admin.estimasi_produksi.index', compact('permintaanProduks', 'pemesananProduk'));
-    }
-    
+    // Query pemesanan produk
+    $pemesananProduk = DetailPemesananProduk::with(['pemesananProduk.toko', 'produk'])
+        ->whereHas('pemesananProduk', function($query) use ($tomorrow) {
+            $query->whereDate('tanggal_kirim', $tomorrow);
+        })
+        ->get()
+        ->groupBy('produk_id') // Kelompokkan berdasarkan produk_id
+        ->map(function ($groupedDetails) {
+            // Kelompokkan berdasarkan toko_id di dalam produk_id
+            return $groupedDetails->groupBy('toko_id')->map(function ($details) {
+                return [
+                    'jumlah' => $details->sum('jumlah'),
+                    'toko' => $details->first()->pemesananProduk->toko,
+                    'produk' => $details->first()->produk,
+                    'kode_pemesanan' => $details->first()->pemesananProduk->kode_pemesanan,
+                    'detail' => $details
+                ];
+            });
+        });
+
+    $permintaanProduks = PermintaanProduk::with(['detailPermintaanProduks.toko', 'detailPermintaanProduks.produk'])
+        ->where('status', 'posting')
+        ->whereDate('created_at', $today)
+        ->orderBy('created_at', 'desc')
+        ->get()
+        ->flatMap(function ($permintaan) {
+            return $permintaan->detailPermintaanProduks;
+        })
+        ->groupBy('produk_id')
+        ->map(function ($groupedDetails) {
+            return $groupedDetails->groupBy('toko_id')->map(function ($details) {
+                return [
+                    'jumlah' => $details->sum('jumlah'),
+                    'toko' => $details->first()->toko,
+                    'produk' => $details->first()->produk,  // Pastikan produk dimuat
+                ];
+            });
+        });
+
+    return view('admin.estimasi_produksi.index', compact('permintaanProduks', 'pemesananProduk'));
+}
+
+
+
 }
