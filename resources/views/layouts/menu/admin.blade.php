@@ -452,7 +452,8 @@
     request()->is('admin/laporan_perubahanharga*')||
     request()->is('admin/laporan_permintaanproduk*')||
     request()->is('admin/laporan_stokbarangjadi*')||
-    request()->is('admin/laporan_pengirimanbarangjadi*')
+    request()->is('admin/laporan_pengirimanbarangjadi*')||
+    request()->is('admin/laporan_estimasiproduksi*')
     // request()->is('admin/input*')
   
         ? 'menu-open'
@@ -463,7 +464,8 @@
         request()->is('admin/laporan_perubahanharga*') ||
         request()->is('admin/laporan_permintaanproduk*')|| 
         request()->is('admin/laporan_stokbarangjadi*')|| 
-        request()->is('admin/laporan_spengirimanarangjadi*') 
+        request()->is('admin/laporan_pengirimanarangjadi*')|| 
+        request()->is('admin/laporan_estimasiproduksi*') 
         // request()->is('admin/input*')
       
             ? 'active'
@@ -532,6 +534,16 @@
                     class="nav-link {{ request()->is('admin/laporan_pengirimanbarangjadi*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                     <p style="font-size: 14px;">Laporan Pengiriman Barang</p>
+                </a>
+            </li>
+            {{-- @endif --}}
+
+              {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+              <li class="nav-item">
+                <a href="{{ url('admin/laporan_estimasiproduksi') }}"
+                    class="nav-link {{ request()->is('admin/laporan_estimasiproduksi*') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                    <p style="font-size: 14px;">Laporan Estimasi Produksi</p>
                 </a>
             </li>
             {{-- @endif --}}
