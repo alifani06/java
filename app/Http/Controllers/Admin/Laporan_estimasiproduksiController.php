@@ -43,85 +43,6 @@ use Dompdf\Options;
 class Laporan_estimasiproduksiController extends Controller{
 
 
-//     public function index(Request $request)
-// {
-//     $status = $request->status;
-//     $tanggalAwal = $request->tanggal_awal;
-//     $tanggalAkhir = $request->tanggal_akhir;
-
-//     // Query untuk Permintaanproduk
-//     $inqueryPermintaan = Permintaanproduk::query();
-    
-//     if ($status) {
-//         $inqueryPermintaan->where('status', $status);
-//     }
-
-//     if ($tanggalAwal && $tanggalAkhir) {
-//         $tanggalAwal = Carbon::parse($tanggalAwal)->startOfDay();
-//         $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
-//         $inqueryPermintaan->whereHas('detailPermintaanProduks', function($query) use ($tanggalAwal, $tanggalAkhir) {
-//             $query->whereBetween('tanggal_permintaan', [$tanggalAwal, $tanggalAkhir]);
-//         });
-//     } else {
-//         $inqueryPermintaan->whereHas('detailPermintaanProduks', function($query) {
-//             $query->whereDate('tanggal_permintaan', Carbon::today());
-//         });
-//     }
-
-//     $permintaanProduks = $inqueryPermintaan->with(['detailPermintaanProduks.toko', 'detailPermintaanProduks.produk'])
-//         ->get()
-//         ->flatMap(function ($permintaan) {
-//             return $permintaan->detailPermintaanProduks;
-//         })
-//         ->groupBy('produk_id')
-//         ->map(function ($groupedDetails) {
-//             return $groupedDetails->groupBy('toko_id')->map(function ($details) {
-//                 return [
-//                     'jumlah' => $details->sum('jumlah'),
-//                     'toko' => $details->first()->toko,
-//                     'produk' => $details->first()->produk,
-//                     'tanggal_permintaan' => $details->first()->tanggal_permintaan,
-//                 ];
-//             });
-//         });
-
-//    // Query untuk Pemesananproduk
-//    $inqueryPemesanan = DetailPemesananProduk::query();
-    
-//    if ($status) {
-//        $inqueryPemesanan->where('status', $status);
-//    }
-
-//    if ($tanggalAwal && $tanggalAkhir) {
-//        $tanggalAwal = Carbon::parse($tanggalAwal)->startOfDay();
-//        $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
-//        $inqueryPemesanan->whereHas('pemesananProduk', function($query) use ($tanggalAwal, $tanggalAkhir) {
-//            $query->whereBetween('tanggal_kirim', [$tanggalAwal, $tanggalAkhir]);
-//        });
-//    } else {
-//        $inqueryPemesanan->whereHas('pemesananProduk', function($query) {
-//            $query->whereDate('tanggal_kirim', Carbon::today());
-//        });
-//    }
-
-//    $pemesananProduk = $inqueryPemesanan->with(['pemesananProduk.toko', 'produk'])
-//        ->get()
-//        ->groupBy('produk_id')
-//        ->map(function ($groupedDetails) {
-//            return $groupedDetails->groupBy('toko_id')->map(function ($details) {
-//                return [
-//                    'jumlah' => $details->sum('jumlah'),
-//                    'toko' => $details->first()->pemesananProduk->toko,
-//                    'produk' => $details->first()->produk,
-//                    'kode_pemesanan' => $details->pluck('pemesananProduk.kode_pemesanan')->unique()->values(),
-//                    'tanggal_kirim' => $details->first()->pemesananProduk->tanggal_kirim,
-//                    'detail' => $details
-//                ];
-//            });
-//        });
-//     return view('admin.laporan_estimasiproduksi.index', compact('permintaanProduks', 'pemesananProduk'));
-// }
-
 public function index(Request $request)
 {
     $status = $request->status;
@@ -132,8 +53,8 @@ public function index(Request $request)
     $permintaanProduks = [];
     $pemesananProduk = [];
 
-    if ($tableType == 'permintaan') {
-        // Query untuk Permintaanproduk
+    // Query Permintaanproduk jika memilih 'permintaan' atau 'all'
+    if ($tableType == 'permintaan' || $tableType == 'all') {
         $inqueryPermintaan = Permintaanproduk::query();
         
         if ($status) {
@@ -168,8 +89,10 @@ public function index(Request $request)
                     ];
                 });
             });
-    } elseif ($tableType == 'pemesanan') {
-        // Query untuk Pemesananproduk
+    }
+
+    // Query Pemesananproduk jika memilih 'pemesanan' atau 'all'
+    if ($tableType == 'pemesanan' || $tableType == 'all') {
         $inqueryPemesanan = DetailPemesananProduk::query();
         
         if ($status) {
@@ -207,88 +130,6 @@ public function index(Request $request)
 
     return view('admin.laporan_estimasiproduksi.index', compact('permintaanProduks', 'pemesananProduk', 'tableType'));
 }
-
-
-// public function index(Request $request)
-// {
-//     $status = $request->status;
-//     $tanggalAwal = $request->tanggal_awal;
-//     $tanggalAkhir = $request->tanggal_akhir;
-
-//     // Query untuk Permintaanproduk
-//     $inqueryPermintaan = Permintaanproduk::query();
-
-//     if ($status && $status == 'permintaan') {
-//         $inqueryPermintaan->where('status', $status);
-
-//         if ($tanggalAwal && $tanggalAkhir) {
-//             $tanggalAwal = Carbon::parse($tanggalAwal)->startOfDay();
-//             $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
-//             $inqueryPermintaan->whereHas('detailPermintaanProduks', function($query) use ($tanggalAwal, $tanggalAkhir) {
-//                 $query->whereBetween('tanggal_permintaan', [$tanggalAwal, $tanggalAkhir]);
-//             });
-//         } else {
-//             $inqueryPermintaan->whereHas('detailPermintaanProduks', function($query) {
-//                 $query->whereDate('tanggal_permintaan', Carbon::today());
-//             });
-//         }
-//     }
-
-//     $permintaanProduks = $inqueryPermintaan->with(['detailPermintaanProduks.toko', 'detailPermintaanProduks.produk'])
-//         ->get()
-//         ->flatMap(function ($permintaan) {
-//             return $permintaan->detailPermintaanProduks;
-//         })
-//         ->groupBy('produk_id')
-//         ->map(function ($groupedDetails) {
-//             return $groupedDetails->groupBy('toko_id')->map(function ($details) {
-//                 return [
-//                     'jumlah' => $details->sum('jumlah'),
-//                     'toko' => $details->first()->toko,
-//                     'produk' => $details->first()->produk,
-//                     'tanggal_permintaan' => $details->first()->tanggal_permintaan,
-//                 ];
-//             });
-//         });
-
-//    // Query untuk Pemesananproduk
-//    $inqueryPemesanan = DetailPemesananProduk::query();
-
-//    if ($status && $status == 'pemesanan') {
-//        $inqueryPemesanan->where('status', $status);
-
-//        if ($tanggalAwal && $tanggalAkhir) {
-//            $tanggalAwal = Carbon::parse($tanggalAwal)->startOfDay();
-//            $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
-//            $inqueryPemesanan->whereHas('pemesananProduk', function($query) use ($tanggalAwal, $tanggalAkhir) {
-//                $query->whereBetween('tanggal_kirim', [$tanggalAwal, $tanggalAkhir]);
-//            });
-//        } else {
-//            $inqueryPemesanan->whereHas('pemesananProduk', function($query) {
-//                $query->whereDate('tanggal_kirim', Carbon::today());
-//            });
-//        }
-//    }
-
-//    $pemesananProduk = $inqueryPemesanan->with(['pemesananProduk.toko', 'produk'])
-//        ->get()
-//        ->groupBy('produk_id')
-//        ->map(function ($groupedDetails) {
-//            return $groupedDetails->groupBy('toko_id')->map(function ($details) {
-//                return [
-//                    'jumlah' => $details->sum('jumlah'),
-//                    'toko' => $details->first()->pemesananProduk->toko,
-//                    'produk' => $details->first()->produk,
-//                    'kode_pemesanan' => $details->pluck('pemesananProduk.kode_pemesanan')->unique()->values(),
-//                    'tanggal_kirim' => $details->first()->pemesananProduk->tanggal_kirim,
-//                    'detail' => $details
-//                ];
-//            });
-//        });
-
-//     return view('admin.laporan_estimasiproduksi.index', compact('permintaanProduks', 'pemesananProduk'));
-// }
-
 
 
 
@@ -386,178 +227,95 @@ public function index(Request $request)
 //     return $dompdf->stream('laporan_estimasiproduksi.pdf', ['Attachment' => false]);
 // }
 
-// data per permintaan dan pesanan
-// public function printReport(Request $request)
-// {
-//     $status = $request->status;
-//     $tanggalAwal = $request->tanggal_awal;
-//     $tanggalAkhir = $request->tanggal_akhir;
-
-//     // Query Permintaanproduk
-//     $inqueryPermintaan = Permintaanproduk::query();
-//     if ($status) {
-//         $inqueryPermintaan->where('status', $status);
-//     }
-//     if ($tanggalAwal && $tanggalAkhir) {
-//         $tanggalAwal = Carbon::parse($tanggalAwal)->startOfDay();
-//         $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
-//         $inqueryPermintaan->whereHas('detailPermintaanProduks', function ($query) use ($tanggalAwal, $tanggalAkhir) {
-//             $query->whereBetween('tanggal_permintaan', [$tanggalAwal, $tanggalAkhir]);
-//         });
-//     } else {
-//         $inqueryPermintaan->whereHas('detailPermintaanProduks', function ($query) {
-//             $query->whereDate('tanggal_permintaan', Carbon::today());
-//         });
-//     }
-//     $permintaanProduks = $inqueryPermintaan->with(['detailPermintaanProduks.toko', 'detailPermintaanProduks.produk.klasifikasi'])
-//         ->get()
-//         ->flatMap(function ($permintaan) {
-//             return $permintaan->detailPermintaanProduks;
-//         })
-//         ->groupBy('produk_id')
-//         ->map(function ($groupedDetails) {
-//             return $groupedDetails->groupBy('toko_id')->map(function ($details) {
-//                 return [
-//                     'jumlah' => $details->sum('jumlah'),
-//                     'toko' => $details->first()->toko,
-//                     'produk' => $details->first()->produk,
-//                     'klasifikasi' => $details->first()->produk->klasifikasi,
-//                     'tanggal_permintaan' => $details->first()->tanggal_permintaan,
-//                 ];
-//             });
-//         });
-
-//     // Query Pemesananproduk
-//     $inqueryPemesanan = DetailPemesananProduk::query();
-//     if ($status) {
-//         $inqueryPemesanan->where('status', $status);
-//     }
-//     if ($tanggalAwal && $tanggalAkhir) {
-//         $tanggalAwal = Carbon::parse($tanggalAwal)->startOfDay();
-//         $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
-//         $inqueryPemesanan->whereHas('pemesananProduk', function ($query) use ($tanggalAwal, $tanggalAkhir) {
-//             $query->whereBetween('tanggal_kirim', [$tanggalAwal, $tanggalAkhir]);
-//         });
-//     } else {
-//         $inqueryPemesanan->whereHas('pemesananProduk', function ($query) {
-//             $query->whereDate('tanggal_kirim', Carbon::today());
-//         });
-//     }
-//     $pemesananProduk = $inqueryPemesanan->with(['pemesananProduk.toko', 'produk.klasifikasi'])
-//         ->get()
-//         ->groupBy('produk_id')
-//         ->map(function ($groupedDetails) {
-//             return $groupedDetails->groupBy('toko_id')->map(function ($details) {
-//                 return [
-//                     'jumlah' => $details->sum('jumlah'),
-//                     'toko' => $details->first()->pemesananProduk->toko,
-//                     'produk' => $details->first()->produk,
-//                     'klasifikasi' => $details->first()->produk->klasifikasi,
-//                     'kode_pemesanan' => $details->pluck('pemesananProduk.kode_pemesanan')->unique()->values(),
-//                     'tanggal_kirim' => $details->first()->pemesananProduk->tanggal_kirim,
-//                     'detail' => $details,
-//                 ];
-//             });
-//         });
-
-//     // Generate PDF
-//     $options = new Options();
-//     $options->set('isHtml5ParserEnabled', true);
-//     $options->set('isRemoteEnabled', true);
-
-//     $dompdf = new Dompdf($options);
-
-//     // Load view with data
-//     $html = view('admin.laporan_estimasiproduksi.print', compact('permintaanProduks', 'pemesananProduk'))->render();
-//     $dompdf->loadHtml($html);
-
-//     // Set paper size and orientation
-//     $dompdf->setPaper('A4', 'portrait');
-
-//     // Render the PDF
-//     $dompdf->render();
-
-//     // Stream the PDF
-//     return $dompdf->stream('laporan_estimasiproduksi.pdf', ['Attachment' => false]);
-// }
 
 public function printReport(Request $request)
 {
     $status = $request->status;
     $tanggalAwal = $request->tanggal_awal;
     $tanggalAkhir = $request->tanggal_akhir;
-    $tableType = $request->table_type; // Ambil nilai dari table_type
+    $tableType = $request->table_type;
 
-    $permintaanProduks = [];
-    $pemesananProduk = [];
+    $permintaanProduks = collect();
+    $pemesananProduk = collect();
 
-    if ($tableType == 'permintaan') {
-        // Query Permintaanproduk
-        $inqueryPermintaan = Permintaanproduk::query();
-        if ($status) {
-            $inqueryPermintaan->where('status', $status);
-        }
-        if ($tanggalAwal && $tanggalAkhir) {
-            $tanggalAwal = Carbon::parse($tanggalAwal)->startOfDay();
-            $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
-            $inqueryPermintaan->whereHas('detailPermintaanProduks', function ($query) use ($tanggalAwal, $tanggalAkhir) {
-                $query->whereBetween('tanggal_permintaan', [$tanggalAwal, $tanggalAkhir]);
+ // Query Pemesananproduk
+if ($tableType == 'pemesanan' || $tableType == 'all') {
+    $inqueryPemesanan = DetailPemesananProduk::query();
+    if ($status) {
+        $inqueryPemesanan->where('status', $status);
+    }
+    if ($tanggalAwal && $tanggalAkhir) {
+        $tanggalAwal = Carbon::parse($tanggalAwal)->startOfDay();
+        $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
+        $inqueryPemesanan->whereHas('pemesananProduk', function ($query) use ($tanggalAwal, $tanggalAkhir) {
+            $query->whereBetween('tanggal_kirim', [$tanggalAwal, $tanggalAkhir]);
+        });
+    } else {
+        $inqueryPemesanan->whereHas('pemesananProduk', function ($query) {
+            $query->whereDate('tanggal_kirim', Carbon::today());
+        });
+    }
+    $pemesananProduk = $inqueryPemesanan->with(['pemesananProduk.toko', 'produk.klasifikasi'])
+        ->get()
+        ->groupBy('produk_id')
+        ->map(function ($groupedDetails) {
+            return $groupedDetails->groupBy('toko_id')->map(function ($details) {
+                return [
+                    'jumlah' => $details->sum('jumlah'),
+                    'toko' => $details->first()->pemesananProduk->toko,
+                    'produk' => $details->first()->produk,
+                    'klasifikasi' => $details->first()->produk->klasifikasi,
+                    'kode_pemesanan' => $details->pluck('pemesananProduk.kode_pemesanan')->unique()->values(),
+                    'tanggal_kirim' => $details->first()->pemesananProduk->tanggal_kirim,
+                    'detail' => $details,
+                ];
             });
-        } else {
-            $inqueryPermintaan->whereHas('detailPermintaanProduks', function ($query) {
-                $query->whereDate('tanggal_permintaan', Carbon::today());
+        });
+}
+
+// Query Permintaanproduk
+if ($tableType == 'permintaan' || $tableType == 'all') {
+    $inqueryPermintaan = Permintaanproduk::query();
+    if ($status) {
+        $inqueryPermintaan->where('status', $status);
+    }
+    if ($tanggalAwal && $tanggalAkhir) {
+        $tanggalAwal = Carbon::parse($tanggalAwal)->startOfDay();
+        $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
+        $inqueryPermintaan->whereHas('detailPermintaanProduks', function ($query) use ($tanggalAwal, $tanggalAkhir) {
+            $query->whereBetween('tanggal_permintaan', [$tanggalAwal, $tanggalAkhir]);
+        });
+    } else {
+        $inqueryPermintaan->whereHas('detailPermintaanProduks', function ($query) {
+            $query->whereDate('tanggal_permintaan', Carbon::today());
+        });
+    }
+    $permintaanProduks = $inqueryPermintaan->with(['detailPermintaanProduks.toko', 'detailPermintaanProduks.produk.klasifikasi'])
+        ->get()
+        ->flatMap(function ($permintaan) {
+            return $permintaan->detailPermintaanProduks;
+        })
+        ->groupBy('produk_id')
+        ->map(function ($groupedDetails) {
+            return $groupedDetails->groupBy('toko_id')->map(function ($details) {
+                return [
+                    'jumlah' => $details->sum('jumlah'),
+                    'toko' => $details->first()->toko,
+                    'produk' => $details->first()->produk,
+                    'klasifikasi' => $details->first()->produk->klasifikasi,
+                    'tanggal_permintaan' => $details->first()->tanggal_permintaan,
+                ];
             });
-        }
-        $permintaanProduks = $inqueryPermintaan->with(['detailPermintaanProduks.toko', 'detailPermintaanProduks.produk.klasifikasi'])
-            ->get()
-            ->flatMap(function ($permintaan) {
-                return $permintaan->detailPermintaanProduks;
-            })
-            ->groupBy('produk_id')
-            ->map(function ($groupedDetails) {
-                return $groupedDetails->groupBy('toko_id')->map(function ($details) {
-                    return [
-                        'jumlah' => $details->sum('jumlah'),
-                        'toko' => $details->first()->toko,
-                        'produk' => $details->first()->produk,
-                        'klasifikasi' => $details->first()->produk->klasifikasi,
-                        'tanggal_permintaan' => $details->first()->tanggal_permintaan,
-                    ];
-                });
-            });
-    } elseif ($tableType == 'pemesanan') {
-        // Query Pemesananproduk
-        $inqueryPemesanan = DetailPemesananProduk::query();
-        if ($status) {
-            $inqueryPemesanan->where('status', $status);
-        }
-        if ($tanggalAwal && $tanggalAkhir) {
-            $tanggalAwal = Carbon::parse($tanggalAwal)->startOfDay();
-            $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
-            $inqueryPemesanan->whereHas('pemesananProduk', function ($query) use ($tanggalAwal, $tanggalAkhir) {
-                $query->whereBetween('tanggal_kirim', [$tanggalAwal, $tanggalAkhir]);
-            });
-        } else {
-            $inqueryPemesanan->whereHas('pemesananProduk', function ($query) {
-                $query->whereDate('tanggal_kirim', Carbon::today());
-            });
-        }
-        $pemesananProduk = $inqueryPemesanan->with(['pemesananProduk.toko', 'produk.klasifikasi'])
-            ->get()
-            ->groupBy('produk_id')
-            ->map(function ($groupedDetails) {
-                return $groupedDetails->groupBy('toko_id')->map(function ($details) {
-                    return [
-                        'jumlah' => $details->sum('jumlah'),
-                        'toko' => $details->first()->pemesananProduk->toko,
-                        'produk' => $details->first()->produk,
-                        'klasifikasi' => $details->first()->produk->klasifikasi,
-                        'kode_pemesanan' => $details->pluck('pemesananProduk.kode_pemesanan')->unique()->values(),
-                        'tanggal_kirim' => $details->first()->pemesananProduk->tanggal_kirim,
-                        'detail' => $details,
-                    ];
-                });
-            });
+        });
+}
+
+
+    // Gabungkan data permintaan dan pemesanan jika memilih 'all'
+    $combinedData = collect();
+    if ($tableType == 'all') {
+        $combinedData = $permintaanProduks->merge($pemesananProduk);
+    } else {
+        $combinedData = ($tableType == 'permintaan') ? $permintaanProduks : $pemesananProduk;
     }
 
     // Generate PDF
@@ -568,11 +326,11 @@ public function printReport(Request $request)
     $dompdf = new Dompdf($options);
 
     // Load view with data
-    $html = view('admin.laporan_estimasiproduksi.print', compact('permintaanProduks', 'pemesananProduk', 'tableType'))->render();
+    $html = view('admin.laporan_estimasiproduksi.print', compact('permintaanProduks', 'pemesananProduk', 'combinedData', 'tableType'))->render();
     $dompdf->loadHtml($html);
 
     // Set paper size and orientation
-    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->setPaper('A4', 'potrait');
 
     // Render the PDF
     $dompdf->render();
@@ -580,9 +338,6 @@ public function printReport(Request $request)
     // Stream the PDF
     return $dompdf->stream('laporan_estimasiproduksi.pdf', ['Attachment' => false]);
 }
-
-
-
 
 
 }

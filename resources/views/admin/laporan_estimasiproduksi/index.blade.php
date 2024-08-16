@@ -95,8 +95,9 @@
                             </div>
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="table_type" name="table_type">
-                                    <option value="permintaan" {{ Request::get('table_type') == 'permintaan' ? 'selected' : '' }}>Tabel Permintaan</option>
-                                    <option value="pemesanan" {{ Request::get('table_type') == 'pemesanan' ? 'selected' : '' }}>Tabel Pemesanan</option>
+                                    <option value="all" {{ Request::get('table_type') == 'all' ? 'selected' : '' }}>All Data</option>
+                                    <option value="permintaan" {{ Request::get('table_type') == 'permintaan' ? 'selected' : '' }}>Atas Permintaan</option>
+                                    <option value="pemesanan" {{ Request::get('table_type') == 'pemesanan' ? 'selected' : '' }}>Atas Pesanan</option>
                                 </select>
                                 <label for="table_type">(Pilih Tabel)</label>
                             </div>
@@ -111,127 +112,130 @@
                         </div>
                     </form>
                     
-                    @if ($tableType == 'permintaan')
-                    <!-- Tabel Permintaan -->
-                    <div class="card-body">
-                        <table id="datatables67" class="table table-bordered" style="font-size: 13px">
+<!-- Tabel Permintaan -->
+<div class="card-body">
+    @if($tableType == '' || $tableType == 'permintaan' || $tableType == 'all')
+    <h4>Atas Permintaan</h4>
+    <table id="datatables67" class="table table-bordered" style="font-size: 13px">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Produk</th>
+                <th>Kode Produk</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($permintaanProduks as $produkId => $tokoDetails)
+                @php
+                    $firstDetail = $tokoDetails->first();
+                    $produk = $firstDetail['produk'] ?? null;
+                    $totalJumlah = $tokoDetails->sum('jumlah');
+                @endphp
+                <tr class="dropdown" data-permintaan-id="{{ $produkId }}">
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $produk->nama_produk ?? 'Produk Tidak Ditemukan' }}</td>
+                    <td>{{ $produk->kode_produk ?? 'N/A' }}</td>
+                    <td>{{ $totalJumlah }}</td>
+                </tr>
+                <tr class="permintaan-details" id="details-{{ $produkId }}" style="display: none;">
+                    <td colspan="4">
+                        <table class="table table-bordered" style="font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Produk</th>
-                                    <th>Kode Produk</th>
-                                    <th>Total</th>
+                                    <th>Cabang</th>
+                                    <th>Jumlah</th>
+                                    <th>Tanggal Permintaan</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($permintaanProduks as $produkId => $tokoDetails)
-                                    @php
-                                        $firstDetail = $tokoDetails->first();
-                                        $produk = $firstDetail['produk'] ?? null;
-                                        $totalJumlah = $tokoDetails->sum('jumlah');
-                                    @endphp
-                                    <tr class="dropdown" data-permintaan-id="{{ $produkId }}">
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $produk->nama_produk ?? 'Produk Tidak Ditemukan' }}</td>
-                                        <td>{{ $produk->kode_produk ?? 'N/A' }}</td>
-                                        <td>{{ $totalJumlah }}</td>
-                                    </tr>
-                                    <tr class="permintaan-details" id="details-{{ $produkId }}" style="display: none;">
-                                        <td colspan="4">
-                                            <table class="table table-bordered" style="font-size: 13px;">
-                                                <thead>
-                                                    <tr>
-                                                        <th>No</th>
-                                                        <th>Cabang</th>
-                                                        <th>Jumlah</th>
-                                                        <th>Tanggal Permintaan</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($tokoDetails as $tokoDetail)
-                                                        <tr>
-                                                            <td>{{ $loop->iteration }}</td>
-                                                            <td>{{ $tokoDetail['toko']->nama_toko }}</td>
-                                                            <td>{{ $tokoDetail['jumlah'] }}</td>
-                                                            <td>{{ \Carbon\Carbon::parse($tokoDetail['tanggal_permintaan'])->format('d-m-Y H:i') }}</td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                @empty
+                                @foreach ($tokoDetails as $tokoDetail)
                                     <tr>
-                                        <td colspan="4" class="text-center">Tidak ada data</td>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $tokoDetail['toko']->nama_toko }}</td>
+                                        <td>{{ $tokoDetail['jumlah'] }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($tokoDetail['tanggal_permintaan'])->format('d-m-Y H:i') }}</td>
                                     </tr>
-                                @endforelse
+                                @endforeach
                             </tbody>
                         </table>
-                    </div>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="4" class="text-center">Tidak ada data</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+    @endif
+</div>
 
-                    @elseif ($tableType == 'pemesanan')
-                    <!-- Tabel Pemesanan -->
-                    <div class="card-body">
-                        <table id="data" class="table table-bordered" style="font-size: 13px">
+<!-- Tabel Pemesanan -->
+<div class="card-body">
+    @if($tableType == '' || $tableType == 'pemesanan' || $tableType == 'all')
+    <h4>Atas Pemesanan</h4>
+    <table id="data" class="table table-bordered" style="font-size: 13px">
+        <thead>
+            <tr>
+                <th class="text-center">No</th>
+                <th>Produk</th>
+                <th>Kode Produk</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($pemesananProduk as $produkId => $tokoDetails)
+                @php
+                    $firstDetail = $tokoDetails->first();
+                    $produk = $firstDetail['produk'] ?? null;
+                    $totalJumlah = $tokoDetails->sum('jumlah');
+                @endphp
+                <tr class="dropdown" data-pemesanan-id="{{ $produkId }}">
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $produk->nama_produk ?? 'Produk Tidak Ditemukan' }}</td>
+                    <td>{{ $produk->kode_produk ?? 'N/A' }}</td>
+                    <td>{{ $totalJumlah }}</td>
+                </tr>
+                <tr class="pemesanan-details" id="details-{{ $produkId }}" style="display: none;">
+                    <td colspan="4">
+                        <table class="table table-bordered" style="font-size: 13px;">
                             <thead>
                                 <tr>
-                                    <th class="text-center">No</th>
-                                    <th>Produk</th>
-                                    <th>Kode Produk</th>
-                                    <th>Total</th>
+                                    <th>No</th>
+                                    <th>Cabang</th>
+                                    <th>Kode Pemesanan</th>
+                                    <th>Tanggal Kirim</th>
+                                    <th>Jumlah</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                
-                                @forelse($pemesananProduk as $produkId => $tokoDetails)
-                                    @php
-                                        $firstDetail = $tokoDetails->first();
-                                        $produk = $firstDetail['produk'] ?? null;
-                                        $totalJumlah = $tokoDetails->sum('jumlah');
-                                    @endphp
-                                    <tr class="dropdown" data-pemesanan-id="{{ $produkId }}">
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $produk->nama_produk ?? 'Produk Tidak Ditemukan' }}</td>
-                                        <td>{{ $produk->kode_produk ?? 'N/A' }}</td>
-                                        <td>{{ $totalJumlah }}</td>
-                                    </tr>
-                                    <tr class="pemesanan-details" id="details-{{ $produkId }}" style="display: none;">
-                                        <td colspan="4">
-                                            <table class="table table-bordered" style="font-size: 13px;">
-                                                <thead>
-                                                    <tr>
-                                                        <th>No</th>
-                                                        <th>Cabang</th>
-                                                        <th>Kode Pemesanan</th>
-                                                        <th>Tanggal Kirim</th>
-                                                        <th>Jumlah</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($tokoDetails as $tokoDetail)
-                                                    @foreach ($tokoDetail['detail'] as $detail)
-                                                            <tr>
-                                                                <td>{{ $loop->parent->iteration }}</td>
-                                                                <td>{{ $tokoDetail['toko']->nama_toko }}</td>
-                                                                <td>{{ $detail->pemesananProduk->kode_pemesanan }}</td>
-                                                                <td>{{ \Carbon\Carbon::parse($tokoDetail['tanggal_kirim'])->format('d-m-Y H:i') }}</td>
-                                                                <td>{{ $detail->jumlah }}</td>
-                                                            </tr>
-                                                        @endforeach
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="4" class="text-center">Tidak ada data</td>
-                                    </tr>
-                                @endforelse
+                                @foreach ($tokoDetails as $tokoDetail)
+                                    @foreach ($tokoDetail['detail'] as $detail)
+                                        <tr>
+                                            <td>{{ $loop->parent->iteration }}</td>
+                                            <td>{{ $tokoDetail['toko']->nama_toko }}</td>
+                                            <td>{{ $detail->pemesananProduk->kode_pemesanan }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($tokoDetail['tanggal_kirim'])->format('d-m-Y H:i') }}</td>
+                                            <td>{{ $detail->jumlah }}</td>
+                                        </tr>
+                                    @endforeach
+                                @endforeach
                             </tbody>
                         </table>
-                    </div>
-                    @endif
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="4" class="text-center">Tidak ada data</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+    @endif
+</div>
+
        
             </div>
         </div>
