@@ -60,6 +60,8 @@
     <div class="change-header">LAPORAN ESTIMASI PRODUKSI</div>
 
     <!-- Tabel Permintaan -->
+    @if($tableType == 'permintaan')
+
     <h3>Permintaan Produk</h3>
     <table>
         <thead>
@@ -101,8 +103,10 @@
             @endforeach
         </tbody>
     </table>
+    @endif
 
     <!-- Tabel Pemesanan -->
+    @if($tableType == 'pemesanan')
     <h3>Pemesanan Produk</h3>
     <table>
         <thead>
@@ -144,5 +148,7 @@
             @endforeach
         </tbody>
     </table>
+    @endif
+
 </body>
 </html>

@@ -32,11 +32,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Inquery Estimasi Produk</h1>
+                    <h1 class="m-0">Laporan Estimasi Produk</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Inquery Estimasi Produk</li>
+                        <li class="breadcrumb-item active">Laporan Estimasi Produk</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -90,8 +90,15 @@
                             </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
-                                    value="{{ Request::get('tanggal_akhir') }}"  />
+                                    value="{{ Request::get('tanggal_akhir') }}" />
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="table_type" name="table_type">
+                                    <option value="permintaan" {{ Request::get('table_type') == 'permintaan' ? 'selected' : '' }}>Tabel Permintaan</option>
+                                    <option value="pemesanan" {{ Request::get('table_type') == 'pemesanan' ? 'selected' : '' }}>Tabel Pemesanan</option>
+                                </select>
+                                <label for="table_type">(Pilih Tabel)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <button type="submit" class="btn btn-outline-primary btn-block">
@@ -103,7 +110,8 @@
                             </div>
                         </div>
                     </form>
-
+                    
+                    @if ($tableType == 'permintaan')
                     <!-- Tabel Permintaan -->
                     <div class="card-body">
                         <table id="datatables67" class="table table-bordered" style="font-size: 13px">
@@ -161,6 +169,7 @@
                         </table>
                     </div>
 
+                    @elseif ($tableType == 'pemesanan')
                     <!-- Tabel Pemesanan -->
                     <div class="card-body">
                         <table id="data" class="table table-bordered" style="font-size: 13px">
@@ -222,8 +231,8 @@
                             </tbody>
                         </table>
                     </div>
-                    
-                <!-- /.card-body -->
+                    @endif
+       
             </div>
         </div>
     </section>

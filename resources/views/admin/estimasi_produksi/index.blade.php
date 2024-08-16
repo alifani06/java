@@ -142,75 +142,7 @@
                             </tbody>
                         </table>
                     </div>
-                
-                    <!-- Tabel Atas Permintaan -->
-                    {{-- <div id="permintaan-table" class="table-container" style="display: none;">
-                        <table id="datatables67" class="table table-bordered" style="font-size: 13px">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Produk</th>
-                                    <th>Kode Produk</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if($permintaanProduks->isEmpty())
-                                    <tr>
-                                        <td colspan="4" class="text-center">Tidak ada data</td>
-                                    </tr>
-                                @else
-                                    @foreach ($permintaanProduks as $produkId => $tokoDetails)
-                                        @php
-                                            $firstDetail = $tokoDetails->first();
-                                            $produk = $firstDetail ? $firstDetail['produk'] : null;
-                                            $totalJumlah = $tokoDetails->sum('jumlah');
-                                        @endphp
-                                        <tr class="dropdown" data-permintaan-id="{{ $produkId }}">
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>
-                                                @if ($produk)
-                                                    {{ $produk->nama_produk }}
-                                                @else
-                                                    Produk Tidak Ditemukan
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if ($produk)
-                                                    {{ $produk->kode_produk }}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </td>
-                                            <td>{{ $totalJumlah }}</td>
-                                        </tr>
-                                        <tr class="permintaan-details" id="details-{{ $produkId }}" style="display: none;">
-                                            <td colspan="4">
-                                                <table class="table table-bordered" style="font-size: 13px;">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>No</th>
-                                                            <th>Cabang</th>
-                                                            <th>Jumlah</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach ($tokoDetails as $tokoDetail)
-                                                            <tr>
-                                                                <td>{{ $loop->iteration }}</td>
-                                                                <td>{{ $tokoDetail['toko']->nama_toko }}</td>
-                                                                <td>{{ $tokoDetail['jumlah'] }}</td>
-                                                            </tr>
-                                                        @endforeach
-                                                    </tbody>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                            </tbody>
-                        </table>
-                    </div> --}}
+
                     
                     <div id="permintaan-table" class="table-container" style="display: none;">
                         <table id="datatables67" class="table table-bordered" style="font-size: 13px">
