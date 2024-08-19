@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\Admin\Stok_barangjadiController;
 use App\Http\Controllers\KategoriDropdownController;
 use App\Http\Controllers\SubcategoryController;
+use App\Http\Controllers\Toko_slawi\Inquery_pemindahanslawiController;
 use App\Http\Controllers\Toko_slawi\Inquery_returslawiController;
 use App\Http\Controllers\Toko_slawi\Pengiriman_tokoslawiController as Toko_slawiPengiriman_tokoslawiController;
 use App\Http\Controllers\Toko_slawi\Retur_tokoslawiController;
@@ -323,6 +324,7 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
 
     Route::resource('inquery_pemindahanslawi', \App\Http\Controllers\Toko_slawi\Inquery_pemindahanslawiController::class);
     Route::get('inquery_pemindahanslawi/posting_pemindahan/{id}', [\App\Http\Controllers\Toko_slawi\Inquery_pemindahanslawiController::class, 'posting_pemindahan']);
+    Route::get('/inquery_pemindahanslawi/{id}/print', [Inquery_pemindahanslawiController::class, 'print'])->name('inquery_pemindahanslawi.print');
 
 });
 

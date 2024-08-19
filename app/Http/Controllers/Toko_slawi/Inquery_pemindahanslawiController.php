@@ -300,43 +300,43 @@ public function posting_pemindahan($id)
 public function show($id)
 {
     // Ambil kode_retur dari pengiriman_barangjadi berdasarkan id
-    $detailStokBarangJadi = Retur_tokoslawi::where('id', $id)->value('kode_retur');
+    $detailStokBarangJadi = Pemindahan_tokoslawi::where('id', $id)->value('kode_pemindahan');
     
-    // Jika kode_retur tidak ditemukan, tampilkan pesan error
+    // Jika kode_pemindahan tidak ditemukan, tampilkan pesan error
     if (!$detailStokBarangJadi) {
         return redirect()->back()->with('error', 'Data tidak ditemukan.');
     }
     
-    // Ambil semua data dengan kode_retur yang sama
-    $pengirimanBarangJadi = Retur_tokoslawi::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
+    // Ambil semua data dengan kode_pemindahan yang sama
+    $pengirimanBarangJadi = Pemindahan_tokoslawi::with(['produk.subklasifikasi', 'toko'])->where('kode_pemindahan', $detailStokBarangJadi)->get();
     
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    return view('toko_slawi.inquery_returslawi.show', compact('pengirimanBarangJadi', 'firstItem'));
+    return view('toko_slawi.inquery_pemindahanslawi.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
 public function print($id)
     {
-        $detailStokBarangJadi = Retur_tokoslawi::where('id', $id)->value('kode_retur');
+        $detailStokBarangJadi = Pemindahan_tokoslawi::where('id', $id)->value('kode_pemindahan');
     
-        // Jika kode_retur tidak ditemukan, tampilkan pesan error
+        // Jika kode_pemindahan tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
             return redirect()->back()->with('error', 'Data tidak ditemukan.');
         }
         
-        // Ambil semua data dengan kode_retur yang sama
-        $pengirimanBarangJadi = Retur_tokoslawi::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
+        // Ambil semua data dengan kode_pemindahan yang sama
+        $pengirimanBarangJadi = Pemindahan_tokoslawi::with(['produk.subklasifikasi', 'toko'])->where('kode_pemindahan', $detailStokBarangJadi)->get();
         
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        $pdf = FacadePdf::loadView('toko_slawi.inquery_returslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
+        $pdf = FacadePdf::loadView('toko_slawi.inquery_pemindahanslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
         
         // return view('toko_slawi.retur_tokoslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
-        }
+    }
 
 }
 

@@ -146,13 +146,13 @@
                                                     href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a> --}}
                                             
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_slawi/retur_tokoslawi/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/toko_slawi/inquery_pemindahanslawi/' . $firstItem->id ) }}">Show</a>
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 {{-- <a class="dropdown-item unpost-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Unpost</a> --}}
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_slawi/retur_tokoslawi/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/toko_slawi/inquery_pemindahanslawi/' . $firstItem->id ) }}">Show</a>
                                         @endif
                                        
                                     </div>
