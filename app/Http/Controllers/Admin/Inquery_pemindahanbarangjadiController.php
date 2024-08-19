@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_slawi;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -41,7 +41,7 @@ use App\Imports\ProdukImport;
 use App\Models\Retur_barnagjadi;
 use Maatwebsite\Excel\Facades\Excel;
 
-class Inquery_pemindahanslawiController extends Controller{
+class Inquery_pemindahanbarangjadiController extends Controller{
 
     public function index(Request $request)
     {
@@ -49,7 +49,7 @@ class Inquery_pemindahanslawiController extends Controller{
             $tanggal_input = $request->tanggal_input;
             $tanggal_akhir = $request->tanggal_akhir;
 
-            $query = Pemindahan_tokoslawi::with('produk.klasifikasi');
+            $query = Pemindahan_barangjadi::with('produk.klasifikasi');
 
             if ($status) {
                 $query->where('status', $status);
@@ -73,7 +73,7 @@ class Inquery_pemindahanslawiController extends Controller{
             // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
             $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pemindahan');
 
-            return view('toko_slawi.inquery_pemindahanslawi.index', compact('stokBarangJadi'));
+            return view('admin.inquery_pemindahanbarangjadi.index', compact('stokBarangJadi'));
     }
 
 
@@ -125,57 +125,11 @@ class Inquery_pemindahanslawiController extends Controller{
 //     return response()->json(['success' => 'Berhasil mengubah status semua produk dan detail terkait dengan kode_retur yang sama.']);
 // }
 
-// public function posting_pemindahan($id)
-// {
-//     $pemindahan = Pemindahan_tokoslawi::findOrFail($id);
-
-//     if ($pemindahan->status == 'unpost') {
-//         $stok_items = Stok_tokoslawi::where('produk_id', $pemindahan->produk_id)
-//             ->where('jumlah', '>', 0)
-//             ->orderBy('jumlah', 'asc')
-//             ->get();
-
-//         $jumlah_yang_dibutuhkan = $pemindahan->jumlah;
-
-//         foreach ($stok_items as $stok) {
-//             if ($jumlah_yang_dibutuhkan <= 0) {
-//                 break;
-//             }
-
-//             if ($stok->jumlah >= $jumlah_yang_dibutuhkan) {
-//                 $stok->jumlah -= $jumlah_yang_dibutuhkan;
-//                 $stok->save();
-//                 $jumlah_yang_dibutuhkan = 0;
-//             } else {
-//                 $jumlah_yang_dibutuhkan -= $stok->jumlah;
-//                 $stok->jumlah = 0;
-//                 $stok->save();
-//             }
-//         }
-
-//         if ($jumlah_yang_dibutuhkan > 0) {
-//             return redirect()->back()->with('error', 'Jumlah stok untuk produk ' . $pemindahan->produk->nama_produk . ' tidak mencukupi.');
-//         }
-
-//         $pemindahan->update([
-//             'status' => 'posting',
-//             'tanggal_terima' => Carbon::now('Asia/Jakarta'),
-//         ]);
-
-//         return redirect()->route('pemindahan_tokoslawi.index')->with('success', 'Status berhasil diubah menjadi posting, stok telah diperbarui, dan tanggal terima telah disimpan.');
-//     }
-
-//     return redirect()->route('pemindahan_tokoslawi.index')->with('error', 'Status pemindahan tidak valid untuk diubah.');
-// }
-
 public function posting_pemindahan($id)
 {
-    // Temukan data pemindahan berdasarkan ID
     $pemindahan = Pemindahan_tokoslawi::findOrFail($id);
 
-    // Cek apakah status saat ini adalah 'unpost'
     if ($pemindahan->status == 'unpost') {
-        // Ambil stok yang tersedia untuk produk yang sama
         $stok_items = Stok_tokoslawi::where('produk_id', $pemindahan->produk_id)
             ->where('jumlah', '>', 0)
             ->orderBy('jumlah', 'asc')
@@ -199,23 +153,14 @@ public function posting_pemindahan($id)
             }
         }
 
-        // Cek jika jumlah yang dibutuhkan masih lebih dari 0 setelah mengupdate stok
         if ($jumlah_yang_dibutuhkan > 0) {
             return redirect()->back()->with('error', 'Jumlah stok untuk produk ' . $pemindahan->produk->nama_produk . ' tidak mencukupi.');
         }
 
-        // Update status dan tanggal terima pada tabel pemindahan_tokoslawi
         $pemindahan->update([
             'status' => 'posting',
             'tanggal_terima' => Carbon::now('Asia/Jakarta'),
         ]);
-
-        // Update status dan tanggal terima pada tabel pemindahan_barangjadis
-        Pemindahan_barangjadi::where('kode_pemindahan', $pemindahan->kode_pemindahan)
-            ->update([
-                'status' => 'posting',
-                'tanggal_terima' => Carbon::now('Asia/Jakarta'),
-            ]);
 
         return redirect()->route('pemindahan_tokoslawi.index')->with('success', 'Status berhasil diubah menjadi posting, stok telah diperbarui, dan tanggal terima telah disimpan.');
     }
@@ -228,7 +173,7 @@ public function posting_pemindahan($id)
 public function show($id)
 {
     // Ambil kode_retur dari pengiriman_barangjadi berdasarkan id
-    $detailStokBarangJadi = Pemindahan_tokoslawi::where('id', $id)->value('kode_pemindahan');
+    $detailStokBarangJadi = pemindahan_barangjadi::where('id', $id)->value('kode_pemindahan');
     
     // Jika kode_pemindahan tidak ditemukan, tampilkan pesan error
     if (!$detailStokBarangJadi) {
@@ -236,17 +181,17 @@ public function show($id)
     }
     
     // Ambil semua data dengan kode_pemindahan yang sama
-    $pengirimanBarangJadi = Pemindahan_tokoslawi::with(['produk.subklasifikasi', 'toko'])->where('kode_pemindahan', $detailStokBarangJadi)->get();
+    $pengirimanBarangJadi = pemindahan_barangjadi::with(['produk.subklasifikasi', 'toko'])->where('kode_pemindahan', $detailStokBarangJadi)->get();
     
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    return view('toko_slawi.inquery_pemindahanslawi.show', compact('pengirimanBarangJadi', 'firstItem'));
+    return view('admin.inquery_pemindahanbarangjadi.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
 public function print($id)
     {
-        $detailStokBarangJadi = Pemindahan_tokoslawi::where('id', $id)->value('kode_pemindahan');
+        $detailStokBarangJadi = pemindahan_barangjadi::where('id', $id)->value('kode_pemindahan');
     
         // Jika kode_pemindahan tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -254,12 +199,12 @@ public function print($id)
         }
         
         // Ambil semua data dengan kode_pemindahan yang sama
-        $pengirimanBarangJadi = Pemindahan_tokoslawi::with(['produk.subklasifikasi', 'toko'])->where('kode_pemindahan', $detailStokBarangJadi)->get();
+        $pengirimanBarangJadi = pemindahan_barangjadi::with(['produk.subklasifikasi', 'toko'])->where('kode_pemindahan', $detailStokBarangJadi)->get();
         
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        $pdf = FacadePdf::loadView('toko_slawi.inquery_pemindahanslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
+        $pdf = FacadePdf::loadView('admin.inquery_pemindahanbarangjadi.print', compact('pengirimanBarangJadi', 'firstItem'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
         

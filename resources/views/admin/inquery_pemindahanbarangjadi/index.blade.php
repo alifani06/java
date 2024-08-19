@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Inquery Retur Barang Jadi</h1>
+                    <h1 class="m-0">Inquery Pemindahan Produk</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -101,9 +101,11 @@
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
-                                <th>Kode Retur</th>
+                                <th>Kode Pemindahan</th>
                                 <th>Tanggal Pengiriman</th>
                                 <th>Tanggal Terima</th>
+                                <th>Dari</th>
+                                <th>Ke</th>
                                 <th>Status</th>
                               
                             </tr>
@@ -115,7 +117,7 @@
                             @endphp
                                 <tr class="dropdown" data-permintaan-id="{{ $firstItem->id }}">
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                <td>{{ $firstItem->kode_retur }}</td>
+                                <td>{{ $firstItem->kode_pemindahan }}</td>
                                 <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_input)->format('d/m/Y H:i') }}</td>
                                 <td>
                                     @if ($firstItem->tanggal_terima)
@@ -124,6 +126,9 @@
                                         -
                                     @endif
                                 </td>
+                                <td>{{ $firstItem->toko->nama_toko }}</td>
+                                <td>{{ $firstItem->keterangan }}</td>
+
                                     <td class="text-center">
                                     @if ($firstItem->status == 'posting')
                                         <button type="button" class="btn btn-success btn-sm">
@@ -139,20 +144,20 @@
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         @if ($firstItem->status == 'unpost')
                                            
-                                                {{-- <a class="dropdown-item posting-btn"
-                                                    data-memo-id="{{ $firstItem->id }}">Posting</a> --}}
+                                                <a class="dropdown-item posting-btn"
+                                                    data-memo-id="{{ $firstItem->id }}">Posting</a>
                                          
                                                 {{-- <a class="dropdown-item"
                                                     href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a> --}}
                                             
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_slawi/retur_tokoslawi/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/admin/inquery_pemindahanbarangjadi/' . $firstItem->id ) }}">Show</a>
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 {{-- <a class="dropdown-item unpost-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Unpost</a> --}}
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_slawi/retur_tokoslawi/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/admin/inquery_pemindahanbarangjadi/' . $firstItem->id ) }}">Show</a>
                                         @endif
                                        
                                     </div>
@@ -228,7 +233,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_slawi/inquery_returslawi') }}";
+            form.action = "{{ url('admin/inquery_pemindahanbarangjadi') }}";
             form.submit();
         }
 
@@ -246,7 +251,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_slawi/retur_tokoslawi/unpost_retur/') }}/" + memoId,
+                    url: "{{ url('toko_slawi/inquery_pemindahanslawi/unpost_pemindahan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -276,7 +281,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_slawi/retur_tokoslawi/posting_retur/') }}/" + memoId,
+                    url: "{{ url('toko_slawi/inquery_pemindahanslawi/posting_pemindahan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

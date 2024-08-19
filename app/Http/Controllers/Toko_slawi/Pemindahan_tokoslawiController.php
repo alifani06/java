@@ -27,6 +27,7 @@ use App\Models\Pemesananproduk;
 use App\Models\Stok_tokoslawi;
 use App\Models\Retur_tokoslawi;
 use App\Models\Pemindahan_tokoslawi;
+use App\Models\Pemindahan_barangjadi;
 use App\Models\Retur_barangjadi;
 use App\Models\Toko;
 use App\Models\Dppemesanan;
@@ -63,7 +64,6 @@ public function create()
     return view('toko_slawi.pemindahan_tokoslawi.create', compact('produks', 'tokos'));
 }
 
-
 // public function store(Request $request)
 // {
 //     $request->validate([
@@ -75,70 +75,26 @@ public function create()
 //         'keterangan.*' => 'string',
 //     ]);
 
+//     $kode = $this->kode();
 //     $produk_ids = $request->input('produk_id');
 //     $jumlahs = $request->input('jumlah');
 //     $keterangans = $request->input('keterangan');
 
 //     foreach ($produk_ids as $index => $produk_id) {
-//         $jumlah_yang_dibutuhkan = $jumlahs[$index];
-
-//         $produk = Produk::find($produk_id);
-//         if (!$produk) {
-//             return redirect()->back()->with('error', 'Produk dengan ID ' . $produk_id . ' tidak ditemukan.');
-//         }
-
-//         $stok_items = Stok_tokoslawi::where('produk_id', $produk_id)
-//             ->where('jumlah', '>', 0)
-//             ->orderBy('jumlah', 'asc')
-//             ->get();
-
-//         if ($stok_items->isEmpty()) {
-//             return redirect()->back()->with('error', 'Stok untuk produk dengan ID ' . $produk_id . ' tidak ditemukan.');
-//         }
-
-//         foreach ($stok_items as $stok) {
-//             if ($jumlah_yang_dibutuhkan <= 0) {
-//                 break;
-//             }
-
-//             if ($stok->jumlah >= $jumlah_yang_dibutuhkan) {
-//                 $stok->jumlah -= $jumlah_yang_dibutuhkan;
-//                 $stok->save();
-
-//                 Pemindahan_tokoslawi::create([
-//                     'produk_id' => $produk_id,
-//                     'toko_id' => '3',
-//                     'jumlah' => $jumlah_yang_dibutuhkan,
-//                     'keterangan' => $keterangans[$index],
-//                     'tanggal_input' => Carbon::now('Asia/Jakarta'),
-//                     // Add any additional fields required by the pemindahan_tokoslawi table
-//                 ]);
-
-//                 $jumlah_yang_dibutuhkan = 0;
-//             } else {
-//                 $jumlah_yang_dibutuhkan -= $stok->jumlah;
-
-//                 Pemindahan_tokoslawi::create([
-//                     'produk_id' => $produk_id,
-//                     'toko_id' => '3',
-//                     'jumlah' => $stok->jumlah,
-//                     'keterangan' => $keterangans[$index],
-//                     'tanggal_input' => Carbon::now('Asia/Jakarta'),
-//                     // Add any additional fields required by the pemindahan_tokoslawi table
-//                 ]);
-
-//                 $stok->jumlah = 0;
-//                 $stok->save();
-//             }
-//         }
-
-//         if ($jumlah_yang_dibutuhkan > 0) {
-//             return redirect()->back()->with('error', 'Jumlah stok untuk produk ' . $stok->produk->nama_produk . ' tidak mencukupi.');
-//         }
+//         Pemindahan_tokoslawi::create([
+//             'kode_pemindahan' => $kode,
+//             'produk_id' => $produk_id,
+//             'toko_id' => '3',  // Ganti sesuai dengan toko tujuan
+//             'status' => 'unpost',
+//             'jumlah' => $jumlahs[$index],
+//             'keterangan' => $keterangans[$index],
+//             'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//         ]);
 //     }
 
 //     return redirect()->route('pemindahan_tokoslawi.index')->with('success', 'Data pemindahan barang berhasil disimpan.');
 // }
+
 public function store(Request $request)
 {
     $request->validate([
@@ -156,7 +112,19 @@ public function store(Request $request)
     $keterangans = $request->input('keterangan');
 
     foreach ($produk_ids as $index => $produk_id) {
+        // Simpan ke tabel pemindahan_tokoslawi
         Pemindahan_tokoslawi::create([
+            'kode_pemindahan' => $kode,
+            'produk_id' => $produk_id,
+            'toko_id' => '3',  // Ganti sesuai dengan toko tujuan
+            'status' => 'unpost',
+            'jumlah' => $jumlahs[$index],
+            'keterangan' => $keterangans[$index],
+            'tanggal_input' => Carbon::now('Asia/Jakarta'),
+        ]);
+
+        // Simpan ke tabel pemindahan_barangjadis
+        Pemindahan_barangjadi::create([
             'kode_pemindahan' => $kode,
             'produk_id' => $produk_id,
             'toko_id' => '3',  // Ganti sesuai dengan toko tujuan
@@ -169,7 +137,6 @@ public function store(Request $request)
 
     return redirect()->route('pemindahan_tokoslawi.index')->with('success', 'Data pemindahan barang berhasil disimpan.');
 }
-
 
 public function kode()
 {

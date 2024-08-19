@@ -339,6 +339,7 @@
     request()->is('admin/inquery_permintaanproduk*')|| 
     request()->is('admin/inquery_stokbarangjadi*')|| 
     request()->is('admin/inquery_pengirimanbarangjadi*')|| 
+    request()->is('admin/inquery_pemindahanbarang*')|| 
     request()->is('admin/inquery_estimasiproduksi')  
     // request()->is('admin/input*')
   
@@ -351,6 +352,7 @@
         request()->is('admin/inquery_permintaanproduk*')||
         request()->is('admin/inquery_stokbarangjadi*')||
         request()->is('admin/inquery_pengirimanbarangjadi*')||
+        request()->is('admin/inquery_pemindahanbarang*')||
         request()->is('admin/inquery_estimasiproduksi*') 
         // request()->is('admin/input*')
       
@@ -431,6 +433,15 @@
                 class="nav-link {{ request()->is('admin/inquery_returbarangjadi*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Inquery Retur Barang</p>
+            </a>
+        </li>
+        {{-- @endif --}}
+
+          <li class="nav-item">
+            <a href="{{ url('admin/inquery_pemindahanbarangjadi') }}"
+                class="nav-link {{ request()->is('admin/inquery_pemindahanbarangjadi*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Inquery Pemindahan Barang</p>
             </a>
         </li>
         {{-- @endif --}}

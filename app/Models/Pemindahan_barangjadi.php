@@ -11,7 +11,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class Pemindahan_tokoslawi extends Model
+class Pemindahan_barangjadi extends Model
 {
     use HasFactory;
 

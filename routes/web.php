@@ -10,6 +10,7 @@ use App\Http\Controllers\KlasifikasiController;
 use App\Http\Controllers\Admin\AddpelangganController;
 use App\Http\Controllers\Admin\HargajualController;
 use App\Http\Controllers\Admin\Inquery_pemesananprodukController;
+use App\Http\Controllers\Admin\Inquery_pemindahanbarangjadiController;
 use App\Http\Controllers\Admin\Inquery_penjualanprodukController;
 use App\Http\Controllers\Admin\Inquery_returbarangjadiController;
 use App\Http\Controllers\Admin\Inquery_stokbarangjadiController;
@@ -208,6 +209,9 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('laporan_estimasiproduksi', \App\Http\Controllers\Admin\Laporan_estimasiproduksiController::class);
     Route::get('printReport', [\App\Http\Controllers\Admin\Laporan_estimasiproduksiController::class, 'printReport']);
 
+    Route::resource('inquery_pemindahanbarangjadi', \App\Http\Controllers\Admin\Inquery_pemindahanbarangjadiController::class);
+    Route::get('/inquery_pemindahanbarangjadi/{id}/print', [Inquery_pemindahanbarangjadiController::class, 'print'])->name('inquery_pemindahanbarangjadi.print');
+    Route::get('/inquery_pemindahanbarangjadi/{id}/print', [Inquery_pemindahanbarangjadiController::class, 'print'])->name('inquery_pemindahanbarangjadi.print');
 
 
     //TOKO SLAWI
