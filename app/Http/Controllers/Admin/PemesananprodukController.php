@@ -216,6 +216,9 @@ class PemesananprodukController extends Controller
         }
 
         $kode = $this->kode();
+        $format = 'd/m/Y H:i';
+        $tanggal_kirim = Carbon::createFromFormat($format, $request->tanggal_kirim)->format('Y-m-d H:i:s');
+
         // Buat pemesanan baru
         $cetakpdf = Pemesananproduk::create([
             'nama_pelanggan' => $request->nama_pelanggan,
@@ -227,7 +230,7 @@ class PemesananprodukController extends Controller
             'nama_penerima' => $request->nama_penerima,
             'telp_penerima' => $request->telp_penerima,
             'alamat_penerima' => $request->alamat_penerima,
-            'tanggal_kirim' => $request->tanggal_kirim,
+            'tanggal_kirim' => $tanggal_kirim,
             'toko_id' => '1',
             'metode_id' => $request->metode_id, 
             'sub_totalasli' => $request->sub_totalasli,

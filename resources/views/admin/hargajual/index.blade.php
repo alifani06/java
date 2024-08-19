@@ -63,7 +63,7 @@
             </div>
             
             <div class="card-body">
-                <table id="datatables1" class="table table-sm table-bordered table-striped table-hover">
+                <table id="datatables1" class="table table-sm table-bordered table-striped table-hover" style="font-size: 12px;">
              
                     <thead>
                         <tr>
