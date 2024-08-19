@@ -300,6 +300,9 @@
     request()->is('toko_slawi/laporan_penjualanproduk*')  ||
     request()->is('toko_slawi/laporan_perubahanharga*')||
     request()->is('toko_slawi/laporan_permintaanproduk*')||
+    request()->is('toko_slawi/laporan_pengirimanproduk*')||
+    request()->is('toko_slawi/laporan_returslawi*')||
+    request()->is('toko_slawi/laporan_pemindahanslawi*')||
     request()->is('toko_slawi/laporan_stokbarangjadi*')||
     request()->is('toko_slawi/laporan_pengirimanbarangjadi*')
     // request()->is('toko_slawi/input*')
@@ -311,6 +314,9 @@
         request()->is('toko_slawi/laporan_penjualanproduk*')|| 
         request()->is('toko_slawi/laporan_perubahanharga*') ||
         request()->is('toko_slawi/laporan_permintaanproduk*')|| 
+        request()->is('toko_slawi/laporan_pengirimanproduk*')|| 
+        request()->is('toko_slawi/laporan_returslawi*')|| 
+        request()->is('toko_slawi/laporan_pemindahanslawi*')|| 
         request()->is('toko_slawi/laporan_stokbarangjadi*')|| 
         request()->is('toko_slawi/laporan_spengirimanarangjadi*') 
         // request()->is('toko_slawi/input*')
@@ -351,6 +357,36 @@
                     class="nav-link {{ request()->is('toko_slawi/laporan_permintaanproduk*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                     <p style="font-size: 14px;">Laporan Permintaan Produk</p>
+                </a>
+            </li>
+            {{-- @endif --}}
+
+            {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+              <li class="nav-item">
+                <a href="{{ url('toko_slawi/laporan_pengirimanproduk') }}"
+                    class="nav-link {{ request()->is('toko_slawi/laporan_pengirimanproduk*') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                    <p style="font-size: 14px;">Laporan Pengiriman Produk</p>
+                </a>
+            </li>
+            {{-- @endif --}}
+
+              {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+              <li class="nav-item">
+                <a href="{{ url('toko_slawi/laporan_returslawi') }}"
+                    class="nav-link {{ request()->is('toko_slawi/laporan_returslawi*') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                    <p style="font-size: 14px;">Laporan Retur Produk</p>
+                </a>
+            </li>
+            {{-- @endif --}}
+
+            {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+              <li class="nav-item">
+                <a href="{{ url('toko_slawi/laporan_pemindahanslawi') }}"
+                    class="nav-link {{ request()->is('toko_slawi/laporan_pemindahanslawi*') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                    <p style="font-size: 13px;">Laporan Pemindahan Produk</p>
                 </a>
             </li>
             {{-- @endif --}}

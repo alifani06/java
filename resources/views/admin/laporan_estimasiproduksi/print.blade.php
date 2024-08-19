@@ -216,6 +216,11 @@
     </div>
     <div class="change-header">LAPORAN ESTIMASI PRODUKSI</div>
 
+    @if($tanggalAwal && $tanggalAkhir)
+    <div class="date-range">
+        Periode Tanggal: {{ \Carbon\Carbon::parse($tanggalAwal)->format('d M Y') }} - {{ \Carbon\Carbon::parse($tanggalAkhir)->format('d M Y') }}
+    </div>
+    @endif
 
     <!-- Tabel Permintaan -->
     @if($tableType == 'permintaan')
@@ -309,84 +314,120 @@
 
 
     @if($tableType == 'all')
-    <h3>Gabungan Permintaan dan Pesanan Produk</h3>
+    <h3>Gabungan Permintaan dan Pemesanan Produk</h3>
     <table>
         <thead>
             <tr>
                 <th>No</th>
                 <th>Divisi</th>
                 <th>Produk</th>
-                <th colspan="2">Banjaran</th>
-                <th colspan="2">Tegal</th>
-                <th colspan="2">Slawi</th>
-                <th colspan="2">Pemalang</th>
-                <th colspan="2">Bumiayu</th>
-                <th colspan="2">Cilacap</th>
+                @foreach(['Banjaran', 'Tegal', 'Slawi', 'Pemalang', 'Bumiayu', 'Cilacap'] as $store)
+                    <th colspan="2">{{ $store }}</th>
+                @endforeach
                 <th>Total</th>
             </tr>
             <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th>Pesanan</th>
-                <th>Stok</th>
-                <th>Pesanan</th>
-                <th>Stok</th>
-                <th>Pesanan</th>
-                <th>Stok</th>
-                <th>Pesanan</th>
-                <th>Stok</th>
-                <th>Pesanan</th>
-                <th>Stok</th>
-                <th>Pesanan</th>
-                <th>Stok</th>
+                <th colspan="3"></th>
+                @foreach(['Banjaran', 'Tegal', 'Slawi', 'Pemalang', 'Bumiayu', 'Cilacap'] as $store)
+                    <th>Pes</th>
+                    <th>Stok</th>
+                @endforeach
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach($combinedData->groupBy('produk_id') as $produkId => $tokoDetails)
+            @foreach($combinedData as $produkId => $tokoDetails)
                 @php
-               
-                    
-                    $firstDetail = $tokoDetails->flatten()->first(); 
-                    $produk = $firstDetail->produk ?? null;
-                    $klasifikasi = $produk ? $produk->klasifikasi->nama ?? 'Tidak Ditemukan' : 'Tidak Ditemukan';
+                    $produk = $tokoDetails->first()['produk'];
+                    $klasifikasi = $produk->klasifikasi->nama ?? 'Tidak Ditemukan';
                     $totalPesanan = 0;
                     $totalPermintaan = 0;
                 @endphp
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $klasifikasi }}</td>
-                    <td>{{ $produk ? $produk->nama_produk ?? 'Produk Tidak Ditemukan' : 'Produk Tidak Ditemukan' }}</td>
+                    <td>{{ $produk->nama_produk ?? 'Produk Tidak Ditemukan' }}</td>
                     @foreach(['banjaran', 'tegal', 'slawi', 'pemalang', 'bumiayu', 'cilacap'] as $store)
                         @php
-                            $pesananJumlah = $pemesananProduk->flatMap(function ($details) use ($store, $produkId) {
-                                return $details->filter(function ($detail) use ($store, $produkId) {
-                                    return strtolower($detail['toko']->nama_toko) === $store && $detail['produk']->id == $produkId;
-                                });
-                            })->sum('jumlah');
-        
-                            $permintaanJumlah = $permintaanProduks->flatMap(function ($details) use ($store, $produkId) {
-                                return $details->filter(function ($detail) use ($store, $produkId) {
-                                    return strtolower($detail['toko']->nama_toko) === $store && $detail['produk']->id == $produkId;
-                                });
-                            })->sum('jumlah');
-        
-                            $totalPesanan += $pesananJumlah;
-                            $totalPermintaan += $permintaanJumlah;
+                            $pesanan = $tokoDetails->filter(function ($detail) use ($store) {
+                                return strtolower($detail['toko']->nama_toko) === $store;
+                            })->sum('pesanan');
+
+                            $permintaan = $tokoDetails->filter(function ($detail) use ($store) {
+                                return strtolower($detail['toko']->nama_toko) === $store;
+                            })->sum('permintaan');
+
+                            $totalPesanan += $pesanan;
+                            $totalPermintaan += $permintaan;
                         @endphp
-                        <td>{{ $pesananJumlah }}</td>
-                        <td>{{ $permintaanJumlah }}</td>
+                        <td>{{ $pesanan }}</td>
+                        <td>{{ $permintaan }}</td>
                     @endforeach
                     <td>{{ $totalPesanan + $totalPermintaan }}</td>
                 </tr>
             @endforeach
         </tbody>
-        
-        
-        
     </table>
 @endif
+
+
+
+<!-- Tabel Gabungan (All Data) -->
+{{-- @if($tableType == 'all')
+<h3>Gabungan Permintaan dan Pemesanan Produk</h3>
+<table>
+    <thead>
+        <tr>
+            <th rowspan="2">No</th>
+            <th rowspan="2">Divisi</th>
+            <th rowspan="2">Produk</th>
+            @foreach(['banjaran', 'tegal', 'slawi', 'pemalang', 'bumiayu', 'cilacap'] as $store)
+                <th colspan="2">{{ ucfirst($store) }}</th>
+            @endforeach
+            <th rowspan="2">Total</th>
+        </tr>
+        <tr>
+            @foreach(['banjaran', 'tegal', 'slawi', 'pemalang', 'bumiayu', 'cilacap'] as $store)
+                <th>Pes</th>
+                <th>Stok</th>
+            @endforeach
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($combinedData as $produkId => $tokoDetails)
+        @php
+        $tokoDetails = collect($tokoDetails); // Ubah array menjadi koleksi Laravel
+        $produk = $tokoDetails->first()['produk'];
+        $klasifikasi = $produk->klasifikasi->nama ?? 'Tidak Ditemukan';
+        $totalJumlah = 0;
+    @endphp
+    
+            <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $klasifikasi }}</td>
+                <td>{{ $produk->nama_produk ?? 'Produk Tidak Ditemukan' }}</td>
+                @foreach(['banjaran', 'tegal', 'slawi', 'pemalang', 'bumiayu', 'cilacap'] as $store)
+                @php
+                $jumlahPemesanan = $tokoDetails->filter(function ($detail) use ($store) {
+                    return isset($detail['toko']) && strtolower($detail['toko']->nama_toko) === $store && isset($detail['pemesanan']);
+                })->sum('pemesanan');
+            
+                $jumlahPermintaan = $tokoDetails->filter(function ($detail) use ($store) {
+                    return isset($detail['toko']) && strtolower($detail['toko']->nama_toko) === $store && isset($detail['permintaan']);
+                })->sum('permintaan');
+            
+                $totalJumlah += ($jumlahPemesanan + $jumlahPermintaan);
+            @endphp
+            
+                    <td>{{ $jumlahPemesanan }}</td>
+                    <td>{{ $jumlahPermintaan }}</td>
+                @endforeach
+                <td>{{ $totalJumlah }}</td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
+@endif --}}
 
 
 
