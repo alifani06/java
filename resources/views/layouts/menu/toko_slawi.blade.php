@@ -109,7 +109,7 @@
     request()->is('toko_slawi/permintaan_produk*')|| 
     request()->is('toko_slawi/pengiriman_barangjadi*')|| 
     request()->is('toko_slawireturn_barangjadi*')|| 
-    request()->is('toko_slawi/pemindahan_produk*') 
+    request()->is('toko_slawi/pemindahan_tokoslawi*') 
     // request()->is('toko_slawi/input*')
   
         ? 'menu-open'
@@ -122,7 +122,7 @@
         request()->is('toko_slawi/permintaan_produk*')||  
         request()->is('toko_slawi/pengiriman_barangjadi*')||  
         request()->is('toko_slawi/retur_barangjadi*')||  
-        request()->is('toko_slawi/pemindahan_produk*')  
+        request()->is('toko_slawi/pemindahan_tokoslawi*')  
         // request()->is('toko_slawi/input*')
       
             ? 'active'
@@ -188,8 +188,8 @@
         
         {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
         <li class="nav-item">
-            <a href="{{ url('toko_slawi/pemindahan_produk') }}"
-                class="nav-link {{ request()->is('toko_slawi/pemindahan_produk*') ? 'active' : '' }}">
+            <a href="{{ url('toko_slawi/pemindahan_tokoslawi') }}"
+                class="nav-link {{ request()->is('toko_slawi/pemindahan_tokoslawi*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Pemindahan Produk</p>
             </a>
@@ -205,6 +205,7 @@
     request()->is('toko_slawi/inquery_permintaanproduk*')|| 
     request()->is('toko_slawi/inquery_stokbarangjadi*')|| 
     request()->is('toko_slawi/pengiriman_tokoslawi*')|| 
+    request()->is('toko_slawi/inquery_pemindahanslawi*')|| 
     request()->is('toko_slawi/inquery_pengirimanbarangjadi*') 
     // request()->is('toko_slawi/input*')
   
@@ -217,7 +218,8 @@
         request()->is('toko_slawi/inquery_permintaanproduk*')||
         request()->is('toko_slawi/inquery_stokbarangjadi*')||
         request()->is('toko_slawi/pengiriman_tokoslawi*')||
-        request()->is('toko_slawi/inquerypengirimankbarangjadi*')
+        request()->is('toko_slawi/inquery_pemindahanslawi*')||
+        request()->is('toko_slawi/inquerypengirimanbarangjadi*')
         // request()->is('toko_slawi/input*')
       
             ? 'active'
@@ -275,6 +277,17 @@
                 class="nav-link {{ request()->is('toko_slawi/inquery_returslawi*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Inquery Retur Slawi</p>
+            </a>
+        </li>
+        {{-- @endif --}}
+
+
+          {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+          <li class="nav-item">
+            <a href="{{ url('toko_slawi/inquery_pemindahanslawi') }}"
+                class="nav-link {{ request()->is('toko_slawi/inquery_pemindahanslawi*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Inquery Pemindahan Produk</p>
             </a>
         </li>
         {{-- @endif --}}

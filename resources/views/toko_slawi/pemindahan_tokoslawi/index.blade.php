@@ -40,7 +40,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Pemindahan Produk Toko Slawi</h3>
                     <div class="float-right">
-                        <a href="{{ url('toko_slawi/retur_tokoslawi/create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url('toko_slawi/pemindahan_tokoslawi/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> 
                         </a>
                     </div>
@@ -51,17 +51,17 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Kode Retur</th>
+                                <th>Kode Pemindahan</th>
                                 <th>Kode Produk</th>
                                 <th>Nama Produk</th>
                                 <th>Keterangan</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($retur_tokoslawi as $stok)
+                            @foreach ($pemindahan_tokoslawi as $stok)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $stok->kode_retur }}</td>
+                                    <td>{{ $stok->kode_pemindahan }}</td>
                                     <td>{{ $stok->produk->kode_produk }}</td>
                                     <td>{{ $stok->produk->nama_produk }}</td>
                                     <td style="text-transform: uppercase;">

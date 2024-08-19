@@ -26,6 +26,7 @@ use App\Models\Klasifikasi;
 use App\Models\Pemesananproduk;
 use App\Models\Stok_tokoslawi;
 use App\Models\Retur_tokoslawi;
+use App\Models\Pemindahan_tokoslawi;
 use App\Models\Retur_barangjadi;
 use App\Models\Toko;
 use App\Models\Dppemesanan;
@@ -39,17 +40,17 @@ use App\Imports\ProdukImport;
 use App\Models\Retur_barnagjadi;
 use Maatwebsite\Excel\Facades\Excel;
 
-class Pemindahan_produkController extends Controller{
+class Pemindahan_tokoslawiController extends Controller{
 
     public function index()
     {
         // Ambil data retur_tokoslawi beserta relasi produk dan urutkan berdasarkan created_at terbaru
-        $retur_tokoslawi = Retur_tokoslawi::with('produk')
+        $pemindahan_tokoslawi = Pemindahan_tokoslawi::with('produk')
                             ->where('status', 'posting')
                             ->orderBy('created_at', 'desc')
                             ->get();
     
-        return view('toko_slawi.pemindahan_produk.index', compact('retur_tokoslawi'));
+        return view('toko_slawi.pemindahan_tokoslawi.index', compact('pemindahan_tokoslawi'));
     }
       
 
@@ -59,10 +60,85 @@ public function create()
     $produks = Produk::all();
     $tokos = Toko::all();
 
-    return view('toko_slawi.retur_tokoslawi.create', compact('produks', 'tokos'));
+    return view('toko_slawi.pemindahan_tokoslawi.create', compact('produks', 'tokos'));
 }
 
 
+// public function store(Request $request)
+// {
+//     $request->validate([
+//         'produk_id' => 'required|array',
+//         'produk_id.*' => 'exists:produks,id',
+//         'jumlah' => 'required|array',
+//         'jumlah.*' => 'integer|min:1',
+//         'keterangan' => 'required|array',
+//         'keterangan.*' => 'string',
+//     ]);
+
+//     $produk_ids = $request->input('produk_id');
+//     $jumlahs = $request->input('jumlah');
+//     $keterangans = $request->input('keterangan');
+
+//     foreach ($produk_ids as $index => $produk_id) {
+//         $jumlah_yang_dibutuhkan = $jumlahs[$index];
+
+//         $produk = Produk::find($produk_id);
+//         if (!$produk) {
+//             return redirect()->back()->with('error', 'Produk dengan ID ' . $produk_id . ' tidak ditemukan.');
+//         }
+
+//         $stok_items = Stok_tokoslawi::where('produk_id', $produk_id)
+//             ->where('jumlah', '>', 0)
+//             ->orderBy('jumlah', 'asc')
+//             ->get();
+
+//         if ($stok_items->isEmpty()) {
+//             return redirect()->back()->with('error', 'Stok untuk produk dengan ID ' . $produk_id . ' tidak ditemukan.');
+//         }
+
+//         foreach ($stok_items as $stok) {
+//             if ($jumlah_yang_dibutuhkan <= 0) {
+//                 break;
+//             }
+
+//             if ($stok->jumlah >= $jumlah_yang_dibutuhkan) {
+//                 $stok->jumlah -= $jumlah_yang_dibutuhkan;
+//                 $stok->save();
+
+//                 Pemindahan_tokoslawi::create([
+//                     'produk_id' => $produk_id,
+//                     'toko_id' => '3',
+//                     'jumlah' => $jumlah_yang_dibutuhkan,
+//                     'keterangan' => $keterangans[$index],
+//                     'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//                     // Add any additional fields required by the pemindahan_tokoslawi table
+//                 ]);
+
+//                 $jumlah_yang_dibutuhkan = 0;
+//             } else {
+//                 $jumlah_yang_dibutuhkan -= $stok->jumlah;
+
+//                 Pemindahan_tokoslawi::create([
+//                     'produk_id' => $produk_id,
+//                     'toko_id' => '3',
+//                     'jumlah' => $stok->jumlah,
+//                     'keterangan' => $keterangans[$index],
+//                     'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//                     // Add any additional fields required by the pemindahan_tokoslawi table
+//                 ]);
+
+//                 $stok->jumlah = 0;
+//                 $stok->save();
+//             }
+//         }
+
+//         if ($jumlah_yang_dibutuhkan > 0) {
+//             return redirect()->back()->with('error', 'Jumlah stok untuk produk ' . $stok->produk->nama_produk . ' tidak mencukupi.');
+//         }
+//     }
+
+//     return redirect()->route('pemindahan_tokoslawi.index')->with('success', 'Data pemindahan barang berhasil disimpan.');
+// }
 public function store(Request $request)
 {
     $request->validate([
@@ -71,121 +147,45 @@ public function store(Request $request)
         'jumlah' => 'required|array',
         'jumlah.*' => 'integer|min:1',
         'keterangan' => 'required|array',
-        'keterangan.*' => 'in:produk gagal,oper,sampel',
-        'oper' => 'nullable|array', // Memastikan oper dapat diterima sebagai array
+        'keterangan.*' => 'string',
     ]);
 
     $kode = $this->kode();
     $produk_ids = $request->input('produk_id');
     $jumlahs = $request->input('jumlah');
     $keterangans = $request->input('keterangan');
-    $opers = $request->input('oper');
 
     foreach ($produk_ids as $index => $produk_id) {
-        $jumlah_yang_dibutuhkan = $jumlahs[$index];
-        
-        $produk = Produk::find($produk_id);
-        if (!$produk) {
-            return redirect()->back()->with('error', 'Produk dengan ID ' . $produk_id . ' tidak ditemukan.');
-        }
-
-        $nama_produk_retur = $produk->nama_produk . ' RETUR';
-
-        $stok_items = Stok_tokoslawi::where('produk_id', $produk_id)
-            ->where('jumlah', '>', 0)
-            ->orderBy('jumlah', 'asc')
-            ->get();
-
-        if ($stok_items->isEmpty()) {
-            return redirect()->back()->with('error', 'Stok untuk produk dengan ID ' . $produk_id . ' tidak ditemukan.');
-        }
-
-        foreach ($stok_items as $stok) {
-            if ($jumlah_yang_dibutuhkan <= 0) {
-                break;
-            }
-
-            if ($stok->jumlah >= $jumlah_yang_dibutuhkan) {
-                $stok->jumlah -= $jumlah_yang_dibutuhkan;
-                $stok->save();
-
-                Retur_tokoslawi::create([
-                    'kode_retur' => $kode,
-                    'produk_id' => $produk_id,
-                    'toko_id' => '3',
-                    'status' => 'unpost',
-                    'jumlah' => $jumlah_yang_dibutuhkan,
-                    'keterangan' => $keterangans[$index],
-                    'oper' => $keterangans[$index] === 'oper' ? $opers[$index] : null, // Simpan oper jika keterangan 'oper'
-                    'tanggal_input' => Carbon::now('Asia/Jakarta'),
-                ]);
-
-                Retur_barangjadi::create([
-                    'kode_retur' => $kode,
-                    'produk_id' => $produk_id,
-                    'toko_id' => '3',
-                    'nama_produk' => $nama_produk_retur,
-                    'status' => 'unpost',
-                    'jumlah' => $jumlah_yang_dibutuhkan,
-                    'keterangan' => $keterangans[$index],
-                    'tanggal_retur' => Carbon::now('Asia/Jakarta'),
-                ]);
-
-                $jumlah_yang_dibutuhkan = 0;
-            } else {
-                $jumlah_yang_dibutuhkan -= $stok->jumlah;
-
-                Retur_tokoslawi::create([
-                    'kode_retur' => $kode,
-                    'produk_id' => $produk_id,
-                    'toko_id' => '3',
-                    'status' => 'unpost',
-                    'jumlah' => $stok->jumlah,
-                    'keterangan' => $keterangans[$index],
-                    'oper' => $keterangans[$index] === 'oper' ? $opers[$index] : null, // Simpan oper jika keterangan 'oper'
-                    'tanggal_input' => Carbon::now('Asia/Jakarta'),
-                ]);
-
-                Retur_barangjadi::create([
-                    'kode_retur' => $kode,
-                    'produk_id' => $produk_id,
-                    'toko_id' => '3',
-                    'nama_produk' => $nama_produk_retur,
-                    'status' => 'unpost',
-                    'jumlah' => $stok->jumlah,
-                    'keterangan' => $keterangans[$index],
-                    'tanggal_retur' => Carbon::now('Asia/Jakarta'),
-                ]);
-
-                $stok->jumlah = 0;
-                $stok->save();
-            }
-        }
-
-        if ($jumlah_yang_dibutuhkan > 0) {
-            return redirect()->back()->with('error', 'Jumlah stok untuk produk ' . $stok->produk->nama_produk . ' tidak mencukupi.');
-        }
+        Pemindahan_tokoslawi::create([
+            'kode_pemindahan' => $kode,
+            'produk_id' => $produk_id,
+            'toko_id' => '3',  // Ganti sesuai dengan toko tujuan
+            'status' => 'unpost',
+            'jumlah' => $jumlahs[$index],
+            'keterangan' => $keterangans[$index],
+            'tanggal_input' => Carbon::now('Asia/Jakarta'),
+        ]);
     }
 
-    return redirect()->route('retur_tokoslawi.index')->with('success', 'Data retur barang berhasil disimpan.');
+    return redirect()->route('pemindahan_tokoslawi.index')->with('success', 'Data pemindahan barang berhasil disimpan.');
 }
 
 
 public function kode()
 {
-    $prefix = 'RSLW';
+    $prefix = 'PSLW';
     $year = date('y'); // Dua digit terakhir dari tahun
     $date = date('md'); // Format bulan dan hari: MMDD
 
     // Mengambil kode retur terakhir yang dibuat pada hari yang sama
-    $lastBarang = Retur_tokoslawi::whereDate('tanggal_input', Carbon::today())
-                                  ->orderBy('kode_retur', 'desc')
+    $lastBarang = Pemindahan_tokoslawi::whereDate('tanggal_input', Carbon::today())
+                                  ->orderBy('kode_pemindahan', 'desc')
                                   ->first();
 
     if (!$lastBarang) {
         $num = 1;
     } else {
-        $lastCode = $lastBarang->kode_retur;
+        $lastCode = $lastBarang->kode_pemindahan;
         $lastNum = (int) substr($lastCode, strlen($prefix . $year . $date)); // Mengambil urutan terakhir
         $num = $lastNum + 1;
     }

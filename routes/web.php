@@ -319,7 +319,10 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
     Route::get('/inquery_returslawi/{id}/print', [Inquery_returslawiController::class, 'print'])->name('inquery_returslawi.print');
 
 
-    Route::resource('pemindahan_produk', \App\Http\Controllers\Toko_slawi\Retur_tokoslawiController::class);
+    Route::resource('pemindahan_tokoslawi', \App\Http\Controllers\Toko_slawi\Pemindahan_tokoslawiController::class);
+
+    Route::resource('inquery_pemindahanslawi', \App\Http\Controllers\Toko_slawi\Inquery_pemindahanslawiController::class);
+    Route::get('inquery_pemindahanslawi/posting_pemindahan/{id}', [\App\Http\Controllers\Toko_slawi\Inquery_pemindahanslawiController::class, 'posting_pemindahan']);
 
 });
 
