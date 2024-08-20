@@ -102,9 +102,10 @@
                             <tr>
                                 <th class="text-center">No</th>
                                 <th>Cabang</th>
+                                <th>Kode Pemusnahan</th>
                                 <th>Kode Retur</th>
                                 <th>Tanggal Retur</th>
-                                <th>Tanggal Terima</th>
+                                <th>Tanggal Pemusnahan</th>
                                 {{-- <th>Nama Produk</th> --}}
                                 <th>Status</th>
                               
@@ -120,6 +121,7 @@
                                     <td>
                                         {{ $firstItem->toko ? $firstItem->toko->nama_toko : '-' }} {{-- Ganti nama_toko sesuai nama kolom yang ada pada tabel toko --}}
                                     </td>
+                                <td>{{ $firstItem->kode_pemusnahan }}</td>
                                 <td>{{ $firstItem->kode_retur }}</td>
                                 <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_retur)->format('d/m/Y H:i') }}</td>
                                 <td>

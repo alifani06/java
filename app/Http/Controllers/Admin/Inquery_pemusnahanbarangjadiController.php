@@ -38,6 +38,7 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Retur_barnagjadi;
+use App\Models\Stok_retur;
 use Maatwebsite\Excel\Facades\Excel;
 
 class Inquery_pemusnahanbarangjadiController extends Controller{
@@ -182,10 +183,11 @@ public function posting_pemusnahan(Request $request, $id)
 
         // Ubah status menjadi 'posting'
         $pemusnahan->status = 'posting';
+        $pemusnahan->tanggal_terima = Carbon::now('Asia/Jakarta');
         $pemusnahan->save();
 
         // Ambil data terkait dari tabel retur_barangjadis
-        $returBarangJadiDetails = Retur_barangjadi::where('kode_retur', $pemusnahan->kode_retur)->get();
+        $returBarangJadiDetails = Stok_retur::where('kode_retur', $pemusnahan->kode_retur)->get();
 
         // Kurangi jumlah produk pada retur_barangjadis
         foreach ($returBarangJadiDetails as $detail) {

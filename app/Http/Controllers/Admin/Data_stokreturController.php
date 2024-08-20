@@ -36,6 +36,7 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Retur_barangjadi;
+use App\Models\Stok_retur;
 use Maatwebsite\Excel\Facades\Excel;
 
 class Data_stokreturController extends Controller{
@@ -43,7 +44,7 @@ class Data_stokreturController extends Controller{
     public function index()
     {
         // Ambil data retur_tokoslawi beserta relasi produk dan toko
-        $stok_retur = Retur_barangjadi::with(['produk', 'toko'])->where('status', 'posting')->get();
+        $stok_retur = Stok_retur::with(['produk', 'toko'])->where('status', 'posting')->get();
     
         return view('admin.data_stokretur.index', compact('stok_retur'));
     }

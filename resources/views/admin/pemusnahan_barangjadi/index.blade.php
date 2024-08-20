@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Barang Jadi')
+@section('title', 'Produks')
 
 @section('content')
     <div id="loadingSpinner" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
@@ -66,70 +66,111 @@
                 </div>
             @endif
             <div class="card">
-                <div class="card-header">
-                    <div class="float-right">
-                        <a href="{{ url('admin/pemusnahan_barangjadi/create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus"></i> 
-                        </a>
-                    </div>
-                </div>
-                <!-- /.card-header -->
+            
+                
                 <div class="card-body">
                     <!-- Tabel -->
+                    
                     <table id="datatables66" class="table table-bordered" style="font-size: 13px">
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
+                                <th>Cabang</th>
                                 <th>Kode Pemusnahan</th>
+                                <th>Kode Retur</th>
+                                <th>Tanggal Retur</th>
                                 <th>Tanggal Pemusnahan</th>
-                                <th>Opsi</th>
+                                {{-- <th>Nama Produk</th> --}}
+                                <th>Status</th>
+                              
                             </tr>
                         </thead>
-                    
                         <tbody>
-                            {{-- @foreach ($pengirimanBarangJadi as $kodeInput => $stokBarangJadiItems)
-                                @php
-                                    $firstItem = $stokBarangJadiItems->first();
-                                @endphp
-                                <tr class="permintaan-header" data-permintaan-id="{{ $firstItem->id }}">
+                            @foreach ($stokBarangJadi as $kodeInput => $stokBarangJadiItems)
+                            @php
+                                $firstItem = $stokBarangJadiItems->first();
+                            @endphp
+                                <tr class="dropdown" data-permintaan-id="{{ $firstItem->id }}">
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $firstItem->kode_pengiriman }}</td>
-                                    <td>{{ $firstItem->tanggal_pengiriman }}</td>
+                                    <td>
+                                        {{ $firstItem->toko ? $firstItem->toko->nama_toko : '-' }} {{-- Ganti nama_toko sesuai nama kolom yang ada pada tabel toko --}}
+                                    </td>
+                                <td>{{ $firstItem->kode_pemusnahan }}</td>
+                                <td>{{ $firstItem->kode_retur }}</td>
+                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_retur)->format('d/m/Y H:i') }}</td>
+                                <td>
+                                    @if ($firstItem->tanggal_terima)
+                                        {{ \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>                                    
+                                {{-- <td>{{ $firstItem->nama_produk }}</td> --}}
                                     <td class="text-center">
-                                        <a href="{{ url('admin/pengiriman_barangjadi/' . $firstItem->id) }}" class="btn btn-info btn-sm">
-                                            <i class="fas fa-print"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr class="permintaan-details" id="details-{{ $firstItem->id }}" style="display: none;">
-                                    <td colspan="5">
-                                        <table class="table table-bordered" style="font-size: 13px;">
-                                            <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>Divisi</th>
-                                                    <th>Kode Produk</th>
-                                                    <th>Produk</th>
-                                                    <th>Jumlah</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($stokBarangJadiItems as $detail)
-                                                <tr>
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $detail->produk->klasifikasi->nama }}</td>
-                                                    <td>{{ $detail->produk->kode_produk }}</td>
-                                                    <td>{{ $detail->produk->nama_produk }}</td>
-                                                    <td>{{ $detail->jumlah }}</td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            @endforeach --}}
+                                    @if ($firstItem->status == 'posting')
+                                        <button type="button" class="btn btn-success btn-sm">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    @endif
+                                    @if ($firstItem->status == 'unpost')
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    @endif
+                                 
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        @if ($firstItem->status == 'unpost')
+                                           
+                                                <a class="dropdown-item posting-btn"
+                                                    data-memo-id="{{ $firstItem->id }}">Posting</a>
+                                         
+                                                {{-- <a class="dropdown-item"
+                                                    href="{{ url('admin/inquery_pemusnahanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
+                                            
+                                                <a class="dropdown-item"
+                                                href="{{ url('/admin/inquery_pemusnahanbarangjadi/' . $firstItem->id ) }}">Show</a> --}}
+                                                @endif
+                                        @if ($firstItem->status == 'posting')
+                                                <a class="dropdown-item unpost-btn"
+                                                    data-memo-id="{{ $firstItem->id }}">Unpost</a>
+                                                <a class="dropdown-item"
+                                                href="{{ url('/admin/inquery_pemusnahanbarangjadi/' . $firstItem->id ) }}">Show</a>
+                                        @endif
+                                       
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="permintaan-details" id="details-{{ $firstItem->id }}" style="display: none;">
+                                <td colspan="5">
+                                    <table class="table table-bordered" style="font-size: 13px;">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Divisi</th>
+                                                <th>Kode Produk</th>
+                                                <th>Produk</th>
+                                                <th>Jumlah</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($stokBarangJadiItems as $detail)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $detail->produk->klasifikasi->nama }}</td>
+                                                <td>{{ $detail->produk->kode_produk }}</td>
+                                                <td>{{ $detail->produk->nama_produk }}</td>
+                                                <td>{{ $detail->jumlah }}</td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                     
+                        @endforeach
                         </tbody>
-                    </table>
+                    </table> 
+               
                     
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
@@ -150,75 +191,155 @@
     </section>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Handle click event for permintaan-header
-            const permintaanHeaders = document.querySelectorAll('.permintaan-header');
-            
-            permintaanHeaders.forEach(header => {
-                header.addEventListener('click', function() {
-                    const permintaanId = header.dataset.permintaanId;
-                    const detailsRow = document.getElementById(`details-${permintaanId}`);
-                    
-                    // Hide all details rows and remove active class from all headers
-                    const allDetailsRows = document.querySelectorAll('.permintaan-details');
-                    const allHeaders = document.querySelectorAll('.permintaan-header');
-                    
-                    // Check if the clicked row is already open
-                    const isActive = header.classList.contains('active');
+        var tanggalAwal = document.getElementById('tanggal_retur');
+        var tanggalAkhir = document.getElementById('tanggal_akhir');
+        if (tanggalAwal.value == "") {
+            tanggalAkhir.readOnly = true;
+        }
+        tanggalAwal.addEventListener('change', function() {
+            if (this.value == "") {
+                tanggalAkhir.readOnly = true;
+            } else {
+                tanggalAkhir.readOnly = false;
+            };
+            tanggalAkhir.value = "";
+            var today = new Date().toISOString().split('T')[0];
+            tanggalAkhir.value = today;
+            tanggalAkhir.setAttribute('min', this.value);
+        });
+        var form = document.getElementById('form-action')
 
-                    allDetailsRows.forEach(row => row.style.display = 'none');
-                    allHeaders.forEach(h => h.classList.remove('active'));
-                    
-                    // Toggle the clicked row only if it wasn't already active
-                    if (!isActive) {
-                        detailsRow.style.display = '';
-                        header.classList.add('active');
+        function cari() {
+            form.action = "{{ url('admin/inquery_pemusnahanbarangjadi') }}";
+            form.submit();
+        }
+
+    </script>
+
+
+
+    {{-- unpost stok  --}}
+    <script>
+        $(document).ready(function() {
+            $('.unpost-btn').click(function() {
+                var memoId = $(this).data('memo-id');
+                $(this).addClass('disabled');
+
+                $('#modal-loading').modal('show');
+
+                $.ajax({
+                    url: "{{ url('admin/inquery_pemusnahanbarangjadi/unpost_pemusnahan/') }}/" + memoId,
+                    type: 'GET',
+                    data: {
+                        id: memoId
+                    },
+                    success: function(response) {
+                        $('#modal-loading').modal('hide');
+                        console.log(response);
+                        $('#modal-posting-' + memoId).modal('hide');
+                        location.reload();
+                    },
+                    error: function(error) {
+                        $('#modal-loading').modal('hide');
+                        console.log(error);
                     }
-                });
-            });
-
-            // Handle click event for show-btn
-            document.querySelectorAll('.show-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const permintaanId = this.dataset.permintaanId;
-                    const href = this.dataset.href;
-
-                    // Redirect to the specified URL
-                    window.location.href = href;
                 });
             });
         });
     </script>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('.unpost-btn').click(function() {
-            var id = $(this).data('memo-id');
+    {{-- posting stok --}}
+    <script>
+        $(document).ready(function() {
+            $('.posting-btn').click(function() {
+                var memoId = $(this).data('memo-id');
+                $(this).addClass('disabled');
 
-            $.ajax({
-                url: '/admin/permintaan_produk/' + id + '/unpost',
-                type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    if (response.success) {
-                        // Update the button and status display
-                        $('button[data-memo-id="' + id + '"]').closest('td').find('.btn-success').removeClass('d-none');
-                        $('button[data-memo-id="' + id + '"]').remove();
-                    } else {
-                        alert('Failed to update status.');
+                $('#modal-loading').modal('show');
+
+                $.ajax({
+                    url: "{{ url('admin/inquery_pemusnahanbarangjadi/posting_pemusnahan/') }}/" + memoId,
+                    type: 'GET',
+                    data: {
+                        id: memoId
+                    },
+                    success: function(response) {
+                        $('#modal-loading').modal('hide');
+                        console.log(response);
+                        $('#modal-posting-' + memoId).modal('hide');
+                        location.reload();
+                    },
+                    error: function(error) {
+                        $('#modal-loading').modal('hide');
+                        console.log(error);
                     }
-                },
-                error: function() {
-                    alert('An error occurred.');
-                }
+                });
             });
         });
+    </script>
+ <script>
+    $(document).ready(function() {
+    $('tbody tr.dropdown').click(function(e) {
+        // Memeriksa apakah yang diklik adalah checkbox
+        if ($(e.target).is('input[type="checkbox"]')) {
+            return; // Jika ya, hentikan eksekusi
+        }
+
+        // Menyembunyikan detail untuk baris yang tidak dipilih
+        $('tbody tr.dropdown').not(this).removeClass('selected').css('background-color', '');
+        $('.permintaan-details').not('#details-' + $(this).data('permintaan-id')).hide();
+
+        // Toggle visibility untuk detail baris yang dipilih
+        var detailRowId = $(this).data('permintaan-id');
+        var detailRow = $('#details-' + detailRowId);
+        var isActive = detailRow.is(':visible');
+
+        // Menghapus kelas 'selected' dan mengembalikan warna latar belakang ke warna default dari semua baris
+        $('tr.dropdown').removeClass('selected').css('background-color', '');
+        
+        if (isActive) {
+            detailRow.hide(); // Menyembunyikan detail jika sudah ditampilkan
+        } else {
+            $(this).addClass('selected').css('background-color', '#b0b0b0'); // Menambahkan kelas 'selected' dan mengubah warna latar belakangnya
+            detailRow.show(); // Menampilkan detail jika belum ditampilkan
+        }
+
+        // Menyembunyikan dropdown pada baris lain yang tidak dipilih
+        $('tbody tr.dropdown').not(this).find('.dropdown-menu').hide();
+
+        // Mencegah event klik menyebar ke atas (misalnya, saat mengklik dropdown)
+        e.stopPropagation();
     });
+
+    $('tbody tr.dropdown').contextmenu(function(e) {
+        // Memeriksa apakah baris ini memiliki kelas 'selected'
+        if ($(this).hasClass('selected')) {
+            // Menampilkan dropdown saat klik kanan
+            var dropdownMenu = $(this).find('.dropdown-menu');
+            dropdownMenu.show();
+
+            // Mendapatkan posisi td yang diklik
+            var clickedTd = $(e.target).closest('td');
+            var tdPosition = clickedTd.position();
+
+            // Menyusun posisi dropdown relatif terhadap td yang di klik
+            dropdownMenu.css({
+                'position': 'absolute',
+                'top': tdPosition.top + clickedTd.height(), // Menempatkan dropdown sedikit di bawah td yang di klik
+                'left': tdPosition.left // Menempatkan dropdown di sebelah kiri td yang di klik
+            });
+
+            // Mencegah event klik kanan menyebar ke atas (misalnya, saat mengklik dropdown)
+            e.stopPropagation();
+            e.preventDefault(); // Mencegah munculnya konteks menu bawaan browser
+        }
+    });
+
+    // Menyembunyikan dropdown saat klik di tempat lain
+    $(document).click(function() {
+        $('.dropdown-menu').hide();
+        $('tr.dropdown').removeClass('selected').css('background-color', ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
+    });
+});
 </script>
-
 @endsection
-
-

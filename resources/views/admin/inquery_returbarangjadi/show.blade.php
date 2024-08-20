@@ -97,36 +97,29 @@
     <div class="container">
         <!-- Kop Surat -->
         <div class="header row">
-        
-            
-            <div class="col-2 text-right">
-                <div class="logo">
-                    {{-- <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY"> --}}
-                </div>
-                {{-- <div>
-                    <span class="title">PT JAVA BAKERY FACTORY</span><br>
-                    <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
-                
-                </div> --}}
-            </div>
-        
-            <div class="col-8 text-center">
-                <div class="logo">
-                    <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
-                </div>
-                <span class="title">PT JAVA BAKERY FACTORY</span><br>
-                <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
-            </div>
-            {{-- <div class="col-2 text-left">
+            <div class="col-4 text-left">
                 <div class="title">JAVA BAKERY</div>
                 <p>Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
                 <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
-            </div> --}}
+            </div>
+            <div class="col-4 text-center">
+              
+            </div>
+            <div class="col-4 text-right">
+                <div class="logo">
+                    {{-- <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY"> --}}
+                </div>
+                <div>
+                    <span class="title">PT JAVA BAKERY</span><br>
+                    <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
+                
+                </div>
+            </div>
         </div>
         {{-- <hr class="divider"> --}}
 
         <!-- Judul Surat -->
-        <div class="change-header">SURAT PEMUSNAHAN BARANG JADI</div>
+        <div class="change-header">SURAT RETUR BARANG JADI</div>
 
         <!-- Informasi Permintaan -->
         <div>
@@ -148,6 +141,7 @@
                     <th>Kode Produk</th>
                     <th>Kategori</th>
                     <th>Produk</th>
+                    <th>Keterangan</th>
                     <th>Jumlah</th>
                 </tr>
             </thead>
@@ -158,6 +152,7 @@
                     <td>{{ $detail->produk->kode_produk }}</td>
                     <td>{{ $detail->produk->subklasifikasi->nama }}</td>
                     <td>{{ $detail->produk->nama_produk }}</td>
+                    <td>{{ $detail->keterangan }}</td>
                     <td>{{ $detail->jumlah }}</td>
                 </tr>
                 @endforeach

@@ -32,16 +32,48 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class PemusnahanbarangjadiController extends Controller{
 
-    public function index()
+    // public function index()
+    // {
+    //     $pemusnahanBarangJadi = Pemusnahan_barangjadi::with('produk.klasifikasi')
+    //         ->orderBy('created_at', 'desc')
+    //         ->get()
+    //         ->groupBy('kode_pemusnahan');
+    
+    //     return view('admin.pemusnahan_barangjadi.index', compact('pemusnahanBarangJadi'));
+    // }
+    
+    public function index(Request $request)
     {
-        $pemusnahanBarangJadi = Pemusnahan_barangjadi::with('produk.klasifikasi')
-            ->orderBy('created_at', 'desc')
-            ->get()
-            ->groupBy('kode_pemusnahan');
-    
-        return view('admin.pemusnahan_barangjadi.index', compact('pemusnahanBarangJadi'));
+            $status = $request->status;
+            $tanggal_retur = $request->tanggal_retur;
+            $tanggal_akhir = $request->tanggal_akhir;
+
+            $query = Pemusnahan_barangjadi::with('produk.klasifikasi');
+
+            if ($status) {
+                $query->where('status', $status);
+            }
+
+            if ($tanggal_retur && $tanggal_akhir) {
+                $tanggal_retur = Carbon::parse($tanggal_retur)->startOfDay();
+                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+                $query->whereBetween('tanggal_retur', [$tanggal_retur, $tanggal_akhir]);
+            } elseif ($tanggal_retur) {
+                $tanggal_retur = Carbon::parse($tanggal_retur)->startOfDay();
+                $query->where('tanggal_retur', '>=', $tanggal_retur);
+            } elseif ($tanggal_akhir) {
+                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+                $query->where('tanggal_retur', '<=', $tanggal_akhir);
+            } else {
+                // Jika tidak ada filter tanggal, tampilkan data hari ini
+                $query->whereDate('tanggal_retur', Carbon::today());
+            }
+
+            // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
+            $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_retur');
+
+            return view('admin.pemusnahan_barangjadi.index', compact('stokBarangJadi'));
     }
-    
     public function getReturData()
     {
         // Mengambil data unik berdasarkan kode_retur
