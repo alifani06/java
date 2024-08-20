@@ -45,10 +45,51 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class Pengiriman_tokoslawiController extends Controller{
 
+    // public function index(Request $request)
+    // {
+    //     // Mengambil data stok_tokoslawi dengan relasi pengiriman_barangjadi dan produk
+    //     $stokBarangJadi = Stok_tokoslawi::with(['pengiriman_barangjadi.produk'])
+    //         ->orderBy('created_at', 'desc')
+    //         ->get()
+    //         ->groupBy(function ($item) {
+    //             // Memeriksa apakah pengiriman_barangjadi ada sebelum mengakses kode_pengiriman
+    //             return $item->pengiriman_barangjadi ? $item->pengiriman_barangjadi->kode_pengiriman : 'undefined';
+    //         });
+    
+    //     return view('toko_slawi.pengiriman_tokoslawi.index', compact('stokBarangJadi'));
+    // }
     public function index(Request $request)
     {
+        $status = $request->status;
+        $tanggal_input = $request->tanggal_input;
+        $tanggal_akhir = $request->tanggal_akhir;
+    
         // Mengambil data stok_tokoslawi dengan relasi pengiriman_barangjadi dan produk
-        $stokBarangJadi = Stok_tokoslawi::with(['pengiriman_barangjadi.produk'])
+        $query = Stok_tokoslawi::with(['pengiriman_barangjadi.produk.klasifikasi']);
+    
+        // Filter berdasarkan status
+        if ($status) {
+            $query->where('status', $status);
+        }
+    
+        // Filter berdasarkan tanggal_input dan tanggal_akhir
+        if ($tanggal_input && $tanggal_akhir) {
+            $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $query->whereBetween('tanggal_input', [$tanggal_input, $tanggal_akhir]);
+        } elseif ($tanggal_input) {
+            $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
+            $query->where('tanggal_input', '>=', $tanggal_input);
+        } elseif ($tanggal_akhir) {
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $query->where('tanggal_input', '<=', $tanggal_akhir);
+        } else {
+            // Jika tidak ada filter tanggal, tampilkan data hari ini
+            $query->whereDate('tanggal_input', Carbon::today());
+        }
+    
+        // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_pengiriman
+        $stokBarangJadi = $query
             ->orderBy('created_at', 'desc')
             ->get()
             ->groupBy(function ($item) {

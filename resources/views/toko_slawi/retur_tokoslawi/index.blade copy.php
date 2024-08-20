@@ -34,7 +34,11 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0">Retur Toko Slawi</h1>
-                    
+                    <div class="float-right">
+                        <a href="{{ url('toko_slawi/retur_tokoslawi/create') }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> 
+                        </a>
+                    </div>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -67,13 +71,8 @@
                 </div>
             @endif
             <div class="card">
-            <div class="card-body">
-                <div class="float-right">
-                    <a href="{{ url('toko_slawi/retur_tokoslawi/create') }}" class="btn btn-primary btn-sm">
-                        <i class="fas fa-plus"></i> 
-                    </a>
-                </div>
-            </div>
+            
+                
                 <div class="card-body">
                     <!-- Tabel -->
                     

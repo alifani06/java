@@ -114,7 +114,7 @@
                                             <div class="form-group text-right">
                                                 <button type="submit" class="btn btn-primary">Simpan</button>
                                             </div>
-                                        </div>
+                                    </div>
                                     </div>
                                 </table>
                             </div>

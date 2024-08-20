@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Pengiriman Toko Slawi</h1>
+                    <h1 class="m-0">Inquery Pengiriman Toko Slawi</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -70,7 +70,7 @@
                 
                 <div class="card-body">
                     <!-- Tabel -->
-                    {{-- <form method="GET" id="form-action">
+                    <form method="GET" id="form-action">
                         <div class="row">
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="status" name="status">
@@ -81,9 +81,9 @@
                                 <label for="status">(Pilih Status)</label>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_pengiriman" name="tanggal_pengiriman" type="date"
-                                    value="{{ Request::get('tanggal_pengiriman') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_pengiriman">(Dari Tanggal)</label>
+                                <input class="form-control" id="tanggal_input" name="tanggal_input" type="date"
+                                    value="{{ Request::get('tanggal_input') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_input">(Dari Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
@@ -96,7 +96,7 @@
                                 </button>
                             </div>
                         </div>
-                    </form> --}}
+                    </form>
                     <table id="datatables66" class="table table-bordered" style="font-size: 13px">
                         <thead>
                             <tr>
@@ -105,79 +105,81 @@
                                 <th>Tanggal Pengiriman</th>
                                 <th>Tanggal Terima</th>
                                 <th>Status</th>
+                              
                             </tr>
                         </thead>
-                    
-                       
                         <tbody>
-                            @foreach ($stokBarangJadi as $kodePengiriman => $stokItems)
-                                @php
-                                    $firstItem = $stokItems->first(); // Mengambil item pertama untuk informasi
-                                    $tanggalPengiriman = $stokItems->min('tanggal_pengiriman'); // Mengambil tanggal pengiriman terkecil
-                                    $status = $stokItems->first()->status; // Mengambil status dari item pertama
-                                @endphp
+                            @foreach ($stokBarangJadi as $kodeInput => $stokBarangJadiItems)
+                            @php
+                                $firstItem = $stokBarangJadiItems->first();
+                            @endphp
                                 <tr class="dropdown" data-permintaan-id="{{ $firstItem->id }}">
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $kodePengiriman }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_input)->format('d/m/Y H:i') }} </td>
-                                    <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') }} </td>
-                                    <td class="text-center">
-                                        @if ($status == 'posting')
-                                            <button type="button" class="btn btn-success btn-sm">
-                                                <i class="fas fa-check"></i>
-                                            </button>
-                                        @elseif ($status == 'unpost')
-                                            <button type="button" class="btn btn-danger btn-sm">
-                                                <i class="fas fa-times"></i>
-                                            </button>
+                                <td>{{ $firstItem->kode_pengiriman }}</td>
+                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_input)->format('d/m/Y H:i') }} </td>
+                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') }} </td>
+                                  
+                                <td class="text-center">
+                                    @if ($firstItem->status == 'posting')
+                                        <button type="button" class="btn btn-success btn-sm">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    @endif
+                                    @if ($firstItem->status == 'unpost')
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    @endif
+                                 
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        @if ($firstItem->status == 'unpost')
+                                           
+                                                <a class="dropdown-item posting-btn"
+                                                    data-memo-id="{{ $firstItem->id }}">Posting</a>
+                                            
+                                                <a class="dropdown-item"
+                                                href="{{ url('/toko_slawi/pengiriman_tokoslawi/' . $firstItem->id)  }}">Show</a>
+                                                @endif
+                                        @if ($firstItem->status == 'posting')
+                                                <a class="dropdown-item unpost-btn"
+                                                    data-memo-id="{{ $firstItem->id }}">Unpost</a>
+                                                <a class="dropdown-item"
+                                                href="{{ url('/toko_slawi/pengiriman_tokoslawi/' . $firstItem->id)  }}">Show</a>
                                         @endif
-                        
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            @if ($status == 'unpost')
-                                                <a class="dropdown-item posting-btn" data-memo-id="{{ $firstItem->id }}">Posting</a>
-                                                {{-- <a class="dropdown-item" href="{{ url('/toko_slawi/pengiriman_tokoslawi/' . $firstItem->id) }}">Show</a> --}}
-                                            @elseif ($status == 'posting')
-                                                <a class="dropdown-item unpost-btn" data-memo-id="{{ $firstItem->id }}">Unpost</a>
-                                                {{-- <a class="dropdown-item" href="{{ url('/toko_slawi/pengiriman_tokoslawi/' . $firstItem->id)  }}">Show</a> --}}
-                                            @endif
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="permintaan-details" id="details-{{ $firstItem->id }}" style="display: none;">
-                                    <td colspan="5">
-                                        <table class="table table-bordered" style="font-size: 13px;">
-                                            <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>Divisi</th>
-                                                    <th>Kode Produk</th>
-                                                    <th>Produk</th>
-                                                    <th>Jumlah</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($stokItems as $stokItem)
-                                                    @php
-                                                        $produk = $stokItem->pengiriman_barangjadi->produk;
-                                                    @endphp
-                                                    <tr>
-                                                        <td>{{ $loop->iteration }}</td>
-                                                        <td>{{ $produk->klasifikasi->nama }}</td>
-                                                        <td>{{ $produk->kode_produk }}</td>
-                                                        <td>{{ $produk->nama_produk }}</td>
-                                                        <td>{{ $stokItem->jumlah }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                        </table>
-                                    </td>
-                                </tr>
-                            @endforeach
+                                       
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="permintaan-details" id="details-{{ $firstItem->id }}" style="display: none;">
+                                <td colspan="5">
+                                    <table class="table table-bordered" style="font-size: 13px;">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Divisi</th>
+                                                <th>Kode Produk</th>
+                                                <th>Produk</th>
+                                                <th>Jumlah</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($stokBarangJadiItems as $detail)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $detail->produk->klasifikasi->nama }}</td>
+                                                <td>{{ $detail->produk->kode_produk }}</td>
+                                                <td>{{ $detail->produk->nama_produk }}</td>
+                                                <td>{{ $detail->jumlah }}</td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                     
+                        @endforeach
                         </tbody>
-                        
-                    </table>
-                    
+                    </table> 
                
                     
                     <!-- Modal Loading -->
@@ -197,9 +199,9 @@
             </div>
         </div>
     </section>
-{{-- 
+
     <script>
-        var tanggalAwal = document.getElementById('tanggal_pengiriman');
+        var tanggalAwal = document.getElementById('tanggal_input');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
         if (tanggalAwal.value == "") {
             tanggalAkhir.readOnly = true;
@@ -222,7 +224,9 @@
             form.submit();
         }
 
-    </script> --}}
+    </script>
+
+
 
     {{-- unpost stok  --}}
     <script>
@@ -283,8 +287,7 @@
             });
         });
     </script>
-
-   <script>
+ <script>
     $(document).ready(function() {
     $('tbody tr.dropdown').click(function(e) {
         // Memeriksa apakah yang diklik adalah checkbox
@@ -349,5 +352,4 @@
     });
 });
 </script>
-  
 @endsection
