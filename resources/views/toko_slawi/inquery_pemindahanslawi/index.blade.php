@@ -104,6 +104,8 @@
                                 <th>Kode Pemindahan</th>
                                 <th>Tanggal Pengiriman</th>
                                 <th>Tanggal Terima</th>
+                                <th>Dari</th>
+                                <th>Ke</th>
                                 <th>Status</th>
                               
                             </tr>
@@ -124,6 +126,8 @@
                                         -
                                     @endif
                                 </td>
+                                <td>{{ $firstItem->toko->nama_toko }}</td>
+                                <td>{{ $firstItem->keterangan }}</td>
                                     <td class="text-center">
                                     @if ($firstItem->status == 'posting')
                                         <button type="button" class="btn btn-success btn-sm">
