@@ -116,6 +116,11 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="card-body">
+                                            <div class="form-group text-right">
+                                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </table>
                             </div>
@@ -168,9 +173,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group text-right">
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                        </div>
+                        
                     </form>
                     
              

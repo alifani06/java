@@ -241,6 +241,68 @@ public function kode()
 
 
 
+// public function posting_retur($id)
+// {
+//     $kode = $this->kode();
+
+//     // Ambil data Retur_barangjadi berdasarkan ID
+//     $pengiriman = Retur_barangjadi::where('id', $id)->first();
+
+//     // Pastikan data ditemukan
+//     if (!$pengiriman) {
+//         return response()->json(['error' => 'Data tidak ditemukan.'], 404);
+//     }
+
+//     // Ambil kode_retur dari pengiriman yang diambil
+//     $kodePengiriman = $pengiriman->kode_retur;
+
+//     // Ambil data produk terkait dengan kode_retur
+//     $returBarangjadiItems = Retur_barangjadi::where('kode_retur', $kodePengiriman)->get();
+
+//     // Update status untuk semua Retur_barangjadi dengan kode_retur yang sama
+//     Retur_barangjadi::where('kode_retur', $kodePengiriman)->update([
+//         'status' => 'posting',
+//         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+//     ]);
+
+//     // Update status untuk semua retur_tokoslawi dengan kode_retur yang sama
+//     Retur_tokoslawi::where('kode_retur', $kodePengiriman)->update([
+//         'status' => 'posting',
+//         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+//     ]);
+
+//     // Simpan data ke tabel pemusnahan_barangjadis untuk setiap item
+//     foreach ($returBarangjadiItems as $item) {
+//         Pemusnahan_barangjadi::create([
+//             'kode_pemusnahan' => $kode,
+//             'kode_retur' => $item->kode_retur,
+//             'produk_id' => $item->produk_id,
+//             'toko_id' => $item->toko_id,
+//             'nama_produk' => $item->nama_produk,
+//             'status' => 'unpost',
+//             'jumlah' => $item->jumlah,
+//             'keterangan' => $item->keterangan,
+//             'tanggal_retur' => Carbon::now('Asia/Jakarta'),
+//         ]);
+//     }
+
+//      // Simpan data ke tabel pemusnahan_barangjadis untuk setiap item
+//      foreach ($returBarangjadiItems as $item) {
+//         Stok_retur::create([
+//             'kode_retur' => $item->kode_retur,
+//             'produk_id' => $item->produk_id,
+//             'toko_id' => $item->toko_id,
+//             'nama_produk' => $item->nama_produk,
+//             'status' => 'posting',
+//             'jumlah' => $item->jumlah,
+//             'keterangan' => $item->keterangan,
+//             'tanggal_retur' => Carbon::now('Asia/Jakarta'),
+//         ]);
+//     }
+
+//     return response()->json(['success' => 'Berhasil mengubah status semua produk dan detail terkait dengan kode_retur yang sama serta menyimpan data pemusnahan_barangjadis.']);
+// }
+
 public function posting_retur($id)
 {
     $kode = $this->kode();
@@ -259,17 +321,33 @@ public function posting_retur($id)
     // Ambil data produk terkait dengan kode_retur
     $returBarangjadiItems = Retur_barangjadi::where('kode_retur', $kodePengiriman)->get();
 
-    // Update status untuk semua Retur_barangjadi dengan kode_retur yang sama
+    // Update status untuk semua Retur_barangjadi dan retur_tokoslawi dengan kode_retur yang sama
     Retur_barangjadi::where('kode_retur', $kodePengiriman)->update([
         'status' => 'posting',
         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
     ]);
 
-    // Update status untuk semua retur_tokoslawi dengan kode_retur yang sama
     Retur_tokoslawi::where('kode_retur', $kodePengiriman)->update([
         'status' => 'posting',
         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
     ]);
+
+    // Kurangi stok di stok_tokoslawi untuk setiap item retur hanya jika status sudah posting
+    foreach ($returBarangjadiItems as $item) {
+        $stokItem = Stok_tokoslawi::where('produk_id', $item->produk_id)
+            ->orderBy('jumlah', 'asc')
+            ->first();
+
+        if ($stokItem) {
+            // Pastikan stok mencukupi sebelum mengurangi
+            if ($stokItem->jumlah >= $item->jumlah) {
+                $stokItem->jumlah -= $item->jumlah;
+                $stokItem->save();
+            } else {
+                return response()->json(['error' => 'Stok tidak mencukupi untuk produk ' . $item->nama_produk], 400);
+            }
+        }
+    }
 
     // Simpan data ke tabel pemusnahan_barangjadis untuk setiap item
     foreach ($returBarangjadiItems as $item) {
@@ -286,13 +364,13 @@ public function posting_retur($id)
         ]);
     }
 
-     // Simpan data ke tabel pemusnahan_barangjadis untuk setiap item
-     foreach ($returBarangjadiItems as $item) {
+    // Simpan data ke tabel stok_retur untuk setiap item
+    foreach ($returBarangjadiItems as $item) {
         Stok_retur::create([
             'kode_retur' => $item->kode_retur,
             'produk_id' => $item->produk_id,
-            'toko_id' => $item->toko_id,
             'nama_produk' => $item->nama_produk,
+            'toko_id' => $item->toko_id,
             'status' => 'posting',
             'jumlah' => $item->jumlah,
             'keterangan' => $item->keterangan,
@@ -300,8 +378,9 @@ public function posting_retur($id)
         ]);
     }
 
-    return response()->json(['success' => 'Berhasil mengubah status semua produk dan detail terkait dengan kode_retur yang sama serta menyimpan data pemusnahan_barangjadis.']);
+    return response()->json(['success' => 'Berhasil mengubah status semua produk dan detail terkait dengan kode_retur yang sama serta mengurangi stok di stok_tokoslawi dan menyimpan data pemusnahan_barangjadis.']);
 }
+
 
 
 

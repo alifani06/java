@@ -59,39 +59,6 @@ class Pengiriman_tokoslawiController extends Controller{
         return view('toko_slawi.pengiriman_tokoslawi.index', compact('stokBarangJadi'));
     }
     
-// public function index(Request $request)
-// {
-//         $status = $request->status;
-//         $tanggal_input = $request->tanggal_input;
-//         $tanggal_akhir = $request->tanggal_akhir;
-
-//         $query = Stok_tokoslawi::with('produk.klasifikasi');
-
-//         if ($status) {
-//             $query->where('status', $status);
-//         }
-
-//         if ($tanggal_input && $tanggal_akhir) {
-//             $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
-//             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-//             $query->whereBetween('tanggal_input', [$tanggal_input, $tanggal_akhir]);
-//         } elseif ($tanggal_input) {
-//             $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
-//             $query->where('tanggal_input', '>=', $tanggal_input);
-//         } elseif ($tanggal_akhir) {
-//             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-//             $query->where('tanggal_input', '<=', $tanggal_akhir);
-//         } else {
-//             // Jika tidak ada filter tanggal, tampilkan data hari ini
-//             $query->whereDate('tanggal_input', Carbon::today());
-//         }
-
-//         // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
-//         $stokBarangJadi = $query->get()->groupBy('kode_input');
-
-//         return view('toko_slawi.pengiriman_tokoslawi.index', compact('stokBarangJadi'));
-// }
-
     
     public function show($id)
     {
@@ -113,6 +80,37 @@ class Pengiriman_tokoslawiController extends Controller{
     }
 
 
+// public function posting_pengiriman($id)
+// {
+//     // Ambil data stok_tokoslawi berdasarkan ID
+//     $stok = Stok_tokoslawi::where('id', $id)->first();
+
+//     // Pastikan data ditemukan
+//     if (!$stok) {
+//         return response()->json(['error' => 'Data tidak ditemukan.'], 404);
+//     }
+
+//     // Ambil kode_pengiriman dari stok yang diambil
+//     $kodePengiriman = $stok->kode_pengiriman;
+    
+//     // Ambil pengiriman_barangjadi_id dari stok yang diambil
+//     $pengirimanId = $stok->pengiriman_barangjadi_id;
+
+//     // Update status untuk semua stok_tokoslawi dengan kode_pengiriman yang sama
+//     Stok_tokoslawi::where('kode_pengiriman', $kodePengiriman)->update([
+//         'status' => 'posting',
+//         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+//     ]);
+
+//     // Update status untuk pengiriman_barangjadi berdasarkan pengiriman_barangjadi_id
+//     Pengiriman_barangjadi::where('id', $pengirimanId)->update([
+//         'status' => 'posting',
+//         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+
+//     ]);
+
+//     return response()->json(['success' => 'Berhasil mengubah status di stok_tokoslawi dan pengiriman_barangjadi.']);
+// }
 public function posting_pengiriman($id)
 {
     // Ambil data stok_tokoslawi berdasarkan ID
@@ -123,11 +121,40 @@ public function posting_pengiriman($id)
         return response()->json(['error' => 'Data tidak ditemukan.'], 404);
     }
 
-    // Ambil kode_pengiriman dari stok yang diambil
+    // Ambil kode_pengiriman dan pengiriman_barangjadi_id dari stok yang diambil
     $kodePengiriman = $stok->kode_pengiriman;
-    
-    // Ambil pengiriman_barangjadi_id dari stok yang diambil
     $pengirimanId = $stok->pengiriman_barangjadi_id;
+
+    // Ambil pengiriman terkait dari tabel pengiriman_barangjadi
+    $pengiriman = Pengiriman_barangjadi::find($pengirimanId);
+
+    // Pastikan data pengiriman ditemukan
+    if (!$pengiriman) {
+        return response()->json(['error' => 'Data pengiriman tidak ditemukan.'], 404);
+    }
+
+    // Ambil detail stok barang jadi terkait produk
+    $detailStoks = Detail_stokbarangjadi::where('produk_id', $pengiriman->produk_id)->get();
+    $totalStok = $detailStoks->sum('stok');
+
+    // Cek apakah stok cukup untuk jumlah pengiriman
+    if ($totalStok < $pengiriman->jumlah) {
+        return response()->json(['error' => 'Stok tidak cukup untuk melakukan posting.'], 400);
+    }
+
+    // Kurangi stok berdasarkan jumlah pengiriman
+    $remaining = $pengiriman->jumlah;
+    foreach ($detailStoks as $detailStok) {
+        if ($detailStok->stok >= $remaining) {
+            $detailStok->stok -= $remaining;
+            $detailStok->save();
+            break;
+        } else {
+            $remaining -= $detailStok->stok;
+            $detailStok->stok = 0;
+            $detailStok->save();
+        }
+    }
 
     // Update status untuk semua stok_tokoslawi dengan kode_pengiriman yang sama
     Stok_tokoslawi::where('kode_pengiriman', $kodePengiriman)->update([
@@ -135,14 +162,13 @@ public function posting_pengiriman($id)
         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
     ]);
 
-    // Update status untuk pengiriman_barangjadi berdasarkan pengiriman_barangjadi_id
-    Pengiriman_barangjadi::where('id', $pengirimanId)->update([
+    // Update status untuk pengiriman_barangjadi
+    $pengiriman->update([
         'status' => 'posting',
         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
-
     ]);
 
-    return response()->json(['success' => 'Berhasil mengubah status di stok_tokoslawi dan pengiriman_barangjadi.']);
+    return response()->json(['success' => 'Berhasil mengubah status di stok_tokoslawi dan pengurangan stok di detail_stokbarangjadi.']);
 }
 
 
