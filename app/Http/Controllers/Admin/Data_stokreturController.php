@@ -43,11 +43,24 @@ class Data_stokreturController extends Controller{
 
     public function index()
     {
-        // Ambil data retur_tokoslawi beserta relasi produk dan toko
-        $stok_retur = Stok_retur::with(['produk', 'toko'])->where('status', 'posting')->get();
+        // Ambil data retur_tokoslawi beserta relasi toko
+        $stok_retur = Stok_retur::with('toko') // Tidak perlu dengan 'produk'
+            ->where('status', 'posting')
+            ->get()
+            ->groupBy('produk_id') // Kelompokkan berdasarkan produk_id
+            ->map(function ($group) {
+                // Agregasi jumlah untuk produk dengan ID yang sama
+                return [
+                    'produk_id' => $group->first()->produk_id, // Ambil ID produk yang pertama
+                    'nama_produk' => $group->first()->nama_produk, // Ambil nama_produk dari stok_retur
+                    'toko' => $group->first()->toko, // Ambil data toko yang pertama
+                    'jumlah' => $group->sum('jumlah') // Jumlahkan semua jumlah produk
+                ];
+            });
     
         return view('admin.data_stokretur.index', compact('stok_retur'));
     }
+    
     
 // public function index()
 // {

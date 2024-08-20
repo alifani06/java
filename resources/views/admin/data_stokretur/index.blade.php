@@ -46,8 +46,6 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Cabang</th>
-                                <th>Kode Retur</th>
                                 <th>Nama Produk</th>
                                 <th>Stok</th>
                             </tr>
@@ -56,13 +54,9 @@
                             @foreach ($stok_retur as $produk)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>
-                                        {{ $produk->toko->nama_toko}} {{-- Ganti nama_toko sesuai nama kolom yang ada pada tabel toko --}}
-                                    </td>                                    
-                                    <td>{{ $produk->kode_retur }}</td>
-                                    <td>{{ $produk->nama_produk }}</td>
-                                    <td>{{ $produk->jumlah }}</td>
-                                    
+                                                                  
+                                    <td>{{ $produk['nama_produk'] }}</td>
+                                    <td>{{ $produk['jumlah'] }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

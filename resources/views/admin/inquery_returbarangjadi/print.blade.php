@@ -223,12 +223,12 @@
                 </tr>
                 @endforeach
             </tbody>
-            <tfoot>
+            {{-- <tfoot>
                 <tr class="total-row">
                     <td colspan="5">Total </td>
                     <td>{{ $detail->sum('jumlah') }}</td>
                 </tr>
-            </tfoot>
+            </tfoot> --}}
         </table><br>
     </div>
     <div class="signature-container">
