@@ -194,14 +194,12 @@ public function store(Request $request)
         'jumlah.*' => 'integer|min:1',
         'keterangan' => 'required|array',
         'keterangan.*' => 'in:produk gagal,oper,sampel',
-        'oper' => 'nullable|array', // Memastikan oper dapat diterima sebagai array
     ]);
 
     $kode = $this->kode();
     $produk_ids = $request->input('produk_id');
     $jumlahs = $request->input('jumlah');
     $keterangans = $request->input('keterangan');
-    $opers = $request->input('oper');
 
     foreach ($produk_ids as $index => $produk_id) {
         $jumlah_yang_dibutuhkan = $jumlahs[$index];
@@ -238,7 +236,6 @@ public function store(Request $request)
                     'status' => 'unpost',
                     'jumlah' => $jumlah_yang_dibutuhkan,
                     'keterangan' => $keterangans[$index],
-                    'oper' => $keterangans[$index] === 'oper' ? $opers[$index] : null, // Simpan oper jika keterangan 'oper'
                     'tanggal_input' => Carbon::now('Asia/Jakarta'),
                 ]);
 
@@ -264,7 +261,6 @@ public function store(Request $request)
                     'status' => 'unpost',
                     'jumlah' => $stok->jumlah,
                     'keterangan' => $keterangans[$index],
-                    'oper' => $keterangans[$index] === 'oper' ? $opers[$index] : null, // Simpan oper jika keterangan 'oper'
                     'tanggal_input' => Carbon::now('Asia/Jakarta'),
                 ]);
 

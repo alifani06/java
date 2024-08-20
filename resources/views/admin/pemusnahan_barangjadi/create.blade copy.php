@@ -35,7 +35,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Retur Barang Jadi</h1>
+                    <h1 class="m-0">Pemusnahan Barang Jadi</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -71,55 +71,84 @@
                 
                 <!-- /.card-header -->
                 <div class="card-body">
-                    
-
-                    <form action="{{ url('admin/retur_tokoslawi') }}" method="POST">
+                    <form action="{{ url('admin/pemusnahan_barangjadi') }}" method="POST">
                         @csrf
                         <input type="hidden" name="toko_id" > <!-- Assuming $toko is passed from the controller -->
                         <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <table class="table table-bordered">
-                                    <thead>
-                                    </thead>
+                            <div class="col-md-12 mb-3">                                 
                                     <div class="card">
                                         <div class="card-header">
                                             <h3 class="card-title"><span></span></h3>
                                             <div class="float-right">
-                                                <button  type="button" class="btn btn-primary btn-sm" onclick="addPesanan()">
+                                                <button  type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal()">
                                                     <i class="fas fa-plus"></i>
                                                 </button>
                                             </div>
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
-                                                <div class="col">
-                                                    <table class="table table-bordered table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th style="font-size:14px" class="text-center">No</th>
-                                                                <th style="font-size:14px">Kode Produk</th>
-                                                                <th style="font-size:14px">Nama Produk</th>
-                                                                <th style="font-size:14px">Jumlah</th>
-                                                                <th style="font-size:14px">Keterangan</th>
-                                                                <th style="font-size:14px; text-align:center">Opsi</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="tabel-pembelian">
-                                                        </tbody>
-                                                    </table>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="kode_retur">Kode Retur</label>
+                                                    <input type="text" class="form-control" id="kode_retur" name="kode_retur"
+                                                       readonly value="{{ old('kode_retur') }}">
+                                                </div>
+
+                                            </div>
+                                    
+                                            <div class="row">
+                                                <div class="col mb-3">
+                                                    <label for="tanggal_retur">Tanggal Retur</label>
+                                                    <input type="text" class="form-control" id="tanggal_retur" name="tanggal_retur"
+                                                       readonly value="{{ old('tanggal_retur') }}">
+                                                </div>
+                                               
+                                                <div class="col mb-3">
+                                                    <label for="tanggal_terima">Tanggal Terima</label>
+                                                    <input type="text" class="form-control" id="tanggal_terima" name="tanggal_terima"
+                                                       readonly value="{{ old('tanggal_terima') }}">
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> 
                                     </div>
-                                </table>
+                        
                             </div>
                         </div>
 
+                        <div class="col-md-12 mb-3">                                 
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title"><span></span></h3>
+                                    <div class="float-left">
+                                       <p>Detail Produk</p>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label for="klasifikasi">Divisi</label>
+                                            <input type="text" class="form-control" id="klasifikasi" name="klasifikasi"
+                                               readonly value="{{ old('klasifikasi') }}">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="nama_produk">Nama Produk</label>
+                                            <input type="text" class="form-control" id="nama_produk" name="nama_produk"
+                                               readonly value="{{ old('nama_produk') }}">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="jumlah">Jumlah</label>
+                                            <input type="text" class="form-control" id="jumlah" name="jumlah"
+                                               readonly value="{{ old('jumlah') }}">
+                                        </div>
+                                    </div>   
+                                </div> 
+                            </div>
+                    </div>
+                </div>
                         <div class="modal fade" id="tableProduk" data-backdrop="static">
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h4 class="modal-title">Data Stok Barang Jadi</h4>
+                                        <h4 class="modal-title">Data Retur Barang Jadi</h4>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
@@ -134,17 +163,27 @@
                                                     <th class="text-center">No</th>
                                                     <th>Kode Produk</th>
                                                     <th>Nama Produk</th>
+                                                    <th>Tanggal Retur</th>
+                                                    <th>Tanggal Terima</th>
                                                     <th>Opsi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($produks as $item)
-                                                    <tr class="pilih-btn" data-id="{{ $item->id }}" data-kode="{{ $item->kode_produk }}" data-nama="{{ $item->nama_produk }}">
+                                                @foreach ($Retur as $item)
+                                                    <tr class="pilih-btn" 
+                                                        data-id="{{ $item->id }}" 
+                                                        data-kode="{{ $item->kode_retur }}" 
+                                                        data-nama="{{ $item->nama_produk }}"
+                                                        data-tglretur="{{ $item->tanggal_retur }}"
+                                                        data-tglterima="{{ $item->tanggal_terima }}">
                                                         <td class="text-center">{{ $loop->iteration }}</td>
-                                                        <td>{{ $item->kode_produk }}</td>
+                                                        <td>{{ $item->kode_retur }}</td>
                                                         <td>{{ $item->nama_produk }}</td>
+                                                        <td>{{ $item->tanggal_retur }}</td>
+                                                        <td>{{ $item->tanggal_terima }}</td>
                                                         <td class="text-center">
-                                                            <button type="button" class="btn btn-primary btn-sm pilih-btn" data-id="{{ $item->id }}" data-kode="{{ $item->kode_produk }}" data-nama="{{ $item->nama_produk }}">
+                                                            <button type="button" class="btn btn-primary btn-sm pilih-btn" data-id="{{ $item->id }}" data-kode="{{ $item->kode_retur }}" data-nama="{{ $item->nama_produk }}" data-tglretur="{{ $item->tanggal_retur }}"
+                                                                data-tglterima="{{ $item->tanggal_terima }}">
                                                                 <i class="fas fa-plus"></i>
                                                             </button>
                                                         </td>
@@ -292,51 +331,5 @@ document.addEventListener('DOMContentLoaded', function() {
        hitungSubTotal();
    }
    
-
-function itemPembelian(urutan, key, value = null) {
-    var produk_id = '';
-    var kode_produk = '';
-    var nama_produk = '';
-    var jumlah = '';
-    var keterangan = '';
-
-    if (value !== null) {
-        produk_id = value.produk_id;
-        kode_produk = value.kode_produk;
-        nama_produk = value.nama_produk;
-        jumlah = value.jumlah;
-        keterangan = value.keterangan;
-    }
-
-    var item_pembelian = '<tr id="pembelian-' + urutan + '">';
-    item_pembelian += '<td style="width: 70px; font-size:14px" class="text-center" id="urutan-' + urutan + '">' + urutan + '</td>';
-    item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="produk_id-' + urutan + '" name="produk_id[]" value="' + produk_id + '"></div></td>';
-    item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
-    item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
-    item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
-    item_pembelian += '<td><div class="form-group"><select class="form-control" style="font-size:14px" id="keterangan-' + urutan + '" name="keterangan[]" onchange="checkKeterangan(' + urutan + ')"><option value="produk gagal"' + (keterangan === 'produk gagal' ? ' selected' : '') + '>Produk Gagal</option><option value="sampel"' + (keterangan === 'sampel' ? ' selected' : '') + '>Sampel</option></select></div><div class="form-group" id="tokoSelectContainer-' + urutan + '"></div></td>';
-    item_pembelian += '<td style="width: 100px"><button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(' + urutan + ')"><i class="fas fa-plus"></i></button><button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' + urutan + ')"><i class="fas fa-trash"></i></button></td>';
-    item_pembelian += '</tr>';
-
-    $('#tabel-pembelian').append(item_pembelian);
-
-    // Call checkKeterangan to initialize the toko select if keterangan is already 'oper'
-    if (keterangan === 'oper') {
-        checkKeterangan(urutan, keterangan);
-    }
-}
-
-function checkKeterangan(urutan, selectedKeterangan = null) {
-    var keterangan = selectedKeterangan || $('#keterangan-' + urutan).val();
-    var tokoSelectContainer = $('#tokoSelectContainer-' + urutan);
-
-    if (keterangan === 'oper') {
-        var tokoSelect = '<select class="form-control" style="font-size:14px; margin-top: 10px" id="toko-' + urutan + '" name="toko[]"><option value="banjaran">Banjaran</option><option value="tegal">Tegal</option><option value="slawi">Slawi</option></select>';
-        tokoSelectContainer.html(tokoSelect);
-    } else {
-        tokoSelectContainer.html('');
-    }
-}
-
    </script>
 @endsection

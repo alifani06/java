@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AddpelangganController;
 use App\Http\Controllers\Admin\HargajualController;
 use App\Http\Controllers\Admin\Inquery_pemesananprodukController;
 use App\Http\Controllers\Admin\Inquery_pemindahanbarangjadiController;
+use App\Http\Controllers\Admin\Inquery_pemusnahanbarangjadiController;
 use App\Http\Controllers\Admin\Inquery_penjualanprodukController;
 use App\Http\Controllers\Admin\Inquery_returbarangjadiController;
 use App\Http\Controllers\Admin\Inquery_stokbarangjadiController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\Admin\PelangganController;
 use App\Http\Controllers\Admin\PenjualanprodukController;
 use App\Http\Controllers\Admin\PermintaanprodukController;
 use App\Http\Controllers\Admin\Laporan_permintaanprodukController;
+use App\Http\Controllers\Admin\PemusnahanbarangjadiController;
 use App\Http\Controllers\Admin\Pengiriman_tokoslawiController;
 use App\Http\Controllers\Admin\PengirimanbarangjadiController;
 use App\Http\Controllers\Admin\ProdukController;
@@ -202,6 +204,16 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('inquery_returbarangjadi/unpost_retur/{id}', [\App\Http\Controllers\Admin\Inquery_returbarangjadiController::class, 'unpost_retur']);
     Route::get('inquery_returbarangjadi/posting_retur/{id}', [\App\Http\Controllers\Admin\Inquery_returbarangjadiController::class, 'posting_retur']);
     Route::get('/inquery_returbarangjadi/{id}/print', [Inquery_returbarangjadiController::class, 'print'])->name('inquery_returbarangjadi.print');
+
+    Route::resource('pemusnahan_barangjadi', \App\Http\Controllers\Admin\PemusnahanbarangjadiController::class);
+    Route::get('/getReturData', [PemusnahanbarangjadiController::class, 'getReturData'])->name('getReturData');
+    Route::get('admin/getProductsByKodeRetur/{kodeRetur}', [PemusnahanbarangjadiController::class, 'getProductsByKodeRetur']);
+    Route::get('admin/get-products-by-kode-retru/{kodeRetur}', [PemusnahanbarangjadiController::class, 'getProductsByKodeRetur'])->name('getProductsByKodeRetur');
+
+    Route::resource('inquery_pemusnahanbarangjadi', \App\Http\Controllers\Admin\Inquery_pemusnahanbarangjadiController::class);
+    Route::get('inquery_pemusnahanbarangjadi/unpost_pemusnahan/{id}', [\App\Http\Controllers\Admin\Inquery_pemusnahanbarangjadiController::class, 'unpost_pemusnahan']);
+    Route::get('inquery_pemusnahanbarangjadi/posting_pemusnahan/{id}', [\App\Http\Controllers\Admin\Inquery_pemusnahanbarangjadiController::class, 'posting_pemusnahan']);
+    Route::get('/inquery_pemusnahanbarangjadi/{id}/print', [Inquery_pemusnahanbarangjadiController::class, 'print'])->name('inquery_pemusnahanbarangjadi.print');
 
     Route::resource('estimasi_produksi', \App\Http\Controllers\Admin\EstimasiproduksiController::class);
 

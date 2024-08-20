@@ -221,6 +221,7 @@
     request()->is('admin/permintaan_produk*')|| 
     request()->is('admin/pengiriman_barangjadi*')|| 
     request()->is('admin/return_barangjadi*')|| 
+    request()->is('admin/pemusnahan_barangjadi*')|| 
     request()->is('admin/estimasi_produksi*') 
     // request()->is('admin/input*')
   
@@ -234,6 +235,7 @@
         request()->is('admin/permintaan_produk*')||  
         request()->is('admin/pengiriman_barangjadi*')||  
         request()->is('admin/retur_barangjadi*')||  
+        request()->is('adminpemusnahan_barangjadi*')||  
         request()->is('admin/estimasi_produksi')  
         // request()->is('admin/input*')
       
@@ -317,6 +319,16 @@
 
         {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
         <li class="nav-item">
+            <a href="{{ url('admin/pemusnahan_barangjadi') }}"
+                class="nav-link {{ request()->is('admin/pemusnahan_barangjadi*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Pemusnahan Barang Jadi</p>
+            </a>
+        </li>
+        {{-- @endif --}}
+
+        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        <li class="nav-item">
             <a href="{{ url('admin/estimasi_produksi') }}"
                 class="nav-link {{ request()->is('admin/estimasi_produksi*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
@@ -340,6 +352,7 @@
     request()->is('admin/inquery_stokbarangjadi*')|| 
     request()->is('admin/inquery_pengirimanbarangjadi*')|| 
     request()->is('admin/inquery_pemindahanbarang*')|| 
+    request()->is('admin/inquery_pemusnahanbarangjadi*')|| 
     request()->is('admin/inquery_estimasiproduksi')  
     // request()->is('admin/input*')
   
@@ -353,6 +366,7 @@
         request()->is('admin/inquery_stokbarangjadi*')||
         request()->is('admin/inquery_pengirimanbarangjadi*')||
         request()->is('admin/inquery_pemindahanbarang*')||
+        request()->is('admin/inquery_pemusnahanbarangjadi*')||
         request()->is('admin/inquery_estimasiproduksi*') 
         // request()->is('admin/input*')
       
@@ -433,6 +447,14 @@
                 class="nav-link {{ request()->is('admin/inquery_returbarangjadi*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Inquery Retur Barang</p>
+            </a>
+        </li>
+        {{-- @endif --}}
+          <li class="nav-item">
+            <a href="{{ url('admin/inquery_pemusnahanbarangjadi') }}"
+                class="nav-link {{ request()->is('admin/inquery_pemusnahanbarangjadi*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Inquery Pemusnahan Barang</p>
             </a>
         </li>
         {{-- @endif --}}

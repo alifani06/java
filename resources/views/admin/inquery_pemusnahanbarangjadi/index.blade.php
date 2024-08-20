@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Inquery Retur Barang Jadi</h1>
+                    <h1 class="m-0">Inquery Pemusnahan Barang Jadi</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -148,17 +148,17 @@
                                                 <a class="dropdown-item posting-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Posting</a>
                                          
-                                                <a class="dropdown-item"
-                                                    href="{{ url('admin/inquery_returbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
+                                                {{-- <a class="dropdown-item"
+                                                    href="{{ url('admin/inquery_pemusnahanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
                                             
                                                 <a class="dropdown-item"
-                                                href="{{ url('/admin/inquery_returbarangjadi/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/admin/inquery_pemusnahanbarangjadi/' . $firstItem->id ) }}">Show</a> --}}
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 <a class="dropdown-item unpost-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Unpost</a>
                                                 <a class="dropdown-item"
-                                                href="{{ url('/admin/inquery_returbarangjadi/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/admin/inquery_pemusnahanbarangjadi/' . $firstItem->id ) }}">Show</a>
                                         @endif
                                        
                                     </div>
@@ -234,7 +234,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('admin/inquery_returbarangjadi') }}";
+            form.action = "{{ url('admin/inquery_pemusnahanbarangjadi') }}";
             form.submit();
         }
 
@@ -252,7 +252,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('admin/inquery_returbarangjadi/unpost_retur/') }}/" + memoId,
+                    url: "{{ url('admin/inquery_pemusnahanbarangjadi/unpost_pemusnahan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -282,7 +282,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('admin/inquery_returbarangjadi/posting_retur/') }}/" + memoId,
+                    url: "{{ url('admin/inquery_pemusnahanbarangjadi/posting_pemusnahan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

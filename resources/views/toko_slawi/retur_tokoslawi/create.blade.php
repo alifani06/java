@@ -314,7 +314,7 @@ function itemPembelian(urutan, key, value = null) {
     item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
     item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
     item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
-    item_pembelian += '<td><div class="form-group"><select class="form-control" style="font-size:14px" id="keterangan-' + urutan + '" name="keterangan[]" onchange="checkKeterangan(' + urutan + ')"><option value="produk gagal"' + (keterangan === 'produk gagal' ? ' selected' : '') + '>Produk Gagal</option><option value="oper"' + (keterangan === 'oper' ? ' selected' : '') + '>Oper</option><option value="sampel"' + (keterangan === 'sampel' ? ' selected' : '') + '>Sampel</option></select></div><div class="form-group" id="tokoSelectContainer-' + urutan + '"></div></td>';
+    item_pembelian += '<td><div class="form-group"><select class="form-control" style="font-size:14px" id="keterangan-' + urutan + '" name="keterangan[]" onchange="checkKeterangan(' + urutan + ')"><option value="produk gagal"' + (keterangan === 'produk gagal' ? ' selected' : '') + '>Produk Gagal</option><option value="sampel"' + (keterangan === 'sampel' ? ' selected' : '') + '>Sampel</option></select></div><div class="form-group" id="tokoSelectContainer-' + urutan + '"></div></td>';
     item_pembelian += '<td style="width: 100px"><button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(' + urutan + ')"><i class="fas fa-plus"></i></button><button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' + urutan + ')"><i class="fas fa-trash"></i></button></td>';
     item_pembelian += '</tr>';
 
@@ -326,17 +326,6 @@ function itemPembelian(urutan, key, value = null) {
     }
 }
 
-function checkKeterangan(urutan, selectedKeterangan = null) {
-    var keterangan = selectedKeterangan || $('#keterangan-' + urutan).val();
-    var tokoSelectContainer = $('#tokoSelectContainer-' + urutan);
-
-    if (keterangan === 'oper') {
-        var tokoSelect = '<select class="form-control" style="font-size:14px; margin-top: 10px" id="toko-' + urutan + '" name="oper[]"><option value="banjaran">Banjaran</option><option value="tegal">Tegal</option><option value="slawi">Slawi</option></select>';
-        tokoSelectContainer.html(tokoSelect);
-    } else {
-        tokoSelectContainer.html('');
-    }
-}
 
 
 
