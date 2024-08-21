@@ -181,7 +181,7 @@
                 <a href="{{ url('toko_banjaran/retur_tokobanjaran') }}"
                     class="nav-link {{ request()->is('toko_banjaran/retur_tokobanjaran*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                    <p style="font-size: 14px;">Retur Toko Slawi</p>
+                    <p style="font-size: 14px;">Retur Toko Banjaran</p>
                 </a>
             </li>
             {{-- @endif --}}
@@ -267,7 +267,7 @@
             <a href="{{ url('toko_banjaran/pengiriman_tokobanjaran') }}"
                 class="nav-link {{ request()->is('toko_banjaran/pengiriman_tokobanjaran*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Inquery Pengiriman Slawi</p>
+                <p style="font-size: 14px;">Inquery Pengiriman Banjaran</p>
             </a>
         </li>
         {{-- @endif --}}
@@ -276,7 +276,7 @@
             <a href="{{ url('toko_banjaran/inquery_returbanjaran') }}"
                 class="nav-link {{ request()->is('toko_banjaran/inquery_returbanjaran*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Inquery Retur Slawi</p>
+                <p style="font-size: 14px;">Inquery Retur Banjaran</p>
             </a>
         </li>
         {{-- @endif --}}

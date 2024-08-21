@@ -231,7 +231,17 @@
                                                 <i class="fas fa-times"></i>
                                             </button>
                                         @endif
-                    
+
+                                        @if($firstItem->toko_id == 3)
+                                            <button type="button" class="btn btn-info btn-sm">
+                                                <i class="fas fa-arrow-right"></i>
+                                            </button>
+                                        @else
+                                            <button type="button" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-arrow-left"></i>
+                                            </button>
+                                        @endif
+
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($firstItem->status == 'unpost' && $firstItem->toko_id != 3)
                                                 <a class="dropdown-item posting-btn" data-memo-id="{{ $firstItem->id }}">Posting</a>

@@ -247,7 +247,12 @@ public function posting_pemindahan($id)
                         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
                     ]);
                 
-                // Tidak mengurangi stok_tokoslawi
+                    $stok_slawi = Stok_tokoslawi::where('produk_id', $pemindahan->produk_id)
+                    ->where('jumlah', '>', 0)
+                    ->orderBy('jumlah', 'asc')
+                    ->get();
+
+                $this->kurangiStok($stok_slawi, $pemindahan->jumlah);
                 break;
 
             // Tambahkan case tambahan jika ada toko lain yang perlu diupdate
@@ -282,7 +287,7 @@ private function kurangiStok($stok_items, $jumlah_yang_dibutuhkan)
 public function show($id)
 {
     // Ambil kode_retur dari pengiriman_barangjadi berdasarkan id
-    $detailStokBarangJadi = Pemindahan_tokoslawi::where('id', $id)->value('kode_pemindahan');
+    $detailStokBarangJadi = Pemindahan_tokobanjaran::where('id', $id)->value('kode_pemindahan');
     
     // Jika kode_pemindahan tidak ditemukan, tampilkan pesan error
     if (!$detailStokBarangJadi) {
@@ -290,7 +295,7 @@ public function show($id)
     }
     
     // Ambil semua data dengan kode_pemindahan yang sama
-    $pengirimanBarangJadi = Pemindahan_tokoslawi::with(['produk.subklasifikasi', 'toko'])->where('kode_pemindahan', $detailStokBarangJadi)->get();
+    $pengirimanBarangJadi = Pemindahan_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_pemindahan', $detailStokBarangJadi)->get();
     
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
@@ -300,7 +305,7 @@ public function show($id)
 
 public function print($id)
     {
-        $detailStokBarangJadi = Pemindahan_tokoslawi::where('id', $id)->value('kode_pemindahan');
+        $detailStokBarangJadi = Pemindahan_tokobanjaran::where('id', $id)->value('kode_pemindahan');
     
         // Jika kode_pemindahan tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -308,7 +313,7 @@ public function print($id)
         }
         
         // Ambil semua data dengan kode_pemindahan yang sama
-        $pengirimanBarangJadi = Pemindahan_tokoslawi::with(['produk.subklasifikasi', 'toko'])->where('kode_pemindahan', $detailStokBarangJadi)->get();
+        $pengirimanBarangJadi = Pemindahan_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_pemindahan', $detailStokBarangJadi)->get();
         
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
