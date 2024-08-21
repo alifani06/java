@@ -85,6 +85,14 @@ class User extends Authenticatable
         return false;
     }
 
+    public function isTokobanjaran()
+    {
+        if ($this->level == 'toko_banjaran') {
+            return true;
+        }
+        return false;
+    }
+
     public function karyawan()
     {
         return $this->belongsTo(Karyawan::class);

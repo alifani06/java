@@ -128,6 +128,9 @@
                         @if (auth()->user()->isTokoslawi())
                             @include('layouts.menu.toko_slawi')
                         @endif
+                        @if (auth()->user()->isTokobanjaran())
+                            @include('layouts.menu.toko_banjaran')
+                        @endif
 
                     </ul>
                 </nav>

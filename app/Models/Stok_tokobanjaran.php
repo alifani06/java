@@ -19,7 +19,11 @@ class Stok_tokobanjaran extends Model
     protected $fillable = [
         'produk_id',
         'jumlah',
+        'pengiriman_barangjadi_id',
         'tanggal_input',
+        'status',
+        'kode_pengiriman',
+        'kode_terima',
      
     ];
 
@@ -83,5 +87,10 @@ class Stok_tokobanjaran extends Model
       public function stok_barangjadi()
       {
           return $this->belongsTo(Stok_barangjadi::class, 'stok_barangjadi_id');
+      }
+
+      public function pengiriman_barangjadi()
+      {
+          return $this->belongsTo(Pengiriman_barangjadi::class, 'pengiriman_barangjadi_id');
       }
 }

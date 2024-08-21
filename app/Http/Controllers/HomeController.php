@@ -17,6 +17,8 @@ class HomeController extends Controller
             return redirect('admin');
         } elseif (auth()->user()->isTokoslawi()) {
             return redirect('toko_slawi');
+        }elseif (auth()->user()->isTokobanjaran()) {
+            return redirect('toko_banjaran');
         }
     }
 }
