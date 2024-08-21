@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Pelanggan;
 use App\Models\Hargajual;
 use App\Models\Tokoslawi;
+use App\Models\Tokobanjaran;
 use App\Models\Tokobenjaran;
 use App\Models\Tokotegal;
 use App\Models\Tokopemalang;
@@ -35,68 +36,28 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class PemesananprodukController extends Controller
 {
- 
-    // public function index(Request $request)
-    // {
-    //     $today = Carbon::today();
-    
-    //     $inquery = Pemesananproduk::with('dppemesanan') // Memuat relasi dppemesanan
-    //         ->whereDate('created_at', $today)
-    //         ->orWhere(function ($query) use ($today) {
-    //             $query->where('status', 'unpost')
-    //                 ->whereDate('created_at', '<', $today);
-    //         })
-    //         ->orderBy('created_at', 'desc')
-    //         ->get();
-    
-    //     // Kirim data ke view
-    //     return view('toko_banjaran.pemesanan_produk.index', compact('inquery'));
-    // }
     
     public function index(Request $request)
-{
-    $today = Carbon::today();
+    {
+        $today = Carbon::today();
+    
+        $inquery = Pemesananproduk::with('dppemesanan') // Memuat relasi dppemesanan
+            ->where('toko_id', 1) // Hanya tampilkan data dengan toko_id = 1
+            ->where(function ($query) use ($today) {
+                $query->whereDate('created_at', $today)
+                      ->orWhere(function ($query) use ($today) {
+                          $query->where('status', 'unpost')
+                                ->whereDate('created_at', '<', $today);
+                      });
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+    
+        // Kirim data ke view
+        return view('toko_banjaran.pemesanan_produk.index', compact('inquery'));
+    }
+    
 
-    $inquery = Pemesananproduk::with(['dppemesanan', 'toko']) // Memuat relasi dppemesanan dan toko
-        ->whereDate('created_at', $today)
-        ->orWhere(function ($query) use ($today) {
-            $query->where('status', 'unpost')
-                ->whereDate('created_at', '<', $today);
-        })
-        ->orderBy('created_at', 'desc')
-        ->get();
-
-    // Kirim data ke view
-    return view('toko_banjaran.pemesanan_produk.index', compact('inquery'));
-}
-
-    // {
-    //     $status = $request->status;
-    //     $tanggal_awal = $request->tanggal_awal;
-    //     $tanggal_akhir = $request->tanggal_akhir;
-    
-    //     $inquery = Pemesananproduk::query();
-    
-    //     if ($status) {
-    //         $inquery->where('status', $status);
-    //     }
-    
-    //     if ($tanggal_awal && $tanggal_akhir) {
-    //         $inquery->whereBetween('tanggal_pemesanan', [$tanggal_awal, $tanggal_akhir]);
-    //     } elseif ($tanggal_awal) {
-    //         $inquery->where('tanggal_pemesanan', '>=', $tanggal_awal);
-    //     } elseif ($tanggal_akhir) {
-    //         $inquery->where('tanggal_pemesanan', '<=', $tanggal_akhir);
-    //     } else {
-    //         // Jika tidak ada filter tanggal, gunakan tanggal hari ini
-    //         $inquery->whereDate('tanggal_pemesanan', Carbon::today());
-    //     }
-    
-    //     $inquery->orderBy('id', 'DESC');
-    //     $inquery = $inquery->get();
-    
-    //     return view('toko_banjaran.pemesanan_produk.index', compact('inquery'));
-    // }
     
 
     public function pelanggan($id)
@@ -114,14 +75,17 @@ class PemesananprodukController extends Controller
         $pelanggans = Pelanggan::all();
         $details = Detailbarangjadi::all();
         $tokoslawis = Tokoslawi::all();
+        $tokobanjaran = Tokobanjaran::all();
         $tokos = Toko::all();
         $metodes = Metodepembayaran::all();
 
-        $produks = Produk::with('tokoslawi')->get();
+        $produks = Produk::with('tokobanjaran')->get();
 
         $kategoriPelanggan = 'member';
     
-        return view('toko_banjaran.pemesanan_produk.create', compact('barangs','metodes', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan'));
+        return view('toko_banjaran.pemesanan_produk.create', compact('barangs','metodes', 
+        'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 
+        'kategoriPelanggan','tokobanjaran',));
     }
     
     public function getCustomerByKode($kode)
@@ -232,6 +196,9 @@ class PemesananprodukController extends Controller
         }
 
         $kode = $this->kode();
+        $format = 'd/m/Y H:i';
+        $tanggal_kirim = Carbon::createFromFormat($format, $request->tanggal_kirim)->format('Y-m-d H:i:s');
+        
         // Buat pemesanan baru
         $cetakpdf = Pemesananproduk::create([
             'nama_pelanggan' => $request->nama_pelanggan,
@@ -243,8 +210,8 @@ class PemesananprodukController extends Controller
             'nama_penerima' => $request->nama_penerima,
             'telp_penerima' => $request->telp_penerima,
             'alamat_penerima' => $request->alamat_penerima,
-            'tanggal_kirim' => $request->tanggal_kirim,
-            'toko_id' => '3',
+            'tanggal_kirim' => $tanggal_kirim,
+            'toko_id' => '1',
             'metode_id' => $request->metode_id, 
             'sub_totalasli' => $request->sub_totalasli,
             'total_fee' => $request->total_fee, 
@@ -368,21 +335,6 @@ class PemesananprodukController extends Controller
         return view('toko_banjaran.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans', 'tokos', 'dp'));
     }
 
-
-        // public function edit($id)
-        // {
-        //     $pelanggans = Pelanggan::all();
-        //     $tokoslawis = Tokoslawi::all();
-        //     $tokos = Toko::all();
-        
-        //     $produks = Produk::with('tokoslawi')->get();
-        //     $inquery = Pemesananproduk::with('detailpemesananproduk')->where('id', $id)->first();
-        //     $selectedTokoId = $inquery->toko_id; // ID toko yang dipilih
-        //     $metodes = Metodepembayaran::all();
-
-
-        //     return view('toko_banjaran.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId','metodes'));
-        // }
         public function edit($id)
         {
             // Mengambil semua data yang diperlukan

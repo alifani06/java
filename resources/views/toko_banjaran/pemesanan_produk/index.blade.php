@@ -57,7 +57,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="float-right">
-                        <a href="{{ url('toko_slawi/pemesanan_produk/create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url('toko_banjaran/pemesanan_produk/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> 
                         </a>
                     </div>

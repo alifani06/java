@@ -71,7 +71,7 @@
                     @endforeach
                 </div>
             @endif
-            <form action="{{ url('toko_slawi/pemesanan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form action="{{ url('toko_banjaran/pemesanan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 {{-- detail pelanggan --}}
                 <div class="card">
@@ -272,31 +272,31 @@
                                     <tbody>
                                         @foreach ($produks as $item)
                                             @php
-                                                $tokoslawi = $item->tokoslawi->first();
+                                                $tokobanjaran = $item->tokobanjaran->first();
                                             @endphp
                                             <tr class="pilih-btn"
                                                 data-id="{{ $item->id }}"
                                                 data-kode="{{ $item->kode_produk }}"
                                                 data-catatan="{{ $item->catatanproduk }}"
                                                 data-nama="{{ $item->nama_produk }}"
-                                                data-member="{{ $tokoslawi ? $tokoslawi->member_harga_slw : '' }}"
-                                                data-diskonmember="{{ $tokoslawi ? $tokoslawi->member_diskon_slw : '' }}"
-                                                data-nonmember="{{ $tokoslawi ? $tokoslawi->non_harga_slw : '' }}"
-                                                data-diskonnonmember="{{ $tokoslawi ? $tokoslawi->non_diskon_slw : '' }}">
+                                                data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
+                                                data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
+                                                data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
+                                                data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td>{{ $item->kode_produk }}</td>
                                                 <td>{{ $item->nama_produk }}</td>
                                                 <td>
-                                                    <span class="member_harga_slw">{{ $tokoslawi ? $tokoslawi->member_harga_slw : '' }}</span>
+                                                    <span class="member_harga_slw">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="member_diskon_slw">{{ $tokoslawi ? $tokoslawi->member_diskon_slw : '' }}</span>
+                                                    <span class="member_diskon_slw">{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="non_harga_slw">{{ $tokoslawi ? $tokoslawi->non_harga_slw : '' }}</span>
+                                                    <span class="non_harga_slw">{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="non_diskon_slw">{{ $tokoslawi ? $tokoslawi->non_diskon_slw : '' }}</span>
+                                                    <span class="non_diskon_slw">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}</span>
                                                 </td>
                                                 <td class="text-center">
                                                     <button type="button" class="btn btn-primary btn-sm pilih-btn"
@@ -304,10 +304,10 @@
                                                         data-kode="{{ $item->kode_produk }}"
                                                         data-catatan="{{ $item->catatanproduk }}"
                                                         data-nama="{{ $item->nama_produk }}"
-                                                        data-member="{{ $tokoslawi ? $tokoslawi->member_harga_slw : '' }}"
-                                                        data-diskonmember="{{ $tokoslawi ? $tokoslawi->member_diskon_slw : '' }}"
-                                                        data-nonmember="{{ $tokoslawi ? $tokoslawi->non_harga_slw : '' }}"
-                                                        data-diskonnonmember="{{ $tokoslawi ? $tokoslawi->non_diskon_slw : '' }}">
+                                                        data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
+                                                        data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
+                                                        data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
+                                                        data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
                                                         <i class="fas fa-plus"></i> 
                                                     </button>
                                                 </td>
@@ -443,93 +443,6 @@
             });
         });
     </script>
-    {{-- <script>
-        function getData1() {
-            var metodeId = document.getElementById('nama_metode').value;
-            var fee = document.getElementById('fee');
-            var keterangan = document.getElementById('keterangan');
-            var paymentFields = document.getElementById('payment-fields');
-            var paymentRow = document.getElementById('payment-row');
-            var changeRow = document.getElementById('change-row');
-            
-            // Check if the selected payment method is "Tunai"
-            if (metodeId && document.querySelector('#nama_metode option:checked').text === 'Tunai') {
-                paymentFields.style.display = 'none';
-                paymentRow.style.display = 'block';
-                changeRow.style.display = 'block';
-            } else if (metodeId) {
-                $.ajax({
-                    url: "{{ url('toko_slawi/metodebayar/metode') }}" + "/" + metodeId,
-                    type: "GET",
-                    dataType: "json",
-                    success: function(response) {
-                        console.log('Respons dari server:', response);
-    
-                        fee.value = '';
-                        keterangan.value = '';
-                        paymentFields.style.display = 'block';
-    
-                        if (response && response.fee) {
-                            fee.value = response.fee;
-                        }
-                        if (response && response.keterangan) {
-                            keterangan.value = response.keterangan;
-                        }
-    
-                        // Hide payment and change fields for all payment methods
-                        paymentRow.style.display = 'none';
-                        changeRow.style.display = 'none';
-                        
-                        // Update calculations whenever data is fetched
-                        updateCalculations();
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Terjadi kesalahan dalam permintaan AJAX:', error);
-                    }
-                });
-            } else {
-                paymentFields.style.display = 'none';
-                paymentRow.style.display = 'block';
-                changeRow.style.display = 'block';
-                // Reset calculations if no method is selected
-                updateCalculations();
-            }
-        }
-    
-        function updateCalculations() {
-            var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
-            var fee = parseFloat(document.getElementById('fee').value.replace('%', '').trim()) || 0;
-            var totalFee = (subTotal * fee / 100) || 0;
-            var finalTotal = subTotal + totalFee;
-    
-            // Format the values without .00
-            function formatCurrency(value) {
-                var formattedValue = value.toFixed(2).replace(/\.00$/, '');
-                return 'Rp' + formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-            }
-    
-            // Update total fee and final sub total fields
-            document.getElementById('total_fee').value = formatCurrency(totalFee);
-            document.getElementById('sub_total').value = formatCurrency(finalTotal);
-        }
-    
-        // Add event listeners for initialization
-        document.getElementById('nama_metode').addEventListener('change', getData1);
-        document.getElementById('sub_total').addEventListener('input', updateCalculations);
-    
-        // Initialize with "Tunai" as default method
-        document.addEventListener('DOMContentLoaded', function() {
-            var defaultMethod = 'Tunai';
-            var options = document.getElementById('nama_metode').options;
-            for (var i = 0; i < options.length; i++) {
-                if (options[i].text === defaultMethod) {
-                    options[i].selected = true;
-                    break;
-                }
-            }
-            getData1();
-        });
-    </script> --}}
     
     <script>
         function getData1() {

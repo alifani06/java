@@ -51,9 +51,9 @@ class Produk extends Model
         return $this->hasMany(Tokoslawi::class);
     }
 
-    public function tokobenjaran()
+    public function tokobanjaran()
     {
-        return $this->hasMany(Tokobenjaran::class);
+        return $this->hasMany(Tokobanjaran::class);
     }
 
     public function tokotegal()
