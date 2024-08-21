@@ -204,8 +204,8 @@
     request()->is('toko_banjaran/inquery_perubahanharga*')|| 
     request()->is('toko_banjaran/inquery_permintaanproduk*')|| 
     request()->is('toko_banjaran/inquery_stokbarangjadi*')|| 
-    request()->is('toko_banjaran/pengiriman_tokoslawi*')|| 
-    request()->is('toko_banjaran/inquery_pemindahanslawi*')|| 
+    request()->is('toko_banjaran/pengiriman_tokobanjaran*')|| 
+    request()->is('toko_banjaran/inquery_pemindahanbanjaran*')|| 
     request()->is('toko_banjaran/inquery_pengirimanbarangjadi*') 
     // request()->is('toko_banjaran/input*')
   
@@ -217,8 +217,8 @@
         request()->is('toko_banjaran/inquery_perubahanharga*')||
         request()->is('toko_banjaran/inquery_permintaanproduk*')||
         request()->is('toko_banjaran/inquery_stokbarangjadi*')||
-        request()->is('toko_banjaran/pengiriman_tokoslawi*')||
-        request()->is('toko_banjaran/inquery_pemindahanslawi*')||
+        request()->is('toko_banjaran/pengiriman_tokobanjaran*')||
+        request()->is('toko_banjaran/inquery_pemindahanbanjaran*')||
         request()->is('toko_banjaran/inquerypengirimanbarangjadi*')
         // request()->is('toko_banjaran/input*')
       
@@ -264,8 +264,8 @@
 
         {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
         <li class="nav-item">
-            <a href="{{ url('toko_banjaran/pengiriman_tokoslawi') }}"
-                class="nav-link {{ request()->is('toko_banjaran/pengiriman_tokoslawi*') ? 'active' : '' }}">
+            <a href="{{ url('toko_banjaran/pengiriman_tokobanjaran') }}"
+                class="nav-link {{ request()->is('toko_banjaran/pengiriman_tokobanjaran*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Inquery Pengiriman Slawi</p>
             </a>
@@ -273,8 +273,8 @@
         {{-- @endif --}}
         {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
         <li class="nav-item">
-            <a href="{{ url('toko_banjaran/inquery_returslawi') }}"
-                class="nav-link {{ request()->is('toko_banjaran/inquery_returslawi*') ? 'active' : '' }}">
+            <a href="{{ url('toko_banjaran/inquery_returbanjaran') }}"
+                class="nav-link {{ request()->is('toko_banjaran/inquery_returbanjaran*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Inquery Retur Slawi</p>
             </a>
@@ -284,8 +284,8 @@
 
           {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
           <li class="nav-item">
-            <a href="{{ url('toko_banjaran/inquery_pemindahanslawi') }}"
-                class="nav-link {{ request()->is('toko_banjaran/inquery_pemindahanslawi*') ? 'active' : '' }}">
+            <a href="{{ url('toko_banjaran/inquery_pemindahanbanjaran') }}"
+                class="nav-link {{ request()->is('toko_banjaran/inquery_pemindahanbanjaran*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Inquery Pemindahan Produk</p>
             </a>
@@ -301,8 +301,8 @@
     request()->is('toko_banjaran/laporan_perubahanharga*')||
     request()->is('toko_banjaran/laporan_permintaanproduk*')||
     request()->is('toko_banjaran/laporan_pengirimanproduk*')||
-    request()->is('toko_banjaran/laporan_returslawi*')||
-    request()->is('toko_banjaran/laporan_pemindahanslawi*')||
+    request()->is('toko_banjaran/laporan_returbanjaran*')||
+    request()->is('toko_banjaran/laporan_pemindahanbanjaran*')||
     request()->is('toko_banjaran/laporan_stokbarangjadi*')||
     request()->is('toko_banjaran/laporan_pengirimanbarangjadi*')
     // request()->is('toko_banjaran/input*')
@@ -315,8 +315,8 @@
         request()->is('toko_banjaran/laporan_perubahanharga*') ||
         request()->is('toko_banjaran/laporan_permintaanproduk*')|| 
         request()->is('toko_banjaran/laporan_pengirimanproduk*')|| 
-        request()->is('toko_banjaran/laporan_returslawi*')|| 
-        request()->is('toko_banjaran/laporan_pemindahanslawi*')|| 
+        request()->is('toko_banjaran/laporan_returbanjaran*')|| 
+        request()->is('toko_banjaran/laporan_pemindahanbanjaran*')|| 
         request()->is('toko_banjaran/laporan_stokbarangjadi*')|| 
         request()->is('toko_banjaran/laporan_spengirimanarangjadi*') 
         // request()->is('toko_banjaran/input*')
@@ -373,8 +373,8 @@
 
               {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
               <li class="nav-item">
-                <a href="{{ url('toko_banjaran/laporan_returslawi') }}"
-                    class="nav-link {{ request()->is('toko_banjaran/laporan_returslawi*') ? 'active' : '' }}">
+                <a href="{{ url('toko_banjaran/laporan_returbanjaran') }}"
+                    class="nav-link {{ request()->is('toko_banjaran/laporan_returbanjaran*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                     <p style="font-size: 14px;">Laporan Retur Produk</p>
                 </a>
@@ -383,8 +383,8 @@
 
             {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
               <li class="nav-item">
-                <a href="{{ url('toko_banjaran/laporan_pemindahanslawi') }}"
-                    class="nav-link {{ request()->is('toko_banjaran/laporan_pemindahanslawi*') ? 'active' : '' }}">
+                <a href="{{ url('toko_banjaran/laporan_pemindahanbanjaran') }}"
+                    class="nav-link {{ request()->is('toko_banjaran/laporan_pemindahanbanjaran*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                     <p style="font-size: 13px;">Laporan Pemindahan Produk</p>
                 </a>

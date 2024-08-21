@@ -25,6 +25,7 @@ use App\Models\Permintaanprodukdetail;
 use App\Models\Klasifikasi;
 use App\Models\Pemesananproduk;
 use App\Models\Stok_barangjadi;
+use App\Models\Stok_tokobanjaran;
 use App\Models\Detail_stokbarangjadi;
 use App\Models\Penjualanproduk;
 use App\Models\Toko;
@@ -65,7 +66,7 @@ class Pengiriman_tokobanjaranController extends Controller{
         $tanggal_akhir = $request->tanggal_akhir;
     
         // Mengambil data stok_tokoslawi dengan relasi pengiriman_barangjadi dan produk
-        $query = Stok_tokoslawi::with(['pengiriman_barangjadi.produk.klasifikasi']);
+        $query = Stok_tokobanjaran::with(['pengiriman_barangjadi.produk.klasifikasi']);
     
         // Filter berdasarkan status
         if ($status) {
@@ -97,7 +98,7 @@ class Pengiriman_tokobanjaranController extends Controller{
                 return $item->pengiriman_barangjadi ? $item->pengiriman_barangjadi->kode_pengiriman : 'undefined';
             });
     
-        return view('toko_banjaran.pengiriman_tokoslawi.index', compact('stokBarangJadi'));
+        return view('toko_banjaran.pengiriman_tokobanjaran.index', compact('stokBarangJadi'));
     }
     
     
@@ -117,7 +118,7 @@ class Pengiriman_tokobanjaranController extends Controller{
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        return view('toko_banjaran.pengiriman_tokoslawi.show', compact('pengirimanBarangJadi', 'firstItem'));
+        return view('toko_banjaran.pengiriman_tokobanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
     }
 
 
@@ -155,7 +156,7 @@ class Pengiriman_tokobanjaranController extends Controller{
 public function posting_pengiriman($id)
 {
     // Ambil data stok_tokoslawi berdasarkan ID
-    $stok = Stok_tokoslawi::where('id', $id)->first();
+    $stok = Stok_tokobanjaran::where('id', $id)->first();
 
     // Pastikan data ditemukan
     if (!$stok) {
@@ -198,7 +199,7 @@ public function posting_pengiriman($id)
     }
 
     // Update status untuk semua stok_tokoslawi dengan kode_pengiriman yang sama
-    Stok_tokoslawi::where('kode_pengiriman', $kodePengiriman)->update([
+    Stok_tokobanjaran::where('kode_pengiriman', $kodePengiriman)->update([
         'status' => 'posting',
         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
     ]);
@@ -216,7 +217,7 @@ public function posting_pengiriman($id)
 public function unpost_pengiriman($id)
         {
             // Ambil data stok_tokoslawi berdasarkan ID
-    $stok = Stok_tokoslawi::where('id', $id)->first();
+    $stok = Stok_tokobanjaran::where('id', $id)->first();
 
     // Pastikan data ditemukan
     if (!$stok) {
@@ -230,7 +231,7 @@ public function unpost_pengiriman($id)
     $pengirimanId = $stok->pengiriman_barangjadi_id;
 
     // Update status untuk semua stok_tokoslawi dengan kode_pengiriman yang sama
-    Stok_tokoslawi::where('kode_pengiriman', $kodePengiriman)->update([
+    Stok_tokobanjaran::where('kode_pengiriman', $kodePengiriman)->update([
         'status' => 'unpost'
     ]);
 

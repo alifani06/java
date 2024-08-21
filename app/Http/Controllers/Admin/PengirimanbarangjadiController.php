@@ -229,15 +229,19 @@ public function store(Request $request)
             switch ($tokoId) {
                 case 1:
                     Stok_tokobanjaran::create([
-                        'pengiriman_id' => $pengiriman->id,
+                        'pengiriman_barangjadi_id' => $pengiriman->id,
+                        'kode_pengiriman' => $kode,
                         'produk_id' => $produkId,
                         'jumlah' => $jumlah,
+                        'status' => 'unpost',
                         'tanggal_input' => Carbon::now('Asia/Jakarta'),
+                        
                     ]);
                     break;
                 case 2:
                     Stok_tokotegal::create([
-                        'pengiriman_id' => $pengiriman->id,
+                        'pengiriman_barangjadi_id' => $pengiriman->id,
+                        'kode_pengiriman' => $kode,
                         'produk_id' => $produkId,
                         'jumlah' => $jumlah,
                         'tanggal_input' => Carbon::now('Asia/Jakarta'),
@@ -255,7 +259,8 @@ public function store(Request $request)
                     break;
                 case 4:
                     Stok_tokopemalang::create([
-                        'pengiriman_id' => $pengiriman->id,
+                        'pengiriman_barangjadi_id' => $pengiriman->id,
+                        'kode_pengiriman' => $kode,
                         'produk_id' => $produkId,
                         'jumlah' => $jumlah,
                         'tanggal_input' => Carbon::now('Asia/Jakarta'),
@@ -263,7 +268,8 @@ public function store(Request $request)
                     break;
                 case 5:
                     Stok_tokobumiayu::create([
-                        'pengiriman_id' => $pengiriman->id,
+                        'pengiriman_barangjadi_id' => $pengiriman->id,
+                        'kode_pengiriman' => $kode,
                         'produk_id' => $produkId,
                         'jumlah' => $jumlah,
                         'tanggal_input' => Carbon::now('Asia/Jakarta'),

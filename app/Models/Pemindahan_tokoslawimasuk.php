@@ -11,7 +11,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class Stok_tokoslawi extends Model
+class Pemindahan_tokoslawimasuk extends Model
 {
     use HasFactory;
 
@@ -19,10 +19,12 @@ class Stok_tokoslawi extends Model
     protected $fillable = [
         'produk_id',
         'jumlah',
-        'pengiriman_barangjadi_id',
+        'keterangan',
         'tanggal_input',
         'status',
-        'kode_pengiriman',
+        'oper',
+        'kode_pemindahan',
+        'toko_id',
         'tanggal_terima',
      
     ];

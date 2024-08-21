@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Inquery Pengiriman Toko Slawi</h1>
+                    <h1 class="m-0">Inquery Pengiriman Toko Banjaran</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -138,13 +138,13 @@
                                                     data-memo-id="{{ $firstItem->id }}">Posting</a>
                                             
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_slawi/pengiriman_tokoslawi/' . $firstItem->id)  }}">Show</a>
+                                                href="{{ url('/toko_banjaran/pengiriman_tokobanjaran/' . $firstItem->id)  }}">Show</a>
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 <a class="dropdown-item unpost-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Unpost</a>
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_slawi/pengiriman_tokoslawi/' . $firstItem->id)  }}">Show</a>
+                                                href="{{ url('/toko_banjaran/pengiriman_tokobanjaran/' . $firstItem->id)  }}">Show</a>
                                         @endif
                                        
                                     </div>
@@ -220,7 +220,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_slawi/inquery_pengirimanbarangjadi') }}";
+            form.action = "{{ url('toko_banjaran/inquery_pengirimanbarangjadi') }}";
             form.submit();
         }
 
@@ -238,7 +238,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_slawi/pengiriman_tokoslawi/unpost_pengiriman/') }}/" + memoId,
+                    url: "{{ url('toko_banjaran/pengiriman_tokobanjaran/unpost_pengiriman/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -268,7 +268,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_slawi/pengiriman_tokoslawi/posting_pengiriman/') }}/" + memoId,
+                    url: "{{ url('toko_banjaran/pengiriman_tokobanjaran/posting_pengiriman/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

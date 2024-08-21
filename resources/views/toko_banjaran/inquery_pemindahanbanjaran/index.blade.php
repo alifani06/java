@@ -128,37 +128,24 @@
                                 </td>
                                 <td>{{ $firstItem->toko->nama_toko }}</td>
                                 <td>{{ $firstItem->keterangan }}</td>
-                                    <td class="text-center">
+                                <td class="text-center">
                                     @if ($firstItem->status == 'posting')
                                         <button type="button" class="btn btn-success btn-sm">
                                             <i class="fas fa-check"></i>
                                         </button>
                                     @endif
                                     @if ($firstItem->status == 'unpost')
-                                    <button type="button" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-times"></i>
-                                    </button>
+                                        <button type="button" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-times"></i>
+                                        </button>
                                     @endif
-                                 
+                
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        @if ($firstItem->status == 'unpost')
-                                           
-                                                <a class="dropdown-item posting-btn"
-                                                    data-memo-id="{{ $firstItem->id }}">Posting</a>
-                                         
-                                                {{-- <a class="dropdown-item"
-                                                    href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a> --}}
-                                            
-                                                <a class="dropdown-item"
-                                                href="{{ url('/toko_slawi/inquery_pemindahanslawi/' . $firstItem->id ) }}">Show</a>
-                                                @endif
-                                        @if ($firstItem->status == 'posting')
-                                                {{-- <a class="dropdown-item unpost-btn"
-                                                    data-memo-id="{{ $firstItem->id }}">Unpost</a> --}}
-                                                <a class="dropdown-item"
-                                                href="{{ url('/toko_slawi/inquery_pemindahanslawi/' . $firstItem->id ) }}">Show</a>
+                                        @if ($firstItem->status == 'unpost' && $firstItem->toko_id != 1)
+                                            <a class="dropdown-item posting-btn" data-memo-id="{{ $firstItem->id }}">Posting</a>
                                         @endif
-                                       
+                
+                                        <a class="dropdown-item" href="{{ url('/toko_banjaran/inquery_pemindahanbanjaran/' . $firstItem->id ) }}">Show</a>
                                     </div>
                                 </td>
                             </tr>
@@ -232,7 +219,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_slawi/inquery_pemindahanslawi') }}";
+            form.action = "{{ url('toko_banjaran/inquery_pemindahanbanjaran') }}";
             form.submit();
         }
 
@@ -250,7 +237,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_slawi/inquery_pemindahanslawi/unpost_pemindahan/') }}/" + memoId,
+                    url: "{{ url('toko_banjaran/inquery_pemindahanbanjaran/unpost_pemindahan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -280,7 +267,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_slawi/inquery_pemindahanslawi/posting_pemindahan/') }}/" + memoId,
+                    url: "{{ url('toko_banjaran/inquery_pemindahanbanjaran/posting_pemindahan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
