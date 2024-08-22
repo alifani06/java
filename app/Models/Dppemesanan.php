@@ -65,4 +65,8 @@ class Dppemesanan extends Model
     {
         return $this->belongsTo(Pemesananproduk::class, 'pemesananproduk_id');
     }
+    public function dppemesanans()
+{
+    return $this->hasMany(Dppemesanan::class, 'pelunasan_id'); // Sesuaikan nama kolom foreign key jika perlu
+}
 }

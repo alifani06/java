@@ -21,7 +21,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Penjualan Produk</h1>
+                    <h1 class="m-0">Pelunasan Pemesanan Produk</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -83,22 +83,17 @@
                                    
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>
-                                        {{ $item->kode_penjualan }}
+                                        {{ $item->dppemesanan->kode_dppemesanan }}
                                     </td>
                                     <td>
-                                        {{ \Carbon\Carbon::parse($item->tanggal_penjualan)->format('d/m/Y H:i') }}
+                                        {{ \Carbon\Carbon::parse($item->tanggal_pelunasan)->format('d/m/Y H:i') }}
                                     </td>
                                     <td>
                                         {{ $item->kasir }}
                                     </td>
                                     <td>
-                                        @if ($item->kode_pelanggan && $item->nama_pelanggan)
-                                            {{ $item->kode_pelanggan }} / {{ $item->nama_pelanggan }}
-                                        @else
-                                            Non Member
-                                        @endif
+                                        {{ $item->dppemesanan->pemesananproduk->nama_pelanggan }}
                                     </td>
-                                    
                                     <td>
                                         @if($item->metodePembayaran)
                                             {{ $item->metodePembayaran->nama_metode }}
@@ -107,7 +102,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        {{ number_format($item->sub_total, 0, ',', '.') }}
+                                        {{ number_format($item->pelunasan, 0, ',', '.') }}
                                     </td>
 
                                     <td class="text-center">
@@ -120,14 +115,7 @@
                                         <button type="button" class="btn btn-danger btn-sm">
                                             <i class="fas fa-times"></i>
                                         </button>
-                                        {{-- <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="btn btn-danger btn-sm mt-2">
-                                                <i class="fas fa-trash-alt"></i> 
-                                            </button>
-                                        </form> --}}
+                                    
                                         @endif
                                      
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -136,8 +124,7 @@
                                                         data-memo-id="{{ $item->id }}">Posting</a>
                                                 
                                                     <a class="dropdown-item"
-                                                        href="{{ url('/toko_banjaran/penjualan_produk/' . $item->id ) }}">Show</a>
-                                                         {{-- Tambahkan opsi Delete --}}
+                                                        href="{{ url('/toko_banjaran/pelunasan_pemesanan/' . $item->id ) }}">Show</a>
                                                     <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
                                                         @csrf
                                                         @method('DELETE')
@@ -149,7 +136,9 @@
                                                     <a class="dropdown-item unpost-btn"
                                                         data-memo-id="{{ $item->id }}">Unpost</a>
                                                     <a class="dropdown-item"
-                                                        href="{{ url('/toko_banjaran/penjualan_produk/' . $item->id ) }}">Show</a>
+                                                    href="{{ url('/toko_banjaran/pelunasan_pemesanan/' . $item->id ) }}">Show</a>
+                                            
+                                            
                                             @endif
                                            
                                           </div>

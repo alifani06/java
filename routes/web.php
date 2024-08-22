@@ -33,6 +33,7 @@ use App\Http\Controllers\Toko_banjaran\Inquery_pemindahanbanjaranController;
 use App\Http\Controllers\Toko_banjaran\Inquery_penjualanprodukbanjaranController;
 use App\Http\Controllers\Toko_banjaran\Inquery_returbanjaranController;
 use App\Http\Controllers\Toko_banjaran\Laporan_pemindahanbanjaranController;
+use App\Http\Controllers\Toko_banjaran\PelunasanpemesananController;
 use App\Http\Controllers\Toko_banjaran\Pengiriman_tokobanjaranController;
 use App\Http\Controllers\Toko_banjaran\PenjualanprodukbanjaranController;
 use App\Http\Controllers\Toko_slawi\Inquery_pemindahanslawiController;
@@ -401,6 +402,11 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('metodebayar/metode/{id}', [\App\Http\Controllers\Toko_banjaran\PenjualanprodukbanjaranController::class, 'metode']);
     Route::post('admin/penjualan_produk/pelunasan', [PenjualanprodukbanjaranController::class, 'SimpanPelunasan'])->name('penjualan_produk.pelunasan.simpan');
 
+    Route::resource('pelunasan_pemesanan', \App\Http\Controllers\Toko_banjaran\PelunasanpemesananController::class);
+    Route::get('/toko_banjaran/pelunasan_pemesanan/cetak-pdf{id}', [PelunasanpemesananController::class, 'cetakPdf'])->name('toko_banjaran.pelunasan_pemesanan.cetak-pdf');
+
+
+   
 
 
     Route::resource('inquery_penjualanproduk', \App\Http\Controllers\Toko_banjaran\Inquery_penjualanprodukbanjaranController::class);

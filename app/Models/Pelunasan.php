@@ -20,7 +20,9 @@ class Pelunasan extends Model
         'kode_dppemesanan',
         'dppemesanan_id',
         'metode_id',
+        'toko_id',
         'total_fee',
+        'status',
         'keterangan',
         'pemesananproduk_id',
         'dp_pemesanan',
@@ -29,6 +31,10 @@ class Pelunasan extends Model
         'kekurangan_pemesanan',
         
   
+    ];
+
+    protected $attributes = [
+        'toko_id' => '1', // Nilai default untuk toko_id
     ];
 
     use SoftDeletes;
@@ -71,4 +77,14 @@ class Pelunasan extends Model
     {
         return $this->belongsTo(Pemesananproduk::class, 'pemesananproduk_id');
     }
+    public function metodePembayaran()
+    {
+        return $this->belongsTo(Metodepembayaran::class, 'metode_id');
+    }
+
+    public function dppemesanan()
+{
+    return $this->belongsTo(Dppemesanan::class, 'dppemesanan_id'); // Sesuaikan nama kolom foreign key jika perlu
+}
+    
 }

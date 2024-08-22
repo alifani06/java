@@ -40,14 +40,15 @@ class DepositController extends Controller
     {
         $today = Carbon::today();
     
+        // Query untuk mendapatkan data dengan kondisi pelunasan kosong atau null
         $inquery = Dppemesanan::with(['pemesananproduk.toko']) // Memuat relasi toko melalui pemesananproduk
+            ->whereNull('pelunasan') // Menambahkan kondisi untuk pelunasan yang kosong atau null
             ->orderBy('created_at', 'desc')
             ->get();
     
         // Kirim data ke view
         return view('admin.deposit.index', compact('inquery'));
     }
-    
     
     
 

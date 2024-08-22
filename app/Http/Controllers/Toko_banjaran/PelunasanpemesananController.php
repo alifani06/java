@@ -38,26 +38,15 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class PenjualanprodukbanjaranController extends Controller
+class PelunasanpemesananController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $today = Carbon::today();
-        
-        $inquery = Penjualanproduk::with('metodePembayaran')
-            ->where('toko_id', 1) 
-            ->where(function ($query) use ($today) {
-                $query->whereDate('created_at', $today)
-                      ->orWhere(function ($query) use ($today) {
-                          $query->where('status', 'unpost')
-                                ->whereDate('created_at', '<', $today);
-                      });
-            })
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $inquery = Pelunasan::with(['metodePembayaran', 'dppemesanan.pemesananproduk'])->get();
     
-        return view('toko_banjaran.penjualan_produk.index', compact('inquery'));
+        return view('toko_banjaran.pelunasan_pemesanan.index', compact('inquery'));
     }
+    
     
     public function pelanggan($id)
     {
@@ -129,9 +118,10 @@ class PenjualanprodukbanjaranController extends Controller
         $pelunasan->metode_id = $validated['metode_id'];
         $pelunasan->total_fee = $validated['total_fee'];
         $pelunasan->keterangan = $validated['keterangan'];
-        $pelunasan->tanggal_pelunasan = Carbon::now('Asia/Jakarta'); // Menetapkan tanggal pelunasan ke hari ini
-        $pelunasan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
-
+        $pelunasan->tanggal_pelunasan = Carbon::now('Asia/Jakarta'); 
+        $pelunasan->toko_id = '1'; 
+        $pelunasan->status = 'posting'; 
+    
         $pelunasan->save();
     
         // Update kolom pelunasan di tabel dppemesanans
@@ -384,7 +374,7 @@ class PenjualanprodukbanjaranController extends Controller
         $tokos = $penjualan->toko;
 
         // Pass the retrieved data to the view
-        return view('toko_banjaran.penjualan_produk.cetak', compact('penjualan', 'pelanggans', 'tokos'));
+        return view('toko_banjaran/pelunasan_pemesanan/cetak', compact('penjualan', 'pelanggans', 'tokos'));
     }
 
     public function cetakpelunasan($id)
@@ -402,31 +392,39 @@ class PenjualanprodukbanjaranController extends Controller
     
     public function cetakPdf($id)
     {
-        $penjualan = Penjualanproduk::findOrFail($id);
-        $pelanggans = Pelanggan::all();
-        
+     // Mengambil satu item Pelunasan berdasarkan ID
+     $inquery = Pelunasan::with(['metodePembayaran', 'dppemesanan.pemesananproduk'])
+     ->findOrFail($id);
+
+// Mengambil semua pelanggan
+$pelanggans = Pelanggan::all();
+
+// Mengakses toko dari $inquery yang sekarang menjadi instance model
+$tokos = $inquery->toko;
     
-        $tokos = $penjualan->toko;
-    
-        $pdf = FacadePdf::loadView('toko_banjaran.penjualan_produk.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans'));
+        $pdf = FacadePdf::loadView('toko_banjaran.pelunasan_pemesanan.cetak-pdf', compact('inquery', 'tokos', 'pelanggans'));
         $pdf->setPaper('a4', 'portrait');
     
-        return $pdf->stream('penjualan.pdf');
+        return $pdf->stream('pelunasan.pdf');
     }
 
 
     public function show($id)
     {   
-      // Retrieve the specific pemesanan by ID along with its details
-      $penjualan = Penjualanproduk::with('detailpenjualanproduk', 'toko')->findOrFail($id);
+        // Mengambil satu item Pelunasan berdasarkan ID
+        $inquery = Pelunasan::with(['metodePembayaran', 'dppemesanan.pemesananproduk'])
+                    ->findOrFail($id);
+        
+        // Mengambil semua pelanggan
+        $pelanggans = Pelanggan::all();
     
-      // Retrieve all pelanggans (assuming you need this for the view)
-      $pelanggans = Pelanggan::all();
-      $tokos = $penjualan->toko;
-
-      // Pass the retrieved data to the view
-      return view('toko_banjaran.penjualan_produk.cetak', compact('penjualan', 'pelanggans', 'tokos'));
+        // Mengakses toko dari $inquery yang sekarang menjadi instance model
+        $tokos = $inquery->toko;
+    
+        // Mengirim data ke view
+        return view('toko_banjaran/pelunasan_pemesanan/cetak', compact('inquery', 'tokos', 'pelanggans'));
     }
+    
     
 
         public function edit($id)

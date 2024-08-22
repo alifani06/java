@@ -89,4 +89,9 @@ class Penjualanproduk extends Model
     return $this->belongsTo(Metodepembayaran::class, 'metode_id');
 }
 
+public function pelunasan()
+{
+    return $this->hasOne(Pelunasan::class);
+}
+
 }
