@@ -43,10 +43,7 @@
                     <h1 class="m-0">Penjualan Produk</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ url('toko_slawi/subklasifikasi') }}">penjualan Produk</a></li>
-                        <li class="breadcrumb-item active">Tambah</li>
-                    </ol>
+                 
                 </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
@@ -461,7 +458,7 @@
                 changeRow.style.display = 'block';
             } else if (metodeId) {
                 $.ajax({
-                    url: "{{ url('toko_slawi/metodebayar/metode') }}" + "/" + metodeId,
+                    url: "{{ url('toko_banjaran/metodebayar/metode') }}" + "/" + metodeId,
                     type: "GET",
                     dataType: "json",
                     success: function(response) {
@@ -809,20 +806,6 @@
 
 
 
-    {{-- <script>
-        document.getElementById('kategori1').addEventListener('change', function() {
-            var selectedValue = this.value;
-
-            if (selectedValue === 'penjualan') {
-                window.location.href = "{{ route('toko_slawi.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
-            } else if (selectedValue === 'pelunasan') {
-                window.location.href = "{{ route('toko_slawi.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
-            }
-        });
-    </script> --}}
-
-
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Panggil fungsi itemPembelian dengan baris default
@@ -998,5 +981,17 @@ function itemPembelian(urutan, key, value = null) {
     }
     </script>
 
+
+<script>
+    document.getElementById('kategori1').addEventListener('change', function() {
+        var selectedValue = this.value;
+
+        if (selectedValue === 'penjualan') {
+            window.location.href = "{{ route('toko_banjaran.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
+        } else if (selectedValue === 'pelunasan') {
+            window.location.href = "{{ route('toko_banjaran.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
+        }
+    });
+</script>
 
 @endsection

@@ -47,6 +47,7 @@
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
+                                <th>Cabang</th>
                                 <th>Kode Deposit</th>
                                 <th>Nama Pelanggan</th>
                                 <th>No HP</th>
@@ -58,6 +59,7 @@
                             @foreach ($inquery as $deposit)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
+                                    <td>{{ $deposit->pemesananproduk->toko->nama_toko ?? 'Tidak Ada Toko' }}</td> <!-- Akses nama_toko -->
                                     <td>{{ $deposit->kode_dppemesanan }}</td>
                                     <td>{{ $deposit->pemesananproduk->nama_pelanggan ?? 'Tidak Ada Nama' }}</td> 
                                     <td>{{ $deposit->pemesananproduk->telp ?? 'Tidak Ada No HP' }}</td> 

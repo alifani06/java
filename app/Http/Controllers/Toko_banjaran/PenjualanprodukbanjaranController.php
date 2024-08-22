@@ -17,6 +17,7 @@ use App\Models\Tokopemalang;
 use App\Models\Tokobumiayu;
 use App\Models\Tokocilacap;
 use App\Models\Barang;
+use App\Models\Pelunasan;
 use App\Models\Detailbarangjadi;
 use App\Models\Detailpemesananproduk;
 use App\Models\Detailpenjualanproduk;
@@ -42,17 +43,22 @@ class PenjualanprodukbanjaranController extends Controller
     public function index(Request $request)
     {
         $today = Carbon::today();
+        
         $inquery = Penjualanproduk::with('metodePembayaran')
-            ->whereDate('created_at', $today)
-            ->orWhere(function ($query) use ($today) {
-                $query->where('status', 'unpost')
-                    ->whereDate('created_at', '<', $today);
+            ->where('toko_id', 1) // Tambahkan kondisi untuk toko_id = 1
+            ->where(function ($query) use ($today) {
+                $query->whereDate('created_at', $today)
+                      ->orWhere(function ($query) use ($today) {
+                          $query->where('status', 'unpost')
+                                ->whereDate('created_at', '<', $today);
+                      });
             })
             ->orderBy('created_at', 'desc')
             ->get();
     
         return view('toko_banjaran.penjualan_produk.index', compact('inquery'));
     }
+    
     
 
  
@@ -100,14 +106,53 @@ class PenjualanprodukbanjaranController extends Controller
         $tokoslawis = Tokoslawi::all();
         $tokobanjarans = Tokobanjaran::all();
         $tokos = Toko::all();
+        $metodes = Metodepembayaran::all();
         $dppemesanans = Dppemesanan::all();
         $pemesananproduks = Pemesananproduk::all();
         $produks = Produk::with('tokobanjaran')->get();
         $kategoriPelanggan = 'member';
  
-        return view('toko_banjaran.penjualan_produk.pelunasan', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'tokobanjarans', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks'));
+        return view('toko_banjaran.penjualan_produk.pelunasan', compact('barangs','metodes', 'tokos', 'produks', 'details', 'tokoslawis', 'tokobanjarans', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks'));
     }
     
+
+    public function SimpanPelunasan(Request $request)
+    {
+        // Validasi input
+        $validated = $request->validate([
+            'dppemesanan_id' => 'required|string',
+            // 'kode_pemesanan' => 'required|string',
+            'pelunasan' => 'required|numeric',
+            'metode_id' => 'required|integer',
+            'total_fee' => 'nullable|numeric',
+            'keterangan' => 'nullable|string', // Ubah dari numeric ke string jika 'keterangan' adalah teks
+        ]);
+    
+        // Simpan data ke database
+        $pelunasan = new Pelunasan();
+        $pelunasan->dppemesanan_id = $validated['dppemesanan_id'];
+        // $pelunasan->kode_pemesanan = $validated['kode_pemesanan'];
+        $pelunasan->pelunasan = $validated['pelunasan'];
+        $pelunasan->metode_id = $validated['metode_id'];
+        $pelunasan->total_fee = $validated['total_fee'];
+        $pelunasan->keterangan = $validated['keterangan'];
+        $pelunasan->tanggal_pelunasan = Carbon::now('Asia/Jakarta'); // Menetapkan tanggal pelunasan ke hari ini
+    
+        $pelunasan->save();
+    
+        // Update kolom pelunasan di tabel dppemesanans
+        $dppemesanans = Dppemesanan::find($validated['dppemesanan_id']);
+        if ($dppemesanans) {
+            // Misalkan kita ingin menambahkan jumlah pelunasan
+            $dppemesanans->pelunasan += $validated['pelunasan']; 
+            $dppemesanans->save();
+        }
+    
+        // Redirect atau response sesuai kebutuhan
+        return redirect()->back()->with('success', 'Data berhasil disimpan.');
+    }
+
+
     public function getCustomerByKode($kode)
     {
         $customer = Pelanggan::where('kode_pelanggan', $kode)->first();
@@ -140,38 +185,40 @@ class PenjualanprodukbanjaranController extends Controller
     }
    
     public function fetchDataByKode(Request $request)
-    {
-        $kode = $request->input('kode_pemesanan');
-        $data = Dppemesanan::where('kode_dppemesanan', $kode)->with('pemesananproduk', 'detailpemesananproduk')->first();
+{
+    $kode = $request->input('kode_pemesanan');
+    $data = Dppemesanan::whereHas('pemesananproduk', function($query) use ($kode) {
+        $query->where('kode_pemesanan', $kode);
+    })->with('pemesananproduk', 'detailpemesananproduk')->first();
 
-        if ($data) {
-            return response()->json([
-                'id' => $data->id,
-                'kode_dppemesanan' => $data->kode_dppemesanan,
-                'dp_pemesanan' => $data->dp_pemesanan,
-                'nama_pelanggan' => $data->pemesananproduk->nama_pelanggan ?? '',
-                'telp' => $data->pemesananproduk->telp ?? '',
-                'alamat' => $data->pemesananproduk->alamat ?? '',
-                'tanggal_kirim' => $data->pemesananproduk->tanggal_kirim ?? '',
-                'nama_penerima' => $data->pemesananproduk->nama_penerima ?? '',
-                'telp_penerima' => $data->pemesananproduk->telp_penerima ?? '',
-                'alamat_penerima' => $data->pemesananproduk->alamat_penerima ?? '',
-                'sub_total' => $data->pemesananproduk->sub_total ?? 0,
-                'dp_pemesanan' => $data->dp_pemesanan,
-                'kekurangan_pemesanan' => $data->kekurangan_pemesanan,
-                'products' => $data->detailpemesananproduk->map(function ($item) {
-                    return [
-                        'kode_produk' => $item->kode_produk,
-                        'nama_produk' => $item->nama_produk,
-                        'jumlah' => $item->jumlah,
-                        'total' => $item->total,
-                    ];
-                })
-            ]);
-        } else {
-            return response()->json([], 404);
-        }
+    if ($data) {
+        return response()->json([
+            'id' => $data->id,
+            'kode_pemesanan' => $data->pemesananproduk->kode_pemesanan ?? '',
+            'dp_pemesanan' => $data->dp_pemesanan,
+            'nama_pelanggan' => $data->pemesananproduk->nama_pelanggan ?? '',
+            'telp' => $data->pemesananproduk->telp ?? '',
+            'alamat' => $data->pemesananproduk->alamat ?? '',
+            'tanggal_kirim' => $data->pemesananproduk->tanggal_kirim ?? '',
+            'nama_penerima' => $data->pemesananproduk->nama_penerima ?? '',
+            'telp_penerima' => $data->pemesananproduk->telp_penerima ?? '',
+            'alamat_penerima' => $data->pemesananproduk->alamat_penerima ?? '',
+            'sub_total' => $data->pemesananproduk->sub_total ?? 0,
+            'dp_pemesanan' => $data->dp_pemesanan,
+            'kekurangan_pemesanan' => $data->kekurangan_pemesanan,
+            'products' => $data->detailpemesananproduk->map(function ($item) {
+                return [
+                    'kode_produk' => $item->kode_produk,
+                    'nama_produk' => $item->nama_produk,
+                    'jumlah' => $item->jumlah,
+                    'total' => $item->total,
+                ];
+            })
+        ]);
+    } else {
+        return response()->json([], 404);
     }
+}
  
     public function kode()
     {

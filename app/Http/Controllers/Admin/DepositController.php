@@ -40,13 +40,14 @@ class DepositController extends Controller
     {
         $today = Carbon::today();
     
-        $inquery = Dppemesanan::with('pemesananproduk') // Memuat relasi dppemesanan
+        $inquery = Dppemesanan::with(['pemesananproduk.toko']) // Memuat relasi toko melalui pemesananproduk
             ->orderBy('created_at', 'desc')
             ->get();
     
         // Kirim data ke view
         return view('admin.deposit.index', compact('inquery'));
     }
+    
     
     
 
