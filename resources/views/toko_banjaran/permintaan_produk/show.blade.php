@@ -197,7 +197,7 @@
 
         <div class="d-flex justify-content-between">
             <div>
-                <a href="{{ url('toko_slawi/permintaan_produk') }}" class="btn btn-primary btn-sm">
+                <a href="{{ url('toko_banjaran/permintaan_produk') }}" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus"></i> Kembali
                 </a>
             </div>
@@ -207,7 +207,7 @@
                 </a>
             </div> --}}
             <div>
-                <a href="{{ url('toko_slawi/permintaan-produk/' . $permintaanProduk->id . '/print') }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
+                <a href="{{ url('toko_banjaran/permintaan-produk/' . $permintaanProduk->id . '/print') }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
                     <i class="fas fa-print"></i> Cetak 
                 </a>
             </div>

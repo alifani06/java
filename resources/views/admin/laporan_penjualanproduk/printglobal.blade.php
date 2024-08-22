@@ -105,6 +105,8 @@
                 <th>Kode penjualan</th>
                 <th>Kasir</th>
                 <th>Pelanggan</th>
+                <th>Kode Deposit</th>
+                <th>Nominal</th>
                 <th>Metode Pembayaran</th>
                 <th>Fee Penjualan</th>
                 <th>Total</th>
@@ -135,7 +137,9 @@
                             Non Member
                         @endif
                     </td>
-                                        <td>{{ $item->metodepembayaran->nama_metode ?? 'Tunai' }}</td>
+                    <td>{{ $item->kasir ?? '-' }}</td>
+                    <td>{{ $item->kasir ?? '-' }}</td>
+                    <td>{{ $item->metodepembayaran->nama_metode ?? 'Tunai' }}</td>
                     <td>
                         @if ($total_fee == 0)
                             -

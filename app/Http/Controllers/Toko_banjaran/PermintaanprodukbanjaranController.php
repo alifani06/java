@@ -39,7 +39,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 
 
-class PermintaanprodukController extends Controller{
+class PermintaanprodukbanjaranController extends Controller{
 
     public function index()
 {
@@ -83,7 +83,7 @@ class PermintaanprodukController extends Controller{
             Detailpermintaanproduk::create([
                 'permintaanproduk_id' => $permintaanProduk->id,
                 'produk_id' => $produkId,
-                'toko_id' => '3', 
+                'toko_id' => '1', 
                 'jumlah' => $jumlah,
                 'status' => 'unpost',
                 'tanggal_permintaan' => Carbon::now('Asia/Jakarta'),

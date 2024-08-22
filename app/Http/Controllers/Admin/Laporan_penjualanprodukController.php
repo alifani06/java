@@ -254,7 +254,7 @@ class Laporan_penjualanprodukController extends Controller
 
 //     return $pdf->stream('laporan_penjualan_produk.pdf');
 // }
-public function printReport(Request $request)
+public function printReportpenjualan(Request $request)
 {
     $status = $request->input('status');
     $tanggalPenjualan = $request->input('tanggal_penjualan');

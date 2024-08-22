@@ -118,7 +118,7 @@
                                 <button type="submit" class="btn btn-outline-primary btn-block">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
-                                <button type="button" class="btn btn-primary btn-block" onclick="printReport()" target="_blank">
+                                <button type="button" class="btn btn-primary btn-block" onclick="printReportpenjualan()" target="_blank">
                                     <i class="fas fa-print"></i> Cetak
                                 </button>
                             </div>
@@ -221,9 +221,9 @@
     </script>
 
 <script>
-    function printReport() {
+    function printReportpenjualan() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printReport') }}";
+    form.action = "{{ url('admin/printReportpenjualan') }}";
     form.target = "_blank";
     form.submit();
 }

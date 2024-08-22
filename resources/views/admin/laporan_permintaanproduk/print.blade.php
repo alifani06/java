@@ -90,7 +90,7 @@
             </p>
         @endif
     </div>
-    {{-- <table style="font-size: 9px;">
+    <table style="font-size: 9px;">
         <thead>
             <tr>
                 <th class="text-center">No</th>
@@ -148,12 +148,11 @@
                 </tr>
             @endforeach
         </tbody>
-    </table> --}}
-    <table style="font-size: 9px;">
+    </table>
+    {{-- <table style="font-size: 9px;">
         <thead>
             <tr>
                 <th class="text-center">No</th>
-                {{-- <th>Kode Permintaan</th> --}}
                 <th>Divisi</th>
                 <th>Kategori</th>
                 <th>Produk</th>
@@ -205,7 +204,6 @@
             @foreach ($produkData as $produkKey => $data)
                 <tr>
                     <td class="text-center">{{ $no++ }}</td>
-                    {{-- <td>{{ $data['kode_permintaan'] }}</td> --}}
                     <td>{{ $data['klasifikasi'] }}</td>
                     <td>{{ $data['subklasifikasi'] }}</td>
                     <td>{{ $data['nama_produk'] }}</td>
@@ -217,7 +215,7 @@
                 </tr>
             @endforeach
         </tbody>
-    </table>
+    </table> --}}
     
     
 </body>

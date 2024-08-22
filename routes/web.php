@@ -36,6 +36,7 @@ use App\Http\Controllers\Toko_banjaran\Laporan_pemindahanbanjaranController;
 use App\Http\Controllers\Toko_banjaran\PelunasanpemesananController;
 use App\Http\Controllers\Toko_banjaran\Pengiriman_tokobanjaranController;
 use App\Http\Controllers\Toko_banjaran\PenjualanprodukbanjaranController;
+use App\Http\Controllers\Toko_banjaran\PermintaanprodukbanjaranController;
 use App\Http\Controllers\Toko_slawi\Inquery_pemindahanslawiController;
 use App\Http\Controllers\Toko_slawi\Inquery_returslawiController;
 use App\Http\Controllers\Toko_slawi\Laporan_pemindahanslawiController;
@@ -154,7 +155,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('inquery_penjualanproduk/posting_penjualanproduk/{id}', [\App\Http\Controllers\Admin\Inquery_penjualanprodukController::class, 'posting_penjualanproduk']);
 
     Route::resource('laporan_penjualanproduk', \App\Http\Controllers\Admin\Laporan_penjualanprodukController::class);
-    Route::get('printReport', [\App\Http\Controllers\Admin\Laporan_penjualanprodukController::class, 'printReport']);
+    Route::get('printReportpenjualan', [\App\Http\Controllers\Admin\Laporan_penjualanprodukController::class, 'printReportpenjualan']);
     Route::get('printReportglobal', [\App\Http\Controllers\Admin\Laporan_penjualanprodukController::class, 'printReportglobal']);
     Route::get('indexglobal', [\App\Http\Controllers\Admin\Laporan_penjualanprodukController::class, 'indexglobal']);
 
@@ -419,13 +420,12 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('printReportglobal', [\App\Http\Controllers\Toko_banjaran\Laporan_penjualanprodukController::class, 'printReportglobal']);
     Route::get('indexglobal', [\App\Http\Controllers\Toko_banjaran\Laporan_penjualanprodukController::class, 'indexglobal']);
 
-    Route::resource('permintaan_produk', \App\Http\Controllers\Toko_banjaran\PermintaanprodukController::class);
-    Route::post('toko_banjaran/permintaan_produk', [PermintaanprodukController::class, 'store']);
-    Route::get('toko_banjaran/permintaan_produk', [PermintaanprodukController::class, 'show']);
-    Route::post('toko_banjaran/permintaan_produk/import', [ProdukController::class, 'import'])->name('permintaan_produk.import');
-    Route::get('/permintaan-produk/{id}/print', [PermintaanProdukController::class, 'print'])->name('permintaan_produk.print');
-    Route::get('permintaan_produk/unpost_permintaanproduk/{id}', [\App\Http\Controllers\Toko_banjaran\PermintaanprodukController::class, 'unpost_permintaanproduk']);
-    Route::get('permintaan_produk/posting_permintaanproduk/{id}', [\App\Http\Controllers\Toko_banjaran\PermintaanprodukController::class, 'posting_permintaanproduk']);
+    Route::resource('permintaan_produk', \App\Http\Controllers\Toko_banjaran\PermintaanprodukbanjaranController::class);
+    Route::post('toko_banjaran/permintaan_produk', [PermintaanprodukbanjaranController::class, 'store']);
+    Route::get('toko_banjaran/permintaan_produk', [PermintaanprodukbanjaranController::class, 'show']);
+    Route::get('/permintaan-produk/{id}/print', [PermintaanprodukbanjaranController::class, 'print'])->name('permintaan_produk.print');
+    Route::get('permintaan_produk/unpost_permintaanproduk/{id}', [\App\Http\Controllers\Toko_banjaran\PermintaanprodukbanjaranController::class, 'unpost_permintaanproduk']);
+    Route::get('permintaan_produk/posting_permintaanproduk/{id}', [\App\Http\Controllers\Toko_banjaran\PermintaanprodukbanjaranController::class, 'posting_permintaanproduk']);
     // Route::delete('Toko_banjaran/permintaan_produk/{id}', [PermintaanProdukController::class, 'destroy'])->name('Toko_banjaran.permintaan_produk.destroy');
 
     Route::resource('inquery_permintaanproduk', \App\Http\Controllers\Toko_banjaran\Inquery_permintaanprodukController::class);

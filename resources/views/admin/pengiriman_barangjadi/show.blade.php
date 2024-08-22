@@ -144,10 +144,10 @@
                 <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal Kirim</strong> </span>
                 <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ \Carbon\Carbon::now()->format('d-m-Y H:m') }}</span>
             </p>
-            <p>
+            {{-- <p>
                 <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal Terima</strong> </span>
                 <span style="min-width: 50px; display: inline-flex; align-items: center;">: </span>
-            </p>
+            </p> --}}
         </div>
 
         <!-- Detail Produk -->
