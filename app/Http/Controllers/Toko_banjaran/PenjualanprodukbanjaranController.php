@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Pelanggan;
 use App\Models\Hargajual;
 use App\Models\Tokoslawi;
+use App\Models\Tokobanjaran;
+use App\Models\Stok_tokobanjaran;
 use App\Models\Tokobenjaran;
 use App\Models\Tokotegal;
 use App\Models\Tokopemalang;
@@ -35,7 +37,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class PenjualanprodukController extends Controller
+class PenjualanprodukbanjaranController extends Controller
 {
     public function index(Request $request)
     {
@@ -82,7 +84,7 @@ class PenjualanprodukController extends Controller
         $pemesananproduks = Pemesananproduk::all();
         $metodes = Metodepembayaran::all();
     
-        $produks = Produk::with('tokoslawi')->get();
+        $produks = Produk::with('tokobanjaran')->get();
 
         $kategoriPelanggan = 'member';
     
@@ -96,13 +98,14 @@ class PenjualanprodukController extends Controller
         $pelanggans = Pelanggan::all();
         $details = Detailbarangjadi::all();
         $tokoslawis = Tokoslawi::all();
+        $tokobanjarans = Tokobanjaran::all();
         $tokos = Toko::all();
         $dppemesanans = Dppemesanan::all();
         $pemesananproduks = Pemesananproduk::all();
-        $produks = Produk::with('tokoslawi')->get();
+        $produks = Produk::with('tokobanjaran')->get();
         $kategoriPelanggan = 'member';
  
-        return view('toko_banjaran.penjualan_produk.pelunasan', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks'));
+        return view('toko_banjaran.penjualan_produk.pelunasan', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'tokobanjarans', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks'));
     }
     
     public function getCustomerByKode($kode)
@@ -288,7 +291,7 @@ public function store(Request $request)
         'metode_id' => $request->metode_id, 
         'total_fee' => $request->total_fee, 
         'keterangan' => $request->keterangan, 
-        'toko_id' => 3,
+        'toko_id' => 1,
         'kasir' => ucfirst(auth()->user()->karyawan->nama_lengkap),
         'kode_penjualan' => $this->kode(),
         'qrcode_penjualan' => 'https://javabakery.id/penjualan/' . $kode,
@@ -299,7 +302,7 @@ public function store(Request $request)
     // Dapatkan ID transaksi baru
     $transaksi_id = $cetakpdf->id;
 
-    // Simpan detail pemesanan
+    // Simpan detail pemesanan dan kurangi stok
     foreach ($data_pembelians as $data_pesanan) {
         Detailpenjualanproduk::create([
             'penjualanproduk_id' => $cetakpdf->id,
@@ -312,6 +315,13 @@ public function store(Request $request)
             'total' => $data_pesanan['total'],
             'totalasli' => $data_pesanan['totalasli'],
         ]);
+
+        // Kurangi stok di tabel stok_tokobanjaran
+        $stok = Stok_tokobanjaran::where('produk_id', $data_pesanan['produk_id'])->first();
+        if ($stok) {
+            $stok->jumlah = $stok->jumlah - $data_pesanan['jumlah'];
+            $stok->save();
+        }
     }
 
     // Ambil detail pemesanan untuk ditampilkan di halaman cetak
@@ -526,17 +536,28 @@ public function store(Request $request)
         public function destroy($id)
         {
             DB::transaction(function () use ($id) {
-                $pemesanan = Pemesananproduk::findOrFail($id);
+                $penjualan = Penjualanproduk::findOrFail($id);
+                
+                // Ambil semua detail pemesanan terkait
+                $detailPenjualanProduks = Detailpenjualanproduk::where('penjualanproduk_id', $id)->get();
+        
+                // Mengembalikan stok untuk setiap produk yang dipesan
+                foreach ($detailPenjualanProduks as $detail) {
+                    DB::table('stok_tokobanjarans')
+                        ->where('produk_id', $detail->produk_id)
+                        ->increment('jumlah', $detail->jumlah);
+                }
         
                 // Menghapus (soft delete) detail pemesanan terkait
-                DetailPemesananProduk::where('pemesananproduk_id', $id)->delete();
+                Detailpenjualanproduk::where('penjualanproduk_id', $id)->delete();
         
                 // Menghapus (soft delete) data pemesanan
-                $pemesanan->delete();
+                $penjualan->delete();
             });
         
-            return redirect('toko_banjaran/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
+            return redirect('toko_banjaran/penjualan_produk')->with('success', 'Berhasil menghapus data penjualan');
         }
+        
         
 
 }

@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Storage;
 
 
 
-class Inquery_penjualanprodukController extends Controller
+class Inquery_penjualanprodukbanjaranController extends Controller
 {
 
     public function index(Request $request)
@@ -81,6 +81,17 @@ public function posting_penjualanproduk($id)
         ]);
     return back()->with('success', 'Berhasil');
 }
+public function unpost_penjualanproduk($id)
+{
+    $item = Penjualanproduk::where('id', $id)->first();
+
+    
+        // Update status deposit_driver menjadi 'posting'
+        $item->update([
+            'status' => 'unpost'
+        ]);
+    return back()->with('success', 'Berhasil');
+}
 
 
 
@@ -91,8 +102,6 @@ public function posting_penjualanproduk($id)
 
        
     }
-    
- 
     
     public function store(Request $request)
 {
