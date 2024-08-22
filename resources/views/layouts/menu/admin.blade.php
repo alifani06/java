@@ -43,6 +43,7 @@
     request()->is('admin/klasifikasi*')||
     request()->is('admin/metode_pembayaran*')||
     request()->is('admin/input*')||
+    request()->is('admin/data_deposit*')||
     request()->is('admin/data_stokbarangjadi*')||
     request()->is('admin/data_stokretur*')
   
@@ -61,6 +62,7 @@
         request()->is('admin/klasifikasi*')||
         request()->is('admin/metode_pembayaran*')||
         request()->is('admin/input*')||
+        request()->is('admin/data_deposit*')||
         request()->is('admin/data_stokbarangjadi*')||
         request()->is('admin/data_stokretur*')
       
@@ -176,6 +178,15 @@
                 class="nav-link {{ request()->is('admin/metode_pembayaran*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Data Jenis Pembayaran</p>
+            </a>
+        </li>
+        {{-- @endif --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['klasifikasi']) --}}
+        <li class="nav-item">
+            <a href="{{ url('admin/data_deposit') }}"
+                class="nav-link {{ request()->is('admin/data_deposit*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Data Deposit</p>
             </a>
         </li>
         {{-- @endif --}}

@@ -188,6 +188,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('laporan_stokbarangjadi', \App\Http\Controllers\Admin\Laporan_stokbarangjadiController::class);
     Route::get('print1', [\App\Http\Controllers\Admin\Laporan_stokbarangjadiController::class, 'printReport']);
 
+    Route::resource('data_deposit', \App\Http\Controllers\Admin\DepositController::class);
 
     Route::resource('data_stokbarangjadi', \App\Http\Controllers\Admin\Data_stokbarangjadiController::class);
 
