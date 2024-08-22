@@ -60,8 +60,8 @@
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $deposit->kode_dppemesanan }}</td>
                                     <td>{{ $deposit->pemesananproduk->nama_pelanggan ?? 'Tidak Ada Nama' }}</td> 
-                                    <td>{{ $deposit->pemesananproduk->telp ?? 'Tidak Ada Nama' }}</td> 
-                                    <td>{{ $deposit->pemesananproduk->alamat ?? 'Tidak Ada Nama' }}</td> 
+                                    <td>{{ $deposit->pemesananproduk->telp ?? 'Tidak Ada No HP' }}</td> 
+                                    <td>{{ $deposit->pemesananproduk->alamat ?? 'Tidak Ada Alamat' }}</td> 
                                     <td>{{ 'Rp ' . number_format($deposit->dp_pemesanan, 0, ',', '.') }}</td>
                                 </tr>
                             @endforeach
