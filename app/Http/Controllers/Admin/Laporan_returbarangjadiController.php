@@ -17,7 +17,7 @@ use App\Models\Tokopemalang;
 use App\Models\Tokobumiayu;
 use App\Models\Tokocilacap;
 use App\Models\Barang;
-use App\Models\Detailbarangjadi;
+use App\Models\Retur_barangjadi;
 use App\Models\Detailpemesananproduk;
 use App\Models\Detailtokoslawi;
 use App\Models\Input;
@@ -36,95 +36,122 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
-class Laporan_pengirimanbarangjadiController extends Controller
+class Laporan_returbarangjadiController extends Controller
 {
 
     public function index(Request $request)
     {
-            $status = $request->status;
-            $tanggal_pengiriman = $request->tanggal_pengiriman;
-            $tanggal_akhir = $request->tanggal_akhir;
-
-            $query = Pengiriman_barangjadi::with('produk.klasifikasi');
-
-            if ($status) {
-                $query->where('status', $status);
-            }
-
-            if ($tanggal_pengiriman && $tanggal_akhir) {
-                $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
-                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-                $query->whereBetween('tanggal_pengiriman', [$tanggal_pengiriman, $tanggal_akhir]);
-            } elseif ($tanggal_pengiriman) {
-                $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
-                $query->where('tanggal_pengiriman', '>=', $tanggal_pengiriman);
-            } elseif ($tanggal_akhir) {
-                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-                $query->where('tanggal_pengiriman', '<=', $tanggal_akhir);
-            } else {
-                // Jika tidak ada filter tanggal, tampilkan data hari ini
-                $query->whereDate('tanggal_pengiriman', Carbon::today());
-            }
-
-            // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
-            $stokBarangJadi = $query->get()->groupBy('kode_pengiriman');
-
-            return view('admin.laporan_pengirimanbarangjadi.index', compact('stokBarangJadi'));
-    }
-
+        $status = $request->status;
+        $tanggal_retur = $request->tanggal_retur;
+        $tanggal_akhir = $request->tanggal_akhir;
+        $toko_id = $request->toko_id;
+        $klasifikasi_id = $request->klasifikasi_id;
     
-
-    public function printReport(Request $request)
-    {
-        // Ambil parameter dari request
-        $tanggalPengiriman = $request->input('tanggal_pengiriman');
-        $tanggalAkhir = $request->input('tanggal_akhir');
-        $status = $request->input('status');
+        // Query dasar
+        $query = Retur_barangjadi::with('produk.klasifikasi');
     
-        // Buat query untuk ambil data berdasarkan filter
-        $query = Pengiriman_barangjadi::query();
-    
-        if ($tanggalPengiriman) {
-            $query->whereDate('tanggal_pengiriman', '>=', $tanggalPengiriman);
-        }
-    
-        if ($tanggalAkhir) {
-            $query->whereDate('tanggal_pengiriman', '<=', $tanggalAkhir);
-        }
-    
+        // Filter berdasarkan status
         if ($status) {
             $query->where('status', $status);
         }
     
-        // Ambil data yang telah difilter
-        $pengirimanBarangJadi = $query->with(['produk.subklasifikasi', 'toko'])->get();
+        // Filter berdasarkan tanggal
+        if ($tanggal_retur && $tanggal_akhir) {
+            $tanggal_retur = Carbon::parse($tanggal_retur)->startOfDay();
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $query->whereBetween('tanggal_retur', [$tanggal_retur, $tanggal_akhir]);
+        } elseif ($tanggal_retur) {
+            $tanggal_retur = Carbon::parse($tanggal_retur)->startOfDay();
+            $query->where('tanggal_retur', '>=', $tanggal_retur);
+        } elseif ($tanggal_akhir) {
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $query->where('tanggal_retur', '<=', $tanggal_akhir);
+        } else {
+            // Jika tidak ada filter tanggal, tampilkan data hari ini
+            $query->whereDate('tanggal_retur', Carbon::today());
+        }
     
-        // Ambil item pertama untuk informasi toko
-        $firstItem = $pengirimanBarangJadi->first();
-        $pdf = FacadePdf::loadView('admin.laporan_pengirimanbarangjadi.print', compact('pengirimanBarangJadi', 'firstItem'));
+        // Filter berdasarkan toko
+        if ($toko_id) {
+            $query->where('toko_id', $toko_id);
+        }
     
-        return $pdf->stream('laporan_pengiriman_barang_jadi.pdf');
+        // Filter berdasarkan klasifikasi
+        if ($klasifikasi_id) {
+            $query->whereHas('produk.klasifikasi', function ($query) use ($klasifikasi_id) {
+                $query->where('id', $klasifikasi_id);
+            });
+        }
+    
+        // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_retur
+        $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_retur');
+    
+        // Ambil semua data toko untuk dropdown
+        $tokos = Toko::all();
+        
+        // Ambil semua data klasifikasi untuk dropdown
+        $klasifikasis = Klasifikasi::all();
+    
+        return view('admin.laporan_returbarangjadi.index', compact('stokBarangJadi', 'tokos', 'klasifikasis'));
     }
     
-    // public function printReport($id)
-    // {
-    //     // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-    //     $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_pengiriman');
-                
-    //     // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
-    //     if (!$detailStokBarangJadi) {
-    //         return redirect()->back()->with('error', 'Data tidak ditemukan.');
-    //     }
-
-    //     // Ambil semua data dengan kode_pengiriman yang sama
-    //     $pengirimanBarangJadi = Pengiriman_barangjadi::with(['produk.subklasifikasi', 'toko'])->where('kode_pengiriman', $detailStokBarangJadi)->get();
-
-    //     // Ambil item pertama untuk informasi toko
-    //     $firstItem = $pengirimanBarangJadi->first();
-    //     $pdf = FacadePdf::loadView('admin.laporan_pengirimanbarangjadi.print', compact('detailStokBarangJadi', 'pengirimanBarangJadi', 'firstItem'));
-
-    //     return $pdf->stream('surat_permintaan_produk.pdf');
-    // }
-
+            
+    public function printReportretur(Request $request)
+    {
+        $status = $request->status;
+        $tanggal_retur = $request->tanggal_retur;
+        $tanggal_akhir = $request->tanggal_akhir;
+        $toko_id = $request->toko_id;
+        $klasifikasi_id = $request->klasifikasi_id;
+    
+        // Query dasar
+        $query = Retur_barangjadi::with('produk.klasifikasi');
+    
+        // Filter berdasarkan status
+        if ($status) {
+            $query->where('status', $status);
+        }
+    
+        // Filter berdasarkan tanggal
+        if ($tanggal_retur && $tanggal_akhir) {
+            $tanggal_retur = Carbon::parse($tanggal_retur)->startOfDay();
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $query->whereBetween('tanggal_retur', [$tanggal_retur, $tanggal_akhir]);
+        } elseif ($tanggal_retur) {
+            $tanggal_retur = Carbon::parse($tanggal_retur)->startOfDay();
+            $query->where('tanggal_retur', '>=', $tanggal_retur);
+        } elseif ($tanggal_akhir) {
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $query->where('tanggal_retur', '<=', $tanggal_akhir);
+        } else {
+            // Jika tidak ada filter tanggal, tampilkan data hari ini
+            $query->whereDate('tanggal_retur', Carbon::today());
+        }
+    
+        // Filter berdasarkan toko
+        if ($toko_id) {
+            $query->where('toko_id', $toko_id);
+        }
+    
+        // Filter berdasarkan klasifikasi
+        if ($klasifikasi_id) {
+            $query->whereHas('produk.klasifikasi', function ($query) use ($klasifikasi_id) {
+                $query->where('id', $klasifikasi_id);
+            });
+        }
+    
+        // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_retur
+        $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_retur');
+    
+        // Load view untuk PDF
+        $pdf = FacadePdf::loadView('admin.laporan_returbarangjadi.print', compact('stokBarangJadi', 'tanggal_retur', 'tanggal_akhir'));
+    
+        // Set properti tambahan PDF
+        $pdf->setPaper('A4', 'potrait');
+    
+        // Return hasil cetak PDF
+        return $pdf->stream('Laporan_Retur_BarangJadi.pdf');
+    }
+    
     
 }

@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Inquery Retur Barang Jadi</h1>
+                    <h1 class="m-0">Laporan Retur Barang Jadi</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -91,10 +91,30 @@
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="toko" name="toko_id">
+                                    <option value="">- Semua Toko -</option>
+                                    @foreach ($tokos as $toko)
+                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
+                                    @endforeach
+                                </select>
+                                <label for="toko">(Pilih Toko)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="klasifikasi" name="klasifikasi_id" onchange="filterProduk()">
+                                    <option value="">- Semua Divisi -</option>
+                                    @foreach ($klasifikasis as $klasifikasi)
+                                        <option value="{{ $klasifikasi->id }}" {{ Request::get('klasifikasi_id') == $klasifikasi->id ? 'selected' : '' }}>{{ $klasifikasi->nama }}</option>
+                                    @endforeach
+                                </select>
+                                <label for="klasifikasi">(Pilih Divisi)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
                                 <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
-                                
+                                <button type="button" class="btn btn-primary btn-block" onclick="printReport()" target="_blank">
+                                    <i class="fas fa-print"></i> Cetak
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -215,6 +235,16 @@
         </div>
     </section>
 
+
+    <script>
+        function printReport() {
+        const form = document.getElementById('form-action');
+        form.action = "{{ url('admin/printReportretur') }}";
+        form.target = "_blank";
+        form.submit();
+    }
+    
+    </script> 
     <script>
         var tanggalAwal = document.getElementById('tanggal_retur');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
@@ -235,7 +265,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('admin/inquery_returbarangjadi') }}";
+            form.action = "{{ url('admin/laporan_returbarangjadi') }}";
             form.submit();
         }
 
