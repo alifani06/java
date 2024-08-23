@@ -384,7 +384,7 @@ public function printReport(Request $request)
     });
 
     // Output PDF ke browser
-    return $dompdf->stream('laporan_stok_barangjadi.pdf', ['Attachment' => false]);
+    return $dompdf->stream('laporan_permintaan_barangjadi.pdf', ['Attachment' => false]);
 }
 
 
