@@ -7,9 +7,16 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <style>
+        @page {     
+            margin: 1cm;
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);
+            }
+        }   
+
         body {
             font-family: Arial, sans-serif;
-            font-size: 12px;
+            font-size: 10px;
             margin: 0;
             padding: 0;
             padding-bottom: 80px; /* Tambahkan ruang ekstra untuk informasi admin */
@@ -24,11 +31,11 @@
         }
         .header {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 10px;
         }
         .header .title {
             font-weight: bold;
-            font-size: 28px;
+            font-size: 24px;
         }
         .header .address, .header .contact {
             font-size: 12px;
@@ -40,10 +47,10 @@
         }
         .change-header {
             text-align: center;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
-            margin-top: 20px;
-            margin-bottom: 20px;
+            margin-top: 4px;
+            margin-bottom: 5px;
         }
         .tanggal {
             text-align: left;
@@ -52,7 +59,7 @@
             margin-top: 20px;
         }
         .section-title {
-            margin-top: 10px;
+            margin-top: 5px;
             margin-bottom: 10px;
             font-weight: bold;
             font-size: 16px;
@@ -62,15 +69,19 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            margin-bottom: 9px;
         }
         th, td {
             padding: 6px;
-            border: 1px solid #ccc;
+            border: 1px solid black;
             text-align: left;
-            width: 20%; /* Atur lebar kolom ke nilai persentase yang sesuai */
         }
         th {
             background-color: #f2f2f2;
+        }
+        /* Atur ukuran font di dalam tabel */
+        table td, table th {
+            font-size: 8px; /* Ukuran font tabel lebih kecil */
         }
         table th:nth-child(1),
         table td:nth-child(1) { width: 5%; } /* Lebar untuk kolom No */
@@ -109,7 +120,7 @@
         }
         .admin-info {
             text-align: right;
-            margin-top: 20px;
+            margin-top: 10px;
             font-size: 12px;
         }
     </style>
@@ -121,7 +132,7 @@
                 <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
             </div>
             <div>
-                <span class="title">PT JAVA BAKERY</span><br>
+                <span class="title">PT JAVA BAKERY FACTORY</span><br>
                 @if($toko)
                 <span class="toko-name">Cabang: {{ $toko->nama_toko }}</span><br>
                 <span class="address">{{$toko->alamat}}</span><br>
@@ -134,7 +145,7 @@
         <div class="change-header">SURAT PERMINTAAN PRODUK</div>
 
         <!-- Informasi Permintaan -->
-        <div>
+        <div style="margin-top: 2px;">
             <p>
                 <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Permintaan</strong></span>
                 <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->kode_permintaan }}</span>
@@ -148,7 +159,7 @@
         @foreach ($produkByDivisi as $divisi => $produks)
         <div class="section-title">{{ $divisi }}</div>
         
-        <table>
+        <table >
             <thead>
                 <tr>
                     <th>No</th>
