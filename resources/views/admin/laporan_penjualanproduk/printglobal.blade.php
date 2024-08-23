@@ -116,15 +116,20 @@
             @php
                 $grandTotal = 0;
                 $grandTotalFee = 0;
+                $totalDeposit = 0;
             @endphp
             @foreach ($inquery as $item)
                 @php
                     $grandTotal += $item->sub_total;
-                    // Menghapus semua karakter kecuali angka
+    
+                    // Menghapus semua karakter kecuali angka dari fee
                     $total_fee = preg_replace('/[^\d]/', '', $item->total_fee);
-                    // Konversi ke tipe float
                     $total_fee = (float) $total_fee;
                     $grandTotalFee += $total_fee;
+    
+                    // Menambahkan deposit jika ada
+                    $deposit = $item->dppemesanan->dp_pemesanan ?? 0;
+                    $totalDeposit += $deposit;
                 @endphp
                 <tr>
                     <td class="text-center">{{ $loop->iteration }}</td>
@@ -137,8 +142,10 @@
                             Non Member
                         @endif
                     </td>
-                    <td>{{ $item->kasir ?? '-' }}</td>
-                    <td>{{ $item->kasir ?? '-' }}</td>
+                    <td>{{ $item->dppemesanan->kode_dppemesanan ?? '-' }}</td>
+                    <td>
+                        {{ $deposit > 0 ? 'Rp. ' . number_format($deposit, 0, ',', '.') : '-' }}
+                    </td>
                     <td>{{ $item->metodepembayaran->nama_metode ?? 'Tunai' }}</td>
                     <td>
                         @if ($total_fee == 0)
@@ -152,20 +159,30 @@
             @endforeach
         </tbody>
     </table>
-
-    <!-- Tabel total penjualan fee dan grand total -->
-    <table style="width: 50%; margin-left: auto; margin-right: 0; background-color: yellow">
+    
+    <!-- Tabel total penjualan fee, total deposit, dan grand total -->
+    <table style="width: 60%; margin-left: auto; margin-right: 0; background-color: yellow">
         <tbody>
             <tr>
-                <td style="text-align: right;  width: 70%;">Total Fee Penjualan</td>
-                <td style="text-align: left; font-weight: bold; width: 30%;">{{ 'Rp. ' .  number_format($grandTotalFee, 0, ',', '.') }}</td>
+                <td style="text-align: right;  width: 60%;">Total Fee Penjualan</td>
+                <td style="text-align: left; font-weight: bold; width: 40%;">{{ 'Rp. ' .  number_format($grandTotalFee, 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <td style="text-align: right; ">Grand Total</td>
+                <td style="text-align: right;">Total Penjualan</td>
                 <td style="text-align: left; font-weight: bold;">{{ 'Rp. ' .  number_format($grandTotal, 0, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td style="text-align: right;">Total Deposit</td>
+                <td style="text-align: left; font-weight: bold;">{{ 'Rp. ' .  number_format($totalDeposit, 0, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td style="text-align: right;">Total </td>
+                <td style="text-align: left; font-weight: bold;">{{ 'Rp. ' .  number_format($grandTotal - $totalDeposit, 0, ',', '.') }}</td>
             </tr>
         </tbody>
     </table>
+    
+    
     
     
 </body>

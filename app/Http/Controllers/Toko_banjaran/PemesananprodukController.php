@@ -202,6 +202,7 @@ class PemesananprodukController extends Controller
         // Buat pemesanan baru
         $cetakpdf = Pemesananproduk::create([
             'nama_pelanggan' => $request->nama_pelanggan,
+            'kode_pelanggan' => $request->kode_pelanggan,
             'telp' => $request->telp,
             'alamat' => $request->alamat,
             'kategori' => $request->kategori,

@@ -42,6 +42,7 @@ class Penjualanproduk extends Model
         'alamat_penerima',
         'tanggal_kirim',
         'toko_id',
+        'dppemesanan_id',
         'status',
         'tanggaL_akhir',
   
@@ -92,6 +93,11 @@ class Penjualanproduk extends Model
 public function pelunasan()
 {
     return $this->hasOne(Pelunasan::class);
+}
+
+public function dppemesanan()
+{
+    return $this->belongsTo(Dppemesanan::class, 'dppemesanan_id');
 }
 
 }

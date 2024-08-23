@@ -19,6 +19,7 @@ class Pemesananproduk extends Model
     protected $fillable = [
         'kode_pemesanan',
         'nama_pelanggan',
+        'kode_pelanggan',
         'alamat',
         'telp',
         'kategori',
