@@ -16,7 +16,7 @@
             /* padding: 0; */
             padding-right: 450px;
             font-size: 10px;
-            background-color: #f2f2f2;
+            background-color: #fff;
         }
             .container {
             width: 70mm; /* Adjusted width */
@@ -348,7 +348,7 @@
                         @endforeach
                         <tr>
                             @if($penjualan->metode_id !== null)
-                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee {{$penjualan->metodepembayaran->fee}}%</strong></td>
+                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee {{$penjualan->metodepembayaran->nama_metode}} {{$penjualan->metodepembayaran->fee}}%</strong></td>
                                 <td style="font-size: 8px; text-align: right;">
                                     @php
                                         // Menghapus semua karakter kecuali angka

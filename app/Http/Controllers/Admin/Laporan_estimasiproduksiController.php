@@ -613,7 +613,7 @@ $combinedData = $pemesananProduk->map(function ($tokoDetails, $produkId) use ($p
     $dompdf->loadHtml($html);
 
     // Set paper size and orientation
-    $dompdf->setPaper('A4', 'landscape');
+    $dompdf->setPaper('A4', 'potrait');
 
     // Render the PDF
     $dompdf->render();

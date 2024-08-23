@@ -181,7 +181,7 @@
     {{-- <hr class="divider"> --}}
 
     <!-- Judul Surat -->
-    <div class="change-header">SURAT PENGIRIMAN BARANG JADI</div>
+    <div class="change-header">SURAT RETUR BARANG JADI</div>
     <div class="change-header1">
         <p style="margin-bottom: 2px;">Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
         <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>

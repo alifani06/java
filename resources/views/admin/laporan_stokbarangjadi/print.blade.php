@@ -209,22 +209,7 @@
                 </tbody>
             </table>
 
-            <div class="signature-container">
-                <div class="signature-row">
-                    <div class="signaturea">
-                        <p style="margin-left: 30px;"><strong>Gudang</strong></p><br><br>
-                        <p>____________________</p>
-                    </div>
-                    <div class="signatureb">
-                        <p><strong>Accounting</strong></p><br><br>
-                        <p>____________________</p>
-                    </div>
-                    <div class="signaturec">
-                        <p style="margin-right: 60px;"><strong>Baker</strong></p><br><br>
-                        <p>____________________</p>
-                    </div>
-                </div>
-            </div>
+            
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </html>

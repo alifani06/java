@@ -16,7 +16,7 @@
             /* padding: 0; */
             padding-right: 450px;
             font-size: 10px;
-            background-color: #f2f2f2;
+            background-color: #fff;
         }
             .container {
             width: 70mm; /* Adjusted width */

@@ -224,7 +224,7 @@
 
     <!-- Tabel Permintaan -->
     @if($tableType == 'permintaan')
-    <h3>Permintaan Produk</h3>
+    <h3>Atas Permintaan</h3>
     <table>
         <thead>
             <tr>
@@ -269,7 +269,7 @@
 
     <!-- Tabel Pemesanan -->
     @if($tableType == 'pemesanan')
-    <h3>Pemesanan Produk</h3>
+    <h3>Atas Pesanan</h3>
     <table>
         <thead>
             <tr>

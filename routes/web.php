@@ -239,11 +239,14 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/inquery_pemindahanbarangjadi/{id}/print', [Inquery_pemindahanbarangjadiController::class, 'print'])->name('inquery_pemindahanbarangjadi.print');
 
     Route::resource('laporan_returbarangjadi', \App\Http\Controllers\Admin\Laporan_returbarangjadiController::class);
+    Route::get('printReportretur', [\App\Http\Controllers\Admin\Laporan_returbarangjadiController::class, 'printReportretur']);
+
+    Route::resource('laporan_pemindahanbarangjadi', \App\Http\Controllers\Admin\Laporan_pemindahanbarangjadiController::class);
+    Route::get('printReportpemindahan/{id}', [\App\Http\Controllers\Admin\Laporan_pemindahanbarangjadiController::class, 'printReportpemindahan']);
 
 
     //TOKO SLAWI
     Route::resource('stok_tokoslawi', \App\Http\Controllers\Admin\Stok_tokoslawiController::class);
-    Route::get('printReportretur', [\App\Http\Controllers\Admin\Laporan_returbarangjadiController::class, 'printReportretur']);
 
     Route::resource('pengiriman_tokoslawi', \App\Http\Controllers\Admin\Pengiriman_tokoslawiController::class);
     Route::get('pengiriman_tokoslawi/unpost_pengiriman/{id}', [\App\Http\Controllers\Admin\Pengiriman_tokoslawiController::class, 'unpost_pengiriman']);

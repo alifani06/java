@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surat Permintaan Produk</title>
+    <title>Surat Stok Produk</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <style>
@@ -142,7 +142,7 @@
     </div>
 
     <!-- Judul Surat -->
-    <div class="change-header">LAPORAN STOK BARANG JADI</div>
+    <div class="change-header">SURAT STOK BARANG JADI</div>
 
 
     <table class="info-table" style="width: 100%; margin-bottom: 10px;">

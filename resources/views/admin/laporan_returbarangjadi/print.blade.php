@@ -57,7 +57,7 @@
 
 <div class="date-range">
     @if($tanggal_retur && $tanggal_akhir)
-        <p>Periode Tanggal: {{ \Carbon\Carbon::parse($tanggal_retur)->format('d-m-Y') }} hingga {{ \Carbon\Carbon::parse($tanggal_akhir)->format('d-m-Y') }}</p>
+        <p>Periode Tanggal: {{ \Carbon\Carbon::parse($tanggal_retur)->format('d-m-Y') }} s/d {{ \Carbon\Carbon::parse($tanggal_akhir)->format('d-m-Y') }}</p>
     @elseif($tanggal_retur)
         <p>Periode Tanggal: Mulai {{ \Carbon\Carbon::parse($tanggal_retur)->format('d-m-Y') }}</p>
     @elseif($tanggal_akhir)
