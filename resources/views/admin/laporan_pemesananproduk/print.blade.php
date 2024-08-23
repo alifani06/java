@@ -25,6 +25,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
+            font-size: 10px;
         }
         table, th, td {
             border: 1px solid #ddd;
@@ -82,7 +83,7 @@
 
     @if ($toko_id == '0')
         <!-- Tabel Global -->
-        <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
+        <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 10px">
             <thead>
                 <tr>
                     <th class="text-center">No</th>
@@ -95,6 +96,7 @@
                     <th>Slawi</th>
                     <th>Pemalang</th>
                     <th>Bumiayu</th>
+                    <th>Cilacap</th>
                     <th>Total</th>
                 </tr>
             </thead>
@@ -105,7 +107,7 @@
                 @endphp
                 @foreach ($groupedData as $detail)
                     @php
-                        $subtotal = $detail['benjaran'] + $detail['tegal'] + $detail['slawi'] + $detail['pemalang'] + $detail['bumiayu'];
+                        $subtotal = $detail['benjaran'] + $detail['tegal'] + $detail['slawi'] + $detail['pemalang'] + $detail['bumiayu']+ $detail['cilacap'];
                         $totalSubtotal += $subtotal;
                     @endphp
                     <tr>
@@ -119,6 +121,7 @@
                         <td>{{ $detail['slawi'] }}</td>
                         <td>{{ $detail['pemalang'] }}</td>
                         <td>{{ $detail['bumiayu'] }}</td>
+                        <td>{{ $detail['cilacap'] }}</td>
                         <td>{{ number_format($subtotal, 0, ',', '.') }}</td>
                     </tr>
                 @endforeach
@@ -401,6 +404,64 @@
                 @php
                     $currentKodeProduk = $detail['kode_produk'];
                     $totalPerProduk += $detail['pemalang'];
+                @endphp
+            @endforeach
+            @if ($currentKodeProduk)
+                <tr>
+                    <td colspan="6" class="text-right"><strong>Total untuk Produk: {{ $currentKodeProduk }}</strong></td>
+                    <td>{{ $totalPerProduk }}</td>
+                    <td colspan="2"></td>
+                </tr>
+            @endif
+        </tbody>
+    </table>
+    @endif
+
+    @if ($toko_id == '6')
+    <!-- Tabel Toko Cilacap -->
+    <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 12px">
+        <thead>
+            <tr>
+                <th class="text-center">No</th>
+                <th>Tanggal Pemesanan</th>
+                <th>Divisi</th>
+                <th>Kode Pemesanan</th>
+                <th>Kode Produk</th>
+                <th>Nama Produk</th>
+                <th>Toko Cilacap</th>
+                <th>Catatan</th>
+            </tr>
+        </thead>
+        <tbody>
+            @php
+                $no = 1;
+                $currentKodeProduk = null;
+                $totalPerProduk = 0;
+            @endphp
+            @foreach ($groupedData as $detail)
+                @if ($currentKodeProduk && $currentKodeProduk != $detail['kode_produk'])
+                    <tr>
+                        <td colspan="6" class="text-right"><strong>Total untuk Produk: {{ $currentKodeProduk }}</strong></td>
+                        <td>{{ $totalPerProduk }}</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    @php
+                        $totalPerProduk = 0;
+                    @endphp
+                @endif
+                <tr>
+                    <td class="text-center">{{ $no++ }}</td>
+                    <td>{{ $detail['tanggal_pemesanan'] ?? '-' }}</td>
+                    <td>{{ $detail['klasifikasi'] }}</td>
+                    <td>{{ $detail['kode_pemesanan'] ?? '-' }}</td>
+                    <td>{{ $detail['kode_produk'] }}</td>
+                    <td>{{ $detail['nama_produk'] }}</td>
+                    <td>{{ $detail['cilacap'] }}</td>
+                    <td>{{ $detail['catatanproduk'] ?? '-' }}</td>
+                </tr>
+                @php
+                    $currentKodeProduk = $detail['kode_produk'];
+                    $totalPerProduk += $detail['cilacap'];
                 @endphp
             @endforeach
             @if ($currentKodeProduk)

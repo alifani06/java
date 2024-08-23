@@ -87,6 +87,7 @@ class Laporan_pemesananprodukController extends Controller
                         'slawi' => 0,
                         'pemalang' => 0,
                         'bumiayu' => 0,
+                        'cilacap' => 0,
                     ];
                 }
                 $tokoFieldMap = [
@@ -95,6 +96,7 @@ class Laporan_pemesananprodukController extends Controller
                     3 => 'slawi',
                     4 => 'pemalang',
                     5 => 'bumiayu',
+                    6 => 'cilacap',
                 ];
                 $tokoField = $tokoFieldMap[$item->toko_id] ?? null;
                 if ($tokoField) {
@@ -168,6 +170,7 @@ class Laporan_pemesananprodukController extends Controller
                         'slawi' => 0,
                         'pemalang' => 0,
                         'bumiayu' => 0,
+                        'cilacap' => 0,
                         'subtotal' => 0,
                     ];
                 }
@@ -177,6 +180,7 @@ class Laporan_pemesananprodukController extends Controller
                     3 => 'slawi',
                     4 => 'pemalang',
                     5 => 'bumiayu',
+                    5 => 'cilacap',
                 ];
                 $tokoField = $tokoFieldMap[$item->toko_id] ?? null;
                 if ($tokoField) {

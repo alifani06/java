@@ -66,6 +66,8 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            page-break-inside: auto;
+
         }
         th, td {
             padding: 6px;
@@ -75,6 +77,10 @@
         th {
             background-color: #f2f2f2;
         }
+        tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+}
         .signature-container {
             margin-top: 60px;
         }
@@ -132,6 +138,8 @@
                 width: 100%;
                 border-collapse: collapse;
                 margin-top: 10px;
+                page-break-inside: auto;
+
             }
             th, td {
                 padding: 6px;
@@ -176,7 +184,9 @@
     <!-- Detail Produk -->
     @foreach($groupedData as $kode_pengiriman => $items)
         <div>
-            <p><strong>Kode Pengiriman:</strong> {{ $kode_pengiriman }}</p>
+            <p style="margin-bottom: 2px;"><strong>Kode Pengiriman:</strong> {{ $kode_pengiriman }}</p>
+            <p><strong>Cabang:</strong> {{ $items->first()->toko->nama_toko }}</p> <!-- Menampilkan nama toko -->
+
         </div>
         <table>
             <thead>
@@ -203,22 +213,6 @@
         <br>
     @endforeach
 
-    <div class="signature-container">
-        <div class="signature-row">
-            <div class="signaturea">
-                <p>____________________</p>
-                {{-- <p>Nama Gudang</p> --}}
-            </div>
-            <div class="signatureb">
-                <p>____________________</p>
-                {{-- <p>Nama Accounting</p> --}}
-            </div>
-            <div class="signaturec">
-                <p>____________________</p>
-                {{-- <p>Nama Karyawan</p> --}}
-            </div>
-        </div>
-    </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </html>
