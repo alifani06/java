@@ -25,7 +25,9 @@ use App\Models\Permintaanprodukdetail;
 use App\Models\Klasifikasi;
 use App\Models\Pemesananproduk;
 use App\Models\Stok_tokoslawi;
+use App\Models\Stok_tokobanjaran;
 use App\Models\Retur_tokoslawi;
+use App\Models\Retur_tokobanjaran;
 use App\Models\Retur_barangjadi;
 use App\Models\Toko;
 use App\Models\Dppemesanan;
@@ -54,7 +56,7 @@ class Inquery_returbanjaranController extends Controller{
             $tanggal_input = $request->tanggal_input;
             $tanggal_akhir = $request->tanggal_akhir;
 
-            $query = Retur_tokoslawi::with('produk.klasifikasi');
+            $query = Retur_tokobanjaran::with('produk.klasifikasi');
 
             if ($status) {
                 $query->where('status', $status);
@@ -78,7 +80,7 @@ class Inquery_returbanjaranController extends Controller{
             // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
             $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_retur');
 
-            return view('toko_banjaran.inquery_returslawi.index', compact('stokBarangJadi'));
+            return view('toko_banjaran.inquery_returbanjaran.index', compact('stokBarangJadi'));
     }
 
     
@@ -361,7 +363,7 @@ public function show($id)
 
 public function print($id)
     {
-        $detailStokBarangJadi = Retur_tokoslawi::where('id', $id)->value('kode_retur');
+        $detailStokBarangJadi = Retur_tokobanjaran::where('id', $id)->value('kode_retur');
     
         // Jika kode_retur tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -369,12 +371,12 @@ public function print($id)
         }
         
         // Ambil semua data dengan kode_retur yang sama
-        $pengirimanBarangJadi = Retur_tokoslawi::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
+        $pengirimanBarangJadi = Retur_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
         
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        $pdf = FacadePdf::loadView('toko_banjaran.inquery_returslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
+        $pdf = FacadePdf::loadView('toko_banjaran.inquery_returbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
         

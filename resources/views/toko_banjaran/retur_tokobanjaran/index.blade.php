@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Retur Toko Slawi</h1>
+                    <h1 class="m-0">Retur Toko Banjaran</h1>
                     
                 </div><!-- /.col -->
                 <div class="col-sm-6">
@@ -69,7 +69,7 @@
             <div class="card">
             <div class="card-body">
                 <div class="float-right">
-                    <a href="{{ url('toko_slawi/retur_tokoslawi/create') }}" class="btn btn-primary btn-sm">
+                    <a href="{{ url('toko_banjaran/retur_tokobanjaran/create') }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i> 
                     </a>
                 </div>
