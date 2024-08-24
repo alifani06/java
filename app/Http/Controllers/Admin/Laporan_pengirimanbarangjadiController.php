@@ -110,75 +110,156 @@ class Laporan_pengirimanbarangjadiController extends Controller
     //     return $pdf->stream('laporan_pengiriman_barang_jadi.pdf');
     // }
     
+    // public function printReport(Request $request)
+    // {
+    //     // Ambil parameter dari request
+    //     $tanggalPengiriman = $request->input('tanggal_pengiriman');
+    //     $tanggalAkhir = $request->input('tanggal_akhir');
+    //     $status = $request->input('status');
+    
+    //     // Buat query untuk ambil data berdasarkan filter
+    //     $query = Pengiriman_barangjadi::query();
+    
+    //     if ($tanggalPengiriman) {
+    //         $query->whereDate('tanggal_pengiriman', '>=', $tanggalPengiriman);
+    //     }
+    
+    //     if ($tanggalAkhir) {
+    //         $query->whereDate('tanggal_pengiriman', '<=', $tanggalAkhir);
+    //     }
+    
+    //     if ($status) {
+    //         $query->where('status', $status);
+    //     }
+    
+    //     // Ambil data yang telah difilter
+    //     $pengirimanBarangJadi = $query->with(['produk.subklasifikasi', 'toko'])->get();
+    
+    //     // Kelompokkan data berdasarkan kode_pengiriman
+    //     $groupedData = $pengirimanBarangJadi->groupBy('kode_pengiriman');
+    
+    //     // Ambil item pertama untuk informasi toko
+    //     $firstItem = $pengirimanBarangJadi->first();
+    
+    //     // Inisialisasi DOMPDF
+    //     $options = new \Dompdf\Options();
+    //     $options->set('isHtml5ParserEnabled', true);
+    //     $options->set('isRemoteEnabled', true); // Jika menggunakan URL eksternal untuk gambar atau CSS
+    
+    //     $dompdf = new \Dompdf\Dompdf($options);
+    
+    //     // Memuat konten HTML dari view
+    //     $html = view('admin.laporan_pengirimanbarangjadi.print', compact('groupedData', 'firstItem'))->render();
+    //     $dompdf->loadHtml($html);
+    
+    //     // Set ukuran kertas dan orientasi
+    //     $dompdf->setPaper('A4', 'portrait');
+    
+    //     // Render PDF
+    //     $dompdf->render();
+    
+    //     // Menambahkan nomor halaman di kanan bawah
+    //     $canvas = $dompdf->getCanvas();
+    //     $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+    //         $text = "Page $pageNumber of $pageCount";
+    //         $font = $fontMetrics->getFont('Arial', 'normal');
+    //         $size = 10;
+    
+    //         // Menghitung lebar teks
+    //         $width = $fontMetrics->getTextWidth($text, $font, $size);
+    
+    //         // Mengatur koordinat X dan Y
+    //         $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+    //         $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+    
+    //         // Menambahkan teks ke posisi yang ditentukan
+    //         $canvas->text($x, $y, $text, $font, $size);
+    //     });
+    
+    //     // Output PDF ke browser
+    //     return $dompdf->stream('laporan_pengiriman_barang_jadi.pdf', ['Attachment' => false]);
+    // }
     public function printReport(Request $request)
-    {
-        // Ambil parameter dari request
-        $tanggalPengiriman = $request->input('tanggal_pengiriman');
-        $tanggalAkhir = $request->input('tanggal_akhir');
-        $status = $request->input('status');
+{
+    // Ambil parameter dari request
+    $tanggalPengiriman = $request->input('tanggal_pengiriman');
+    $tanggalAkhir = $request->input('tanggal_akhir');
+    $status = $request->input('status');
     
-        // Buat query untuk ambil data berdasarkan filter
-        $query = Pengiriman_barangjadi::query();
+    // Buat query untuk ambil data berdasarkan filter
+    $query = Pengiriman_barangjadi::query();
     
-        if ($tanggalPengiriman) {
-            $query->whereDate('tanggal_pengiriman', '>=', $tanggalPengiriman);
-        }
-    
-        if ($tanggalAkhir) {
-            $query->whereDate('tanggal_pengiriman', '<=', $tanggalAkhir);
-        }
-    
-        if ($status) {
-            $query->where('status', $status);
-        }
-    
-        // Ambil data yang telah difilter
-        $pengirimanBarangJadi = $query->with(['produk.subklasifikasi', 'toko'])->get();
-    
-        // Kelompokkan data berdasarkan kode_pengiriman
-        $groupedData = $pengirimanBarangJadi->groupBy('kode_pengiriman');
-    
-        // Ambil item pertama untuk informasi toko
-        $firstItem = $pengirimanBarangJadi->first();
-    
-        // Inisialisasi DOMPDF
-        $options = new \Dompdf\Options();
-        $options->set('isHtml5ParserEnabled', true);
-        $options->set('isRemoteEnabled', true); // Jika menggunakan URL eksternal untuk gambar atau CSS
-    
-        $dompdf = new \Dompdf\Dompdf($options);
-    
-        // Memuat konten HTML dari view
-        $html = view('admin.laporan_pengirimanbarangjadi.print', compact('groupedData', 'firstItem'))->render();
-        $dompdf->loadHtml($html);
-    
-        // Set ukuran kertas dan orientasi
-        $dompdf->setPaper('A4', 'portrait');
-    
-        // Render PDF
-        $dompdf->render();
-    
-        // Menambahkan nomor halaman di kanan bawah
-        $canvas = $dompdf->getCanvas();
-        $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
-            $text = "Page $pageNumber of $pageCount";
-            $font = $fontMetrics->getFont('Arial', 'normal');
-            $size = 10;
-    
-            // Menghitung lebar teks
-            $width = $fontMetrics->getTextWidth($text, $font, $size);
-    
-            // Mengatur koordinat X dan Y
-            $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
-            $y = $canvas->get_height() - 15; // 15 pixel dari bawah
-    
-            // Menambahkan teks ke posisi yang ditentukan
-            $canvas->text($x, $y, $text, $font, $size);
-        });
-    
-        // Output PDF ke browser
-        return $dompdf->stream('laporan_pengiriman_barang_jadi.pdf', ['Attachment' => false]);
+    if ($tanggalPengiriman) {
+        $query->whereDate('tanggal_pengiriman', '>=', $tanggalPengiriman);
     }
+    
+    if ($tanggalAkhir) {
+        $query->whereDate('tanggal_pengiriman', '<=', $tanggalAkhir);
+    }
+    
+    if ($status) {
+        $query->where('status', $status);
+    }
+    
+    $formattedStartDate = $tanggalPengiriman ? Carbon::parse($tanggalPengiriman)->format('d-m-Y') : 'N/A';
+        $formattedEndDate = $tanggalAkhir ? Carbon::parse($tanggalAkhir)->format('d-m-Y') : 'N/A';
+    // Ambil data yang telah difilter
+    $pengirimanBarangJadi = $query->with(['produk.subklasifikasi', 'toko'])->get();
+    
+    // Kelompokkan data berdasarkan kode_pengiriman
+    $groupedData = $pengirimanBarangJadi->groupBy('kode_pengiriman');
+    
+    // Ambil item pertama untuk informasi toko
+    $firstItem = $pengirimanBarangJadi->first();
+    
+    // Inisialisasi DOMPDF
+    $options = new \Dompdf\Options();
+    $options->set('isHtml5ParserEnabled', true);
+    $options->set('isRemoteEnabled', true); // Jika menggunakan URL eksternal untuk gambar atau CSS
+    
+    $dompdf = new \Dompdf\Dompdf($options);
+    
+    // Memuat konten HTML dari view
+    $html = view('admin.laporan_pengirimanbarangjadi.print', [
+    'groupedData'  => $groupedData, 
+    'firstItem' => $firstItem , 
+    'tanggalPengiriman', 
+    'tanggalAkhir',
+    'startDate' => $formattedStartDate,
+    'endDate' => $formattedEndDate,
+    ])->render();
+    
+    
+    $dompdf->loadHtml($html);
+    
+    // Set ukuran kertas dan orientasi
+    $dompdf->setPaper('A4', 'portrait');
+    
+    // Render PDF
+    $dompdf->render();
+    
+    // Menambahkan nomor halaman di kanan bawah
+    $canvas = $dompdf->getCanvas();
+    $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+        $text = "Page $pageNumber of $pageCount";
+        $font = $fontMetrics->getFont('Arial', 'normal');
+        $size = 10;
+    
+        // Menghitung lebar teks
+        $width = $fontMetrics->getTextWidth($text, $font, $size);
+    
+        // Mengatur koordinat X dan Y
+        $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+        $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+    
+        // Menambahkan teks ke posisi yang ditentukan
+        $canvas->text($x, $y, $text, $font, $size);
+    });
+    
+    // Output PDF ke browser
+    return $dompdf->stream('laporan_pengiriman_barang_jadi.pdf', ['Attachment' => false]);
+}
+
     
     
 }

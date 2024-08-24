@@ -43,10 +43,11 @@
         table {
             border-collapse: collapse;
             width: 100%;
+            font-size: 10px;
         }
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+            border: 1px solid black;
+            padding: 4px;
             text-align: left;
         }
         th {
@@ -68,21 +69,8 @@
     </style>
 </head>
 <body>
-    <!-- Kop Surat -->
-    <div class="header">
-        <div class="logo">
-            <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
-        </div>
-        <div>
-            <span class="title">PT JAVA BAKERY FACTORY</span><br>
-            <span class="address">JL. HOS COKRO AMINOTO NO 5 SLAWI TEGAL</span><br>
-            <span class="contact">Telp / Fax, Email :</span>
-        </div>
-        <hr class="divider">
-    </div>
-
     <!-- Judul Surat -->
-    <div class="change-header">LAPORAN PERMINTAAN PRODUK</div>
+    <div class="change-header">LAPORAN PERMINTAAN PRODUK RINCI</div>
     <div class="text" style="margin-bottom: 1px;">
         @php
             \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
@@ -151,14 +139,14 @@
                             <td>{{ $detail['subklasifikasi'] }}</td>
                             <td>{{ $detail['kode_produk'] }}</td>
                             <td>{{ $detail['nama_produk'] }}</td>
-                            <td>{{ $detail['jumlah'] }}</td>
+                            <td style="text-align: right">{{ $detail['jumlah'] }}</td>
                         </tr>
                     @endforeach
                 </tbody>
                 <tfoot>
                     <tr class="total-row">
                         <td colspan="4">Total</td>
-                        <td>{{ collect($produks)->sum('jumlah') }}</td>
+                        <td style="text-align: right">{{ collect($produks)->sum('jumlah') }}</td>
                     </tr>
                 </tfoot>
             </table><br>

@@ -67,15 +67,16 @@
             border-collapse: collapse;
             margin-top: 10px;
             page-break-inside: auto;
+            font-size: 10px;
 
         }
         th, td {
-            padding: 6px;
-            border: 1px solid #ccc;
+            padding: 4px;
+            border: 1px solid black;
             text-align: left;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: white;
         }
         tr {
     page-break-inside: avoid;
@@ -155,32 +156,31 @@
     </style>
 </head>
 <body>
-    <!-- Kop Surat -->
-    <table class="header" style="margin-top: 2px;">
-        <tr>
-            <td style="text-align: center;">
-                <div>
-                    <span class="title">PT JAVA BAKERY FACTORY</span><br>
-                    <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
-                </div>                
-            </td>
-        </tr>
-    </table>
-
+    <!-- Header -->
     <div class="change-header">LAPORAN PENGIRIMAN BARANG JADI</div>
 
-    <!-- Informasi Permintaan -->
-    {{-- <div>
-        <p style="margin-bottom: 2px;">
-            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Pengiriman</strong></span>
-            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $firstItem->first()->kode_pengiriman }}</span>
-        </p>
-        <p>
-            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal</strong> </span>
-            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ \Carbon\Carbon::now()->format('d-m-Y') }}</span>
-        </p>
-    </div> --}}
-
+    <div class="text" style="margin-bottom: 1px;">
+        @php
+            \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
+    
+            $formattedStartDate = \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y');
+            $formattedEndDate = \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y');
+            $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
+        @endphp
+    
+        @if ($startDate && $endDate)
+            <p>
+                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }} &nbsp;&nbsp;&nbsp;
+                <span style="float: right; font-style: italic">{{ $currentDateTime }}</span>
+            </p>
+        @else
+            <p>
+                Periode: Tidak ada tanggal awal dan akhir yang diteruskan. &nbsp;&nbsp;&nbsp;
+                <span style="float: right;">{{ $currentDateTime }}</span>
+            </p>
+        @endif
+    </div>
+    
     <!-- Detail Produk -->
     @foreach($groupedData as $kode_pengiriman => $items)
         <div>

@@ -97,7 +97,7 @@ class Laporan_stokbarangjadiController extends Controller
     
         $stokBarangJadi = $query->get();
         $formattedStartDate = $tanggal_input ? Carbon::parse($tanggal_input)->format('d-m-Y') : 'N/A';
-    $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : 'N/A';
+        $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : 'N/A';
         
     // Inisialisasi DOMPDF
     $options = new Options();

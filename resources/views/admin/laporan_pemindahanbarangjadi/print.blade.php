@@ -12,15 +12,22 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
-            font-size: 12px; /* Ukuran font lebih kecil untuk tabel */
+            font-size: 10px; /* Ukuran font lebih kecil untuk tabel */
         }
         th, td {
             border: 1px solid #000;
-            padding: 8px;
+            padding: 4px;
             text-align: left;
         }
         th {
             background-color: #f4f4f4;
+        }
+        .change-header {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
         .header {
             text-align: center;
@@ -35,28 +42,28 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Laporan Pemindahan Barang Jadi</h1>
-        @if($tanggal_input && $tanggal_akhir)
-            <p>Periode: {{ \Carbon\Carbon::parse($tanggal_input)->format('d/m/Y') }} s/d {{ \Carbon\Carbon::parse($tanggal_akhir)->format('d/m/Y') }}</p>
-        @elseif($tanggal_input)
-            <p>Periode Mulai: {{ \Carbon\Carbon::parse($tanggal_input)->format('d/m/Y') }}</p>
-        @elseif($tanggal_akhir)
-            <p>Periode Hingga: {{ \Carbon\Carbon::parse($tanggal_akhir)->format('d/m/Y') }}</p>
-        @else
-            <p>Periode: Hari Ini</p>
-        @endif
-
+    <div class="change-header">LAPORAN PEMINDAHAN BARANG JADI</div>
+    <div class="text" style="margin-bottom: 1px;">
         @php
-        \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
-        $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
-        @endphp
-    </div>
-
-    <p>
-        <span style="float: right; font-style: italic; font-size: 10px;">{{ $currentDateTime }}</span>
-    </p>
+            \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
     
+            $formattedStartDate = \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y');
+            $formattedEndDate = \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y');
+            $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
+        @endphp
+    
+        @if ($startDate && $endDate)
+            <p style="font-size: 10px;">
+                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }} &nbsp;&nbsp;&nbsp;
+                <span style="float: right; font-style: italic">{{ $currentDateTime }}</span>
+            </p>
+        @else
+            <p>
+                Periode: Tidak ada tanggal awal dan akhir yang diteruskan. &nbsp;&nbsp;&nbsp;
+                <span style="float: right;">{{ $currentDateTime }}</span>
+            </p>
+        @endif
+    </div>
 
     @if($stokBarangJadi->isEmpty())
         <p>Data tidak ditemukan untuk filter yang diberikan.</p>

@@ -26,7 +26,7 @@
         }
         .change-header {
             text-align: center;
-            font-size: 18px;
+            font-size: 24px;
             font-weight: bold;
             margin-top: 20px;
             margin-bottom: 20px;
@@ -42,13 +42,13 @@
             border: 1px solid black;
         }
         th, td {
-            padding: 8px;
+            padding: 5px;
             text-align: left;
         }
     </style>
 </head>
 <body>
-    <div class="header">
+    {{-- <div class="header">
         <div class="logo">
             <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
         </div>
@@ -58,7 +58,7 @@
             <span class="contact">Telp / Fax, Email :</span>
         </div>
         <hr class="divider">
-    </div>
+    </div> --}}
     <div class="change-header">LAPORAN ESTIMASI PRODUKSI</div>
 
     @if($tanggalAwal && $tanggalAkhir)
@@ -103,9 +103,9 @@
                                 })->sum('jumlah');
                                 $totalJumlah += $jumlah;
                             @endphp
-                            <td>{{ $jumlah }}</td>
+                            <td style="text-align: right">{{ $jumlah }}</td>
                         @endforeach
-                        <td>{{ $totalJumlah }}</td>
+                        <td style="text-align: right">{{ $totalJumlah }}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -148,9 +148,9 @@
                             })->sum('jumlah');
                             $totalJumlah += $jumlah;
                         @endphp
-                        <td>{{ $jumlah }}</td>
+                        <td style="text-align: right">{{ $jumlah }}</td>
                     @endforeach
-                    <td>{{ $totalJumlah }}</td>
+                    <td style="text-align: right">{{ $totalJumlah }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -206,10 +206,10 @@
                 $totalPesanan += $pesanan;
                 $totalPermintaan += $permintaan;
             @endphp
-            <td>{{ $pesanan }}</td>
-            <td>{{ $permintaan }}</td>
+            <td style="text-align: right">{{ $pesanan }}</td>
+            <td style="text-align: right">{{ $permintaan }}</td>
         @endforeach
-        <td>{{ $totalPesanan + $totalPermintaan }}</td>
+        <td style="text-align: right">{{ $totalPesanan + $totalPermintaan }}</td>
     </tr>
     @endforeach 
         </tbody>

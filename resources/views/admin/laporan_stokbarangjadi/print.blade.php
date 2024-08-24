@@ -52,10 +52,11 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            font-size: 10px;
         }
         th, td {
-            padding: 6px;
-            border: 1px solid #ccc;
+            padding: 4px;
+            border: 1px solid black;
             text-align: left;
         }
         th {
@@ -92,6 +93,7 @@
         }
         .total-row {
             font-weight: bold;
+            text-align: right;
         }
         .notes {
             margin-top: 30px;
@@ -118,7 +120,7 @@
     </style>
 </head>
 <body>
-    <div class="header">
+    {{-- <div class="header">
         <div class="logo">
             <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
         </div>
@@ -129,7 +131,7 @@
         </div>
         <br>
         <hr class="divider">
-    </div>
+    </div> --}}
 
     <div class="change-header">LAPORAN STOK BARANG JADI</div>
     <div class="text" style="margin-bottom: 1px;">
@@ -195,7 +197,7 @@
             <td>{{ $item->produk->klasifikasi->nama }}</td>
             <td>{{ $item->produk->kode_produk }}</td>
             <td>{{ $item->produk->nama_produk }}</td>
-            <td>{{ $item->stok }}</td>
+            <td style="text-align: left">{{ $item->stok }}</td>
         </tr>
         @php
             $totalStok += $item->stok; // Accumulate stock total

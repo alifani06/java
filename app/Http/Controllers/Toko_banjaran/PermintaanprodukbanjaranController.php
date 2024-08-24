@@ -42,17 +42,20 @@ use Maatwebsite\Excel\Facades\Excel;
 class PermintaanprodukbanjaranController extends Controller{
 
     public function index()
-{
-    $today = \Carbon\Carbon::today();
-
-    $permintaanProduks = PermintaanProduk::with('detailpermintaanproduks')
-        ->whereDate('created_at', $today)
-        ->orderBy('created_at', 'desc')
-        ->get();
-
-    return view('toko_banjaran.permintaan_produk.index', compact('permintaanProduks'));
-}
-
+    {
+        $today = \Carbon\Carbon::today();
+    
+        $permintaanProduks = PermintaanProduk::whereDate('created_at', $today)
+            ->whereHas('detailpermintaanproduks', function($query) {
+                $query->where('toko_id', 1);  // Filter berdasarkan toko_id di detailpermintaanproduks
+            })
+            ->orderBy('created_at', 'desc')
+            ->with('detailpermintaanproduks')  // Eager load detailpermintaanproduks untuk tampilan
+            ->get();
+    
+        return view('toko_banjaran.permintaan_produk.index', compact('permintaanProduks'));
+    }
+    
     
 
     public function create()
