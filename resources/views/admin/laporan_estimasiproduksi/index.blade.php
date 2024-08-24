@@ -32,11 +32,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Estimasi Produk</h1>
+                    <h1 class="m-0">Laporan Estimasi Produksi</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Laporan Estimasi Produk</li>
+                        <li class="breadcrumb-item active">Laporan Estimasi Produksi</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -67,7 +67,7 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Estimasi Produk</h3>
+                    <h3 class="card-title">Estimasi Produksi</h3>
                 </div>
                 <!-- /.card-header -->
                  
