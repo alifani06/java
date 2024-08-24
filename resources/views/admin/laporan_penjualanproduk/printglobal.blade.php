@@ -6,15 +6,18 @@
         body {
             font-family: Arial, sans-serif;
             font-size: 12px;
+            margin: 0;
+            padding: 0;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin: 0; /* Hapus margin */
+            padding: 0; /* Hapus padding */
         }
         table, th, td {
             border: 1px solid black;
-            padding: 8px;
+            padding: 5px; /* Atur padding untuk tabel */
             text-align: left;
         }
         th {
@@ -22,7 +25,7 @@
         }
         .header {
             text-align: center;
-            margin-top: 3px ;
+            margin-top: 3px;
         }
         .header span {
             display: block;
@@ -42,7 +45,7 @@
 
         /* CSS untuk nomor halaman */
         @page {
-            margin: 20mm;
+            margin: 10mm; /* Sesuaikan margin untuk kertas */
             @bottom-right {
                 content: "Halaman " counter(page);
                 font-size: 10px;
@@ -61,8 +64,8 @@
         <hr class="divider">
     </div> --}}
     <div class="container">
-        <h1 style="text-align: center; margin-bottom: 5px;">LAPORAN PENJUALAN PRODUK</h1>
-        <p style="text-align: center; font-size: 28px; font-weight: bold; margin-top: 0;">GLOBAL</p>
+        <h1 style="text-align: center; margin-bottom: 5px;">LAPORAN PENJUALAN PRODUK GLOBAL</h1>
+        {{-- <p style="text-align: center; font-size: 28px; font-weight: bold; margin-top: 0;">GLOBAL</p> --}}
     </div>
     
     {{-- <div class="text">
@@ -92,9 +95,6 @@
                 <span style="float: right;">{{ $currentDateTime }}</span>
             </p>
         @endif
-    </div>
-    
-    
     </div>
 
     <!-- Tabel utama -->
@@ -143,18 +143,18 @@
                         @endif
                     </td>
                     <td>{{ $item->dppemesanan->kode_dppemesanan ?? '-' }}</td>
-                    <td>
-                        {{ $deposit > 0 ? 'Rp. ' . number_format($deposit, 0, ',', '.') : '-' }}
+                    <td style="text-align: right">
+                        {{ $deposit > 0 ?  number_format($deposit, 0, ',', '.') : '-' }}
                     </td>
                     <td>{{ $item->metodepembayaran->nama_metode ?? 'Tunai' }}</td>
-                    <td>
+                    <td style="text-align: right">
                         @if ($total_fee == 0)
                             -
                         @else
-                            {{ 'Rp. ' . number_format($total_fee, 0, ',', '.') }}
+                            {{ number_format($total_fee, 0, ',', '.') }}
                         @endif
                     </td>
-                    <td>{{ 'Rp. ' .  number_format($item->sub_total, 0, ',', '.') }}</td>
+                    <td style="text-align: right">{{ number_format($item->sub_total, 0, ',', '.') }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -165,25 +165,21 @@
         <tbody>
             <tr>
                 <td style="text-align: right;  width: 60%;">Total Fee Penjualan</td>
-                <td style="text-align: left; font-weight: bold; width: 40%;">{{ 'Rp. ' .  number_format($grandTotalFee, 0, ',', '.') }}</td>
+                <td style="text-align: right; font-weight: bold; width: 40%;">{{ 'Rp. ' .  number_format($grandTotalFee, 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td style="text-align: right;">Total Penjualan</td>
-                <td style="text-align: left; font-weight: bold;">{{ 'Rp. ' .  number_format($grandTotal, 0, ',', '.') }}</td>
+                <td style="text-align: right; font-weight: bold;">{{ 'Rp. ' .  number_format($grandTotal, 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <td style="text-align: right;">Total Deposit</td>
-                <td style="text-align: left; font-weight: bold;">{{ 'Rp. ' .  number_format($totalDeposit, 0, ',', '.') }}</td>
+                <td style="text-align: right;">Pengambilan Deposit</td>
+                <td style="text-align: right; font-weight: bold;">{{ 'Rp. ' .  number_format($totalDeposit, 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td style="text-align: right;">Total </td>
-                <td style="text-align: left; font-weight: bold;">{{ 'Rp. ' .  number_format($grandTotal - $totalDeposit, 0, ',', '.') }}</td>
+                <td style="text-align: right; font-weight: bold;">{{ 'Rp. ' .  number_format($grandTotal - $totalDeposit, 0, ',', '.') }}</td>
             </tr>
         </tbody>
     </table>
-    
-    
-    
-    
 </body>
 </html>

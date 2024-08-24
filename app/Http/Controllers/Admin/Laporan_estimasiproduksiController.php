@@ -42,94 +42,6 @@ use Dompdf\Options;
 
 class Laporan_estimasiproduksiController extends Controller{
 
-
-// public function index(Request $request)
-// {
-//     $status = $request->status;
-//     $tanggalAwal = $request->tanggal_awal;
-//     $tanggalAkhir = $request->tanggal_akhir;
-//     $tableType = $request->table_type; // Ambil nilai dari table_type
-
-//     $permintaanProduks = [];
-//     $pemesananProduk = [];
-
-//     // Query Permintaanproduk jika memilih 'permintaan' atau 'all'
-//     if ($tableType == 'permintaan' || $tableType == 'all') {
-//         $inqueryPermintaan = Permintaanproduk::query();
-        
-//         if ($status) {
-//             $inqueryPermintaan->where('status', $status);
-//         }
-
-//         if ($tanggalAwal && $tanggalAkhir) {
-//             $tanggalAwal = Carbon::parse($tanggalAwal)->startOfDay();
-//             $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
-//             $inqueryPermintaan->whereHas('detailPermintaanProduks', function($query) use ($tanggalAwal, $tanggalAkhir) {
-//                 $query->whereBetween('tanggal_permintaan', [$tanggalAwal, $tanggalAkhir]);
-//             });
-//         } else {
-//             $inqueryPermintaan->whereHas('detailPermintaanProduks', function($query) {
-//                 $query->whereDate('tanggal_permintaan', Carbon::today());
-//             });
-//         }
-
-//         $permintaanProduks = $inqueryPermintaan->with(['detailPermintaanProduks.toko', 'detailPermintaanProduks.produk'])
-//             ->get()
-//             ->flatMap(function ($permintaan) {
-//                 return $permintaan->detailPermintaanProduks;
-//             })
-//             ->groupBy('produk_id')
-//             ->map(function ($groupedDetails) {
-//                 return $groupedDetails->groupBy('toko_id')->map(function ($details) {
-//                     return [
-//                         'jumlah' => $details->sum('jumlah'),
-//                         'toko' => $details->first()->toko,
-//                         'produk' => $details->first()->produk,
-//                         'tanggal_permintaan' => $details->first()->tanggal_permintaan,
-//                     ];
-//                 });
-//             });
-//     }
-
-//     // Query Pemesananproduk jika memilih 'pemesanan' atau 'all'
-//     if ($tableType == 'pemesanan' || $tableType == 'all') {
-//         $inqueryPemesanan = DetailPemesananProduk::query();
-        
-//         if ($status) {
-//             $inqueryPemesanan->where('status', $status);
-//         }
-
-//         if ($tanggalAwal && $tanggalAkhir) {
-//             $tanggalAwal = Carbon::parse($tanggalAwal)->startOfDay();
-//             $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
-//             $inqueryPemesanan->whereHas('pemesananProduk', function($query) use ($tanggalAwal, $tanggalAkhir) {
-//                 $query->whereBetween('tanggal_kirim', [$tanggalAwal, $tanggalAkhir]);
-//             });
-//         } else {
-//             $inqueryPemesanan->whereHas('pemesananProduk', function($query) {
-//                 $query->whereDate('tanggal_kirim', Carbon::today());
-//             });
-//         }
-
-//         $pemesananProduk = $inqueryPemesanan->with(['pemesananProduk.toko', 'produk'])
-//             ->get()
-//             ->groupBy('produk_id')
-//             ->map(function ($groupedDetails) {
-//                 return $groupedDetails->groupBy('toko_id')->map(function ($details) {
-//                     return [
-//                         'jumlah' => $details->sum('jumlah'),
-//                         'toko' => $details->first()->pemesananProduk->toko,
-//                         'produk' => $details->first()->produk,
-//                         'kode_pemesanan' => $details->pluck('pemesananProduk.kode_pemesanan')->unique()->values(),
-//                         'tanggal_kirim' => $details->first()->pemesananProduk->tanggal_kirim,
-//                         'detail' => $details
-//                     ];
-//                 });
-//             });
-//     }
-
-//     return view('admin.laporan_estimasiproduksi.index', compact('permintaanProduks', 'pemesananProduk', 'tableType'));
-// }
 public function index(Request $request)
 {
     $status = $request->status;
@@ -248,6 +160,9 @@ return view('admin.laporan_estimasiproduksi.index', compact('permintaanProduks',
     return view('admin.laporan_estimasiproduksi.index', compact('permintaanProduks', 'pemesananProduk', 'combinedData', 'tableType'));
 }
 
+
+
+
 // public function printReport(Request $request)
 // {
 //     $status = $request->status;
@@ -328,36 +243,38 @@ return view('admin.laporan_estimasiproduksi.index', compact('permintaanProduks',
 //                 });
 //             });
 //     }
-// // Gabungkan data permintaan dan pemesanan
-// $combinedData = $pemesananProduk->map(function ($tokoDetails, $produkId) use ($permintaanProduks) {
-//     return $tokoDetails->map(function ($detail, $tokoId) use ($permintaanProduks, $produkId) {
-//         $permintaan = $permintaanProduks[$produkId][$tokoId] ?? ['jumlah' => 0];
-//         return [
-//             'pesanan' => $detail['jumlah'],
-//             'permintaan' => $permintaan['jumlah'],
-//             'total' => $detail['jumlah'] + $permintaan['jumlah'], // Menghitung total dari pesanan dan permintaan
-//             'toko' => $detail['toko'],
-//             'produk' => $detail['produk'],
-//             'klasifikasi' => $detail['klasifikasi'],
-//         ];
-//     });
-// })->union(
-//     $permintaanProduks->map(function ($tokoDetails, $produkId) use ($pemesananProduk) {
-//         return $tokoDetails->map(function ($detail, $tokoId) use ($pemesananProduk, $produkId) {
-//             if (!isset($pemesananProduk[$produkId][$tokoId])) {
-//                 return [
-//                     'pesanan' => 0, // Jika tidak ada pesanan, set ke 0
-//                     'permintaan' => $detail['jumlah'],
-//                     'total' => $detail['jumlah'], // Total hanya dari permintaan
-//                     'toko' => $detail['toko'],
-//                     'produk' => $detail['produk'],
-//                     'klasifikasi' => $detail['klasifikasi'],
-//                 ];
-//             }
-//             return null; // Sudah digabungkan di map pertama
-//         })->filter(); // Menghilangkan null value
-//     })
-// );
+
+//     // Gabungkan data permintaan dan pemesanan
+//     $combinedData = $pemesananProduk->map(function ($tokoDetails, $produkId) use ($permintaanProduks) {
+//         return $tokoDetails->map(function ($detail, $tokoId) use ($permintaanProduks, $produkId) {
+//             $permintaan = $permintaanProduks[$produkId][$tokoId] ?? ['jumlah' => 0];
+//             return [
+//                 'pesanan' => $detail['jumlah'],
+//                 'permintaan' => $permintaan['jumlah'],
+//                 'total' => $detail['jumlah'] + $permintaan['jumlah'], // Menghitung total dari pesanan dan permintaan
+//                 'toko' => $detail['toko'],
+//                 'produk' => $detail['produk'],
+//                 'klasifikasi' => $detail['klasifikasi'],
+//             ];
+//         });
+//     })->union(
+//         $permintaanProduks->map(function ($tokoDetails, $produkId) use ($pemesananProduk) {
+//             return $tokoDetails->map(function ($detail, $tokoId) use ($pemesananProduk, $produkId) {
+//                 if (!isset($pemesananProduk[$produkId][$tokoId])) {
+//                     return [
+//                         'pesanan' => 0, // Jika tidak ada pesanan, set ke 0
+//                         'permintaan' => $detail['jumlah'],
+//                         'total' => $detail['jumlah'], // Total hanya dari permintaan
+//                         'toko' => $detail['toko'],
+//                         'produk' => $detail['produk'],
+//                         'klasifikasi' => $detail['klasifikasi'],
+//                     ];
+//                 }
+//                 return null; // Sudah digabungkan di map pertama
+//             })->filter(); // Menghilangkan null value
+//         })
+//     );
+
 //     // Generate PDF
 //     $options = new Options();
 //     $options->set('isHtml5ParserEnabled', true);
@@ -370,16 +287,28 @@ return view('admin.laporan_estimasiproduksi.index', compact('permintaanProduks',
 //     $dompdf->loadHtml($html);
 
 //     // Set paper size and orientation
-//     $dompdf->setPaper('A4', 'potrait');
+//     $dompdf->setPaper('A4', 'portrait');
 
 //     // Render the PDF
 //     $dompdf->render();
 
+//     // Menambahkan nomor halaman di kanan bawah
+//     $canvas = $dompdf->getCanvas();
+//     $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+//         $text = "Page $pageNumber of $pageCount";
+//         $font = $fontMetrics->getFont('Arial', 'normal');
+//         $size = 10;
+
+//         // Set posisi X dan Y untuk teks nomor halaman
+//         $x = 520; // Posisi X (horizontally), lebih ke dalam dari kanan
+//         $y = 820; // Posisi Y (vertically), lebih ke atas dari bawah
+
+//         $canvas->text($x, $y, $text, $font, $size);
+//     });
+
 //     // Stream the PDF
 //     return $dompdf->stream('laporan_estimasiproduksi.pdf', ['Attachment' => false]);
 // }
-
-
 
 public function printReport(Request $request)
 {
@@ -394,9 +323,11 @@ public function printReport(Request $request)
     // Query Pemesananproduk
     if ($tableType == 'pemesanan' || $tableType == 'all') {
         $inqueryPemesanan = DetailPemesananProduk::query();
+
         if ($status) {
             $inqueryPemesanan->where('status', $status);
         }
+
         if ($tanggalAwal && $tanggalAkhir) {
             $tanggalAwal = Carbon::parse($tanggalAwal)->startOfDay();
             $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
@@ -408,6 +339,7 @@ public function printReport(Request $request)
                 $query->whereDate('tanggal_kirim', Carbon::today());
             });
         }
+
         $pemesananProduk = $inqueryPemesanan->with(['pemesananProduk.toko', 'produk.klasifikasi'])
             ->get()
             ->groupBy('produk_id')
@@ -418,9 +350,6 @@ public function printReport(Request $request)
                         'toko' => $details->first()->pemesananProduk->toko,
                         'produk' => $details->first()->produk,
                         'klasifikasi' => $details->first()->produk->klasifikasi,
-                        'kode_pemesanan' => $details->pluck('pemesananProduk.kode_pemesanan')->unique()->values(),
-                        'tanggal_kirim' => $details->first()->pemesananProduk->tanggal_kirim,
-                        'detail' => $details,
                     ];
                 });
             });
@@ -429,9 +358,11 @@ public function printReport(Request $request)
     // Query Permintaanproduk
     if ($tableType == 'permintaan' || $tableType == 'all') {
         $inqueryPermintaan = Permintaanproduk::query();
+
         if ($status) {
             $inqueryPermintaan->where('status', $status);
         }
+
         if ($tanggalAwal && $tanggalAkhir) {
             $tanggalAwal = Carbon::parse($tanggalAwal)->startOfDay();
             $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
@@ -443,6 +374,7 @@ public function printReport(Request $request)
                 $query->whereDate('tanggal_permintaan', Carbon::today());
             });
         }
+
         $permintaanProduks = $inqueryPermintaan->with(['detailPermintaanProduks.toko', 'detailPermintaanProduks.produk.klasifikasi'])
             ->get()
             ->flatMap(function ($permintaan) {
@@ -456,20 +388,19 @@ public function printReport(Request $request)
                         'toko' => $details->first()->toko,
                         'produk' => $details->first()->produk,
                         'klasifikasi' => $details->first()->produk->klasifikasi,
-                        'tanggal_permintaan' => $details->first()->tanggal_permintaan,
                     ];
                 });
             });
     }
 
-    // Gabungkan data permintaan dan pemesanan
     $combinedData = $pemesananProduk->map(function ($tokoDetails, $produkId) use ($permintaanProduks) {
         return $tokoDetails->map(function ($detail, $tokoId) use ($permintaanProduks, $produkId) {
-            $permintaan = $permintaanProduks[$produkId][$tokoId] ?? ['jumlah' => 0];
+            $permintaan = $permintaanProduks->get($produkId, collect())->get($tokoId, ['jumlah' => 0]);
+            
             return [
                 'pesanan' => $detail['jumlah'],
                 'permintaan' => $permintaan['jumlah'],
-                'total' => $detail['jumlah'] + $permintaan['jumlah'], // Menghitung total dari pesanan dan permintaan
+                'total' => $detail['jumlah'] + $permintaan['jumlah'],
                 'toko' => $detail['toko'],
                 'produk' => $detail['produk'],
                 'klasifikasi' => $detail['klasifikasi'],
@@ -480,18 +411,28 @@ public function printReport(Request $request)
             return $tokoDetails->map(function ($detail, $tokoId) use ($pemesananProduk, $produkId) {
                 if (!isset($pemesananProduk[$produkId][$tokoId])) {
                     return [
-                        'pesanan' => 0, // Jika tidak ada pesanan, set ke 0
+                        'pesanan' => 0,
                         'permintaan' => $detail['jumlah'],
-                        'total' => $detail['jumlah'], // Total hanya dari permintaan
+                        'total' => $detail['jumlah'],
+                        'toko' => $detail['toko'],
+                        'produk' => $detail['produk'],
+                        'klasifikasi' => $detail['klasifikasi'],
+                    ];
+                } else {
+                    $pesanan = $pemesananProduk[$produkId][$tokoId];
+                    return [
+                        'pesanan' => $pesanan['jumlah'],
+                        'permintaan' => $detail['jumlah'],
+                        'total' => $pesanan['jumlah'] + $detail['jumlah'],
                         'toko' => $detail['toko'],
                         'produk' => $detail['produk'],
                         'klasifikasi' => $detail['klasifikasi'],
                     ];
                 }
-                return null; // Sudah digabungkan di map pertama
-            })->filter(); // Menghilangkan null value
+            });
         })
     );
+    
 
     // Generate PDF
     $options = new Options();

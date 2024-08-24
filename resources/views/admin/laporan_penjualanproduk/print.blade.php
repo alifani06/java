@@ -82,8 +82,8 @@
 <body>
    
     <div class="container">
-        <h1 style="text-align: center; margin-bottom: 5px;">LAPORAN PENJUALAN PRODUK</h1>
-        <p style="text-align: center; font-size: 28px; font-weight: bold; margin-top: 0;">RINCI</p>
+        <h1 style="text-align: center; margin-bottom: 5px;">LAPORAN PENJUALAN PRODUK RINCI</h1>
+        {{-- <p style="text-align: center; font-size: 28px; font-weight: bold; margin-top: 0;">RINCI</p> --}}
     </div>
     {{-- <div class="text">
         @if ($startDate && $endDate)
