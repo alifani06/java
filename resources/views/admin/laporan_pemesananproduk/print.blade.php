@@ -6,7 +6,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
         }
         .container {
             text-align: center;
@@ -28,14 +29,14 @@
             font-size: 10px;
         }
         table, th, td {
-            border: 1px solid #ddd;
+            border: 1px solid black;
         }
         th, td {
-            padding: 8px;
+            padding: 4px;
             text-align: left;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: white;
         }
         .text-center {
             text-align: center;

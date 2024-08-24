@@ -27,7 +27,7 @@
         }
         .change-header {
             text-align: center;
-            font-size: 18px;
+            font-size: 24px;
             font-weight: bold;
             margin-top: 20px;
             margin-bottom: 20px;
@@ -56,7 +56,7 @@
     </style>
 </head>
 <body>
-    <div class="header">
+    {{-- <div class="header">
         <div class="logo">
             <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
         </div>
@@ -64,13 +64,13 @@
             <span class="title">PT JAVA BAKERY FACTORY</span><br><br>
             <span class="address">JL. HOS COKRO AMINOTO NO 5 SLAWI TEGAL</span><br>
             <span class="contact">Telp / Fax, Email :</span>
-            {{-- @if(isset($tokoData) && $tokoData->isNotEmpty())
+            @if(isset($tokoData) && $tokoData->isNotEmpty())
                 <span class="toko-name">Cabang: {{ $tokoData->first()->nama_toko }}</span><br>
                 <span class="address">{{ $tokoData->first()->alamat }}</span><br>
-            @endif --}}
+            @endif
         </div>
         <hr class="divider">
-    </div>
+    </div> --}}
     <div class="change-header">LAPORAN PERMINTAAN PRODUK</div>
     <div class="text" style="margin-bottom: 1px;">
         @php

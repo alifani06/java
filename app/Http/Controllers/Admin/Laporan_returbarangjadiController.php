@@ -31,6 +31,8 @@ use App\Models\Pengiriman_barangjadi;
 use Carbon\Carbon;
 use App\Models\Toko;
 use Dompdf\Dompdf;
+use Dompdf\Options;
+
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
@@ -143,15 +145,54 @@ class Laporan_returbarangjadiController extends Controller
         // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_retur
         $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_retur');
     
-        // Load view untuk PDF
-        $pdf = FacadePdf::loadView('admin.laporan_returbarangjadi.print', compact('stokBarangJadi', 'tanggal_retur', 'tanggal_akhir'));
+        // Format tanggal
+        $formattedStartDate = $tanggal_retur ? Carbon::parse($tanggal_retur)->format('d-m-Y') : 'N/A';
+        $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : 'N/A';
     
-        // Set properti tambahan PDF
-        $pdf->setPaper('A4', 'potrait');
+        // Inisialisasi DOMPDF
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isRemoteEnabled', true); // Jika menggunakan URL eksternal untuk gambar atau CSS
     
-        // Return hasil cetak PDF
-        return $pdf->stream('Laporan_Retur_BarangJadi.pdf');
+        $dompdf = new Dompdf($options);
+    
+        // Memuat konten HTML dari view
+        $html = view('admin.laporan_returbarangjadi.print', [
+            'stokBarangJadi' => $stokBarangJadi,
+            'tanggal_retur' => $tanggal_retur,
+            'tanggal_akhir' => $tanggal_akhir,
+            'startDate' => $formattedStartDate,
+            'endDate' => $formattedEndDate,
+        ])->render();
+    
+        $dompdf->loadHtml($html);
+    
+        // Set ukuran kertas dan orientasi
+        $dompdf->setPaper('A4', 'portrait');
+    
+        // Render PDF
+        $dompdf->render();
+    
+        // Menambahkan nomor halaman di kanan bawah
+        $canvas = $dompdf->getCanvas();
+        $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+            $text = "Page $pageNumber of $pageCount";
+            $font = $fontMetrics->getFont('Arial', 'normal');
+            $size = 10;
+    
+            // Menghitung lebar teks
+            $width = $fontMetrics->getTextWidth($text, $font, $size);
+    
+            // Mengatur koordinat X dan Y
+            $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+            $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+    
+            // Menambahkan teks ke posisi yang ditentukan
+            $canvas->text($x, $y, $text, $font, $size);
+        });
+    
+        // Output PDF ke browser
+        return $dompdf->stream('Laporan_Retur_BarangJadi.pdf', ['Attachment' => false]);
     }
-    
     
 }

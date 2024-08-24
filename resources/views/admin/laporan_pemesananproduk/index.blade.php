@@ -99,11 +99,12 @@
                                 <th>Tanggal Kirim/Ambil</th>
                                 <th>Kode Produk</th>
                                 <th>Nama Produk</th>
-                                <th>Benjaran</th>
+                                <th>Banjaran</th>
                                 <th>Tegal</th>
                                 <th>Slawi</th>
                                 <th>Pemalang</th>
                                 <th>Bumiayu</th>
+                                <th>Cilacap</th>
                                 <th>Total</th>
                             </tr>
                         </thead>

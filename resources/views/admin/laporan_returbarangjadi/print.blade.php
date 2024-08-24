@@ -17,28 +17,29 @@
         }
         .header h1 {
             margin: 0;
-            font-size: 18px;
+            font-size: 24px;
         }
         .header p {
             margin: 0;
             font-size: 14px;
         }
         .date-range {
-            text-align: center;
+            text-align: left;
             margin-bottom: 20px;
         }
         .table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            font-size: 10px;
         }
         .table th, .table td {
             border: 1px solid #000;
-            padding: 8px;
-            text-align: center;
+            padding: 4px;
+            text-align: left;
         }
         .table th {
-            background-color: #f2f2f2;
+            background-color: white;
         }
         .table tbody tr:nth-child(even) {
             background-color: #f9f9f9;
@@ -51,17 +52,16 @@
 <body>
 
 <div class="header">
-    <h1>JAVA BAKERY</h1>
-    <h1>Laporan Retur Barang Jadi</h1>
+    <h1>LAPORAN RETUR BARANG JADI</h1>
 </div>
 
 <div class="date-range">
     @if($tanggal_retur && $tanggal_akhir)
-        <p>Periode Tanggal: {{ \Carbon\Carbon::parse($tanggal_retur)->format('d-m-Y') }} s/d {{ \Carbon\Carbon::parse($tanggal_akhir)->format('d-m-Y') }}</p>
+        <p>Periode Tanggal: {{ \Carbon\Carbon::parse($tanggal_retur)->format('d F Y') }} s/d {{ \Carbon\Carbon::parse($tanggal_akhir)->format('d F Y') }}</p>
     @elseif($tanggal_retur)
-        <p>Periode Tanggal: Mulai {{ \Carbon\Carbon::parse($tanggal_retur)->format('d-m-Y') }}</p>
+        <p>Periode Tanggal: Mulai {{ \Carbon\Carbon::parse($tanggal_retur)->format('d F Y') }}</p>
     @elseif($tanggal_akhir)
-        <p>Periode Tanggal: Sampai {{ \Carbon\Carbon::parse($tanggal_akhir)->format('d-m-Y') }}</p>
+        <p>Periode Tanggal: Sampai {{ \Carbon\Carbon::parse($tanggal_akhir)->format('d F Y') }}</p>
     @else
         <p>Periode Tanggal: Hari Ini</p>
     @endif
@@ -103,9 +103,9 @@
                     <td>{{ $retur->produk->klasifikasi->nama }}</td>
                     <td>{{ $retur->produk->kode_produk }}</td>
                     <td>{{ $retur->produk->nama_produk }}</td>
-                    <td>{{ $retur->jumlah }}</td>
-                    <td>{{ number_format($retur->produk->harga, 0, ',', '.') }}</td>
-                    <td>{{ 'Rp. '. number_format($total, 0, ',', '.') }}</td>
+                    <td style="text-align: right">{{ $retur->jumlah }}</td>
+                    <td style="text-align: right">{{ number_format($retur->produk->harga, 0, ',', '.') }}</td>
+                    <td style="text-align: right">{{ number_format($total, 0, ',', '.') }}</td>
                 </tr>
             @endforeach
         @endforeach
@@ -113,9 +113,9 @@
     <tfoot class="tfoot">
         <tr>
             <td colspan="4"><strong>Total Keseluruhan:</strong></td>
-            <td><strong>{{ $totalJumlah }}</strong></td>
+            <td style="text-align: right"><strong>{{ $totalJumlah }}</strong></td>
             <td></td>
-            <td><strong>{{ 'Rp. '. number_format($totalKeseluruhan, 0, ',', '.') }}</strong></td>
+            <td style="text-align: right"><strong>{{ 'Rp. '. number_format($totalKeseluruhan, 0, ',', '.') }}</strong></td>
         </tr>
     </tfoot>
 </table>

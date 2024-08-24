@@ -220,7 +220,7 @@ class Laporan_pemesananprodukController extends Controller
         // Menambahkan nomor halaman di kanan bawah
         $canvas = $dompdf->getCanvas();
         $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
-            $text = "Halaman $pageNumber dari $pageCount";
+            $text = "Page $pageNumber of $pageCount";
             $font = $fontMetrics->getFont('Arial', 'normal');
             $size = 10;
     
