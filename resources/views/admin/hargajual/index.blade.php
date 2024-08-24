@@ -73,11 +73,11 @@
                             <th rowspan="3" style="text-align: center;">Harga Awal</th>
                             <th rowspan="3" style="text-align: center;">+</th>
                             <th colspan="4" style="text-align: center;">Toko Slawi</th>
-                            <th colspan="4" style="text-align: center;">Toko Benjaran</th>
+                            <th colspan="4" style="text-align: center;">Toko Banjaran</th>
                             <th colspan="4" style="text-align: center;">Toko Tegal</th>
                             <th colspan="4" style="text-align: center;">Toko Pemalang</th>
                             <th colspan="4" style="text-align: center;">Toko Bumiayu</th>
-                            {{-- <th colspan="4" style="text-align: center;">Toko Cilacap</th> --}}
+                            <th colspan="4" style="text-align: center;">Toko Cilacap</th>
                         </tr>
                         <tr>
                             <th colspan="2" style="text-align: center;">Member</th>
@@ -90,8 +90,8 @@
                             <th colspan="2" style="text-align: center;">Non Member</th>
                             <th colspan="2" style="text-align: center;">Member</th>
                             <th colspan="2" style="text-align: center;">Non Member</th>
-                            {{-- <th colspan="2" style="text-align: center;">Member</th>
-                            <th colspan="2" style="text-align: center;">Non Member</th> --}}
+                            <th colspan="2" style="text-align: center;">Member</th>
+                            <th colspan="2" style="text-align: center;">Non Member</th>
                         </tr>
                         <tr>
                             <th style="text-align: center;">Harga</th>
@@ -114,10 +114,10 @@
                             <th style="text-align: center;">Diskon (%)</th>
                             <th style="text-align: center;">Harga</th>
                             <th style="text-align: center;">Diskon (%)</th>
-                            {{-- <th style="text-align: center;">Harga</th>
+                            <th style="text-align: center;">Harga</th>
                             <th style="text-align: center;">Diskon (%)</th>
                             <th style="text-align: center;">Harga</th>
-                            <th style="text-align: center;">Diskon (%)</th> --}}
+                            <th style="text-align: center;">Diskon (%)</th>
                             
                         </tr>
                     </thead>
@@ -153,16 +153,16 @@
 
                                 {{-- Benjaran --}}
                                 <td style="text-align: center;">
-                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_harga_bnjr" id="member-harga-bnjr-{{ $loop->index }}" value="{{ $item->tokobenjaran->first()->member_harga_bnjr ?? $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_harga_bnjr" id="member-harga-bnjr-{{ $loop->index }}" value="{{ $item->tokobanjaran->first()->member_harga_bnjr ?? $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
                                 </td>
                                 <td>
-                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_diskon_bnjr" id="diskon-member-bnjr-{{ $loop->index }}" value="{{ $item->tokobenjaran->first()->member_diskon_bnjr ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_diskon_bnjr" id="diskon-member-bnjr-{{ $loop->index }}" value="{{ $item->tokobanjaran->first()->member_diskon_bnjr ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
                                 </td>
                                 <td style="text-align: center;">
-                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_harga_bnjr" id="non-member-harga-bnjr-{{ $loop->index }}" value="{{ $item->tokobenjaran->first()->non_harga_bnjr ?? $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_harga_bnjr" id="non-member-harga-bnjr-{{ $loop->index }}" value="{{ $item->tokobanjaran->first()->non_harga_bnjr ?? $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
                                 </td>
                                 <td>
-                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_diskon_bnjr" id="diskon-non-member-bnjr-{{ $loop->index }}" value="{{ $item->tokobenjaran->first()->non_diskon_bnjr ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
+                                    <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_diskon_bnjr" id="diskon-non-member-bnjr-{{ $loop->index }}" value="{{ $item->tokobanjaran->first()->non_diskon_bnjr ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
                                 </td>
 
                                  {{-- Tegal --}}
@@ -209,7 +209,7 @@
                                 </td>
 
                                  {{-- Cilacap --}}
-                                 {{-- <td style="text-align: center;">
+                                 <td style="text-align: center;">
                                     <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_harga_clc" id="member-harga-clc-{{ $loop->index }}" value="{{ $item->tokocilacap->first()->member_harga_clc ?? $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
                                 </td>
                                 <td>
@@ -220,7 +220,7 @@
                                 </td>
                                 <td>
                                     <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_diskon_clc" id="diskon-non-member-clc-{{ $loop->index }}" value="{{ $item->tokocilacap->first()->non_diskon_clc ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
-                                </td> --}}
+                                </td>
   
                             
                             </form>

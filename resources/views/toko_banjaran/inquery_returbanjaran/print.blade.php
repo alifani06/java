@@ -71,11 +71,11 @@
         }
         th, td {
             padding: 6px;
-            border: 1px solid #ccc;
+            border: 1px solid black;
             text-align: left;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: white;
         }
         .signature-container {
             margin-top: 60px;
@@ -181,7 +181,7 @@
     {{-- <hr class="divider"> --}}
 
     <!-- Judul Surat -->
-    <div class="change-header">SURAT PENGIRIMAN BARANG JADI</div>
+    <div class="change-header">SURAT RETUR BARANG JADI</div>
     <div class="change-header1">
         <p style="margin-bottom: 2px;">Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
         <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
@@ -204,6 +204,7 @@
             <thead>
                 <tr>
                     <th>No</th>
+                    <th>Divisi</th>
                     <th>Kode Produk</th>
                     <th>Kategori</th>
                     <th>Produk</th>
@@ -215,11 +216,12 @@
                 @foreach($pengirimanBarangJadi as $key => $detail)
                 <tr>
                     <td>{{ $key + 1 }}</td> 
+                    <td>{{ $detail->produk->klasifikasi->nama }}</td>
                     <td>{{ $detail->produk->kode_produk }}</td>
                     <td>{{ $detail->produk->subklasifikasi->nama }}</td>
                     <td>{{ $detail->produk->nama_produk }}</td>
                     <td>{{ $detail->keterangan }}</td>
-                    <td>{{ $detail->jumlah }}</td>
+                    <td style="text-align: right">{{ $detail->jumlah }}</td>
                 </tr>
                 @endforeach
             </tbody>

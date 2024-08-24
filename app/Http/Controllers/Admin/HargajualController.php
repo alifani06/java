@@ -7,7 +7,7 @@ use App\Models\Hargajual;
 use Illuminate\Support\Facades\DB;
 use App\Models\Produk;
 use App\Models\Tokoslawi;
-use App\Models\Tokobenjaran;
+use App\Models\Tokobanjaran;
 use App\Models\Tokotegal;
 use App\Models\Tokopemalang;
 use App\Models\Tokobumiayu;
@@ -33,13 +33,13 @@ class HargajualController extends Controller
     {
       
         $tokoslawi = Tokoslawi::latest()->first();
-        $tokobenjaran = Tokobenjaran::latest()->first();
+        $tokobanjaran = Tokobanjaran::latest()->first();
         $tokotegal = Tokotegal::latest()->first();
         $tokopemalang = Tokopemalang::latest()->first();
         $tokobumiayu = Tokobumiayu::latest()->first();
         $tokocilacap = Tokocilacap::latest()->first();
-        $produk = Produk::with(['tokoslawi', 'tokobenjaran','tokotegal', 'tokopemalang', 'tokobumiayu' , 'tokocilacap'])->get();
-        return view('admin.hargajual.index', compact('produk', 'tokoslawi', 'tokobenjaran', 'tokotegal', 'tokopemalang', 'tokobumiayu', 'tokocilacap'));
+        $produk = Produk::with(['tokoslawi', 'tokobanjaran','tokotegal', 'tokopemalang', 'tokobumiayu' , 'tokocilacap'])->get();
+        return view('admin.hargajual.index', compact('produk', 'tokoslawi', 'tokobanjaran', 'tokotegal', 'tokopemalang', 'tokobumiayu', 'tokocilacap'));
     }
 
 
@@ -77,7 +77,7 @@ class HargajualController extends Controller
         $toko = request()->input('toko', 'tokoslawi'); // Ambil input toko dari request, default ke 'tokoslawi'
         $today = Carbon::today(); // Tanggal hari ini
         
-        $produk = Produk::with(['tokoslawi', 'tokobenjaran' , 'tokotegal','tokopemalang', 'tokobumiayu', 'tokocilacap'])
+        $produk = Produk::with(['tokoslawi', 'tokobanjaran' , 'tokotegal','tokopemalang', 'tokobumiayu', 'tokocilacap'])
             ->where(function ($query) use ($today) {
                 $query->whereHas('tokoslawi', function ($query) use ($today) {
                     $query->whereDate('updated_at', $today)
@@ -90,13 +90,13 @@ class HargajualController extends Controller
                 });
             })
             ->orWhere(function ($query) use ($today) {
-                $query->whereHas('tokobenjaran', function ($query) use ($today) {
+                $query->whereHas('tokobanjaran', function ($query) use ($today) {
                     $query->whereDate('updated_at', $today)
                           ->where(function ($query) {
-                              $query->whereRaw('tokobenjarans.member_harga_bnjr != tokobenjarans.harga_awal')
-                                    ->orWhereRaw('tokobenjarans.non_harga_bnjr != tokobenjarans.harga_awal')
-                                    ->orWhereRaw('tokobenjarans.member_diskon_bnjr != 0')
-                                    ->orWhereRaw('tokobenjarans.non_diskon_bnjr != 0');
+                              $query->whereRaw('tokobanjarans.member_harga_bnjr != tokobanjarans.harga_awal')
+                                    ->orWhereRaw('tokobanjarans.non_harga_bnjr != tokobanjarans.harga_awal')
+                                    ->orWhereRaw('tokobanjarans.member_diskon_bnjr != 0')
+                                    ->orWhereRaw('tokobanjarans.non_diskon_bnjr != 0');
                           });
                 });
             })
@@ -244,15 +244,15 @@ class HargajualController extends Controller
         ]);
 
         // Update atau buat entri baru untuk toko Benjaran
-        $tokobenjaran = $produk->tokobenjaran->first();
-        if ($tokobenjaran) {
-            $tokobenjaran->member_harga_bnjr = $request->member_harga_bnjr ?? $tokobenjaran->member_harga_bnjr;
-            $tokobenjaran->member_diskon_bnjr = $request->member_diskon_bnjr ?? $tokobenjaran->member_diskon_bnjr;
-            $tokobenjaran->non_harga_bnjr = $request->non_harga_bnjr ?? $tokobenjaran->non_harga_bnjr;
-            $tokobenjaran->non_diskon_bnjr = $request->non_diskon_bnjr ?? $tokobenjaran->non_diskon_bnjr;
-            $tokobenjaran->save();
+        $tokobanjaran = $produk->tokobanjaran->first();
+        if ($tokobanjaran) {
+            $tokobanjaran->member_harga_bnjr = $request->member_harga_bnjr ?? $tokobanjaran->member_harga_bnjr;
+            $tokobanjaran->member_diskon_bnjr = $request->member_diskon_bnjr ?? $tokobanjaran->member_diskon_bnjr;
+            $tokobanjaran->non_harga_bnjr = $request->non_harga_bnjr ?? $tokobanjaran->non_harga_bnjr;
+            $tokobanjaran->non_diskon_bnjr = $request->non_diskon_bnjr ?? $tokobanjaran->non_diskon_bnjr;
+            $tokobanjaran->save();
         } else {
-            $tokobenjaran = Tokobenjaran::create([
+            $tokobanjaran = Tokobanjaran::create([
                 'produk_id' => $produk->id,
                 'member_harga_bnjr' => $request->member_harga_bnjr,
                 'member_diskon_bnjr' => $request->member_diskon_bnjr,
@@ -265,7 +265,7 @@ class HargajualController extends Controller
         $harga_diskon_non_member = $request->non_harga_bnjr * (1 - ($request->non_diskon_bnjr / 100));
         // Simpan ID toko Benjaran di detailtoko
         Detailtoko::create([
-            'tokobenjaran_id' => $tokobenjaran->id,
+            'tokobanjaran_id' => $tokobanjaran->id,
             'member_harga' => $request->member_harga_bnjr,
             'member_diskon' => $request->member_diskon_bnjr,
             'non_member_harga' => $request->non_harga_bnjr,

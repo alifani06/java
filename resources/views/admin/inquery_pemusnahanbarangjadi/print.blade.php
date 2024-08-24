@@ -34,7 +34,7 @@
         }
         .tab .title {
             font-weight: bold;
-            font-size: 18px;
+            font-size: 24px;
         }
         .tab .address, .tab .contact {
             font-size: 12px;
@@ -46,7 +46,7 @@
         }
         .change-header {
             text-align: center;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             margin-top: 10px;
             margin-bottom: 10px;
@@ -71,11 +71,11 @@
         }
         th, td {
             padding: 6px;
-            border: 1px solid #ccc;
+            border: 1px solid black;
             text-align: left;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: white;
         }
         .signature-container {
             margin-top: 60px;

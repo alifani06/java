@@ -28,7 +28,7 @@
                             <label for="toko" class="form-label">Pilih Toko:</label>
                             <select class="form-control" id="toko" name="toko">
                                 <option value="tokoslawi" @if(request()->input('toko', 'tokoslawi') == 'tokoslawi') selected @endif>Toko Slawi</option>
-                                <option value="tokobenjaran" @if(request()->input('toko') == 'tokobenjaran') selected @endif>Toko Benjaran</option>
+                                <option value="tokobanjaran" @if(request()->input('toko') == 'tokobanjaran') selected @endif>Toko Banjaran</option>
                                 <option value="tokotegal" @if(request()->input('toko') == 'tokotegal') selected @endif>Toko Tegal</option>
                                 <option value="tokopemalang" @if(request()->input('toko') == 'tokopemalang') selected @endif>Toko Pemalang</option>
                                 <option value="tokobumiayu" @if(request()->input('toko') == 'tokobumiayu') selected @endif>Toko Bumiayu</option>
@@ -134,14 +134,14 @@
                 @endif
             </div>
 
-            {{-- Tampilkan Tabel Tokobenjaran --}}
-            <div id="tokobenjaranTable" @if(request()->input('toko', 'tokobenjaran') != 'tokobenjaran') style="display: none;" @endif>
+            {{-- Tampilkan Tabel tokobanjaran --}}
+            <div id="tokobanjaranTable" @if(request()->input('toko', 'tokobanjaran') != 'tokobanjaran') style="display: none;" @endif>
                 @if($produk->filter(function($item) {
-                        return $item->tokobenjaran->isNotEmpty();
+                        return $item->tokobanjaran->isNotEmpty();
                     })->isNotEmpty())
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Data Harga Jual tokobenjaran yang Diperbarui Hari Ini</h3>
+                            <h3 class="card-title">Data Harga Jual tokobanjaran yang Diperbarui Hari Ini</h3>
                         </div>
                         <div class="card-body">
                       
@@ -177,13 +177,13 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($produk as $index => $item)
-                                        @if($item->tokobenjaran->isNotEmpty())
+                                        @if($item->tokobanjaran->isNotEmpty())
                                             @php
-                                                $memberHarga = $item->tokobenjaran->first()->member_harga_bnjr;
-                                                $nonMemberHarga = $item->tokobenjaran->first()->non_harga_bnjr;
-                                                $hargaAwal = $item->tokobenjaran->first()->harga_awal;
-                                                $memberDiskon = $item->tokobenjaran->first()->member_diskon_bnjr;
-                                                $nonMemberDiskon = $item->tokobenjaran->first()->non_diskon_bnjr;
+                                                $memberHarga = $item->tokobanjaran->first()->member_harga_bnjr;
+                                                $nonMemberHarga = $item->tokobanjaran->first()->non_harga_bnjr;
+                                                $hargaAwal = $item->tokobanjaran->first()->harga_awal;
+                                                $memberDiskon = $item->tokobanjaran->first()->member_diskon_bnjr;
+                                                $nonMemberDiskon = $item->tokobanjaran->first()->non_diskon_bnjr;
                                 
                                                 // Cek apakah ada perubahan pada harga member atau diskon member atau harga non-member atau diskon non-member
                                                 $isChanged = ($memberHarga != $hargaAwal) || ($memberDiskon != 0) || 
@@ -602,15 +602,15 @@
         function showTable(toko) {
             if (toko === 'tokoslawi') {
                 document.getElementById('tokoslawiTable').style.display = 'block';
-                document.getElementById('tokobenjaranTable').style.display = 'none';
+                document.getElementById('tokobanjaranTable').style.display = 'none';
                 document.getElementById('tokotegalTable').style.display = 'none';
                 document.getElementById('tokopemalangTable').style.display = 'none';
                 document.getElementById('tokobumiayuTable').style.display = 'none';
                 document.getElementById('tokocilacapTable').style.display = 'none';
 
-            } else if (toko === 'tokobenjaran') {
+            } else if (toko === 'tokobanjaran') {
                 document.getElementById('tokoslawiTable').style.display = 'none';
-                document.getElementById('tokobenjaranTable').style.display = 'block';
+                document.getElementById('tokobanjaranTable').style.display = 'block';
                 document.getElementById('tokotegalTable').style.display = 'none';
                 document.getElementById('tokopemalangTable').style.display = 'none';
                 document.getElementById('tokobumiayuTable').style.display = 'none';
@@ -618,7 +618,7 @@
 
             }else if (toko === 'tokotegal') {
                 document.getElementById('tokoslawiTable').style.display = 'none';
-                document.getElementById('tokobenjaranTable').style.display = 'none';
+                document.getElementById('tokobanjaranTable').style.display = 'none';
                 document.getElementById('tokotegalTable').style.display = 'block';
                 document.getElementById('tokopemalangTable').style.display = 'none';
                 document.getElementById('tokobumiayuTable').style.display = 'none';
@@ -626,7 +626,7 @@
 
             }else if (toko === 'tokopemalang') {
                 document.getElementById('tokoslawiTable').style.display = 'none';
-                document.getElementById('tokobenjaranTable').style.display = 'none';
+                document.getElementById('tokobanjaranTable').style.display = 'none';
                 document.getElementById('tokotegalTable').style.display = 'none';
                 document.getElementById('tokopemalangTable').style.display = 'block';
                 document.getElementById('tokobumiayuTable').style.display = 'none';
@@ -634,7 +634,7 @@
 
             }else if (toko === 'tokobumiayu') {
                 document.getElementById('tokoslawiTable').style.display = 'none';
-                document.getElementById('tokobenjaranTable').style.display = 'none';
+                document.getElementById('tokobanjaranTable').style.display = 'none';
                 document.getElementById('tokotegalTable').style.display = 'none';
                 document.getElementById('tokopemalangTable').style.display = 'none';
                 document.getElementById('tokobumiayuTable').style.display = 'block';
@@ -642,7 +642,7 @@
 
             }else if (toko === 'tokocilacap') {
                 document.getElementById('tokoslawiTable').style.display = 'none';
-                document.getElementById('tokobenjaranTable').style.display = 'none';
+                document.getElementById('tokobanjaranTable').style.display = 'none';
                 document.getElementById('tokotegalTable').style.display = 'none';
                 document.getElementById('tokopemalangTable').style.display = 'none';
                 document.getElementById('tokobumiayuTable').style.display = 'none';

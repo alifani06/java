@@ -260,27 +260,49 @@ public function show($id)
     return view('toko_banjaran.inquery_returbanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
-public function print($id)
-    {
-        $detailStokBarangJadi = Retur_tokobanjaran::where('id', $id)->value('kode_retur');
+    // public function print($id)
+    // {
+    //     $detailStokBarangJadi = Retur_tokobanjaran::where('id', $id)->value('kode_retur');
     
-        // Jika kode_retur tidak ditemukan, tampilkan pesan error
-        if (!$detailStokBarangJadi) {
-            return redirect()->back()->with('error', 'Data tidak ditemukan.');
-        }
+    //     // Jika kode_retur tidak ditemukan, tampilkan pesan error
+    //     if (!$detailStokBarangJadi) {
+    //         return redirect()->back()->with('error', 'Data tidak ditemukan.');
+    //     }
         
-        // Ambil semua data dengan kode_retur yang sama
-        $pengirimanBarangJadi = Retur_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
+    //     // Ambil semua data dengan kode_retur yang sama
+    //     $pengirimanBarangJadi = Retur_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
         
-        // Ambil item pertama untuk informasi toko
-        $firstItem = $pengirimanBarangJadi->first();
+    //     // Ambil item pertama untuk informasi toko
+    //     $firstItem = $pengirimanBarangJadi->first();
         
-        $pdf = FacadePdf::loadView('toko_banjaran.inquery_returbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
+    //     $pdf = FacadePdf::loadView('toko_banjaran.inquery_returbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
 
-        return $pdf->stream('surat_permintaan_produk.pdf');
+    //     return $pdf->stream('surat_permintaan_produk.pdf');
         
-        // return view('toko_banjaran.retur_tokoslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
-        }
+    // }
+
+    public function print($id)
+{
+    $kodeRetur = Retur_tokobanjaran::where('id', $id)->value('kode_retur');
+
+    // Jika kode_retur tidak ditemukan, tampilkan pesan error
+    if (!$kodeRetur) {
+        return redirect()->back()->with('error', 'Data tidak ditemukan.');
+    }
+    
+    // Ambil semua data dengan kode_retur yang sama
+    $pengirimanBarangJadi = Retur_tokobanjaran::with([
+        'produk.subklasifikasi.klasifikasi', // Tambahkan relasi klasifikasi
+        'toko'
+    ])->where('kode_retur', $kodeRetur)->get();
+    
+    // Ambil item pertama untuk informasi toko
+    $firstItem = $pengirimanBarangJadi->first();
+    
+    $pdf = FacadePdf::loadView('toko_banjaran.inquery_returbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
+
+    return $pdf->stream('surat_permintaan_produk.pdf');
+}
 
 }
 

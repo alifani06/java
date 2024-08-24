@@ -48,9 +48,9 @@ class Hargajual extends Model
         return $this->belongsTo(Produk::class, 'produk_id');
     }
 
-    public function tokobenjaran()
+    public function tokobanjaran()
     {
-        return $this->belongsTo(Tokobenjaran::class);
+        return $this->belongsTo(Tokobanjaran::class);
     }
         
 }

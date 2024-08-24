@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Retur Barang Jadi</h1>
+                    <h1 class="m-0">Laporan Pemusnahan Barang Jadi</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -91,24 +91,6 @@
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="toko" name="toko_id">
-                                    <option value="">- Semua Toko -</option>
-                                    @foreach ($tokos as $toko)
-                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="toko">(Pilih Toko)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="klasifikasi" name="klasifikasi_id" onchange="filterProduk()">
-                                    <option value="">- Semua Divisi -</option>
-                                    @foreach ($klasifikasis as $klasifikasi)
-                                        <option value="{{ $klasifikasi->id }}" {{ Request::get('klasifikasi_id') == $klasifikasi->id ? 'selected' : '' }}>{{ $klasifikasi->nama }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="klasifikasi">(Pilih Divisi)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
                                 <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
@@ -123,11 +105,10 @@
                             <tr>
                                 <th class="text-center">No</th>
                                 <th>Cabang</th>
+                                <th>Kode Pemusnahan</th>
                                 <th>Kode Retur</th>
                                 <th>Tanggal Retur</th>
-                                <th>Tanggal Terima</th>
-                                {{-- <th>Nama Produk</th> --}}
-                                <th>Status</th>
+                                <th>Tanggal Pemusnahan</th>
                               
                             </tr>
                         </thead>
@@ -141,6 +122,7 @@
                                     <td>
                                         {{ $firstItem->toko ? $firstItem->toko->nama_toko : '-' }} {{-- Ganti nama_toko sesuai nama kolom yang ada pada tabel toko --}}
                                     </td>
+                                <td>{{ $firstItem->kode_pemusnahan }}</td>
                                 <td>{{ $firstItem->kode_retur }}</td>
                                 <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_retur)->format('d/m/Y H:i') }}</td>
                                 <td>
@@ -149,41 +131,7 @@
                                     @else
                                         -
                                     @endif
-                                </td>                                    
-                                {{-- <td>{{ $firstItem->nama_produk }}</td> --}}
-                                    <td class="text-center">
-                                    @if ($firstItem->status == 'posting')
-                                        <button type="button" class="btn btn-success btn-sm">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                    @endif
-                                    @if ($firstItem->status == 'unpost')
-                                    <button type="button" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                    @endif
-                                 
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        @if ($firstItem->status == 'unpost')
-                                           
-                                                <a class="dropdown-item posting-btn"
-                                                    data-memo-id="{{ $firstItem->id }}">Posting</a>
-                                         
-                                                {{-- <a class="dropdown-item"
-                                                    href="{{ url('admin/inquery_returbarangjadi/' . $firstItem->id . '/edit') }}">Update</a> --}}
-                                            
-                                                <a class="dropdown-item"
-                                                href="{{ url('/admin/inquery_returbarangjadi/' . $firstItem->id ) }}">Show</a>
-                                                @endif
-                                        @if ($firstItem->status == 'posting')
-                                                <a class="dropdown-item unpost-btn"
-                                                    data-memo-id="{{ $firstItem->id }}">Unpost</a>
-                                                <a class="dropdown-item"
-                                                href="{{ url('/admin/inquery_returbarangjadi/' . $firstItem->id ) }}">Show</a>
-                                        @endif
-                                       
-                                    </div>
-                                </td>
+                         
                             </tr>
                             <tr class="permintaan-details" id="details-{{ $firstItem->id }}" style="display: none;">
                                 <td colspan="5">
@@ -235,16 +183,15 @@
         </div>
     </section>
 
-
     <script>
         function printReport() {
         const form = document.getElementById('form-action');
-        form.action = "{{ url('admin/printReportretur') }}";
+        form.action = "{{ url('admin/printReportpemusnahan') }}";
         form.target = "_blank";
         form.submit();
     }
     </script> 
-    
+
     <script>
         var tanggalAwal = document.getElementById('tanggal_retur');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
@@ -265,73 +212,12 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('admin/laporan_returbarangjadi') }}";
+            form.action = "{{ url('admin/laporan_pemusnahanbarangjadi') }}";
             form.submit();
         }
 
     </script>
 
-
-
-    {{-- unpost stok  --}}
-    <script>
-        $(document).ready(function() {
-            $('.unpost-btn').click(function() {
-                var memoId = $(this).data('memo-id');
-                $(this).addClass('disabled');
-
-                $('#modal-loading').modal('show');
-
-                $.ajax({
-                    url: "{{ url('admin/inquery_returbarangjadi/unpost_retur/') }}/" + memoId,
-                    type: 'GET',
-                    data: {
-                        id: memoId
-                    },
-                    success: function(response) {
-                        $('#modal-loading').modal('hide');
-                        console.log(response);
-                        $('#modal-posting-' + memoId).modal('hide');
-                        location.reload();
-                    },
-                    error: function(error) {
-                        $('#modal-loading').modal('hide');
-                        console.log(error);
-                    }
-                });
-            });
-        });
-    </script>
-
-    {{-- posting stok --}}
-    <script>
-        $(document).ready(function() {
-            $('.posting-btn').click(function() {
-                var memoId = $(this).data('memo-id');
-                $(this).addClass('disabled');
-
-                $('#modal-loading').modal('show');
-
-                $.ajax({
-                    url: "{{ url('admin/inquery_returbarangjadi/posting_retur/') }}/" + memoId,
-                    type: 'GET',
-                    data: {
-                        id: memoId
-                    },
-                    success: function(response) {
-                        $('#modal-loading').modal('hide');
-                        console.log(response);
-                        $('#modal-posting-' + memoId).modal('hide');
-                        location.reload();
-                    },
-                    error: function(error) {
-                        $('#modal-loading').modal('hide');
-                        console.log(error);
-                    }
-                });
-            });
-        });
-    </script>
  <script>
     $(document).ready(function() {
     $('tbody tr.dropdown').click(function(e) {
