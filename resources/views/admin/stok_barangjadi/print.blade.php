@@ -62,14 +62,15 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            font-size: 10px;
         }
         th, td {
-            padding: 6px;
-            border: 1px solid #ccc;
+            padding: 4px;
+            border: 1px solid black;
             text-align: left;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: white;
         }
         .signature-container {
             margin-top: 60px;
@@ -153,7 +154,7 @@
         </tr>
         <tr>
             <td><strong>Tanggal</strong></td>
-            <td>: {{ \Carbon\Carbon::now()->format('d-m-Y') }}</td>
+            <td>: {{ \Carbon\Carbon::now()->format('d-m-Y H:i') }}</td>
             <td></td>
         </tr>
         <tr>
@@ -188,12 +189,12 @@
                 <td>{{ $detail->produk->kode_produk }}</td>
                 <td>{{ $detail->produk->subklasifikasi->nama }}</td>
                 <td>{{ $detail->produk->nama_produk }}</td>
-                <td>{{ $detail->stok }}</td>
+                <td style="text-align: right">{{ $detail->stok }}</td>
             </tr>
             @endforeach
             <tr class="total-row">
                 <td colspan="4">Total</td>
-                <td>{{ $totalJumlah }}</td>
+                <td style="text-align: right">{{ $totalJumlah }}</td>
             </tr>
         </tbody>
     </table>

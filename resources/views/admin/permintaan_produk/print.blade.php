@@ -72,12 +72,12 @@
             margin-bottom: 9px;
         }
         th, td {
-            padding: 6px;
+            padding: 4px;
             border: 1px solid black;
             text-align: left;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: white;
         }
         /* Atur ukuran font di dalam tabel */
         table td, table th {
@@ -152,7 +152,7 @@
             </p>
             <p>
                 <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal</strong> </span>
-                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->created_at->format('d-m-Y') }}</span>
+                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->created_at->format('d-m-Y H:i') }}</span>
             </p>
         </div>
 
@@ -182,7 +182,7 @@
                                 <td>{{ $detail->produk->kode_produk }}</td>
                                 <td>{{ $subklasifikasi }}</td>
                                 <td>{{ $detail->produk->nama_produk }}</td>
-                                <td>{{ $detail->jumlah }}</td>
+                                <td style="text-align: right">{{ $detail->jumlah }}</td>
                             </tr>
                         @endforeach
                 @endforeach
@@ -191,7 +191,7 @@
             <tfoot>
                 <tr class="total-row">
                     <td colspan="4">Total </td>
-                    <td>{{ $produks->sum('jumlah') }}</td>
+                    <td style="text-align: right">{{ $produks->sum('jumlah') }}</td>
                 </tr>
             </tfoot>
         </table><br>
