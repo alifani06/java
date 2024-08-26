@@ -107,7 +107,7 @@
         </div>
 
         <!-- Judul Surat -->
-        <div class="change-header">LAPORAN STOK BARANG JADI</div>
+        <div class="change-header">SURAT STOK BARANG JADI</div>
 
         <!-- Informasi Permintaan -->
         <div>

@@ -125,37 +125,66 @@ class Pengiriman_tokobanjaranController extends Controller{
 // public function posting_pengiriman($id)
 // {
 //     // Ambil data stok_tokoslawi berdasarkan ID
-//     $stok = Stok_tokoslawi::where('id', $id)->first();
+//     $stok = Stok_tokobanjaran::where('id', $id)->first();
 
 //     // Pastikan data ditemukan
 //     if (!$stok) {
 //         return response()->json(['error' => 'Data tidak ditemukan.'], 404);
 //     }
 
-//     // Ambil kode_pengiriman dari stok yang diambil
+//     // Ambil kode_pengiriman dan pengiriman_barangjadi_id dari stok yang diambil
 //     $kodePengiriman = $stok->kode_pengiriman;
-    
-//     // Ambil pengiriman_barangjadi_id dari stok yang diambil
 //     $pengirimanId = $stok->pengiriman_barangjadi_id;
 
+//     // Ambil pengiriman terkait dari tabel pengiriman_barangjadi
+//     $pengiriman = Pengiriman_barangjadi::find($pengirimanId);
+
+//     // Pastikan data pengiriman ditemukan
+//     if (!$pengiriman) {
+//         return response()->json(['error' => 'Data pengiriman tidak ditemukan.'], 404);
+//     }
+
+//     // Ambil detail stok barang jadi terkait produk
+//     $detailStoks = Detail_stokbarangjadi::where('produk_id', $pengiriman->produk_id)->get();
+//     $totalStok = $detailStoks->sum('stok');
+
+//     // Cek apakah stok cukup untuk jumlah pengiriman
+//     if ($totalStok < $pengiriman->jumlah) {
+//         return response()->json(['error' => 'Stok tidak cukup untuk melakukan posting.'], 400);
+//     }
+
+//     // Kurangi stok berdasarkan jumlah pengiriman
+//     $remaining = $pengiriman->jumlah;
+//     foreach ($detailStoks as $detailStok) {
+//         if ($detailStok->stok >= $remaining) {
+//             $detailStok->stok -= $remaining;
+//             $detailStok->save();
+//             // break;
+//         } else {
+//             $remaining -= $detailStok->stok;
+//             $detailStok->stok = 0;
+//             $detailStok->save();
+//         }
+//     }
+
 //     // Update status untuk semua stok_tokoslawi dengan kode_pengiriman yang sama
-//     Stok_tokoslawi::where('kode_pengiriman', $kodePengiriman)->update([
+//     Stok_tokobanjaran::where('kode_pengiriman', $kodePengiriman)->update([
 //         'status' => 'posting',
 //         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
 //     ]);
 
-//     // Update status untuk pengiriman_barangjadi berdasarkan pengiriman_barangjadi_id
-//     Pengiriman_barangjadi::where('id', $pengirimanId)->update([
+//     // Update status untuk pengiriman_barangjadi
+//     $pengiriman->update([
 //         'status' => 'posting',
 //         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
-
 //     ]);
 
-//     return response()->json(['success' => 'Berhasil mengubah status di stok_tokoslawi dan pengiriman_barangjadi.']);
+//     return response()->json(['success' => 'Berhasil mengubah status di stok_tokoslawi dan pengurangan stok di detail_stokbarangjadi.']);
 // }
+
 public function posting_pengiriman($id)
 {
-    // Ambil data stok_tokoslawi berdasarkan ID
+    // Ambil data stok_tokobanjaran berdasarkan ID
     $stok = Stok_tokobanjaran::where('id', $id)->first();
 
     // Pastikan data ditemukan
@@ -175,43 +204,57 @@ public function posting_pengiriman($id)
         return response()->json(['error' => 'Data pengiriman tidak ditemukan.'], 404);
     }
 
-    // Ambil detail stok barang jadi terkait produk
-    $detailStoks = Detail_stokbarangjadi::where('produk_id', $pengiriman->produk_id)->get();
-    $totalStok = $detailStoks->sum('stok');
+    // Ambil semua detail stok barang jadi terkait semua produk dalam pengiriman
+    $productsInPengiriman = Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->get();
 
-    // Cek apakah stok cukup untuk jumlah pengiriman
-    if ($totalStok < $pengiriman->jumlah) {
-        return response()->json(['error' => 'Stok tidak cukup untuk melakukan posting.'], 400);
-    }
+    foreach ($productsInPengiriman as $pengirimanItem) {
+        // Ambil detail stok barang jadi terkait produk ini
+        $detailStoks = Detail_stokbarangjadi::where('produk_id', $pengirimanItem->produk_id)->get();
+        $totalStok = $detailStoks->sum('stok');
 
-    // Kurangi stok berdasarkan jumlah pengiriman
-    $remaining = $pengiriman->jumlah;
-    foreach ($detailStoks as $detailStok) {
-        if ($detailStok->stok >= $remaining) {
-            $detailStok->stok -= $remaining;
-            $detailStok->save();
-            break;
-        } else {
-            $remaining -= $detailStok->stok;
-            $detailStok->stok = 0;
-            $detailStok->save();
+        // Cek apakah stok cukup untuk jumlah pengiriman
+        if ($totalStok < $pengirimanItem->jumlah) {
+            return response()->json(['error' => 'Stok tidak cukup untuk melakukan posting.'], 400);
+        }
+
+        // Kurangi stok berdasarkan jumlah pengiriman
+        $remaining = $pengirimanItem->jumlah;
+        foreach ($detailStoks as $detailStok) {
+            if ($remaining > 0) {
+                if ($detailStok->stok >= $remaining) {
+                    $detailStok->stok -= $remaining;
+                    $detailStok->save();
+                    $remaining = 0; // Pengurangan stok sudah mencukupi
+                } else {
+                    $remaining -= $detailStok->stok;
+                    $detailStok->stok = 0;
+                    $detailStok->save();
+                }
+            } else {
+                break; // Jika tidak ada sisa yang perlu dikurangi, hentikan loop
+            }
         }
     }
 
-    // Update status untuk semua stok_tokoslawi dengan kode_pengiriman yang sama
+    // Update status untuk semua stok_tokobanjaran dengan kode_pengiriman yang sama
     Stok_tokobanjaran::where('kode_pengiriman', $kodePengiriman)->update([
         'status' => 'posting',
         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
     ]);
 
     // Update status untuk pengiriman_barangjadi
-    $pengiriman->update([
+    Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->update([
         'status' => 'posting',
         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
     ]);
 
-    return response()->json(['success' => 'Berhasil mengubah status di stok_tokoslawi dan pengurangan stok di detail_stokbarangjadi.']);
+    return response()->json(['success' => 'Berhasil mengubah status di stok_tokobanjaran dan pengurangan stok di detail_stokbarangjadi.']);
 }
+
+
+
+
+
 
 
 public function unpost_pengiriman($id)

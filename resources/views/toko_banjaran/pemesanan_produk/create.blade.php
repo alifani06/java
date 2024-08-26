@@ -457,7 +457,7 @@
                 paymentFields.style.display = 'none';
             } else if (metodeId) {
                 $.ajax({
-                    url: "{{ url('toko_slawi/metodebayar/metode') }}" + "/" + metodeId,
+                    url: "{{ url('toko_banjaran/metodebayar/metode') }}" + "/" + metodeId,
                     type: "GET",
                     dataType: "json",
                     success: function(response) {
@@ -560,7 +560,7 @@
             // Tutup modal
             $('#tableCatatan').modal('hide');
         }
-    </script>
+    </script>   
     
     <script>
         $('#tableCatatan').on('show.bs.modal', function (event) {
@@ -627,6 +627,7 @@
 
         });
     </script>
+    
     <script>
             //    memunculkan button utk mencari pelanggan yg sudah ada
             document.addEventListener('DOMContentLoaded', function() {

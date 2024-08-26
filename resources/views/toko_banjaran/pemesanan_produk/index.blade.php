@@ -161,10 +161,10 @@
                                                         data-memo-id="{{ $item->id }}">Posting</a>
                                              
                                                     <a class="dropdown-item"
-                                                        href="{{ url('toko_slawi/pemesanan_produk/' . $item->id . '/edit') }}">Update</a>
+                                                        href="{{ url('toko_banjaran/pemesanan_produk/' . $item->id . '/edit') }}">Update</a>
                                                 
                                                     <a class="dropdown-item" 
-                                                    href="{{ route('toko_slawi.pemesanan_produk.cetak', $item->id) }}">Show</a>
+                                                    href="{{ route('toko_banjaran.pemesanan_produk.cetak', $item->id) }}">Show</a>
 
                                                       
                                             @endif
@@ -172,7 +172,7 @@
                                                     <a class="dropdown-item unpost-btn"
                                                         data-memo-id="{{ $item->id }}">Unpost</a>
                                                     <a class="dropdown-item"
-                                                        href="{{ url('/toko_slawi/pemesanan_produk/' . $item->id ) }}">Show</a>
+                                                        href="{{ url('/toko_banjaran/pemesanan_produk/' . $item->id ) }}">Show</a>
                                             @endif
                                            
                                         </div>
@@ -226,7 +226,7 @@
         var form = document.getElementById('form-action');
 
         function cari() {
-            form.action = "{{ url('toko_slawi/inquery_pemesnanproduk') }}";
+            form.action = "{{ url('toko_banjaran/inquery_pemesnanproduk') }}";
             form.submit();
         }
     </script>
@@ -250,8 +250,8 @@
                 });
                 document.getElementById('selectedIds').value = selectedIds.join(',');
                 var selectedIdsString = selectedIds.join(',');
-                window.location.href = "{{ url('toko_slawi/cetak_fakturekspedisifilter') }}?ids=" + selectedIdsString;
-                // var url = "{{ url('toko_slawi/ban/cetak_pdffilter') }}?ids=" + selectedIdsString;
+                window.location.href = "{{ url('toko_banjaran/cetak_fakturekspedisifilter') }}?ids=" + selectedIdsString;
+                // var url = "{{ url('toko_banjaran/ban/cetak_pdffilter') }}?ids=" + selectedIdsString;
             }
         }
     </script>
@@ -268,7 +268,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan unpost
                 $.ajax({
-                    url: "{{ url('toko_slawi/inquery_pemesananproduk/unpost_pemesananproduk/') }}/" + memoId,
+                    url: "{{ url('toko_banjaran/inquery_pemesananproduk/unpost_pemesananproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -309,7 +309,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan posting
                 $.ajax({
-                    url: "{{ url('toko_slawi/inquery_pemesananproduk/posting_pemesananproduk/') }}/" + memoId,
+                    url: "{{ url('toko_banjaran/inquery_pemesananproduk/posting_pemesananproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
