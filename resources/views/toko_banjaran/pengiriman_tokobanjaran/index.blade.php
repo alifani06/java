@@ -176,7 +176,6 @@
                                     </table>
                                 </td>
                             </tr>
-                     
                         @endforeach
                         </tbody>
                     </table> 
@@ -220,7 +219,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_banjaran/inquery_pengirimanbarangjadi') }}";
+            form.action = "{{ url('toko_banjaran/pengiriman_tokobanjaran') }}";
             form.submit();
         }
 

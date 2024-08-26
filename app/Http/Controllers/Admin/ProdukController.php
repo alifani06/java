@@ -10,7 +10,7 @@ use App\Models\Subklasifikasi;
 use App\Models\Subsub;
 use App\Models\Hargajual;
 use App\Models\Tokoslawi;
-use App\Models\Tokobenjaran;
+use App\Models\Tokobanjaran;
 use App\Models\Tokotegal;
 use App\Models\Tokopemalang;
 use App\Models\Tokobumiayu;
@@ -119,7 +119,7 @@ class ProdukController extends Controller
             'non_diskon_slw' => 0,
         ]);
     
-        Tokobenjaran::create([
+        Tokobanjaran::create([
             'produk_id' => $produk->id,
             'harga_awal' => $request->harga,
             'diskon_awal' => 0,

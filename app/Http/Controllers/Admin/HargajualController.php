@@ -31,7 +31,6 @@ class HargajualController extends Controller
      */
     public function index()
     {
-      
         $tokoslawi = Tokoslawi::latest()->first();
         $tokobanjaran = Tokobanjaran::latest()->first();
         $tokotegal = Tokotegal::latest()->first();

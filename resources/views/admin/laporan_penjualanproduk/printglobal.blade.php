@@ -161,25 +161,35 @@
     </table>
     
     <!-- Tabel total penjualan fee, total deposit, dan grand total -->
-    <table style="width: 60%; margin-left: auto; margin-right: 0; background-color: yellow">
+    <table style="width: 60%; margin-left: auto; margin-right: 0; background-color: rgb(248, 248, 6);" border="0">
         <tbody>
-            <tr>
-                <td style="text-align: right;  width: 60%;">Total Fee Penjualan</td>
-                <td style="text-align: right; font-weight: bold; width: 40%;">{{ 'Rp. ' .  number_format($grandTotalFee, 0, ',', '.') }}</td>
+            <!-- Baris tanpa garis tabel -->
+            <tr style="border: none;">
+                <td style="text-align: right; border: none;">Total Penjualan :</td>
+                <td style="text-align: right; font-weight: bold; border: none;">{{ number_format($grandTotal, 0, ',', '.') }}</td>
+            </tr>
+            <tr style="border: none;">
+                <td style="text-align: right; width: 60%; border: none;">Fee Penjualan :</td>
+                <td style="text-align: right; font-weight: bold; width: 40%; border: none;">{{ number_format($grandTotalFee, 0, ',', '.') }}</td>
+            </tr>
+            <!-- Baris dengan garis pembatas -->
+            <tr style="border-top: 2px solid black;">
+                <td style="text-align: right; border: none;">Sub Total Penjualan :</td>
+                <td style="text-align: right; font-weight: bold; border: none;">{{ number_format($grandTotal - $grandTotalFee, 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <td style="text-align: right;">Total Penjualan</td>
-                <td style="text-align: right; font-weight: bold;">{{ 'Rp. ' .  number_format($grandTotal, 0, ',', '.') }}</td>
+                <td style="text-align: right; border: none;">Pengambilan Deposit :</td>
+                <td style="text-align: right; font-weight: bold; border: none;">{{ number_format($totalDeposit, 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <td style="text-align: right;">Pengambilan Deposit</td>
-                <td style="text-align: right; font-weight: bold;">{{ 'Rp. ' .  number_format($totalDeposit, 0, ',', '.') }}</td>
-            </tr>
-            <tr>
-                <td style="text-align: right;">Total </td>
-                <td style="text-align: right; font-weight: bold;">{{ 'Rp. ' .  number_format($grandTotal - $totalDeposit, 0, ',', '.') }}</td>
+                <td style="text-align: right;">Total</td>
+                <td style="text-align: right; font-weight: bold;">{{ 'Rp. ' . number_format($grandTotal - $grandTotalFee - $totalDeposit, 0, ',', '.') }}</td>
             </tr>
         </tbody>
     </table>
+    
+    
+
+    
 </body>
 </html>

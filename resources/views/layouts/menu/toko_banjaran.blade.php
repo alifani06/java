@@ -279,7 +279,7 @@
             <a href="{{ url('toko_banjaran/pengiriman_tokobanjaran') }}"
                 class="nav-link {{ request()->is('toko_banjaran/pengiriman_tokobanjaran*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Inquery Pengiriman Banjaran</p>
+                <p style="font-size: 13px;">Inquery Pengiriman Banjaran</p>
             </a>
         </li>
         {{-- @endif --}}
