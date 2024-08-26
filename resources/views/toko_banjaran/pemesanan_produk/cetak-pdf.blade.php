@@ -295,7 +295,7 @@
         <hr class="divider">
         <hr class="divider">
         <div class="section">
-            <h2>Surat Pemesanan Produk</h2>
+            <h2>Struk Pemesanan Produk</h2>
             <p style="text-align: right; font-size: 8px;">
                 {{ \Carbon\Carbon::parse($pemesanan->tanggal_pemesanan)->locale('id')->translatedFormat('l, d F Y H:i') }}
             </p><br>
