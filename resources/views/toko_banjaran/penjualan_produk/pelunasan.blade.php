@@ -170,7 +170,7 @@
                         {{-- Detail Pemsanan --}}
                         <div id="forms-container"></div>
 
-                        <div class="row mb-3">
+                        {{-- <div class="row mb-3">
                             <div class="col-md-6 mb-3">
                                 <div class="card">
                                     <div class="card-header">
@@ -261,6 +261,95 @@
                             </div>
                          
                             
+                        </div> --}}
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col mb-3 ml-auto d-flex align-items-center">
+                                                <label for="sub_total" class="mr-2 label-width">Sub Total</label>
+                                                <input type="text" class="form-control large-font input-width" id="sub_total" name="sub_total" value="{{ old('sub_total', 'Rp0') }}" readonly oninput="updateCalculations();">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col mb-3 ml-auto d-flex align-items-center">
+                                                <label for="dp_pemesanan" class="mr-2 label-width">DP</label>
+                                                <input type="text" class="form-control large-font input-width" id="dp_pemesanan" name="dp_pemesanan" readonly value="{{ old('dp_pemesanan', 'Rp0') }}" oninput="formatAndUpdateKembali()">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col mb-3 ml-auto d-flex align-items-center">
+                                                <label for="kekurangan_pemesanan" class="mr-2 label-width">Kekurangan</label>
+                                                <input type="text" class="form-control large-font input-width" id="kekurangan_pemesanan" name="kekurangan_pemesanan" value="{{ old('kekurangan_pemesanan', 'Rp0') }}" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" style="flex: 8;">
+                                    <label for="metode_id">Jenis Pembayaran</label>
+                                    <select class="select2bs4 select2-hidden-accessible" name="metode_id" style="width: 100%;" id="nama_metode" onchange="getData1()">
+                                        <option value="">- Pilih -</option>
+                                        @foreach ($metodes as $metode)
+                                            <option value="{{ $metode->id }}" data-fee="{{ $metode->fee }}" {{ old('metode_id') == $metode->id ? 'selected' : '' }}>
+                                                {{ $metode->nama_metode }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div id="payment-fields" class="form-group" style="display: none; margin-top: 20px;">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="fee">Fee (%)</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="fee" readonly name="fee" placeholder="" value="{{ old('fee') }}">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-md-4">
+                                            <label for="total_fee">Total Fee</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" id="total_fee" name="total_fee" placeholder="" value="{{ old('total_fee', 'Rp0') }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-md-4">
+                                            <label for="keterangan">Keterangan</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" id="keterangan" name="keterangan" placeholder="" value="{{ old('keterangan') }}">
+                                        </div>
+                                    </div>
+                                </div> 
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col mb-3 ml-auto d-flex align-items-center">
+                                                <label for="pelunasan" class="mr-2 label-width">Bayar</label>
+                                                <input type="text" class="form-control large-font input-width" id="pelunasan" name="pelunasan" value="{{ old('pelunasan', 'Rp') }}" oninput="formatAndUpdateKembali()">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col mb-3 ml-auto d-flex align-items-center">
+                                                <label for="kembali" class="mr-2 label-width">Kembali</label>
+                                                <input type="text" class="form-control large-font input-width" id="kembali" name="kembali" value="{{ old('kembali', 'Rp') }}" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="card">
                           
@@ -437,7 +526,7 @@
          
     </script>
     
-    <script>
+    {{-- <script>
         function formatAndUpdateKembali() {
             // Get values from the form
             let kekuranganPemesanan = parseFloat(document.getElementById('kekurangan_pemesanan').value) || 0;
@@ -502,25 +591,75 @@
                 }
             });
         });
-    </script>
-    
-    {{-- <script>
-        function formatAndUpdateKembali() {
-            // Ambil nilai dari input fields
-            var pelunasan = parseFloat(document.getElementById('pelunasan').value) || 0;
-            var kekurangan = parseFloat(document.getElementById('kekurangan_pemesanan').value) || 0;
-    
-            // Hitung kembalian
-            var kembali = pelunasan - kekurangan;
-    
-            // Perbarui nilai input kembalian
-            document.getElementById('kembali').value = kembali.toFixed(0);
+    </script> --}}
+    <script>
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(number).replace(/(\.|,)00$/g, '');
         }
     
-        // Panggil fungsi saat halaman dimuat pertama kali untuk memastikan nilai awal sudah benar
-        document.addEventListener('DOMContentLoaded', formatAndUpdateKembali);
-    </script> --}}
-  
+        function unformatRupiah(value) {
+            return parseFloat(value.replace(/[^0-9,-]+/g, "").replace(',', '.')) || 0;
+        }
+    
+        function formatAndUpdateKembali() {
+            let kekuranganPemesanan = unformatRupiah(document.getElementById('kekurangan_pemesanan').value) || 0;
+            let pelunasan = unformatRupiah(document.getElementById('pelunasan').value) || 0;
+    
+            let kembali = pelunasan - kekuranganPemesanan;
+            document.getElementById('kembali').value = formatRupiah(kembali);
+        }
+    
+        function getData1() {
+            let metodeSelect = document.getElementById('nama_metode');
+            let selectedOption = metodeSelect.options[metodeSelect.selectedIndex];
+    
+            let feePercentage = parseFloat(selectedOption.getAttribute('data-fee')) || 0;
+            let kekuranganPemesanan = unformatRupiah(document.getElementById('kekurangan_pemesanan').value) || 0;
+    
+            let totalFee = (kekuranganPemesanan * feePercentage) / 100;
+    
+            document.getElementById('fee').value = feePercentage;
+            document.getElementById('total_fee').value = formatRupiah(totalFee);
+    
+            let totalToPay = kekuranganPemesanan + totalFee;
+            document.getElementById('pelunasan').value = formatRupiah(totalToPay);
+    
+            if (metodeSelect.value) {
+                document.getElementById('payment-fields').style.display = 'block';
+            } else {
+                document.getElementById('payment-fields').style.display = 'none';
+            }
+        }
+    
+        $(document).ready(function() {
+            $('#kode_pemesanan').on('input', function() {
+                var kode = $(this).val();
+                if (kode) {
+                    fetchDataByKode(kode);
+                }
+            });
+    
+            $('#nama_metode').on('change', function() {
+                getData1();
+            });
+    
+            $('#pelunasan').on('input', function() {
+                let metodeSelected = $('#nama_metode').val();
+                if (!metodeSelected) {
+                    formatAndUpdateKembali();
+                }
+            });
+    
+            // Pastikan format rupiah dihapus sebelum data disubmit ke server
+            $('form').on('submit', function() {
+                $('#kekurangan_pemesanan').val(unformatRupiah($('#kekurangan_pemesanan').val()));
+                $('#pelunasan').val(unformatRupiah($('#pelunasan').val()));
+                $('#kembali').val(unformatRupiah($('#kembali').val()));
+                $('#total_fee').val(unformatRupiah($('#total_fee').val()));
+            });
+        });
+    </script>
+    
     <script>
         function showCategoryModalpemesanan() {
                 $('#tableDeposit').modal('show');

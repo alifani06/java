@@ -27,6 +27,8 @@ class Pelunasan extends Model
         'pemesananproduk_id',
         'dp_pemesanan',
         'pelunasan',
+        'kembali',
+        'kode_penjualan',
         'tanggal_pelunasan',
         'kekurangan_pemesanan',
         

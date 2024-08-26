@@ -415,6 +415,7 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
 
     Route::resource('pelunasan_pemesanan', \App\Http\Controllers\Toko_banjaran\PelunasanpemesananController::class);
     Route::get('/toko_banjaran/pelunasan_pemesanan/cetak-pdf{id}', [PelunasanpemesananController::class, 'cetakPdf'])->name('toko_banjaran.pelunasan_pemesanan.cetak-pdf');
+    Route::get('/pelunasan-pemesanan/cetak/{id}', [PelunasanpemesananController::class, 'cetak'])->name('toko_banjaran.pelunasan_pemesanan.cetak');
 
 
    

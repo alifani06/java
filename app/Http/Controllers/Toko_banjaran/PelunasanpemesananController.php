@@ -364,17 +364,32 @@ class PelunasanpemesananController extends Controller
         ]);
     }
 
-    public function cetak($id)
-    {
-        // Retrieve the specific pemesanan by ID along with its details
-        $penjualan = Penjualanproduk::with('detailpenjualanproduk', 'toko')->findOrFail($id);
+    // public function cetak($id)
+    // {
+    //     // Retrieve the specific pemesanan by ID along with its details
+    //     $penjualan = Penjualanproduk::with('detailpenjualanproduk', 'toko')->findOrFail($id);
     
-        // Retrieve all pelanggans (assuming you need this for the view)
-        $pelanggans = Pelanggan::all();
-        $tokos = $penjualan->toko;
+    //     // Retrieve all pelanggans (assuming you need this for the view)
+    //     $pelanggans = Pelanggan::all();
+    //     $tokos = $penjualan->toko;
 
-        // Pass the retrieved data to the view
-        return view('toko_banjaran/pelunasan_pemesanan/cetak', compact('penjualan', 'pelanggans', 'tokos'));
+    //     // Pass the retrieved data to the view
+    //     return view('toko_banjaran/pelunasan_pemesanan/cetak', compact('penjualan', 'pelanggans', 'tokos'));
+    // }
+    public function cetak($id)
+    {   
+        // Mengambil satu item Pelunasan berdasarkan ID
+        $inquery = Pelunasan::with(['metodePembayaran', 'dppemesanan.pemesananproduk'])
+                    ->findOrFail($id);
+        
+        // Mengambil semua pelanggan
+        $pelanggans = Pelanggan::all();
+    
+        // Mengakses toko dari $inquery yang sekarang menjadi instance model
+        $tokos = $inquery->toko;
+    
+        // Mengirim data ke view
+        return view('toko_banjaran/pelunasan_pemesanan/cetak', compact('inquery', 'tokos', 'pelanggans'));
     }
 
     public function cetakpelunasan($id)

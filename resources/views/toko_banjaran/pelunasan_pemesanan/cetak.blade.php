@@ -198,7 +198,7 @@
                 <div class="penjualan">
                     <p>
                         <span style="min-width: 100px; display: inline-flex; align-items: center;">No penjualan</span>
-                        <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $inquery->dppemesanan_id }}</span>
+                        <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $inquery->kode_penjualan }}</span>
                     </p>
                 </div>
                 <div class="kasir">
@@ -257,18 +257,6 @@
                                 $subtotal += $total;
                             @endphp
                             @endforeach
-
-                       
-    
-                            {{-- <tr>
-                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total Bayar</strong></td>
-                                <td style="font-size: 8px;">{{'Rp.'.  number_format($detail->total, 0, ',', '.') }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong>DP </strong></td>
-                                    <td style="font-size: 8px;">{{'Rp.'.  number_format($inquery->dppemesanan->dp_pemesanan, 0, ',', '.') }}</td>
-                                </td>
-                            </tr> --}}
                             
                             <tr>
                                 <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kekurangan  </strong></td>
@@ -292,6 +280,10 @@
                             <tr>
                                 <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Bayar </strong></td>
                                 <td style="font-size: 8px;">{{'Rp.'.  number_format($inquery->pelunasan, 0, ',', '.') }}</td>
+                            </tr>  
+                            <tr>
+                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kembali </strong></td>
+                                <td style="font-size: 8px;">{{'Rp.'.  number_format($inquery->kembali, 0, ',', '.') }}</td>
                             </tr>  
                     </tbody>
                 </table>
