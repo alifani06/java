@@ -83,7 +83,7 @@
                                    
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>
-                                        {{ $item->dppemesanan->kode_dppemesanan }}
+                                        {{ $item->kode_penjualan }}
                                     </td>
                                     <td>
                                         {{ \Carbon\Carbon::parse($item->tanggal_pelunasan)->format('d/m/Y H:i') }}

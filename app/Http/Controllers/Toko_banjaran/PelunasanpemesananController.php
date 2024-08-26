@@ -411,16 +411,16 @@ class PelunasanpemesananController extends Controller
      $inquery = Pelunasan::with(['metodePembayaran', 'dppemesanan.pemesananproduk'])
      ->findOrFail($id);
 
-// Mengambil semua pelanggan
-$pelanggans = Pelanggan::all();
+    // Mengambil semua pelanggan
+    $pelanggans = Pelanggan::all();
 
-// Mengakses toko dari $inquery yang sekarang menjadi instance model
-$tokos = $inquery->toko;
+    // Mengakses toko dari $inquery yang sekarang menjadi instance model
+    $tokos = $inquery->toko;
+        
+    $pdf = FacadePdf::loadView('toko_banjaran.pelunasan_pemesanan.cetak-pdf', compact('inquery', 'tokos', 'pelanggans'));
+    $pdf->setPaper('a4', 'portrait');
     
-        $pdf = FacadePdf::loadView('toko_banjaran.pelunasan_pemesanan.cetak-pdf', compact('inquery', 'tokos', 'pelanggans'));
-        $pdf->setPaper('a4', 'portrait');
-    
-        return $pdf->stream('pelunasan.pdf');
+    return $pdf->stream('pelunasan.pdf');
     }
 
 

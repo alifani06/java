@@ -301,7 +301,7 @@
             </p><br>
             <div class="detail-info">
                 <div class="pemesanan">
-                    <p><span style="min-width: 100px; display: inline-flex; align-items: center;">No Pemesanan</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $inquery->dppemesanan->pemesananproduk->kode_pemesanan }}</span></p>
+                    <p><span style="min-width: 100px; display: inline-flex; align-items: center;">No Penjualan</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $inquery->kode_penjualan }}</span></p>
                 </div>
                 <div class="kasir">
                     <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Kasir</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</span></p>
@@ -309,22 +309,8 @@
                 <div class="pelanggan">
                     <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Pelanggan</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $inquery->dppemesanan->pemesananproduk->nama_pelanggan }}</span></p>
                 </div>
-<hr>
-                <h3 class="pengiriman" style="text-decoration: underline;"></h3>
-                    <div class="pelanggan">
-                        <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Penerima</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $inquery->dppemesanan->pemesananproduk->nama_penerima ?? $inquery->dppemesanan->pemesananproduk->nama_pelanggan }}</span></p>
-                    </div>
-                    <div class="telepon">
-                        <p><span style="min-width: 100px; display: inline-flex; align-items: center;">No Telp Pnerima</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: 0{{ $inquery->dppemesanan->pemesananproduk->telp_penerima ?? $inquery->dppemesanan->pemesananproduk->telp }}</span></p>
-                    </div>
-                    <div class="alamat">
-                        <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Alamat Pengiriman</span><span style="min-width: 100px; display: inline-flex; align-items: center;"><span>: {{ $inquery->dppemesanan->pemesananproduk->alamat_penerima ?? $inquery->dppemesanan->pemesananproduk->alamat }}</span></p>
-                    </div>
-                    <div class="alamat">
-                        <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Tanggal Pengiriman</span><span style="min-width: 100px; display: inline-flex; align-items: center;"><span>: {{ $inquery->dppemesanan->pemesananproduk->tanggal_kirim }}</span></p>
-                    </div>
 
-                <h3 class="pemesanan" style="text-decoration: underline;"></h3>
+                
 
                 <table style="font-size: 12px; width: 100%;">
                     <thead>
@@ -385,27 +371,22 @@
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Bayar </strong></td>
                             <td style="font-size: 8px;">{{'Rp.'.  number_format($inquery->pelunasan, 0, ',', '.') }}</td>
                         </tr> 
+                        <tr>
+                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kembali </strong></td>
+                            <td style="font-size: 8px;">{{'Rp.'.  number_format($inquery->pelunasan, 0, ',', '.') }}</td>
+                        </tr> 
                     </tbody>
                     
                 </table>
             </div>
         
-            <div class="catatan">
-                <label>Catatan:</label>
-                <p style="margin-top: 2px;">{{$inquery->catatan ?? '-'}}</p>
-            </div>
-            @if(preg_replace('/[^0-9]/', '', $inquery->sub_total) < preg_replace('/[^0-9]/', '', $inquery->sub_totalasli))
-            <div class="hemat">
-                <label>Anda telah hemat: </label>
-                <span><strong>{{ 'Rp. ' . number_format(preg_replace('/[^0-9]/', '', $inquery->sub_totalasli) - preg_replace('/[^0-9]/', '', $inquery->sub_total), 0, ',', '.') }}</strong></span>
-            </div>
-            @endif
+
+
             <div class="terimakasih">
                 <p>Untuk pemesanan, kritik dan saran Hubungi.082136638003</p>
             </div>
-           
-            <div class="note" style="text-align: left; margin-top: -15px ; font-size:9px; font-style: italic" >
-                <p>Down Payment(DP) yang sudah masuk tidak bisa diambil / ditukar dengan uang tunai/cash</p><br> 
+            <div class="terimakasihd" style="text-align: left; margin-top: -15px ; font-size: 10px; font-style: italic" >
+                <p>Barang yang sudah dibeli tidak bisa dikembalikan atau ditukar.</p><br> 
             </div>
             <div class="terimakasihd" style="text-align: center; margin-top: -30px" >
                 <p>Terimakasih atas kunjungannya</p><br> 
