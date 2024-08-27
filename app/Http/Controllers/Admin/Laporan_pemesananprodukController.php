@@ -29,7 +29,6 @@ use Dompdf\Options;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
-use Illuminate\Support\Facades\Log;
 
 
 
@@ -119,269 +118,128 @@ class Laporan_pemesananprodukController extends Controller
 
     
    
-    // public function print_pemesanan(Request $request)
-    // {
-    //     // Tangkap data dari request
-    //     $status = htmlspecialchars($request->input('status'));
-    //     $tanggal_pemesanan = $request->input('start_date');
-    //     $tanggal_akhir = $request->input('end_date');
-    //     $toko_id = htmlspecialchars($request->input('toko_id'));
-    
-    //     // Query untuk mendapatkan data pemesanan produk
-    //     $query = Pemesananproduk::with(['toko', 'detailpemesananproduk.produk.klasifikasi'])
-    //         ->when($status, function ($query, $status) {
-    //             return $query->where('status', $status);
-    //         })
-    //         ->when($tanggal_pemesanan && $tanggal_akhir, function ($query) use ($tanggal_pemesanan, $tanggal_akhir) {
-    //             $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
-    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //             return $query->whereBetween('tanggal_pemesanan', [$tanggal_pemesanan, $tanggal_akhir]);
-    //         })
-    //         ->when($tanggal_pemesanan && !$tanggal_akhir, function ($query) use ($tanggal_pemesanan) {
-    //             $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
-    //             return $query->where('tanggal_pemesanan', '>=', $tanggal_pemesanan);
-    //         })
-    //         ->when(!$tanggal_pemesanan && $tanggal_akhir, function ($query) use ($tanggal_akhir) {
-    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //             return $query->where('tanggal_pemesanan', '<=', $tanggal_akhir);
-    //         })
-    //         ->when(!$tanggal_pemesanan && !$tanggal_akhir, function ($query) {
-    //             return $query->whereDate('tanggal_pemesanan', Carbon::today());
-    //         })
-    //         ->when($toko_id && $toko_id != '0', function ($query) use ($toko_id) {
-    //             return $query->where('toko_id', $toko_id);
-    //         })
-    //         ->orderBy('id', 'DESC')
-    //         ->get();
-    
-    //     // Pengelompokan data berdasarkan produk dan klasifikasi
-    //     $groupedData = [];
-    //     foreach ($query as $item) {
-    //         foreach ($item->detailpemesananproduk as $detail) {
-    //             $key = $detail->kode_produk . '-' . ($detail->produk->klasifikasi->id ?? 'no-klasifikasi');
-    //             if (!isset($groupedData[$key])) {
-    //                 $groupedData[$key] = [
-    //                     'klasifikasi' => $detail->produk->klasifikasi->nama ?? 'Tidak ada',
-    //                     'tanggal_pemesanan' => Carbon::parse($item->tanggal_pemesanan)->format('d-m-Y H:i'),
-    //                     'kode_produk' => $detail->kode_produk,
-    //                     'nama_produk' => $detail->nama_produk,
-    //                     'kode_pemesanan' => $item->kode_pemesanan,
-    //                     'catatanproduk' => $detail->catatanproduk,
-    //                     'benjaran' => 0,
-    //                     'tegal' => 0,
-    //                     'slawi' => 0,
-    //                     'pemalang' => 0,
-    //                     'bumiayu' => 0,
-    //                     'cilacap' => 0,
-    //                     'subtotal' => 0,
-    //                 ];
-    //             }
-    //             $tokoFieldMap = [
-    //                 1 => 'benjaran',
-    //                 2 => 'tegal',
-    //                 3 => 'slawi',
-    //                 4 => 'pemalang',
-    //                 5 => 'bumiayu',
-    //                 6 => 'cilacap', // Perbaikan dari '5' menjadi '6'
-    //             ];
-    //             $tokoField = $tokoFieldMap[$item->toko_id] ?? null;
-    //             if ($tokoField) {
-    //                 $groupedData[$key][$tokoField] += $detail->jumlah;
-    //                 $groupedData[$key]['subtotal'] += $detail->jumlah;
-    //             }
-    //         }
-    //     }
-    
-    //     // Format tanggal untuk tampilan PDF
-    //     $formattedStartDate = $tanggal_pemesanan ? Carbon::parse($tanggal_pemesanan)->format('d-m-Y') : null;
-    //     $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : null;
-    
-    //     // Inisialisasi DOMPDF
-    //     $options = new Options();
-    //     $options->set('isHtml5ParserEnabled', true);
-    //     $options->set('isRemoteEnabled', true);
-    
-    //     $dompdf = new Dompdf($options);
-    
-    //     // Buat PDF
-    //     $html = view('admin.laporan_pemesananproduk.print', [
-    //         'groupedData' => $groupedData,
-    //         'totalSubtotal' => array_sum(array_column($groupedData, 'subtotal')),
-    //         'startDate' => $formattedStartDate,
-    //         'endDate' => $formattedEndDate,
-    //         'toko_id' => $toko_id,
-    //     ])->render();
-    
-    //     $dompdf->loadHtml($html);
-    
-    //     // Set ukuran kertas dan orientasi
-    //     $dompdf->setPaper('A4', 'portrait');
-    
-    //     // Render PDF
-    //     $dompdf->render();
-    
-    //     // Menambahkan nomor halaman di kanan bawah
-    //     $canvas = $dompdf->getCanvas();
-    //     $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
-    //         $text = "Page $pageNumber of $pageCount";
-    //         $font = $fontMetrics->getFont('Arial', 'normal');
-    //         $size = 10;
-    
-    //         // Menghitung lebar teks
-    //         $width = $fontMetrics->getTextWidth($text, $font, $size);
-    
-    //         // Mengatur koordinat X dan Y
-    //         $x = $canvas->get_width() - $width - 10;
-    //         $y = $canvas->get_height() - 15;
-    
-    //         // Menambahkan teks ke posisi yang ditentukan
-    //         $canvas->text($x, $y, $text, $font, $size);
-    //     });
-    
-    //     // Output PDF ke browser
-    //     return $dompdf->stream('Laporan_Pemesanan_Produk.pdf', ['Attachment' => false]);
-    // }
-
-
     public function print_pemesanan(Request $request)
-{
-    // Tangkap data dari request dengan validasi dan sanitasi input
-    $status = htmlspecialchars($request->input('status'));
-    $tanggal_pemesanan = $request->input('start_date');
-    $tanggal_akhir = $request->input('end_date');
-    $toko_id = htmlspecialchars($request->input('toko_id'));
-
-    // Query untuk mendapatkan data pemesanan produk
-    $query = Pemesananproduk::with(['toko', 'detailpemesananproduk.produk.klasifikasi'])
-        ->when($status, function ($query, $status) {
-            return $query->where('status', $status);
-        })
-        ->when($tanggal_pemesanan && $tanggal_akhir, function ($query) use ($tanggal_pemesanan, $tanggal_akhir) {
-            $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
-            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-            return $query->whereBetween('tanggal_pemesanan', [$tanggal_pemesanan, $tanggal_akhir]);
-        })
-        ->when($tanggal_pemesanan && !$tanggal_akhir, function ($query) use ($tanggal_pemesanan) {
-            $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
-            return $query->where('tanggal_pemesanan', '>=', $tanggal_pemesanan);
-        })
-        ->when(!$tanggal_pemesanan && $tanggal_akhir, function ($query) use ($tanggal_akhir) {
-            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-            return $query->where('tanggal_pemesanan', '<=', $tanggal_akhir);
-        })
-        ->when(!$tanggal_pemesanan && !$tanggal_akhir, function ($query) {
-            return $query->whereDate('tanggal_pemesanan', Carbon::today());
-        })
-        ->when($toko_id && $toko_id != '0', function ($query) use ($toko_id) {
-            return $query->where('toko_id', $toko_id);
-        })
-        ->orderBy('id', 'DESC')
-        ->get();
-
-    // Pengelompokan data berdasarkan produk dan klasifikasi
-    $groupedData = [];
-    foreach ($query as $item) {
-        foreach ($item->detailpemesananproduk as $detail) {
-            $produk = $detail->produk;
-            $klasifikasi = $produk->klasifikasi->nama ?? 'Tidak ada';
-            $kodeProduk = $detail->kode_produk;
-            $namaProduk = $detail->nama_produk;
-
-            // Key untuk pengelompokan data
-            $key = $kodeProduk . '-' . ($produk->klasifikasi->id ?? 'no-klasifikasi');
-
-            if (!isset($groupedData[$key])) {
-                $groupedData[$key] = [
-                    'klasifikasi' => $klasifikasi,
-                    'tanggal_pemesanan' => Carbon::parse($item->tanggal_pemesanan)->format('d-m-Y H:i'),
-                    'kode_produk' => $kodeProduk,
-                    'nama_produk' => $namaProduk,
-                    'kode_pemesanan' => $item->kode_pemesanan,
-                    'catatanproduk' => $detail->catatanproduk,
-                    'benjaran' => 0,
-                    'tegal' => 0,
-                    'slawi' => 0,
-                    'pemalang' => 0,
-                    'bumiayu' => 0,
-                    'cilacap' => 0,
-                    'subtotal' => 0,
+    {
+        // Tangkap data dari request
+        $status = htmlspecialchars($request->input('status'));
+        $tanggal_pemesanan = $request->input('start_date');
+        $tanggal_akhir = $request->input('end_date');
+        $toko_id = htmlspecialchars($request->input('toko_id'));
+    
+        // Query untuk mendapatkan data pemesanan produk
+        $query = Pemesananproduk::with(['toko', 'detailpemesananproduk.produk.klasifikasi'])
+            ->when($status, function ($query, $status) {
+                return $query->where('status', $status);
+            })
+            ->when($tanggal_pemesanan && $tanggal_akhir, function ($query) use ($tanggal_pemesanan, $tanggal_akhir) {
+                $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
+                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+                return $query->whereBetween('tanggal_pemesanan', [$tanggal_pemesanan, $tanggal_akhir]);
+            })
+            ->when($tanggal_pemesanan && !$tanggal_akhir, function ($query) use ($tanggal_pemesanan) {
+                $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
+                return $query->where('tanggal_pemesanan', '>=', $tanggal_pemesanan);
+            })
+            ->when(!$tanggal_pemesanan && $tanggal_akhir, function ($query) use ($tanggal_akhir) {
+                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+                return $query->where('tanggal_pemesanan', '<=', $tanggal_akhir);
+            })
+            ->when(!$tanggal_pemesanan && !$tanggal_akhir, function ($query) {
+                return $query->whereDate('tanggal_pemesanan', Carbon::today());
+            })
+            ->when($toko_id && $toko_id != '0', function ($query) use ($toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->orderBy('id', 'DESC')
+            ->get();
+    
+        // Pengelompokan data berdasarkan produk dan klasifikasi
+        $groupedData = [];
+        foreach ($query as $item) {
+            foreach ($item->detailpemesananproduk as $detail) {
+                $key = $detail->kode_produk . '-' . ($detail->produk->klasifikasi->id ?? 'no-klasifikasi');
+                if (!isset($groupedData[$key])) {
+                    $groupedData[$key] = [
+                        'klasifikasi' => $detail->produk->klasifikasi->nama ?? 'Tidak ada',
+                        'tanggal_pemesanan' => Carbon::parse($item->tanggal_pemesanan)->format('d-m-Y H:i'),
+                        'kode_produk' => $detail->kode_produk,
+                        'nama_produk' => $detail->nama_produk,
+                        'kode_pemesanan' => $item->kode_pemesanan,
+                        'catatanproduk' => $detail->catatanproduk,
+                        'benjaran' => 0,
+                        'tegal' => 0,
+                        'slawi' => 0,
+                        'pemalang' => 0,
+                        'bumiayu' => 0,
+                        'cilacap' => 0,
+                        'subtotal' => 0,
+                    ];
+                }
+                $tokoFieldMap = [
+                    1 => 'benjaran',
+                    2 => 'tegal',
+                    3 => 'slawi',
+                    4 => 'pemalang',
+                    5 => 'bumiayu',
+                    6 => 'cilacap', // Perbaikan dari '5' menjadi '6'
                 ];
-            }
-
-            $tokoFieldMap = [
-                1 => 'benjaran',
-                2 => 'tegal',
-                3 => 'slawi',
-                4 => 'pemalang',
-                5 => 'bumiayu',
-                6 => 'cilacap', // Perbaikan dari '5' menjadi '6'
-            ];
-            $tokoField = $tokoFieldMap[$item->toko_id] ?? null;
-            if ($tokoField) {
-                $groupedData[$key][$tokoField] += $detail->jumlah;
-                $groupedData[$key]['subtotal'] += $detail->jumlah;
+                $tokoField = $tokoFieldMap[$item->toko_id] ?? null;
+                if ($tokoField) {
+                    $groupedData[$key][$tokoField] += $detail->jumlah;
+                    $groupedData[$key]['subtotal'] += $detail->jumlah;
+                }
             }
         }
-    }
-
-    // Format tanggal untuk tampilan PDF
-    $formattedStartDate = $tanggal_pemesanan ? Carbon::parse($tanggal_pemesanan)->format('d-m-Y') : null;
-    $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : null;
-
-    // Inisialisasi DOMPDF
-    $options = new Options();
-    $options->set('isHtml5ParserEnabled', true);
-    $options->set('isRemoteEnabled', true);
-
-    $dompdf = new Dompdf($options);
-
-    // Buat PDF
-    $html = view('admin.laporan_pemesananproduk.print', [
-        'groupedData' => $groupedData,
-        'totalSubtotal' => array_sum(array_column($groupedData, 'subtotal')),
-        'startDate' => $formattedStartDate,
-        'endDate' => $formattedEndDate,
-        'toko_id' => $toko_id,
-    ])->render();
-
-    $dompdf->loadHtml($html);
-
-    // Set ukuran kertas dan orientasi
-    $dompdf->setPaper('A4', 'portrait');
-
-    // Render PDF dengan error handling
-    try {
+    
+        // Format tanggal untuk tampilan PDF
+        $formattedStartDate = $tanggal_pemesanan ? Carbon::parse($tanggal_pemesanan)->format('d-m-Y') : null;
+        $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : null;
+    
+        // Inisialisasi DOMPDF
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isRemoteEnabled', true);
+    
+        $dompdf = new Dompdf($options);
+    
+        // Buat PDF
+        $html = view('admin.laporan_pemesananproduk.print', [
+            'groupedData' => $groupedData,
+            'totalSubtotal' => array_sum(array_column($groupedData, 'subtotal')),
+            'startDate' => $formattedStartDate,
+            'endDate' => $formattedEndDate,
+            'toko_id' => $toko_id,
+        ])->render();
+    
+        $dompdf->loadHtml($html);
+    
+        // Set ukuran kertas dan orientasi
+        $dompdf->setPaper('A4', 'portrait');
+    
+        // Render PDF
         $dompdf->render();
-    } catch (\Exception $e) {
-        Log::error('Error rendering PDF: ' . $e->getMessage());
-        return response()->json(['error' => 'Failed to generate PDF.'], 500);
+    
+        // Menambahkan nomor halaman di kanan bawah
+        $canvas = $dompdf->getCanvas();
+        $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+            $text = "Page $pageNumber of $pageCount";
+            $font = $fontMetrics->getFont('Arial', 'normal');
+            $size = 10;
+    
+            // Menghitung lebar teks
+            $width = $fontMetrics->getTextWidth($text, $font, $size);
+    
+            // Mengatur koordinat X dan Y
+            $x = $canvas->get_width() - $width - 10;
+            $y = $canvas->get_height() - 15;
+    
+            // Menambahkan teks ke posisi yang ditentukan
+            $canvas->text($x, $y, $text, $font, $size);
+        });
+    
+        // Output PDF ke browser
+        return $dompdf->stream('Laporan_Pemesanan_Produk.pdf', ['Attachment' => false]);
     }
-
-    // Menambahkan nomor halaman di kanan bawah
-    $canvas = $dompdf->getCanvas();
-    $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
-        $text = "Page $pageNumber of $pageCount";
-        $font = $fontMetrics->getFont('Arial', 'normal');
-        $size = 10;
-
-        // Menghitung lebar teks
-        $width = $fontMetrics->getTextWidth($text, $font, $size);
-
-        // Mengatur koordinat X dan Y
-        $x = $canvas->get_width() - $width - 10;
-        $y = $canvas->get_height() - 15;
-
-        // Menambahkan teks ke posisi yang ditentukan
-        $canvas->text($x, $y, $text, $font, $size);
-    });
-
-    // Bersihkan output buffer sebelum streaming PDF
-    ob_clean();
-    flush();
-
-    // Output PDF ke browser
-    return $dompdf->stream('Laporan_Pemesanan_Produk.pdf', ['Attachment' => false]);
-}
     
     
     public function create()
