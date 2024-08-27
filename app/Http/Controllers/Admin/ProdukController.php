@@ -11,6 +11,7 @@ use App\Models\Subsub;
 use App\Models\Hargajual;
 use App\Models\Tokoslawi;
 use App\Models\Tokobanjaran;
+use App\Models\Stok_tokobanjaran;
 use App\Models\Tokotegal;
 use App\Models\Tokopemalang;
 use App\Models\Tokobumiayu;
@@ -62,7 +63,6 @@ class ProdukController extends Controller
 
  
     public function store(Request $request)
- 
     {
         $validator = Validator::make(
             $request->all(),
@@ -76,7 +76,8 @@ class ProdukController extends Controller
             ],
             [
                 'nama_produk.required' => 'Masukan nama produk',
-                'klasifikasi_id.required' => 'Masukan nama produk',
+                'klasifikasi_id.required' => 'Masukkan klasifikasi produk',
+                'subklasifikasi_id.required' => 'Masukkan subklasifikasi produk',
                 'satuan.required' => 'Masukkan satuan',
                 'harga.required' => 'Masukkan harga',
                 'gambar.image' => 'Gambar yang dimasukan salah!',
@@ -97,6 +98,7 @@ class ProdukController extends Controller
         }
         $kode = $this->kode();
     
+        // Simpan data produk
         $produk = Produk::create(array_merge(
             $request->all(),
             [
@@ -107,13 +109,13 @@ class ProdukController extends Controller
                 'tanggal' => Carbon::now('Asia/Jakarta'),
             ]
         ));
-  
     
+        // Simpan data ke tabel toko
         TokoSlawi::create([
             'produk_id' => $produk->id,
             'member_harga_slw' => $request->harga,
             'harga_awal' => $request->harga,
-            'diskon_awal' =>  0,
+            'diskon_awal' => 0,
             'member_diskon_slw' => 0,
             'non_harga_slw' => $request->harga,
             'non_diskon_slw' => 0,
@@ -128,7 +130,7 @@ class ProdukController extends Controller
             'non_harga_bnjr' => $request->harga,
             'non_diskon_bnjr' => 0,
         ]);
-
+    
         Tokotegal::create([
             'produk_id' => $produk->id,
             'harga_awal' => $request->harga,
@@ -138,6 +140,7 @@ class ProdukController extends Controller
             'non_harga_tgl' => $request->harga,
             'non_diskon_tgl' => 0,
         ]);
+    
         Tokopemalang::create([
             'produk_id' => $produk->id,
             'harga_awal' => $request->harga,
@@ -147,6 +150,7 @@ class ProdukController extends Controller
             'non_harga_pml' => $request->harga,
             'non_diskon_pml' => 0,
         ]);
+    
         Tokobumiayu::create([
             'produk_id' => $produk->id,
             'harga_awal' => $request->harga,
@@ -156,6 +160,7 @@ class ProdukController extends Controller
             'non_harga_bmy' => $request->harga,
             'non_diskon_bmy' => 0,
         ]);
+    
         Tokocilacap::create([
             'produk_id' => $produk->id,
             'harga_awal' => $request->harga,
@@ -166,8 +171,15 @@ class ProdukController extends Controller
             'non_diskon_clc' => 0,
         ]);
     
+        // Simpan data ke tabel stok_tokobanjarans dengan jumlah 0
+        Stok_tokobanjaran::create([
+            'produk_id' => $produk->id,
+            'jumlah' => 0,
+        ]);
+    
         return redirect('admin/produk')->with('success', 'Berhasil menambahkan produk');
     }
+    
 
     /**
      * Display the specified resource.
@@ -274,39 +286,6 @@ class ProdukController extends Controller
     }
 
 
-    // public function import(Request $request)
-    // {
-    //     $request->validate([
-    //         'file' => 'required|mimes:xlsx,xls',
-    //     ]);
-
-    //     Excel::import(new ProdukImport, $request->file('file'));
-
-    //     return redirect()->route('form.produk')->with('success', 'Data produk berhasil diimpor.');
-    // }
-
-    // public function formProduk()
-    // {
-    //     $klasifikasis = Klasifikasi::with('produks')->get();
-    //     $importedData = session('imported_data', []);
-    //     return view('admin.permintaan_produk.form', compact('klasifikasis', 'importedData'));
-    // }
-    public function import(Request $request)
-    {
-        $request->validate([
-            'file' => 'required|mimes:xlsx,xls',
-        ]);
-
-        // Import data
-        $import = new ProdukImport();
-        Excel::import($import, $request->file('file'));
-
-        // Save imported data to session
-        session()->put('imported_data', $import->getImportedData());
-
-        // Redirect to the form with success message
-        return redirect()->route('form.produk')->with('success', 'Data produk berhasil diimpor.');
-    }
 
     public function formProduk()
     {
@@ -314,4 +293,18 @@ class ProdukController extends Controller
         $importedData = session('imported_data', []);
         return view('admin.permintaan_produk.form', compact('klasifikasis', 'importedData'));
     }
+
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|file|mimes:xlsx',
+        ]);
+    
+        Excel::import(new ProdukImport, $request->file('file_excel'));
+    
+        return redirect('admin/produk')->with('success', 'Berhasil mengimpor produk dari Excel');
+    }
 }
+
+

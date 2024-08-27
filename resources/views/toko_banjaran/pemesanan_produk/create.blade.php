@@ -444,7 +444,7 @@
         });
     </script>
     
-    <script>
+    {{-- <script>
         function getData1() {
             var metodeId = document.getElementById('nama_metode').value;
             var fee = document.getElementById('fee');
@@ -536,8 +536,118 @@
             getData1();
         });
     </script>
+     --}}
+<script>
+     function getData1() {
+        var metodeId = document.getElementById('nama_metode').value;
+        var fee = document.getElementById('fee');
+        var keterangan = document.getElementById('keterangan');
+        var paymentFields = document.getElementById('payment-fields');
+        var paymentRow = document.getElementById('payment-row');
+        var changeRow = document.getElementById('change-row');
     
+        if (metodeId && document.querySelector('#nama_metode option:checked').text === 'Tunai') {
+            paymentFields.style.display = 'none';
+        } else if (metodeId) {
+            $.ajax({
+                url: "{{ url('toko_banjaran/metodebayar/metode') }}" + "/" + metodeId,
+                type: "GET",
+                dataType: "json",
+                success: function(response) {
+                    console.log('Respons dari server:', response);
+    
+                    fee.value = '';
+                    keterangan.value = '';
+                    paymentFields.style.display = 'block';
+    
+                    if (response && response.fee) {
+                        fee.value = response.fee;
+                    }
+                    if (response && response.keterangan) {
+                        keterangan.value = response.keterangan;
+                    }
+    
+                    // Update calculations whenever data is fetched
+                    updateCalculations();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Terjadi kesalahan dalam permintaan AJAX:', error);
+                }
+            });
+        } else {
+            paymentFields.style.display = 'none';
+        }
+    
+        // Display payment and change rows for all payment methods
+        paymentRow.style.display = 'block';
+        changeRow.style.display = 'block';
+        
+        // Update calculations to reflect any changes
+        updateCalculations();
+    }
 
+    function updateCalculations() {
+        var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+        var fee = parseFloat(document.getElementById('fee').value.replace('%', '').trim()) || 0;
+        var totalFee = (subTotal * fee / 100) || 0;
+        var finalTotal = subTotal + totalFee;
+
+        // Format the values without .00
+        function formatCurrency(value) {
+            var formattedValue = value.toFixed(2).replace(/\.00$/, '');
+            return 'Rp' + formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        // Update total fee and final sub total fields
+        document.getElementById('total_fee').value = formatCurrency(totalFee);
+        document.getElementById('sub_total').value = formatCurrency(finalTotal);
+
+        // Validate DP
+        validateDP();
+    }
+
+    function formatAndUpdateKembali() {
+        var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+        var dpPemesanan = parseFloat(document.getElementById('dp_pemesanan').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+        var kekuranganPemesanan = subTotal - dpPemesanan;
+
+        document.getElementById('kekurangan_pemesanan').value = formatCurrency(kekuranganPemesanan);
+
+        // Validate DP
+        validateDP();
+    }
+
+    function validateDP() {
+        var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+        var dpPemesanan = parseFloat(document.getElementById('dp_pemesanan').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+        var minDP = subTotal * 0.5;
+        var dpPemesananElement = document.getElementById('dp_pemesanan');
+        
+        if (dpPemesanan < minDP) {
+            dpPemesananElement.setCustomValidity('DP minimal 50% ');
+        } else {
+            dpPemesananElement.setCustomValidity('');
+        }
+    }
+
+    // Add event listeners for initialization
+    document.getElementById('nama_metode').addEventListener('change', getData1);
+    document.getElementById('sub_total').addEventListener('input', updateCalculations);
+    document.getElementById('dp_pemesanan').addEventListener('input', formatAndUpdateKembali);
+    
+    // Initialize with "Tunai" as default method
+    document.addEventListener('DOMContentLoaded', function() {
+        var defaultMethod = 'Tunai';
+        var options = document.getElementById('nama_metode').options;
+        for (var i = 0; i < options.length; i++) {
+            if (options[i].text === defaultMethod) {
+                options[i].selected = true;
+                break;
+            }
+        }
+        getData1();
+    });
+</script>
     <script>
         function showCategoryModalCatatan(urutan) {
             // Tampilkan modal
@@ -737,7 +847,7 @@
             }
     </script>
       
-    <script>
+    {{-- <script>
             // Fungsi untuk menghapus format Rupiah dan mengembalikan nilai numerik
             function removeRupiahFormat(value) {
                 return parseFloat(value.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
@@ -802,6 +912,74 @@
                 // Formulir akan disubmit dengan nilai numerik
             });
 
+    </script> --}}
+
+    <script>
+function formatAndUpdateKembali() {
+        let subTotalElement = document.getElementById('sub_total');
+        let dp_pemesananElement = document.getElementById('dp_pemesanan');
+        let kekurangan_pemesananElement = document.getElementById('kekurangan_pemesanan');
+
+        // Mengambil nilai sub_total
+        let subTotal = removeRupiahFormat(subTotalElement.value);
+
+        // Format dan ambil nilai dp_pemesanan
+        let dp_pemesananValue = dp_pemesananElement.value.replace(/[^0-9,-]/g, '').replace(',', '.');
+        let dp_pemesanan = parseFloat(dp_pemesananValue) || 0; // Jika tidak valid, set 0
+
+        // Format input 'dp_pemesanan'
+        dp_pemesananElement.value = formatRupiah(dp_pemesananValue);
+
+        // Hitung kekurangan_pemesananan
+        let kekurangan_pemesanan = subTotal - dp_pemesanan;
+        
+        // Format hasil kekurangan_pemesananan sebagai Rupiah
+        kekurangan_pemesananElement.value = kekurangan_pemesanan >= 0 ? formatRupiah(kekurangan_pemesanan) : 'Rp. 0';
+
+        // Validasi DP
+        validateDP();
+    }
+
+    // Fungsi untuk menghapus format Rupiah dan mengembalikan nilai numerik
+    function removeRupiahFormat(value) {
+        return parseFloat(value.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
+    }
+
+    // Format angka menjadi format Rupiah
+    function formatRupiah(value) {
+        let numberString = value.toString().replace(/[^,\d]/g, ''),
+            split = numberString.split(','),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+        if (ribuan) {
+            let separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        return split[1] !== undefined ? 'Rp. ' + rupiah + ',' + split[1] : 'Rp. ' + rupiah;
+    }
+
+    // Panggil fungsi ini saat halaman dimuat untuk format sub_total yang mungkin sudah ada
+    document.addEventListener('DOMContentLoaded', function() {
+        let subTotalElement = document.getElementById('sub_total');
+        let subTotal = removeRupiahFormat(subTotalElement.value);
+        subTotalElement.value = formatRupiah(subTotal);
+    });
+
+    document.querySelector('form').addEventListener('submit', function(event) {
+        let subTotalElement = document.getElementById('sub_total');
+        let dp_pemesananElement = document.getElementById('dp_pemesanan');
+        let kekurangan_pemesananElement = document.getElementById('kekurangan_pemesanan');
+
+        // Menghapus format Rupiah dari input sebelum submit
+        subTotalElement.value = removeRupiahFormat(subTotalElement.value);
+        dp_pemesananElement.value = removeRupiahFormat(dp_pemesananElement.value);
+        kekurangan_pemesananElement.value = removeRupiahFormat(kekurangan_pemesananElement.value);
+
+        // Formulir akan disubmit dengan nilai numerik
+    });
     </script>
 
     <script>

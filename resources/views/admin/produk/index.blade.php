@@ -23,15 +23,7 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            {{-- @if (session('success'))
-                <div class="alert alert-success alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <h5>
-                        <i class="icon fas fa-check"></i> Success!
-                    </h5>
-                    {{ session('success') }}
-                </div>
-            @endif --}}
+
             @if (session('success'))
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
@@ -53,6 +45,7 @@
                             <i class="fas fa-plus"></i> 
                         </a>
                     </div>
+                    
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">

@@ -106,6 +106,9 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('input', \App\Http\Controllers\Admin\InputController::class);
 
     Route::resource('produk', \App\Http\Controllers\Admin\ProdukController::class);
+    // Route::post('admin/produk/import', [ProdukController::class, 'import']);
+    Route::post('admin/produk/import', [ProdukController::class, 'import'])->name('produk.import');
+
 
     Route::resource('toko', \App\Http\Controllers\Admin\TokoController::class);
 
@@ -247,6 +250,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::resource('laporan_pemusnahanbarangjadi', \App\Http\Controllers\Admin\Laporan_pemusnahanbarangjadiController::class);
     Route::get('printReportpemusnahan', [\App\Http\Controllers\Admin\Laporan_pemusnahanbarangjadiController::class, 'printReportpemusnahan']);
+
 
 
     //TOKO SLAWI

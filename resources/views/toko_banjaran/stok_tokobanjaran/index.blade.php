@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Data produk')
+@section('title', 'Data Produk')
 
 @section('content')
     <!-- Content Header (Page header) -->
@@ -37,14 +37,7 @@
                 </script>
             @endif
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Data Stok Toko Banjaran</h3>
-                    <div class="float-right">
-                        <a href="{{ url('toko_banjaran/stok_tokobanjaran/create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus"></i> 
-                        </a>
-                    </div>
-                </div>
+                
                 <!-- /.card-header -->
                 <div class="card-body">
                     <table id="datatables1" class="table table-bordered" style="font-size: 13px">
@@ -57,13 +50,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($stokGrouped as $stok)
+                            @foreach ($produkWithStok as $produk)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $stok->produk->kode_produk }}</td>
-                                    <td>{{ $stok->produk->nama_produk }}</td>
-                                    <td>{{ $stok->jumlah }}</td>
-                                   
+                                    <td>{{ $produk->kode_produk }}</td>
+                                    <td>{{ $produk->nama_produk }}</td>
+                                    <td>{{ $produk->jumlah }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

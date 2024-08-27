@@ -39,6 +39,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Pengiriman_barangjadi;
 use App\Models\Stok_tokoslawi;
+use App\Models\Pengiriman_tokobanjaran;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -46,19 +47,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class Pengiriman_tokobanjaranController extends Controller{
 
-    // public function index(Request $request)
-    // {
-    //     // Mengambil data stok_tokoslawi dengan relasi pengiriman_barangjadi dan produk
-    //     $stokBarangJadi = Stok_tokoslawi::with(['pengiriman_barangjadi.produk'])
-    //         ->orderBy('created_at', 'desc')
-    //         ->get()
-    //         ->groupBy(function ($item) {
-    //             // Memeriksa apakah pengiriman_barangjadi ada sebelum mengakses kode_pengiriman
-    //             return $item->pengiriman_barangjadi ? $item->pengiriman_barangjadi->kode_pengiriman : 'undefined';
-    //         });
-    
-    //     return view('toko_banjaran.pengiriman_tokoslawi.index', compact('stokBarangJadi'));
-    // }
+
     public function index(Request $request)
     {
         $status = $request->status;
@@ -66,7 +55,7 @@ class Pengiriman_tokobanjaranController extends Controller{
         $tanggal_akhir = $request->tanggal_akhir;
     
         // Mengambil data stok_tokoslawi dengan relasi pengiriman_barangjadi dan produk
-        $query = Stok_tokobanjaran::with(['pengiriman_barangjadi.produk.klasifikasi']);
+        $query = Pengiriman_tokobanjaran::with(['pengiriman_barangjadi.produk.klasifikasi']);
     
         // Filter berdasarkan status
         if ($status) {
@@ -237,7 +226,7 @@ public function posting_pengiriman($id)
     }
 
     // Update status untuk semua stok_tokobanjaran dengan kode_pengiriman yang sama
-    Stok_tokobanjaran::where('kode_pengiriman', $kodePengiriman)->update([
+    Pengiriman_tokobanjaran::where('kode_pengiriman', $kodePengiriman)->update([
         'status' => 'posting',
         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
     ]);

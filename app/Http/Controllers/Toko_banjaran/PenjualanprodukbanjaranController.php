@@ -437,7 +437,7 @@ class PenjualanprodukbanjaranController extends Controller
             }
         }
 
-        // Handling errors for pelanggans or pesanans
+        //Hide
         // if ($error_pelanggans || $error_pesanans) {
         //     return back()
         //         ->withInput()

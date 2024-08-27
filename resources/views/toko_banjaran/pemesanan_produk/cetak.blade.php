@@ -227,9 +227,9 @@
                     <div class="telepon">
                         <p><span style="min-width: 100px; display: inline-flex; align-items: center;">No Telp Pnerima</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: 0{{ $pemesanan->telp_penerima ?? $pemesanan->telp }}</span></p>
                     </div>
-                    <div class="alamat">
+                    {{-- <div class="alamat">
                         <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Alamat Pengiriman</span><span style="min-width: 100px; display: inline-flex; align-items: center;"><span>: {{ $pemesanan->alamat_penerima ?? $pemesanan->alamat }}</span></p>
-                    </div>
+                    </div> --}}
                     <div class="alamat">
                         <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Tanggal Pengiriman</span><span style="min-width: 100px; display: inline-flex; align-items: center;"><span>: {{ $pemesanan->tanggal_kirim }}</span></p>
                     </div>

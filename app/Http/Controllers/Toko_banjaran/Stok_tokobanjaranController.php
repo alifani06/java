@@ -40,13 +40,37 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class Stok_tokobanjaranController extends Controller{
 
+// public function index()
+// {
+//     // Ambil data stok_tokoslawi beserta relasi produk
+//     $stok_tokoslawi = Stok_tokobanjaran::with('produk')->where('status', 'posting')->get();
+
+//     // Kelompokkan stok berdasarkan produk_id dan jumlahkan jumlahnya
+//     $stokGrouped = $stok_tokoslawi->groupBy('produk_id')->map(function ($group) {
+//         // Ambil data produk dari kelompok
+//         $firstItem = $group->first();
+//         // Jumlahkan jumlah stok
+//         $totalJumlah = $group->sum('jumlah');
+//         // Atur jumlah total dan ambil produk dari item pertama
+//         $firstItem->jumlah = $totalJumlah;
+//         return $firstItem;
+//     });
+
+//     // Kumpulkan data hasil pengelompokan ke dalam array
+//     $stokGrouped = $stokGrouped->values();
+
+//     return view('toko_banjaran.stok_tokobanjaran.index', compact('stokGrouped'));
+// }
 public function index()
 {
-    // Ambil data stok_tokoslawi beserta relasi produk
-    $stok_tokoslawi = Stok_tokobanjaran::with('produk')->where('status', 'posting')->get();
+    // Ambil semua produk
+    $produk = Produk::all();
+
+    // Ambil data stok dari stok_tokobanjaran beserta relasi produk dan filter berdasarkan status 'posting'
+    $stok_tokobanjaran = Stok_tokobanjaran::with('produk')->where('status', 'posting')->get();
 
     // Kelompokkan stok berdasarkan produk_id dan jumlahkan jumlahnya
-    $stokGrouped = $stok_tokoslawi->groupBy('produk_id')->map(function ($group) {
+    $stokGrouped = $stok_tokobanjaran->groupBy('produk_id')->map(function ($group) {
         // Ambil data produk dari kelompok
         $firstItem = $group->first();
         // Jumlahkan jumlah stok
@@ -59,8 +83,18 @@ public function index()
     // Kumpulkan data hasil pengelompokan ke dalam array
     $stokGrouped = $stokGrouped->values();
 
-    return view('toko_banjaran.stok_tokobanjaran.index', compact('stokGrouped'));
+    // Gabungkan data produk dengan data stok, jika tidak ada stok, set jumlah ke 0
+    $produkWithStok = $produk->map(function ($item) use ($stokGrouped) {
+        // Cari stok berdasarkan produk_id
+        $stokItem = $stokGrouped->firstWhere('produk_id', $item->id);
+        // Jika stok tidak ada, set jumlah ke 0
+        $item->jumlah = $stokItem ? $stokItem->jumlah : 0;
+        return $item;
+    });
+
+    return view('toko_banjaran.stok_tokobanjaran.index', compact('produkWithStok'));
 }
+
 
 public function create()
 {
