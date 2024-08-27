@@ -57,6 +57,7 @@ class AksesController extends Controller
         }
     }
 
+
     public function access($id)
     {
         if (auth()->check() && auth()->user()->menu['akses']) {
@@ -70,57 +71,34 @@ class AksesController extends Controller
                 'klasifikasi',
                 'pelanggan',
                 'input',
-                // 'merek',
-                // 'kendaraan',
-                // 'type karoseri',
-                // 'barang',
-                // 'perhitungan gaji',
-                // 'memo hutang karyawan',
-                // 'po pembelian',
-                // 'pembelian',
-                // 'pelunasan pembelian',
-                // 'surat penawaran karoseri',
-                // 'spk',
-                // 'pengambilan bahan baku',
-                // 'penjualan',
-                // 'pelunasan',
-                // 'deposit pemesanan',
-                // 'pengambilan kas kecil',
-                // 'saldo kas kecil',
-                // 'inquery saldo kas kecil',
-                // 'inquery perhitungan gaji',
-                // 'inquery memo hutang karyawan',
-                // 'inquery po pembelian',
-                // 'inquery pembelian',
-                // 'inquery pelunasan pembelian',
-                // 'inquery surat penawaran',
-                // 'inquery spk',
-                // 'inquery pengambilan bahan baku',
-                // 'inquery deposit',
-                // 'inquery penjualan',
-                // 'inquery pelunasan',
-                // 'inquery pengambilan kas kecil',
-                // 'laporan po pembelian',
-                // 'laporan pembelian',
-                // 'laporan spk',
-                // 'laporan pengambilan bahan baku',
-                // 'laporan deposit',
-                // 'laporan penjualan',
-                // 'laporan pelunasan',
+                'produk',
+                'toko',
+                'klasifikasi',
+                'metode pembayaran',
+                'data deposit',
+                'data stokbarangjadi',
+                'data stokretur',
+                'stok tokobanjaran', 
+                'pemesanan banjaran', 
+                'penjualan banjaran', 
+                'pelunasan banjaran', 
             );
 
             $akses = User::where('id', $id)->first();
-            return view('admin.akses.access', compact('akses', 'menus'));
+            $level = $akses->level; // Misalnya level disimpan dalam kolom 'level'
+
+            return view('admin.akses.access', compact('akses', 'menus', 'level'));
         } else {
             // tidak memiliki akses
             return back()->with('error', array('Anda tidak memiliki akses'));
         }
     }
 
+
     public function access_user(Request $request)
     {
         $menus = array(
-            'akses',
+                'akses',
                 'karyawan',
                 'user',
                 'departemen',
@@ -128,6 +106,17 @@ class AksesController extends Controller
                 'klasifikasi',
                 'pelanggan',
                 'input',
+                'produk',
+                'toko',
+                'klasifikasi',
+                'metode pembayaran',
+                'data deposit',
+                'data stokbarangjadi',
+                'data stokretur',
+                'stok tokobanjaran',
+                'pemesanan banjaran',
+                'penjualan banjaran',
+                'pelunasan banjaran',
         );
 
 

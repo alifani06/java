@@ -124,16 +124,7 @@
         </li>
         @endif
 
-        {{-- @if (auth()->check() && auth()->user()->menu['barang']) --}}
-        {{-- <li class="nav-item">
-            <a href="{{ url('admin/barang') }}"
-                class="nav-link {{ request()->is('admin/barang*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Data Barang</p>
-            </a>
-        </li> --}}
-        {{-- @endif --}}
-        {{-- @if (auth()->check() && auth()->user()->menu['produk']) --}}
+        @if (auth()->check() && auth()->user()->menu['produk'])
         <li class="nav-item">
             <a href="{{ url('admin/produk') }}"
                 class="nav-link {{ request()->is('admin/produk*') ? 'active' : '' }}">
@@ -141,9 +132,9 @@
                 <p style="font-size: 14px;">Data Produk</p>
             </a>
         </li>
-        {{-- @endif --}}
+        @endif
 
-        {{-- @if (auth()->check() && auth()->user()->menu['toko']) --}}
+        @if (auth()->check() && auth()->user()->menu['toko'])
         <li class="nav-item">
             <a href="{{ url('admin/toko') }}"
                 class="nav-link {{ request()->is('admin/toko*') ? 'active' : '' }}">
@@ -151,17 +142,7 @@
                 <p style="font-size: 14px;">Data Toko</p>
             </a>
         </li>
-        {{-- @endif --}}
-
-        {{-- @if (auth()->check() && auth()->user()->menu['harga']) --}}
-        {{-- <li class="nav-item">
-            <a href="{{ url('admin/hargajual') }}"
-                class="nav-link {{ request()->is('admin/hargajual*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Data Harga Jual</p>
-            </a>
-        </li> --}}
-        {{-- @endif --}}
+        @endif
 
         @if (auth()->check() && auth()->user()->menu['klasifikasi'])
         <li class="nav-item">
@@ -172,7 +153,7 @@
             </a>
         </li>
         @endif
-        {{-- @if (auth()->check() && auth()->user()->menu['klasifikasi']) --}}
+        @if (auth()->check() && auth()->user()->menu['metode pembayaran'])
         <li class="nav-item">
             <a href="{{ url('admin/metode_pembayaran') }}"
                 class="nav-link {{ request()->is('admin/metode_pembayaran*') ? 'active' : '' }}">
@@ -180,8 +161,9 @@
                 <p style="font-size: 14px;">Data Jenis Pembayaran</p>
             </a>
         </li>
-        {{-- @endif --}}
-        {{-- @if (auth()->check() && auth()->user()->menu['klasifikasi']) --}}
+        @endif
+
+        @if (auth()->check() && auth()->user()->menu['data deposit'])
         <li class="nav-item">
             <a href="{{ url('admin/data_deposit') }}"
                 class="nav-link {{ request()->is('admin/data_deposit*') ? 'active' : '' }}">
@@ -189,9 +171,9 @@
                 <p style="font-size: 14px;">Data Deposit</p>
             </a>
         </li>
-        {{-- @endif --}}
+        @endif
 
-        {{-- @if (auth()->check() && auth()->user()->menu['klasifikasi']) --}}
+        @if (auth()->check() && auth()->user()->menu['data stokbarangjadi'])
         <li class="nav-item">
             <a href="{{ url('admin/data_stokbarangjadi') }}"
                 class="nav-link {{ request()->is('admin/data_stokbarangjadi*') ? 'active' : '' }}">
@@ -199,9 +181,9 @@
                 <p style="font-size: 14px;">Data Stok Barang Jadi</p>
             </a>
         </li>
-        {{-- @endif --}}
+        @endif
 
-        {{-- @if (auth()->check() && auth()->user()->menu['klasifikasi']) --}}
+        @if (auth()->check() && auth()->user()->menu['data stokretur'])
         <li class="nav-item">
             <a href="{{ url('admin/data_stokretur') }}"
                 class="nav-link {{ request()->is('admin/data_stokretur*') ? 'active' : '' }}">
@@ -209,17 +191,7 @@
                 <p style="font-size: 14px;">Data Stok Retur</p>
             </a>
         </li>
-        {{-- @endif --}}
-
-        {{-- @if (auth()->check() && auth()->user()->menu['input'])
-        <li class="nav-item">
-            <a href="{{ url('admin/input ') }}"
-                class="nav-link {{ request()->is('admin/input *') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">input stok barang jadi</p>
-            </a>
-        </li>
-        @endif --}}
+        @endif
 
     </ul>
 </li>

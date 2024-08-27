@@ -59,10 +59,6 @@
                                         <a href="{{ url('admin/akses/access/' . $akses->id) }}" class="btn btn-info btn-sm">
                                             <i class="fas fa-low-vision"></i> Akses
                                         </a>
-                                        {{-- <a href="{{ url('admin/akses/' . $akses->id . '/edit') }}"
-                                            class="btn btn-warning btn-sm">
-                                            <i class="fas fa-low-vision"></i> Update Akses
-                                        </a> --}}
                                     </td>
                                 </tr>
                             @endforeach

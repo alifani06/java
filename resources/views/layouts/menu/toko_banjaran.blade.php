@@ -67,7 +67,7 @@
         </li>
         @endif
 
-        {{-- @if (auth()->check() && auth()->user()->menu['produk']) --}}
+        @if (auth()->check() && auth()->user()->menu['produk'])
         <li class="nav-item">
             <a href="{{ url('toko_banjaran/produk') }}"
                 class="nav-link {{ request()->is('toko_banjaran/produk*') ? 'active' : '' }}">
@@ -75,19 +75,9 @@
                 <p style="font-size: 14px;">Data Produk</p>
             </a>
         </li>
-        {{-- @endif --}}
+        @endif
 
-        {{-- @if (auth()->check() && auth()->user()->menu['toko']) --}}
-        <li class="nav-item">
-            <a href="{{ url('toko_banjaran/toko') }}"
-                class="nav-link {{ request()->is('toko_banjaran/toko*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Data Toko</p>
-            </a>
-        </li>
-        {{-- @endif --}}
-
-          {{-- @if (auth()->check() && auth()->user()->menu['toko']) --}}
+          @if (auth()->check() && auth()->user()->menu['stok tokobanjaran'])
           <li class="nav-item">
             <a href="{{ url('toko_banjaran/stok_tokobanjaran') }}"
                 class="nav-link {{ request()->is('toko_banjaran/stok_tokobanjaran*') ? 'active' : '' }}">
@@ -95,7 +85,7 @@
                 <p style="font-size: 14px;">Data Stok Produk</p>
             </a>
         </li>
-        {{-- @endif --}}    
+        @endif
 
 
     </ul>
@@ -137,7 +127,7 @@
         </p>
     </a>
     <ul class="nav nav-treeview">
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        @if (auth()->check() && auth()->user()->menu['pemesanan banjaran'])
         <li class="nav-item">
             <a href="{{ url('toko_banjaran/pemesanan_produk') }}"
                 class="nav-link {{ request()->is('toko_banjaran/pemesanan_produk*') ? 'active' : '' }}">
@@ -145,9 +135,9 @@
                 <p style="font-size: 14px;">Pemesanan Produk</p>
             </a>
         </li>
-        {{-- @endif --}}
+        @endif
 
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        @if (auth()->check() && auth()->user()->menu['penjualan banjaran'])
         <li class="nav-item">
             <a href="{{ url('toko_banjaran/penjualan_produk') }}"
                 class="nav-link {{ request()->is('toko_banjaran/penjualan_produk*') ? 'active' : '' }}">
@@ -155,9 +145,9 @@
                 <p style="font-size: 14px;">Penjualan Produk</p>
             </a>
         </li>
-        {{-- @endif --}}
+        @endif
 
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        @if (auth()->check() && auth()->user()->menu['pelunasan banjaran'])
         <li class="nav-item">
             <a href="{{ url('toko_banjaran/pelunasan_pemesanan') }}"
                 class="nav-link {{ request()->is('toko_banjaran/pelunasan_pemesanan*') ? 'active' : '' }}">
@@ -165,7 +155,7 @@
                 <p style="font-size: 14px;">Pelunasan Pemesanan</p>
             </a>
         </li>
-        {{-- @endif --}}
+        @endif
    
 
           {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
