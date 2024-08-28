@@ -76,7 +76,6 @@
                             <option value="pemesanan" {{ old('kategori1') == 'pemesanan' ? 'selected' : '' }}>Pengiriman Pesanan</option>
                         </select>
                     </div>
-
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">

@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Inquery Pengiriman Toko Banjaran (Permintaan)</h1>
+                    <h1 class="m-0">Inquery Pengiriman Toko Banjaran (Pesanan)</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -245,7 +245,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_banjaran/pengiriman_tokobanjaran/unpost_pengiriman/') }}/" + memoId,
+                    url: "{{ url('toko_banjaran/pengiriman_tokobanjaran/unpost_pengirimanpemesanan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -275,7 +275,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_banjaran/pengiriman_tokobanjaran/posting_pengiriman/') }}/" + memoId,
+                    url: "{{ url('toko_banjaran/pengiriman_tokobanjaran/posting_pengirimanpemesanan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

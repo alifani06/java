@@ -45,6 +45,8 @@ class PengirimanbarangjadiController extends Controller{
     
         return view('admin.pengiriman_barangjadi.index', compact('pengirimanBarangJadi'));
     }
+
+
     
 // create lama
 // public function create()
