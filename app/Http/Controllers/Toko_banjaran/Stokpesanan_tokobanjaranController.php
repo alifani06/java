@@ -35,11 +35,11 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
-use App\Models\Stok_tokobanjaran;
+use App\Models\Stokpesanan_tokobanjaran;
 use App\Models\Subklasifikasi;
 use Maatwebsite\Excel\Facades\Excel;
 
-class Stok_tokobanjaranController extends Controller{
+class Stokpesanan_tokobanjaranController extends Controller{
 
 public function index(Request $request)
 {
@@ -58,7 +58,7 @@ public function index(Request $request)
 
     $produk = $produkQuery->get();
 
-    $stok_tokobanjaran = Stok_tokobanjaran::with('produk')->get();
+    $stok_tokobanjaran = Stokpesanan_tokobanjaran::with('produk')->get();
     $stokGrouped = $stok_tokobanjaran->groupBy('produk_id')->map(function ($group) {
         $firstItem = $group->first();
         $totalJumlah = $group->sum('jumlah');
@@ -77,7 +77,7 @@ public function index(Request $request)
         ? SubKlasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get() 
         : collect();
 
-    return view('toko_banjaran.stok_tokobanjaran.index', compact('produkWithStok', 'klasifikasis', 'subklasifikasis'));
+    return view('toko_banjaran.stokpesanan_tokobanjaran.index', compact('produkWithStok', 'klasifikasis', 'subklasifikasis'));
 }
 
 

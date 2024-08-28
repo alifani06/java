@@ -31,6 +31,7 @@
     request()->is('toko_banjaran/klasifikasi*')||
     request()->is('toko_banjaran/metode_pembayaran*')||
     request()->is('toko_banjaran/input*')||
+    request()->is('toko_banjaran/stokpesanan_tokobanjaran*')||
     request()->is('toko_banjaran/data_stokbarangjadi*')
   
         ? 'menu-open'
@@ -45,6 +46,7 @@
         request()->is('toko_banjaran/klasifikasi*')||
         request()->is('toko_banjaran/metode_pembayaran*')||
         request()->is('toko_banjaran/input*')||
+        request()->is('toko_banjaran/stokpesanan_tokobanjaran*')||
         request()->is('toko_banjaran/data_stokbarangjadi*')
       
             ? 'active'
@@ -84,8 +86,17 @@
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Data Stok Produk</p>
             </a>
-        </li>
-        @endif
+            </li>
+            @endif
+          {{-- @if (auth()->check() && auth()->user()->menu['stok tokobanjaran']) --}}
+          <li class="nav-item">
+            <a href="{{ url('toko_banjaran/stokpesanan_tokobanjaran') }}"
+                class="nav-link {{ request()->is('toko_banjaran/stokpesanan_tokobanjaran*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Data Stok Pesanan</p>
+            </a>
+            </li>
+            {{-- @endif --}}
 
 
     </ul>
