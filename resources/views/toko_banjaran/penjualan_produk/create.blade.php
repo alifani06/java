@@ -273,7 +273,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <table id="datatables5" class="table table-bordered table-striped">
+                                <table id="datatables5" class="table table-bordered table-striped" style="font-size: 12px;">
                                     <thead>
                                         <tr>
                                             <th class="text-center">No</th>
