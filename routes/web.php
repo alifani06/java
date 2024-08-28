@@ -38,6 +38,7 @@ use App\Http\Controllers\Toko_banjaran\PemesananprodukbanjaranController;
 use App\Http\Controllers\Toko_banjaran\Pengiriman_tokobanjaranController;
 use App\Http\Controllers\Toko_banjaran\PenjualanprodukbanjaranController;
 use App\Http\Controllers\Toko_banjaran\PermintaanprodukbanjaranController;
+use App\Http\Controllers\Toko_banjaran\Stok_tokobanjaranController;
 use App\Http\Controllers\Toko_slawi\Inquery_pemindahanslawiController;
 use App\Http\Controllers\Toko_slawi\Inquery_returslawiController;
 use App\Http\Controllers\Toko_slawi\Laporan_pemindahanslawiController;
@@ -460,6 +461,7 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
 
     //TOKO SLAWI
     Route::resource('stok_tokobanjaran', \App\Http\Controllers\Toko_banjaran\Stok_tokobanjaranController::class);
+
 
     Route::resource('pengiriman_tokobanjaran', \App\Http\Controllers\Toko_banjaran\Pengiriman_tokobanjaranController::class);
     Route::get('pengiriman_tokobanjaran/unpost_pengiriman/{id}', [\App\Http\Controllers\Toko_banjaran\Pengiriman_tokobanjaranController::class, 'unpost_pengiriman']);

@@ -36,17 +36,22 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Stok_tokobanjaran;
+use App\Models\Subklasifikasi;
 use Maatwebsite\Excel\Facades\Excel;
 
 class Stok_tokobanjaranController extends Controller{
 
+
 // public function index()
 // {
-//     // Ambil data stok_tokoslawi beserta relasi produk
-//     $stok_tokoslawi = Stok_tokobanjaran::with('produk')->where('status', 'posting')->get();
+//     // Ambil semua produk
+//     $produk = Produk::all();
+
+//     // Ambil data stok dari stok_tokobanjaran beserta relasi produk dan filter berdasarkan status 'posting'
+//     $stok_tokobanjaran = Stok_tokobanjaran::with('produk')->get();
 
 //     // Kelompokkan stok berdasarkan produk_id dan jumlahkan jumlahnya
-//     $stokGrouped = $stok_tokoslawi->groupBy('produk_id')->map(function ($group) {
+//     $stokGrouped = $stok_tokobanjaran->groupBy('produk_id')->map(function ($group) {
 //         // Ambil data produk dari kelompok
 //         $firstItem = $group->first();
 //         // Jumlahkan jumlah stok
@@ -59,40 +64,90 @@ class Stok_tokobanjaranController extends Controller{
 //     // Kumpulkan data hasil pengelompokan ke dalam array
 //     $stokGrouped = $stokGrouped->values();
 
-//     return view('toko_banjaran.stok_tokobanjaran.index', compact('stokGrouped'));
+//     // Gabungkan data produk dengan data stok, jika tidak ada stok, set jumlah ke 0
+//     $produkWithStok = $produk->map(function ($item) use ($stokGrouped) {
+//         // Cari stok berdasarkan produk_id
+//         $stokItem = $stokGrouped->firstWhere('produk_id', $item->id);
+//         // Jika stok tidak ada, set jumlah ke 0
+//         $item->jumlah = $stokItem ? $stokItem->jumlah : 0;
+//         return $item;
+//     });
+
+//     return view('toko_banjaran.stok_tokobanjaran.index', compact('produkWithStok'));
 // }
-public function index()
+
+// public function index(Request $request)
+// {
+//     $klasifikasis = Klasifikasi::all();
+
+//     $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);
+
+//     if ($request->has('klasifikasi_id') && $request->klasifikasi_id) {
+//         $produkQuery->where('klasifikasi_id', $request->klasifikasi_id);
+
+//         $subklasifikasis = SubKlasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get();
+//     } else {
+//         $subklasifikasis = collect(); 
+//     }
+
+//     $produk = $produkQuery->get();
+
+//     $stok_tokobanjaran = Stok_tokobanjaran::with('produk')->get();
+
+//     $stokGrouped = $stok_tokobanjaran->groupBy('produk_id')->map(function ($group) {
+//         $firstItem = $group->first();
+//         $totalJumlah = $group->sum('jumlah');
+//         $firstItem->jumlah = $totalJumlah;
+//         return $firstItem;
+//     });
+
+//     $stokGrouped = $stokGrouped->values();
+
+//     $produkWithStok = $produk->map(function ($item) use ($stokGrouped) {
+//         $stokItem = $stokGrouped->firstWhere('produk_id', $item->id);
+//         $item->jumlah = $stokItem ? $stokItem->jumlah : 0;
+//         return $item;
+//     });
+
+//     return view('toko_banjaran.stok_tokobanjaran.index', compact('produkWithStok', 'klasifikasis'));
+// }
+public function index(Request $request)
 {
-    // Ambil semua produk
-    $produk = Produk::all();
+    $klasifikasis = Klasifikasi::all();
+    $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);
 
-    // Ambil data stok dari stok_tokobanjaran beserta relasi produk dan filter berdasarkan status 'posting'
+    // Filter berdasarkan klasifikasi_id
+    if ($request->has('klasifikasi_id') && $request->klasifikasi_id) {
+        $produkQuery->where('klasifikasi_id', $request->klasifikasi_id);
+    }
+
+    // Filter berdasarkan subklasifikasi_id
+    if ($request->has('subklasifikasi_id') && $request->subklasifikasi_id) {
+        $produkQuery->where('subklasifikasi_id', $request->subklasifikasi_id);
+    }
+
+    $produk = $produkQuery->get();
+
     $stok_tokobanjaran = Stok_tokobanjaran::with('produk')->get();
-
-    // Kelompokkan stok berdasarkan produk_id dan jumlahkan jumlahnya
     $stokGrouped = $stok_tokobanjaran->groupBy('produk_id')->map(function ($group) {
-        // Ambil data produk dari kelompok
         $firstItem = $group->first();
-        // Jumlahkan jumlah stok
         $totalJumlah = $group->sum('jumlah');
-        // Atur jumlah total dan ambil produk dari item pertama
         $firstItem->jumlah = $totalJumlah;
         return $firstItem;
-    });
+    })->values();
 
-    // Kumpulkan data hasil pengelompokan ke dalam array
-    $stokGrouped = $stokGrouped->values();
-
-    // Gabungkan data produk dengan data stok, jika tidak ada stok, set jumlah ke 0
     $produkWithStok = $produk->map(function ($item) use ($stokGrouped) {
-        // Cari stok berdasarkan produk_id
         $stokItem = $stokGrouped->firstWhere('produk_id', $item->id);
-        // Jika stok tidak ada, set jumlah ke 0
         $item->jumlah = $stokItem ? $stokItem->jumlah : 0;
         return $item;
     });
 
-    return view('toko_banjaran.stok_tokobanjaran.index', compact('produkWithStok'));
+    // Kirim data subklasifikasi jika ada klasifikasi_id
+    $subklasifikasis = $request->has('klasifikasi_id') 
+        ? SubKlasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get() 
+        : collect();
+
+    return view('toko_banjaran.stok_tokobanjaran.index', compact('produkWithStok', 'klasifikasis', 'subklasifikasis'));
 }
 
 

@@ -104,7 +104,7 @@
                                                             @foreach ($klasifikasi->produks as $produk)
                                                                 <tr>
                                                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                                                    <td>{{ $produk->kode_produk }}</td>
+                                                                    <td>{{ $produk->kode_lama }}</td>
                                                                     <td>{{ $produk->nama_produk }}</td>
                                                                     <td>
                                                                         <input type="number" class="form-control" id="produk-{{ $produk->id }}" name="produk[{{ $produk->id }}][jumlah]" min="0" style="width: 100px; height: 30px;">
