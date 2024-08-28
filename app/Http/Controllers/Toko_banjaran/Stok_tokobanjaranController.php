@@ -82,6 +82,7 @@ class Stok_tokobanjaranController extends Controller{
 
 public function index(Request $request)
 {
+    
     $klasifikasis = Klasifikasi::all();
     $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);
 

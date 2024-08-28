@@ -70,12 +70,12 @@
                             
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_pemesanan" name="tanggal_pemesanan" type="date"
-                                    value="{{ Request::get('tanggal_pemesanan') }}" max="{{ date('Y-m-d') }}" />
+                                    value="{{ Request::get('tanggal_pemesanan') }}"  />
                                 <label for="tanggal_pemesanan">(Dari Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
-                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
+                                    value="{{ Request::get('tanggal_akhir') }}" />
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
