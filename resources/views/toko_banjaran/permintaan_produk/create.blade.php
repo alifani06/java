@@ -68,6 +68,16 @@
                 </div>
             @endif
             <div class="card">
+                <div class="card-body">
+                    <form action="{{ route('permintaan.import') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="form-group">
+                            <label for="file_excel">Unggah File Excel</label>
+                            <input type="file" class="form-control-file" id="file_excel" name="file_excel" accept=".xlsx">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Import</button>
+                    </form>
+                </div>
                 
                 <!-- /.card-header -->
                 <div class="card-body">

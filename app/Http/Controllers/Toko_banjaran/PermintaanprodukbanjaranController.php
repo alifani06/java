@@ -33,7 +33,7 @@ use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
-use App\Imports\ProdukImport;
+use App\Imports\PermintaanImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -167,7 +167,7 @@ public function show($id)
     }
 
     
-    public function unpost_permintaanproduk($id)
+public function unpost_permintaanproduk($id)
 {
     $item = Permintaanproduk::where('id', $id)->first();
 
@@ -239,22 +239,37 @@ public function destroy($id)
     return redirect()->route('permintaan_produk.index')->with('success', 'Permintaan produk dan detail terkait berhasil dihapus.');
 }
         
-        public function import(Request $request)
-        {
-            $request->validate([
-                'file' => 'required|mimes:xlsx,xls',
-            ]);
-    
-            Excel::import(new ProdukImport, $request->file('file'));
-    
-            // Redirect to the form with success message
-            return redirect()->route('form.produk')->with('success', 'Data produk berhasil diimpor.');
-        }
-    
-        public function formProduk()
-        {
-            $klasifikasis = Klasifikasi::with('produks')->get();
-            $importedData = session('imported_data', []);
-            return view('toko_banjaran.permintaan_produk.form', compact('klasifikasis', 'importedData'));
-        }
+// public function import(Request $request)
+// {
+//     // Validasi file upload
+//     $request->validate([
+//         'file_excel' => 'required|mimes:xlsx,xls',
+//     ]);
+
+//     // Import data dari file Excel
+//     Excel::import(new PermintaanImport, $request->file('file_excel'));
+
+//     // Redirect dengan pesan sukses
+//     return redirect()->route('form.permintaan')->with('success', 'Data produk berhasil diimpor.');
+// }
+
+public function import(Request $request)
+{
+    // Validasi file upload
+    $request->validate([
+        'file_excel' => 'required|mimes:xlsx,xls',
+    ]);
+
+    // Import data dari file Excel
+    $import = new PermintaanImport;
+    Excel::import($import, $request->file('file_excel'));
+
+    // Ambil ID permintaan produk yang terakhir diimpor
+    $lastPermintaanProdukId = $import->getLastPermintaanProdukId();
+
+    // Redirect ke halaman detail permintaan produk yang baru diimpor
+    return redirect()->route('permintaan_produk.show', $lastPermintaanProdukId)
+        ->with('success', 'Data produk berhasil diimpor.');
+}
+
 }

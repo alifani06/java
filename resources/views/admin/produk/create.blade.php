@@ -35,20 +35,18 @@
                 </div>
             @endif
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Tambah Produk</h3>
+                <div class="card-body">
+                    <form action="{{ route('produk.import') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="form-group">
+                            <label for="file_excel">Unggah File Excel</label>
+                            <input type="file" class="form-control-file" id="file_excel" name="file_excel" accept=".xlsx">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Import</button>
+                    </form>
+                    
                 </div>
-                <form action="{{ route('produk.import') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="form-group">
-                        <label for="file_excel">Unggah File Excel</label>
-                        <input type="file" class="form-control-file" id="file_excel" name="file_excel" accept=".xlsx">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Import</button>
-                </form>
-                
-                
-                
+      
                 <!-- /.card-header -->
                 <form action="{{ url('admin/produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                     @csrf
