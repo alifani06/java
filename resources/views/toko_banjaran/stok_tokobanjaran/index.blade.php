@@ -53,7 +53,7 @@
                             @foreach ($produkWithStok as $produk)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $produk->kode_produk }}</td>
+                                    <td>{{ $produk->kode_lama }}</td>
                                     <td>{{ $produk->nama_produk }}</td>
                                     <td>{{ $produk->jumlah }}</td>
                                 </tr>

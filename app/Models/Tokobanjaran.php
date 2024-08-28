@@ -19,10 +19,10 @@ class Tokobanjaran extends Model
     'hargajual_id', 
     'harga_awal', 
     'diskon_awal', 
-    'member_harga_slw', 
-    'non_harga_slw', 
-    'member_diskon_slw', 
-    'non_diskon_slw', 
+    'member_harga_bnjr', 
+    'non_harga_bnjr', 
+    'member_diskon_bnjr', 
+    'non_diskon_bnjr', 
     'tanggal_perubahan', 
    
 

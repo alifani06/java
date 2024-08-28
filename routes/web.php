@@ -108,6 +108,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('produk', \App\Http\Controllers\Admin\ProdukController::class);
     // Route::post('admin/produk/import', [ProdukController::class, 'import']);
     Route::post('admin/produk/import', [ProdukController::class, 'import'])->name('produk.import');
+    Route::get('/produk', [ProdukController::class, 'index'])->name('produk.index');
 
 
     Route::resource('toko', \App\Http\Controllers\Admin\TokoController::class);

@@ -18,36 +18,7 @@ class ProdukImport implements ToModel, WithHeadingRow
 {
     use Importable;
 
-    // public function model(array $row)
-    // {
-    //     return new Produk([
-    //         'nama_produk' => $row['nama_produk'],
-    //         'klasifikasi_id' => $row['klasifikasi_id'],
-    //         'subklasifikasi_id' => $row['subklasifikasi_id'],
-    //         'satuan' => $row['satuan'],
-    //         'harga' => $row['harga'],
-    //         'gambar' => isset($row['gambar']) ? $row['gambar'] : null,
-    //         'diskon' => 0,
-    //         'kode_produk' => $this->generateKodeProduk(),
-    //         'qrcode_produk' => 'https://javabakery.id/produk/' . $this->generateKodeProduk(),
-    //         'tanggal' => now(),
-    //     ]);
-    // }
 
-    // private function generateKodeProduk()
-    // {
-    //     $lastBarang = Produk::latest()->first();
-    //     if (!$lastBarang) {
-    //         $num = 1;
-    //     } else {
-    //         $lastCode = $lastBarang->kode_produk;
-    //         $num = (int) substr($lastCode, strlen('FE')) + 1;
-    //     }
-    //     $formattedNum = sprintf("%06s", $num);
-    //     $prefix = 'PR';
-    //     $newCode = $prefix . $formattedNum;
-    //     return $newCode;
-    // }
     public function model(array $row)
     {
         // Pastikan harga tidak null
@@ -57,6 +28,7 @@ class ProdukImport implements ToModel, WithHeadingRow
     
         // Simpan data ke tabel produk
         $produk = Produk::create([
+            'kode_lama' => $row['kode_lama'],
             'nama_produk' => $row['nama_produk'],
             'klasifikasi_id' => $row['klasifikasi_id'],
             'subklasifikasi_id' => $row['subklasifikasi_id'],
@@ -66,7 +38,7 @@ class ProdukImport implements ToModel, WithHeadingRow
             'diskon' => 0,
             'kode_produk' => $kode_produk,
             'qrcode_produk' => 'https://javabakery.id/produk/' . $kode_produk,
-            'tanggal' => now(),
+            // 'tanggal' => now(),
         ]);
     
         // Simpan data ke tabel toko
@@ -75,7 +47,7 @@ class ProdukImport implements ToModel, WithHeadingRow
             'member_harga_slw' => $harga,
             'harga_awal' => $harga,
             'diskon_awal' => 0,
-            'member_diskon_slw' => 0,
+            'member_diskon_slw' => 10,
             'non_harga_slw' => $harga,
             'non_diskon_slw' => 0,
         ]);
@@ -85,7 +57,7 @@ class ProdukImport implements ToModel, WithHeadingRow
             'harga_awal' => $harga,
             'diskon_awal' => 0,
             'member_harga_bnjr' => $harga,
-            'member_diskon_bnjr' => 0,
+            'member_diskon_bnjr' => 10,
             'non_harga_bnjr' => $harga,
             'non_diskon_bnjr' => 0,
         ]);
@@ -95,7 +67,7 @@ class ProdukImport implements ToModel, WithHeadingRow
             'harga_awal' => $harga,
             'diskon_awal' => 0,
             'member_harga_tgl' => $harga,
-            'member_diskon_tgl' => 0,
+            'member_diskon_tgl' => 10,
             'non_harga_tgl' => $harga,
             'non_diskon_tgl' => 0,
         ]);
@@ -105,7 +77,7 @@ class ProdukImport implements ToModel, WithHeadingRow
             'harga_awal' => $harga,
             'diskon_awal' => 0,
             'member_harga_pml' => $harga,
-            'member_diskon_pml' => 0,
+            'member_diskon_pml' => 10,
             'non_harga_pml' => $harga,
             'non_diskon_pml' => 0,
         ]);
@@ -115,7 +87,7 @@ class ProdukImport implements ToModel, WithHeadingRow
             'harga_awal' => $harga,
             'diskon_awal' => 0,
             'member_harga_bmy' => $harga,
-            'member_diskon_bmy' => 0,
+            'member_diskon_bmy' => 10,
             'non_harga_bmy' => $harga,
             'non_diskon_bmy' => 0,
         ]);
@@ -125,7 +97,7 @@ class ProdukImport implements ToModel, WithHeadingRow
             'harga_awal' => $harga,
             'diskon_awal' => 0,
             'member_harga_clc' => $harga,
-            'member_diskon_clc' => 0,
+            'member_diskon_clc' => 10,
             'non_harga_clc' => $harga,
             'non_diskon_clc' => 0,
         ]);
@@ -141,18 +113,24 @@ class ProdukImport implements ToModel, WithHeadingRow
     
     private function generateKodeProduk()
     {
-        $lastBarang = Produk::latest()->first();
+        // Ambil produk terakhir berdasarkan urutan kode_produk
+        $lastBarang = Produk::orderBy('kode_produk', 'desc')->first();
+    
         if (!$lastBarang) {
-            $num = 1;
+            $num = 1; // Jika tidak ada produk sebelumnya, mulai dari 1
         } else {
             $lastCode = $lastBarang->kode_produk;
-            $num = (int) substr($lastCode, strlen('FE')) + 1;
+            $num = (int) substr($lastCode, strlen('PR')) + 1; // Ambil angka setelah prefix
         }
-        $formattedNum = sprintf("%06s", $num);
-        $prefix = 'PR';
-        $newCode = $prefix . $formattedNum;
+    
+        // Format nomor produk dengan 6 digit
+        $formattedNum = sprintf("%06d", $num);
+        $prefix = 'PR'; // Prefix kode produk
+        $newCode = $prefix . $formattedNum; // Gabungkan prefix dan nomor
+    
         return $newCode;
     }
+    
     
 
 }

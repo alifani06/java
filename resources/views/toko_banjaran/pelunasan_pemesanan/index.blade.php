@@ -80,19 +80,16 @@
                         <tbody>
                             @foreach ($inquery as $item)
                                 <tr class="dropdown"{{ $item->id }}>
-                                   
                                     <td class="text-center">{{ $loop->iteration }}</td>
+                                    <td>{{ $item->kode_penjualan }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($item->tanggal_pelunasan)->format('d/m/Y H:i') }}</td>
+                                    <td>{{ $item->kasir }}</td>
                                     <td>
-                                        {{ $item->kode_penjualan }}
-                                    </td>
-                                    <td>
-                                        {{ \Carbon\Carbon::parse($item->tanggal_pelunasan)->format('d/m/Y H:i') }}
-                                    </td>
-                                    <td>
-                                        {{ $item->kasir }}
-                                    </td>
-                                    <td>
-                                        {{ $item->dppemesanan->pemesananproduk->nama_pelanggan }}
+                                        @if ($item->dppemesanan && $item->dppemesanan->pemesananproduk)
+                                            {{ $item->dppemesanan->pemesananproduk->nama_pelanggan }}
+                                        @else
+                                            Data tidak tersedia
+                                        @endif
                                     </td>
                                     <td>
                                         @if($item->metodePembayaran)
@@ -101,10 +98,7 @@
                                             Tunai
                                         @endif
                                     </td>
-                                    <td>
-                                        {{ number_format($item->pelunasan, 0, ',', '.') }}
-                                    </td>
-
+                                    <td>{{ number_format($item->pelunasan, 0, ',', '.') }}</td>
                                     <td class="text-center">
                                         @if ($item->status == 'posting')
                                             <button type="button" class="btn btn-success btn-sm">
@@ -112,40 +106,30 @@
                                             </button>
                                         @endif
                                         @if ($item->status == 'unpost')
-                                        <button type="button" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    
+                                            <button type="button" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-times"></i>
+                                            </button>
                                         @endif
-                                     
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($item->status == 'unpost')
-                                                <a class="dropdown-item posting-btn"
-                                                        data-memo-id="{{ $item->id }}">Posting</a>
-                                                
-                                                    <a class="dropdown-item"
-                                                        href="{{ url('/toko_banjaran/pelunasan_pemesanan/' . $item->id ) }}">Show</a>
-                                                    <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="dropdown-item">Delete</button>
-                                                    </form>
-                                                      
+                                                <a class="dropdown-item posting-btn" data-memo-id="{{ $item->id }}">Posting</a>
+                                                <a class="dropdown-item" href="{{ url('/toko_banjaran/pelunasan_pemesanan/' . $item->id ) }}">Show</a>
+                                                <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="dropdown-item">Delete</button>
+                                                </form>
                                             @endif
                                             @if ($item->status == 'posting')
-                                                    <a class="dropdown-item unpost-btn"
-                                                        data-memo-id="{{ $item->id }}">Unpost</a>
-                                                    <a class="dropdown-item"
-                                                    href="{{ url('/toko_banjaran/pelunasan_pemesanan/' . $item->id ) }}">Show</a>
-                                            
-                                            
+                                                <a class="dropdown-item unpost-btn" data-memo-id="{{ $item->id }}">Unpost</a>
+                                                <a class="dropdown-item" href="{{ url('/toko_banjaran/pelunasan_pemesanan/' . $item->id ) }}">Show</a>
                                             @endif
-                                           
-                                          </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
+                        
                     </table>
 
                     <!-- Modal Loading -->

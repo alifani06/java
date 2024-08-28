@@ -66,7 +66,7 @@
                             @foreach ($produks as $produk)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $produk->kode_produk }}</td>
+                                    <td>{{ $produk->kode_lama }}</td>
                                     <td>{{ $produk->nama_produk}}</td>
                                     <td>{{ 'Rp. ' .number_format($produk->harga, 0, ',', '.') }} </td> <!-- Format harga -->
                                     <td>{{ $produk->satuan }}</td>

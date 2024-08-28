@@ -67,7 +67,7 @@ public function index()
     $produk = Produk::all();
 
     // Ambil data stok dari stok_tokobanjaran beserta relasi produk dan filter berdasarkan status 'posting'
-    $stok_tokobanjaran = Stok_tokobanjaran::with('produk')->where('status', 'posting')->get();
+    $stok_tokobanjaran = Stok_tokobanjaran::with('produk')->get();
 
     // Kelompokkan stok berdasarkan produk_id dan jumlahkan jumlahnya
     $stokGrouped = $stok_tokobanjaran->groupBy('produk_id')->map(function ($group) {
