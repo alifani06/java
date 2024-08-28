@@ -34,10 +34,19 @@ class PermintaanImport implements ToModel, WithHeadingRow
             $this->lastPermintaanProdukId = $permintaanProduk->id;
         }
 
+        // Temukan produk berdasarkan kode_lama
+        $produk = Produk::where('kode_lama', $row['kode_lama'])->first();
+        if ($produk) {
+            $produkId = $produk->id;
+        } else {
+            // Jika produk tidak ditemukan, skip baris atau lakukan penanganan kesalahan
+            return null;
+        }
+
         // Simpan detail permintaan untuk setiap produk
         Detailpermintaanproduk::create([
             'permintaanproduk_id' => $this->lastPermintaanProdukId,
-            'produk_id' => $row['produk_id'],
+            'produk_id' => $produkId,
             'toko_id' => '1',
             'jumlah' => $row['jumlah'],
             'status' => 'unpost',
