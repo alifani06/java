@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Produks')
+@section('title', 'Pengiriman Pesanan')
 
 @section('content')
     <div id="loadingSpinner" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
@@ -35,7 +35,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Pengiriman Barang Jadi (Permintaan)</h1>
+                    <h1 class="m-0">Pengiriman Barang Jadi (Pesanan)</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -81,8 +81,9 @@
                 <!-- /.card-header -->
                 <div class="card-body">
                     
-                    <form action="{{ url('admin/pengiriman_barangjadi') }}" method="POST">
-                        @csrf
+                    <form action="{{ route('pengiriman_barangjadi.pengirimanpemesanan.simpan') }}" method="POST" enctype="multipart/form-data"
+                    autocomplete="off">                        
+                    @csrf
                         <input type="hidden" name="toko_id" > <!-- Assuming $toko is passed from the controller -->
                         <div class="row">
                             <div class="col-md-12 mb-3">
