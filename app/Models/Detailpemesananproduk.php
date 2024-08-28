@@ -21,6 +21,7 @@ class Detailpemesananproduk extends Model
         'produk_id',
         'catatanproduk',
         'kode_produk',
+        'kode_lama',
         'nama_produk',
         'jumlah',
         'diskon',

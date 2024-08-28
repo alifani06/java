@@ -11,6 +11,7 @@ use App\Models\Hargajual;
 use App\Models\Tokoslawi;
 use App\Models\Tokobanjaran;
 use App\Models\Stok_tokobanjaran;
+use App\Models\Stokpesanan_tokobanjaran;
 use App\Models\Tokobenjaran;
 use App\Models\Tokotegal;
 use App\Models\Tokopemalang;
@@ -110,91 +111,92 @@ class PenjualanprodukbanjaranController extends Controller
     }
     
 
-    // public function SimpanPelunasan(Request $request)
-    // {
-    //     // Validasi input
-    //     $validated = $request->validate([
-    //         'dppemesanan_id' => 'required|string',
-    //         'pelunasan' => 'required|numeric',
-    //         'metode_id' => 'nullable|integer',
-    //         'total_fee' => 'nullable|numeric',
-    //         'keterangan' => 'nullable|string',
-    //         'kode_produk' => 'required|array',
-    //         'kode_produk.*' => 'required|string',
-    //         'nama_produk' => 'required|array',
-    //         'nama_produk.*' => 'required|string',
-    //         'jumlah' => 'required|array',
-    //         'jumlah.*' => 'required|integer',
-    //         'total' => 'required|array',
-    //         'total.*' => 'required|numeric',
-    //         'kembali' => 'nullable|numeric', // Pastikan 'kembali' juga divalidasi
-    //     ]);
 
-    //     // Simpan data ke tabel pelunasan
-    //     $pelunasan = new Pelunasan();
-    //     $pelunasan->dppemesanan_id = $validated['dppemesanan_id'];
-    //     $pelunasan->pelunasan = $validated['pelunasan'];
-    //     $pelunasan->metode_id = $validated['metode_id'];
-    //     $pelunasan->total_fee = $validated['total_fee'];
-    //     $pelunasan->keterangan = $validated['keterangan'];
-    //     $pelunasan->kembali = $validated['kembali'];
-    //     $pelunasan->tanggal_pelunasan = Carbon::now('Asia/Jakarta');
-    //     $pelunasan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
-    //     $pelunasan->status = 'posting'; // Menyimpan status 'posting'
-    //     $pelunasan->save();
+//     public function SimpanPelunasan(Request $request)
+// {
+//     // Validasi input
+//     $validated = $request->validate([
+//         'dppemesanan_id' => 'required|string',
+//         'pelunasan' => 'required|numeric',
+//         'metode_id' => 'nullable|integer',
+//         'total_fee' => 'nullable|numeric',
+//         'keterangan' => 'nullable|string',
+//         'kode_produk' => 'required|array',
+//         'kode_produk.*' => 'required|string',
+//         'nama_produk' => 'required|array',
+//         'nama_produk.*' => 'required|string',
+//         'jumlah' => 'required|array',
+//         'jumlah.*' => 'required|integer',
+//         'total' => 'required|array',
+//         'total.*' => 'required|numeric',
+//         'kembali' => 'nullable|numeric',
+//     ]);
 
-    //     // Update kolom pelunasan di tabel dppemesanans
-    //     $dppemesanans = Dppemesanan::find($validated['dppemesanan_id']);
-    //     if ($dppemesanans) {
-    //         $dppemesanans->pelunasan += $validated['pelunasan'];
-    //         $dppemesanans->save();
-    //     }
+//     // Simpan data ke tabel pelunasan
+//     $pelunasan = new Pelunasan();
+//     $pelunasan->dppemesanan_id = $validated['dppemesanan_id'];
+//     $pelunasan->pelunasan = $validated['pelunasan'];
+//     $pelunasan->metode_id = $validated['metode_id'];
+//     $pelunasan->total_fee = $validated['total_fee'];
+//     $pelunasan->keterangan = $validated['keterangan'];
+//     $pelunasan->kembali = $validated['kembali'];
+//     $pelunasan->tanggal_pelunasan = Carbon::now('Asia/Jakarta');
+//     $pelunasan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
+//     $pelunasan->status = 'posting';
+//     $pelunasan->kode_penjualan = $this->kode(); // Tambahkan kode_penjualan
+//     $pelunasan->save();
 
-    //     $kode = $this->kode();
+//     // Update kolom pelunasan di tabel dppemesanans
+//     $dppemesanans = Dppemesanan::find($validated['dppemesanan_id']);
+//     if ($dppemesanans) {
+//         $dppemesanans->pelunasan += $validated['pelunasan'];
+//         $dppemesanans->save();
+//     }
 
-    //     // Simpan data ke tabel penjualan_produk
-    //     $penjualan = new PenjualanProduk();
-    //     $penjualan->dppemesanan_id = $validated['dppemesanan_id'];
-    //     $penjualan->nama_pelanggan = $dppemesanans->pemesananproduk->nama_pelanggan; 
-    //     $penjualan->kode_pelanggan = $dppemesanans->pemesananproduk->kode_pelanggan; 
-    //     $penjualan->telp = $dppemesanans->pemesananproduk->telp; 
-    //     $penjualan->alamat = $dppemesanans->pemesananproduk->alamat; 
-    //     $penjualan->sub_total = $dppemesanans->pemesananproduk->sub_total; 
-    //     $penjualan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
-    //     $penjualan->total_fee = $validated['total_fee'];
-    //     $penjualan->keterangan = $validated['keterangan'];
-    //     $penjualan->metode_id = $validated['metode_id'];
-    //     $penjualan->kembali = $validated['kembali']; 
-    //     $penjualan->bayar = $validated['pelunasan']; // Menyimpan nilai pelunasan sebagai 'bayar'
-    //     $penjualan->status = 'posting'; 
-    //     $penjualan->toko_id = '1'; 
-    //     $penjualan->kode_penjualan = $this->kode();
-    //     $penjualan->tanggal_penjualan = Carbon::now('Asia/Jakarta');
-    //     $penjualan->save();
+//     // Simpan data ke tabel penjualan_produk
+//     $penjualan = new PenjualanProduk();
+//     $penjualan->dppemesanan_id = $validated['dppemesanan_id'];
+//     $penjualan->nama_pelanggan = $dppemesanans->pemesananproduk->nama_pelanggan; 
+//     $penjualan->kode_pelanggan = $dppemesanans->pemesananproduk->kode_pelanggan; 
+//     $penjualan->telp = $dppemesanans->pemesananproduk->telp; 
+//     $penjualan->alamat = $dppemesanans->pemesananproduk->alamat; 
+//     $penjualan->sub_total = $dppemesanans->pemesananproduk->sub_total; 
+//     $penjualan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
+//     $penjualan->total_fee = $validated['total_fee'];
+//     $penjualan->keterangan = $validated['keterangan'];
+//     $penjualan->metode_id = $validated['metode_id'];
+//     $penjualan->kembali = $validated['kembali']; 
+//     $penjualan->bayar = $validated['pelunasan'];
+//     $penjualan->status = 'posting'; 
+//     $penjualan->toko_id = '1'; 
+//     $penjualan->kode_penjualan = $this->kode();
+//     $penjualan->tanggal_penjualan = Carbon::now('Asia/Jakarta');
+//     $penjualan->save();
 
-    //     // Simpan data ke tabel detailpenjualanproduk
-    //     foreach ($validated['kode_produk'] as $index => $kode_produk) {
-    //         $detail = new DetailPenjualanProduk();
-    //         $detail->penjualanproduk_id = $penjualan->id;
-    //         $detail->kode_produk = $kode_produk;
-    //         $detail->nama_produk = $validated['nama_produk'][$index];
-    //         $detail->jumlah = $validated['jumlah'][$index];
-    //         $detail->total = $validated['total'][$index];
-    //         $detail->save();
-    //     }
+//     // Simpan data ke tabel detailpenjualanproduk
+//     foreach ($validated['kode_produk'] as $index => $kode_produk) {
+//         $detail = new DetailPenjualanProduk();
+//         $detail->penjualanproduk_id = $penjualan->id;
+//         $detail->kode_produk = $kode_produk;
+//         $detail->nama_produk = $validated['nama_produk'][$index];
+//         $detail->jumlah = $validated['jumlah'][$index];
+//         $detail->total = $validated['total'][$index];
+//         $detail->save();
+//     }
 
-    //     // Ambil detail pelunasan untuk ditampilkan di halaman cetak
-    //     $details = DetailPenjualanProduk::where('penjualanproduk_id', $penjualan->id)->get();
+//     // Ambil detail pelunasan untuk ditampilkan di halaman cetak
+//     $details = DetailPenjualanProduk::where('penjualanproduk_id', $penjualan->id)->get();
 
-    //     // Redirect ke halaman cetak dengan menyertakan data sukses dan detail pelunasan
-    //     return redirect()->route('toko_banjaran.pelunasan_pemesanan.cetak', ['id' => $pelunasan->id])->with([
-    //         'success' => 'Data berhasil disimpan.',
-    //         'pelunasan' => $pelunasan,
-    //         'penjualan' => $penjualan,
-    //         'details' => $details,
-    //     ]);
-    // }
-    public function SimpanPelunasan(Request $request)
+//     // Redirect ke halaman cetak dengan menyertakan data sukses dan detail pelunasan
+//     return redirect()->route('toko_banjaran.pelunasan_pemesanan.cetak', ['id' => $pelunasan->id])->with([
+//         'success' => 'Data berhasil disimpan.',
+//         'pelunasan' => $pelunasan,
+//         'penjualan' => $penjualan,
+//         'details' => $details,
+//     ]);
+// }
+
+public function SimpanPelunasan(Request $request)
 {
     // Validasi input
     $validated = $request->validate([
@@ -264,6 +266,18 @@ class PenjualanprodukbanjaranController extends Controller
         $detail->jumlah = $validated['jumlah'][$index];
         $detail->total = $validated['total'][$index];
         $detail->save();
+        
+        // Kurangi stok di tabel stok_tokobanjaran menggunakan produk_id
+        $stok = Stokpesanan_tokobanjaran::where('produk_id', $validated['kode_produk'][$index])->first();
+        if ($stok) {
+            // Jika jumlah stok 0, maka kurangi dengan nilai jumlah dari inputan dan buat stok jadi minus
+            if ($stok->jumlah == 0) {
+                $stok->jumlah -= $validated['jumlah'][$index];
+            } else {
+                $stok->jumlah -= $validated['jumlah'][$index];
+            }
+            $stok->save();
+        }
     }
 
     // Ambil detail pelunasan untuk ditampilkan di halaman cetak
@@ -277,6 +291,8 @@ class PenjualanprodukbanjaranController extends Controller
         'details' => $details,
     ]);
 }
+
+
 
 
 

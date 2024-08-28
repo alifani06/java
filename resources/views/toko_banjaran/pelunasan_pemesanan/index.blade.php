@@ -54,13 +54,13 @@
                 </div>
             @endif
             <div class="card">
-                <div class="card-header">
+                {{-- <div class="card-header">
                     <div class="float-right">
                         <a href="{{ url('toko_banjaran/penjualan_produk/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> 
                         </a>
                     </div>
-                </div>
+                </div> --}}
                 <!-- /.card-header -->
                 <div class="card-body">
                     <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">

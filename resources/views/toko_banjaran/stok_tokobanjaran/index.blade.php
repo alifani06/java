@@ -71,7 +71,7 @@
                             </div>
                         </div>
                     </form>
-                    
+                
                     <table id="datatables1" class="table table-bordered" style="font-size: 13px">
                         <thead>
                             <tr>
@@ -79,6 +79,8 @@
                                 <th>Kode Produk</th>
                                 <th>Nama Produk</th>
                                 <th>Stok</th>
+                                <th>Harga</th>
+                                <th>Sub Total</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -87,12 +89,24 @@
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $produk->kode_lama }}</td>
                                     <td>{{ $produk->nama_produk }}</td>
-                                    <td>{{ $produk->jumlah }}</td>
+                                    <td style="text-align: right">{{ $produk->jumlah }}</td>
+                                    <td style="text-align: right">{{ number_format($produk->harga, 0, ',', '.') }} </td>
+                                    <td style="text-align: right">{{ number_format($produk->subTotal, 0, ',', '.') }} </td> <!-- Sub Total -->
                                 </tr>
                             @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="3" class="text-center">Total</th>
+                                <th style="text-align: right">{{ $totalStok }}</th>
+                                <th></th>
+                                <th style="text-align: right">{{ 'Rp. ' . number_format($totalSubTotal, 0, ',', '.') }}</th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
+                
+                
                 <!-- /.card-body -->
             </div>
         </div>

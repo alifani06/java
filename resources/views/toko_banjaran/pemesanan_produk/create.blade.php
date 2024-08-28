@@ -256,11 +256,12 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <table id="datatables5" class="table table-bordered table-striped">
+                                <table id="datatables5" class="table table-bordered table-striped" style="font-size: 14px;">
                                     <thead>
                                         <tr>
                                             <th class="text-center">No</th>
                                             <th>Kode Produk</th>
+                                            <th>Kode Lama</th>
                                             <th>Nama Produk</th>
                                             <th>Harga Member</th>
                                             <th>Diskon Member</th>
@@ -285,6 +286,7 @@
                                                 data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td>{{ $item->kode_produk }}</td>
+                                                <td>{{ $item->kode_lama }}</td>
                                                 <td>{{ $item->nama_produk }}</td>
                                                 <td>
                                                     <span class="member_harga_slw">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}</span>
