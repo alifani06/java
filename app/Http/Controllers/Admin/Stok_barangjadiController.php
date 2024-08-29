@@ -58,14 +58,22 @@ class Stok_barangjadiController extends Controller{
         return view('admin.stok_barangjadi.index', compact('stokBarangJadi'));
     }
     
-    public function create()
+    public function create(Request $request)
     {
+        // Mengambil semua klasifikasis
+        $klasifikasis = Klasifikasi::all();
         
-        $klasifikasis = Klasifikasi::with('produks')->get();
-        
-        return view('admin.stok_barangjadi.create', compact('klasifikasis'));    
+        // Melakukan paginasi untuk produk dalam setiap klasifikasi
+        foreach ($klasifikasis as $klasifikasi) {
+            // Gunakan page dari query string untuk masing-masing produk
+            $currentPage = $request->input('page_' . $klasifikasi->id, 1); 
+            $klasifikasi->produks = $klasifikasi->produks()->paginate(10, ['*'], 'page_' . $klasifikasi->id, $currentPage);
+        }
+    
+        return view('admin.stok_barangjadi.create', compact('klasifikasis'));
     }
-
+      
+    
 public function store(Request $request)
 {
     $kode = $this->kode();

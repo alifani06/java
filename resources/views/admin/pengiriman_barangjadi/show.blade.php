@@ -172,13 +172,14 @@
                 </tr>
                 @endforeach
             </tbody>
-            {{-- <tfoot>
-                <tr class="total-row">
-                    <td colspan="4">Total </td>
-                    <td>{{ $detail->sum('jumlah') }}</td>
+            <tfoot>
+                <tr>
+                    <td colspan="4" style="text-align:right;"><strong>Total</strong></td>
+                    <td><strong>{{ $pengirimanBarangJadi->sum('jumlah') }}</strong></td>
                 </tr>
-            </tfoot> --}}
+            </tfoot>
         </table><br>
+        
 
         <div class="d-flex justify-content-between">
             <div>

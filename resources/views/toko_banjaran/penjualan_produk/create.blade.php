@@ -873,14 +873,17 @@ function getSelectedData(id, kode_produk, nama_produk, member, diskonmember, non
     $('#nama_produk-' + urutan).val(nama_produk);
     $('#harga-' + urutan).val(harga);
     $('#diskon-' + urutan).val(diskon);
+
+    // Set nilai default untuk input jumlah dan fokuskan ke input jumlah
+    $('#jumlah-' + urutan).val(1).focus(); // Set nilai default menjadi 1 dan fokuskan ke input jumlah
+    
     // Hitung total
     hitungTotal(urutan);
+
     // Tutup modal
     $('#tableProduk').modal('hide');
-
-    // Setelah menambahkan data dari modal, fokuskan ke input jumlah
-    document.getElementById('jumlah-' + urutan).focus();
 }
+
 
 // Fungsi untuk menghitung total berdasarkan harga dan jumlah
 function hitungTotal(urutan) {

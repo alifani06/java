@@ -153,6 +153,7 @@
                                                 <tr>
                                                     <th class="text-center">No</th>
                                                     <th>Kode Produk</th>
+                                                    <th>Kode Lama</th>
                                                     <th>Nama Produk</th>
                                                     <th>Opsi</th>
                                                 </tr>
@@ -165,6 +166,7 @@
                                                         data-nama="{{ $item->produk->nama_produk }}">
                                                         <td class="text-center">{{ $loop->iteration }}</td>
                                                         <td>{{ $item->produk ? $item->produk->kode_produk : 'N/A' }}</td>
+                                                        <td>{{ $item->produk ? $item->produk->kode_lama : 'N/A' }}</td>
                                                         <td>{{ $item->produk ? $item->produk->nama_produk : 'N/A' }}</td>
                                                         <td class="text-center">
                                                             <button type="button" class="btn btn-primary btn-sm pilih-btn"

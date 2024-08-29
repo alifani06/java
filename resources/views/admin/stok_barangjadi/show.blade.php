@@ -144,6 +144,12 @@
                 </tr>
                 @endforeach
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" style="text-align:right;"><strong>Total</strong></td>
+                    <td><strong>{{ $detailStokBarangJadi->sum('stok') }}</strong></td>
+                </tr>
+            </tfoot>
         </table><br>
 
         <div class="d-flex justify-content-between">
