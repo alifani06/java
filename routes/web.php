@@ -198,6 +198,10 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::resource('data_deposit', \App\Http\Controllers\Admin\DepositController::class);
 
+    Route::resource('inquery_deposit', \App\Http\Controllers\Admin\Inquery_depositController::class);
+    Route::resource('laporan_deposit', \App\Http\Controllers\Admin\Laporan_depositController::class);
+    Route::get('printReportdeposit', [\App\Http\Controllers\Admin\Laporan_depositController::class, 'printReportdeposit']);
+
     Route::resource('data_stokbarangjadi', \App\Http\Controllers\Admin\Data_stokbarangjadiController::class);
 
     Route::resource('data_stokretur', \App\Http\Controllers\Admin\Data_stokreturController::class);

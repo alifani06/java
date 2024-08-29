@@ -34,8 +34,7 @@ use Illuminate\Support\Facades\Storage;
 class Inquery_pemesananprodukController extends Controller
 {
 
-    public function index(Request $request)
-
+public function index(Request $request)
 {
     $status = $request->status;
     $tanggal_pemesanan = $request->tanggal_pemesanan;

@@ -87,15 +87,7 @@
                                     value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
-                            {{-- <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="toko" name="toko_id">
-                                    <option value="">- Semua Toko -</option>
-                                    @foreach ($tokos as $toko)
-                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="toko">(Pilih Toko)</label>
-                            </div> --}}
+                      
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="klasifikasi" name="klasifikasi_id" onchange="filterProduk()">
                                     <option value="">- Semua Divisi -</option>
@@ -132,7 +124,7 @@
                                 <th class="text-center">No</th>
                                 <th>Kode penjualan</th>
                                 <th>Tanggal penjualan</th>
-                                <th>Cabang</th>
+                                <th>Kasir</th>
                                 <th>Divisi</th>
                                 <th>Produk</th>
                                 <th>Total</th>
@@ -152,7 +144,7 @@
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $item->kode_penjualan }}</td>
                                     <td>{{ \Carbon\Carbon::parse($item->tanggal_penjualan)->format('d/m/Y H:i') }}</td>
-                                    <td>{{ $item->toko->nama_toko}}</td>
+                                    <td>{{ $item->kasir}}</td>
                                     <td>
                                         @if ($item->detailpenjualanproduk->isNotEmpty())
                                             {{ $item->detailpenjualanproduk->pluck('produk.klasifikasi.nama')->implode(', ') }}

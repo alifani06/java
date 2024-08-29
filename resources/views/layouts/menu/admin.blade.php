@@ -348,6 +348,7 @@
     request()->is('admin/inquery_pengirimanbarangjadi*')|| 
     request()->is('admin/inquery_pemindahanbarang*')|| 
     request()->is('admin/inquery_pemusnahanbarangjadi*')|| 
+    request()->is('admin/inquery_deposit*')|| 
     request()->is('admin/inquery_estimasiproduksi')  
     // request()->is('admin/input*')
   
@@ -362,6 +363,7 @@
         request()->is('admin/inquery_pengirimanbarangjadi*')||
         request()->is('admin/inquery_pemindahanbarang*')||
         request()->is('admin/inquery_pemusnahanbarangjadi*')||
+        request()->is('admin/inquery_deposit*')||
         request()->is('admin/inquery_estimasiproduksi*') 
         // request()->is('admin/input*')
       
@@ -471,6 +473,14 @@
             </a>
         </li>
         {{-- @endif --}}
+          <li class="nav-item">
+            <a href="{{ url('admin/inquery_deposit') }}"
+                class="nav-link {{ request()->is('admin/inquery_deposit*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Inquery Deposit</p>
+            </a>
+        </li>
+        {{-- @endif --}}
     </ul>
 </li>
 
@@ -484,6 +494,7 @@
     request()->is('admin/laporan_returbarangjadi*')||
     request()->is('admin/laporan_pemusnahanbarangjadi*')||
     request()->is('admin/laporan_pemindahanbarangjadi*')||
+    request()->is('admin/laporan_deposit*')||
     request()->is('admin/laporan_estimasiproduksi*')
     // request()->is('admin/input*')
   
@@ -499,6 +510,7 @@
         request()->is('admin/laporan_returbarangjadi*')|| 
         request()->is('admin/laporan_pemusnahanbarangjadi*')|| 
         request()->is('admin/laporan_pemindahanbarangjadi*')|| 
+        request()->is('admin/laporan_deposit*')|| 
         request()->is('admin/laporan_estimasiproduksi*') 
         // request()->is('admin/input*')
       
@@ -548,6 +560,14 @@
                     class="nav-link {{ request()->is('admin/laporan_permintaanproduk*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                     <p style="font-size: 14px;">Laporan Permintaan Produk</p>
+                </a>
+            </li>
+            {{-- @endif --}}
+              <li class="nav-item">
+                <a href="{{ url('admin/laporan_deposit') }}"
+                    class="nav-link {{ request()->is('admin/laporan_deposit*') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                    <p style="font-size: 14px;">Laporan Deposit</p>
                 </a>
             </li>
             {{-- @endif --}}

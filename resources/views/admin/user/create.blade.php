@@ -39,49 +39,6 @@
                     <h3 class="card-title">Tambah User</h3>
                 </div>
                
-                {{-- <form action="{{ url('admin/user') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
-                    @csrf
-                    <div class="card-body">
-                        <div class="form-group" style="flex: 8;"> 
-                            <label for="karyawan_id">Pilih Kode Karyawan</label>
-                            <select class="select2bs4 select2-hidden-accessible" name="karyawan_id"
-                                data-placeholder="Cari Karyawan.." style="width: 100%;" data-select2-id="23" tabindex="-1"
-                                aria-hidden="true" id="kode_karyawan" onchange="getData(0)">
-                                <option value="">- Pilih -</option>
-                                @foreach ($karyawans as $karyawan)
-                                    <option value="{{ $karyawan->id }}"
-                                        {{ old('karyawan_id') == $karyawan->id ? 'selected' : '' }}>
-                                        {{ $karyawan->kode_karyawan }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="nama_lengkap">Nama lengkap</label>
-                            <input type="text" class="form-control" id="nama_lengkap" readonly name="nama_lengkap" 
-                                placeholder="" value="{{ old('nama_lengkap') }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="nama">No KTP</label>
-                            <input type="text" class="form-control" id="no_ktp" readonly name="no_ktp"  placeholder=""
-                                value="{{ old('no_ktp') }}">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="nama">Alamat</label>
-                            <input type="text" class="form-control" id="alamat" readonly name="alamat"  placeholder=""
-                                value="{{ old('alamat') }}">
-                        </div>
-
-                    </div>
-                    <div class="card-footer text-right">
-                        <button type="reset" class="btn btn-secondary" id="btnReset">Reset</button>
-                        <button type="submit" class="btn btn-primary" id="btnSimpan">Simpan</button>
-                        <div id="loading" style="display: none;">
-                            <i class="fas fa-spinner fa-spin"></i> Sedang Menyimpan...
-                        </div>
-                    </div>
-                </form> --}}
                 <form action="{{ url('admin/user') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                     @csrf
                     <div class="card-body">
@@ -124,7 +81,7 @@
                             <select class="form-control" name="level" id="level">
                                 <option value="">- Pilih Level User -</option>
                                 <option value="admin" {{ old('level') == 'admin' ? 'selected' : '' }}>Admin</option>
-                                <option value="admin_toko" {{ old('level') == 'admin_toko' ? 'selected' : '' }}>Admin Toko</option>
+                                {{-- <option value="admin_toko" {{ old('level') == 'admin_toko' ? 'selected' : '' }}>Admin Toko</option> --}}
                                 <option value="toko_slawi" {{ old('level') == 'toko_slawi' ? 'selected' : '' }}>Toko Slawi</option>
                                 <option value="toko_banjaran" {{ old('level') == 'toko_banjaran' ? 'selected' : '' }}>Toko Banjaran</option>
                                 <option value="toko_tegal" {{ old('level') == 'toko_tegal' ? 'selected' : '' }}>Toko Tegal</option>
