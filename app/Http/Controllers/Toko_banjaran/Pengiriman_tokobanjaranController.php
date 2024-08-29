@@ -137,7 +137,7 @@ class Pengiriman_tokobanjaranController extends Controller{
     public function show($id)
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-        $detailStokBarangJadi = Stok_tokoslawi::where('id', $id)->value('kode_pengiriman');
+        $detailStokBarangJadi = Pengiriman_tokobanjaran::where('id', $id)->value('kode_pengiriman');
         
         // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -145,12 +145,32 @@ class Pengiriman_tokobanjaranController extends Controller{
         }
         
         // Ambil semua data dengan kode_pengiriman yang sama
-        $pengirimanBarangJadi = Stok_tokoslawi::with(['produk.subklasifikasi', 'toko'])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+        $pengirimanBarangJadi = Pengiriman_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_pengiriman', $detailStokBarangJadi)->get();
         
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
         return view('toko_banjaran.pengiriman_tokobanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
+    }
+
+    public function print($id)
+    {
+        // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
+        $detailStokBarangJadi = Pengiriman_tokobanjaran::where('id', $id)->value('kode_pengiriman');
+                
+        // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
+        if (!$detailStokBarangJadi) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        }
+
+        // Ambil semua data dengan kode_pengiriman yang sama
+        $pengirimanBarangJadi = Pengiriman_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+
+        // Ambil item pertama untuk informasi toko
+        $firstItem = $pengirimanBarangJadi->first();
+        $pdf = FacadePdf::loadView('toko_banjaran.pengiriman_tokobanjaran.print', compact('detailStokBarangJadi', 'pengirimanBarangJadi', 'firstItem'));
+
+        return $pdf->stream('surat_permintaan_produk.pdf');
     }
 
 
@@ -346,29 +366,7 @@ public function unpost_pengiriman($id)
     return response()->json(['success' => 'Berhasil mengubah status di stok_tokoslawi dan pengiriman_barangjadi.']);
         }
 
-    public function print($id)
-    {
-        // $permintaanProduk = PermintaanProduk::where('id', $id)->firstOrFail();
-        
-        // $detailPermintaanProduks = $permintaanProduk->detailpermintaanproduks;
-        $permintaanProduk = PermintaanProduk::find($id);
-        $detailPermintaanProduks = DetailPermintaanProduk::where('permintaanproduk_id', $id)->get();
-    
-        // Mengelompokkan produk berdasarkan divisi
-        $produkByDivisi = $detailPermintaanProduks->groupBy(function($item) {
-            return $item->produk->klasifikasi->nama; // Ganti dengan nama divisi jika diperlukan
-        });
-    
-        // Menghitung total jumlah per divisi
-        $totalPerDivisi = $produkByDivisi->map(function($produks) {
-            return $produks->sum('jumlah');
-        });
-        $toko = $detailPermintaanProduks->first()->toko;
-
-        $pdf = FacadePdf::loadView('toko_banjaran.permintaan_produk.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi','toko'));
-
-        return $pdf->stream('surat_permintaan_produk.pdf');
-    }
+   
 
     public function unpost(Request $request, $id)
     {

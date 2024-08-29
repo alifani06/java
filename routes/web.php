@@ -472,7 +472,7 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('pengiriman_tokobanjaran/posting_pengiriman/{id}', [\App\Http\Controllers\Toko_banjaran\Pengiriman_tokobanjaranController::class, 'posting_pengiriman']);
     Route::get('pengiriman_tokobanjaran/unpost_pengirimanpemesanan/{id}', [\App\Http\Controllers\Toko_banjaran\Pengiriman_tokobanjaranController::class, 'unpost_pengirimanpemesanan']);
     Route::get('pengiriman_tokobanjaran/posting_pengirimanpemesanan/{id}', [\App\Http\Controllers\Toko_banjaran\Pengiriman_tokobanjaranController::class, 'posting_pengirimanpemesanan']);
-    Route::get('/pengiriman_tokobanjaran/{id}/print', [Pengiriman_tokobanjaranController::class, 'print'])->name('pengiriman_tokobanajran.print');
+    Route::get('/pengiriman_tokobanjaran/{id}/print', [Pengiriman_tokobanjaranController::class, 'print'])->name('pengiriman_tokobanjaran.print');
     Route::get('toko_banjaran/pengiriman_barangjadi/index', [Pengiriman_tokobanjaranController::class, 'index'])->name('toko_banjaran.pengiriman_barangjadi.index');
     Route::get('/toko_banjaran/pengiriman_barangjadi/pengiriman_pemesanan', [Pengiriman_tokobanjaranController::class, 'pengiriman_pemesanan'])->name('toko_banjaran.pengiriman_barangjadi.pengiriman_pemesanan');
 

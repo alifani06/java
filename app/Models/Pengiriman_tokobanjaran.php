@@ -18,6 +18,7 @@ class Pengiriman_tokobanjaran extends Model
     
     protected $fillable = [
         'produk_id',
+        'toko_id',
         'jumlah',
         'pengiriman_barangjadi_id',
         'tanggal_input',

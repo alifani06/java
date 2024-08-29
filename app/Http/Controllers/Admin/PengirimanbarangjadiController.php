@@ -142,6 +142,7 @@ public function store(Request $request)
                         'pengiriman_barangjadi_id' => $pengiriman->id,
                         'kode_pengiriman' => $kode,
                         'produk_id' => $produkId,
+                        'toko_id' => $tokoId,
                         'jumlah' => $jumlah,
                         'status' => 'unpost',
                         'tanggal_input' => Carbon::now('Asia/Jakarta'),
