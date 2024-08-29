@@ -27,6 +27,7 @@ use App\Models\Penjualanproduk;
 use Carbon\Carbon;
 use App\Models\Toko;
 use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
@@ -328,8 +329,13 @@ public function printReportglobal(Request $request)
     $produk = $request->produk;
     $toko_id = $request->toko_id;
 
+    // Default toko_id ke 1 jika tidak ada yang dipilih
+    if (!$toko_id) {
+        $toko_id = 1; // ID Toko Banjaran
+    }
+
     // Query dasar untuk mengambil data penjualan produk
-    $query = Penjualanproduk::query();
+    $query = Penjualanproduk::with(['toko', 'detailpenjualanproduk', 'dppemesanan'])->orderBy('id', 'DESC');
 
     // Filter berdasarkan status
     if ($status) {
@@ -359,26 +365,61 @@ public function printReportglobal(Request $request)
     }
 
     // Filter berdasarkan toko
-    if ($toko_id) {
-        $query->where('toko_id', $toko_id);
-    }
+    $query->where('toko_id', $toko_id);
+    $toko = Toko::find($toko_id); // Ambil nama toko berdasarkan ID
+    $branchName = $toko ? $toko->nama_toko : 'Semua Toko'; // Nama toko atau default jika tidak ditemukan
 
-    $query->orderBy('id', 'DESC');
+    $inquery = $query->get();
 
-    $inquery = $query->with('toko', 'detailpenjualanproduk')->get();
+    // Format tanggal untuk tampilan PDF
+    $formattedStartDate = $tanggal_penjualan ? Carbon::parse($tanggal_penjualan)->format('d-m-Y') : null;
+    $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : null;
 
-      // Format tanggal untuk tampilan PDF
-      $formattedStartDate = $tanggal_penjualan ? Carbon::parse($tanggal_penjualan)->format('d-m-Y') : null;
-      $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : null;
+    // Inisialisasi DOMPDF
+    $options = new Options();
+    $options->set('isHtml5ParserEnabled', true);
+    $options->set('isRemoteEnabled', true); // Jika menggunakan URL eksternal untuk gambar atau CSS
 
-      $pdf = FacadePdf::loadView('toko_banjaran.laporan_penjualanproduk.printglobal', [
+    $dompdf = new Dompdf($options);
+
+    // Memuat konten HTML dari view
+    $html = view('toko_banjaran.laporan_penjualanproduk.printglobal', [
         'inquery' => $inquery,
         'startDate' => $formattedStartDate,
         'endDate' => $formattedEndDate,
-    ]);
+        'branchName' => $branchName, // Sertakan variabel nama cabang toko
+    ])->render();
 
-    return $pdf->stream('laporan_penjualan_produk.pdf');
+    $dompdf->loadHtml($html);
+
+    // Set ukuran kertas dan orientasi
+    $dompdf->setPaper('A4', 'portrait');
+
+    // Render PDF
+    $dompdf->render();
+
+    // Menambahkan nomor halaman di kanan bawah
+    $canvas = $dompdf->getCanvas();
+    $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+        $text = "Page $pageNumber of $pageCount";
+        $font = $fontMetrics->getFont('Arial', 'normal');
+        $size = 10;
+
+        // Menghitung lebar teks
+        $width = $fontMetrics->getTextWidth($text, $font, $size);
+
+        // Mengatur koordinat X dan Y
+        $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+        $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+
+        // Menambahkan teks ke posisi yang ditentukan
+        $canvas->text($x, $y, $text, $font, $size);
+    });
+
+    // Output PDF ke browser
+    return $dompdf->stream('laporan_penjualan_produk.pdf', ['Attachment' => false]);
 }
+
    
 
 
