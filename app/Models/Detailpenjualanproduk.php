@@ -20,6 +20,7 @@ class Detailpenjualanproduk extends Model
         'penjualanproduk_id',
         'produk_id',
         'kode_produk',
+        'kode_lama',
         'nama_produk',
         'jumlah',
         'diskon',

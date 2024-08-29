@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Pemesanan Produk')
+@section('title', 'Penjualan Produk')
 
 @section('content')
 <style>
@@ -43,10 +43,7 @@
                     <h1 class="m-0">Penjualan Produk</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ url('admin/subklasifikasi') }}">penjualan Produk</a></li>
-                        <li class="breadcrumb-item active">Tambah</li>
-                    </ol>
+                 
                 </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
@@ -71,7 +68,7 @@
                     @endforeach
                 </div>
             @endif
-            <form action="{{ url('admin/penjualan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form action="{{ url('toko_banjaran/penjualan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 {{-- detail pelanggan --}}
                 <div class="card">
@@ -84,7 +81,7 @@
                             </select>
                         </div>
                         {{-- <div class="float-right">
-                            <a href="{{ route('admin.penjualan_produk.pelunasan') }}"  class="btn btn-primary btn-sm">Pelunasan Pemesanan
+                            <a href="{{ route('toko_slawi.penjualan_produk.pelunasan') }}"  class="btn btn-primary btn-sm">Pelunasan Pemesanan
                             </a>
                         </div> --}}
                     </div>
@@ -212,7 +209,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($pelanggans as $item)
-                                            <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->kode_pelanggan }}','{{ $item->telp }}', '{{ $item->alamat }}')">
+                                            <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}')">
                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td>{{ $item->kode_pelanggan }}</td>
                                                 <td>{{ $item->nama_pelanggan }}</td>
@@ -276,11 +273,12 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <table id="datatables5" class="table table-bordered table-striped">
+                                <table id="datatables5" class="table table-bordered table-striped" style="font-size: 12px;">
                                     <thead>
                                         <tr>
                                             <th class="text-center">No</th>
                                             <th>Kode Produk</th>
+                                            <th>Kode Lama</th>
                                             <th>Nama Produk</th>
                                             <th>Harga Member</th>
                                             <th>Diskon Member</th>
@@ -291,47 +289,52 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($produks as $item)
-                                        <tr class="pilih-btn" 
-                                            data-id="{{ $item->id }}"
-                                            data-kode="{{ $item->kode_produk }}"
-                                            data-kode="{{ $item->catatanproduk }}"
-                                            data-nama="{{ $item->nama_produk }}"
-                                            data-member="{{ $item->tokoslawi->first()->member_harga_slw }}"
-                                            data-diskonmember="{{ $item->tokoslawi->first()->member_diskon_slw }}"
-                                            data-nonmember="{{ $item->tokoslawi->first()->non_harga_slw }}"
-                                            data-diskonnonmember="{{ $item->tokoslawi->first()->non_diskon_slw }}">>
-                                            <td class="text-center">{{ $loop->iteration }}</td>
-                                            <td>{{ $item->kode_produk }}</td>
-                                            <td>{{ $item->nama_produk }}</td>
-                                            <td>
-                                                <span class="member_harga_slw">{{$item->tokoslawi->first()->member_harga_slw}}</span>
-                                            </td>
-                                            <td>
-                                                <span class="member_diskon_slw">{{ $item->tokoslawi->first()->member_diskon_slw }}</span>
-                                            </td>
-                                            <td>
-                                                <span class="non_harga_slw">{{$item->tokoslawi->first()->non_harga_slw}}</span>
-                                            </td>
-                                            <td>
-                                                <span class="non_diskon_slw">{{ $item->tokoslawi->first()->non_diskon_slw }}</span>
-                                            </td>
-                                            <td class="text-center">
-                                                <button type="button" class="btn btn-primary btn-sm pilih-btn"
-                                                    data-id="{{ $item->id }}"
-                                                    data-kode="{{ $item->kode_produk }}"
-                                                    data-kode="{{ $item->catatanproduk }}"
-                                                    data-nama="{{ $item->nama_produk }}"
-                                                    data-member="{{ $item->tokoslawi->first()->member_harga_slw }}"
-                                                    data-diskonmember="{{ $item->tokoslawi->first()->member_diskon_slw }}"
-                                                    data-nonmember="{{ $item->tokoslawi->first()->non_harga_slw }}"
-                                                    data-diskonnonmember="{{ $item->tokoslawi->first()->non_diskon_slw }}">
-                                                    <i class="fas fa-plus"></i> 
-                                                </button>
-                                            </td>
-                                        </tr>
+                                            @php
+                                                $tokobanjaran = $item->tokobanjaran->first();
+                                            @endphp
+                                            <tr class="pilih-btn"
+                                                data-id="{{ $item->id }}"
+                                                data-kode="{{ $item->kode_produk }}"
+                                                data-catatan="{{ $item->catatanproduk }}"
+                                                data-nama="{{ $item->nama_produk }}"
+                                                data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
+                                                data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
+                                                data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
+                                                data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
+                                                <td class="text-center">{{ $loop->iteration }}</td>
+                                                <td>{{ $item->kode_produk }}</td>
+                                                <td>{{ $item->kode_lama }}</td>
+                                                <td>{{ $item->nama_produk }}</td>
+                                                <td>
+                                                    <span class="member_harga_slw">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="member_diskon_slw">{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="non_harga_slw">{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="non_diskon_slw">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-primary btn-sm pilih-btn"
+                                                        data-id="{{ $item->id }}"
+                                                        data-kode="{{ $item->kode_produk }}"
+                                                        data-catatan="{{ $item->catatanproduk }}"
+                                                        data-nama="{{ $item->nama_produk }}"
+                                                        data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
+                                                        data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
+                                                        data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
+                                                        data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
+                                                        <i class="fas fa-plus"></i> 
+                                                    </button>
+                                                </td>
+                                            </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
+                                
                             </div>
                  
                         </div>
@@ -344,16 +347,22 @@
                                 <div class="row">
                                     <div class="col mb-3 d-flex align-items-center">
                                         <label for="sub_total" class="mr-2">Sub Total</label>
-                                        <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="Rp0" oninput="validateNumberInput(event); showPaymentFields()">
+                                        <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="Rp0" oninput="updateCalculations();">
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row"hidden>
+                                    <div class="col mb-3 d-flex align-items-center">
+                                        <label for="sub_totalasli" class="mr-2">Sub Total Asli</label>
+                                        <input type="text" class="form-control large-font" id="sub_totalasli" name="sub_totalasli" value="Rp0" oninput="updateCalculations();">
+                                    </div>
+                                </div>
+                                <div class="row" id="payment-row">
                                     <div class="col mb-3 d-flex align-items-center">
                                         <label for="bayar" class="mr-2">Uang Bayar</label>
                                         <input type="text" class="form-control large-font" id="bayar" name="bayar" value="{{ old('bayar') }}" oninput="formatAndUpdateKembali()">
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row" id="change-row">
                                     <div class="col mb-3 d-flex align-items-center">
                                         <label for="kembali" class="mr-2">Kembali</label>
                                         <input type="text" class="form-control large-font" id="kembali" name="kembali" value="{{ old('kembali') }}" readonly>
@@ -364,76 +373,52 @@
                     </div>
                     
                     <div class="col-md-6">
-                        {{-- <div class="card">
-                            <div class="card-header">
-                                <label class="form-label" for="metodebayar">Metode Pembayaran</label>
-                                <select class="form-control" id="metodebayar" name="metodebayar" onchange="showPaymentFields()">
-                                    <option value="">- Pilih -</option>
-                                    <option value="mesinedc">MESIN EDC</option>
-                                    <option value="gobiz">GO-BIZ</option>
-                                    <option value="transfer">TRANSFER</option>
-                                    <option value="qris">QRIS</option>
-                                </select>
-                            </div>
-                        </div> --}}
-                        <div class="card">
-                            <div class="card-header">
-                                <label class="form-label" for="metodebayar">Metode Pembayaran</label>
-                                <select class="form-control" id="metodebayar" name="metodebayar" onchange="showPaymentFields()">
-                                    <option value="">- Pilih -</option>
-                                    @foreach($metodes as $metode)
-                                        <option value="{{ $metode->id }}">{{ $metode->nama_metode }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                        <div class="form-group" style="flex: 8;">
+                            <label for="metode_id">Jenis Pembayaran</label>
+                            <select class="select2bs4 select2-hidden-accessible" name="metode_id" style="width: 100%;" id="nama_metode" onchange="getData1()">
+                                <option value="">- Pilih -</option>
+                                @foreach ($metodes as $metode)
+                                    <option value="{{ $metode->id }}" data-fee="{{ $metode->fee }}" {{ old('metode_id') == $metode->id ? 'selected' : '' }}>
+                                        {{ $metode->nama_metode }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
-                        <div id="payment-fields">
-                            <!-- Form untuk GO-BIZ -->
-                            <div id="gobiz-fields" class="payment-field" hidden>
-                                <div class="form-group">
-                                    <label for="gobiz_code">No GoFood</label>
-                                    <input type="text" id="gobiz_code" name="ket_gobiz" class="form-control" placeholder="Masukkan kode GO-BIZ">
-                                    <input type="hidden" id="metode_bayar_hidden" name="metodebayar" value="tunai">
+                        <div id="payment-fields" class="form-group" style="display: none; margin-top: 20px;">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="fee">Fee (%)</label>
                                 </div>
-                                <div class="form-group">
-                                    <label for="gobiz_fee">Fee (20%)</label>
-                                    <input type="text" id="gobiz_fee" name="gobiz_fee" class="form-control" placeholder="Masukkan fee" readonly>
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="fee" readonly name="fee" placeholder="" value="{{ old('fee') }}">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-4">
+                                    <label for="total_fee">Total Fee</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" id="total_fee" name="total_fee" placeholder="" value="{{ old('total_fee') }}" readonly>
                                 </div>
                             </div>
                         
-                            <!-- Form untuk MESIN EDC -->
-                            <div id="mesinedc-fields" class="payment-field" hidden>
-                                <div class="form-group">
-                                    <label for="struk_edc">No Struk EDC</label>
-                                    <input type="text" id="struk_edc" name="ket_edc" class="form-control" placeholder="Masukkan No Struk EDC">
+                            <div class="row mt-2">
+                                <div class="col-md-4">
+                                    <label for="keterangan">Keterangan</label>
                                 </div>
-                                <div class="form-group">
-                                    <label for="struk_edc_fee">Fee (1%)</label>
-                                    <input type="text" id="struk_edc_fee" name="struk_edc_fee" class="form-control" readonly>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" id="keterangan" name="keterangan" placeholder="" value="{{ old('keterangan') }}">
                                 </div>
                             </div>
-                        
-                            <!-- Form untuk TRANSFER -->
-                            <div id="transfer-fields" class="payment-field" hidden>
-                                <div class="form-group">
-                                    <label for="no_rek">No Rekening</label>
-                                    <input type="text" id="no_rek" name="ket_rekening" value="362800800" class="form-control">
-                                </div>
-                            </div>
-                        
-                            <!-- Form untuk QRIS -->
-                            <div id="qris-fields" class="payment-field" hidden>
-                                <div class="form-group">
-                                    <label for="qris_code">No Referensi</label>
-                                    <input type="text" id="qris_code" name="ket_qris" value="713072924254" class="form-control" placeholder="Masukkan kode QRIS">
-                                </div>
-                            </div>
-                        </div>
+                        </div> 
                     </div>
                 </div>
-                
-    </div>
-          
+            </div>
                 <div class="card">
                     <div class="card-header">
                         <div class="row">
@@ -458,269 +443,95 @@
             </form>
         </div>
     </section>
-
-    {{-- <script>
-        // Fungsi untuk menghapus format Rupiah dan mengembalikan nilai numerik
-        function removeRupiahFormat(value) {
-            return parseFloat(value.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
-        }
-    
-        // Format angka menjadi format Rupiah
-        function formatRupiah(value) {
-            let numberString = value.toString().replace(/[^,\d]/g, ''),
-                split = numberString.split(','),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-    
-            if (ribuan) {
-                let separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-    
-            return split[1] !== undefined ? 'Rp. ' + rupiah + ',' + split[1] : 'Rp. ' + rupiah;
-        }
-    
-        // Format input dan update kembalian
-        function formatAndUpdateKembali() {
-            let subTotalElement = document.getElementById('sub_total');
-            let bayarElement = document.getElementById('bayar');
-            let kembaliElement = document.getElementById('kembali');
-    
-            // Mengambil nilai sub_total
-            let subTotal = removeRupiahFormat(subTotalElement.value);
-    
-            // Format dan ambil nilai bayar
-            let bayarValue = bayarElement.value.replace(/[^0-9,-]/g, '').replace(',', '.');
-            let bayar = parseFloat(bayarValue) || 0; // Jika tidak valid, set 0
-    
-            // Format input 'bayar'
-            bayarElement.value = formatRupiah(bayarValue);
-    
-            // Hitung kembalian
-            let kembali = bayar - subTotal;
-    
-            // Format hasil kembalian sebagai Rupiah
-            kembaliElement.value = kembali >= 0 ? formatRupiah(kembali) : 'Rp. 0';
-        }
-    
-        // Panggil fungsi ini saat halaman dimuat untuk format sub_total yang mungkin sudah ada
-        document.addEventListener('DOMContentLoaded', function() {
-            let subTotalElement = document.getElementById('sub_total');
-            let subTotal = removeRupiahFormat(subTotalElement.value);
-            subTotalElement.value = formatRupiah(subTotal);
-        });
-    
-        document.querySelector('form').addEventListener('submit', function(event) {
-            let subTotalElement = document.getElementById('sub_total');
-            let bayarElement = document.getElementById('bayar');
-            let kembaliElement = document.getElementById('kembali');
-    
-            // Menghapus format Rupiah dari input sebelum submit
-            subTotalElement.value = removeRupiahFormat(subTotalElement.value);
-            bayarElement.value = removeRupiahFormat(bayarElement.value);
-            kembaliElement.value = removeRupiahFormat(kembaliElement.value);
-    
-            // Formulir akan disubmit dengan nilai numerik
-        });
-    
-        let originalSubTotal = 0;
-    
-        function cleanSubTotal(subTotal) {
-            // Hapus "Rp" dan titik
-            return parseFloat(subTotal.replace(/Rp|\.|,/g, '')) || 0;
-        }
-    
-        function showPaymentFields() {
-            const paymentFields = document.querySelectorAll('.payment-field');
-            paymentFields.forEach(field => field.hidden = true);
-    
-            const metodebayar = document.getElementById('metodebayar').value;
-            const subTotalField = document.getElementById('sub_total');
-            let subTotal = cleanSubTotal(subTotalField.value);
-    
-            console.log('Sub Total:', subTotal);
-    
-            // Simpan nilai asli dari subTotal saat pertama kali metode pembayaran dipilih
-            if (originalSubTotal === 0 && subTotal > 0) {
-                originalSubTotal = subTotal;
-            }
-    
-            // Sembunyikan field Uang Bayar dan Kembali
-            document.getElementById('bayar').parentElement.parentElement.style.display = 'none';
-            document.getElementById('kembali').parentElement.parentElement.style.display = 'none';
-    
-            // Update hidden input field
-            const metodeBayarHidden = document.getElementById('metode_bayar_hidden');
-            metodeBayarHidden.value = metodebayar || 'tunai'; // Default to 'tunai'
-    
-            if (metodebayar === "gobiz") {
-                document.getElementById('gobiz-fields').hidden = false;
-                const feeField = document.getElementById('gobiz_fee');
-                const fee = Math.round(subTotal * 0.20); // Fee 20%
-                feeField.value = formatRupiah(fee.toString());
-    
-                // Kurangi subTotal dengan fee
-                subTotalField.value = formatRupiah((originalSubTotal + fee).toString());
-            } else if (metodebayar === "mesinedc") {
-                document.getElementById('mesinedc-fields').hidden = false;
-                const feeField = document.getElementById('struk_edc_fee');
-                const fee = Math.round(subTotal * 0.01); // Fee 1%
-                feeField.value = formatRupiah(fee.toString());
-    
-                // Kurangi subTotal dengan fee
-                subTotalField.value = formatRupiah((originalSubTotal + fee).toString());
-            } else if (metodebayar === "transfer") {
-                document.getElementById('transfer-fields').hidden = false;
-                subTotalField.value = formatRupiah(originalSubTotal.toString());
-            } else if (metodebayar === "qris") {
-                document.getElementById('qris-fields').hidden = false;
-                subTotalField.value = formatRupiah(originalSubTotal.toString());
-            } else {
-                // Tampilkan field Uang Bayar dan Kembali jika tunai
-                document.getElementById('bayar').parentElement.parentElement.style.display = 'block';
-                document.getElementById('kembali').parentElement.parentElement.style.display = 'block';
-                subTotalField.value = formatRupiah(originalSubTotal.toString());
-            }
-        }
-    </script> --}}
-    
+  
     <script>
-        // Fungsi untuk menghapus format Rupiah dan mengembalikan nilai numerik
-        function removeRupiahFormat(value) {
-            return parseFloat(value.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
-        }
-    
-        // Format angka menjadi format Rupiah
-        function formatRupiah(value) {
-            let numberString = value.toString().replace(/[^,\d]/g, ''),
-                split = numberString.split(','),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-    
-            if (ribuan) {
-                let separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-    
-            return split[1] !== undefined ? 'Rp. ' + rupiah + ',' + split[1] : 'Rp. ' + rupiah;
-        }
-    
-        // Format input dan update kembalian
-        function formatAndUpdateKembali() {
-            let subTotalElement = document.getElementById('sub_total');
-            let bayarElement = document.getElementById('bayar');
-            let kembaliElement = document.getElementById('kembali');
-    
-            // Mengambil nilai sub_total
-            let subTotal = removeRupiahFormat(subTotalElement.value);
-    
-            // Format dan ambil nilai bayar
-            let bayarValue = bayarElement.value.replace(/[^0-9,-]/g, '').replace(',', '.');
-            let bayar = parseFloat(bayarValue) || 0; // Jika tidak valid, set 0
-    
-            // Format input 'bayar'
-            bayarElement.value = formatRupiah(bayarValue);
-    
-            // Hitung kembalian
-            let kembali = bayar - subTotal;
-    
-            // Format hasil kembalian sebagai Rupiah
-            kembaliElement.value = kembali >= 0 ? formatRupiah(kembali) : 'Rp. 0';
-        }
-    
-        // Panggil fungsi ini saat halaman dimuat untuk format sub_total yang mungkin sudah ada
-        document.addEventListener('DOMContentLoaded', function() {
-            let subTotalElement = document.getElementById('sub_total');
-            let subTotal = removeRupiahFormat(subTotalElement.value);
-            subTotalElement.value = formatRupiah(subTotal);
-        });
-    
-        document.querySelector('form').addEventListener('submit', function(event) {
-            let subTotalElement = document.getElementById('sub_total');
-            let bayarElement = document.getElementById('bayar');
-            let kembaliElement = document.getElementById('kembali');
+        function getData1() {
+            var metodeId = document.getElementById('nama_metode').value;
+            var fee = document.getElementById('fee');
+            var keterangan = document.getElementById('keterangan');
+            var paymentFields = document.getElementById('payment-fields');
+            var paymentRow = document.getElementById('payment-row');
+            var changeRow = document.getElementById('change-row');
             
-            // Menghapus format Rupiah dari input sebelum submit
-            subTotalElement.value = removeRupiahFormat(subTotalElement.value);
-            bayarElement.value = removeRupiahFormat(bayarElement.value);
-            kembaliElement.value = removeRupiahFormat(kembaliElement.value);
-            
-            // Hapus format Rupiah dari fee sebelum submit
-            let gobizFeeElement = document.getElementById('gobiz_fee');
-            let strukEdcFeeElement = document.getElementById('struk_edc_fee');
-            
-            if (gobizFeeElement) {
-                gobizFeeElement.value = removeRupiahFormat(gobizFeeElement.value);
-            }
-            if (strukEdcFeeElement) {
-                strukEdcFeeElement.value = removeRupiahFormat(strukEdcFeeElement.value);
-            }
-        });
+            // Check if the selected payment method is "Tunai"
+            if (metodeId && document.querySelector('#nama_metode option:checked').text === 'Tunai') {
+                paymentFields.style.display = 'none';
+                paymentRow.style.display = 'block';
+                changeRow.style.display = 'block';
+            } else if (metodeId) {
+                $.ajax({
+                    url: "{{ url('toko_banjaran/metodebayar/metode') }}" + "/" + metodeId,
+                    type: "GET",
+                    dataType: "json",
+                    success: function(response) {
+                        console.log('Respons dari server:', response);
     
-        let originalSubTotal = 0;
+                        fee.value = '';
+                        keterangan.value = '';
+                        paymentFields.style.display = 'block';
     
-        function cleanSubTotal(subTotal) {
-            // Hapus "Rp" dan titik
-            return parseFloat(subTotal.replace(/Rp|\.|,/g, '')) || 0;
-        }
+                        if (response && response.fee) {
+                            fee.value = response.fee;
+                        }
+                        if (response && response.keterangan) {
+                            keterangan.value = response.keterangan;
+                        }
     
-        function showPaymentFields() {
-            const paymentFields = document.querySelectorAll('.payment-field');
-            paymentFields.forEach(field => field.hidden = true);
-    
-            const metodebayar = document.getElementById('metodebayar').value;
-            const subTotalField = document.getElementById('sub_total');
-            let subTotal = cleanSubTotal(subTotalField.value);
-    
-            console.log('Sub Total:', subTotal);
-    
-            // Simpan nilai asli dari subTotal saat pertama kali metode pembayaran dipilih
-            if (originalSubTotal === 0 && subTotal > 0) {
-                originalSubTotal = subTotal;
-            }
-    
-            // Sembunyikan field Uang Bayar dan Kembali
-            document.getElementById('bayar').parentElement.parentElement.style.display = 'none';
-            document.getElementById('kembali').parentElement.parentElement.style.display = 'none';
-    
-            // Update hidden input field
-            const metodeBayarHidden = document.getElementById('metode_bayar_hidden');
-            metodeBayarHidden.value = metodebayar || 'tunai'; // Default to 'tunai'
-    
-            if (metodebayar === "gobiz") {
-                document.getElementById('gobiz-fields').hidden = false;
-                const feeField = document.getElementById('gobiz_fee');
-                const fee = Math.round(subTotal * 0.20); // Fee 20%
-                feeField.value = formatRupiah(fee.toString());
-    
-                // Kurangi subTotal dengan fee
-                subTotalField.value = formatRupiah((originalSubTotal + fee).toString());
-            } else if (metodebayar === "mesinedc") {
-                document.getElementById('mesinedc-fields').hidden = false;
-                const feeField = document.getElementById('struk_edc_fee');
-                const fee = Math.round(subTotal * 0.01); // Fee 1%
-                feeField.value = formatRupiah(fee.toString());
-    
-                // Kurangi subTotal dengan fee
-                subTotalField.value = formatRupiah((originalSubTotal + fee).toString());
-            } else if (metodebayar === "transfer") {
-                document.getElementById('transfer-fields').hidden = false;
-                subTotalField.value = formatRupiah(originalSubTotal.toString());
-            } else if (metodebayar === "qris") {
-                document.getElementById('qris-fields').hidden = false;
-                subTotalField.value = formatRupiah(originalSubTotal.toString());
+                        // Hide payment and change fields for all payment methods
+                        paymentRow.style.display = 'none';
+                        changeRow.style.display = 'none';
+                        
+                        // Update calculations whenever data is fetched
+                        updateCalculations();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Terjadi kesalahan dalam permintaan AJAX:', error);
+                    }
+                });
             } else {
-                // Tampilkan field Uang Bayar dan Kembali jika tunai
-                document.getElementById('bayar').parentElement.parentElement.style.display = 'block';
-                document.getElementById('kembali').parentElement.parentElement.style.display = 'block';
-                subTotalField.value = formatRupiah(originalSubTotal.toString());
+                paymentFields.style.display = 'none';
+                paymentRow.style.display = 'block';
+                changeRow.style.display = 'block';
+                // Reset calculations if no method is selected
+                updateCalculations();
             }
         }
+    
+        function updateCalculations() {
+            var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+            var fee = parseFloat(document.getElementById('fee').value.replace('%', '').trim()) || 0;
+            var totalFee = (subTotal * fee / 100) || 0;
+            var finalTotal = subTotal + totalFee;
+    
+            // Format the values without .00
+            function formatCurrency(value) {
+                var formattedValue = value.toFixed(2).replace(/\.00$/, '');
+                return 'Rp' + formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            }
+    
+            // Update total fee and final sub total fields
+            document.getElementById('total_fee').value = formatCurrency(totalFee);
+            document.getElementById('sub_total').value = formatCurrency(finalTotal);
+        }
+    
+        // Add event listeners for initialization
+        document.getElementById('nama_metode').addEventListener('change', getData1);
+        document.getElementById('sub_total').addEventListener('input', updateCalculations);
+    
+        // Initialize with "Tunai" as default method
+        document.addEventListener('DOMContentLoaded', function() {
+            var defaultMethod = 'Tunai';
+            var options = document.getElementById('nama_metode').options;
+            for (var i = 0; i < options.length; i++) {
+                if (options[i].text === defaultMethod) {
+                    options[i].selected = true;
+                    break;
+                }
+            }
+            getData1();
+        });
     </script>
     
-
     <script>
         function showCategoryModalCatatan(urutan) {
             // Tampilkan modal
@@ -770,8 +581,6 @@
             $('#tableCatatan').modal('hide');
         }
     </script>
-
-
 
     <script>
             // menghide form inputan
@@ -851,7 +660,7 @@
                 $('#tableMarketing').modal('show');
             }
         
-            function getSelectedDataPemesanan(nama_pelanggan, kode_pelanggan, telp, alamat) {
+            function getSelectedDataPemesanan(nama_pelanggan,  telp, alamat, kode_pelanggan) {
                 document.getElementById('nama_pelanggan').value = nama_pelanggan;
                 document.getElementById('kode_pelanggan').value = kode_pelanggan;
                 document.getElementById('telp').value = telp;
@@ -999,21 +808,7 @@
 
 
 
-    <script>
-        document.getElementById('kategori1').addEventListener('change', function() {
-            var selectedValue = this.value;
-
-            if (selectedValue === 'penjualan') {
-                window.location.href = "{{ route('admin.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
-            } else if (selectedValue === 'pelunasan') {
-                window.location.href = "{{ route('admin.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
-            }
-        });
-    </script>
-
-
-
-    <script>
+<script>
     document.addEventListener('DOMContentLoaded', function() {
         // Panggil fungsi itemPembelian dengan baris default
         // itemPembelian(1, 0); // Misalnya, menambahkan satu baris default
@@ -1030,6 +825,7 @@
             }
         });
     });
+
 
     var data_pembelian = @json(session('data_pembelians'));
     var jumlah_ban = 0;
@@ -1050,7 +846,7 @@
         // Simpan urutan untuk menyimpan data ke baris yang sesuai
         $('#tableProduk').attr('data-urutan', urutan);
     }
-    
+
     // Event listener for pilih-btn
     $(document).on('click', '.pilih-btn', function() {
         var id = $(this).data('id');
@@ -1077,14 +873,17 @@
         $('#nama_produk-' + urutan).val(nama_produk);
         $('#harga-' + urutan).val(harga);
         $('#diskon-' + urutan).val(diskon);
+
+        // Set nilai default untuk input jumlah dan fokuskan ke input jumlah
+        $('#jumlah-' + urutan).val(1).focus(); // Set nilai default menjadi 1 dan fokuskan ke input jumlah
+        
         // Hitung total
         hitungTotal(urutan);
+
         // Tutup modal
         $('#tableProduk').modal('hide');
-
-        // Setelah menambahkan data dari modal, fokuskan ke input jumlah
-        document.getElementById('jumlah-' + urutan).focus();
     }
+
 
     // Fungsi untuk menghitung total berdasarkan harga dan jumlah
     function hitungTotal(urutan) {
@@ -1094,9 +893,11 @@
 
         var hargaSetelahDiskon = harga - (harga * (diskon / 100));
         var total = hargaSetelahDiskon * jumlah;
+        var totalasli = harga * jumlah;
 
         // Format total ke dalam format rupiah dan set nilai input total
         $('#total-' + urutan).val(total);
+        $('#totalasli-' + urutan).val(totalasli);
         // Hitung subtotal setiap kali total di baris berubah
         hitungSubTotal();
     }
@@ -1104,11 +905,20 @@
     // Fungsi untuk menghitung subtotal semua barang
     function hitungSubTotal() {
         var subTotal = 0;
+        var subTotalAsli = 0;
+
         $('[id^=total-]').each(function() {
             var total = parseFloat($(this).val().replace(/[^0-9]/g, '')) || 0;
             subTotal += total;
         });
+
+        $('[id^=totalasli-]').each(function() {
+            var totalAsli = parseFloat($(this).val().replace(/[^0-9]/g, '')) || 0;
+            subTotalAsli += totalAsli;
+        });
+
         $('#sub_total').val(formatRupiah(subTotal));
+        $('#sub_totalasli').val(formatRupiah(subTotalAsli));
     }
 
     function addPesanan() {
@@ -1146,6 +956,7 @@
         var diskon = '';
         var harga = '';
         var total = '';
+        var totalasli = '';
 
         if (value !== null) {
             produk_id = value.produk_id;
@@ -1155,23 +966,37 @@
             diskon = value.diskon;
             harga = value.harga;
             total = value.total;
+            totalasli = value.totalasli;
         }
 
         var item_pembelian = '<tr id="pembelian-' + urutan + '">';
         item_pembelian += '<td style="width: 70px; font-size:14px" class="text-center" id="urutan-' + urutan + '">' + urutan + '</td>'; 
         item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="produk_id-' + urutan + '" name="produk_id[]" value="' + produk_id + '"></div></td>';
-        item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
+        item_pembelian += '<td ><div class="form-group"><input type="text" class="form-control" style="font-size:14px"  id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
         item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
         item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
         item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')" style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" readonly id="diskon-' + urutan + '" name="diskon[]" value="' + diskon + '" ></div></td>';
         item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="harga-' + urutan + '" name="harga[]" value="' + harga + '"></div></td>';
         item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="total-' + urutan + '" name="total[]" value="' + total + '"></div></td>';
+        item_pembelian += '<td hidden onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" hidden id="totalasli-' + urutan + '" name="totalasli[]" value="' + totalasli + '"></div></td>';
         item_pembelian += '<td style="width: 100px"><button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(' + urutan + ')"><i class="fas fa-plus"></i></button><button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' + urutan + ')"><i class="fas fa-trash"></i></button></td>';
         item_pembelian += '</tr>';
 
         $('#tabel-pembelian').append(item_pembelian);
-    }
-    </script>
+        }
+</script>
 
+
+<script>
+    document.getElementById('kategori1').addEventListener('change', function() {
+        var selectedValue = this.value;
+
+        if (selectedValue === 'penjualan') {
+            window.location.href = "{{ route('toko_banjaran.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
+        } else if (selectedValue === 'pelunasan') {
+            window.location.href = "{{ route('toko_banjaran.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
+        }
+    });
+</script>
 
 @endsection

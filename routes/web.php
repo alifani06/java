@@ -421,6 +421,8 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('/metodepembayaran/{id}', [PenjualanprodukbanjaranController::class, 'getMetodePembayaran']);
     Route::get('metodebayar/metode/{id}', [\App\Http\Controllers\Toko_banjaran\PenjualanprodukbanjaranController::class, 'metode']);
     Route::post('admin/penjualan_produk/pelunasan', [PenjualanprodukbanjaranController::class, 'SimpanPelunasan'])->name('penjualan_produk.pelunasan.simpan');
+    Route::get('/get-product', [PenjualanprodukbanjaranController::class, 'getProductByKode']);
+
 
     Route::resource('pelunasan_pemesanan', \App\Http\Controllers\Toko_banjaran\PelunasanpemesananController::class);
     Route::get('/toko_banjaran/pelunasan_pemesanan/cetak-pdf{id}', [PelunasanpemesananController::class, 'cetakPdf'])->name('toko_banjaran.pelunasan_pemesanan.cetak-pdf');

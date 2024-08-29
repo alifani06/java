@@ -60,6 +60,27 @@ class PenjualanprodukbanjaranController extends Controller
         return view('toko_banjaran.penjualan_produk.index', compact('inquery'));
     }
     
+
+    public function getProductByKode(Request $request)
+    {
+        $kode = $request->get('kode');
+        $product = Produk::where('kode_produk', $kode)->first();
+    
+        if ($product) {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $product->id,
+                    'nama_produk' => $product->nama_produk,
+                    'harga' => $product->harga,
+                    'diskon' => $product->diskon,
+                ],
+            ]);
+        } else {
+            return response()->json(['success' => false]);
+        }
+    }
+
     public function pelanggan($id)
     {
         $user = Pelanggan::where('id', $id)->first();
@@ -576,6 +597,7 @@ public function SimpanPelunasan(Request $request)
 
             $produk_id = $request->input('produk_id.' . $i, '');
             $kode_produk = $request->input('kode_produk.' . $i, '');
+            $kode_lama = $request->input('kode_lama.' . $i, '');
             $nama_produk = $request->input('nama_produk.' . $i, '');
             $jumlah = $request->input('jumlah.' . $i, '');
             $diskon = $request->input('diskon.' . $i, '');
@@ -585,6 +607,7 @@ public function SimpanPelunasan(Request $request)
 
             $data_pembelians->push([
                 'kode_produk' => $kode_produk,
+                'kode_lama' => $kode_lama,
                 'produk_id' => $produk_id,
                 'nama_produk' => $nama_produk,
                 'jumlah' => $jumlah,
@@ -629,6 +652,7 @@ public function SimpanPelunasan(Request $request)
             'penjualanproduk_id' => $cetakpdf->id,
             'produk_id' => $data_pesanan['produk_id'],
             'kode_produk' => $data_pesanan['kode_produk'],
+            'kode_lama' => $data_pesanan['kode_lama'],
             'nama_produk' => $data_pesanan['nama_produk'],
             'jumlah' => $data_pesanan['jumlah'],
             'diskon' => $data_pesanan['diskon'],
@@ -654,7 +678,7 @@ public function SimpanPelunasan(Request $request)
     $details = Detailpenjualanproduk::where('penjualanproduk_id', $cetakpdf->id)->get();
 
     // Redirect ke halaman cetak dengan menyertakan data sukses dan detail pemesanan
-    return redirect()->route('toko_banjaran.penjualan_produk.cetak', ['id' => $cetakpdf->id])->with([
+    return redirect()->route('toko_banjaran.penjualan_produk.cetak-pdf', ['id' => $cetakpdf->id])->with([
         'success' => 'Berhasil menambahkan barang jadi',
         'penjualan' => $cetakpdf,
         'details' => $details,
