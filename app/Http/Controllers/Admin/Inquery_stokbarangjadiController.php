@@ -200,13 +200,6 @@ public function posting_stokbarangjadi($id)
         'status' => 'posting'
     ]);
 
-    // Update status untuk semua detail_stokbarangjadi terkait dengan kode_input yang sama
-    // Detail_stokbarangjadi::whereHas('stok_barangjadi', function ($query) use ($kodeInput) {
-    //     $query->where('kode_input', $kodeInput);
-    // })->update([
-    //     'status' => 'posting'
-    // ]);
-
     // Redirect kembali dengan pesan sukses
     return back()->with('success', 'Berhasil mengubah status semua produk dan detail terkait dengan kode_input yang sama.');
 }

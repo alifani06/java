@@ -60,7 +60,7 @@
         }
         .section-title {
             margin-top: 30px;
-            margin-bottom: 10px;
+            margin-bottom: 0px;
             font-weight: bold;
             font-size: 16px;
             text-align: left;
@@ -71,12 +71,12 @@
             margin-top: 10px;
         }
         th, td {
-            padding: 6px;
+            padding: 4px;
             border: 1px solid #ccc;
             text-align: left;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: white;
         }
         .signature-container {
             margin-top: 60px;
@@ -131,54 +131,52 @@
         <!-- Judul Surat -->
         <div class="change-header">SURAT PENGIRIMAN BARANG JADI</div>
         <div class="change-header1">
-                <p style="margin-bottom: 2px;">Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
-                <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
+            <p style="margin-bottom: 2px;">Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
+            <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
         </div>
         <!-- Informasi Permintaan -->
         <div>
             <p style="margin-bottom: 2px;">
-                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Pengiriman</strong></span>
-                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $pengirimanBarangJadi->first()->kode_pengiriman }}</span>
+                <strong>Kode Pengiriman:</strong> {{ $firstItem->kode_pengiriman }}
             </p>
             <p style="margin-bottom: 2px;">
-                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal Kirim</strong> </span>
-                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ \Carbon\Carbon::now()->format('d-m-Y H:m') }}</span>
+                <strong>Tanggal Kirim:</strong> {{ \Carbon\Carbon::now()->format('d-m-Y H:m') }}
             </p>
-            {{-- <p>
-                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal Terima</strong> </span>
-                <span style="min-width: 50px; display: inline-flex; align-items: center;">: </span>
-            </p> --}}
         </div>
 
         <!-- Detail Produk -->
-        <table>
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Kode Produk</th>
-                    <th>Kategori</th>
-                    <th>Produk</th>
-                    <th>Jumlah</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($pengirimanBarangJadi as $key => $detail)
-                <tr>
-                    <td>{{ $key + 1 }}</td> 
-                    <td>{{ $detail->produk->kode_produk }}</td>
-                    <td>{{ $detail->produk->subklasifikasi->nama }}</td>
-                    <td>{{ $detail->produk->nama_produk }}</td>
-                    <td>{{ $detail->jumlah }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="4" style="text-align:right;"><strong>Total</strong></td>
-                    <td><strong>{{ $pengirimanBarangJadi->sum('jumlah') }}</strong></td>
-                </tr>
-            </tfoot>
-        </table><br>
+        @foreach($groupedByKlasifikasi as $klasifikasi => $items)
+            <div class="section-title">{{ $klasifikasi }}</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Kode Produk</th>
+                        <th>Kategori</th>
+                        <th>Produk</th>
+                        <th>Jumlah</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($items as $key => $detail)
+                    <tr>
+                        <td>{{ $key + 1 }}</td>
+                        <td>{{ $detail->produk->kode_produk }}</td>
+                        <td>{{ $detail->produk->subklasifikasi->nama }}</td>
+                        <td>{{ $detail->produk->nama_produk }}</td>
+                        <td>{{ $detail->jumlah }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" style="text-align:right;"><strong>Total</strong></td>
+                        <td><strong>{{ $items->sum('jumlah') }}</strong></td>
+                    </tr>
+                </tfoot>
+            </table><br>
+        @endforeach
+
         
 
         <div class="d-flex justify-content-between">
@@ -188,7 +186,7 @@
                 </a>
             </div>
             <div>
-                <a href="{{ route('pengiriman_barangjadi.print', $pengirimanBarangJadi->first()->id) }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
+                <a href="{{ route('pengiriman_barangjadi.print', $firstItem->id) }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
                     <i class="fas fa-print"></i> Cetak 
                 </a>
             </div>  

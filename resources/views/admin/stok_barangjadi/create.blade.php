@@ -106,7 +106,8 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>No</th>
-                                                                <th>Kode Produk</th>
+                                                                <th>Kode Produk Baru</th>
+                                                                <th>Kode Produk Lama</th>
                                                                 <th>Produk</th>
                                                                 <th>Stok</th>   
                                                             </tr>
@@ -116,6 +117,7 @@
                                                             <tr class="produk-row">
                                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                                 <td class="kode-produk">{{ $produk->kode_produk }}</td>
+                                                                <td class="kode-lama">{{ $produk->kode_lama }}</td>
                                                                 <td class="nama-produk">{{ $produk->nama_produk }}</td>
                                                                     <td>
                                                                         <input type="number" class="form-control" id="produk-{{ $produk->id }}" name="produk[{{ $produk->id }}][stok]" min="0" style="width: 100px; height: 30px;">
@@ -187,8 +189,9 @@
             
             produkRows.forEach(function(row) {
                 var kodeProduk = row.querySelector('.kode-produk').textContent.toLowerCase();
+                var kodeLama = row.querySelector('.kode-lama').textContent.toLowerCase();
                 var namaProduk = row.querySelector('.nama-produk').textContent.toLowerCase();
-                if (kodeProduk.includes(searchValue) || namaProduk.includes(searchValue)) {
+                if (kodeProduk.includes(searchValue) || namaProduk.includes(searchValue)|| kodeLama.includes(searchValue))  {
                     row.style.display = '';
                 } else {
                     row.style.display = 'none';

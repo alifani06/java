@@ -61,10 +61,10 @@
             margin-top: 20px;
         }
         .section-title {
-            margin-top: 30px;
+            margin-top: 5px;
             margin-bottom: 10px;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 14px;
             text-align: left;
         }
         table {
@@ -73,12 +73,13 @@
             margin-top: 10px;
         }
         th, td {
-            padding: 6px;
-            border: 1px solid #ccc;
+            padding: 4px;
+            border: 1px solid black;
             text-align: left;
+            font-size: 10px;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: white;
         }
         .signature-container {
             margin-top: 60px;
@@ -182,27 +183,29 @@
 
     <!-- Judul Surat -->
     <div class="change-header">SURAT PENGIRIMAN BARANG JADI</div>
-    <div class="change-header1">
-        <p style="margin-bottom: 2px;">Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
-        <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
-    </div>
+        <div class="change-header1">
+            <p style="margin-bottom: 2px;">Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
+            <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
+        </div>
     <!-- Informasi Permintaan -->
-    <div>
-        <p style="margin-bottom: 2px;">
-            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Pengiriman</strong></span>
-            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $pengirimanBarangJadi->first()->kode_pengiriman }}</span>
-        </p>
-        <p style="margin-bottom: 2px;">
-            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal Kirim</strong> </span>
-            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ \Carbon\Carbon::now()->format('d-m-Y H:m') }}</span>
-        </p>
-        {{-- <p>
-            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal Terima</strong> </span>
-            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ \Carbon\Carbon::now()->format('d-m-Y') }}</span>
-        </p> --}}
-    </div>
+
+        <div>
+            <p style="margin-bottom: 2px;">
+                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Pengiriman</strong></span>
+                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $firstItem->kode_pengiriman }}</span>
+            </p>
+            <p style="margin-bottom: 2px;">
+                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal Kirim</strong> </span>
+                <span style="min-width: 50px; display: inline-flex; align-items: center;">
+                    : {{ $firstItem->created_at->locale('id')->translatedFormat('d F Y H:i') }}
+                </span>
+            </p> 
+        </div>
+
 
     <!-- Detail Produk -->
+    @foreach($groupedByKlasifikasi as $klasifikasi => $items)
+    <div class="section-title">{{ $klasifikasi }}</div>
     <table>
         <thead>
             <tr>
@@ -214,23 +217,25 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($pengirimanBarangJadi as $key => $detail)
+            @foreach($items as $key => $detail)
             <tr>
-                <td>{{ $key + 1 }}</td> 
+                <td>{{ $key + 1 }}</td>
                 <td>{{ $detail->produk->kode_produk }}</td>
                 <td>{{ $detail->produk->subklasifikasi->nama }}</td>
                 <td>{{ $detail->produk->nama_produk }}</td>
-                <td>{{ $detail->jumlah }}</td>
+                <td style="text-align: right">{{ $detail->jumlah }}</td>
             </tr>
             @endforeach
         </tbody>
         <tfoot>
             <tr>
                 <td colspan="4" style="text-align:right;"><strong>Total</strong></td>
-                <td><strong>{{ $pengirimanBarangJadi->sum('jumlah') }}</strong></td>
+                <td style="text-align: right"><strong>{{ $items->sum('jumlah') }}</strong></td>
             </tr>
         </tfoot>
     </table><br>
+@endforeach
+
 
     <div class="signature-container">
         <div class="signature-row">
