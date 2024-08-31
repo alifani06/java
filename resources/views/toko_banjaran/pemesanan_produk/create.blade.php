@@ -620,17 +620,26 @@
     }
 
     function validateDP() {
-        var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
-        var dpPemesanan = parseFloat(document.getElementById('dp_pemesanan').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
-        var minDP = subTotal * 0.5;
-        var dpPemesananElement = document.getElementById('dp_pemesanan');
-        
-        if (dpPemesanan < minDP) {
-            dpPemesananElement.setCustomValidity('DP minimal 50% ');
-        } else {
-            dpPemesananElement.setCustomValidity('');
-        }
+    var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+    var dpPemesanan = parseFloat(document.getElementById('dp_pemesanan').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+    var minDP = subTotal * 0.5;
+    var dpPemesananElement = document.getElementById('dp_pemesanan');
+    
+    if (dpPemesanan < minDP) {
+        dpPemesananElement.setCustomValidity('DP inimal 50% dari Total');
+    } else if (dpPemesanan > subTotal) {
+        dpPemesananElement.setCustomValidity('DP Tidak Boleh Melebihi Total');
+    } else {
+        dpPemesananElement.setCustomValidity('');
     }
+}
+
+// Update event listener for DP validation
+document.getElementById('dp_pemesanan').addEventListener('input', function() {
+    formatAndUpdateKembali();
+    validateDP();
+});
+
 
     // Add event listeners for initialization
     document.getElementById('nama_metode').addEventListener('change', getData1);
