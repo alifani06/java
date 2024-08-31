@@ -239,7 +239,7 @@
                         @endphp
                         @foreach($inquery->dppemesanan->pemesananproduk->detailpemesananproduk as $detail)
                             <tr>
-                                <td style="font-size: 8px;">{{ $detail->kode_produk }}</td>
+                                <td style="font-size: 8px;">{{ $detail->kode_lama }}</td>
                                 <td style="font-size: 8px;">{{ $detail->nama_produk }}</td>
                                 <td style="font-size: 8px;">{{ $detail->jumlah }}</td>
                                 <td style="font-size: 8px;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
@@ -258,6 +258,14 @@
                             @endphp
                             @endforeach
                             
+                            <tr>
+                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total  </strong></td>
+                                <td style="font-size: 8px;">{{'Rp.'.  number_format($inquery->dppemesanan->pemesananproduk->sub_total, 0, ',', '.') }}</td>
+                            </tr>  
+                            <tr>
+                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong>DP  </strong></td>
+                                <td style="font-size: 8px;">{{'Rp.'.  number_format($inquery->dppemesanan->dp_pemesanan, 0, ',', '.') }}</td>
+                            </tr>  
                             <tr>
                                 <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kekurangan  </strong></td>
                                 <td style="font-size: 8px;">{{'Rp.'.  number_format($inquery->dppemesanan->kekurangan_pemesanan, 0, ',', '.') }}</td>
