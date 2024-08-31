@@ -12,12 +12,12 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 0; /* Hapus margin */
-            padding: 0; /* Hapus padding */
+            margin: 0;
+            padding: 0;
         }
         table, th, td {
             border: 1px solid black;
-            padding: 5px; /* Atur padding untuk tabel */
+            padding: 5px;
             text-align: left;
         }
         th {
@@ -42,10 +42,10 @@
             margin-top: 3px;
             margin-bottom: 1px;
         }
-
+    
         /* CSS untuk nomor halaman */
         @page {
-            margin: 10mm; /* Sesuaikan margin untuk kertas */
+            margin: 10mm;
             @bottom-right {
                 content: "Halaman " counter(page);
                 font-size: 10px;
@@ -54,28 +54,12 @@
     </style>
 </head>
 <body>
-    {{-- <div class="header">
-        <div>
-            <span class="title">PT JAVA BAKERY FACTORY</span>
-            <span class="address">JL. HOS COKRO AMINOTO NO 5 SLAWI TEGAL</span>
-            <span class="contact">Telp / Fax, Email :</span>
-        </div>
-        <hr class="divider">
-        <hr class="divider">
-    </div> --}}
+
     <div class="container">
         <h1 style="text-align: center; margin-bottom: 5px;">LAPORAN PENJUALAN PRODUK GLOBAL</h1>
-        {{-- <p style="text-align: center; font-size: 28px; font-weight: bold; margin-top: 0;">GLOBAL</p> --}}
     </div>
     
-    {{-- <div class="text">
-        @if ($startDate && $endDate)
-            <p>Periode: {{ $startDate }} s/d {{ $endDate }} &nbsp;&nbsp;&nbsp; Cabang: {{ $branchName }}</p>
-        @else
-            <p>Periode: Tidak ada tanggal awal dan akhir yang diteruskan. &nbsp;&nbsp;&nbsp; Cabang: {{ $branchName }}</p>
-        @endif
-    </div> --}}
-    <div class="text">
+    <div class="text" style="text-align: center;">
         @php
             \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
     
@@ -86,15 +70,17 @@
     
         @if ($startDate && $endDate)
             <p>
-                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }} &nbsp;&nbsp;&nbsp; Cabang: {{ $branchName }}
-                <span style="float: right;">{{ $currentDateTime }}</span>
+                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }}<br><br>
+                Cabang: {{ $branchName }}
             </p>
         @else
             <p>
-                Periode: Tidak ada tanggal awal dan akhir yang diteruskan. &nbsp;&nbsp;&nbsp; Cabang: {{ $branchName }}
-                <span style="float: right;">{{ $currentDateTime }}</span>
+                Periode: Tidak ada tanggal awal dan akhir yang diteruskan.<br>
+                Cabang: {{ $branchName }}
             </p>
         @endif
+    
+        <p style="text-align: right; margin-top: -20px;">{{ $currentDateTime }}</p>
     </div>
 
     <!-- Tabel utama -->
