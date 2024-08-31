@@ -167,6 +167,7 @@ class PemesananprodukbanjaranController extends Controller
                 $produk_id = $request->produk_id[$i] ?? '';
                 $catatanproduk = $request->catatanproduk[$i] ?? '';
                 $kode_produk = $request->kode_produk[$i] ?? '';
+                $kode_lama = $request->kode_lama[$i] ?? '';
                 $nama_produk = $request->nama_produk[$i] ?? '';
                 $jumlah = $request->jumlah[$i] ?? '';
                 $diskon = $request->diskon[$i] ?? '';
@@ -175,6 +176,7 @@ class PemesananprodukbanjaranController extends Controller
 
                 $data_pembelians->push([
                     'kode_produk' => $kode_produk,
+                    'kode_lama' => $kode_lama,
                     'produk_id' => $produk_id,
                     'catatanproduk' => $catatanproduk,
                     'nama_produk' => $nama_produk,
@@ -231,6 +233,7 @@ class PemesananprodukbanjaranController extends Controller
                     'produk_id' => $data_pesanan['produk_id'],
                     'catatanproduk' => $data_pesanan['catatanproduk'],
                     'kode_produk' => $data_pesanan['kode_produk'],
+                    'kode_lama' => $data_pesanan['kode_lama'],
                     'nama_produk' => $data_pesanan['nama_produk'],
                     'jumlah' => $data_pesanan['jumlah'],
                     'diskon' => $data_pesanan['diskon'],
@@ -252,7 +255,7 @@ class PemesananprodukbanjaranController extends Controller
         $details = Detailpemesananproduk::where('pemesananproduk_id', $cetakpdf->id)->get();
 
         // Redirect ke halaman cetak dengan menyertakan data sukses dan detail pemesanan
-        return redirect()->route('toko_banjaran.pemesanan_produk.cetak', ['id' => $cetakpdf->id])->with([
+        return redirect()->route('toko_banjaran.pemesanan_produk.cetak-pdf', ['id' => $cetakpdf->id])->with([
             'success' => 'Berhasil menambahkan barang jadi',
             'pemesanan' => $cetakpdf,
             'details' => $details,

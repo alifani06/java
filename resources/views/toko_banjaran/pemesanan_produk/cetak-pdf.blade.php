@@ -315,13 +315,10 @@
                         <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Penerima</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $pemesanan->nama_penerima ?? $pemesanan->nama_pelanggan }}</span></p>
                     </div>
                     <div class="telepon">
-                        <p><span style="min-width: 100px; display: inline-flex; align-items: center;">No Telp Pnerima</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: 0{{ $pemesanan->telp_penerima ?? $pemesanan->telp }}</span></p>
+                        <p><span style="min-width: 100px; display: inline-flex; align-items: center;">No Telp</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: 0{{ $pemesanan->telp_penerima ?? $pemesanan->telp }}</span></p>
                     </div>
-                    {{-- <div class="alamat">
-                        <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Alamat Pengiriman</span><span style="min-width: 100px; display: inline-flex; align-items: center;"><span>: {{ $pemesanan->alamat_penerima ?? $pemesanan->alamat }}</span></p>
-                    </div> --}}
                     <div class="alamat">
-                        <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Tanggal Pengiriman</span><span style="min-width: 100px; display: inline-flex; align-items: center;"><span>: {{ $pemesanan->tanggal_kirim }}</span></p>
+                        <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Tanggal Ambil</span><span style="min-width: 100px; display: inline-flex; align-items: center;"><span>: {{ $pemesanan->tanggal_kirim }}</span></p>
                     </div>
 
                 <h3 class="pemesanan" style="text-decoration: underline;"></h3>
@@ -345,7 +342,7 @@
                         @endphp
                         @foreach($pemesanan->detailpemesananproduk as $detail)
                             <tr>
-                                <td style="font-size: 8px;">{{ $detail->kode_produk }}</td>
+                                <td style="font-size: 8px;">{{ $detail->kode_lama }}</td>
                                 <td style="font-size: 8px;">{{ $detail->nama_produk }}</td>
                                 <td style="font-size: 8px;">{{ $detail->jumlah }}</td>
                                 <td style="font-size: 8px;">{{'Rp.'.  number_format($detail->harga, 0, ',', '.') }}</td>
@@ -397,23 +394,7 @@
                 </table>
                 @endif
             </div>
-            {{-- <div class="signatures">
-                <div class="signature1">
-                    <p>Pelanggan</p>
-                    <br><br>
-                    <p style="text-decoration: underline;">{{ $pemesanan->nama_pelanggan }}</p>
-                </div>
-                <div class="signature2">
-                    <p>Pemilik</p>
-                    <p>-</p>
-                    <p>__________________</p>
-                </div>
-                <div class="signature3">
-                <p>Admin</p>
-                <br><br>
-                <p style="text-decoration: underline;">{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</p>
-                </div>
-            </div> --}}
+ 
             <div class="catatan">
                 <label>Catatan:</label>
                 <p style="margin-top: 2px;">{{$pemesanan->catatan ?? '-'}}</p>
