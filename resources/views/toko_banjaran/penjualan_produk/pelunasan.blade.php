@@ -269,19 +269,19 @@
                                         <div class="row">
                                             <div class="col mb-3 ml-auto d-flex align-items-center">
                                                 <label for="sub_total" class="mr-2 label-width">Sub Total</label>
-                                                <input type="text" class="form-control large-font input-width" id="sub_total" name="sub_total" value="{{ old('sub_total', 'Rp0') }}" readonly oninput="updateCalculations();">
+                                                <input type="text" class="form-control large-font input-width" id="sub_total" name="sub_total" value="{{ old('sub_total', 'Rp') }}" readonly oninput="updateCalculations();">
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col mb-3 ml-auto d-flex align-items-center">
                                                 <label for="dp_pemesanan" class="mr-2 label-width">DP</label>
-                                                <input type="text" class="form-control large-font input-width" id="dp_pemesanan" name="dp_pemesanan" readonly value="{{ old('dp_pemesanan', 'Rp0') }}" oninput="formatAndUpdateKembali()">
+                                                <input type="text" class="form-control large-font input-width" id="dp_pemesanan" name="dp_pemesanan" readonly value="{{ old('dp_pemesanan', 'Rp') }}" oninput="formatAndUpdateKembali()">
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col mb-3 ml-auto d-flex align-items-center">
                                                 <label for="kekurangan_pemesanan" class="mr-2 label-width">Kekurangan</label>
-                                                <input type="text" class="form-control large-font input-width" id="kekurangan_pemesanan" name="kekurangan_pemesanan" value="{{ old('kekurangan_pemesanan', 'Rp0') }}" readonly>
+                                                <input type="text" class="form-control large-font input-width" id="kekurangan_pemesanan" name="kekurangan_pemesanan" value="{{ old('kekurangan_pemesanan', 'Rp') }}" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -357,7 +357,7 @@
                                 <button type="reset" class="btn btn-secondary" id="btnReset">Reset</button>
                                 <button type="submit" class="btn btn-primary" id="btnSimpan">Simpan</button>
                                 <div id="loading" style="display: none;">
-                                    <i class="fas fa-spinner fa-spin"></i> Sedang Menyimpan...
+                                    {{-- <i class="fas fa-spinner fa-spin"></i> Sedang Menyimpan... --}}
                                 </div>
                             </div>
                         </div>
@@ -448,9 +448,10 @@
                     document.getElementById('nama_penerima').value = response.nama_penerima;
                     document.getElementById('telp_penerima').value = response.telp_penerima;
                     document.getElementById('alamat_penerima').value = response.alamat_penerima;
-                    document.getElementById('sub_total').value = response.sub_total;
-                    document.getElementById('dp_pemesanan').value = response.dp_pemesanan;
-                    document.getElementById('kekurangan_pemesanan').value = response.kekurangan_pemesanan;
+                    document.getElementById('sub_total').value = formatRupiah(response.sub_total);
+                    document.getElementById('dp_pemesanan').value = formatRupiah(response.dp_pemesanan);
+                    document.getElementById('kekurangan_pemesanan').value = formatRupiah(response.kekurangan_pemesanan);
+
     
                     // Update the form with products details if available
                     if (response.products) {
@@ -527,72 +528,6 @@
     </script>
     
     {{-- <script>
-        function formatAndUpdateKembali() {
-            // Get values from the form
-            let kekuranganPemesanan = parseFloat(document.getElementById('kekurangan_pemesanan').value) || 0;
-            let pelunasan = parseFloat(document.getElementById('pelunasan').value) || 0;
-        
-            // Calculate 'Kembali' amount
-            let kembali = pelunasan - kekuranganPemesanan;
-            document.getElementById('kembali').value = kembali.toFixed(2);
-        }
-    
-        function getData1() {
-            // Get the selected method
-            let metodeSelect = document.getElementById('nama_metode');
-            let selectedOption = metodeSelect.options[metodeSelect.selectedIndex];
-            
-            // Get the fee percentage
-            let feePercentage = parseFloat(selectedOption.getAttribute('data-fee')) || 0;
-            
-            // Get the kekurangan_pemesanan value
-            let kekuranganPemesanan = parseFloat(document.getElementById('kekurangan_pemesanan').value) || 0;
-            
-            // Calculate the total fee
-            let totalFee = (kekuranganPemesanan * feePercentage) / 100;
-            
-            // Update the fee and total_fee fields
-            document.getElementById('fee').value = feePercentage;
-            document.getElementById('total_fee').value = totalFee;
-    
-            // Calculate the total amount to pay (kekurangan_pemesanan + totalFee)
-            let totalToPay = kekuranganPemesanan + totalFee;
-    
-            // Update the 'pelunasan' field with the total amount
-            document.getElementById('pelunasan').value = totalToPay;
-    
-            // Show the payment fields if a method is selected
-            if (metodeSelect.value) {
-                document.getElementById('payment-fields').style.display = 'block';
-            } else {
-                document.getElementById('payment-fields').style.display = 'none';
-            }
-        }
-    
-        $(document).ready(function() {
-            // Fetch data when input field value changes
-            $('#kode_pemesanan').on('input', function() {
-                var kode = $(this).val();
-                if (kode) {
-                    fetchDataByKode(kode);
-                }
-            });
-    
-            // Update payment fields when the payment method changes
-            $('#nama_metode').on('change', function() {
-                getData1();
-            });
-    
-            // Check if there's no payment method selected to run formatAndUpdateKembali
-            $('#pelunasan').on('input', function() {
-                let metodeSelected = $('#nama_metode').val();
-                if (!metodeSelected) {
-                    formatAndUpdateKembali();
-                }
-            });
-        });
-    </script> --}}
-    <script>
         function formatRupiah(number) {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(number).replace(/(\.|,)00$/g, '');
         }
@@ -609,6 +544,31 @@
             document.getElementById('kembali').value = formatRupiah(kembali);
         }
     
+
+        function formatRupiahInput(value, prefix = 'Rp ') {
+        // Menghilangkan karakter selain angka
+        let numberString = value.replace(/[^,\d]/g, '').toString();
+        let split = numberString.split(',');
+        let sisa = split[0].length % 3;
+        let rupiah = split[0].substr(0, sisa);
+        let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+    
+        if (ribuan) {
+            let separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+    
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix == undefined ? rupiah : (rupiah ? prefix + rupiah : '');
+        }
+
+        $('#pelunasan').on('input', function() {
+            let input = $(this).val();
+            $(this).val(formatRupiahInput(input));
+            formatAndUpdateKembali(); // Update nilai kembali setelah input
+        });
+
+
         function getData1() {
             let metodeSelect = document.getElementById('nama_metode');
             let selectedOption = metodeSelect.options[metodeSelect.selectedIndex];
@@ -658,7 +618,116 @@
                 $('#total_fee').val(unformatRupiah($('#total_fee').val()));
             });
         });
+    </script> --}}
+
+    <script>
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(number).replace(/(\.|,)00$/g, '');
+        }
+    
+        function unformatRupiah(value) {
+            return parseFloat(value.replace(/[^0-9,-]+/g, "").replace(',', '.')) || 0;
+        }
+    
+        function formatAndUpdateKembali() {
+            let kekuranganPemesanan = unformatRupiah(document.getElementById('kekurangan_pemesanan').value) || 0;
+            let pelunasan = unformatRupiah(document.getElementById('pelunasan').value) || 0;
+    
+            let kembali = pelunasan - kekuranganPemesanan;
+            document.getElementById('kembali').value = formatRupiah(kembali);
+    
+            // Validasi pelunasan
+            let pelunasanElement = document.getElementById('pelunasan');
+            if (pelunasan < kekuranganPemesanan) {
+                pelunasanElement.setCustomValidity('Nominal bayar tidak cukup');
+            } else {
+                pelunasanElement.setCustomValidity('');
+            }
+        }
+    
+        function formatRupiahInput(value, prefix = 'Rp ') {
+            let numberString = value.replace(/[^,\d]/g, '').toString();
+            let split = numberString.split(',');
+            let sisa = split[0].length % 3;
+            let rupiah = split[0].substr(0, sisa);
+            let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+    
+            if (ribuan) {
+                let separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+    
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            return prefix == undefined ? rupiah : (rupiah ? prefix + rupiah : '');
+        }
+    
+        $('#pelunasan').on('input', function() {
+            let input = $(this).val();
+            $(this).val(formatRupiahInput(input));
+            formatAndUpdateKembali(); // Update nilai kembali setelah input
+        });
+    
+        function getData1() {
+            let metodeSelect = document.getElementById('nama_metode');
+            let selectedOption = metodeSelect.options[metodeSelect.selectedIndex];
+    
+            let feePercentage = parseFloat(selectedOption.getAttribute('data-fee')) || 0;
+            let kekuranganPemesanan = unformatRupiah(document.getElementById('kekurangan_pemesanan').value) || 0;
+    
+            let totalFee = (kekuranganPemesanan * feePercentage) / 100;
+    
+            document.getElementById('fee').value = feePercentage;
+            document.getElementById('total_fee').value = formatRupiah(totalFee);
+    
+            let totalToPay = kekuranganPemesanan + totalFee;
+            document.getElementById('pelunasan').value = formatRupiah(totalToPay);
+    
+            if (metodeSelect.value) {
+                document.getElementById('payment-fields').style.display = 'block';
+            } else {
+                document.getElementById('payment-fields').style.display = 'none';
+            }
+        }
+    
+        $(document).ready(function() {
+            $('#kode_pemesanan').on('input', function() {
+                var kode = $(this).val();
+                if (kode) {
+                    fetchDataByKode(kode);
+                }
+            });
+    
+            $('#nama_metode').on('change', function() {
+                getData1();
+            });
+    
+            $('#pelunasan').on('input', function() {
+                let metodeSelected = $('#nama_metode').val();
+                if (!metodeSelected) {
+                    formatAndUpdateKembali();
+                }
+            });
+    
+            // Validasi form sebelum disubmit
+            $('form').on('submit', function(event) {
+                formatAndUpdateKembali(); // Pastikan validasi dilakukan
+    
+                // Cek jika ada pesan validasi di pelunasan
+                let pelunasanElement = document.getElementById('pelunasan');
+                if (pelunasanElement.validationMessage) {
+                    event.preventDefault(); // Hentikan pengiriman form
+                    return false;
+                }
+    
+                $('#kekurangan_pemesanan').val(unformatRupiah($('#kekurangan_pemesanan').val()));
+                $('#pelunasan').val(unformatRupiah($('#pelunasan').val()));
+                $('#kembali').val(unformatRupiah($('#kembali').val()));
+                $('#total_fee').val(unformatRupiah($('#total_fee').val()));
+            });
+        });
     </script>
+    
+    
     
     <script>
         function showCategoryModalpemesanan() {
@@ -677,10 +746,8 @@
 
         // Menutup modal setelah memilih data (opsional)
         $('#tableDeposit').modal('hide');
-    }
-
+        }
     </script>
-
 
     <script>
         $(document).ready(function() {
@@ -696,17 +763,18 @@
             });
         });
     </script>
-<script>
-    document.getElementById('kategori').addEventListener('change', function() {
-        var selectedValue = this.value;
 
-        if (selectedValue === 'penjualan') {
-            window.location.href = "{{ route('toko_banjaran.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
-        } else if (selectedValue === 'pelunasan') {
-            window.location.href = "{{ route('toko_banjaran.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
-        }
-    });
-</script>
+    <script>
+        document.getElementById('kategori').addEventListener('change', function() {
+            var selectedValue = this.value;
+
+            if (selectedValue === 'penjualan') {
+                window.location.href = "{{ route('toko_banjaran.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
+            } else if (selectedValue === 'pelunasan') {
+                window.location.href = "{{ route('toko_banjaran.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
+            }
+        });
+    </script>
 
 
 @endsection

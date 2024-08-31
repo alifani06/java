@@ -542,13 +542,12 @@
     } else {
         dpPemesananElement.setCustomValidity('');
     }
-}
+    }
 
-// Update event listener for DP validation
-document.getElementById('dp_pemesanan').addEventListener('input', function() {
-    formatAndUpdateKembali();
-    validateDP();
-});
+    document.getElementById('dp_pemesanan').addEventListener('input', function() {
+        formatAndUpdateKembali();
+        validateDP();
+    });
 
 
     // Add event listeners for initialization

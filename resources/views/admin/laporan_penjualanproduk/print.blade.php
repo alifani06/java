@@ -82,24 +82,10 @@
 <body>
    
     <div class="container">
-        <h1 style="text-align: center; margin-bottom: 5px;">LAPORAN PENJUALAN PRODUK RINCI</h1>
-        {{-- <p style="text-align: center; font-size: 28px; font-weight: bold; margin-top: 0;">RINCI</p> --}}
+        <h1 style="text-align: center; margin-bottom: 5px;">LAPORAN PENJUALAN PRODUK GLOBAL</h1>
     </div>
-    {{-- <div class="text">
-        @if ($startDate && $endDate)
-            <p>
-                Periode: {{ $startDate }} s/d {{ $endDate }} &nbsp;&nbsp;&nbsp; Cabang: {{ $branchName }}
-                <span style="float: right;">{{ \Carbon\Carbon::now()->format('d-m-Y H:s') }}</span>
-            </p>
-        @else
-            <p>
-                Periode: Tidak ada tanggal awal dan akhir yang diteruskan. &nbsp;&nbsp;&nbsp; Cabang: {{ $branchName }}
-                <span style="float: right;">{{ \Carbon\Carbon::now()->format('d-m-Y H:s') }}</span>
-            </p>
-        @endif
-    </div> --}}
     
-    <div class="text">
+    <div class="text" style="text-align: center;">
         @php
             \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
     
@@ -110,15 +96,17 @@
     
         @if ($startDate && $endDate)
             <p>
-                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }} &nbsp;&nbsp;&nbsp; Cabang: {{ $branchName }}
-                <span style="float: right; font-style: italic">{{ $currentDateTime }}</span>
+                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }}<br><br>
+                Cabang: {{ $branchName }}
             </p>
         @else
             <p>
-                Periode: Tidak ada tanggal awal dan akhir yang diteruskan. &nbsp;&nbsp;&nbsp; Cabang: {{ $branchName }}
-                <span style="float: right;">{{ $currentDateTime }}</span>
+                Periode: Tidak ada tanggal awal dan akhir yang diteruskan.<br>
+                Cabang: {{ $branchName }}
             </p>
         @endif
+    
+        <p style="text-align: right; margin-top: -20px;">{{ $currentDateTime }}</p>
     </div>
     
     

@@ -305,7 +305,7 @@ public function SimpanPelunasan(Request $request)
     $details = DetailPenjualanProduk::where('penjualanproduk_id', $penjualan->id)->get();
 
     // Redirect ke halaman cetak dengan menyertakan data sukses dan detail pelunasan
-    return redirect()->route('toko_banjaran.pelunasan_pemesanan.cetak', ['id' => $pelunasan->id])->with([
+    return redirect()->route('toko_banjaran.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id])->with([
         'success' => 'Data berhasil disimpan.',
         'pelunasan' => $pelunasan,
         'penjualan' => $penjualan,

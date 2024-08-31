@@ -254,11 +254,12 @@ class PemesananprodukbanjaranController extends Controller
         // Ambil detail pemesanan untuk ditampilkan di halaman cetak
         $details = Detailpemesananproduk::where('pemesananproduk_id', $cetakpdf->id)->get();
 
-        // Redirect ke halaman cetak dengan menyertakan data sukses dan detail pemesanan
-        return redirect()->route('toko_banjaran.pemesanan_produk.cetak-pdf', ['id' => $cetakpdf->id])->with([
+        return redirect()->route('toko_banjaran.pemesanan_produk.cetak-pdf', ['id' => $cetakpdf->id])
+        ->with([
             'success' => 'Berhasil menambahkan barang jadi',
             'pemesanan' => $cetakpdf,
             'details' => $details,
+            'open_in_new_tab' => true, // Menambahkan flag
         ]);
     }
 
