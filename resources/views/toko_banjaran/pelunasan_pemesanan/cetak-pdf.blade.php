@@ -327,7 +327,7 @@
                         @php
                             $subtotal = 0;
                         @endphp
-                        @foreach($inquery->dppemesanan->pemesananproduk->detailpemesananproduk as $detail)
+                        @foreach($inquery->penjualanproduk->detailpenjualanproduk as $detail)
                             <tr>
                                 <td style="font-size: 8px;">{{ $detail->kode_lama }}</td>
                                 <td style="font-size: 8px;">{{ $detail->nama_produk }}</td>

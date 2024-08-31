@@ -141,6 +141,7 @@ class PenjualanprodukbanjaranController extends Controller
         // Jika produk ditemukan, kembalikan data produk
         if ($produk) {
             return response()->json([
+                'kode_lama' => $produk->kode_lama,
                 'nama_produk' => $produk->nama_produk,
                 'harga' => $produk->harga, // Asumsikan ada kolom harga di tabel produk
             ]);
@@ -172,19 +173,7 @@ class PenjualanprodukbanjaranController extends Controller
             'kembali' => 'nullable|numeric',
         ]);
 
-        // Simpan data ke tabel pelunasan
-        $pelunasan = new Pelunasan();
-        $pelunasan->dppemesanan_id = $validated['dppemesanan_id'];
-        $pelunasan->pelunasan = $validated['pelunasan'];
-        $pelunasan->metode_id = $validated['metode_id'];
-        $pelunasan->total_fee = $validated['total_fee'];
-        $pelunasan->keterangan = $validated['keterangan'];
-        $pelunasan->kembali = $validated['kembali'];
-        $pelunasan->tanggal_pelunasan = Carbon::now('Asia/Jakarta');
-        $pelunasan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
-        $pelunasan->status = 'posting';
-        $pelunasan->kode_penjualan = $this->kode(); // Tambahkan kode_penjualan
-        $pelunasan->save();
+      
 
         // Update kolom pelunasan di tabel dppemesanans
         $dppemesanans = Dppemesanan::find($validated['dppemesanan_id']);
@@ -212,6 +201,22 @@ class PenjualanprodukbanjaranController extends Controller
         $penjualan->kode_penjualan = $this->kode();
         $penjualan->tanggal_penjualan = Carbon::now('Asia/Jakarta');
         $penjualan->save();
+
+          // Simpan data ke tabel pelunasan
+          $pelunasan = new Pelunasan();
+          $pelunasan->dppemesanan_id = $validated['dppemesanan_id'];
+          $pelunasan->penjualanproduk_id = $penjualan->id;
+  
+          $pelunasan->pelunasan = $validated['pelunasan'];
+          $pelunasan->metode_id = $validated['metode_id'];
+          $pelunasan->total_fee = $validated['total_fee'];
+          $pelunasan->keterangan = $validated['keterangan'];
+          $pelunasan->kembali = $validated['kembali'];
+          $pelunasan->tanggal_pelunasan = Carbon::now('Asia/Jakarta');
+          $pelunasan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
+          $pelunasan->status = 'posting';
+          $pelunasan->kode_penjualan = $this->kode(); // Tambahkan kode_penjualan
+          $pelunasan->save();
 
         // Simpan data ke tabel detailpenjualanproduk
         foreach ($validated['kode_produk'] as $index => $kode_produk) {

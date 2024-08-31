@@ -341,50 +341,6 @@
     </section>
     
 
-    <script>
-        function showCategoryModal(itemCounter) {
-           $('#tableProduk').modal('show');
-           // Simpan itemCounter untuk menyimpan data ke baris yang sesuai
-           $('#tableProduk').attr('data-urutan', itemCounter);
-       }
-
-        // Event listener for pilih-btn
-        $(document).on('click', '.pilih-btn', function() {
-           var id = $(this).data('id');
-           var kode = $(this).data('kode');
-           var lama = $(this).data('lama');
-           var nama = $(this).data('nama');
-           var member = $(this).data('member');
-           var diskonmember = $(this).data('diskonmember');
-           var nonmember = $(this).data('nonmember');
-           var diskonnonmember = $(this).data('diskonnonmember');
-           
-           getSelectedData(id, kode,lama, nama, member, diskonmember, nonmember, diskonnonmember);
-       });
-
-       // Fungsi untuk memilih data barang dari modal
-       function getSelectedData(id, kode_produk,kode_produk, nama_produk, member, diskonmember, nonmember, diskonnonmember) {
-           var itemCounter = $('#tableProduk').attr('data-urutan');
-           var kategori = $('#kategori').val();
-           var harga = kategori === 'member' ? member : nonmember;
-           var diskon = kategori === 'member' ? diskonmember : diskonnonmember;
-
-           // Set nilai input pada baris yang sesuai
-           $('#produk_id-' + itemCounter).val(id);
-           $('#kode_produk-' + itemCounter).val(kode_produk);
-           $('#kode_produk-' + itemCounter).val(kode_produk);
-           $('#nama_produk-' + itemCounter).val(nama_produk);
-           $('#harga-' + itemCounter).val(harga);
-           $('#diskon-' + itemCounter).val(diskon);
-           // Hitung total
-           hitungTotal(itemCounter);
-           // Tutup modal
-           $('#tableProduk').modal('hide');
-
-           // Setelah menambahkan data dari modal, fokuskan ke input jumlah
-           document.getElementById('jumlah-' + itemCounter).focus();
-       }
-   </script>
 
     {{-- <script>
         var itemCounter = 0; // Counter for rows
@@ -694,6 +650,7 @@
             data: { kode_produk: kodeProduk },
             success: function(response) {
                 if (response) {
+                    $('#kode_lama_' + rowId).val(response.kode_lama);
                     $('#nama_produk_' + rowId).val(response.nama_produk);
                     $('#harga_' + rowId).val(response.harga); // Set the harga field
                     $('#jumlah_' + rowId).val(1); // Default quantity to 1

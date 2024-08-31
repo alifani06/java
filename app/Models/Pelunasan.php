@@ -20,6 +20,7 @@ class Pelunasan extends Model
         'kode_dppemesanan',
         'dppemesanan_id',
         'metode_id',
+        'penjualanproduk_id',
         'toko_id',
         'total_fee',
         'status',
@@ -87,6 +88,10 @@ class Pelunasan extends Model
     public function dppemesanan()
 {
     return $this->belongsTo(Dppemesanan::class, 'dppemesanan_id'); // Sesuaikan nama kolom foreign key jika perlu
+}
+    public function penjualanproduk()
+{
+    return $this->belongsTo(Penjualanproduk::class, 'penjualanproduk_id'); // Sesuaikan nama kolom foreign key jika perlu
 }
     
 }
