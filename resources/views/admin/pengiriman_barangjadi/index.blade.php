@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Barang Jadi')
+@section('title', 'Pengiriman Barang Jadi')
 
 @section('content')
     <div id="loadingSpinner" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
