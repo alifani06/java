@@ -185,7 +185,7 @@
     @foreach($groupedData as $kode_pengiriman => $items)
         <div>
             <p style="margin-bottom: 2px;"><strong>Kode Pengiriman:</strong> {{ $kode_pengiriman }}</p>
-            <p><strong>Cabang:</strong> {{ $items->first()->toko->nama_toko }}</p> <!-- Menampilkan nama toko -->
+            <p><strong>Cabang:</strong> {{ $items->first()->toko->nama_toko ?? 'Toko tidak ditemukan' }}</p>
 
         </div>
         <table>
