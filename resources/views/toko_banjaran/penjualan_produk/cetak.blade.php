@@ -244,7 +244,7 @@
                         @endphp
                         @foreach($penjualan->detailpenjualanproduk as $detail)
                             <tr>
-                                <td style="font-size: 8px;">{{ $detail->kode_produk }}</td>
+                                <td style="font-size: 8px;">{{ $detail->kode_lama }}</td>
                                 <td style="font-size: 8px;">{{ $detail->nama_produk }}</td>
                                 <td style="font-size: 8px;">{{ $detail->jumlah }}</td>
                                 <td style="font-size: 8px;">{{ number_format($detail->harga, 0, ',', '.') }}</td>

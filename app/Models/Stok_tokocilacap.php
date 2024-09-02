@@ -11,7 +11,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class Stok_tokotegal extends Model
+class Stok_tokocilacap extends Model
 {
     use HasFactory;
 

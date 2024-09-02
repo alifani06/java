@@ -149,9 +149,6 @@ class PenjualanprodukbanjaranController extends Controller
         }
     }
     
-    
-
-
 
     public function SimpanPelunasan(Request $request)
     {
