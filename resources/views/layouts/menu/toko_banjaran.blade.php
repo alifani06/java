@@ -317,6 +317,7 @@
     request()->is('toko_banjaran/laporan_returbanjaran*')||
     request()->is('toko_banjaran/laporan_pemindahanbanjaran*')||
     request()->is('toko_banjaran/laporan_stokbarangjadi*')||
+    request()->is('toko_banjaran/laporan_stoktokobanjaran*')||
     request()->is('toko_banjaran/laporan_pengirimanbarangjadi*')
     // request()->is('toko_banjaran/input*')
   
@@ -331,6 +332,7 @@
         request()->is('toko_banjaran/laporan_returbanjaran*')|| 
         request()->is('toko_banjaran/laporan_pemindahanbanjaran*')|| 
         request()->is('toko_banjaran/laporan_stokbarangjadi*')|| 
+        request()->is('toko_banjaran/laporan_stoktokobanjaran*')|| 
         request()->is('toko_banjaran/laporan_spengirimanarangjadi*') 
         // request()->is('toko_banjaran/input*')
       
@@ -400,6 +402,15 @@
                     class="nav-link {{ request()->is('toko_banjaran/laporan_pemindahanbanjaran*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                     <p style="font-size: 13px;">Laporan Pemindahan Produk</p>
+                </a>
+            </li>
+            {{-- @endif --}}
+            {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+              <li class="nav-item">
+                <a href="{{ url('toko_banjaran/laporan_stoktokobanjaran') }}"
+                    class="nav-link {{ request()->is('toko_banjaran/laporan_stoktokobanjaran*') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                    <p style="font-size: 13px;">Laporan Stok Toko</p>
                 </a>
             </li>
             {{-- @endif --}}

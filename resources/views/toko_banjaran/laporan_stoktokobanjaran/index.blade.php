@@ -143,7 +143,7 @@
     function printReport() {
         if (event) event.preventDefault();
     const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printstoktoko') }}";
+    form.action = "{{ url('toko_banjaran/printstoktokobanjaran') }}";
     form.target = "_blank";
     form.submit();
 }

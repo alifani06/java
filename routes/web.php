@@ -502,6 +502,10 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::resource('laporan_pemindahanbanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_pemindahanbanjaranController::class);
     Route::get('/Toko_banjaran/print_report', [Laporan_pemindahanbanjaranController::class, 'printReport'])->name('print.report');
 
+    Route::resource('laporan_stoktokobanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_stoktokobanjaranController::class);
+    Route::get('printstoktokobanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_stoktokobanjaranController::class, 'printReport']);
+
+
 });
 
     // Route::get('/toko/slawi', [SlawiController::class, 'index']);
