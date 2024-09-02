@@ -785,6 +785,13 @@
                 // Hitung kembalian
                 let kembali = bayar - subTotal;
                 
+                 // Validasi pelunasan
+                let bayarElementRaw = removeRupiahFormat(bayarElement.value);
+                if (bayar < subTotal) {
+                    bayarElement.setCustomValidity('Nominal bayar tidak cukup.');
+                } else {
+                    bayarElement.setCustomValidity('');
+                }
                 // Format hasil kembalian sebagai Rupiah
                 kembaliElement.value = kembali >= 0 ? formatRupiah(kembali) : 'Rp. 0';
             }
