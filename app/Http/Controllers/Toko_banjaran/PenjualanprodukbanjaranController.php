@@ -133,15 +133,14 @@ class PenjualanprodukbanjaranController extends Controller
     
     public function fetchProductData(Request $request)
     {
-        $kodeProduk = $request->input('kode_produk');
+        $kodeLama = $request->input('kode_lama');
         
-        // Mencari produk berdasarkan kode_produk
-        $produk = Produk::where('kode_produk', $kodeProduk)->first();
-
-        // Jika produk ditemukan, kembalikan data produk
+        // Mencari produk berdasarkan kode_lama
+        $produk = Produk::where('kode_lama', $kodeLama)->first();
+    
         if ($produk) {
             return response()->json([
-                'kode_lama' => $produk->kode_lama,
+                'kode_produk' => $produk->kode_produk, // Mengembalikan kode_produk jika diperlukan
                 'nama_produk' => $produk->nama_produk,
                 'harga' => $produk->harga, // Asumsikan ada kolom harga di tabel produk
             ]);
@@ -149,6 +148,8 @@ class PenjualanprodukbanjaranController extends Controller
             return response()->json(null, 404);
         }
     }
+    
+    
 
 
 
@@ -168,8 +169,12 @@ class PenjualanprodukbanjaranController extends Controller
             'nama_produk.*' => 'required|string',
             'jumlah' => 'required|array',
             'jumlah.*' => 'required|integer',
-            'total' => 'required|array',
-            'total.*' => 'required|numeric',
+            'harga' => 'nullable|array', 
+            'harga.*' => 'nullable|numeric', 
+            'total' => 'nullable|array',
+            'total.*' => 'nullable|numeric',
+            'diskon' => 'nullable|array',
+            'diskon.*' => 'nullable|numeric',
             'kembali' => 'nullable|numeric',
         ]);
 
@@ -226,6 +231,8 @@ class PenjualanprodukbanjaranController extends Controller
             $detail->kode_lama = $validated['kode_lama'][$index];
             $detail->nama_produk = $validated['nama_produk'][$index];
             $detail->jumlah = $validated['jumlah'][$index];
+            $detail->harga = $validated['harga'][$index];
+            $detail->diskon = $validated['diskon'][$index];
             $detail->total = $validated['total'][$index];
             $detail->save();
             
@@ -313,6 +320,7 @@ class PenjualanprodukbanjaranController extends Controller
                         'kode_produk' => $item->kode_produk,
                         'kode_lama' => $item->kode_lama,
                         'harga' => $item->harga,
+                        'diskon' => $item->diskon,
                         'nama_produk' => $item->nama_produk,
                         'jumlah' => $item->jumlah,
                         'total' => $item->total,

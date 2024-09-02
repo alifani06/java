@@ -345,7 +345,7 @@
                                 <td style="font-size: 8px;">{{ $detail->kode_lama }}</td>
                                 <td style="font-size: 8px;">{{ $detail->nama_produk }}</td>
                                 <td style="font-size: 8px;">{{ $detail->jumlah }}</td>
-                                <td style="font-size: 8px;">{{'Rp.'.  number_format($detail->harga, 0, ',', '.') }}</td>
+                                <td style="font-size: 8px;">{{number_format($detail->harga, 0, ',', '.') }}</td>
                                 <td style="font-size: 8px;">
                                     @if ($detail->diskon > 0)
                                         {{ $detail->diskon }} %
@@ -353,7 +353,7 @@
                                         -
                                     @endif
                                 </td>
-                                <td style="font-size: 8px;">{{'Rp.'.  number_format($detail->total , 0, ',', '.')}}</td>
+                                <td style="font-size: 8px;">{{number_format($detail->total , 0, ',', '.')}}</td>
                             </tr>
                             @php
                                 // Validasi dan konversi data menjadi numerik
@@ -372,22 +372,22 @@
                                         // Konversi ke tipe float
                                         $total_fee = (float) $total_fee;
                                     @endphp
-                                    {{ 'Rp. ' . number_format($total_fee, 0, ',', '.') }}
+                                    {{ number_format($total_fee, 0, ',', '.') }}
                                 </td>
                             @endif
                         </tr>
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total </strong></td>
-                            <td style="font-size: 8px;">{{'Rp.'.  number_format($pemesanan->sub_total, 0, ',', '.') }}</td>
+                            <td style="font-size: 8px;">{{number_format($pemesanan->sub_total, 0, ',', '.') }}</td>
                             
                         </tr>
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>DP </strong></td>
-                            <td style="font-size: 8px;">{{'Rp.'.  number_format($dp->dp_pemesanan, 0, ',', '.') }}</td>
+                            <td style="font-size: 8px;">{{number_format($dp->dp_pemesanan, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kekurangan  </strong></td>
-                            <td style="font-size: 8px;">{{'Rp.'.  number_format($dp->kekurangan_pemesanan, 0, ',', '.') }}</td>
+                            <td style="font-size: 8px;">{{number_format($dp->kekurangan_pemesanan, 0, ',', '.') }}</td>
                         </tr>
                     </tbody>
                     

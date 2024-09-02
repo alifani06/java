@@ -136,7 +136,7 @@
                                                         data-memo-id="{{ $item->id }}">Posting</a>
                                                 
                                                     <a class="dropdown-item"
-                                                        href="{{ url('/toko_banjaran/penjualan_produk/' . $item->id ) }}">Show</a>
+                                                        href="{{ url('/toko_banjaran/pelunasan_pemesanan/' . $item->id ) }}">Show</a>
                                                          {{-- Tambahkan opsi Delete --}}
                                                     <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
                                                         @csrf
@@ -149,7 +149,7 @@
                                                     <a class="dropdown-item unpost-btn"
                                                         data-memo-id="{{ $item->id }}">Unpost</a>
                                                     <a class="dropdown-item"
-                                                        href="{{ url('/toko_banjaran/penjualan_produk/' . $item->id ) }}">Show</a>
+                                                        href="{{ url('/toko_banjaran/pelunasan_pemesanan/' . $item->id ) }}">Show</a>
                                             @endif
                                            
                                           </div>

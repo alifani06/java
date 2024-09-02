@@ -408,7 +408,7 @@ class PelunasanpemesananController extends Controller
     public function cetakPdf($id)
     {
      // Mengambil satu item Pelunasan berdasarkan ID
-     $inquery = Pelunasan::with(['metodePembayaran', 'penjualanproduk.detailpenjualanproduk',])
+     $inquery = Pelunasan::with(['metodePembayaran', 'penjualanproduk.detailpenjualanproduk'])
      ->findOrFail($id);
 
     // Mengambil semua pelanggan
@@ -427,7 +427,7 @@ class PelunasanpemesananController extends Controller
     public function show($id)
     {   
         // Mengambil satu item Pelunasan berdasarkan ID
-        $inquery = Pelunasan::with(['metodePembayaran', 'dppemesanan.pemesananproduk'])
+        $inquery = Pelunasan::with(['metodePembayaran', 'penjualanproduk.detailpenjualanproduk'])
                     ->findOrFail($id);
         
         // Mengambil semua pelanggan

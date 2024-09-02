@@ -514,121 +514,125 @@
 
                 // Update the form with products details if available
                 if (response.products) {
-                    var formHtml = '<div class="card mb-3">' +
-                        '<div class="card-header">' +
-                        '<h3 class="card-title">Detail Pemesanan</h3>' +
-                        '<div class="float-right">'+
-                            '<button type="button" class="btn btn-primary btn-sm" onclick="addRow()"><i class="fas fa-plus"></i></button>' +
-                        '</div>'+
-                        '</div>' +
-                        '<div class="card-body">' +
-                        '<table class="table table-bordered table-striped">' +
-                        '<thead>' +
-                        '<tr>' +
-                        '<th style="font-size:14px" class="text-center">No</th>' +
-                        '<th style="font-size:14px">Kode Produk</th>' +
-                        '<th style="font-size:14px">Kode Lama</th>' +
-                        '<th style="font-size:14px">Nama Produk</th>' +
-                        '<th style="font-size:14px">Harga</th>' +
-                        '<th style="font-size:14px">Jumlah</th>' +
-                        '<th style="font-size:14px">Total</th>' +
-                        '<th style="font-size:14px">Aksi</th>' +
-                        '</tr>' +
-                        '</thead>' +
-                        '<tbody id="tabel-pembelian">';
+        var formHtml = '<div class="card mb-3">' +
+            '<div class="card-header">' +
+            '<h3 class="card-title">Detail Pemesanan</h3>' +
+            '<div class="float-right">'+
+                '<button type="button" class="btn btn-primary btn-sm" onclick="addRow()"><i class="fas fa-plus"></i></button>' +
+            '</div>'+
+            '</div>' +
+            '<div class="card-body">' +
+            '<table class="table table-bordered table-striped">' +
+            '<thead>' +
+            '<tr>' +
+            '<th style="font-size:14px" class="text-center">No</th>' +
+            '<!-- Kolom kode_produk tidak ditampilkan -->' +
+            '<th style="font-size:14px">Kode Lama</th>' +
+            '<th style="font-size:14px">Nama Produk</th>' +
+            '<th style="font-size:14px">Harga</th>' +
+            '<th style="font-size:14px">Jumlah</th>' +
+            '<th style="font-size:14px">Total</th>' +
+            '<th style="font-size:14px">Aksi</th>' +
+            '</tr>' +
+            '</thead>' +
+            '<tbody id="tabel-pembelian">';
 
-                    response.products.forEach((product, index) => {
-                        formHtml += '<tr id="pembelian-' + index + '">' +
-                            '<td style="width: 70px; font-size:14px" class="text-center urutan">' + (index + 1) + '</td>' +
-                            '<td>' +
-                            '   <div class="form-group">' +
-                            '       <input style="font-size:14px" readonly type="text" class="form-control kode_produk" name="kode_produk[]" value="' + product.kode_produk + '">' +
-                            '   </div>' +
-                            '</td>' +
-                            '<td>' +
-                            '   <div class="form-group">' +
-                            '       <input style="font-size:14px" readonly type="text" class="form-control kode_lama" name="kode_lama[]" value="' + product.kode_lama + '">' +
-                            '   </div>' +
-                            '</td>' +
-                            '<td>' +
-                            '   <div class="form-group">' +
-                            '       <input style="font-size:14px" readonly type="text" class="form-control nama_produk" name="nama_produk[]" value="' + product.nama_produk + '">' +
-                            '   </div>' +
-                            '</td>' +
-                            '<td>' +
-                            '   <div class="form-group">' +
-                            '       <input style="font-size:14px" readonly type="text" class="form-control harga" name="harga[]" value="' + product.harga + '">' +
-                            '   </div>' +
-                            '</td>' +
-                            '<td>' +
-                            '   <div class="form-group">' +
-                            '       <input style="font-size:14px" type="number" readonly class="form-control jumlah" name="jumlah[]" id="jumlah_' + index + '" value="' + product.jumlah + '">' +
-                            '   </div>' +
-                            '</td>' +
-                            '<td>' +
-                            '   <div class="form-group">' +
-                            '       <input style="font-size:14px" type="number" readonly class="form-control total" name="total[]" id="total_' + index + '" value="' + product.total + '">' +
-                            '   </div>' +
-                            '</td>' +
-                            '<td>' +
-                            '   <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(' + index + ')"><i class="fas fa-trash"></i></button>' +
-                            '</td>' +
-                            '</tr>';
-                    });
+        response.products.forEach((product, index) => {
+            formHtml += '<tr id="pembelian-' + index + '">' +
+                '<td style="width: 70px; font-size:14px" class="text-center urutan">' + (index + 1) + '</td>' +
+                '<td hidden>' + // Menyembunyikan kolom kode_produk
+                '   <input hidden style="font-size:14px" readonly type="text" class="form-control kode_produk" name="kode_produk[]" value="' + product.kode_produk + '">' +
+                '</td>' +
+                '<td hidden>' + // Menyembunyikan kolom kode_produk
+                '   <input hidden  style="font-size:14px" readonly type="text" class="form-control diskon" name="diskon[]" value="' + product.diskon + '">' +
+                '</td>' +
+                '<td>' +
+                '   <div class="form-group">' +
+                '       <input style="font-size:14px" readonly type="text" class="form-control kode_lama" name="kode_lama[]" value="' + product.kode_lama + '">' +
+                '   </div>' +
+                '</td>' +
+                '<td>' +
+                '   <div class="form-group">' +
+                '       <input style="font-size:14px" readonly type="text" class="form-control nama_produk" name="nama_produk[]" value="' + product.nama_produk + '">' +
+                '   </div>' +
+                '</td>' +
+                '<td>' +
+                '   <div class="form-group">' +
+                '       <input style="font-size:14px" readonly type="text" class="form-control harga" name="harga[]" value="' + product.harga + '">' +
+                '   </div>' +
+                '</td>' +
+                '<td>' +
+                '   <div class="form-group">' +
+                '       <input style="font-size:14px" type="number" readonly class="form-control jumlah" name="jumlah[]" id="jumlah_' + index + '" value="' + product.jumlah + '">' +
+                '   </div>' +
+                '</td>' +
+                '<td>' +
+                '   <div class="form-group">' +
+                '       <input style="font-size:14px" type="number" readonly class="form-control total" name="total[]" id="total_' + index + '" value="' + product.total + '">' +
+                '   </div>' +
+                '</td>' +
+                '<td>' +
+                '   <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(' + index + ')"><i class="fas fa-trash"></i></button>' +
+                '</td>' +
+                '</tr>';
+        });
 
-                    $('#forms-container').html(formHtml);
-                }
+        $('#forms-container').html(formHtml);
+    }
 
-                updateGrandTotal();
-            },
+    updateGrandTotal();
+},
             error: function(xhr) {
                 alert('Data tidak ditemukan.');
             }
         });
     }
 
-    function addRow() {
-        itemCounter++;
-        var newRow = '<tr id="pembelian-' + itemCounter + '">' +
-            '<td style="width: 70px; font-size:14px" class="text-center urutan">' + (itemCounter + 1) + '</td>' +
-            '<td>' +
-            '   <div class="form-group">' +
-            '       <input style="font-size:14px" type="text" class="form-control kode_produk" name="kode_produk[]" id="kode_produk_' + itemCounter + '" value="" oninput="fetchProductData(' + itemCounter + ')">' +
-            '   </div>' +
-            '</td>' +
-            '<td>' +
-            '   <div class="form-group">' +
-            '       <input style="font-size:14px" type="text" class="form-control kode_lama" name="kode_lama[]" id="kode_lama_' + itemCounter + '" value="" oninput="fetchProductData(' + itemCounter + ')">' +
-            '   </div>' +
-            '</td>' +
-            '<td>' +
-            '   <div class="form-group">' +
-            '       <input style="font-size:14px" type="text" class="form-control nama_produk" name="nama_produk[]" id="nama_produk_' + itemCounter + '" value="" readonly>' +
-            '   </div>' +
-            '</td>' +
-            '<td>' +
-            '   <div class="form-group">' +
-            '       <input style="font-size:14px" type="text" class="form-control harga" name="harga[]" id="harga_' + itemCounter + '" value="" readonly>' +
-            '   </div>' +
-            '</td>' +
-            '<td>' +
-            '   <div class="form-group">' +
-            '       <input style="font-size:14px" type="number" class="form-control jumlah" name="jumlah[]" id="jumlah_' + itemCounter + '" value="" oninput="updateTotal(' + itemCounter + ')">' +
-            '   </div>' +
-            '</td>' +
-            '<td>' +
-            '   <div class="form-group">' +
-            '       <input style="font-size:14px" type="number" class="form-control total" name="total[]" id="total_' + itemCounter + '" value="">' +
-            '   </div>' +
-            '</td>' +
-            '<td>' +
-            '   <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(' + itemCounter + ')"><i class="fas fa-trash"></i></button>' +
-            '</td>' +
-            '</tr>';
 
-        $('#tabel-pembelian').append(newRow);
-        updateRowNumbers();
-    }
+
+function addRow() {
+    itemCounter++;
+    var newRow = '<tr id="row-' + itemCounter + '">' +
+        '<td style="width: 70px; font-size:14px" class="text-center urutan">' + (itemCounter + 1) + '</td>' +
+        '<td hidden>' + 
+        '   <input hidden style="font-size:14px" type="text" class="form-control kode_produk" name="kode_produk[]" id="kode_produk_' + itemCounter + '" value="" oninput="fetchProductData(' + itemCounter + ')">' +
+        '</td>' +
+        '<td hidden>' +
+        '   <input hidden style="font-size:14px" type="text" class="form-control diskon" name="diskon[]" id="diskon_' + itemCounter + '" value="" oninput="fetchProductData(' + itemCounter + ')">' +
+        '</td>' +
+        '<td>' +
+        '   <div class="form-group">' +
+        '       <input style="font-size:14px" type="text" class="form-control kode_lama" name="kode_lama[]" id="kode_lama_' + itemCounter + '" value="" oninput="fetchProductData(' + itemCounter + ')">' +
+        '   </div>' +
+        '</td>' +
+        '<td>' +
+        '   <div class="form-group">' +
+        '       <input style="font-size:14px" type="text" class="form-control nama_produk" name="nama_produk[]" id="nama_produk_' + itemCounter + '" value="" readonly>' +
+        '   </div>' +
+        '</td>' +
+        '<td>' +
+        '   <div class="form-group">' +
+        '       <input style="font-size:14px" type="text" class="form-control harga" name="harga[]" id="harga_' + itemCounter + '" value="" readonly>' +
+        '   </div>' +
+        '</td>' +
+        '<td>' +
+        '   <div class="form-group">' +
+        '       <input style="font-size:14px" type="number" class="form-control jumlah" name="jumlah[]" id="jumlah_' + itemCounter + '" value="" oninput="updateTotal(' + itemCounter + ')">' +
+        '   </div>' +
+        '</td>' +
+        '<td>' +
+        '   <div class="form-group">' +
+        '       <input style="font-size:14px" type="number" class="form-control total" name="total[]" id="total_' + itemCounter + '" value="">' +
+        '   </div>' +
+        '</td>' +
+        '<td>' +
+        '   <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(' + itemCounter + ')"><i class="fas fa-trash"></i></button>' +
+        '</td>' +
+        '</tr>';
+
+    $('#tabel-pembelian').append(newRow);
+    updateRowNumbers();
+}
 
     function removeRow(rowId) {
         $('#pembelian-' + rowId).remove();
@@ -641,20 +645,22 @@
         });
     }
 
-  function fetchProductData(rowId) {
-    var kodeProduk = $('#kode_produk_' + rowId).val();
-    if (kodeProduk) {
+    function fetchProductData(rowId) {
+    console.log('Fetching data for row ID:', rowId); // Debugging line
+    var kodeLama = $('#kode_lama_' + rowId).val(); 
+    if (kodeLama) {
         $.ajax({
-            url: '{{ route("toko_banjaran.penjualan_produk.fetchProductData") }}', // Adjust the route accordingly
+            url: '{{ route("toko_banjaran.penjualan_produk.fetchProductData") }}',
             method: 'GET',
-            data: { kode_produk: kodeProduk },
+            data: { kode_lama: kodeLama }, 
             success: function(response) {
+                console.log('Response for row ID', rowId, ':', response); // Debugging line
                 if (response) {
-                    $('#kode_lama_' + rowId).val(response.kode_lama);
+                    $('#kode_produk_' + rowId).val(response.kode_produk);
                     $('#nama_produk_' + rowId).val(response.nama_produk);
-                    $('#harga_' + rowId).val(response.harga); // Set the harga field
-                    $('#jumlah_' + rowId).val(1); // Default quantity to 1
-                    updateTotal(rowId); // Update total based on the price and quantity
+                    $('#harga_' + rowId).val(response.harga);
+                    $('#jumlah_' + rowId).val(1); // Mengisi jumlah dengan 1 secara otomatis
+                    updateTotal(rowId); // Mengupdate total pada row yang benar
                 } else {
                     alert('Produk tidak ditemukan.');
                 }
@@ -666,14 +672,22 @@
     }
 }
 
+// Attach event listener for when input loses focus (blur)
+$(document).on('blur', '.kode_produk_input', function() {
+    var rowId = $(this).data('row-id');
+    fetchProductData(rowId);
+});
+
+
+
 function updateTotal(rowId) {
+    console.log('Updating total for row ID:', rowId); // Debugging line
     var jumlah = $('#jumlah_' + rowId).val();
-    var harga = $('#harga_' + rowId).val(); // Get the harga from the field
-    var total = jumlah * harga; // Calculate the total
+    var harga = $('#harga_' + rowId).val();
+    var total = jumlah * harga; 
     $('#total_' + rowId).val(total);
     updateGrandTotal();
 }
-
 
     function updateGrandTotal() {
         var grandTotal = 0;
