@@ -378,8 +378,8 @@
 
             {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
               <li class="nav-item">
-                <a href="{{ url('toko_banjaran/laporan_pengirimanproduk') }}"
-                    class="nav-link {{ request()->is('toko_banjaran/laporan_pengirimanproduk*') ? 'active' : '' }}">
+                <a href="{{ url('toko_banjaran/laporan_pengirimantokobanjaran') }}"
+                    class="nav-link {{ request()->is('toko_banjaran/laporan_pengirimantokobanjaran*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                     <p style="font-size: 14px;">Laporan Pengiriman Produk</p>
                 </a>

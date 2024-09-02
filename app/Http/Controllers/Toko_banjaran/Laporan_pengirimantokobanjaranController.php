@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Toko_banjaran;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -28,6 +28,7 @@ use App\Models\Stok_barangjadi;
 use App\Models\Permintaanproduk;
 use App\Models\Detailpermintaanproduk;
 use App\Models\Pengiriman_barangjadi;
+use App\Models\Pengiriman_tokobanjaran;
 use Carbon\Carbon;
 use App\Models\Toko;
 use Dompdf\Dompdf;
@@ -36,60 +37,60 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
-class Laporan_pengirimanbarangjadiController extends Controller
+class Laporan_pengirimantokobanjaranController extends Controller
 {
 
     public function index(Request $request)
     {
             $status = $request->status;
-            $tanggal_pengiriman = $request->tanggal_pengiriman;
+            $tanggal_input = $request->tanggal_input;
             $tanggal_akhir = $request->tanggal_akhir;
 
-            $query = Pengiriman_barangjadi::with('produk.klasifikasi');
+            $query = Pengiriman_tokobanjaran::with('produk.klasifikasi');
 
             if ($status) {
                 $query->where('status', $status);
             }
 
-            if ($tanggal_pengiriman && $tanggal_akhir) {
-                $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
+            if ($tanggal_input && $tanggal_akhir) {
+                $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
                 $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-                $query->whereBetween('tanggal_pengiriman', [$tanggal_pengiriman, $tanggal_akhir]);
-            } elseif ($tanggal_pengiriman) {
-                $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
-                $query->where('tanggal_pengiriman', '>=', $tanggal_pengiriman);
+                $query->whereBetween('tanggal_input', [$tanggal_input, $tanggal_akhir]);
+            } elseif ($tanggal_input) {
+                $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
+                $query->where('tanggal_input', '>=', $tanggal_input);
             } elseif ($tanggal_akhir) {
                 $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-                $query->where('tanggal_pengiriman', '<=', $tanggal_akhir);
+                $query->where('tanggal_input', '<=', $tanggal_akhir);
             } else {
                 // Jika tidak ada filter tanggal, tampilkan data hari ini
-                $query->whereDate('tanggal_pengiriman', Carbon::today());
+                $query->whereDate('tanggal_input', Carbon::today());
             }
 
             // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
             $stokBarangJadi = $query->get()->groupBy('kode_pengiriman');
 
-            return view('admin.laporan_pengirimanbarangjadi.index', compact('stokBarangJadi'));
+            return view('toko_banjaran.laporan_pengirimantokobanjaran.index', compact('stokBarangJadi'));
     }
 
 
-   
+    
     public function printReport(Request $request)
 {
     // Ambil parameter dari request
-    $tanggalPengiriman = $request->input('tanggal_pengiriman');
+    $tanggalPengiriman = $request->input('tanggal_input');
     $tanggalAkhir = $request->input('tanggal_akhir');
     $status = $request->input('status');
     
     // Buat query untuk ambil data berdasarkan filter
-    $query = Pengiriman_barangjadi::query();
+    $query = Pengiriman_tokobanjaran::query();
     
     if ($tanggalPengiriman) {
-        $query->whereDate('tanggal_pengiriman', '>=', $tanggalPengiriman);
+        $query->whereDate('tanggal_input', '>=', $tanggalPengiriman);
     }
     
     if ($tanggalAkhir) {
-        $query->whereDate('tanggal_pengiriman', '<=', $tanggalAkhir);
+        $query->whereDate('tanggal_input', '<=', $tanggalAkhir);
     }
     
     if ($status) {
@@ -115,7 +116,7 @@ class Laporan_pengirimanbarangjadiController extends Controller
     $dompdf = new \Dompdf\Dompdf($options);
     
     // Memuat konten HTML dari view
-    $html = view('admin.laporan_pengirimanbarangjadi.print', [
+    $html = view('toko_banjaran.laporan_pengirimantokobanjaran.print', [
     'groupedData'  => $groupedData, 
     'firstItem' => $firstItem , 
     'tanggalPengiriman', 
