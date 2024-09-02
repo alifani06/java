@@ -527,6 +527,7 @@
             '<tr>' +
             '<th style="font-size:14px" class="text-center">No</th>' +
             '<!-- Kolom kode_produk tidak ditampilkan -->' +
+            '<th style="font-size:14px">produk id</th>' +
             '<th style="font-size:14px">Kode Lama</th>' +
             '<th style="font-size:14px">Nama Produk</th>' +
             '<th style="font-size:14px">Harga</th>' +
@@ -540,6 +541,9 @@
         response.products.forEach((product, index) => {
             formHtml += '<tr id="pembelian-' + index + '">' +
                 '<td style="width: 70px; font-size:14px" class="text-center urutan">' + (index + 1) + '</td>' +
+                '<td  >' + // Menyembunyikan kolom kode_produk
+                '   <input  style="font-size:14px" readonly type="text" class="form-control produk_id" name="produk_id[]" value="' + product.produk_id + '">' +
+                '</td>' +
                 '<td hidden>' + // Menyembunyikan kolom kode_produk
                 '   <input hidden style="font-size:14px" readonly type="text" class="form-control kode_produk" name="kode_produk[]" value="' + product.kode_produk + '">' +
                 '</td>' +
@@ -594,6 +598,9 @@ function addRow() {
     itemCounter++;
     var newRow = '<tr id="row-' + itemCounter + '">' +
         '<td style="width: 70px; font-size:14px" class="text-center urutan">' + (itemCounter + 1) + '</td>' +
+        '<td >' + 
+        '   <input  style="font-size:14px" type="text" class="form-control produk_id" name="produk_id[]" id="produk_id_' + itemCounter + '" value="" oninput="fetchProductData(' + itemCounter + ')">' +
+        '</td>' +
         '<td hidden>' + 
         '   <input hidden style="font-size:14px" type="text" class="form-control kode_produk" name="kode_produk[]" id="kode_produk_' + itemCounter + '" value="" oninput="fetchProductData(' + itemCounter + ')">' +
         '</td>' +
@@ -656,6 +663,7 @@ function addRow() {
             success: function(response) {
                 console.log('Response for row ID', rowId, ':', response); // Debugging line
                 if (response) {
+                    $('#produk_id_' + rowId).val(response.produk_id);
                     $('#kode_produk_' + rowId).val(response.kode_produk);
                     $('#nama_produk_' + rowId).val(response.nama_produk);
                     $('#harga_' + rowId).val(response.harga);

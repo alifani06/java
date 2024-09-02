@@ -161,7 +161,7 @@
                     @foreach($items as $key => $detail)
                     <tr>
                         <td>{{ $key + 1 }}</td>
-                        <td>{{ $detail->produk->kode_produk }}</td>
+                        <td>{{ $detail->produk->kode_lama }}</td>
                         <td>{{ $detail->produk->subklasifikasi->nama }}</td>
                         <td>{{ $detail->produk->nama_produk }}</td>
                         <td>{{ $detail->jumlah }}</td>

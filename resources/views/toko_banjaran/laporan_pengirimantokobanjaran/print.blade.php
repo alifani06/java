@@ -183,35 +183,43 @@
     
     <!-- Detail Produk -->
     @foreach($groupedData as $kode_pengiriman => $items)
-        <div>
-            <p style="margin-bottom: 2px;"><strong>Kode Pengiriman:</strong> {{ $kode_pengiriman }}</p>
-            <p><strong>Cabang:</strong> {{ $items->first()->toko->nama_toko ?? 'Toko tidak ditemukan' }}</p>
+    <div>
+        <p style="margin-bottom: 2px;"><strong>Kode Pengiriman:</strong> {{ $kode_pengiriman }}</p>
+        <p><strong>Cabang:</strong> {{ $items->first()->toko->nama_toko }}</p> <!-- Menampilkan nama toko -->
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Kode Produk</th>
+                <th>Kategori</th>
+                <th>Produk</th>
+                <th style="text-align: right;">Jumlah</th>
+            </tr>
+        </thead>
+        <tbody>
+            @php $totalJumlah = 0; @endphp <!-- Variabel untuk menyimpan total -->
+            @foreach($items as $key => $detail)
+            <tr>
+                <td>{{ $key + 1 }}</td> 
+                <td>{{ $detail->produk->kode_lama }}</td>
+                <td>{{ $detail->produk->subklasifikasi->nama }}</td>
+                <td>{{ $detail->produk->nama_produk }}</td>
+                <td style="text-align: right;">{{ $detail->jumlah }}</td>
+            </tr>
+            @php $totalJumlah += $detail->jumlah; @endphp <!-- Tambahkan jumlah ke total -->
+            @endforeach
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" style="text-align: right; font-weight: bold;">Total</td>
+                <td style="text-align: right; font-weight: bold;">{{ $totalJumlah }}</td>
+            </tr>
+        </tfoot>
+    </table>
+    <br>
+@endforeach
 
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Kode Produk</th>
-                    <th>Kategori</th>
-                    <th>Produk</th>
-                    <th>Jumlah</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($items as $key => $detail)
-                <tr>
-                    <td>{{ $key + 1 }}</td> 
-                    <td>{{ $detail->produk->kode_lama }}</td>
-                    <td>{{ $detail->produk->subklasifikasi->nama }}</td>
-                    <td>{{ $detail->produk->nama_produk }}</td>
-                    <td>{{ $detail->jumlah }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-        <br>
-    @endforeach
 
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

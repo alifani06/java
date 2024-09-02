@@ -41,44 +41,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class Stokpesanan_tokobanjaranController extends Controller{
 
-// public function index(Request $request)
-// {
-//     $klasifikasis = Klasifikasi::all();
-//     $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);
-
-//     // Filter berdasarkan klasifikasi_id
-//     if ($request->has('klasifikasi_id') && $request->klasifikasi_id) {
-//         $produkQuery->where('klasifikasi_id', $request->klasifikasi_id);
-//     }
-
-//     // Filter berdasarkan subklasifikasi_id
-//     if ($request->has('subklasifikasi_id') && $request->subklasifikasi_id) {
-//         $produkQuery->where('subklasifikasi_id', $request->subklasifikasi_id);
-//     }
-
-//     $produk = $produkQuery->get();
-
-//     $stok_tokobanjaran = Stokpesanan_tokobanjaran::with('produk')->get();
-//     $stokGrouped = $stok_tokobanjaran->groupBy('produk_id')->map(function ($group) {
-//         $firstItem = $group->first();
-//         $totalJumlah = $group->sum('jumlah');
-//         $firstItem->jumlah = $totalJumlah;
-//         return $firstItem;
-//     })->values();
-
-//     $produkWithStok = $produk->map(function ($item) use ($stokGrouped) {
-//         $stokItem = $stokGrouped->firstWhere('produk_id', $item->id);
-//         $item->jumlah = $stokItem ? $stokItem->jumlah : 0;
-//         return $item;
-//     });
-
-//     // Kirim data subklasifikasi jika ada klasifikasi_id
-//     $subklasifikasis = $request->has('klasifikasi_id') 
-//         ? SubKlasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get() 
-//         : collect();
-
-//     return view('toko_banjaran.stokpesanan_tokobanjaran.index', compact('produkWithStok', 'klasifikasis', 'subklasifikasis'));
-// }
 
 public function index(Request $request)
 {

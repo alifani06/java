@@ -140,9 +140,10 @@ class PenjualanprodukbanjaranController extends Controller
     
         if ($produk) {
             return response()->json([
-                'kode_produk' => $produk->kode_produk, // Mengembalikan kode_produk jika diperlukan
+                'produk_id' => $produk->id, 
+                'kode_produk' => $produk->kode_produk, 
                 'nama_produk' => $produk->nama_produk,
-                'harga' => $produk->harga, // Asumsikan ada kolom harga di tabel produk
+                'harga' => $produk->harga, 
             ]);
         } else {
             return response()->json(null, 404);
@@ -150,113 +151,224 @@ class PenjualanprodukbanjaranController extends Controller
     }
     
 
-    public function SimpanPelunasan(Request $request)
-    {
-        // Validasi input
-        $validated = $request->validate([
-            'dppemesanan_id' => 'required|string',
-            'pelunasan' => 'required|numeric',
-            'metode_id' => 'nullable|integer',
-            'total_fee' => 'nullable|numeric',
-            'keterangan' => 'nullable|string',
-            'kode_produk' => 'required|array',
-            'kode_produk.*' => 'required|string',
-            'kode_lama.*' => 'required|string',
-            'nama_produk' => 'required|array',
-            'nama_produk.*' => 'required|string',
-            'jumlah' => 'required|array',
-            'jumlah.*' => 'required|integer',
-            'harga' => 'nullable|array', 
-            'harga.*' => 'nullable|numeric', 
-            'total' => 'nullable|array',
-            'total.*' => 'nullable|numeric',
-            'diskon' => 'nullable|array',
-            'diskon.*' => 'nullable|numeric',
-            'kembali' => 'nullable|numeric',
-        ]);
 
-      
+    // public function SimpanPelunasan(Request $request)
+    // {
+    //     // Validasi input
+    //     $validated = $request->validate([
+    //         'dppemesanan_id' => 'required|string',
+    //         'pelunasan' => 'required|numeric',
+    //         'metode_id' => 'nullable|integer',
+    //         'total_fee' => 'nullable|numeric',
+    //         'keterangan' => 'nullable|string',
+    //         'kode_produk' => 'required|array',
+    //         'kode_produk.*' => 'required|string',
+    //         'kode_lama.*' => 'required|string',
+    //         'nama_produk' => 'required|array',
+    //         'nama_produk.*' => 'required|string',
+    //         'jumlah' => 'required|array',
+    //         'jumlah.*' => 'required|integer',
+    //         'harga' => 'nullable|array', 
+    //         'harga.*' => 'nullable|numeric', 
+    //         'total' => 'nullable|array',
+    //         'total.*' => 'nullable|numeric',
+    //         'diskon' => 'nullable|array',
+    //         'diskon.*' => 'nullable|numeric',
+    //         'produk_id' => 'nullable|array',
+    //         'produk_id.*' => 'nullable|numeric',
+    //         'kembali' => 'nullable|numeric',
+    //     ]);
 
-        // Update kolom pelunasan di tabel dppemesanans
-        $dppemesanans = Dppemesanan::find($validated['dppemesanan_id']);
-        if ($dppemesanans) {
-            $dppemesanans->pelunasan += $validated['pelunasan'];
-            $dppemesanans->save();
-        }
+    //     // Update kolom pelunasan di tabel dppemesanans
+    //     $dppemesanans = Dppemesanan::find($validated['dppemesanan_id']);
+    //     if ($dppemesanans) {
+    //         $dppemesanans->pelunasan += $validated['pelunasan'];
+    //         $dppemesanans->save();
+    //     }
 
-        // Simpan data ke tabel penjualan_produk
-        $penjualan = new PenjualanProduk();
-        $penjualan->dppemesanan_id = $validated['dppemesanan_id'];
-        $penjualan->nama_pelanggan = $dppemesanans->pemesananproduk->nama_pelanggan; 
-        $penjualan->kode_pelanggan = $dppemesanans->pemesananproduk->kode_pelanggan; 
-        $penjualan->telp = $dppemesanans->pemesananproduk->telp; 
-        $penjualan->alamat = $dppemesanans->pemesananproduk->alamat; 
-        $penjualan->sub_total = $dppemesanans->pemesananproduk->sub_total; 
-        $penjualan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
-        $penjualan->total_fee = $validated['total_fee'];
-        $penjualan->keterangan = $validated['keterangan'];
-        $penjualan->metode_id = $validated['metode_id'];
-        $penjualan->kembali = $validated['kembali']; 
-        $penjualan->bayar = $validated['pelunasan'];
-        $penjualan->status = 'posting'; 
-        $penjualan->toko_id = '1'; 
-        $penjualan->kode_penjualan = $this->kode();
-        $penjualan->tanggal_penjualan = Carbon::now('Asia/Jakarta');
-        $penjualan->save();
+    //     // Simpan data ke tabel penjualan_produk
+    //     $penjualan = new PenjualanProduk();
+    //     $penjualan->dppemesanan_id = $validated['dppemesanan_id'];
+    //     $penjualan->nama_pelanggan = $dppemesanans->pemesananproduk->nama_pelanggan; 
+    //     $penjualan->kode_pelanggan = $dppemesanans->pemesananproduk->kode_pelanggan; 
+    //     $penjualan->telp = $dppemesanans->pemesananproduk->telp; 
+    //     $penjualan->alamat = $dppemesanans->pemesananproduk->alamat; 
+    //     $penjualan->sub_total = $dppemesanans->pemesananproduk->sub_total; 
+    //     $penjualan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
+    //     $penjualan->total_fee = $validated['total_fee'];
+    //     $penjualan->keterangan = $validated['keterangan'];
+    //     $penjualan->metode_id = $validated['metode_id'];
+    //     $penjualan->kembali = $validated['kembali']; 
+    //     $penjualan->bayar = $validated['pelunasan'];
+    //     $penjualan->status = 'posting'; 
+    //     $penjualan->toko_id = '1'; 
+    //     $penjualan->kode_penjualan = $this->kode();
+    //     $penjualan->tanggal_penjualan = Carbon::now('Asia/Jakarta');
+    //     $penjualan->save();
 
-          // Simpan data ke tabel pelunasan
-          $pelunasan = new Pelunasan();
-          $pelunasan->dppemesanan_id = $validated['dppemesanan_id'];
-          $pelunasan->penjualanproduk_id = $penjualan->id;
-  
-          $pelunasan->pelunasan = $validated['pelunasan'];
-          $pelunasan->metode_id = $validated['metode_id'];
-          $pelunasan->total_fee = $validated['total_fee'];
-          $pelunasan->keterangan = $validated['keterangan'];
-          $pelunasan->kembali = $validated['kembali'];
-          $pelunasan->tanggal_pelunasan = Carbon::now('Asia/Jakarta');
-          $pelunasan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
-          $pelunasan->status = 'posting';
-          $pelunasan->kode_penjualan = $this->kode(); // Tambahkan kode_penjualan
-          $pelunasan->save();
+    //     // Simpan data ke tabel pelunasan
+    //     $pelunasan = new Pelunasan();
+    //     $pelunasan->dppemesanan_id = $validated['dppemesanan_id'];
+    //     $pelunasan->penjualanproduk_id = $penjualan->id;
+    //     $pelunasan->pelunasan = $validated['pelunasan'];
+    //     $pelunasan->metode_id = $validated['metode_id'];
+    //     $pelunasan->total_fee = $validated['total_fee'];
+    //     $pelunasan->keterangan = $validated['keterangan'];
+    //     $pelunasan->kembali = $validated['kembali'];
+    //     $pelunasan->tanggal_pelunasan = Carbon::now('Asia/Jakarta');
+    //     $pelunasan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
+    //     $pelunasan->status = 'posting';
+    //     $pelunasan->kode_penjualan = $this->kode(); 
+    //     $pelunasan->save();
 
-        // Simpan data ke tabel detailpenjualanproduk
-        foreach ($validated['kode_produk'] as $index => $kode_produk) {
-            $detail = new DetailPenjualanProduk();
-            $detail->penjualanproduk_id = $penjualan->id;
-            $detail->kode_produk = $kode_produk;
-            $detail->kode_lama = $validated['kode_lama'][$index];
-            $detail->nama_produk = $validated['nama_produk'][$index];
-            $detail->jumlah = $validated['jumlah'][$index];
-            $detail->harga = $validated['harga'][$index];
-            $detail->diskon = $validated['diskon'][$index];
-            $detail->total = $validated['total'][$index];
-            $detail->save();
+    //     // Simpan data ke tabel detailpenjualanproduk
+    //     foreach ($validated['kode_produk'] as $index => $kode_produk) {
+    //         $detail = new DetailPenjualanProduk();
+    //         $detail->penjualanproduk_id = $penjualan->id;
+    //         $detail->kode_produk = $kode_produk;
+    //         $detail->kode_lama = $validated['kode_lama'][$index];
+    //         $detail->produk_id = $validated['produk_id'][$index];
+    //         $detail->nama_produk = $validated['nama_produk'][$index];
+    //         $detail->jumlah = $validated['jumlah'][$index];
+    //         $detail->harga = $validated['harga'][$index];
+    //         $detail->diskon = $validated['diskon'][$index];
+    //         $detail->total = $validated['total'][$index];
+    //         $detail->save();
             
-            // Kurangi stok di tabel stok_tokobanjaran menggunakan produk_id
-            $stok = Stokpesanan_tokobanjaran::where('produk_id', $validated['kode_produk'][$index])->first();
-            if ($stok) {
-                // Jika jumlah stok 0, maka kurangi dengan nilai jumlah dari inputan dan buat stok jadi minus
-                if ($stok->jumlah == 0) {
-                    $stok->jumlah -= $validated['jumlah'][$index];
-                } else {
-                    $stok->jumlah -= $validated['jumlah'][$index];
-                }
-                $stok->save();
-            }
-        }
+    //         // Kurangi stok di tabel stok_tokobanjaran menggunakan produk_id
+    //         $stok = Stokpesanan_tokobanjaran::where('produk_id', $validated['kode_produk'][$index])->first();
+    //         if ($stok) {
+    //             // Kurangi jumlah stok dengan nilai jumlah dari inputan
+    //             if ($stok->jumlah >= $validated['jumlah'][$index]) {
+    //                 $stok->jumlah -= $validated['jumlah'][$index];
+    //             } else {
+    //                 return redirect()->back()->withErrors(['error' => 'Stok tidak mencukupi untuk produk: ' . $validated['nama_produk'][$index]]);
+    //             }
+    //             $stok->save();
+    //         }
+    //     }
 
-        // Ambil detail pelunasan untuk ditampilkan di halaman cetak
-        $details = DetailPenjualanProduk::where('penjualanproduk_id', $penjualan->id)->get();
+    //     // Ambil detail pelunasan untuk ditampilkan di halaman cetak
+    //     $details = DetailPenjualanProduk::where('penjualanproduk_id', $penjualan->id)->get();
 
-        // Redirect ke halaman cetak dengan menyertakan data sukses dan detail pelunasan
-        return redirect()->route('toko_banjaran.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id])->with([
-            'success' => 'Data berhasil disimpan.',
-            'pelunasan' => $pelunasan,
-            'penjualan' => $penjualan,
-            'details' => $details,
-        ]);
+    //     // Redirect ke halaman cetak dengan menyertakan data sukses dan detail pelunasan
+    //     return redirect()->route('toko_banjaran.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id])->with([
+    //         'success' => 'Data berhasil disimpan.',
+    //         'pelunasan' => $pelunasan,
+    //         'penjualan' => $penjualan,
+    //         'details' => $details,
+    //     ]);
+    // }
+    public function SimpanPelunasan(Request $request)
+{
+    // Validasi input
+    $validated = $request->validate([
+        'dppemesanan_id' => 'required|string',
+        'pelunasan' => 'required|numeric',
+        'metode_id' => 'nullable|integer',
+        'total_fee' => 'nullable|numeric',
+        'keterangan' => 'nullable|string',
+        'kode_produk' => 'nullable|array',
+        'kode_produk.*' => 'nullable|string',
+        'kode_lama.*' => 'nullable|string',
+        'nama_produk' => 'nullable|array',
+        'nama_produk.*' => 'nullable|string',
+        'jumlah' => 'nullable|array',
+        'jumlah.*' => 'nullable|integer',
+        'harga' => 'nullable|array', 
+        'harga.*' => 'nullable|numeric', 
+        'total' => 'nullable|array',
+        'total.*' => 'nullable|numeric',
+        'diskon' => 'nullable|array',
+        'diskon.*' => 'nullable|numeric',
+        'produk_id' => 'nullable|array',
+        'produk_id.*' => 'nullable|numeric',
+        'kembali' => 'nullable|numeric',
+    ]);
+
+    // Update kolom pelunasan di tabel dppemesanans
+    $dppemesanans = Dppemesanan::find($validated['dppemesanan_id']);
+    if (!$dppemesanans) {
+        return redirect()->back()->withErrors(['error' => 'Data pesanan tidak ditemukan']);
     }
+
+    $dppemesanans->pelunasan += $validated['pelunasan'];
+    $dppemesanans->save();
+
+    // Simpan data ke tabel penjualan_produk
+    $penjualan = new PenjualanProduk();
+    $penjualan->dppemesanan_id = $validated['dppemesanan_id'];
+    $penjualan->nama_pelanggan = $dppemesanans->pemesananproduk->nama_pelanggan;
+    $penjualan->kode_pelanggan = $dppemesanans->pemesananproduk->kode_pelanggan;
+    $penjualan->telp = $dppemesanans->pemesananproduk->telp;
+    $penjualan->alamat = $dppemesanans->pemesananproduk->alamat;
+    $penjualan->sub_total = $dppemesanans->pemesananproduk->sub_total;
+    $penjualan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
+    $penjualan->total_fee = $validated['total_fee'];
+    $penjualan->keterangan = $validated['keterangan'];
+    $penjualan->metode_id = $validated['metode_id'];
+    $penjualan->kembali = $validated['kembali'];
+    $penjualan->bayar = $validated['pelunasan'];
+    $penjualan->status = 'posting';
+    $penjualan->toko_id = 1;
+    $penjualan->kode_penjualan = $this->kode();
+    $penjualan->tanggal_penjualan = Carbon::now('Asia/Jakarta');
+    $penjualan->save();
+
+    // Simpan data ke tabel pelunasan
+    $pelunasan = new Pelunasan();
+    $pelunasan->dppemesanan_id = $validated['dppemesanan_id'];
+    $pelunasan->penjualanproduk_id = $penjualan->id;
+    $pelunasan->pelunasan = $validated['pelunasan'];
+    $pelunasan->metode_id = $validated['metode_id'];
+    $pelunasan->total_fee = $validated['total_fee'];
+    $pelunasan->keterangan = $validated['keterangan'];
+    $pelunasan->kembali = $validated['kembali'];
+    $pelunasan->tanggal_pelunasan = Carbon::now('Asia/Jakarta');
+    $pelunasan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
+    $pelunasan->status = 'posting';
+    $pelunasan->kode_penjualan = $this->kode();
+    $pelunasan->save();
+
+    // Simpan data ke tabel detailpenjualanproduk dan kurangi stok
+    foreach ($validated['kode_produk'] as $index => $kode_produk) {
+        $detail = new DetailPenjualanProduk();
+        $detail->penjualanproduk_id = $penjualan->id;
+        $detail->kode_produk = $kode_produk;
+        $detail->kode_lama = $validated['kode_lama'][$index];
+        $detail->produk_id = $validated['produk_id'][$index];
+        $detail->nama_produk = $validated['nama_produk'][$index];
+        $detail->jumlah = $validated['jumlah'][$index];
+        $detail->harga = $validated['harga'][$index];
+        $detail->diskon = $validated['diskon'][$index];
+        $detail->total = $validated['total'][$index];
+        $detail->save();
+
+        // Kurangi stok di tabel stok_tokobanjaran
+        $stok = Stokpesanan_tokobanjaran::where('produk_id', $detail->produk_id)->first();
+        if ($stok) {
+            if ($stok->jumlah >= $detail->jumlah) {
+                $stok->jumlah -= $detail->jumlah;
+            } else {
+                return redirect()->back()->withErrors(['error' => 'Stok tidak mencukupi untuk produk: ' . $detail->nama_produk]);
+            }
+            $stok->save();
+        }
+    }
+
+    // Ambil detail pelunasan untuk ditampilkan di halaman cetak
+    $details = DetailPenjualanProduk::where('penjualanproduk_id', $penjualan->id)->get();
+
+    // Redirect ke halaman cetak dengan menyertakan data sukses dan detail pelunasan
+    return redirect()->route('toko_banjaran.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id])->with([
+        'success' => 'Data berhasil disimpan.',
+        'pelunasan' => $pelunasan,
+        'penjualan' => $penjualan,
+        'details' => $details,
+    ]);
+}
+
+
 
     public function getCustomerByKode($kode)
     {
@@ -314,6 +426,7 @@ class PenjualanprodukbanjaranController extends Controller
                 'kekurangan_pemesanan' => $data->kekurangan_pemesanan,
                 'products' => $data->detailpemesananproduk->map(function ($item) {
                     return [
+                        'produk_id' => $item->produk_id,
                         'kode_produk' => $item->kode_produk,
                         'kode_lama' => $item->kode_lama,
                         'harga' => $item->harga,

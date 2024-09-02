@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surat Permintaan Produk</title>
+    <title>Surat Pengiriman Produk</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
         body {
@@ -220,7 +220,7 @@
             @foreach($items as $key => $detail)
             <tr>
                 <td>{{ $key + 1 }}</td>
-                <td>{{ $detail->produk->kode_produk }}</td>
+                <td>{{ $detail->produk->kode_lama }}</td>
                 <td>{{ $detail->produk->subklasifikasi->nama }}</td>
                 <td>{{ $detail->produk->nama_produk }}</td>
                 <td style="text-align: right">{{ $detail->jumlah }}</td>

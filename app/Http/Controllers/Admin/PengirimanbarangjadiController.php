@@ -38,14 +38,17 @@ class PengirimanbarangjadiController extends Controller{
 
     public function index()
     {
+        // Mendapatkan tanggal hari ini
+        $today = Carbon::today();
+    
         $pengirimanBarangJadi = Pengiriman_barangjadi::with('produk.klasifikasi')
+            ->whereDate('created_at', $today) // Filter data berdasarkan tanggal hari ini
             ->orderBy('created_at', 'desc')
             ->get()
             ->groupBy('kode_pengiriman');
     
         return view('admin.pengiriman_barangjadi.index', compact('pengirimanBarangJadi'));
     }
-
 
     
 // create lama
