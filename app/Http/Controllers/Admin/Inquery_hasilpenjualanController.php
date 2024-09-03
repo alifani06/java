@@ -37,71 +37,93 @@ class Inquery_hasilpenjualanController extends Controller
 
     // public function index(Request $request)
     // {
-    //         $status = $request->status;
-    //         $tanggal_pengiriman = $request->tanggal_pengiriman;
-    //         $tanggal_akhir = $request->tanggal_akhir;
+    //     $status = $request->status;
+    //     $tanggal_pengiriman = $request->tanggal_pengiriman;
+    //     $tanggal_akhir = $request->tanggal_akhir;
 
-    //         $query = Pengiriman_barangjadi::with('produk.klasifikasi');
+    //     $query = Pengiriman_barangjadi::with('produk.klasifikasi');
 
-    //         if ($status) {
-    //             $query->where('status', $status);
-    //         }
+    //     if ($status) {
+    //         $query->where('status', $status);
+    //     }
 
-    //         if ($tanggal_pengiriman && $tanggal_akhir) {
-    //             $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
-    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //             $query->whereBetween('tanggal_pengiriman', [$tanggal_pengiriman, $tanggal_akhir]);
-    //         } elseif ($tanggal_pengiriman) {
-    //             $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
-    //             $query->where('tanggal_pengiriman', '>=', $tanggal_pengiriman);
-    //         } elseif ($tanggal_akhir) {
-    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //             $query->where('tanggal_pengiriman', '<=', $tanggal_akhir);
-    //         } else {
-    //             // Jika tidak ada filter tanggal, tampilkan data hari ini
-    //             $query->whereDate('tanggal_pengiriman', Carbon::today());
-    //         }
+    //     if ($tanggal_pengiriman && $tanggal_akhir) {
+    //         $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
+    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //         $query->whereBetween('tanggal_pengiriman', [$tanggal_pengiriman, $tanggal_akhir]);
+    //     } elseif ($tanggal_pengiriman) {
+    //         $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
+    //         $query->where('tanggal_pengiriman', '>=', $tanggal_pengiriman);
+    //     } elseif ($tanggal_akhir) {
+    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //         $query->where('tanggal_pengiriman', '<=', $tanggal_akhir);
+    //     } else {
+    //         // Jika tidak ada filter tanggal, tampilkan data hari ini
+    //         $query->whereDate('tanggal_pengiriman', Carbon::today());
+    //     }
 
-    //         // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
-    //         $stokBarangJadi = $query
-    //         ->orderBy('created_at', 'desc')
-    //         ->get()
-    //         ->groupBy('kode_pengiriman');
+    //     // Ambil data tanpa pengelompokan
+    //     $stokBarangJadi = $query->orderBy('tanggal_pengiriman', 'desc')->get();
 
-    //         return view('admin.inquery_hasilpenjualan.index', compact('stokBarangJadi'));
+    //     return view('admin.inquery_hasilpenjualan.index', compact('stokBarangJadi'));
     // }
+
     public function index(Request $request)
-{
-    $status = $request->status;
-    $tanggal_pengiriman = $request->tanggal_pengiriman;
-    $tanggal_akhir = $request->tanggal_akhir;
-
-    $query = Pengiriman_barangjadi::with('produk.klasifikasi');
-
-    if ($status) {
-        $query->where('status', $status);
+    {
+        $status = $request->status;
+        $tanggal_pengiriman = $request->tanggal_pengiriman;
+        $tanggal_akhir = $request->tanggal_akhir;
+        $toko_id = $request->toko_id; // Menambahkan filter toko_id
+        $klasifikasi_id = $request->klasifikasi_id; // Menambahkan filter klasifikasi_id
+    
+        // Ambil data toko untuk dropdown
+        $tokos = Toko::all();  // Mengambil semua data toko
+        $klasifikasis = Klasifikasi::all(); // Mengambil semua data klasifikasi
+    
+        // Query dasar dengan relasi ke produk dan klasifikasi
+        $query = Pengiriman_barangjadi::with('produk.klasifikasi');
+    
+        // Filter berdasarkan status
+        if ($status) {
+            $query->where('status', $status);
+        }
+    
+        // Filter berdasarkan toko_id
+        if ($toko_id) {
+            $query->where('toko_id', $toko_id);
+        }
+    
+        // Filter berdasarkan klasifikasi_id
+        if ($klasifikasi_id) {
+            $query->whereHas('produk', function($q) use ($klasifikasi_id) {
+                $q->where('klasifikasi_id', $klasifikasi_id);
+            });
+        }
+    
+        // Filter berdasarkan tanggal pengiriman
+        if ($tanggal_pengiriman && $tanggal_akhir) {
+            $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $query->whereBetween('tanggal_pengiriman', [$tanggal_pengiriman, $tanggal_akhir]);
+        } elseif ($tanggal_pengiriman) {
+            $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
+            $query->where('tanggal_pengiriman', '>=', $tanggal_pengiriman);
+        } elseif ($tanggal_akhir) {
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $query->where('tanggal_pengiriman', '<=', $tanggal_akhir);
+        } else {
+            // Jika tidak ada filter tanggal, tampilkan data hari ini
+            $query->whereDate('tanggal_pengiriman', Carbon::today());
+        }
+    
+        // Ambil data dengan pengurutan berdasarkan tanggal pengiriman terbaru
+        $stokBarangJadi = $query->orderBy('tanggal_pengiriman', 'desc')->get();
+    
+        // Kirim variabel ke view
+        return view('admin.inquery_hasilpenjualan.index', compact('stokBarangJadi', 'tokos', 'klasifikasis'));
     }
-
-    if ($tanggal_pengiriman && $tanggal_akhir) {
-        $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
-        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-        $query->whereBetween('tanggal_pengiriman', [$tanggal_pengiriman, $tanggal_akhir]);
-    } elseif ($tanggal_pengiriman) {
-        $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
-        $query->where('tanggal_pengiriman', '>=', $tanggal_pengiriman);
-    } elseif ($tanggal_akhir) {
-        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-        $query->where('tanggal_pengiriman', '<=', $tanggal_akhir);
-    } else {
-        // Jika tidak ada filter tanggal, tampilkan data hari ini
-        $query->whereDate('tanggal_pengiriman', Carbon::today());
-    }
-
-    // Ambil data tanpa pengelompokan
-    $stokBarangJadi = $query->orderBy('tanggal_pengiriman', 'desc')->get();
-
-    return view('admin.inquery_hasilpenjualan.index', compact('stokBarangJadi'));
-}
+    
+    
 
 
     public function barangKeluar(Request $request)

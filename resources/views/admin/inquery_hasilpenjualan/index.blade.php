@@ -82,13 +82,33 @@
                     <!-- Tabel -->
                     <form method="GET" id="form-action">
                         <div class="row">
-                            <div class="col-md-3 mb-3">
+                            {{-- <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="status" name="status">
                                     <option value="">- Semua Status -</option>
                                     <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
                                     <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
                                 </select>
                                 <label for="status">(Pilih Status)</label>
+                            </div> --}}
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="toko_id" name="toko_id">
+                                    <option value="">- Semua Toko -</option>
+                                    @foreach($tokos as $toko)
+                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
+                                    @endforeach
+                                </select>
+                                <label for="toko_id">(Pilih Toko)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="klasifikasi_id" name="klasifikasi_id">
+                                    <option value="">- Semua Klasifikasi -</option>
+                                    @foreach($klasifikasis as $klasifikasi)
+                                        <option value="{{ $klasifikasi->id }}" {{ Request::get('klasifikasi_id') == $klasifikasi->id ? 'selected' : '' }}>
+                                            {{ $klasifikasi->nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <label for="klasifikasi_id">(Pilih Klasifikasi)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_pengiriman" name="tanggal_pengiriman" type="date"
@@ -115,35 +135,42 @@
                                 <th>Kode Produk</th>
                                 <th>Produk</th>
                                 <th>Jumlah</th>
-                                <th>Status</th>
+                                <th>Harga</th>
+                                <th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $totalJumlah = 0;
+                                $grandTotal = 0;
+                            @endphp
                             @foreach ($stokBarangJadi as $index => $item)
+                            @php
+                                $totalJumlah += $item->jumlah;
+                                $totalHarga = $item->jumlah * $item->produk->harga;
+                                $grandTotal += $totalHarga;
+                            @endphp
                             <tr>
                                 <td class="text-center">{{ $index + 1 }}</td>
                                 <td>{{ \Carbon\Carbon::parse($item->tanggal_pengiriman)->format('d/m/Y H:i') }}</td>
                                 <td>{{ $item->produk->kode_lama }}</td>
                                 <td>{{ $item->produk->nama_produk }}</td>
-                                <td>{{ $item->jumlah }}</td>
-                                <td class="text-center">
-                                    @if ($item->status == 'posting')
-                                        <button type="button" class="btn btn-success btn-sm">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                    @elseif ($item->status == 'unpost')
-                                        <button type="button" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    @endif
-                                </td>
+                                <td style="text-align: right">{{ $item->jumlah }}</td>
+                                <td style="text-align: right">{{ number_format($item->produk->harga, 0, ',', '.') }}</td>
+                                <td style="text-align: right">{{ number_format($totalHarga, 0, ',', '.') }}</td>
                             </tr>
                             @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="4" class="text-center">Total</th>
+                                <th style="text-align: right">{{ $totalJumlah }}</th>
+                                <th></th>
+                                <th style="text-align: right">Rp {{ number_format($grandTotal, 0, ',', '.') }}</th>
+                            </tr>
+                        </tfoot>
                     </table>
-                    
-               
-                    
+                
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
                         aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">
@@ -157,6 +184,7 @@
                         </div>
                     </div>
                 </div>
+                
                 <!-- /.card-body -->
             </div>
         </div>
@@ -182,7 +210,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('admin/inquery_pengirimanbarangjadi') }}";
+            form.action = "{{ url('admin/inquery_hasilpenjualan') }}";
             form.submit();
         }
 
