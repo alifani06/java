@@ -349,6 +349,7 @@
     request()->is('admin/inquery_pemindahanbarang*')|| 
     request()->is('admin/inquery_pemusnahanbarangjadi*')|| 
     request()->is('admin/inquery_deposit*')|| 
+    request()->is('admin/inquery_hasilpenjualan*')|| 
     request()->is('admin/inquery_estimasiproduksi')  
     // request()->is('admin/input*')
   
@@ -364,6 +365,7 @@
         request()->is('admin/inquery_pemindahanbarang*')||
         request()->is('admin/inquery_pemusnahanbarangjadi*')||
         request()->is('admin/inquery_deposit*')||
+        request()->is('admin/inquery_hasilpenjualan*')||
         request()->is('admin/inquery_estimasiproduksi*') 
         // request()->is('admin/input*')
       
@@ -481,6 +483,16 @@
             </a>
         </li>
         {{-- @endif --}}
+
+        {{-- @endif --}}
+          <li class="nav-item">
+            <a href="{{ url('admin/inquery_hasilpenjualan') }}"
+                class="nav-link {{ request()->is('admin/inquery_hasilpenjualan*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Inquery Hasil Penjualan</p>
+            </a>
+        </li>
+        {{-- @endif --}}
     </ul>
 </li>
 
@@ -496,6 +508,7 @@
     request()->is('admin/laporan_pemindahanbarangjadi*')||
     request()->is('admin/laporan_deposit*')||
     request()->is('admin/laporan_stoktoko*')||
+    request()->is('admin/laporan_hasilpenjualan*')||
     request()->is('admin/laporan_estimasiproduksi*')
     // request()->is('admin/input*')
   
@@ -513,6 +526,7 @@
         request()->is('admin/laporan_pemindahanbarangjadi*')|| 
         request()->is('admin/laporan_deposit*')|| 
         request()->is('admin/laporan_stoktoko*')|| 
+        request()->is('admin/laporan_hasilpenjualan*')|| 
         request()->is('admin/laporan_estimasiproduksi*') 
         // request()->is('admin/input*')
       
@@ -633,12 +647,23 @@
                 </a>
             </li>
             {{-- @endif --}}
-              {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+
+            {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
               <li class="nav-item">
                 <a href="{{ url('admin/laporan_stoktoko') }}"
                     class="nav-link {{ request()->is('admin/laporan_stoktoko*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                     <p style="font-size: 14px;">Laporan Stok Toko</p>
+                </a>
+            </li>
+            {{-- @endif --}}
+
+            {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+              <li class="nav-item">
+                <a href="{{ url('admin/laporan_hasilpenjualan') }}"
+                    class="nav-link {{ request()->is('admin/laporan_hasilpenjualan*') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                    <p style="font-size: 14px;">Laporan Hasil Penjualan</p>
                 </a>
             </li>
             {{-- @endif --}}

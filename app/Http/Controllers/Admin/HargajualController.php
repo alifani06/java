@@ -14,6 +14,7 @@ use App\Models\Tokobumiayu;
 use App\Models\Tokocilacap;
 use App\Models\Detailtoko;
 use App\Models\Detailtokoslawi;
+use App\Models\Detailtokobanjaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -204,43 +205,43 @@ class HargajualController extends Controller
         // Cari produk berdasarkan ID
         $produk = Produk::findOrFail($request->id);
 
-        // Update atau buat entri baru untuk toko Slawi
-        $tokoslawi = $produk->tokoslawi->first();
-        if ($tokoslawi) {
-            $tokoslawi->member_harga_slw = $request->member_harga_slw ?? $tokoslawi->member_harga_slw;
-            $tokoslawi->member_diskon_slw = $request->member_diskon_slw ?? $tokoslawi->member_diskon_slw;
-            $tokoslawi->non_harga_slw = $request->non_harga_slw ?? $tokoslawi->non_harga_slw;
-            $tokoslawi->non_diskon_slw = $request->non_diskon_slw ?? $tokoslawi->non_diskon_slw;
-            $tokoslawi->save();
-        } else {
-            $tokoslawi = Tokoslawi::create([
-                'produk_id' => $produk->id,
-                'member_harga_slw' => $request->member_harga_slw,
-                'member_diskon_slw' => $request->member_diskon_slw,
-                'non_harga_slw' => $request->non_harga_slw,
-                'non_diskon_slw' => $request->non_diskon_slw,
-                'tanggal_perubahan' => Carbon::now('Asia/Jakarta'),
-            ]);
-        }
+        // // Update atau buat entri baru untuk toko Slawi
+        // $tokoslawi = $produk->tokoslawi->first();
+        // if ($tokoslawi) {
+        //     $tokoslawi->member_harga_slw = $request->member_harga_slw ?? $tokoslawi->member_harga_slw;
+        //     $tokoslawi->member_diskon_slw = $request->member_diskon_slw ?? $tokoslawi->member_diskon_slw;
+        //     $tokoslawi->non_harga_slw = $request->non_harga_slw ?? $tokoslawi->non_harga_slw;
+        //     $tokoslawi->non_diskon_slw = $request->non_diskon_slw ?? $tokoslawi->non_diskon_slw;
+        //     $tokoslawi->save();
+        // } else {
+        //     $tokoslawi = Tokoslawi::create([
+        //         'produk_id' => $produk->id,
+        //         'member_harga_slw' => $request->member_harga_slw,
+        //         'member_diskon_slw' => $request->member_diskon_slw,
+        //         'non_harga_slw' => $request->non_harga_slw,
+        //         'non_diskon_slw' => $request->non_diskon_slw,
+        //         'tanggal_perubahan' => Carbon::now('Asia/Jakarta'),
+        //     ]);
+        // }
 
-        $harga_diskon_member = $request->member_harga_slw * (1 - ($request->member_diskon_slw / 100));
-        $harga_diskon_non_member = $request->non_harga_slw * (1 - ($request->non_diskon_slw / 100));
-        // Simpan ID toko Slawi di detailtoko
-        Detailtokoslawi::create([
-            'produk_id' => $produk->id,
-            'tokoslawi_id' => $tokoslawi->id,
-            'member_harga' => $request->member_harga_slw,
-            'member_diskon' => $request->member_diskon_slw,
-            'non_member_harga' => $request->non_harga_slw,
-            'non_member_diskon' => $request->non_diskon_slw,
-            'harga_diskon_member' => $harga_diskon_member,
-            'harga_diskon_non' => $harga_diskon_non_member,
-            'harga_awal' => $request->member_harga_slw,
-            'diskon_awal' =>  0,
-            'tanggal_perubahan' => Carbon::now('Asia/Jakarta'),
-            'created_at' => Carbon::now('Asia/Jakarta'),
-            'updated_at' => Carbon::now('Asia/Jakarta'),
-        ]);
+        // $harga_diskon_member = $request->member_harga_slw * (1 - ($request->member_diskon_slw / 100));
+        // $harga_diskon_non_member = $request->non_harga_slw * (1 - ($request->non_diskon_slw / 100));
+        // // Simpan ID toko Slawi di detailtoko
+        // Detailtokoslawi::create([
+        //     'produk_id' => $produk->id,
+        //     'tokoslawi_id' => $tokoslawi->id,
+        //     'member_harga' => $request->member_harga_slw,
+        //     'member_diskon' => $request->member_diskon_slw,
+        //     'non_member_harga' => $request->non_harga_slw,
+        //     'non_member_diskon' => $request->non_diskon_slw,
+        //     'harga_diskon_member' => $harga_diskon_member,
+        //     'harga_diskon_non' => $harga_diskon_non_member,
+        //     'harga_awal' => $request->member_harga_slw,
+        //     'diskon_awal' =>  0,
+        //     'tanggal_perubahan' => Carbon::now('Asia/Jakarta'),
+        //     'created_at' => Carbon::now('Asia/Jakarta'),
+        //     'updated_at' => Carbon::now('Asia/Jakarta'),
+        // ]);
 
         // Update atau buat entri baru untuk toko Benjaran
         $tokobanjaran = $produk->tokobanjaran->first();
@@ -263,7 +264,7 @@ class HargajualController extends Controller
         $harga_diskon_member = $request->member_harga_bnjr * (1 - ($request->member_diskon_bnjr / 100));
         $harga_diskon_non_member = $request->non_harga_bnjr * (1 - ($request->non_diskon_bnjr / 100));
         // Simpan ID toko Benjaran di detailtoko
-        Detailtoko::create([
+        Detailtokobanjaran::create([
             'tokobanjaran_id' => $tokobanjaran->id,
             'member_harga' => $request->member_harga_bnjr,
             'member_diskon' => $request->member_diskon_bnjr,
@@ -275,142 +276,142 @@ class HargajualController extends Controller
             'updated_at' => Carbon::now('Asia/Jakarta'),
         ]);
 
-        // Update atau buat entri baru untuk toko Tegal
-        $tokotegal = $produk->tokotegal->first();
-        if ($tokotegal) {
-            $tokotegal->member_harga_tgl = $request->member_harga_tgl ?? $tokotegal->member_harga_tgl;
-            $tokotegal->member_diskon_tgl = $request->member_diskon_tgl ?? $tokotegal->member_diskon_tgl;
-            $tokotegal->non_harga_tgl = $request->non_harga_tgl ?? $tokotegal->non_harga_tgl;
-            $tokotegal->non_diskon_tgl = $request->non_diskon_tgl ?? $tokotegal->non_diskon_tgl;
-            $tokotegal->save();
-        } else {
-            $tokotegal = Tokotegal::create([
-                'produk_id' => $produk->id,
-                'member_harga_tgl' => $request->member_harga_tgl,
-                'member_diskon_tgl' => $request->member_diskon_tgl,
-                'non_harga_tgl' => $request->non_harga_tgl,
-                'non_diskon_tgl' => $request->non_diskon_tgl,
-            ]);
-        }
+        // // Update atau buat entri baru untuk toko Tegal
+        // $tokotegal = $produk->tokotegal->first();
+        // if ($tokotegal) {
+        //     $tokotegal->member_harga_tgl = $request->member_harga_tgl ?? $tokotegal->member_harga_tgl;
+        //     $tokotegal->member_diskon_tgl = $request->member_diskon_tgl ?? $tokotegal->member_diskon_tgl;
+        //     $tokotegal->non_harga_tgl = $request->non_harga_tgl ?? $tokotegal->non_harga_tgl;
+        //     $tokotegal->non_diskon_tgl = $request->non_diskon_tgl ?? $tokotegal->non_diskon_tgl;
+        //     $tokotegal->save();
+        // } else {
+        //     $tokotegal = Tokotegal::create([
+        //         'produk_id' => $produk->id,
+        //         'member_harga_tgl' => $request->member_harga_tgl,
+        //         'member_diskon_tgl' => $request->member_diskon_tgl,
+        //         'non_harga_tgl' => $request->non_harga_tgl,
+        //         'non_diskon_tgl' => $request->non_diskon_tgl,
+        //     ]);
+        // }
 
-        $harga_diskon_member = $request->member_harga_tgl * (1 - ($request->member_diskon_tgl / 100));
-        $harga_diskon_non_member = $request->non_harga_tgl * (1 - ($request->non_diskon_tgl / 100));
-        // Simpan ID toko Tegal di detailtoko
-        Detailtoko::create([
-            'tokotegal_id' => $tokotegal->id,
-            'member_harga' => $request->member_harga_tgl,
-            'member_diskon' => $request->member_diskon_tgl,
-            'non_member_harga' => $request->non_harga_tgl,
-            'non_member_diskon' => $request->non_diskon_tgl,
-            'harga_diskon_member' => $harga_diskon_member,
-            'harga_diskon_non' => $harga_diskon_non_member,
-            'created_at' => Carbon::now('Asia/Jakarta'),
-            'updated_at' => Carbon::now('Asia/Jakarta'),
+        // $harga_diskon_member = $request->member_harga_tgl * (1 - ($request->member_diskon_tgl / 100));
+        // $harga_diskon_non_member = $request->non_harga_tgl * (1 - ($request->non_diskon_tgl / 100));
+        // // Simpan ID toko Tegal di detailtoko
+        // Detailtoko::create([
+        //     'tokotegal_id' => $tokotegal->id,
+        //     'member_harga' => $request->member_harga_tgl,
+        //     'member_diskon' => $request->member_diskon_tgl,
+        //     'non_member_harga' => $request->non_harga_tgl,
+        //     'non_member_diskon' => $request->non_diskon_tgl,
+        //     'harga_diskon_member' => $harga_diskon_member,
+        //     'harga_diskon_non' => $harga_diskon_non_member,
+        //     'created_at' => Carbon::now('Asia/Jakarta'),
+        //     'updated_at' => Carbon::now('Asia/Jakarta'),
     
-        ]);
+        // ]);
 
 
-        // Update atau buat entri baru untuk toko pemalang
-        $tokopemalang = $produk->tokopemalang->first();
-        if ($tokopemalang) {
-            $tokopemalang->member_harga_pml = $request->member_harga_pml ?? $tokopemalang->member_harga_pml;
-            $tokopemalang->member_diskon_pml = $request->member_diskon_pml ?? $tokopemalang->member_diskon_pml;
-            $tokopemalang->non_harga_pml = $request->non_harga_pml ?? $tokopemalang->non_harga_pml;
-            $tokopemalang->non_diskon_pml = $request->non_diskon_pml ?? $tokopemalang->non_diskon_pml;
-            $tokopemalang->save();
-        } else {
-            $tokopemalang = Tokopemalang::create([
-                'produk_id' => $produk->id,
-                'member_harga_pml' => $request->member_harga_pml,
-                'member_diskon_pml' => $request->member_diskon_pml,
-                'non_harga_pml' => $request->non_harga_pml,
-                'non_diskon_pml' => $request->non_diskon_pml,
-            ]);
-        }
+        // // Update atau buat entri baru untuk toko pemalang
+        // $tokopemalang = $produk->tokopemalang->first();
+        // if ($tokopemalang) {
+        //     $tokopemalang->member_harga_pml = $request->member_harga_pml ?? $tokopemalang->member_harga_pml;
+        //     $tokopemalang->member_diskon_pml = $request->member_diskon_pml ?? $tokopemalang->member_diskon_pml;
+        //     $tokopemalang->non_harga_pml = $request->non_harga_pml ?? $tokopemalang->non_harga_pml;
+        //     $tokopemalang->non_diskon_pml = $request->non_diskon_pml ?? $tokopemalang->non_diskon_pml;
+        //     $tokopemalang->save();
+        // } else {
+        //     $tokopemalang = Tokopemalang::create([
+        //         'produk_id' => $produk->id,
+        //         'member_harga_pml' => $request->member_harga_pml,
+        //         'member_diskon_pml' => $request->member_diskon_pml,
+        //         'non_harga_pml' => $request->non_harga_pml,
+        //         'non_diskon_pml' => $request->non_diskon_pml,
+        //     ]);
+        // }
 
-        $harga_diskon_member = $request->member_harga_pml * (1 - ($request->member_diskon_pml / 100));
-        $harga_diskon_non_member = $request->non_harga_pml * (1 - ($request->non_diskon_pml / 100));
-        // Simpan ID toko Pemalang di detailtoko
-        Detailtoko::create([
-            'tokopemalang_id' => $tokopemalang->id,
-            'member_harga' => $request->member_harga_pml,
-            'member_diskon' => $request->member_diskon_pml,
-            'non_member_harga' => $request->non_harga_pml,
-            'non_member_diskon' => $request->non_diskon_pml,
-            'harga_diskon_member' => $harga_diskon_member,
-            'harga_diskon_non' => $harga_diskon_non_member,
-            'created_at' => Carbon::now('Asia/Jakarta'),
-            'updated_at' => Carbon::now('Asia/Jakarta'),
+        // $harga_diskon_member = $request->member_harga_pml * (1 - ($request->member_diskon_pml / 100));
+        // $harga_diskon_non_member = $request->non_harga_pml * (1 - ($request->non_diskon_pml / 100));
+        // // Simpan ID toko Pemalang di detailtoko
+        // Detailtoko::create([
+        //     'tokopemalang_id' => $tokopemalang->id,
+        //     'member_harga' => $request->member_harga_pml,
+        //     'member_diskon' => $request->member_diskon_pml,
+        //     'non_member_harga' => $request->non_harga_pml,
+        //     'non_member_diskon' => $request->non_diskon_pml,
+        //     'harga_diskon_member' => $harga_diskon_member,
+        //     'harga_diskon_non' => $harga_diskon_non_member,
+        //     'created_at' => Carbon::now('Asia/Jakarta'),
+        //     'updated_at' => Carbon::now('Asia/Jakarta'),
     
-        ]);
+        // ]);
 
-        // Update atau buat entri baru untuk toko Bumiayu
-        $tokobumiayu = $produk->tokobumiayu->first();
-        if ($tokobumiayu) {
-            $tokobumiayu->member_harga_bmy = $request->member_harga_bmy ?? $tokobumiayu->member_harga_bmy;
-            $tokobumiayu->member_diskon_bmy = $request->member_diskon_bmy ?? $tokobumiayu->member_diskon_bmy;
-            $tokobumiayu->non_harga_bmy = $request->non_harga_bmy ?? $tokobumiayu->non_harga_bmy;
-            $tokobumiayu->non_diskon_bmy = $request->non_diskon_bmy ?? $tokobumiayu->non_diskon_bmy;
-            $tokobumiayu->save();
-        } else {
-            $tokobumiayu = Tokobumiayu::create([
-                'produk_id' => $produk->id,
-                'member_harga_bmy' => $request->member_harga_bmy,
-                'member_diskon_bmy' => $request->member_diskon_bmy,
-                'non_harga_bmy' => $request->non_harga_bmy,
-                'non_diskon_bmy' => $request->non_diskon_bmy,
-            ]);
-        }
+        // // Update atau buat entri baru untuk toko Bumiayu
+        // $tokobumiayu = $produk->tokobumiayu->first();
+        // if ($tokobumiayu) {
+        //     $tokobumiayu->member_harga_bmy = $request->member_harga_bmy ?? $tokobumiayu->member_harga_bmy;
+        //     $tokobumiayu->member_diskon_bmy = $request->member_diskon_bmy ?? $tokobumiayu->member_diskon_bmy;
+        //     $tokobumiayu->non_harga_bmy = $request->non_harga_bmy ?? $tokobumiayu->non_harga_bmy;
+        //     $tokobumiayu->non_diskon_bmy = $request->non_diskon_bmy ?? $tokobumiayu->non_diskon_bmy;
+        //     $tokobumiayu->save();
+        // } else {
+        //     $tokobumiayu = Tokobumiayu::create([
+        //         'produk_id' => $produk->id,
+        //         'member_harga_bmy' => $request->member_harga_bmy,
+        //         'member_diskon_bmy' => $request->member_diskon_bmy,
+        //         'non_harga_bmy' => $request->non_harga_bmy,
+        //         'non_diskon_bmy' => $request->non_diskon_bmy,
+        //     ]);
+        // }
     
-        $harga_diskon_member = $request->member_harga_bmy * (1 - ($request->member_diskon_bmy / 100));
-        $harga_diskon_non_member = $request->non_harga_bmy * (1 - ($request->non_diskon_bmy / 100));
-        // Simpan ID toko Pemalang di detailtoko
-        Detailtoko::create([
-            'tokobumiayu_id' => $tokobumiayu->id,
-            'member_harga' => $request->member_harga_bmy,
-            'member_diskon' => $request->dikon_member_bmy,
-            'non_member_harga' => $request->non_harga_bmy,
-            'non_member_diskon' => $request->non_diskon_bmy,
-            'harga_diskon_member' => $harga_diskon_member,
-            'harga_diskon_non' => $harga_diskon_non_member,
-            'created_at' => Carbon::now('Asia/Jakarta'),
-            'updated_at' => Carbon::now('Asia/Jakarta'),
+        // $harga_diskon_member = $request->member_harga_bmy * (1 - ($request->member_diskon_bmy / 100));
+        // $harga_diskon_non_member = $request->non_harga_bmy * (1 - ($request->non_diskon_bmy / 100));
+        // // Simpan ID toko Pemalang di detailtoko
+        // Detailtoko::create([
+        //     'tokobumiayu_id' => $tokobumiayu->id,
+        //     'member_harga' => $request->member_harga_bmy,
+        //     'member_diskon' => $request->dikon_member_bmy,
+        //     'non_member_harga' => $request->non_harga_bmy,
+        //     'non_member_diskon' => $request->non_diskon_bmy,
+        //     'harga_diskon_member' => $harga_diskon_member,
+        //     'harga_diskon_non' => $harga_diskon_non_member,
+        //     'created_at' => Carbon::now('Asia/Jakarta'),
+        //     'updated_at' => Carbon::now('Asia/Jakarta'),
     
-        ]);
+        // ]);
 
-        // Update atau buat entri baru untuk toko Cilacap
-        $tokocilacap = $produk->tokocilacap->first();
-        if ($tokocilacap) {
-            $tokocilacap->member_harga_clc = $request->member_harga_clc ?? $tokocilacap->member_harga_clc;
-            $tokocilacap->member_diskon_clc = $request->member_diskon_clc ?? $tokocilacap->member_diskon_clc;
-            $tokocilacap->non_harga_clc = $request->non_harga_clc ?? $tokocilacap->non_harga_clc;
-            $tokocilacap->non_diskon_clc = $request->non_diskon_clc ?? $tokocilacap->non_diskon_clc;
-            $tokocilacap->save();
-        } else {
-            $tokocilacap = Tokocilacap::create([
-                'produk_id' => $produk->id,
-                'member_harga_clc' => $request->member_harga_clc,
-                'member_diskon_clc' => $request->member_diskon_clc,
-                'non_harga_clc' => $request->non_harga_clc,
-                'non_diskon_clc' => $request->non_diskon_clc,
-            ]);
-        }
+        // // Update atau buat entri baru untuk toko Cilacap
+        // $tokocilacap = $produk->tokocilacap->first();
+        // if ($tokocilacap) {
+        //     $tokocilacap->member_harga_clc = $request->member_harga_clc ?? $tokocilacap->member_harga_clc;
+        //     $tokocilacap->member_diskon_clc = $request->member_diskon_clc ?? $tokocilacap->member_diskon_clc;
+        //     $tokocilacap->non_harga_clc = $request->non_harga_clc ?? $tokocilacap->non_harga_clc;
+        //     $tokocilacap->non_diskon_clc = $request->non_diskon_clc ?? $tokocilacap->non_diskon_clc;
+        //     $tokocilacap->save();
+        // } else {
+        //     $tokocilacap = Tokocilacap::create([
+        //         'produk_id' => $produk->id,
+        //         'member_harga_clc' => $request->member_harga_clc,
+        //         'member_diskon_clc' => $request->member_diskon_clc,
+        //         'non_harga_clc' => $request->non_harga_clc,
+        //         'non_diskon_clc' => $request->non_diskon_clc,
+        //     ]);
+        // }
     
-        $harga_diskon_member = $request->member_harga_clc * (1 - ($request->member_diskon_clc / 100));
-        $harga_diskon_non_member = $request->non_harga_clc * (1 - ($request->non_diskon_clc / 100));
-        // Simpan ID toko Pemalang di detailtoko
-        Detailtoko::create([
-            'tokocilacap_id' => $tokocilacap->id,
-            'member_harga' => $request->member_harga_clc,
-            'member_diskon' => $request->dikon_member_bmy,
-            'non_member_harga' => $request->non_harga_clc,
-            'non_member_diskon' => $request->non_diskon_clc,
-            'harga_diskon_member' => $harga_diskon_member,
-            'harga_diskon_non' => $harga_diskon_non_member,
-            'created_at' => Carbon::now('Asia/Jakarta'),
-            'updated_at' => Carbon::now('Asia/Jakarta'),
+        // $harga_diskon_member = $request->member_harga_clc * (1 - ($request->member_diskon_clc / 100));
+        // $harga_diskon_non_member = $request->non_harga_clc * (1 - ($request->non_diskon_clc / 100));
+        // // Simpan ID toko Pemalang di detailtoko
+        // Detailtoko::create([
+        //     'tokocilacap_id' => $tokocilacap->id,
+        //     'member_harga' => $request->member_harga_clc,
+        //     'member_diskon' => $request->dikon_member_bmy,
+        //     'non_member_harga' => $request->non_harga_clc,
+        //     'non_member_diskon' => $request->non_diskon_clc,
+        //     'harga_diskon_member' => $harga_diskon_member,
+        //     'harga_diskon_non' => $harga_diskon_non_member,
+        //     'created_at' => Carbon::now('Asia/Jakarta'),
+        //     'updated_at' => Carbon::now('Asia/Jakarta'),
     
-        ]);
+        // ]);
 
         return response()->json(['success' => true]);
     }

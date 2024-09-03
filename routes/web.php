@@ -9,6 +9,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\KlasifikasiController;
 use App\Http\Controllers\Admin\AddpelangganController;
 use App\Http\Controllers\Admin\HargajualController;
+use App\Http\Controllers\Admin\Inquery_hasilpenjualanController;
 use App\Http\Controllers\Admin\Inquery_pemesananprodukController;
 use App\Http\Controllers\Admin\Inquery_pemindahanbarangjadiController;
 use App\Http\Controllers\Admin\Inquery_pemusnahanbarangjadiController;
@@ -264,6 +265,12 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('laporan_pemusnahanbarangjadi', \App\Http\Controllers\Admin\Laporan_pemusnahanbarangjadiController::class);
     Route::get('printReportpemusnahan', [\App\Http\Controllers\Admin\Laporan_pemusnahanbarangjadiController::class, 'printReportpemusnahan']);
 
+    Route::resource('inquery_hasilpenjualan', \App\Http\Controllers\Admin\Inquery_hasilpenjualanController::class);
+    Route::get('barangKeluar', [\App\Http\Controllers\Admin\Inquery_hasilpenjualanController::class, 'barangKeluar']);
+    Route::get('barangRetur', [\App\Http\Controllers\Admin\Inquery_hasilpenjualanController::class, 'barangRetur']);
+
+
+    Route::resource('laporan_hasilpenjualan', \App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class);
 
 
     //TOKO SLAWI

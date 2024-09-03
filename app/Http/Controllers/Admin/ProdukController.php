@@ -12,6 +12,7 @@ use App\Models\Hargajual;
 use App\Models\Tokoslawi;
 use App\Models\Tokobanjaran;
 use App\Models\Stok_tokobanjaran;
+use App\Models\Stokpesanan_tokobanjaran;
 use App\Models\Tokotegal;
 use App\Models\Tokopemalang;
 use App\Models\Tokobumiayu;
@@ -177,6 +178,11 @@ class ProdukController extends Controller
             'jumlah' => 0,
         ]);
     
+          // Simpan data ke tabel stokpesanan_tokobanjaran dengan nilai yang sama seperti stok_tokobanjaran
+        Stokpesanan_tokobanjaran::create([
+        'produk_id' => $produk->id,
+        'jumlah' => 0
+    ]);
         return redirect('admin/produk')->with('success', 'Berhasil menambahkan produk');
     }
     

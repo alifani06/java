@@ -16,17 +16,16 @@
             }, 10); // Adjust the delay time as needed
         });
     </script>
-
     <!-- Content Header (Page header) -->
     <div class="content-header" style="display: none;" id="mainContent">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Penjualan Produk Rinci</h1>
+                    <h1 class="m-0">Inquery Hasil Penjualan BR</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        {{-- <li class="breadcrumb-item active">Laporan penjualan Produk</li> --}}
+                        <li class="breadcrumb-item active">Inquery Hasil Penjualan BR</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -57,22 +56,29 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                        <div class="float-right">
-                            <select class="form-control" id="kategori1" name="kategori">
-                                <option value="">- Pilih -</option>
-                                <option value="global" {{ old('kategori1') == 'global' ? 'selected' : '' }}>Laporan Penjualan Global</option>
-                                <option value="rinci" {{ old('kategori1') == 'rinci' ? 'selected' : '' }}>Laporan Penjualan Rinci</option>
-                            </select>
-                        </div>
-       
-                    <h3 class="card-title">Laporan Penjualan Produk</h3>
+                    <div class="float-right">
+                        <select class="form-control" id="kategori1" name="kategori">
+                            <option value="">- Pilih -</option>
+                            <option value="masuk" {{ old('kategori1') == 'masuk' ? 'selected' : '' }}>Barang Masuk</option>
+                            <option value="keluar" {{ old('kategori1') == 'keluar' ? 'selected' : '' }}>Barang Keluar</option>
+                            <option value="retur" {{ old('kategori1') == 'retur' ? 'selected' : '' }}>Barang Retur</option>
+                        </select>
+                    </div>
+                    <h3 class="card-title">Inquery Hasil Penjualan</h3>
                 </div>
-
                 <!-- /.card-header -->
                  
                 <div class="card-body">
                     <form method="GET" id="form-action">
                         <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <select class="custom-select form-control" id="status" name="status">
+                                <option value="">- Semua Status -</option>
+                                <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
+                                <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
+                            </select>
+                            <label for="status">(Pilih Status)</label>
+                        </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
                                     value="{{ Request::get('tanggal_penjualan') }}" max="{{ date('Y-m-d') }}" />
@@ -84,92 +90,92 @@
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="toko" name="toko_id">
-                                    <option value="">- Semua Toko -</option>
-                                    @foreach ($tokos as $toko)
-                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="toko">(Pilih Toko)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="klasifikasi" name="klasifikasi_id" onchange="filterProduk()">
-                                    <option value="">- Semua Divisi -</option>
-                                    @foreach ($klasifikasis as $klasifikasi)
-                                        <option value="{{ $klasifikasi->id }}" {{ Request::get('klasifikasi_id') == $klasifikasi->id ? 'selected' : '' }}>{{ $klasifikasi->nama }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="klasifikasi">(Pilih Divisi)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="produk" name="produk">
-                                    <option value="">- Semua Produk -</option>
-                                    @foreach ($produks as $produk)
-                                        <option value="{{ $produk->id }}" data-klasifikasi="{{ $produk->klasifikasi_id }}" {{ Request::get('produk') == $produk->id ? 'selected' : '' }}>{{ $produk->nama_produk }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="produk">(Pilih Produk)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <button type="submit" class="btn btn-outline-primary btn-block">
+                                <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
-                                <button type="button" class="btn btn-primary btn-block" onclick="printReportpenjualan()" target="_blank">
-                                    <i class="fas fa-print"></i> Cetak
-                                </button>
+                                
                             </div>
                         </div>
                     </form>
-                    
+
                    
                     <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
                         <thead class="">
                             <tr>
+                                {{-- <th> <input type="checkbox" name="" id="select_all_ids"></th> --}}
                                 <th class="text-center">No</th>
                                 <th>Kode penjualan</th>
                                 <th>Tanggal penjualan</th>
-                                <th>Cabang</th>
-                                <th>Divisi</th>
-                                <th>Produk</th>
+                                <th>Kasir</th>
+                                <th>Pelanggan</th>
+                          
                                 <th>Total</th>
+                                <th class="text-center" width="20">Opsi</th>
                             </tr>
                         </thead>
                         <tbody>
-                             @php
-                            $grandTotal = 0;
-                            $grandTotalFee = 0;
-                        @endphp
                             @foreach ($inquery as $item)
-                            @php
-                            $grandTotal += $item->sub_total;
-                 
-                            @endphp
                                 <tr class="dropdown"{{ $item->id }}>
+                                   
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $item->kode_penjualan }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($item->tanggal_penjualan)->format('d/m/Y H:i') }}</td>
-                                    <td>{{ $item->toko->nama_toko}}</td>
                                     <td>
-                                        @if ($item->detailpenjualanproduk->isNotEmpty())
-                                            {{ $item->detailpenjualanproduk->pluck('produk.klasifikasi.nama')->implode(', ') }}
-                                        @else
-                                            tidak ada
-                                        @endif
-                                    </td>                                    
+                                        {{ $item->kode_penjualan }}
+                                    </td>
                                     <td>
-                                        @if ($item->detailpenjualanproduk->isNotEmpty())
-                                            {{ $item->detailpenjualanproduk->pluck('nama_produk')->implode(', ') }}
+                                        {{ \Carbon\Carbon::parse($item->tanggal_penjualan)->format('d/m/Y H:i') }}
+                                    </td>
+                                    <td>
+                                        {{ $item->kasir }}
+                                    </td>
+                                    <td>
+                                        @if ($item->kode_pelanggan && $item->nama_pelanggan)
+                                            {{ $item->kode_pelanggan }} / {{ $item->nama_pelanggan }}
                                         @else
-                                            tidak ada
+                                            Non Member
                                         @endif
                                     </td>
-                                    <td>{{ number_format($item->sub_total, 0, ',', '.') }}</td>
+                                  
+
+                                    <td>
+                                        {{ number_format($item->sub_total, 0, ',', '.') }}
+                                    </td>
+
+                                    <td class="text-center">
+                                        @if ($item->status == 'posting')
+                                            <button type="button" class="btn btn-success btn-sm">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        @endif
+                                        @if ($item->status == 'unpost')
+                                        <button type="submit"
+                                                class="btn btn-danger btn-sm mt-2">
+                                                <i class="fas fa-times"></i> 
+                                            </button>
+                                        @endif
+                                     
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            @if ($item->status == 'unpost')
+                                               
+                                                    <a class="dropdown-item posting-btn"
+                                                        data-memo-id="{{ $item->id }}">Posting</a>
+                                             
+                                                    <a class="dropdown-item"
+                                                        href="{{ url('admin/inquery_penjualanproduk/' . $item->id . '/edit') }}">Update</a>
+                                                
+                                                    <a class="dropdown-item"
+                                                    href="{{ url('/admin/penjualan_produk/' . $item->id ) }}">Show</a>
+                                                    @endif
+                                            @if ($item->status == 'posting')
+                                                    <a class="dropdown-item unpost-btn"
+                                                        data-memo-id="{{ $item->id }}">Unpost</a>
+                                                    <a class="dropdown-item"
+                                                    href="{{ url('/admin/penjualan_produk/' . $item->id ) }}">Show</a>
+                                            @endif
+                                           
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
-                            <tr>
-                                <td colspan="6" class="text-right"><strong>Grand Total</strong></td>
-                                <td>{{ 'Rp. ' .  number_format($grandTotal, 0, ',', '.') }}</td>
-                            </tr>
                         </tbody>
                     </table>
                     <!-- Modal Loading -->
@@ -189,6 +195,7 @@
             </div>
         </div>
     </section>
+
 
     <!-- /.card -->
     <script>
@@ -211,50 +218,26 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('admin/laporan_penjualanproduk') }}";
+            form.action = "{{ url('admin/inquery_hasilpenjualan') }}";
             form.submit();
         }
+
     </script>
-
-<script>
-    function printReportpenjualan() {
-    const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printReportpenjualan') }}";
-    form.target = "_blank";
-    form.submit();
-}
-
-</script>
 
 <script>
     document.getElementById('kategori1').addEventListener('change', function() {
         var selectedValue = this.value;
 
-        if (selectedValue === 'global') {
-            window.location.href = "{{ url('admin/indexglobal') }}";
-        } else if (selectedValue === 'rinci') {
-            window.location.href = "{{ url('admin/laporan_penjualanproduk') }}";
+        if (selectedValue === 'masuk') {
+            window.location.href = "{{ url('admin/inquery_hasilpenjualan') }}";
+        } else if (selectedValue === 'keluar') {
+            window.location.href = "{{ url('admin/inquery_hasilpenjualan/barangkeluar') }}";
+        }else if (selectedValue === 'retur') {
+            window.location.href = "{{ url('admin/inquery_hasilpenjualan/barangretur') }}";
         }
     });
 </script>
 
-<script>
-    function filterProduk() {
-        var klasifikasiId = document.getElementById('klasifikasi').value;
-        var produkSelect = document.getElementById('produk');
-        var produkOptions = produkSelect.options;
-    
-        for (var i = 0; i < produkOptions.length; i++) {
-            var option = produkOptions[i];
-            if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
-                option.style.display = "block";
-            } else {
-                option.style.display = "none";
-            }
-        }
-    
-        // Reset the selected value of the product select box
-        produkSelect.selectedIndex = 0;
-    }
-    </script>
+
+
 @endsection
