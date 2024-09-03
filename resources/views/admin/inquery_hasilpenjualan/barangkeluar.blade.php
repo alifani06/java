@@ -71,14 +71,27 @@
                 <div class="card-body">
                     <form method="GET" id="form-action">
                         <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <select class="custom-select form-control" id="status" name="status">
-                                <option value="">- Semua Status -</option>
-                                <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
-                                <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
-                            </select>
-                            <label for="status">(Pilih Status)</label>
-                        </div>
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="toko_id" name="toko_id">
+                                    <option value="">- Semua Toko -</option>
+                                    @foreach($tokos as $toko)
+                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
+                                    @endforeach
+                                </select>
+                                <label for="toko_id">(Pilih Toko)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="klasifikasi_id" name="klasifikasi_id">
+                                    <option value="">- Semua Klasifikasi -</option>
+                                    <!-- Populate klasifikasi options dynamically -->
+                                    @foreach($klasifikasis as $klasifikasi)
+                                        <option value="{{ $klasifikasi->id }}" {{ Request::get('klasifikasi_id') == $klasifikasi->id ? 'selected' : '' }}>
+                                            {{ $klasifikasi->nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <label for="klasifikasi_id">(Pilih Klasifikasi)</label>
+                            </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
                                     value="{{ Request::get('tanggal_penjualan') }}" max="{{ date('Y-m-d') }}" />
@@ -89,95 +102,73 @@
                                     value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
-                            <div class="col-md-3 mb-3">
-                                <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
-                                    <i class="fas fa-search"></i> Cari
-                                </button>
-                                
-                            </div>
+                        </div>
+                    
+                    </form>
+                    
+                    <form id="searchForm" method="GET">
+                        <!-- Form fields go here -->
+                    
+                        <div class="col-md-3 mb-3">
+                            <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
+                                <i class="fas fa-search"></i> Cari
+                            </button>
                         </div>
                     </form>
 
-                   
                     <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
-                        <thead class="">
+                        <thead>
                             <tr>
-                                {{-- <th> <input type="checkbox" name="" id="select_all_ids"></th> --}}
                                 <th class="text-center">No</th>
-                                <th>Kode penjualan</th>
-                                <th>Tanggal penjualan</th>
-                                <th>Kasir</th>
-                                <th>Pelanggan</th>
-                          
+                                <th>Tanggal Penjualan</th>
+                                <th>Kode Produk</th>
+                                <th>Nama Produk</th>
+                                <th>Jumlah</th>
+                                <th>Harga</th>
+                                <th>Diskon</th>
                                 <th>Total</th>
-                                <th class="text-center" width="20">Opsi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($inquery as $item)
-                                <tr class="dropdown"{{ $item->id }}>
-                                   
-                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>
-                                        {{ $item->kode_penjualan }}
-                                    </td>
-                                    <td>
-                                        {{ \Carbon\Carbon::parse($item->tanggal_penjualan)->format('d/m/Y H:i') }}
-                                    </td>
-                                    <td>
-                                        {{ $item->kasir }}
-                                    </td>
-                                    <td>
-                                        @if ($item->kode_pelanggan && $item->nama_pelanggan)
-                                            {{ $item->kode_pelanggan }} / {{ $item->nama_pelanggan }}
-                                        @else
-                                            Non Member
-                                        @endif
-                                    </td>
-                                  
-
-                                    <td>
-                                        {{ number_format($item->sub_total, 0, ',', '.') }}
-                                    </td>
-
-                                    <td class="text-center">
-                                        @if ($item->status == 'posting')
-                                            <button type="button" class="btn btn-success btn-sm">
-                                                <i class="fas fa-check"></i>
-                                            </button>
-                                        @endif
-                                        @if ($item->status == 'unpost')
-                                        <button type="submit"
-                                                class="btn btn-danger btn-sm mt-2">
-                                                <i class="fas fa-times"></i> 
-                                            </button>
-                                        @endif
-                                     
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            @if ($item->status == 'unpost')
-                                               
-                                                    <a class="dropdown-item posting-btn"
-                                                        data-memo-id="{{ $item->id }}">Posting</a>
-                                             
-                                                    <a class="dropdown-item"
-                                                        href="{{ url('admin/inquery_penjualanproduk/' . $item->id . '/edit') }}">Update</a>
-                                                
-                                                    <a class="dropdown-item"
-                                                    href="{{ url('/admin/penjualan_produk/' . $item->id ) }}">Show</a>
-                                                    @endif
-                                            @if ($item->status == 'posting')
-                                                    <a class="dropdown-item unpost-btn"
-                                                        data-memo-id="{{ $item->id }}">Unpost</a>
-                                                    <a class="dropdown-item"
-                                                    href="{{ url('/admin/penjualan_produk/' . $item->id ) }}">Show</a>
-                                            @endif
-                                           
-                                        </div>
-                                    </td>
-                                </tr>
+                            @php
+                                $no = 1; // Inisialisasi nomor
+                                $totalJumlah = 0;
+                                $totalDiskon = 0;
+                                $grandTotal = 0;
+                            @endphp
+                            @foreach($finalResults as $item)
+                            @php
+                                $totalJumlah += $item['jumlah'];
+                                $totalDiskon += $item['diskon'];
+                                $grandTotal += $item['total'];
+                            @endphp
+                            <tr>
+                                <td class="text-center">{{ $no++ }}</td> <!-- Nomor urut -->
+                                <td>{{ \Carbon\Carbon::parse($item['tanggal_penjualan'])->format('d/m/Y H:i') }}</td>
+                                <td>{{ $item['kode_lama'] }}</td> <!-- Memanggil kode_lama dari tabel produk -->
+                                <td>{{ $item['nama_produk'] }}</td>
+                                <td style="text-align: right">{{ number_format($item['jumlah'], 0, ',', '.') }}</td>
+                                <td style="text-align: right">{{ number_format($item['harga'], 0, ',', '.') }}</td>
+                                <td style="text-align: right">{{ number_format($item['diskon'], 0, ',', '.') }}</td> <!-- Diskon 10% dari total yang memiliki diskon -->
+                                <td style="text-align: right">{{ number_format($item['total'], 0, ',', '.') }}</td>
+                            </tr>
                             @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="4" class="text-center">Total</th>
+                                <th style="text-align: right">{{ number_format($totalJumlah, 0, ',', '.') }}</th>
+                                <th></th>
+                                <th style="text-align: right">{{ number_format($totalDiskon, 0, ',', '.') }}</th>
+                                <th style="text-align: right">Rp {{ number_format($grandTotal, 0, ',', '.') }}</th>
+                            </tr>
+                        </tfoot>
                     </table>
+                    
+                    
+                    
+                    
+                    
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
                         aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">
@@ -201,27 +192,23 @@
     <script>
         var tanggalAwal = document.getElementById('tanggal_penjualan');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
-        if (tanggalAwal.value == "") {
-            tanggalAkhir.readOnly = true;
-        }
+    
         tanggalAwal.addEventListener('change', function() {
             if (this.value == "") {
                 tanggalAkhir.readOnly = true;
             } else {
                 tanggalAkhir.readOnly = false;
-            };
-            tanggalAkhir.value = "";
-            var today = new Date().toISOString().split('T')[0];
-            tanggalAkhir.value = today;
-            tanggalAkhir.setAttribute('min', this.value);
+                var today = new Date().toISOString().split('T')[0];
+                tanggalAkhir.value = today;
+                tanggalAkhir.setAttribute('min', this.value);
+            }
         });
-        var form = document.getElementById('form-action')
-
+    
         function cari() {
-            form.action = "{{ url('admin/inquery_hasilpenjualan') }}";
+            var form = document.getElementById('form-action');
+            form.action = "{{ route('barangKeluar') }}";
             form.submit();
         }
-
     </script>
 
 <script>
