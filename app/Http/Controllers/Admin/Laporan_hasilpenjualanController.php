@@ -140,31 +140,35 @@ class Laporan_hasilpenjualanController extends Controller
     
         foreach ($inquery as $penjualan) {
             foreach ($penjualan->detailPenjualanProduk as $detail) {
-                $key = $detail->produk_id;
-    
-                if (!isset($finalResults[$key])) {
-                    $finalResults[$key] = [
-                        'tanggal_penjualan' => $penjualan->tanggal_penjualan,
-                        'kode_lama' => $detail->produk->kode_lama,
-                        'nama_produk' => $detail->produk->nama_produk,
-                        'harga' => $detail->produk->harga,
-                        'jumlah' => 0,
-                        'diskon' => 0,
-                        'total' => 0,
-                    ];
-                }
-    
-                // Jumlahkan jumlah dan total
-                $finalResults[$key]['jumlah'] += $detail->jumlah;
-                $finalResults[$key]['total'] += $detail->total;
-    
-                // Hitung diskon 10% dari jumlah * harga
-                if ($detail->diskon > 0) {
-                    $diskonPerItem = $detail->harga * 0.10; // Diskon per unit
-                    $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
+                // Pastikan produk tidak null sebelum mengakses properti
+                if ($detail->produk) {
+                    $key = $detail->produk_id;
+        
+                    if (!isset($finalResults[$key])) {
+                        $finalResults[$key] = [
+                            'tanggal_penjualan' => $penjualan->tanggal_penjualan,
+                            'kode_lama' => $detail->produk->kode_lama,
+                            'nama_produk' => $detail->produk->nama_produk,
+                            'harga' => $detail->produk->harga,
+                            'jumlah' => 0,
+                            'diskon' => 0,
+                            'total' => 0,
+                        ];
+                    }
+        
+                    // Jumlahkan jumlah dan total
+                    $finalResults[$key]['jumlah'] += $detail->jumlah;
+                    $finalResults[$key]['total'] += $detail->total;
+        
+                    // Hitung diskon 10% dari jumlah * harga
+                    if ($detail->diskon > 0) {
+                        $diskonPerItem = $detail->harga * 0.10; // Diskon per unit
+                        $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
+                    }
                 }
             }
         }
+        
     
         $tokos = Toko::all(); // Assuming Toko is a model for your toko table
         $klasifikasis = Klasifikasi::all(); // Assuming Klasifikasi is a model for your klasifikasi table
@@ -644,7 +648,7 @@ class Laporan_hasilpenjualanController extends Controller
     // Output PDF ke browser
     return $dompdf->stream('laporan_barang_keluar.pdf', ['Attachment' => false]);
 }
-
+    
 
 
    

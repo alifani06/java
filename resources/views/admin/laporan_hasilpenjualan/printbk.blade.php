@@ -20,9 +20,10 @@
         }
         table, th, td {
             border: 1px solid black;
+            font-size: 10px;
         }
         th, td {
-            padding: 8px;
+            padding: 4px;
             text-align: left;
         }
         tfoot th {

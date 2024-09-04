@@ -114,12 +114,12 @@ class Laporan_depositController extends Controller
         $tanggal_akhir = $request->tanggal_akhir;
         $status_pelunasan = $request->status_pelunasan;
         $toko_id = $request->toko_id; // Ambil filter toko_id dari request
-        
+    
         // Ambil daftar toko untuk filter
         $tokos = Toko::all();
         
         // Query dasar untuk mengambil data Dppemesanan
-        $inquery = Dppemesanan::with(['pemesananproduk.toko', 'pemesananproduk.metodePembayaran']) // Memuat relasi metodePembayaran
+        $inquery = Dppemesanan::with(['pemesananproduk.toko', 'pemesananproduk.metodePembayaran'])
             ->orderBy('created_at', 'desc');
         
         // Filter berdasarkan status
@@ -134,6 +134,10 @@ class Laporan_depositController extends Controller
             $inquery->whereHas('pemesananproduk', function ($query) use ($toko_id) {
                 $query->where('toko_id', $toko_id);
             });
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        } else {
+            $branchName = 'Semua Toko';
         }
         
         // Filter berdasarkan tanggal pemesanan
@@ -171,9 +175,10 @@ class Laporan_depositController extends Controller
         $inquery = $inquery->get();
         
         // Format tanggal untuk tampilan PDF
-        $formattedStartDate = $tanggal_pemesanan ? Carbon::parse($tanggal_pemesanan)->format('d-m-Y') : 'N/A';
-        $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : 'N/A';
-        
+        $formattedStartDate = $tanggal_pemesanan ? Carbon::parse($tanggal_pemesanan)->translatedFormat('d F Y') : 'N/A';
+        $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->translatedFormat('d F Y') : 'N/A';
+        $currentDateTime = Carbon::now()->translatedFormat('d F Y H:i');
+    
         // Inisialisasi DOMPDF
         $options = new \Dompdf\Options();
         $options->set('isHtml5ParserEnabled', true);
@@ -186,6 +191,8 @@ class Laporan_depositController extends Controller
             'inquery' => $inquery,
             'startDate' => $formattedStartDate,
             'endDate' => $formattedEndDate,
+            'branchName' => $branchName,
+            'currentDateTime' => $currentDateTime,
             'tokos' => $tokos, // Pastikan variabel ini ada
         ])->render();
         
@@ -218,6 +225,7 @@ class Laporan_depositController extends Controller
         // Output PDF ke browser
         return $dompdf->stream('laporan_deposit.pdf', ['Attachment' => false]);
     }
+    
     
     
         

@@ -365,9 +365,9 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'permintaan') {
-            window.location.href = "{{ route('toko_banjaran.pengiriman_barangjadi.index') }}"; 
+            window.location.href = "{{ route('toko_banjaran.pengiriman_tokobanjaran.index') }}"; 
         } else if (selectedValue === 'pemesanan') {
-            window.location.href = "{{ route('toko_banjaran.pengiriman_barangjadi.pengiriman_pemesanan') }}"; 
+            window.location.href = "{{ route('toko_banjaran.pengiriman_tokobanjaran.pengiriman_pemesanan') }}"; 
         }
     });
 </script>
