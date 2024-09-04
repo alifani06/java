@@ -99,16 +99,22 @@
             <!-- Baris tanpa garis tabel -->
             <tr style="border: none;">
                 <td style="text-align: right; border: none;">Total Deposit :</td>
-                <td style="text-align: right; font-weight: bold; border: none;">{{ number_format(, 0, ',', '.') }}</td>
+                <td style="text-align: right">{{ $totalDeposit }}</td>
+
+                {{-- <td style="text-align: right; font-weight: bold; border: none;">{{ number_format(, 0, ',', '.') }}</td> --}}
             </tr>
             <tr style="border: none;">
                 <td style="text-align: right; width: 60%; border: none;">Fee Deposit :</td>
-                <td style="text-align: right; font-weight: bold; width: 40%; border: none;">{{ number_format($, 0, ',', '.') }}</td>
+                <td style="text-align: right">{{ $totalFee }}</td>
+
+                {{-- <td style="text-align: right; font-weight: bold; width: 40%; border: none;">{{ number_format($, 0, ',', '.') }}</td> --}}
             </tr>
             <!-- Baris dengan garis pembatas -->
             <tr style="border-top: 2px solid black;">
                 <td style="text-align: right; border: none;">Sub Total  :</td>
-                <td style="text-align: right; font-weight: bold; border: none;">{{ number_format(, 0, ',', '.') }}</td>
+                <td style="text-align: right">{{ $subTotal }}</td>
+
+                {{-- <td style="text-align: right; font-weight: bold; border: none;">{{ number_format(, 0, ',', '.') }}</td> --}}
             </tr>
            
         </tbody>
