@@ -55,7 +55,7 @@ class Detailpemesananproduk extends Model
     }
     public function produk()
     {
-        return $this->belongsTo(Produk::class, 'produk_id', 'id');
+        return $this->belongsTo(Produk::class, 'produk_id');
     }
     public function pemesananproduk()
     {
