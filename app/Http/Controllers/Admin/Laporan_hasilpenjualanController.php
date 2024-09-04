@@ -561,31 +561,36 @@ class Laporan_hasilpenjualanController extends Controller
     foreach ($inquery as $penjualan) {
         foreach ($penjualan->detailPenjualanProduk as $detail) {
             $produk = $detail->produk;
-            $key = $produk->id; // Menggunakan ID produk sebagai key
-
-            if (!isset($finalResults[$key])) {
-                $finalResults[$key] = [
-                    'tanggal_penjualan' => $penjualan->tanggal_penjualan,
-                    'kode_lama' => $produk->kode_lama,
-                    'nama_produk' => $produk->nama_produk,
-                    'harga' => $produk->harga,
-                    'jumlah' => 0,
-                    'diskon' => 0,
-                    'total' => 0,
-                ];
-            }
-
-            // Jumlahkan jumlah dan total
-            $finalResults[$key]['jumlah'] += $detail->jumlah;
-            $finalResults[$key]['total'] += $detail->total;
-
-            // Hitung diskon 10% dari jumlah * harga
-            if ($detail->diskon > 0) {
-                $diskonPerItem = $produk->harga * 0.10; // Diskon per unit
-                $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
+    
+            // Pastikan produk tidak null sebelum mengakses properti
+            if ($produk) {
+                $key = $produk->id; // Menggunakan ID produk sebagai key
+    
+                if (!isset($finalResults[$key])) {
+                    $finalResults[$key] = [
+                        'tanggal_penjualan' => $penjualan->tanggal_penjualan,
+                        'kode_lama' => $produk->kode_lama,
+                        'nama_produk' => $produk->nama_produk,
+                        'harga' => $produk->harga,
+                        'jumlah' => 0,
+                        'diskon' => 0,
+                        'total' => 0,
+                    ];
+                }
+    
+                // Jumlahkan jumlah dan total
+                $finalResults[$key]['jumlah'] += $detail->jumlah;
+                $finalResults[$key]['total'] += $detail->total;
+    
+                // Hitung diskon 10% dari jumlah * harga
+                if ($detail->diskon > 0) {
+                    $diskonPerItem = $produk->harga * 0.10; // Diskon per unit
+                    $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
+                }
             }
         }
     }
+    
 
     // Ambil data untuk filter
     $tokos = Toko::all(); // Model untuk tabel toko
