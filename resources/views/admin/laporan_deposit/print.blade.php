@@ -7,6 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            font-size: 12px;
         }
         table {
             width: 100%;
@@ -14,14 +15,14 @@
             margin-bottom: 20px;
         }
         table, th, td {
-            border: 1px solid #ddd;
+            border: 1px solid black;
         }
         th, td {
-            padding: 8px;
+            padding: 4px;
             text-align: left;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: white;
         }
         .text-center {
             text-align: center;
@@ -36,7 +37,6 @@
     <div class="header">
         <h1>LAPORAN DEPOSIT</h1>
         <p><strong>Periode:</strong> {{ $tanggal_pemesanan ? $tanggal_pemesanan . ' s/d ' . $tanggal_akhir : 'Hari Ini' }}</p>
-        <p><strong>Status Pelunasan:</strong> {{ $status_pelunasan == 'diambil' ? 'Diambil' : ($status_pelunasan == 'belum_diambil' ? 'Belum Diambil' : 'Semua') }}</p>
         <p><strong>Toko:</strong> {{ $toko_id ? $tokos->find($toko_id)->nama_toko : 'Semua Toko' }}</p>
     </div>
     <table>
