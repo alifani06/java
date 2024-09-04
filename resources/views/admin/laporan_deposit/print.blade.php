@@ -29,7 +29,7 @@
         }
     </style>
 </head>
-{{-- <body>
+<body>
 
     <h2 style="text-align: center; font-size: 28px;">LAPORAN DEPOSIT</h2>
     <div class="text-center">
@@ -117,6 +117,6 @@
         </tbody>
     </table>
     
-</body> --}}
+</body>
 
 </html>
