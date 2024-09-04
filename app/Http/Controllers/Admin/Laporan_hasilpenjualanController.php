@@ -32,6 +32,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Dompdf\Options;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\StokBarangExport;
+use App\Exports\StokBarangExportBM;
 
 
 
@@ -96,8 +99,6 @@ class Laporan_hasilpenjualanController extends Controller
         return view('admin.laporan_hasilpenjualan.index', compact('stokBarangJadi', 'tokos', 'klasifikasis'));
     }
 
-    
-    
     public function barangKeluar(Request $request)
     {
         $status = $request->status;
@@ -655,6 +656,13 @@ class Laporan_hasilpenjualanController extends Controller
 }
     
 
-
+public function exportExcelBK(Request $request)
+{
+    return Excel::download(new StokBarangExport($request), 'BK.xlsx');
+}
+public function exportExcel(Request $request)
+{
+    return Excel::download(new StokBarangExportBM($request), 'BM.xlsx');
+}
    
 }
