@@ -143,6 +143,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('laporan_pemesananproduk', \App\Http\Controllers\Admin\Laporan_pemesananprodukController::class);
     Route::get('print_pemesanan', [\App\Http\Controllers\Admin\Laporan_pemesananprodukController::class, 'print_pemesanan']);
     Route::get('printReportpemesanan', [Laporan_pemesananprodukController::class, 'printReportPemesanan'])->name('printReportPemesanan');
+    Route::get('indexpemesananglobal', [\App\Http\Controllers\Admin\Laporan_pemesananprodukController::class, 'indexpemesananglobal']);
 
 
     Route::resource('penjualan_produk', \App\Http\Controllers\Admin\PenjualanprodukController::class);

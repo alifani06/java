@@ -124,7 +124,7 @@
                             <td>{{ $item->kode_pemesanan }}</td>
                             <td>{{ $subKlasifikasi->nama ?? 'Tidak Diketahui' }}</td>
                             <td>{{ $detail->produk->nama_produk }}</td>
-                            <td>{{ $item->keterangan }}</td>
+                            <td>{{ $item->catatan }}</td>
                             <td style="text-align: right">
                                 {{ number_format($detail->jumlah, 0, ',', '.') }}
                             </td>
