@@ -89,8 +89,6 @@ class Laporan_depositController extends Controller
         return view('admin.laporan_deposit.index', compact('inquery', 'tokos'));
     }
 
-
-
     public function printReportdeposit(Request $request)
     {
         // Ambil parameter filter dari request
@@ -98,29 +96,29 @@ class Laporan_depositController extends Controller
         $tanggal_pemesanan = $request->tanggal_pemesanan;
         $tanggal_akhir = $request->tanggal_akhir;
         $status_pelunasan = $request->status_pelunasan;
-        $toko_id = $request->toko_id; // Ambil filter toko_id dari request
-
+        $toko_id = $request->toko_id;
+    
         // Ambil daftar toko untuk filter
         $tokos = Toko::all();
-
+    
         // Query dasar untuk mengambil data Dppemesanan
-        $inquery = Dppemesanan::with(['pemesananproduk.toko']) // Memuat relasi toko melalui pemesananproduk
+        $inquery = Dppemesanan::with(['pemesananproduk.toko'])
             ->orderBy('created_at', 'desc');
-
+    
         // Filter berdasarkan status
         if ($status) {
             $inquery->whereHas('pemesananproduk', function ($query) use ($status) {
                 $query->where('status', $status);
             });
         }
-
+    
         // Filter berdasarkan toko_id
         if ($toko_id) {
             $inquery->whereHas('pemesananproduk', function ($query) use ($toko_id) {
                 $query->where('toko_id', $toko_id);
             });
         }
-
+    
         // Filter berdasarkan tanggal pemesanan
         if ($tanggal_pemesanan && $tanggal_akhir) {
             $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
@@ -144,23 +142,33 @@ class Laporan_depositController extends Controller
                 $query->whereDate('tanggal_pemesanan', Carbon::today());
             });
         }
-
+    
         // Filter berdasarkan status pelunasan
         if ($status_pelunasan == 'diambil') {
             $inquery->whereNotNull('pelunasan');
         } elseif ($status_pelunasan == 'belum_diambil') {
             $inquery->whereNull('pelunasan');
         }
-
+    
         // Eksekusi query dan dapatkan hasilnya
         $inquery = $inquery->get();
-
+    
+        // Hitung total deposit, fee deposit, dan sub total
+        $totalDeposit = $inquery->sum(function ($deposit) {
+            return (int)$deposit->dp_pemesanan; // Pastikan nilai numerik
+        });
+        $totalFee = $inquery->sum(function ($deposit) {
+            return (int)($deposit->pemesananproduk->total_fee ?? 0); // Pastikan nilai numerik
+        });
+        $subTotal = $totalDeposit + $totalFee;
+    
         // Kirim data ke view cetak
-        $pdf = FacadePdf::loadView('admin.laporan_deposit.print', compact('inquery', 'tokos', 'status', 'tanggal_pemesanan', 'tanggal_akhir', 'status_pelunasan', 'toko_id'));
+        $pdf = FacadePdf::loadView('admin.laporan_deposit.print', compact('inquery', 'tokos', 'status', 'tanggal_pemesanan', 'tanggal_akhir', 'status_pelunasan', 'toko_id', 'totalDeposit', 'totalFee', 'subTotal'));
     
         // Return PDF
         return $pdf->stream('laporan_deposit.pdf');
     }
-
+    
+    
 
 }

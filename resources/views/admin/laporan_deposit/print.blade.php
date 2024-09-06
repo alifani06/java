@@ -46,8 +46,8 @@
                 <th>Cabang</th>
                 <th>Kode Deposit</th>
                 <th>Nama Pelanggan</th>
-                <th>No HP</th>
-                <th>Alamat</th>
+                <th>Metode Bayar</th>
+                <th>Fee Deposit</th>
                 <th>Nominal</th>
                 <th>Status</th> <!-- Tambahkan kolom Status -->
             </tr>
@@ -59,9 +59,16 @@
                     <td>{{ $deposit->pemesananproduk->toko->nama_toko ?? 'Tidak Ada Toko' }}</td> <!-- Akses nama_toko -->
                     <td>{{ $deposit->kode_dppemesanan }}</td>
                     <td>{{ $deposit->pemesananproduk->nama_pelanggan ?? 'Tidak Ada Nama' }}</td>
-                    <td>{{ $deposit->pemesananproduk->telp ?? 'Tidak Ada No HP' }}</td>
-                    <td>{{ $deposit->pemesananproduk->alamat ?? 'Tidak Ada Alamat' }}</td>
-                    <td>{{ 'Rp ' . number_format($deposit->dp_pemesanan, 0, ',', '.') }}</td>
+                    <td>
+                        @if($deposit->pemesananproduk->metodePembayaran)
+                            {{ $deposit->pemesananproduk->metodePembayaran->nama_metode }}
+                        @else
+                            -
+                        @endif
+                    </td>
+                    <td>{{ $deposit->pemesananproduk->total_fee == 'Rp0' ? '-' : $item->pemesananproduk->total_fee }}</td>
+
+                    <td style="text-align: right">{{number_format($deposit->dp_pemesanan, 0, ',', '.') }}</td>
                     <td>
                         @if($deposit->pelunasan)
                             <span>Diambil</span>
@@ -73,5 +80,24 @@
             @endforeach
         </tbody>
     </table>
+   <!-- Tampilkan Total Deposit, Fee Deposit, dan Sub Total dengan format yang benar -->
+<table style="width: 60%; margin-left: auto; margin-right: 0; background-color: rgb(248, 248, 6);" border="0">
+    <tbody>
+        <tr style="border: none;">
+            <td style="text-align: right; border: none;">Total Deposit :</td>
+            <td style="text-align: right">{{number_format($totalDeposit, 0, ',', '.') }}</td>
+        </tr>
+        <tr style="border: none;">
+            <td style="text-align: right; width: 60%; border: none;">Fee Deposit :</td>
+            <td style="text-align: right">{{number_format($totalFee, 0, ',', '.') }}</td>
+        </tr>
+        <tr style="border-top: 2px solid black;">
+            <td style="text-align: right; border: none;">Sub Total :</td>
+            <td style="text-align: right">{{ 'Rp ' . number_format($subTotal, 0, ',', '.') }}</td>
+        </tr>
+    </tbody>
+</table>
+
+    
 </body>
 </html>
