@@ -44,7 +44,7 @@
     <div class="header">
         <h1 class="title">LAPORAN PEMESANAN PRODUK GLOBAL</h1>
 
-        {{-- @php
+        @php
             \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
     
             $formattedStartDate = $startDate ? \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y') : 'Tidak ada';
@@ -54,8 +54,8 @@
 
         <p class="period">
             Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }}<br>
-            Tanggal Cetak: {{ $currentDateTime }}
-        </p> --}}
+            {{-- Tanggal Cetak: {{ $currentDateTime }} --}}
+        </p>
     </div>
 
     <div class="divider"></div>
@@ -86,7 +86,7 @@
                     <tr>
                         <td>{{ $no++ }}</td>
                         <td>{{ $data['klasifikasi'] }}</td>
-                        <td>{{ $data['kode_produk'] }}</td>
+                        <td>{{ $data['kode_lama'] }}</td>
                         <td>{{ $data['nama_produk'] }}</td>
                         <td>{{ $data['benjaran'] }}</td>
                         <td>{{ $data['tegal'] }}</td>
