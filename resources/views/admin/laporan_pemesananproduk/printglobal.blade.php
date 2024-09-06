@@ -15,7 +15,7 @@
         table, th, td {
             border: 1px solid black;
             padding: 4px;
-            text-align: center;
+            text-align: left;
             font-size: 10px;
         }
         th {
@@ -88,19 +88,22 @@
                         <td>{{ $data['klasifikasi'] }}</td>
                         <td>{{ $data['kode_lama'] }}</td>
                         <td>{{ $data['nama_produk'] }}</td>
-                        <td>{{ $data['benjaran'] }}</td>
-                        <td>{{ $data['tegal'] }}</td>
-                        <td>{{ $data['slawi'] }}</td>
-                        <td>{{ $data['pemalang'] }}</td>
-                        <td>{{ $data['bumiayu'] }}</td>
-                        <td>{{ $data['cilacap'] }}</td>
-                        <td>{{ $data['subtotal'] }}</td>
+                        <td style="text-align: right">{{ $data['benjaran'] }}</td>
+                        <td style="text-align: right">{{ $data['tegal'] }}</td>
+                        <td style="text-align: right">{{ $data['slawi'] }}</td>
+                        <td style="text-align: right">{{ $data['pemalang'] }}</td>
+                        <td style="text-align: right">{{ $data['bumiayu'] }}</td>
+                        <td style="text-align: right">{{ $data['cilacap'] }}</td>
+                        <td style="text-align: right">{{ $data['subtotal'] }}</td>
                     </tr>
+                    @php
+                    $totalSubtotal += $data['subtotal'];
+                @endphp
                 @endforeach
             @endforeach
             <tr>
                 <td colspan="10"><strong>Total</strong></td>
-                <td><strong>{{ $totalSubtotal }}</strong></td>
+                <td style="text-align: right" ><strong>{{ $totalSubtotal }}</strong></td>
             </tr>
         </tbody>
     </table>
