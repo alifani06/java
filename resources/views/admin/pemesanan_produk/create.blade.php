@@ -261,6 +261,7 @@
                                         <tr>
                                             <th class="text-center">No</th>
                                             <th>Kode Produk</th>
+                                            <th>Kode Lama</th>
                                             <th>Nama Produk</th>
                                             <th>Harga Member</th>
                                             <th>Diskon Member</th>
@@ -277,6 +278,7 @@
                                             <tr class="pilih-btn"
                                                 data-id="{{ $item->id }}"
                                                 data-kode="{{ $item->kode_produk }}"
+                                                data-lama="{{ $item->kode_lama }}"
                                                 data-catatan="{{ $item->catatanproduk }}"
                                                 data-nama="{{ $item->nama_produk }}"
                                                 data-member="{{ $tokoslawi ? $tokoslawi->member_harga_slw : '' }}"
@@ -285,6 +287,7 @@
                                                 data-diskonnonmember="{{ $tokoslawi ? $tokoslawi->non_diskon_slw : '' }}">
                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td>{{ $item->kode_produk }}</td>
+                                                <td>{{ $item->kode_lama }}</td>
                                                 <td>{{ $item->nama_produk }}</td>
                                                 <td>
                                                     <span class="member_harga_slw">{{ $tokoslawi ? $tokoslawi->member_harga_slw : '' }}</span>
@@ -302,6 +305,7 @@
                                                     <button type="button" class="btn btn-primary btn-sm pilih-btn"
                                                         data-id="{{ $item->id }}"
                                                         data-kode="{{ $item->kode_produk }}"
+                                                        data-lama="{{ $item->kode_lama }}"
                                                         data-catatan="{{ $item->catatanproduk }}"
                                                         data-nama="{{ $item->nama_produk }}"
                                                         data-member="{{ $tokoslawi ? $tokoslawi->member_harga_slw : '' }}"
@@ -443,93 +447,6 @@
             });
         });
     </script>
-    {{-- <script>
-        function getData1() {
-            var metodeId = document.getElementById('nama_metode').value;
-            var fee = document.getElementById('fee');
-            var keterangan = document.getElementById('keterangan');
-            var paymentFields = document.getElementById('payment-fields');
-            var paymentRow = document.getElementById('payment-row');
-            var changeRow = document.getElementById('change-row');
-            
-            // Check if the selected payment method is "Tunai"
-            if (metodeId && document.querySelector('#nama_metode option:checked').text === 'Tunai') {
-                paymentFields.style.display = 'none';
-                paymentRow.style.display = 'block';
-                changeRow.style.display = 'block';
-            } else if (metodeId) {
-                $.ajax({
-                    url: "{{ url('admin/metodebayar/metode') }}" + "/" + metodeId,
-                    type: "GET",
-                    dataType: "json",
-                    success: function(response) {
-                        console.log('Respons dari server:', response);
-    
-                        fee.value = '';
-                        keterangan.value = '';
-                        paymentFields.style.display = 'block';
-    
-                        if (response && response.fee) {
-                            fee.value = response.fee;
-                        }
-                        if (response && response.keterangan) {
-                            keterangan.value = response.keterangan;
-                        }
-    
-                        // Hide payment and change fields for all payment methods
-                        paymentRow.style.display = 'none';
-                        changeRow.style.display = 'none';
-                        
-                        // Update calculations whenever data is fetched
-                        updateCalculations();
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Terjadi kesalahan dalam permintaan AJAX:', error);
-                    }
-                });
-            } else {
-                paymentFields.style.display = 'none';
-                paymentRow.style.display = 'block';
-                changeRow.style.display = 'block';
-                // Reset calculations if no method is selected
-                updateCalculations();
-            }
-        }
-    
-        function updateCalculations() {
-            var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
-            var fee = parseFloat(document.getElementById('fee').value.replace('%', '').trim()) || 0;
-            var totalFee = (subTotal * fee / 100) || 0;
-            var finalTotal = subTotal + totalFee;
-    
-            // Format the values without .00
-            function formatCurrency(value) {
-                var formattedValue = value.toFixed(2).replace(/\.00$/, '');
-                return 'Rp' + formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-            }
-    
-            // Update total fee and final sub total fields
-            document.getElementById('total_fee').value = formatCurrency(totalFee);
-            document.getElementById('sub_total').value = formatCurrency(finalTotal);
-        }
-    
-        // Add event listeners for initialization
-        document.getElementById('nama_metode').addEventListener('change', getData1);
-        document.getElementById('sub_total').addEventListener('input', updateCalculations);
-    
-        // Initialize with "Tunai" as default method
-        document.addEventListener('DOMContentLoaded', function() {
-            var defaultMethod = 'Tunai';
-            var options = document.getElementById('nama_metode').options;
-            for (var i = 0; i < options.length; i++) {
-                if (options[i].text === defaultMethod) {
-                    options[i].selected = true;
-                    break;
-                }
-            }
-            getData1();
-        });
-    </script> --}}
     
     <script>
         function getData1() {
@@ -933,17 +850,18 @@
         $(document).on('click', '.pilih-btn', function() {
             var id = $(this).data('id');
             var kode = $(this).data('kode');
+            var lama = $(this).data('lama');
             var nama = $(this).data('nama');
             var member = $(this).data('member');
             var diskonmember = $(this).data('diskonmember');
             var nonmember = $(this).data('nonmember');
             var diskonnonmember = $(this).data('diskonnonmember');
             
-            getSelectedData(id, kode, nama, member, diskonmember, nonmember, diskonnonmember);
+            getSelectedData(id, kode, lama, nama, member, diskonmember, nonmember, diskonnonmember);
         });
 
         // Fungsi untuk memilih data barang dari modal
-        function getSelectedData(id, kode_produk, nama_produk, member, diskonmember, nonmember, diskonnonmember) {
+        function getSelectedData(id, kode_produk, kode_lama, nama_produk, member, diskonmember, nonmember, diskonnonmember) {
             var urutan = $('#tableProduk').attr('data-urutan');
             var kategori = $('#kategori').val();
             var harga = kategori === 'member' ? member : nonmember;
@@ -952,6 +870,7 @@
             // Set nilai input pada baris yang sesuai
             $('#produk_id-' + urutan).val(id);
             $('#kode_produk-' + urutan).val(kode_produk);
+            $('#kode_lama-' + urutan).val(kode_lama);
             $('#nama_produk-' + urutan).val(nama_produk);
             $('#harga-' + urutan).val(harga);
             $('#diskon-' + urutan).val(diskon);
@@ -1030,6 +949,7 @@
         function itemPembelian(urutan, key, value = null) {
             var produk_id = '';
             var kode_produk = '';
+            var kode_lama = '';
             var nama_produk = '';
             var jumlah = '';
             var diskon = '';
@@ -1040,6 +960,7 @@
             if (value !== null) {
                 produk_id = value.produk_id;
                 kode_produk = value.kode_produk;
+                kode_produk = value.kode_lama;
                 nama_produk = value.nama_produk;
                 jumlah = value.jumlah;
                 diskon = value.diskon;
@@ -1052,6 +973,7 @@
             item_pembelian += '<td style="width: 70px; font-size:14px" class="text-center" id="urutan-' + urutan + '">' + urutan + '</td>'; 
             item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="produk_id-' + urutan + '" name="produk_id[]" value="' + produk_id + '"></div></td>';
             item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
+            item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_lama-' + urutan + '" name="kode_lama[]" value="' + kode_lama + '"></div></td>';
             item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
             item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
             item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')" style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" readonly id="diskon-' + urutan + '" name="diskon[]" value="' + diskon + '" ></div></td>';

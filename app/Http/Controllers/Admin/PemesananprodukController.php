@@ -175,6 +175,7 @@ class PemesananprodukController extends Controller
             for ($i = 0; $i < count($request->produk_id); $i++) {
                 $validasi_produk = Validator::make($request->all(), [
                     'kode_produk.' . $i => 'required',
+                    'kode_lama.' . $i => 'required',
                     'produk_id.' . $i => 'required',
                     'nama_produk.' . $i => 'required',
                     'harga.' . $i => 'required',
@@ -187,6 +188,7 @@ class PemesananprodukController extends Controller
                 $produk_id = $request->produk_id[$i] ?? '';
                 $catatanproduk = $request->catatanproduk[$i] ?? '';
                 $kode_produk = $request->kode_produk[$i] ?? '';
+                $kode_lama = $request->kode_lama[$i] ?? '';
                 $nama_produk = $request->nama_produk[$i] ?? '';
                 $jumlah = $request->jumlah[$i] ?? '';
                 $diskon = $request->diskon[$i] ?? '';
@@ -198,6 +200,7 @@ class PemesananprodukController extends Controller
                     'produk_id' => $produk_id,
                     'catatanproduk' => $catatanproduk,
                     'nama_produk' => $nama_produk,
+                    'kode_lama' => $kode_lama,
                     'jumlah' => $jumlah,
                     'diskon' => $diskon,
                     'harga' => $harga,
@@ -250,6 +253,7 @@ class PemesananprodukController extends Controller
                     'produk_id' => $data_pesanan['produk_id'],
                     'catatanproduk' => $data_pesanan['catatanproduk'],
                     'kode_produk' => $data_pesanan['kode_produk'],
+                    'kode_lama' => $data_pesanan['kode_lama'],
                     'nama_produk' => $data_pesanan['nama_produk'],
                     'jumlah' => $data_pesanan['jumlah'],
                     'diskon' => $data_pesanan['diskon'],

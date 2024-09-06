@@ -7,11 +7,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Data Deposit</h1>
+                    <h1 class="m-0">Laporan Data Deposit Rinci</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Laporan Data Deposit</li>
+                        <li class="breadcrumb-item active">Laporan Data Deposit Rinci</li>
                     </ol>
                 </div>
             </div>
@@ -148,7 +148,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('admin/laporan_deposit') }}";
+            form.action = "{{ url('admin/indexrinci') }}";
             form.submit();
         }
 
@@ -169,7 +169,7 @@
 <script>
     function printReport() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printReportdeposit') }}";
+    form.action = "{{ url('admin/printReportdepositrinci') }}";
     form.target = "_blank";
     form.submit();
 }

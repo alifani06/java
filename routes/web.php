@@ -209,7 +209,9 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::resource('inquery_deposit', \App\Http\Controllers\Admin\Inquery_depositController::class);
     Route::resource('laporan_deposit', \App\Http\Controllers\Admin\Laporan_depositController::class);
+    Route::get('indexrinci', [\App\Http\Controllers\Admin\Laporan_depositController::class, 'indexrinci']);
     Route::get('printReportdeposit', [\App\Http\Controllers\Admin\Laporan_depositController::class, 'printReportdeposit']);
+    Route::get('printReportdepositrinci', [\App\Http\Controllers\Admin\Laporan_depositController::class, 'printReportdepositrinci']);
 
     Route::resource('data_stokbarangjadi', \App\Http\Controllers\Admin\Data_stokbarangjadiController::class);
 
