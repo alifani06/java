@@ -344,33 +344,33 @@ class Laporan_pemesananprodukController extends Controller
     {
         // Tangkap data dari request
         $status = htmlspecialchars($request->input('status'));
-        $tanggal_pemesanan = $request->input('start_date');
-        $tanggal_akhir = $request->input('end_date');
-        $toko_id = htmlspecialchars($request->input('toko_id'));
+        $tanggalPemesanan = $request->input('tanggal_pemesanan');
+        $tanggalAkhir = $request->input('tanggal_akhir');
+        $tokoId = htmlspecialchars($request->input('toko_id'));
     
         // Query untuk mendapatkan data pemesanan produk
         $query = Pemesananproduk::with(['toko', 'detailpemesananproduk.produk.klasifikasi'])
             ->when($status, function ($query, $status) {
                 return $query->where('status', $status);
             })
-            ->when($tanggal_pemesanan && $tanggal_akhir, function ($query) use ($tanggal_pemesanan, $tanggal_akhir) {
-                $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
-                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-                return $query->whereBetween('tanggal_pemesanan', [$tanggal_pemesanan, $tanggal_akhir]);
+            ->when($tanggalPemesanan && $tanggalAkhir, function ($query) use ($tanggalPemesanan, $tanggalAkhir) {
+                $tanggalPemesanan = Carbon::parse($tanggalPemesanan)->startOfDay();
+                $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
+                return $query->whereBetween('tanggal_pemesanan', [$tanggalPemesanan, $tanggalAkhir]);
             })
-            ->when($tanggal_pemesanan && !$tanggal_akhir, function ($query) use ($tanggal_pemesanan) {
-                $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
-                return $query->where('tanggal_pemesanan', '>=', $tanggal_pemesanan);
+            ->when($tanggalPemesanan && !$tanggalAkhir, function ($query) use ($tanggalPemesanan) {
+                $tanggalPemesanan = Carbon::parse($tanggalPemesanan)->startOfDay();
+                return $query->where('tanggal_pemesanan', '>=', $tanggalPemesanan);
             })
-            ->when(!$tanggal_pemesanan && $tanggal_akhir, function ($query) use ($tanggal_akhir) {
-                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-                return $query->where('tanggal_pemesanan', '<=', $tanggal_akhir);
+            ->when(!$tanggalPemesanan && $tanggalAkhir, function ($query) use ($tanggalAkhir) {
+                $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
+                return $query->where('tanggal_pemesanan', '<=', $tanggalAkhir);
             })
-            ->when(!$tanggal_pemesanan && !$tanggal_akhir, function ($query) {
+            ->when(!$tanggalPemesanan && !$tanggalAkhir, function ($query) {
                 return $query->whereDate('tanggal_pemesanan', Carbon::today());
             })
-            ->when($toko_id && $toko_id != '0', function ($query) use ($toko_id) {
-                return $query->where('toko_id', $toko_id);
+            ->when($tokoId && $tokoId != '0', function ($query) use ($tokoId) {
+                return $query->where('toko_id', $tokoId);
             })
             ->orderBy('id', 'DESC')
             ->get();
@@ -421,8 +421,8 @@ class Laporan_pemesananprodukController extends Controller
         }
     
         // Format tanggal untuk tampilan PDF
-        $formattedStartDate = $tanggal_pemesanan ? Carbon::parse($tanggal_pemesanan)->format('d-m-Y') : null;
-        $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : null;
+        $formattedStartDate = $tanggalPemesanan ? Carbon::parse($tanggalPemesanan)->format('d-m-Y') : null;
+        $formattedEndDate = $tanggalAkhir ? Carbon::parse($tanggalAkhir)->format('d-m-Y') : null;
     
         // Buat PDF menggunakan Facade PDF
         $pdf = FacadePdf::loadView('admin.laporan_pemesananproduk.printglobal', [
@@ -432,7 +432,7 @@ class Laporan_pemesananprodukController extends Controller
             }, $groupedData)),
             'startDate' => $formattedStartDate,
             'endDate' => $formattedEndDate,
-            'toko_id' => $toko_id,
+            'toko_id' => $tokoId,
         ]);
     
         // Menambahkan nomor halaman di kanan bawah
@@ -458,6 +458,7 @@ class Laporan_pemesananprodukController extends Controller
         // Output PDF ke browser
         return $pdf->stream('Laporan_Pemesanan_Produk.pdf');
     }
+    
     
 
     
