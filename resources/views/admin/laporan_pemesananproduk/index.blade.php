@@ -230,7 +230,7 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'global') {
-            window.location.href = "{{ url('admin/indexglobal') }}";
+            window.location.href = "{{ url('admin/indexpemesananglobal') }}";
         } else if (selectedValue === 'rinci') {
             window.location.href = "{{ url('admin/laporan_pemesananproduk') }}";
         }

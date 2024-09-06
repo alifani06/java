@@ -32,7 +32,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class Laporan_pemesananprodukController extends Controller
+class Laporan_pemesananprController extends Controller
 {
  
     public function index(Request $request)

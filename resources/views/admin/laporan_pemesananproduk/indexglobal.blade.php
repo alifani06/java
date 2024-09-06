@@ -22,7 +22,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Pemesanan Produk Rinci </h1>
+                    <h1 class="m-0">Laporan Pemesanan Produk Global </h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -65,7 +65,7 @@
                             </select>
                         </div>
        
-                    <h3 class="card-title">Laporan Pemesanan Produk</h3>
+                    <h3 class="card-title">Laporan Pemesanan Produk Gobal</h3>
                 </div>
 
                 <!-- /.card-header -->
@@ -114,7 +114,7 @@
                                 <button type="submit" class="btn btn-outline-primary btn-block">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
-                                <button type="button" class="btn btn-primary btn-block" onclick="printReportpemesnan()" target="_blank">
+                                <button type="button" class="btn btn-primary btn-block" onclick="printReportpemesnanglobal()" target="_blank">
                                     <i class="fas fa-print"></i> Cetak
                                 </button>
                             </div>
@@ -216,9 +216,9 @@
     </script>
 
 <script>
-    function printReportpemesnan() {
+    function printReportpemesnanglobal() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printReportpemesanan') }}";
+    form.action = "{{ url('admin/printReportpemesananglobal') }}";
     form.target = "_blank";
     form.submit();
 }
@@ -230,7 +230,7 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'global') {
-            window.location.href = "{{ url('admin/indexglobal') }}";
+            window.location.href = "{{ url('admin/indexpemesananglobal') }}";
         } else if (selectedValue === 'rinci') {
             window.location.href = "{{ url('admin/laporan_pemesananproduk') }}";
         }

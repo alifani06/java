@@ -146,7 +146,7 @@
                                                 @foreach ($produks as $item)
                                                     <tr class="pilih-btn" data-id="{{ $item->id }}" data-kode="{{ $item->kode_produk }}" data-nama="{{ $item->nama_produk }}">
                                                         <td class="text-center">{{ $loop->iteration }}</td>
-                                                        <td>{{ $item->kode_produk }}</td>
+                                                        <td>{{ $item->kode_lama }}</td>
                                                         <td>{{ $item->nama_produk }}</td>
                                                         <td class="text-center">
                                                             <button type="button" class="btn btn-primary btn-sm pilih-btn" data-id="{{ $item->id }}" data-kode="{{ $item->kode_produk }}" data-nama="{{ $item->nama_produk }}">
