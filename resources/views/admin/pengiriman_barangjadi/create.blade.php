@@ -155,19 +155,22 @@
                                                     <th>Kode Produk</th>
                                                     <th>Kode Lama</th>
                                                     <th>Nama Produk</th>
+                                                    <th>Stok</th>
                                                     <th>Opsi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($detailStokBarangjadi as $item)
+                                                @foreach ($uniqueStokBarangjadi as $item)
                                                     <tr class="pilih-btn"
                                                         data-id="{{ $item->produk->id }}"
                                                         data-kode="{{ $item->produk->kode_produk }}"
                                                         data-nama="{{ $item->produk->nama_produk }}">
+                                                        
                                                         <td class="text-center">{{ $loop->iteration }}</td>
                                                         <td>{{ $item->produk ? $item->produk->kode_produk : 'N/A' }}</td>
                                                         <td>{{ $item->produk ? $item->produk->kode_lama : 'N/A' }}</td>
                                                         <td>{{ $item->produk ? $item->produk->nama_produk : 'N/A' }}</td>
+                                                        <td>{{ $item['stok'] }}</td>
                                                         <td class="text-center">
                                                             <button type="button" class="btn btn-primary btn-sm pilih-btn"
                                                                     data-id="{{ $item->produk->id }}"
@@ -184,6 +187,7 @@
                                 </div>
                             </div>
                         </div>
+                        
                         
                     </form>
                     

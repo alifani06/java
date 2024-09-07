@@ -100,6 +100,73 @@ class Inquery_pengirimanbarangjadiController extends Controller{
         return view('admin.inquery_pengirimanbarangjadi.show', compact('pengirimanBarangJadi', 'firstItem'));
     }
 
+    public function edit($id)
+    {
+        // Ambil data detail stok barang jadi yang terkait dengan ID
+        $detailStokBarangjadi = Detail_stokbarangjadi::with('produk')
+            ->where('id', $id)
+            ->firstOrFail();
+        
+        // Ambil data produk yang terkait dengan ID
+        $uniqueStokBarangjadi = collect([$detailStokBarangjadi]);
+        
+        // Ambil klasifikasi yang terkait dengan produk yang ada
+        $produkIds = $uniqueStokBarangjadi->pluck('produk_id')->toArray();
+        $klasifikasiIds = $uniqueStokBarangjadi->pluck('klasifikasi_id')->toArray();
+        
+        $klasifikasis = Klasifikasi::whereIn('id', $klasifikasiIds)
+            ->with(['produks' => function ($query) use ($produkIds) {
+                $query->whereIn('id', $produkIds);
+            }])
+            ->get();
+        
+        // Ambil semua toko
+        $tokos = Toko::all();
+        
+        return view('admin.inquery_pengirimanbarangjadi.edit', compact('klasifikasis', 'tokos', 'uniqueStokBarangjadi'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Validasi input
+        $request->validate([
+            'toko_id' => 'required|exists:tokos,id',
+            'produk_id.*' => 'required|exists:produks,id',
+            'jumlah.*' => 'required|numeric|min:0'
+        ]);
+        
+        // Ambil data detail stok barang jadi yang terkait dengan ID
+        $detailStokBarangjadi = Detail_stokbarangjadi::findOrFail($id);
+        
+        // Update data detail stok barang jadi
+        $detailStokBarangjadi->toko_id = $request->toko_id;
+        $detailStokBarangjadi->save();
+        
+        // Loop untuk update produk
+        foreach ($request->produk_id as $index => $produk_id) {
+            $detail = Detail_stokbarangjadi::where('id', $id)
+                ->where('produk_id', $produk_id)
+                ->first();
+            
+            if ($detail) {
+                $detail->jumlah = $request->jumlah[$index];
+                $detail->save();
+            } else {
+                // Jika data produk tidak ditemukan, tambahkan data baru
+                Detail_stokbarangjadi::create([
+                    'id' => $id,
+                    'produk_id' => $produk_id,
+                    'jumlah' => $request->jumlah[$index],
+                    'toko_id' => $request->toko_id
+                ]);
+            }
+        }
+        
+        return redirect()->route('admin.pengiriman_barangjadi.index')->with('success', 'Data berhasil diperbarui');
+    }
+
+    
+
 
         public function unpost_pengirimanbarangjadi($id)
         {
@@ -148,27 +215,7 @@ class Inquery_pengirimanbarangjadiController extends Controller{
             return response()->json(['success' => 'Berhasil mengubah status semua produk dan detail terkait dengan kode_pengiriman yang sama.']);
         }
 
-        // public function posting_pengirimanbarangjadi($id)
-        // {
-        //     // Ambil data stok barang berdasarkan ID
-        //     $stok = Pengiriman_barangjadi::where('id', $id)->first();
-
-        //     // Pastikan data ditemukan
-        //     if (!$stok) {
-        //         return back()->with('error', 'Data tidak ditemukan.');
-        //     }
-
-        //     // Ambil kode_input dari stok yang diambil
-        //     $kodeInput = $stok->kode_pengiriman;
-
-        //     // Update status untuk semua stok dengan kode_pengiriman yang sama di tabel Pengiriman_barangjadi
-        //     Pengiriman_barangjadi::where('kode_pengiriman', $kodeInput)->update([
-        //         'status' => 'posting'
-        //     ]);
-
-        //     return back()->with('success', 'Berhasil mengubah status semua produk dan detail terkait dengan kode_input yang sama.');
-        // }
-
+       
 
     public function print($id)
     {
@@ -208,39 +255,6 @@ class Inquery_pengirimanbarangjadiController extends Controller{
         return response()->json(['success' => false], 404);
     }
     
-    
-
-    public function edit($id)
-    {
-        $stok_barangjadi = Stok_Barangjadi::findOrFail($id);
-        $klasifikasis = Klasifikasi::all(); // Menyediakan daftar klasifikasi
-
-        return view('admin.stok_barangjadi.edit', compact('stok_barangjadi', 'klasifikasis'));
-    }
-
-    // Method untuk memproses update data
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'klasifikasi_id' => 'required|exists:klasifikasis,id',
-            'produk' => 'required|array',
-            'produk.*.stok' => 'required|integer|min:0',
-        ]);
-
-        $stok_barangjadi = Stok_Barangjadi::findOrFail($id);
-        $stok_barangjadi->klasifikasi_id = $request->klasifikasi_id;
-        $stok_barangjadi->save();
-
-        // Update stok produk
-        foreach ($request->produk as $produkId => $data) {
-            // Lakukan update stok produk sesuai kebutuhan
-            // Misalnya, update stok produk dalam pivot table jika ada
-            $stok_barangjadi->produks()->updateExistingPivot($produkId, ['stok' => $data['stok']]);
-        }
-
-        return redirect()->route('stokbarangjadi.edit', $id)->with('success', 'Data berhasil diperbarui!');
-    }
-
         public function destroy($id)
         {
             DB::transaction(function () use ($id) {

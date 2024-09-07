@@ -112,9 +112,7 @@ class AksesController extends Controller
                 'laporan pemindahanbarangjadi',
                 'laporan estimasiproduksi',
                 'laporan stoktoko',
-                'laporan hasilpenjualan',
-
-
+                'laporan hasilpenjualan',   
                 //banjaran
                 'stok tokobanjaran', 
                 'pemesanan banjaran', 

@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\Inquery_hasilpenjualanController;
 use App\Http\Controllers\Admin\Inquery_pemesananprodukController;
 use App\Http\Controllers\Admin\Inquery_pemindahanbarangjadiController;
 use App\Http\Controllers\Admin\Inquery_pemusnahanbarangjadiController;
+use App\Http\Controllers\Admin\Inquery_pengirimanbarangjadiController;
 use App\Http\Controllers\Admin\Inquery_penjualanprodukController;
 use App\Http\Controllers\Admin\Inquery_returbarangjadiController;
 use App\Http\Controllers\Admin\Inquery_stokbarangjadiController;
@@ -226,6 +227,9 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('inquery_pengirimanbarangjadi', \App\Http\Controllers\Admin\Inquery_pengirimanbarangjadiController::class);
     Route::get('inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Admin\Inquery_pengirimanbarangjadiController::class, 'unpost_pengirimanbarangjadi']);
     Route::get('inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Admin\Inquery_pengirimanbarangjadiController::class, 'posting_pengirimanbarangjadi']);
+    // Route::get('inquery_pengirimanbarangjadi/{id}/edit', [Inquery_pengirimanbarangjadiController::class, 'edit'])->name('inquery_pengirimanbarangjadi.edit');
+    // Route::get('admin/inquery_pengirimanbarangjadi/{id}/edit', [Inquery_pengirimanbarangjadiController::class, 'edit'])->name('inquery_pengirimanbarangjadi.edit');
+    // Route::put('admin/inquery_pengirimanbarangjadi/{id}', [Inquery_pengirimanbarangjadiController::class, 'update'])->name('inquery_pengirimanbarangjadi.update');
 
     Route::resource('laporan_pengirimanbarangjadi', \App\Http\Controllers\Admin\Laporan_pengirimanbarangjadiController::class);
     Route::get('print', [\App\Http\Controllers\Admin\Laporan_pengirimanbarangjadiController::class, 'printReport']);
@@ -380,7 +384,7 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
     Route::get('indexrinci', [\App\Http\Controllers\Toko_slawi\Laporan_permintaanprodukController::class, 'indexrinci']);
     Route::get('printReportRinci', [\App\Http\Controllers\Toko_slawi\Laporan_permintaanprodukController::class, 'printReportRinci']);
 
-    Route::resource('inquery_pengirimanbarangjadi', \App\Http\Controllers\Toko_slawi\Inquery_pengirimanbarangjadiController::class);
+    // Route::resource('inquery_pengirimanbarangjadi', \App\Http\Controllers\Toko_slawi\Inquery_pengirimanbarangjadiController::class);
     Route::get('inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_slawi\Inquery_pengirimanbarangjadiController::class, 'unpost_pengirimanbarangjadi']);
     Route::get('inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_slawi\Inquery_pengirimanbarangjadiController::class, 'posting_pengirimanbarangjadi']);
 
@@ -492,7 +496,7 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('indexrinci', [\App\Http\Controllers\Toko_banjaran\Laporan_permintaanprodukController::class, 'indexrinci']);
     Route::get('printReportRinci', [\App\Http\Controllers\Toko_banjaran\Laporan_permintaanprodukController::class, 'printReportRinci']);
 
-    Route::resource('inquery_pengirimanbarangjadi', \App\Http\Controllers\Toko_banjaran\Inquery_pengirimanbarangjadiController::class);
+    // Route::resource('inquery_pengirimanbarangjadi', \App\Http\Controllers\Toko_banjaran\Inquery_pengirimanbarangjadiController::class);
     Route::get('inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_banjaran\Inquery_pengirimanbarangjadiController::class, 'unpost_pengirimanbarangjadi']);
     Route::get('inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_banjaran\Inquery_pengirimanbarangjadiController::class, 'posting_pengirimanbarangjadi']);
 

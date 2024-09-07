@@ -149,23 +149,26 @@
     <table class="info-table" style="width: 100%; margin-bottom: 10px;">
         <tr>
             <td style="width: 20%;"><strong>Kode Permintaan</strong></td>
-            <td style="width: 40%;">: {{ $detailStokBarangJadi->first()->kode_input }}</td>
+            <td style="width: 40%;">: {{ $kodeInput }}</td>
             <td></td>
         </tr>
         <tr>
             <td><strong>Tanggal</strong></td>
-            <td>: {{ \Carbon\Carbon::now()->format('d-m-Y H:i') }}</td>
+            <td>: {{ \Carbon\Carbon::parse($tanggalInput)->format('d-m-Y H:i') }}</td> <!-- Format tanggal_input -->
             <td></td>
         </tr>
         <tr>
-            <td><strong>Divisi</strong></td>
-            <td>: {{ $klasifikasi }}</td>
+            <td><strong></strong></td>
+            <td></td>
             <td style="text-align: right; width: 30%; font-style: italic"><strong>Cetak :</strong> {{ \Carbon\Carbon::now()->format('d-m-Y H:i') }}</td>
-
         </tr>
+        
     </table>
+    
 
     <!-- Detail Produk -->
+    @foreach($detailStokBarangJadi as $klasifikasi => $details)
+    <h3>{{ $klasifikasi }}</h3>
     <table>
         <thead>
             <tr>
@@ -180,17 +183,17 @@
             @php
                 $totalJumlah = 0;
             @endphp
-            @foreach($detailStokBarangJadi as $key => $detail)
-            @php
-                $totalJumlah += $detail->stok;
-            @endphp
-            <tr>
-                <td>{{ $key + 1 }}</td> 
-                <td>{{ $detail->produk->kode_produk }}</td>
-                <td>{{ $detail->produk->subklasifikasi->nama }}</td>
-                <td>{{ $detail->produk->nama_produk }}</td>
-                <td style="text-align: right">{{ $detail->stok }}</td>
-            </tr>
+            @foreach($details as $key => $detail)
+                @php
+                    $totalJumlah += $detail->stok;
+                @endphp
+                <tr>
+                    <td>{{ $key + 1 }}</td> 
+                    <td>{{ $detail->produk->kode_lama }}</td>
+                    <td>{{ $detail->produk->subklasifikasi->nama }}</td>
+                    <td>{{ $detail->produk->nama_produk }}</td>
+                    <td style="text-align: right">{{ $detail->stok }}</td>
+                </tr>
             @endforeach
             <tr class="total-row">
                 <td colspan="4">Total</td>
@@ -198,6 +201,9 @@
             </tr>
         </tbody>
     </table>
+    <br>
+@endforeach
+
     <!-- Tanda Tangan -->
     <div class="signature-container">
         <div class="signature-row">

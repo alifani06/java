@@ -137,7 +137,8 @@
                                                 {{-- <a class="dropdown-item posting-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Posting</a> --}}
                                          
-                                                <a class="dropdown-item"
+                                                    {{-- <a class="dropdown-item" href="{{ route('inquery_pengirimanbarangjadi.edit', $firstItem->id) }}">Update</a> --}}
+                                                    <a class="dropdown-item"
                                                     href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
                                             
                                                 <a class="dropdown-item"

@@ -33,11 +33,20 @@ class ProdukController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $produks = Produk::all();
-        return view('admin.produk.index', compact('produks'));
+        $search = $request->input('search'); // Ambil input pencarian
+        
+        $produks = Produk::when($search, function ($query, $search) {
+            return $query->where('nama_produk', 'like', '%' . $search . '%')
+                         ->orWhere('kode_lama', 'like', '%' . $search . '%');
+        })
+        ->paginate(10); // Menampilkan 10 data per halaman
+    
+        return view('admin.produk.index', compact('produks', 'search'));
     }
+    
+    
 
     public function getkategori($id)
     {

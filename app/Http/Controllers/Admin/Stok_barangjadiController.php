@@ -151,20 +151,83 @@ public function store(Request $request)
     }
     
 
-    public function print($id)
+
+//     public function print($id)
+// {
+//     $kodeInput = Stok_barangjadi::where('id', $id)->value('kode_input');
+
+//     // Jika kode_input tidak ditemukan, tampilkan pesan error
+//     if (!$kodeInput) {
+//         return redirect()->back()->with('error', 'Data tidak ditemukan.');
+//     }
+
+//     // Ambil semua data dengan kode_input yang sama, dikelompokkan berdasarkan klasifikasi produk
+//     $detailStokBarangJadi = Stok_barangjadi::with(['produk.subklasifikasi', 'produk.klasifikasi'])
+//         ->where('kode_input', $kodeInput)
+//         ->get()
+//         ->groupBy('produk.klasifikasi.nama');  // Mengelompokkan data berdasarkan nama klasifikasi
+
+//     // Inisialisasi DOMPDF
+//     $options = new Options();
+//     $options->set('isHtml5ParserEnabled', true);
+//     $options->set('isRemoteEnabled', true); // Jika menggunakan URL eksternal untuk gambar atau CSS
+
+//     $dompdf = new Dompdf($options);
+
+//     // Memuat konten HTML dari view
+//     $html = view('admin.stok_barangjadi.print', [
+//         'detailStokBarangJadi' => $detailStokBarangJadi,
+//         'kodeInput' => $kodeInput,
+//     ])->render();
+
+//     $dompdf->loadHtml($html);
+
+//     // Set ukuran kertas dan orientasi
+//     $dompdf->setPaper('A4', 'portrait');
+
+//     // Render PDF
+//     $dompdf->render();
+
+//     // Menambahkan nomor halaman di kanan bawah
+//     $canvas = $dompdf->getCanvas();
+//     $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+//         $text = "Page $pageNumber of $pageCount";
+//         $font = $fontMetrics->getFont('Arial', 'normal');
+//         $size = 10;
+
+//         // Menghitung lebar teks
+//         $width = $fontMetrics->getTextWidth($text, $font, $size);
+
+//         // Mengatur koordinat X dan Y
+//         $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+//         $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+
+//         // Menambahkan teks ke posisi yang ditentukan
+//         $canvas->text($x, $y, $text, $font, $size);
+//     });
+
+//     // Output PDF ke browser
+//     return $dompdf->stream('laporan_stok_barangjadi.pdf', ['Attachment' => false]);
+// }
+
+public function print($id)
 {
-    $kodeInput = Stok_barangjadi::where('id', $id)->value('kode_input');
-    
-    // Jika kode_input tidak ditemukan, tampilkan pesan error
-    if (!$kodeInput) {
+    // Ambil kode_input berdasarkan id stok_barangjadi
+    $stokBarang = Stok_barangjadi::where('id', $id)->first();
+
+    // Jika data tidak ditemukan
+    if (!$stokBarang) {
         return redirect()->back()->with('error', 'Data tidak ditemukan.');
     }
-    
-    // Ambil semua data dengan kode_input yang sama
-    $detailStokBarangJadi = Stok_barangjadi::with(['produk.subklasifikasi'])->where('kode_input', $kodeInput)->get();
 
-    // Ambil nama klasifikasi/divisi, misalnya dari produk atau tabel klasifikasi
-    $klasifikasi = $detailStokBarangJadi->first()->produk->klasifikasi->nama ?? 'Tidak Diketahui';
+    // Ambil semua data dengan kode_input yang sama, dikelompokkan berdasarkan klasifikasi produk
+    $detailStokBarangJadi = Stok_barangjadi::with(['produk.subklasifikasi', 'produk.klasifikasi'])
+        ->where('kode_input', $stokBarang->kode_input)
+        ->get()
+        ->groupBy('produk.klasifikasi.nama');  // Mengelompokkan data berdasarkan nama klasifikasi
+
+    // Ambil klasifikasi dari produk pertama, jika ada
+    $klasifikasi = optional($detailStokBarangJadi->first())->produk->klasifikasi->nama ?? 'Tidak ada klasifikasi';
 
     // Inisialisasi DOMPDF
     $options = new Options();
@@ -176,9 +239,9 @@ public function store(Request $request)
     // Memuat konten HTML dari view
     $html = view('admin.stok_barangjadi.print', [
         'detailStokBarangJadi' => $detailStokBarangJadi,
+        'kodeInput' => $stokBarang->kode_input,
+        'tanggalInput' => $stokBarang->tanggal_input,  // Mengirimkan tanggal_input ke view
         'klasifikasi' => $klasifikasi,
-        'kodeInput' => $kodeInput,
-
     ])->render();
 
     $dompdf->loadHtml($html);
@@ -209,8 +272,13 @@ public function store(Request $request)
 
     // Output PDF ke browser
     return $dompdf->stream('laporan_stok_barangjadi.pdf', ['Attachment' => false]);
+}
 
-    }
+
+
+
+
+
 
 
 public function unpost_stokbarangjadi($id)
