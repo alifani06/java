@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Produks')
+@section('title', 'Laporan BK')
 
 @section('content')
     <div id="loadingSpinner" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
@@ -21,11 +21,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan BK </h1>
+                    <h1 class="m-0">Laporan Barang Keluar </h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Laporan BK </li>
+                        <li class="breadcrumb-item active">Laporan Barang Keluar </li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -64,7 +64,7 @@
                             <option value="retur" {{ old('kategori1') == 'retur' ? 'selected' : '' }}>Barang Retur</option>
                         </select>
                     </div>
-                    <h3 class="card-title">Laporan BK</h3>
+                    <h3 class="card-title">Laporan Barang Keluar</h3>
                 </div>
                 <!-- /.card-header -->
                  
@@ -224,21 +224,39 @@
         if (selectedValue === 'masuk') {
             window.location.href = "{{ url('admin/laporan_hasilpenjualan') }}";
         } else if (selectedValue === 'keluar') {
-            window.location.href = "{{ url('admin/laporan_hasilpenjualan/barangkeluar') }}";
+            window.location.href = "{{ url('admin/barangKeluar') }}";
         }else if (selectedValue === 'retur') {
-            window.location.href = "{{ url('admin/laporan_hasilpenjualan/barangretur') }}";
+            window.location.href = "{{ url('admin/barangRetur') }}";
         }
     });
 </script>
 
+
 <script>
     function printReport() {
+        var tanggalAwal = document.getElementById('tanggal_penjualan').value;
+        var tanggalAkhir = document.getElementById('tanggal_akhir').value;
+
+        if (tanggalAwal === "" || tanggalAkhir === "") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tanggal Belum Dipilih!',
+                text: 'Silakan isi tanggal terlebih dahulu.',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#3085d6',
+                background: '#fff',
+                customClass: {
+                    popup: 'animated bounceIn'
+                }
+            });
+            return;
+        }
+
     const form = document.getElementById('form-action');
     form.action = "{{ url('admin/printLaporanBK') }}";
     form.target = "_blank";
     form.submit();
-}
-
+    }
 </script>
 
 <script>

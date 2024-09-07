@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Produks')
+@section('title', 'Laporan BR')
 
 @section('content')
     <div id="loadingSpinner" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
@@ -21,11 +21,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan BR </h1>
+                    <h1 class="m-0">Laporan Barang Retur </h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Laporan BR </li>
+                        <li class="breadcrumb-item active">Laporan Barang Retur </li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -64,7 +64,7 @@
                             <option value="retur" {{ old('kategori1') == 'retur' ? 'selected' : '' }}>Barang Retur</option>
                         </select>
                     </div>
-                    <h3 class="card-title">Laporan BK</h3>
+                    <h3 class="card-title">Laporan Barang Retur</h3>
                 </div>
                 <!-- /.card-header -->
                  
@@ -93,9 +93,9 @@
                                 <label for="klasifikasi_id">(Pilih Klasifikasi)</label>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
-                                    value="{{ Request::get('tanggal_penjualan') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_penjualan">(Dari Tanggal)</label>
+                                <input class="form-control" id="tanggal_retur" name="tanggal_retur" type="date"
+                                    value="{{ Request::get('tanggal_retur') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_retur">(Dari Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
@@ -121,43 +121,32 @@
                             </button>
                         </div>
                     </form>
-
                     <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
-                                <th>Tanggal Penjualan</th>
-                                <th>Kode Produk</th>
+                                <th>Tanggal Retur</th>
+                                <th>Kode Retur</th>
                                 <th>Nama Produk</th>
                                 <th>Jumlah</th>
                                 <th>Harga</th>
-                                <th>Diskon</th>
                                 <th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @php
-                                $no = 1; // Inisialisasi nomor
-                                $totalJumlah = 0;
-                                $totalDiskon = 0;
-                                $grandTotal = 0;
-                            @endphp
-                            @foreach($finalResults as $item)
-                            @php
-                                $totalJumlah += $item['jumlah'];
-                                $totalDiskon += $item['diskon'];
-                                $grandTotal += $item['total'];
-                            @endphp
-                            <tr>
-                                <td class="text-center">{{ $no++ }}</td> <!-- Nomor urut -->
-                                <td>{{ \Carbon\Carbon::parse($item['tanggal_penjualan'])->format('d/m/Y H:i') }}</td>
-                                <td>{{ $item['kode_lama'] }}</td> <!-- Memanggil kode_lama dari tabel produk -->
-                                <td>{{ $item['nama_produk'] }}</td>
-                                <td style="text-align: right">{{ number_format($item['jumlah'], 0, ',', '.') }}</td>
-                                <td style="text-align: right">{{ number_format($item['harga'], 0, ',', '.') }}</td>
-                                <td style="text-align: right">{{ number_format($item['diskon'], 0, ',', '.') }}</td> <!-- Diskon 10% dari total yang memiliki diskon -->
-                                <td style="text-align: right">{{ number_format($item['total'], 0, ',', '.') }}</td>
-                            </tr>
+                            @php $no = 1; @endphp
+                            @foreach($stokBarangJadi as $returGroup)
+                                @foreach($returGroup as $retur)
+                                <tr>
+                                    <td class="text-center">{{ $no++ }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($retur['tanggal_retur'])->format('d/m/Y H:i') }}</td>
+                                    <td>{{ $retur->kode_retur }}</td>
+                                    <td>{{ $retur->produk->nama_produk }}</td>
+                                    <td style="text-align: right">{{ number_format($retur->jumlah, 0, ',', '.') }}</td>
+                                    <td style="text-align: right">{{ number_format($retur->produk->harga, 0, ',', '.') }}</td>
+                                    <td style="text-align: right">{{ number_format($retur->jumlah * $retur->produk->harga, 0, ',', '.') }}</td>
+                                </tr>
+                                @endforeach
                             @endforeach
                         </tbody>
                         <tfoot>
@@ -165,16 +154,11 @@
                                 <th colspan="4" class="text-center">Total</th>
                                 <th style="text-align: right">{{ number_format($totalJumlah, 0, ',', '.') }}</th>
                                 <th></th>
-                                <th style="text-align: right">{{ number_format($totalDiskon, 0, ',', '.') }}</th>
                                 <th style="text-align: right">Rp {{ number_format($grandTotal, 0, ',', '.') }}</th>
                             </tr>
                         </tfoot>
                     </table>
-                    
-                    
-                    
-                    
-                    
+
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
                         aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">
@@ -196,7 +180,7 @@
 
     <!-- /.card -->
     <script>
-        var tanggalAwal = document.getElementById('tanggal_penjualan');
+        var tanggalAwal = document.getElementById('tanggal_retur');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
     
         tanggalAwal.addEventListener('change', function() {
@@ -212,8 +196,8 @@
     
         function cari() {
             var form = document.getElementById('form-action');
-            form.action = "{{ route('barangKeluar') }}";
-            form.submit();
+            form.action = "{{ route('barangRetur') }}";
+            form.submit();  
         }
     </script>
 
@@ -224,27 +208,45 @@
         if (selectedValue === 'masuk') {
             window.location.href = "{{ url('admin/laporan_hasilpenjualan') }}";
         } else if (selectedValue === 'keluar') {
-            window.location.href = "{{ url('admin/laporan_hasilpenjualan/barangkeluar') }}";
+            window.location.href = "{{ url('admin/barangKeluar') }}";
         }else if (selectedValue === 'retur') {
-            window.location.href = "{{ url('admin/laporan_hasilpenjualan/barangretur') }}";
+            window.location.href = "{{ url('admin/barangRetur') }}";
         }
     });
 </script>
 
 <script>
     function printReport() {
-    const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printLaporanBK') }}";
-    form.target = "_blank";
-    form.submit();
-}
+        var tanggalAwal = document.getElementById('tanggal_retur').value;
+        var tanggalAkhir = document.getElementById('tanggal_akhir').value;
 
+        if (tanggalAwal === "" || tanggalAkhir === "") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tanggal Belum Dipilih!',
+                text: 'Silakan isi tanggal terlebih dahulu.',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#3085d6',
+                background: '#fff',
+                customClass: {
+                    popup: 'animated bounceIn'
+                }
+            });
+            return;
+        }
+
+        const form = document.getElementById('form-action');
+        form.action = "{{ url('admin/printLaporanBR') }}";
+        form.target = "_blank";
+        form.submit();
+    }
 </script>
+
 
 <script>
     function exportExcelBK() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printExcelBk') }}";
+    form.action = "{{ url('admin/printExcelBR') }}";
     form.target = "_blank";
     form.submit();
 }

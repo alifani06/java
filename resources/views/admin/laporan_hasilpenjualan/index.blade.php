@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'BM')
+@section('title', 'Laporan BM')
 
 @section('content')
     <div id="loadingSpinner" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan BM</h1>
+                    <h1 class="m-0">Laporan Barang Masuk</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -75,7 +75,7 @@
                             <option value="retur" {{ old('kategori1') == 'retur' ? 'selected' : '' }}>Barang Retur</option>
                         </select>
                     </div>
-                    <h3 class="card-title">Laporan BM</h3>
+                    <h3 class="card-title">Laporan Barang Masuk</h3>
                 </div>
                 
                 <div class="card-body">
@@ -231,12 +231,32 @@
 
 <script>
     function printReport() {
-    const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printLaporanBm') }}";
-    form.target = "_blank";
-    form.submit();
-}
+        var tanggalAwal = document.getElementById('tanggal_pengiriman').value;
+        var tanggalAkhir = document.getElementById('tanggal_akhir').value;
+
+        if (tanggalAwal === "" || tanggalAkhir === "") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tanggal Belum Dipilih!',
+                text: 'Silakan isi tanggal terlebih dahulu.',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#3085d6',
+                background: '#fff',
+                customClass: {
+                    popup: 'animated bounceIn'
+                }
+            });
+            return;
+        }
+
+        const form = document.getElementById('form-action');
+        form.action = "{{ url('admin/printLaporanBm') }}";
+        form.target = "_blank";
+        form.submit();
+    }
 </script>
+
+
 
 <script>
     function exportExcel() {

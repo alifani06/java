@@ -111,4 +111,10 @@ class Produk extends Model
     {
         return $this->hasMany(Detail_stokbarangjadi::class, 'produk_id');
     }
+
+    public function returBarangJadi()
+{
+    return $this->hasMany(Retur_barangjadi::class, 'produk_id');
+}
+
 }

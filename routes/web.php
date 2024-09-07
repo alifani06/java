@@ -280,9 +280,11 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('barangKeluar', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'barangKeluar']);
     Route::get('barangRetur', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'barangRetur']);
     Route::get('barangKeluar', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'barangKeluar'])->name('barangKeluar');
+    Route::get('barangRetur', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'barangRetur'])->name('barangRetur');
     Route::get('/print-report', [Laporan_hasilpenjualanController::class, 'printReport'])->name('print.report');
     Route::get('printLaporanBm', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'printLaporanBm']);
     Route::get('printLaporanBK', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'printLaporanBK']);
+    Route::get('printLaporanBR', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'printLaporanBR']);
     Route::get('printExcelBm', [Laporan_hasilpenjualanController::class, 'exportExcel'])->name('printExcelBm');
     Route::get('printExcelBk', [Laporan_hasilpenjualanController::class, 'exportExcelBK'])->name('printExcelBk');
 
