@@ -153,6 +153,7 @@
             </a>
         </li>
         @endif
+
         @if (auth()->check() && auth()->user()->menu['metode pembayaran'])
         <li class="nav-item">
             <a href="{{ url('admin/metode_pembayaran') }}"
@@ -183,7 +184,7 @@
         </li>
         @endif
 
-        @if (auth()->check() && auth()->user()->menu['data stokretur'])
+        {{-- @if (auth()->check() && auth()->user()->menu['data stokretur']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/data_stokretur') }}"
                 class="nav-link {{ request()->is('admin/data_stokretur*') ? 'active' : '' }}">
@@ -191,7 +192,7 @@
                 <p style="font-size: 14px;">Data Stok Retur</p>
             </a>
         </li>
-        @endif
+        {{-- @endif --}}
 
     </ul>
 </li>
@@ -234,7 +235,7 @@
         </p>
     </a>
     <ul class="nav nav-treeview">
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['pemesanan produk']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/pemesanan_produk') }}"
                 class="nav-link {{ request()->is('admin/pemesanan_produk*') ? 'active' : '' }}">
@@ -244,7 +245,7 @@
         </li>
         {{-- @endif --}}
 
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['penjualan produk']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/penjualan_produk') }}"
                 class="nav-link {{ request()->is('admin/penjualan_produk*') ? 'active' : '' }}">
@@ -253,7 +254,9 @@
             </a>
         </li>
         {{-- @endif --}}
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+
+
+        {{-- @if (auth()->check() && auth()->user()->menu['harga jual']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/hargajual') }}"
                 class="nav-link {{ request()->is('admin/hargajual*') ? 'active' : '' }}">
@@ -263,7 +266,7 @@
         </li>
         {{-- @endif --}}
 
-          {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+          {{-- @if (auth()->check() && auth()->user()->menu['permintaan produk']) --}}
           <li class="nav-item">
             <a href="{{ url('admin/permintaan_produk') }}"
                 class="nav-link {{ request()->is('admin/permintaan_produk*') ? 'active' : '' }}">
@@ -272,7 +275,8 @@
             </a>
         </li>
         {{-- @endif --}}
-          {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+
+          {{-- @if (auth()->check() && auth()->user()->menu['stok barangjadi']) --}}
           <li class="nav-item">
             <a href="{{ url('admin/stok_barangjadi') }}"
                 class="nav-link {{ request()->is('admin/stok_barangjadi*') ? 'active' : '' }}">
@@ -282,7 +286,7 @@
         </li>
         {{-- @endif --}}
     
-          {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+          {{-- @if (auth()->check() && auth()->user()->menu['pengiriman barangjadi']) --}}
           <li class="nav-item">
             <a href="{{ url('admin/pengiriman_barangjadi') }}"
                 class="nav-link {{ request()->is('admin/pengiriman_barangjadi*') ? 'active' : '' }}">
@@ -292,7 +296,7 @@
         </li>
         {{-- @endif --}}
 
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['retur barangjadi']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/retur_barangjadi') }}"
                 class="nav-link {{ request()->is('admin/retur_barangjadi*') ? 'active' : '' }}">
@@ -302,7 +306,7 @@
         </li>
         {{-- @endif --}}
 
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['pemindahan barangjadi']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/pemindahan_barangjadi') }}"
                 class="nav-link {{ request()->is('admin/pemindahan_barangjadi*') ? 'active' : '' }}">
@@ -312,7 +316,7 @@
         </li>
         {{-- @endif --}}
 
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['pemusnahan barangjadi']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/pemusnahan_barangjadi') }}"
                 class="nav-link {{ request()->is('admin/pemusnahan_barangjadi*') ? 'active' : '' }}">
@@ -322,7 +326,7 @@
         </li>
         {{-- @endif --}}
 
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['estimasi produksi']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/estimasi_produksi') }}"
                 class="nav-link {{ request()->is('admin/estimasi_produksi*') ? 'active' : '' }}">
@@ -379,7 +383,8 @@
         </p>
     </a>
     <ul class="nav nav-treeview">
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+
+        {{-- @if (auth()->check() && auth()->user()->menu['inquery pemesananproduk']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/inquery_pemesananproduk') }}"
                 class="nav-link {{ request()->is('admin/inquery_pemesananproduk*') ? 'active' : '' }}">
@@ -389,7 +394,7 @@
         </li>
         {{-- @endif --}}
 
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['inquery penjualanproduk']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/inquery_penjualanproduk') }}"
                 class="nav-link {{ request()->is('admin/inquery_penjualanproduk*') ? 'active' : '' }}">
@@ -399,7 +404,7 @@
         </li>
         {{-- @endif --}}
 
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['inquery perubahanharga']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/inquery_perubahanharga') }}"
                 class="nav-link {{ request()->is('admin/inquery_perubahanharga*') ? 'active' : '' }}">
@@ -409,7 +414,7 @@
         </li>
         {{-- @endif --}}
         
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['inquery permintaanproduk']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/inquery_permintaanproduk') }}"
                 class="nav-link {{ request()->is('admin/inquery_permintaanproduk*') ? 'active' : '' }}">
@@ -421,7 +426,7 @@
         </li>
         {{-- @endif --}}
 
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['inquery stokbarangjadi']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/inquery_stokbarangjadi') }}"
                 class="nav-link {{ request()->is('admin/inquery_stokbarangjadi*') ? 'active' : '' }}">
@@ -431,7 +436,7 @@
         </li>
         {{-- @endif --}}
 
-          {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+          {{-- @if (auth()->check() && auth()->user()->menu['inquery pengirimanbarangjadi']) --}}
           <li class="nav-item">
             <a href="{{ url('admin/inquery_pengirimanbarangjadi') }}"
                 class="nav-link {{ request()->is('admin/inquery_pengirimanbarangjadi*') ? 'active' : '' }}">
@@ -441,6 +446,7 @@
         </li>
         {{-- @endif --}}
 
+        {{-- @if (auth()->check() && auth()->user()->menu['inquery returbarangjadi']) --}}
           <li class="nav-item">
             <a href="{{ url('admin/inquery_returbarangjadi') }}"
                 class="nav-link {{ request()->is('admin/inquery_returbarangjadi*') ? 'active' : '' }}">
@@ -449,6 +455,8 @@
             </a>
         </li>
         {{-- @endif --}}
+
+        {{-- @if (auth()->check() && auth()->user()->menu['inquery pemusnahanbarangjadi']) --}}
           <li class="nav-item">
             <a href="{{ url('admin/inquery_pemusnahanbarangjadi') }}"
                 class="nav-link {{ request()->is('admin/inquery_pemusnahanbarangjadi*') ? 'active' : '' }}">
@@ -458,6 +466,7 @@
         </li>
         {{-- @endif --}}
 
+        {{-- @if (auth()->check() && auth()->user()->menu['inquery pemindahanbarangjadi']) --}}
           <li class="nav-item">
             <a href="{{ url('admin/inquery_pemindahanbarangjadi') }}"
                 class="nav-link {{ request()->is('admin/inquery_pemindahanbarangjadi*') ? 'active' : '' }}">
@@ -467,6 +476,7 @@
         </li>
         {{-- @endif --}}
 
+        {{-- @if (auth()->check() && auth()->user()->menu['inquery estimasiproduksi']) --}}
           <li class="nav-item">
             <a href="{{ url('admin/inquery_estimasiproduksi') }}"
                 class="nav-link {{ request()->is('admin/inquery_estimasiproduksi*') ? 'active' : '' }}">
@@ -475,6 +485,8 @@
             </a>
         </li>
         {{-- @endif --}}
+
+        {{-- @if (auth()->check() && auth()->user()->menu['inquery deposit']) --}}
           <li class="nav-item">
             <a href="{{ url('admin/inquery_deposit') }}"
                 class="nav-link {{ request()->is('admin/inquery_deposit*') ? 'active' : '' }}">
@@ -484,7 +496,7 @@
         </li>
         {{-- @endif --}}
 
-        {{-- @endif --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['inquery hasilpenjualan']) --}}
           <li class="nav-item">
             <a href="{{ url('admin/inquery_hasilpenjualan') }}"
                 class="nav-link {{ request()->is('admin/inquery_hasilpenjualan*') ? 'active' : '' }}">
@@ -540,7 +552,7 @@
         </p>
     </a>
     <ul class="nav nav-treeview">
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['laporan pemesananproduk']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/laporan_pemesananproduk') }}"
                 class="nav-link {{ request()->is('admin/laporan_pemesananproduk*') ? 'active' : '' }}">
@@ -550,7 +562,7 @@
         </li>
         {{-- @endif --}}
 
-        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['laporan penjualanproduk']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/laporan_penjualanproduk') }}"
                 class="nav-link {{ request()->is('admin/laporan_penjualanproduk*') ? 'active' : '' }}">
@@ -560,7 +572,7 @@
         </li>
         {{-- @endif --}}
 
-              {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['laporan perubahanharga']) --}}
               <li class="nav-item">
                 <a href="{{ url('admin/laporan_perubahanharga') }}"
                     class="nav-link {{ request()->is('admin/laporan_perubahanharga*') ? 'active' : '' }}">
@@ -568,9 +580,9 @@
                     <p style="font-size: 14px;">Laporan Perubahan Harga</p>
                 </a>
             </li>
-            {{-- @endif --}}
+        {{-- @endif --}}
 
-              {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+         {{-- @if (auth()->check() && auth()->user()->menu['laporan permintaanproduk']) --}}
               <li class="nav-item">
                 <a href="{{ url('admin/laporan_permintaanproduk') }}"
                     class="nav-link {{ request()->is('admin/laporan_permintaanproduk*') ? 'active' : '' }}">
@@ -578,7 +590,9 @@
                     <p style="font-size: 14px;">Laporan Permintaan Produk</p>
                 </a>
             </li>
-            {{-- @endif --}}
+        {{-- @endif --}}
+
+        {{-- @if (auth()->check() && auth()->user()->menu['laporan deposit']) --}}
               <li class="nav-item">
                 <a href="{{ url('admin/laporan_deposit') }}"
                     class="nav-link {{ request()->is('admin/laporan_deposit*') ? 'active' : '' }}">
@@ -586,9 +600,9 @@
                     <p style="font-size: 14px;">Laporan Deposit</p>
                 </a>
             </li>
-            {{-- @endif --}}
+        {{-- @endif --}}
 
-              {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['laporan stokbarangjadi']) --}}
               <li class="nav-item">
                 <a href="{{ url('admin/laporan_stokbarangjadi') }}"
                     class="nav-link {{ request()->is('admin/laporan_stokbarangjadi*') ? 'active' : '' }}">
@@ -596,9 +610,9 @@
                     <p style="font-size: 14px;">Laporan Stok Barang Jadi</p>
                 </a>
             </li>
-            {{-- @endif --}}
+        {{-- @endif --}}
 
-              {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['laporan pengirimanbarangjadi']) --}}
               <li class="nav-item">
                 <a href="{{ url('admin/laporan_pengirimanbarangjadi') }}"
                     class="nav-link {{ request()->is('admin/laporan_pengirimanbarangjadi*') ? 'active' : '' }}">
@@ -606,9 +620,9 @@
                     <p style="font-size: 14px;">Laporan Pengiriman Barang</p>
                 </a>
             </li>
-            {{-- @endif --}}
+        {{-- @endif --}}
 
-              {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['laporan returbarangjadi']) --}}
               <li class="nav-item">
                 <a href="{{ url('admin/laporan_returbarangjadi') }}"
                     class="nav-link {{ request()->is('admin/laporan_returbarangjadi*') ? 'active' : '' }}">
@@ -616,9 +630,9 @@
                     <p style="font-size: 14px;">Laporan Retur Barang</p>
                 </a>
             </li>
-            {{-- @endif --}}
+        {{-- @endif --}}
 
-              {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['laporan pemusnahanbarangjadi']) --}}
               <li class="nav-item">
                 <a href="{{ url('admin/laporan_pemusnahanbarangjadi') }}"
                     class="nav-link {{ request()->is('admin/laporan_pemusnahanbarangjadi*') ? 'active' : '' }}">
@@ -626,9 +640,9 @@
                     <p style="font-size: 13px;">Laporan Pemusnahan Barang</p>
                 </a>
             </li>
-            {{-- @endif --}}
+        {{-- @endif --}}
 
-              {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['laporan pemindahanbarangjadi']) --}}
               <li class="nav-item">
                 <a href="{{ url('admin/laporan_pemindahanbarangjadi') }}"
                     class="nav-link {{ request()->is('admin/laporan_pemindahanbarangjadi*') ? 'active' : '' }}">
@@ -636,9 +650,9 @@
                     <p style="font-size: 13px;">Laporan Pemindahan Barang</p>
                 </a>
             </li>
-            {{-- @endif --}}
+        {{-- @endif --}}
 
-              {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['laporan estimasiproduksi']) --}}
               <li class="nav-item">
                 <a href="{{ url('admin/laporan_estimasiproduksi') }}"
                     class="nav-link {{ request()->is('admin/laporan_estimasiproduksi*') ? 'active' : '' }}">
@@ -646,9 +660,9 @@
                     <p style="font-size: 14px;">Laporan Estimasi Produksi</p>
                 </a>
             </li>
-            {{-- @endif --}}
+        {{-- @endif --}}
 
-            {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['laporan stoktoko']) --}}
               <li class="nav-item">
                 <a href="{{ url('admin/laporan_stoktoko') }}"
                     class="nav-link {{ request()->is('admin/laporan_stoktoko*') ? 'active' : '' }}">
@@ -656,9 +670,9 @@
                     <p style="font-size: 14px;">Laporan Stok Toko</p>
                 </a>
             </li>
-            {{-- @endif --}}
+        {{-- @endif --}}
 
-            {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['laporan hasilpenjualan']) --}}
               <li class="nav-item">
                 <a href="{{ url('admin/laporan_hasilpenjualan') }}"
                     class="nav-link {{ request()->is('admin/laporan_hasilpenjualan*') ? 'active' : '' }}">
@@ -666,65 +680,9 @@
                     <p style="font-size: 14px;">Laporan Hasil Penjualan</p>
                 </a>
             </li>
-            {{-- @endif --}}
+        {{-- @endif --}}
     </ul>
 </li>
-
-{{-- <li
-    class="nav-item {{ request()->is('admin/stok_tokoslawi*') ||
-    request()->is('admin/retur_tokoslawi*')||
-    request()->is('admin/pengiriman_tokoslawi*')
-  
-        ? 'menu-open'
-        : '' }}">
-    <a href="#"
-        class="nav-link {{ request()->is('admin/stok_tokoslawi*') ||
-        request()->is('admin/retur_tokoslawi*')|| 
-        request()->is('admin/rpengirimantokoslawi*') 
-      
-            ? 'active'
-            : '' }}">
-
-        <i class="nav-icon fas fa-grip-horizontal"></i>
-        <p>
-            <strong style="color: rgb(255, 255, 255);">TOKO SLAWI</strong>
-            <i class="right fas fa-angle-left"></i>
-        </p>
-    </a>
-    <ul class="nav nav-treeview">
-        @if (auth()->check() && auth()->user()->menu['karyawan'])
-        <li class="nav-item">
-            <a href="{{ url('admin/stok_tokoslawi') }}"
-                class="nav-link {{ request()->is('admin/stok_tokoslawi*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Stok Toko Slawi</p>
-            </a>
-        </li>
-        @endif
-
-        @if (auth()->check() && auth()->user()->menu['karyawan'])
-        <li class="nav-item">
-            <a href="{{ url('admin/retur_tokoslawi') }}"
-                class="nav-link {{ request()->is('admin/retur_tokoslawi*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Retur Toko Slawi</p>
-            </a>
-        </li>
-        @endif
-
-        @if (auth()->check() && auth()->user()->menu['karyawan'])
-        <li class="nav-item">
-            <a href="{{ url('admin/pengiriman_tokoslawi') }}"
-                class="nav-link {{ request()->is('admin/pengiriman_tokoslawi*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Pengiriman Toko Slawi</p>
-            </a>
-        </li>
-        @endif
-    </ul>
-</li> --}}
-
-
 
 
 <li class="nav-header">Profile</li>

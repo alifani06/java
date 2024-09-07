@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Assuming you have a list of classifications available globally in JavaScript
     @foreach ($klasifikasis as $klasifikasi)
-        item_pembelian += '<option value="{{ $klasifikasi->id }}"' + (keterangan === '{{ $klasifikasi->id }}' ? ' selected' : '') + '>{{ $klasifikasi->nama }}</option>';
+       item_pembelian += '<option value="{{ $klasifikasi->id }}"' + (keterangan === '{{ $klasifikasi->id }}' ? ' selected' : '') + '>{{ $klasifikasi->nama }}</option>';
     @endforeach
 
     item_pembelian += '<option value="produk_gagal"' + (keterangan === 'produk_gagal' ? ' selected' : '') + '>PRODUK GAGAL</option>';

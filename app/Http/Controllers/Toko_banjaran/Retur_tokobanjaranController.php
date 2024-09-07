@@ -80,7 +80,7 @@ class Retur_tokobanjaranController extends Controller{
             'jumlah' => 'required|array',
             'jumlah.*' => 'integer|min:1',
             'keterangan' => 'required|array',
-            'keterangan.*' => 'in:produk gagal,oper,sampel',
+            'keterangan.*' => 'in:produk_gagal,oper,sampel',
         ]);
 
         $kode = $this->kode();
