@@ -527,7 +527,6 @@
             '<tr>' +
             '<th style="font-size:14px" class="text-center">No</th>' +
             '<!-- Kolom kode_produk tidak ditampilkan -->' +
-            '<th style="font-size:14px">produk id</th>' +
             '<th style="font-size:14px">Kode Lama</th>' +
             '<th style="font-size:14px">Nama Produk</th>' +
             '<th style="font-size:14px">Harga</th>' +
@@ -541,8 +540,8 @@
         response.products.forEach((product, index) => {
             formHtml += '<tr id="pembelian-' + index + '">' +
                 '<td style="width: 70px; font-size:14px" class="text-center urutan">' + (index + 1) + '</td>' +
-                '<td  >' + // Menyembunyikan kolom kode_produk
-                '   <input  style="font-size:14px" readonly type="text" class="form-control produk_id" name="produk_id[]" value="' + product.produk_id + '">' +
+                '<td hidden >' + // Menyembunyikan kolom kode_produk
+                '   <input hidden style="font-size:14px" readonly type="text" class="form-control produk_id" name="produk_id[]" value="' + product.produk_id + '">' +
                 '</td>' +
                 '<td hidden>' + // Menyembunyikan kolom kode_produk
                 '   <input hidden style="font-size:14px" readonly type="text" class="form-control kode_produk" name="kode_produk[]" value="' + product.kode_produk + '">' +
@@ -593,13 +592,12 @@
     }
 
 
-
-function addRow() {
+    function addRow() {
     itemCounter++;
     var newRow = '<tr id="row-' + itemCounter + '">' +
         '<td style="width: 70px; font-size:14px" class="text-center urutan">' + (itemCounter + 1) + '</td>' +
-        '<td >' + 
-        '   <input  style="font-size:14px" type="text" class="form-control produk_id" name="produk_id[]" id="produk_id_' + itemCounter + '" value="" oninput="fetchProductData(' + itemCounter + ')">' +
+        '<td hidden >' + 
+        '   <input hidden style="font-size:14px" type="text" class="form-control produk_id" name="produk_id[]" id="produk_id_' + itemCounter + '" value="" oninput="fetchProductData(' + itemCounter + ')">' +
         '</td>' +
         '<td hidden>' + 
         '   <input hidden style="font-size:14px" type="text" class="form-control kode_produk" name="kode_produk[]" id="kode_produk_' + itemCounter + '" value="" oninput="fetchProductData(' + itemCounter + ')">' +
@@ -609,7 +607,7 @@ function addRow() {
         '</td>' +
         '<td>' +
         '   <div class="form-group">' +
-        '       <input style="font-size:14px" type="text" class="form-control kode_lama" name="kode_lama[]" id="kode_lama_' + itemCounter + '" value="" oninput="fetchProductData(' + itemCounter + ')">' +
+        '       <input style="font-size:14px" type="text" class="form-control kode_lama" name="kode_lama[]" id="kode_lama_' + itemCounter + '" value="" onblur="fetchProductData(' + itemCounter + ')">' +
         '   </div>' +
         '</td>' +
         '<td>' +
@@ -641,9 +639,10 @@ function addRow() {
     updateRowNumbers();
 }
 
+
     function removeRow(rowId) {
-        $('#pembelian-' + rowId).remove();
-        updateRowNumbers();
+        $('#row-' + rowId).remove(); 
+        updateRowNumbers(); 
     }
 
     function updateRowNumbers() {
@@ -653,7 +652,6 @@ function addRow() {
     }
 
     function fetchProductData(rowId) {
-    console.log('Fetching data for row ID:', rowId); // Debugging line
     var kodeLama = $('#kode_lama_' + rowId).val(); 
     if (kodeLama) {
         $.ajax({
@@ -661,14 +659,13 @@ function addRow() {
             method: 'GET',
             data: { kode_lama: kodeLama }, 
             success: function(response) {
-                console.log('Response for row ID', rowId, ':', response); // Debugging line
                 if (response) {
                     $('#produk_id_' + rowId).val(response.produk_id);
                     $('#kode_produk_' + rowId).val(response.kode_produk);
                     $('#nama_produk_' + rowId).val(response.nama_produk);
                     $('#harga_' + rowId).val(response.harga);
-                    $('#jumlah_' + rowId).val(1); // Mengisi jumlah dengan 1 secara otomatis
-                    updateTotal(rowId); // Mengupdate total pada row yang benar
+                    $('#jumlah_' + rowId).val(1); // Set default quantity to 1
+                    updateTotal(rowId); // Update total after setting price and quantity
                 } else {
                     alert('Produk tidak ditemukan.');
                 }
@@ -680,6 +677,8 @@ function addRow() {
     }
 }
 
+
+
 // Attach event listener for when input loses focus (blur)
 $(document).on('blur', '.kode_produk_input', function() {
     var rowId = $(this).data('row-id');
@@ -689,22 +688,23 @@ $(document).on('blur', '.kode_produk_input', function() {
 
 
 function updateTotal(rowId) {
-    console.log('Updating total for row ID:', rowId); // Debugging line
     var jumlah = $('#jumlah_' + rowId).val();
     var harga = $('#harga_' + rowId).val();
     var total = jumlah * harga; 
     $('#total_' + rowId).val(total);
-    updateGrandTotal();
+    updateGrandTotal(); // Mengupdate grand total keseluruhan
 }
 
-    function updateGrandTotal() {
-        var grandTotal = 0;
-        $('.total').each(function() {
-            var total = $(this).val();
-            grandTotal += parseInt(total);
-        });
-        $('#grand_total').val(grandTotal);
-    }
+
+function updateGrandTotal() {
+    var grandTotal = 0;
+    $('.total').each(function() {
+        var total = $(this).val();
+        grandTotal += parseInt(total) || 0; // Menambahkan 0 jika nilai kosong
+    });
+    $('#grand_total').val(grandTotal);
+}
+
 
     $(document).ready(function() {
         // Fetch data when input field value changes
