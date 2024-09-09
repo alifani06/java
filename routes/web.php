@@ -294,6 +294,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('printLaporanBR', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'printLaporanBR']);
     Route::get('printExcelBm', [Laporan_hasilpenjualanController::class, 'exportExcel'])->name('printExcelBm');
     Route::get('printExcelBk', [Laporan_hasilpenjualanController::class, 'exportExcelBK'])->name('printExcelBk');
+    Route::get('printExcelBr', [Laporan_hasilpenjualanController::class, 'exportExcelBR'])->name('printExcelBr');
 
     //TOKO SLAWI
     Route::resource('stok_tokoslawi', \App\Http\Controllers\Admin\Stok_tokoslawiController::class);

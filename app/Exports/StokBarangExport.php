@@ -5,20 +5,25 @@ namespace App\Exports;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Illuminate\Http\Request;
 use App\Models\Penjualanproduk;
 use Carbon\Carbon;
 
-class StokBarangExport implements FromCollection, WithHeadings, WithMapping
+class StokBarangExport implements FromCollection, WithHeadings, WithMapping, WithTitle, WithCustomStartCell
 {
     protected $request;
     protected $counter;
+    protected $totalJumlah = 0;
+    protected $totalDiskon = 0;
+    protected $totalOverall = 0;
+    protected $finalResults = [];
 
     public function __construct(Request $request)
     {
         $this->request = $request;
         $this->counter = 1; // Inisialisasi nomor urut
-
     }
 
     public function collection()
@@ -59,8 +64,6 @@ class StokBarangExport implements FromCollection, WithHeadings, WithMapping
         $inquery = $query->get();
 
         // Gabungkan hasil berdasarkan produk_id
-        $finalResults = [];
-
         foreach ($inquery as $penjualan) {
             foreach ($penjualan->detailPenjualanProduk as $detail) {
                 $produk = $detail->produk;
@@ -68,8 +71,8 @@ class StokBarangExport implements FromCollection, WithHeadings, WithMapping
                 if ($produk) {
                     $key = $produk->id;
 
-                    if (!isset($finalResults[$key])) {
-                        $finalResults[$key] = [
+                    if (!isset($this->finalResults[$key])) {
+                        $this->finalResults[$key] = [
                             'tanggal_penjualan' => $penjualan->tanggal_penjualan,
                             'kode_lama' => $produk->kode_lama,
                             'nama_produk' => $produk->nama_produk,
@@ -80,40 +83,51 @@ class StokBarangExport implements FromCollection, WithHeadings, WithMapping
                         ];
                     }
 
-                    $finalResults[$key]['jumlah'] += $detail->jumlah;
-                    $finalResults[$key]['total'] += $detail->total;
+                    $this->finalResults[$key]['jumlah'] += $detail->jumlah;
+                    $this->finalResults[$key]['total'] += $detail->total;
 
                     if ($detail->diskon > 0) {
                         $diskonPerItem = $produk->harga * 0.10;
-                        $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
+                        $this->finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
                     }
                 }
             }
         }
 
-        // Konversi array finalResults ke collection untuk diekspor
-        return collect($finalResults);
+        // Hitung total jumlah, diskon, dan total
+        foreach ($this->finalResults as $result) {
+            $this->totalJumlah += $result['jumlah'];
+            $this->totalDiskon += $result['diskon'];
+            $this->totalOverall += $result['total'];
+        }
+
+        // Tambahkan baris total di akhir koleksi
+        $this->finalResults[] = [
+            'tanggal_penjualan' => 'Total',
+            'kode_lama' => '',
+            'nama_produk' => '',
+            'harga' => '',
+            'jumlah' => $this->totalJumlah,
+            'diskon' => $this->totalDiskon,
+            'total' => $this->totalOverall,
+        ];
+
+        return collect($this->finalResults);
     }
 
     public function headings(): array
     {
         return [
-            'No',
-            'Tanggal Penjualan',
-            'Kode Produk',
-            'Nama Produk',
-            'Harga',
-            'Jumlah',
-            'Diskon',
-            'Total'
+            ['LAPORAN BARANG KELUAR'], // Judul di baris pertama
+            [], // Kosongkan baris kedua
+            ['No', 'Tanggal Penjualan', 'Kode Produk', 'Nama Produk', 'Harga', 'Jumlah', 'Diskon', 'Total'] // Header tabel
         ];
     }
 
     public function map($row): array
     {
         return [
-
-            $this->counter++, 
+            $this->counter++,
             $row['tanggal_penjualan'],
             $row['kode_lama'],
             $row['nama_produk'],
@@ -122,5 +136,15 @@ class StokBarangExport implements FromCollection, WithHeadings, WithMapping
             $row['diskon'],
             $row['total'],
         ];
+    }
+
+    public function title(): string
+    {
+        return 'Laporan Stok Barang'; // Nama sheet
+    }
+
+    public function startCell(): string
+    {
+        return 'A3'; // Data dimulai dari baris ketiga untuk mengakomodasi judul
     }
 }
