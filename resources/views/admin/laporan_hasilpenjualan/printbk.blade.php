@@ -64,6 +64,7 @@
     <table>
         <thead>
             <tr>
+                <th>No</th>
                 <th>Tanggal Penjualan</th>
                 <th>Kode Lama</th>
                 <th>Nama Produk</th>
@@ -74,8 +75,10 @@
             </tr>
         </thead>
         <tbody>
+            @php $no = 1; @endphp
             @foreach ($finalResults as $produk)
                 <tr>
+                    <td class="text-center">{{ $no++ }}</td>
                     <td>{{ \Carbon\Carbon::parse($produk['tanggal_penjualan'])->translatedFormat('d F Y') }}</td>
                     <td>{{ $produk['kode_lama'] }}</td>
                     <td>{{ $produk['nama_produk'] }}</td>
@@ -93,7 +96,7 @@
                 $totalDiskon = collect($finalResults)->sum('diskon');
             @endphp
             <tr>
-                <th colspan="4">Total</th>
+                <th colspan="5">Total</th>
                 <th>{{ $totalJumlah }}</th>
                 <th>{{ number_format($totalDiskon, 0, ',', '.') }}</th>
                 <th>{{ number_format($grandTotal, 0, ',', '.') }}</th>

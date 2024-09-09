@@ -27,7 +27,7 @@
         }
         .header .title {
             font-weight: bold;
-            font-size: 28px;
+            font-size: 20px;
         }
         .header .period {
             font-size: 14px;
@@ -38,27 +38,36 @@
             margin-top: 10px;
             margin-bottom: 10px;
         }
+        .right-align {
+            text-align: right;
+            font-size: 10px;
+        }
     </style>
 </head>
 <body>
+
     <div class="header">
         <h1 class="title">LAPORAN PEMESANAN PRODUK GLOBAL</h1>
 
         @php
-            \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
-    
-            $formattedStartDate = $startDate ? \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y') : 'Tidak ada';
-            $formattedEndDate = $endDate ? \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y') : 'Tidak ada';
-            $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
+            use Carbon\Carbon;
+            Carbon::setLocale('id');
+            $formattedStartDate = $startDate ? Carbon::parse($startDate)->translatedFormat('d F Y') : 'Tidak ada';
+            $formattedEndDate = $endDate ? Carbon::parse($endDate)->translatedFormat('d F Y') : 'Tidak ada';
+            $currentDateTime = Carbon::now()->translatedFormat('d F Y H:i');
+            // Variabel untuk cabang yang dipilih
+            $selectedCabang = $cabang ?? 'Semua Toko';
         @endphp
 
         <p class="period">
-            Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }}<br>
-            {{-- Tanggal Cetak: {{ $currentDateTime }} --}}
+            Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }}
+        </p>
+        <p class="period right-align" style="font-size: 12px;">
+            {{ $currentDateTime }}
         </p>
     </div>
 
-    <div class="divider"></div>
+    {{-- <div class="divider"></div> --}}
 
     <table>
         <thead>
@@ -67,45 +76,45 @@
                 <th>Divisi</th>
                 <th>Kode Produk</th>
                 <th>Nama Produk</th>
-                <th>Banjaran</th>
-                <th>Tegal</th>
-                <th>Slawi</th>
-                <th>Pemalang</th>
-                <th>Bumiayu</th>
-                <th>Cilacap</th>
+                @foreach ($tokoFieldMap as $tokoField)
+                    <th>{{ ucfirst($tokoField) }}</th>
+                @endforeach
                 <th>Subtotal</th>
             </tr>
         </thead>
         <tbody>
-            @php
-                $no = 1;
-                $totalSubtotal = 0;
+            @php 
+                $no = 1; 
+                $totalPerToko = array_fill_keys($tokoFieldMap, 0); 
             @endphp
             @foreach ($groupedData as $klasifikasi => $items)
-                @foreach ($items as $key => $data)
+                @foreach ($items as $data)
                     <tr>
                         <td>{{ $no++ }}</td>
                         <td>{{ $data['klasifikasi'] }}</td>
                         <td>{{ $data['kode_lama'] }}</td>
                         <td>{{ $data['nama_produk'] }}</td>
-                        <td style="text-align: right">{{ $data['benjaran'] }}</td>
-                        <td style="text-align: right">{{ $data['tegal'] }}</td>
-                        <td style="text-align: right">{{ $data['slawi'] }}</td>
-                        <td style="text-align: right">{{ $data['pemalang'] }}</td>
-                        <td style="text-align: right">{{ $data['bumiayu'] }}</td>
-                        <td style="text-align: right">{{ $data['cilacap'] }}</td>
+                        @foreach ($tokoFieldMap as $tokoField)
+                            <td style="text-align: right">{{ $data[$tokoField] }}</td>
+                            @php
+                                $totalPerToko[$tokoField] += $data[$tokoField];
+                            @endphp
+                        @endforeach
                         <td style="text-align: right">{{ $data['subtotal'] }}</td>
                     </tr>
-                    @php
-                    $totalSubtotal += $data['subtotal'];
-                @endphp
                 @endforeach
             @endforeach
-            <tr>
-                <td colspan="10"><strong>Total</strong></td>
-                <td style="text-align: right" ><strong>{{ $totalSubtotal }}</strong></td>
-            </tr>
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" style="text-align: right;"><strong>Total:</strong></td>
+                @foreach ($tokoFieldMap as $tokoField)
+                    <td style="text-align: right"><strong>{{ $totalPerToko[$tokoField] }}</strong></td>
+                @endforeach
+                <td style="text-align: right"><strong>{{ $totalSubtotal }}</strong></td>
+            </tr>
+        </tfoot>
     </table>
+
 </body>
 </html>
