@@ -72,7 +72,6 @@
                 <!-- /.card-header -->
                  
                 <div class="card-body">
-
                     <form method="GET" id="form-action">
                         <div class="row">
                             <!-- Tanggal Awal -->
@@ -97,6 +96,18 @@
                                     <option value="pemesanan" {{ Request::get('table_type') == 'pemesanan' ? 'selected' : '' }}>Atas Pesanan</option>
                                 </select>
                                 <label for="table_type">(Pilih Tabel)</label>
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="toko" name="toko">
+                                    <option value="">- Semua Toko -</option>
+                                    @foreach($tokos as $toko)
+                                        <option value="{{ $toko->id }}" {{ Request::get('toko') == $toko->id ? 'selected' : '' }}>
+                                            {{ $toko->nama_toko }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <label for="toko">(Pilih Toko)</label>
                             </div>
                             
                             <!-- Klasifikasi Filter -->
@@ -193,68 +204,70 @@
                     
 
                 <!-- Tabel Pemesanan -->
-                <div class="card-body">
-                    @if($tableType == '' || $tableType == 'pemesanan' || $tableType == 'all')
-                    <h4>Atas Pemesanan</h4>
-                    <table id="data" class="table table-bordered" style="font-size: 13px">
-                        <thead>
-                            <tr>
-                                <th class="text-center">No</th>
-                                <th>Produk</th>
-                                <th>Kode Produk</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($pemesananProduk as $produkId => $tokoDetails)
-                                @php
-                                    $firstDetail = $tokoDetails->first();
-                                    $produk = $firstDetail['produk'] ?? null;
-                                    $totalJumlah = $tokoDetails->sum('jumlah');
-                                @endphp
-                                <tr class="dropdown-pemesanan" data-pemesanan-id="{{ $produkId }}">
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $produk->nama_produk ?? 'Produk Tidak Ditemukan' }}</td>
-                                    <td>{{ $produk->kode_produk ?? 'N/A' }}</td>
-                                    <td>{{ $totalJumlah }}</td>
-                                </tr>
-                                <tr class="pemesanan-details" id="details-pemesanan-{{ $produkId }}" style="display: none;">
-                                    <td colspan="4">
-                                        <table class="table table-bordered" style="font-size: 13px;">
-                                            <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>Cabang</th>
-                                                    <th>Kode Pemesanan</th>
-                                                    <th>Tanggal Kirim</th>
-                                                    <th>Jumlah</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($tokoDetails as $tokoDetail)
-                                                    @foreach ($tokoDetail['detail'] as $detail)
-                                                        <tr>
-                                                            <td>{{ $loop->parent->iteration }}</td>
-                                                            <td>{{ $tokoDetail['toko']->nama_toko }}</td>
-                                                            <td>{{ $detail->pemesananProduk->kode_pemesanan }}</td>
-                                                            <td>{{ \Carbon\Carbon::parse($tokoDetail['tanggal_kirim'])->format('d-m-Y H:i') }}</td>
-                                                            <td>{{ $detail->jumlah }}</td>
-                                                        </tr>
-                                                    @endforeach
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            @empty
+              <!-- Tabel Pemesanan -->
+<div class="card-body">
+    @if($tableType == '' || $tableType == 'pemesanan' || $tableType == 'all')
+    <h4>Atas Pemesanan</h4>
+    <table id="data" class="table table-bordered" style="font-size: 13px">
+        <thead>
+            <tr>
+                <th class="text-center">No</th>
+                <th>Produk</th>
+                <th>Kode Produk</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($pemesananProduk as $produkId => $tokoDetails)
+                @php
+                    $firstDetail = $tokoDetails->first();
+                    $produk = $firstDetail['produk'] ?? null;
+                    $totalJumlah = $tokoDetails->sum('jumlah');
+                @endphp
+                <tr class="dropdown-pemesanan" data-pemesanan-id="{{ $produkId }}">
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $produk->nama_produk ?? 'Produk Tidak Ditemukan' }}</td>
+                    <td>{{ $produk->kode_produk ?? 'N/A' }}</td>
+                    <td>{{ $totalJumlah }}</td>
+                </tr>
+                <tr class="pemesanan-details" id="details-pemesanan-{{ $produkId }}" style="display: none;">
+                    <td colspan="4">
+                        <table class="table table-bordered" style="font-size: 13px;">
+                            <thead>
                                 <tr>
-                                    <td colspan="4" class="text-center">Tidak ada data</td>
+                                    <th>No</th>
+                                    <th>Cabang</th>
+                                    <th>Kode Pemesanan</th>
+                                    <th>Tanggal Kirim</th>
+                                    <th>Jumlah</th>
                                 </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                    @endif
-                </div>
+                            </thead>
+                            <tbody>
+                                @foreach ($tokoDetails as $tokoDetail)
+                                    @foreach ($tokoDetail['detail'] as $detail)
+                                        <tr>
+                                            <td>{{ $loop->parent->iteration }}</td>
+                                            <td>{{ $tokoDetail['toko']->nama_toko }}</td>
+                                            <td>{{ $detail->pemesananProduk->kode_pemesanan }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($tokoDetail['tanggal_kirim'])->format('d-m-Y H:i') }}</td>
+                                            <td>{{ $detail->jumlah }}</td>
+                                        </tr>
+                                    @endforeach
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="4" class="text-center">Tidak ada data</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+    @endif
+</div>
+
        
             </div>
         </div>

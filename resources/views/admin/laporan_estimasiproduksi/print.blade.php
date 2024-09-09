@@ -36,7 +36,6 @@
             border-collapse: collapse;
             margin-bottom: 20px;
             font-size: 9px; /* Menetapkan ukuran font kecil untuk tabel */
-
         }
         table, th, td {
             border: 1px solid black;
@@ -45,20 +44,13 @@
             padding: 5px;
             text-align: left;
         }
+        .total-row {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    {{-- <div class="header">
-        <div class="logo">
-            <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
-        </div>
-        <div>
-            <span class="title">PT JAVA BAKERY FACTORY</span><br><br>
-            <span class="address">JL. HOS COKRO AMINOTO NO 5 SLAWI TEGAL</span><br>
-            <span class="contact">Telp / Fax, Email :</span>
-        </div>
-        <hr class="divider">
-    </div> --}}
+
     <div class="change-header">LAPORAN ESTIMASI PRODUKSI</div>
 
     @if($tanggalAwal && $tanggalAkhir)
@@ -67,50 +59,65 @@
     </div>
     @endif
 
-        <!-- Tabel Pemesanan -->
-        @if($tableType == 'pemesanan')
-        <h3>Atas Pesanan</h3>
-        <table>
-            <thead>
+    <!-- Tabel Pesanan -->
+    @if($tableType == 'pemesanan')
+    <h3>Atas Pesanan</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Divisi</th>
+                <th>Produk</th>
+                <th>Banjaran</th>
+                <th>Tegal</th>
+                <th>Slawi</th>
+                <th>Pemalang</th>
+                <th>Bumiayu</th>
+                <th>Cilacap</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @php
+                $totalBanjaran = $totalTegal = $totalSlawi = $totalPemalang = $totalBumiayu = $totalCilacap = $totalSemua = 0;
+            @endphp
+            @foreach($pemesananProduk as $produkId => $tokoDetails)
+                @php
+                    $produk = $tokoDetails->first()['produk'];
+                    $klasifikasi = $produk->klasifikasi->nama ?? 'Tidak Ditemukan';
+                    $totalJumlah = 0;
+                @endphp
                 <tr>
-                    <th>No</th>
-                    <th>Divisi</th>
-                    <th>Produk</th>
-                    <th>Banjaran</th>
-                    <th>Tegal</th>
-                    <th>Slawi</th>
-                    <th>Pemalang</th>
-                    <th>Bumiayu</th>
-                    <th>Cilacap</th>
-                    <th>Total</th>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $klasifikasi }}</td>
+                    <td>{{ $produk->nama_produk ?? 'Produk Tidak Ditemukan' }}</td>
+                    @foreach(['banjaran', 'tegal', 'slawi', 'pemalang', 'bumiayu', 'cilacap'] as $store)
+                        @php
+                            $jumlah = $tokoDetails->filter(function ($detail) use ($store) {
+                                return strtolower($detail['toko']->nama_toko) === $store;
+                            })->sum('jumlah');
+                            $totalJumlah += $jumlah;
+                            ${'total' . ucfirst($store)} += $jumlah;
+                        @endphp
+                        <td style="text-align: right">{{ $jumlah }}</td>
+                    @endforeach
+                    <td style="text-align: right">{{ $totalJumlah }}</td>
+                    @php $totalSemua += $totalJumlah; @endphp
                 </tr>
-            </thead>
-            <tbody>
-                @foreach($pemesananProduk as $produkId => $tokoDetails)
-                    @php
-                        $produk = $tokoDetails->first()['produk'];
-                        $klasifikasi = $produk->klasifikasi->nama ?? 'Tidak Ditemukan';
-                        $totalJumlah = 0;
-                    @endphp
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $klasifikasi }}</td>
-                        <td>{{ $produk->nama_produk ?? 'Produk Tidak Ditemukan' }}</td>
-                        @foreach(['banjaran', 'tegal', 'slawi', 'pemalang', 'bumiayu', 'cilacap'] as $store)
-                            @php
-                                $jumlah = $tokoDetails->filter(function ($detail) use ($store) {
-                                    return strtolower($detail['toko']->nama_toko) === $store;
-                                })->sum('jumlah');
-                                $totalJumlah += $jumlah;
-                            @endphp
-                            <td style="text-align: right">{{ $jumlah }}</td>
-                        @endforeach
-                        <td style="text-align: right">{{ $totalJumlah }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-        @endif
+            @endforeach
+            <tr class="total-row">
+                <td colspan="3">Total</td>
+                <td style="text-align: right">{{ $totalBanjaran }}</td>
+                <td style="text-align: right">{{ $totalTegal }}</td>
+                <td style="text-align: right">{{ $totalSlawi }}</td>
+                <td style="text-align: right">{{ $totalPemalang }}</td>
+                <td style="text-align: right">{{ $totalBumiayu }}</td>
+                <td style="text-align: right">{{ $totalCilacap }}</td>
+                <td style="text-align: right">{{ $totalSemua }}</td>
+            </tr>
+        </tbody>
+    </table>
+    @endif
 
     <!-- Tabel Permintaan -->
     @if($tableType == 'permintaan')
@@ -131,6 +138,9 @@
             </tr>
         </thead>
         <tbody>
+            @php
+                $totalBanjaran = $totalTegal = $totalSlawi = $totalPemalang = $totalBumiayu = $totalCilacap = $totalSemua = 0;
+            @endphp
             @foreach($permintaanProduks as $produkId => $tokoDetails)
                 @php
                     $produk = $tokoDetails->first()['produk'];
@@ -147,16 +157,29 @@
                                 return strtolower($detail['toko']->nama_toko) === $store;
                             })->sum('jumlah');
                             $totalJumlah += $jumlah;
+                            ${'total' . ucfirst($store)} += $jumlah;
                         @endphp
                         <td style="text-align: right">{{ $jumlah }}</td>
                     @endforeach
                     <td style="text-align: right">{{ $totalJumlah }}</td>
+                    @php $totalSemua += $totalJumlah; @endphp
                 </tr>
             @endforeach
+            <tr class="total-row">
+                <td colspan="3">Total</td>
+                <td style="text-align: right">{{ $totalBanjaran }}</td>
+                <td style="text-align: right">{{ $totalTegal }}</td>
+                <td style="text-align: right">{{ $totalSlawi }}</td>
+                <td style="text-align: right">{{ $totalPemalang }}</td>
+                <td style="text-align: right">{{ $totalBumiayu }}</td>
+                <td style="text-align: right">{{ $totalCilacap }}</td>
+                <td style="text-align: right">{{ $totalSemua }}</td>
+            </tr>
         </tbody>
     </table>
     @endif
 
+    <!-- Tabel Gabungan Pesanan dan Permintaan -->
     @if($tableType == 'all')
     <h3>Atas Permintaan dan Atas Pesanan</h3>
     <table>
@@ -180,104 +203,65 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($combinedData as $produkId => $tokoDetails)
-    @php
-        $produk = $tokoDetails->first()['produk'];
-        $klasifikasi = $produk->klasifikasi->nama ?? 'Tidak Ditemukan';
-        $totalPesanan = 0;
-        $totalPermintaan = 0;
-    @endphp
-    <tr>
-        <td>{{ $loop->iteration }}</td>
-        <td>{{ $klasifikasi }}</td>
-        <td>{{ $produk->nama_produk ?? 'Produk Tidak Ditemukan' }}</td>
-        @foreach(['banjaran', 'tegal', 'slawi', 'pemalang', 'bumiayu', 'cilacap'] as $store)
             @php
-                $pesanan = 0;
-                $permintaan = 0;
-
-                foreach ($tokoDetails as $detail) {
-                    if (strtolower($detail['toko']->nama_toko) === $store) {
-                        $pesanan += $detail['pesanan'];
-                        $permintaan += $detail['permintaan'];
-                    }
-                }
-
-                $totalPesanan += $pesanan;
-                $totalPermintaan += $permintaan;
+                $totalBanjaranPes = $totalBanjaranStok = $totalTegalPes = $totalTegalStok = $totalSlawiPes = $totalSlawiStok = 0;
+                $totalPemalangPes = $totalPemalangStok = $totalBumiayuPes = $totalBumiayuStok = $totalCilacapPes = $totalCilacapStok = 0;
+                $totalSemua = 0;
             @endphp
-            <td style="text-align: right">{{ $pesanan }}</td>
-            <td style="text-align: right">{{ $permintaan }}</td>
-        @endforeach
-        <td style="text-align: right">{{ $totalPesanan + $totalPermintaan }}</td>
-    </tr>
-    @endforeach 
+           @foreach($combinedData as $produkId => $tokoDetails)
+           @php
+               $produk = $tokoDetails->first()['produk'];
+               $klasifikasi = $produk->klasifikasi->nama ?? 'Tidak Ditemukan';
+               $totalPesanan = 0;
+               $totalPermintaan = 0;
+           @endphp
+           <tr>
+               <td>{{ $loop->iteration }}</td>
+               <td>{{ $klasifikasi }}</td>
+               <td>{{ $produk->nama_produk ?? 'Produk Tidak Ditemukan' }}</td>
+               @foreach(['banjaran', 'tegal', 'slawi', 'pemalang', 'bumiayu', 'cilacap'] as $store)
+                   @php
+                       $pesanan = $tokoDetails->filter(function ($detail) use ($store) {
+                           return strtolower($detail['toko']->nama_toko) === $store && isset($detail['pesanan']);
+                       })->sum('pesanan');
+                       
+                       $permintaan = $tokoDetails->filter(function ($detail) use ($store) {
+                           return strtolower($detail['toko']->nama_toko) === $store && isset($detail['permintaan']);
+                       })->sum('permintaan');
+                       
+                       $totalPesanan += $pesanan;
+                       $totalPermintaan += $permintaan;
+       
+                       // Update total per toko
+                       ${'total' . ucfirst($store) . 'Pes'} += $pesanan;
+                       ${'total' . ucfirst($store) . 'Stok'} += $permintaan;
+                   @endphp
+                   <td style="text-align: right">{{ $pesanan }}</td>
+                   <td style="text-align: right">{{ $permintaan }}</td>
+               @endforeach
+               <td style="text-align: right">{{ $totalPesanan + $totalPermintaan }}</td>
+           </tr>
+       @endforeach
+
+            <tr class="total-row">
+                <td colspan="3">Total</td>
+                <td style="text-align: right">{{ $totalBanjaranPes }}</td>
+                <td style="text-align: right">{{ $totalBanjaranStok }}</td>
+                <td style="text-align: right">{{ $totalTegalPes }}</td>
+                <td style="text-align: right">{{ $totalTegalStok }}</td>
+                <td style="text-align: right">{{ $totalSlawiPes }}</td>
+                <td style="text-align: right">{{ $totalSlawiStok }}</td>
+                <td style="text-align: right">{{ $totalPemalangPes }}</td>
+                <td style="text-align: right">{{ $totalPemalangStok }}</td>
+                <td style="text-align: right">{{ $totalBumiayuPes }}</td>
+                <td style="text-align: right">{{ $totalBumiayuStok }}</td>
+                <td style="text-align: right">{{ $totalCilacapPes }}</td>
+                <td style="text-align: right">{{ $totalCilacapStok }}</td>
+                <td style="text-align: right">{{ $totalSemua }}</td>
+            </tr>
         </tbody>
     </table>
     @endif
 
-
-
-<!-- Tabel Gabungan (All Data) -->
-{{-- @if($tableType == 'all')
-<h3>Gabungan Permintaan dan Pemesanan Produk</h3>
-<table>
-    <thead>
-        <tr>
-            <th rowspan="2">No</th>
-            <th rowspan="2">Divisi</th>
-            <th rowspan="2">Produk</th>
-            @foreach(['banjaran', 'tegal', 'slawi', 'pemalang', 'bumiayu', 'cilacap'] as $store)
-                <th colspan="2">{{ ucfirst($store) }}</th>
-            @endforeach
-            <th rowspan="2">Total</th>
-        </tr>
-        <tr>
-            @foreach(['banjaran', 'tegal', 'slawi', 'pemalang', 'bumiayu', 'cilacap'] as $store)
-                <th>Pes</th>
-                <th>Stok</th>
-            @endforeach
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($combinedData as $produkId => $tokoDetails)
-        @php
-        $tokoDetails = collect($tokoDetails); // Ubah array menjadi koleksi Laravel
-        $produk = $tokoDetails->first()['produk'];
-        $klasifikasi = $produk->klasifikasi->nama ?? 'Tidak Ditemukan';
-        $totalJumlah = 0;
-    @endphp
-    
-            <tr>
-                <td>{{ $loop->iteration }}</td>
-                <td>{{ $klasifikasi }}</td>
-                <td>{{ $produk->nama_produk ?? 'Produk Tidak Ditemukan' }}</td>
-                @foreach(['banjaran', 'tegal', 'slawi', 'pemalang', 'bumiayu', 'cilacap'] as $store)
-                @php
-                $jumlahPemesanan = $tokoDetails->filter(function ($detail) use ($store) {
-                    return isset($detail['toko']) && strtolower($detail['toko']->nama_toko) === $store && isset($detail['pemesanan']);
-                })->sum('pemesanan');
-            
-                $jumlahPermintaan = $tokoDetails->filter(function ($detail) use ($store) {
-                    return isset($detail['toko']) && strtolower($detail['toko']->nama_toko) === $store && isset($detail['permintaan']);
-                })->sum('permintaan');
-            
-                $totalJumlah += ($jumlahPemesanan + $jumlahPermintaan);
-            @endphp
-            
-                    <td>{{ $jumlahPemesanan }}</td>
-                    <td>{{ $jumlahPermintaan }}</td>
-                @endforeach
-                <td>{{ $totalJumlah }}</td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
-@endif --}}
-
-
-
-
 </body>
-
 </html>
