@@ -40,6 +40,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Dompdf\Options;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\StokTokoExport;
+use App\Exports\StokBarangExportBM;
 
 
 
@@ -120,8 +123,6 @@ class Laporan_stoktokoController extends Controller
     
         return view('admin.laporan_stoktoko.index', compact('produkWithStok', 'klasifikasis', 'subklasifikasis', 'totalHarga', 'totalStok', 'totalSubTotal'));
     }
-    
-    
     
     public function printReport(Request $request)
     {
@@ -234,6 +235,11 @@ class Laporan_stoktokoController extends Controller
     
         // Output PDF ke browser
         return $dompdf->stream('laporan_stoktoko.pdf', ['Attachment' => false]);
+    }
+
+    public function exportExcelStok(Request $request)
+    {
+        return Excel::download(new StokTokoExport($request), 'BK.xlsx');
     }
     
 }

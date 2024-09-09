@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\PelangganController;
 use App\Http\Controllers\Admin\PenjualanprodukController;
 use App\Http\Controllers\Admin\PermintaanprodukController;
 use App\Http\Controllers\Admin\Laporan_permintaanprodukController;
+use App\Http\Controllers\Admin\Laporan_stoktokoController;
 use App\Http\Controllers\Admin\PemusnahanbarangjadiController;
 use App\Http\Controllers\Admin\Pengiriman_tokoslawiController;
 use App\Http\Controllers\Admin\PengirimanbarangjadiController;
@@ -204,6 +205,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::resource('laporan_stoktoko', \App\Http\Controllers\Admin\Laporan_stoktokoController::class);
     Route::get('printstoktoko', [\App\Http\Controllers\Admin\Laporan_stoktokoController::class, 'printReport']);
+    Route::get('printExcelStok', [Laporan_stoktokoController::class, 'exportExcelStok'])->name('printExcelStok');
+
 
 
     Route::resource('data_deposit', \App\Http\Controllers\Admin\DepositController::class);
@@ -291,11 +294,6 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('printLaporanBR', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'printLaporanBR']);
     Route::get('printExcelBm', [Laporan_hasilpenjualanController::class, 'exportExcel'])->name('printExcelBm');
     Route::get('printExcelBk', [Laporan_hasilpenjualanController::class, 'exportExcelBK'])->name('printExcelBk');
-
-
-
-    Route::resource('laporan_hasilpenjualan', \App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class);
-
 
     //TOKO SLAWI
     Route::resource('stok_tokoslawi', \App\Http\Controllers\Admin\Stok_tokoslawiController::class);
