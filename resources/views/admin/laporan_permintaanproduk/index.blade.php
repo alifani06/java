@@ -116,15 +116,7 @@
                                 </select>
                                 <label for="klasifikasi">(Pilih Divisi)</label>
                             </div>
-                            {{-- <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="produk" name="produk">
-                                    <option value="">- Semua Produk -</option>
-                                    @foreach ($produks as $produk)
-                                        <option value="{{ $produk->id }}" data-klasifikasi="{{ $produk->klasifikasi_id }}" {{ Request::get('produk') == $produk->id ? 'selected' : '' }}>{{ $produk->nama_produk }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="produk">(Pilih Produk)</label>
-                            </div> --}}
+                            
                             <div class="col-md-3 mb-3">
                                 <button type="submit" class="btn btn-outline-primary btn-block">
                                     <i class="fas fa-search"></i> Cari
@@ -135,36 +127,35 @@
                             </div>
                         </div>
                     </form>
-                
-                    {{-- <table id="datatables66" class="table table-bordered" style="font-size: 13px">
-                        <thead>
-                            <tr>
-                                <th class="text-center">No</th>
-                                <th>Cabang</th>
-                                <th>Kode Permintaan</th>
-                                <th>Tanggal Permintaan</th>
-                                <th>Jumlah Produk</th>
-                                <th>Opsi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($inquery as $permintaan)
+
+                <table id="datatables66" class="table table-bordered" style="font-size: 13px">
+                    <thead>
+                        <tr>
+                            <th class="text-center">No</th>
+                            <th>Cabang</th>
+                            <th>Kode Permintaan</th>
+                            <th>Tanggal Permintaan</th>
+                            <th>Jumlah Produk</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($inquery as $permintaan)
+                            @php
+                                $filteredDetails = $permintaan->detailpermintaanproduks->filter(function ($detail) use ($klasifikasi_id) {
+                                    return !$klasifikasi_id || $detail->produk->klasifikasi_id == $klasifikasi_id;
+                                });
+                            @endphp
+                            @if ($filteredDetails->isNotEmpty())
                                 <tr class="permintaan-header" data-permintaan-id="{{ $permintaan->id }}">
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ optional($permintaan->detailpermintaanproduks->first()->toko)->nama_toko ?? 'Toko tidak ditemukan' }}</td>
                                     <td>{{ $permintaan->kode_permintaan }}</td>
                                     <td>{{ $permintaan->created_at->format('d-m-Y') }}</td>
-                                    <td>{{ $permintaan->detailpermintaanproduks->count() }}</td>
-                                    <td class="text-center">
-                                        <a href="{{ url('admin/permintaan_produk/' . $permintaan->id) }}" class="btn btn-info btn-sm">
-                                            <i class="fas fa-print"></i>
-                                        </a>
-                                      
-                                    </td>
-                                    
+                                    <td>{{ $filteredDetails->count() }}</td>
+                                
                                 </tr>
                                 <tr class="permintaan-details" id="details-{{ $permintaan->id }}" style="display: none;">
-                                    <td colspan="5">
+                                    <td colspan="6">
                                         <table class="table table-bordered" style="font-size: 13px;">
                                             <thead>
                                                 <tr>
@@ -176,9 +167,9 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($permintaan->detailpermintaanproduks as $detail)
-                                                <tr >
-                                                    <td>{{ $loop->iteration }}</td>
+                                                @foreach ($filteredDetails as $detail)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
                                                         <td>{{ $detail->produk->klasifikasi->nama }}</td>
                                                         <td>{{ $detail->produk->kode_produk }}</td>
                                                         <td>{{ $detail->produk->nama_produk }}</td>
@@ -188,67 +179,11 @@
                                             </tbody>
                                         </table>
                                     </td>
-                    
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table> --}}
-<table id="datatables66" class="table table-bordered" style="font-size: 13px">
-    <thead>
-        <tr>
-            <th class="text-center">No</th>
-            <th>Cabang</th>
-            <th>Kode Permintaan</th>
-            <th>Tanggal Permintaan</th>
-            <th>Jumlah Produk</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($inquery as $permintaan)
-            @php
-                $filteredDetails = $permintaan->detailpermintaanproduks->filter(function ($detail) use ($klasifikasi_id) {
-                    return !$klasifikasi_id || $detail->produk->klasifikasi_id == $klasifikasi_id;
-                });
-            @endphp
-            @if ($filteredDetails->isNotEmpty())
-                <tr class="permintaan-header" data-permintaan-id="{{ $permintaan->id }}">
-                    <td class="text-center">{{ $loop->iteration }}</td>
-                    <td>{{ optional($permintaan->detailpermintaanproduks->first()->toko)->nama_toko ?? 'Toko tidak ditemukan' }}</td>
-                    <td>{{ $permintaan->kode_permintaan }}</td>
-                    <td>{{ $permintaan->created_at->format('d-m-Y') }}</td>
-                    <td>{{ $filteredDetails->count() }}</td>
-                   
-                </tr>
-                <tr class="permintaan-details" id="details-{{ $permintaan->id }}" style="display: none;">
-                    <td colspan="6">
-                        <table class="table table-bordered" style="font-size: 13px;">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Divisi</th>
-                                    <th>Kode Produk</th>
-                                    <th>Produk</th>
-                                    <th>Jumlah</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($filteredDetails as $detail)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $detail->produk->klasifikasi->nama }}</td>
-                                        <td>{{ $detail->produk->kode_produk }}</td>
-                                        <td>{{ $detail->produk->nama_produk }}</td>
-                                        <td>{{ $detail->jumlah }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-            @endif
-        @endforeach
-    </tbody>
-</table>
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
 
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
@@ -311,7 +246,7 @@
         if (selectedValue === 'global') {
             window.location.href = "{{ url('admin/laporan_permintaanproduk') }}";
         } else if (selectedValue === 'rinci') {
-            window.location.href = "{{ url('admin/indexrinci') }}";
+            window.location.href = "{{ url('admin/indexpermintaanrinci') }}";
         }
     });
 </script>

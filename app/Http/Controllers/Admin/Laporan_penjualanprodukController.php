@@ -93,7 +93,7 @@ class Laporan_penjualanprodukController extends Controller
         }
 
         // Urutkan data berdasarkan ID secara descending
-        $query->orderBy('id', 'DESC');
+        // $query->orderBy('id', 'DESC');
 
         // Ambil data penjualan produk
         $inquery = $query->with(['toko', 'detailpenjualanproduk.produk.klasifikasi'])->get();
@@ -165,7 +165,7 @@ class Laporan_penjualanprodukController extends Controller
             });
         }
             // Urutkan data berdasarkan ID secara descending
-        $query->orderBy('id', 'DESC');
+        // $query->orderBy('id', 'DESC');
     
         // Ambil data penjualan produk
         $inquery = $query->with('toko', 'detailpenjualanproduk.produk.klasifikasi')->get();
@@ -246,7 +246,7 @@ public function printReportpenjualan(Request $request)
     }
 
     // Order results
-    $query->orderBy('id', 'DESC');
+    // $query->orderBy('id', 'DESC');
 
     // Load related data
     $inquery = $query->with(['toko', 'detailpenjualanproduk.produk.klasifikasi', 'metodePembayaran'])->get();
