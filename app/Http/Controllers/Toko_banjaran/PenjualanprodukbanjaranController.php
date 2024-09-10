@@ -61,6 +61,46 @@ class PenjualanprodukbanjaranController extends Controller
     }
     
 
+    //function untuk create penjualan baru
+    // public function searchProduct(Request $request)
+    // {
+    //     $kode = $request->query('kode', '');
+    
+    //     // Cari produk berdasarkan kode_produk atau kode_lama
+    //     $produks = Produk::where('kode_produk', 'like', "%$kode%")
+    //                     ->orWhere('kode_lama', 'like', "%$kode%")
+    //                     ->with('tokobanjaran')
+    //                     ->paginate(10);
+    
+    //     // Pastikan format JSON
+    //     return response()->json($produks);
+    // }
+    
+    //     public function create()
+    // {
+    //     $barangs = Barang::all();
+    //     $pelanggans = Pelanggan::all();
+    //     $details = Detailbarangjadi::all();
+    //     $tokoslawis = Tokoslawi::all();
+    //     $tokos = Toko::all();
+    //     $dppemesanans = Dppemesanan::all();
+    //     $pemesananproduks = Pemesananproduk::all();
+    //     $metodes = Metodepembayaran::all();
+    
+    //     // Ambil semua data produk untuk pencarian
+    //     $allProduks = Produk::with('tokobanjaran')->get();
+        
+    //     // Gunakan paginasi untuk menampilkan produk di tabel
+    //     $produks = Produk::with('tokobanjaran')->paginate(10);
+    
+    //     $kategoriPelanggan = 'member';
+        
+    //     return view('toko_banjaran.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks', 'metodes', 'allProduks'));
+    // }
+    
+
+
+
     public function getProductByKode(Request $request)
     {
         $kode = $request->get('kode');
@@ -113,6 +153,9 @@ class PenjualanprodukbanjaranController extends Controller
     
         return view('toko_banjaran.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
     }
+
+
+    
 
     public function pelunasan()
     {

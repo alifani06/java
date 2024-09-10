@@ -503,21 +503,24 @@
         }
     
         function updateCalculations() {
-            var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
-            var fee = parseFloat(document.getElementById('fee').value.replace('%', '').trim()) || 0;
-            var totalFee = (subTotal * fee / 100) || 0;
-            var finalTotal = subTotal + totalFee;
+    var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+    var fee = parseFloat(document.getElementById('fee').value.replace('%', '').trim()) || 0;
     
-            // Format the values without .00
-            function formatCurrency(value) {
-                var formattedValue = value.toFixed(2).replace(/\.00$/, '');
-                return 'Rp' + formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-            }
-    
-            // Update total fee and final sub total fields
-            document.getElementById('total_fee').value = formatCurrency(totalFee);
-            document.getElementById('sub_total').value = formatCurrency(finalTotal);
-        }
+    // Hitung total fee dan bulatkan hasilnya
+    var totalFee = Math.round((subTotal * fee / 100)) || 0; 
+    var finalTotal = subTotal + totalFee;
+
+    // Format nilai tanpa .00
+    function formatCurrency(value) {
+        var formattedValue = value.toFixed(2).replace(/\.00$/, '');
+        return 'Rp' + formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    // Update total fee dan sub total akhir
+    document.getElementById('total_fee').value = formatCurrency(totalFee);
+    document.getElementById('sub_total').value = formatCurrency(finalTotal);
+}
+
     
         // Add event listeners for initialization
         document.getElementById('nama_metode').addEventListener('change', getData1);
