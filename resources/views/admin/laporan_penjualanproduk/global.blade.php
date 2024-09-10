@@ -192,17 +192,24 @@
         function validateDates() {
             const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
             const tanggalAkhir = document.getElementById('tanggal_akhir').value;
-    
+
             if (!tanggalPenjualan || !tanggalAkhir) {
-                alert('Harap atur tanggal penjualan dan tanggal akhir terlebih dahulu.');
+                Swal.fire({
+                icon: 'warning',
+                title: 'Tanggal Belum Dipilih!',
+                text: 'Silakan isi tanggal terlebih dahulu.',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#3085d6',
+                background: '#fff',
+                customClass: {
+                    popup: 'animated bounceIn'
+                }
+            });
                 return false; // Cegah pengiriman formulir
             }
             return true; // Lanjutkan pengiriman formulir jika valid
         }
-    
-  
     </script>
-
     <!-- /.card -->
     <script>
         var tanggalAwal = document.getElementById('tanggal_penjualan');
@@ -231,6 +238,8 @@
 
 <script>
     function printReportglobal() {
+
+        
     const form = document.getElementById('form-action');
     form.action = "{{ url('admin/printReportglobal') }}";
     form.target = "_blank";

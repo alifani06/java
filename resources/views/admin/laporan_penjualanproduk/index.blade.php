@@ -218,6 +218,24 @@
 
 <script>
     function printReportpenjualan() {
+        var tanggalAwal = document.getElementById('tanggal_penjualan').value;
+        var tanggalAkhir = document.getElementById('tanggal_akhir').value;
+
+        if (tanggalAwal === "" || tanggalAkhir === "") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tanggal Belum Dipilih!',
+                text: 'Silakan isi tanggal terlebih dahulu.',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#3085d6',
+                background: '#fff',
+                customClass: {
+                    popup: 'animated bounceIn'
+                }
+            });
+            return;
+        }
+
     const form = document.getElementById('form-action');
     form.action = "{{ url('admin/printReportpenjualan') }}";
     form.target = "_blank";

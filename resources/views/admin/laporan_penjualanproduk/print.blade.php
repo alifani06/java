@@ -158,7 +158,7 @@
                                         tidak ada
                                     @endif
                                 </td>  
-                                <td>{{ $detail->kode_produk }}</td>
+                                <td>{{ $detail->kode_lama }}</td>
                                 <td>{{ $detail->nama_produk }}</td>
                                 <td>{{ $detail->jumlah }}</td>
                                 <td>{{ number_format($detail->harga, 0, ',', '.') }}</td>
