@@ -109,8 +109,6 @@
         <p style="text-align: right; margin-top: -20px;">{{ $currentDateTime }}</p>
     </div>
     
-    
-
     @php 
         $grandTotal = 0;
         $grandTotalFee = 0;
@@ -149,7 +147,6 @@
                             @php
                                 $totalForDetail = $detail->jumlah * $detail->harga;
                                 $subTotal += $totalForDetail;
-                                $grandTotal += $totalForDetail; // Tambahkan ke grand total
                                 $diskon = floatval($detail->diskon);
                             @endphp
                             <tr>
@@ -194,7 +191,13 @@
                     </tr>
                     <tr>
                         <td colspan="7" class="text-right"><strong>Total Bayar</strong></td>
-                        <td>{{'Rp. ' .  number_format($item->sub_total, 0, ',', '.') }}</td>
+                        <td>
+                            @php
+                                $totalBayar = $item->sub_total;
+                                $grandTotal += $totalBayar; // Tambahkan total bayar ke grand total
+                            @endphp
+                            {{'Rp. ' .  number_format($totalBayar, 0, ',', '.') }}
+                        </td>
                     </tr>
                     @if($item->metode_id == Null)
                     <tr>
@@ -208,24 +211,26 @@
                   @endif
                 </tbody>
             </table>
-
-            
         </div>
     @endforeach
 
- <!-- Tabel total penjualan fee dan grand total -->
- <table style="width: 50%; margin-left: auto; margin-right: 0; background-color: yellow">
-    <tbody>
-        <tr>
-            <td style="text-align: right;  width: 70%;">Total Fee Penjualan</td>
-            <td style="text-align: left; font-weight: bold; width: 30%;">{{ 'Rp. ' .  number_format($grandTotalFee, 0, ',', '.') }}</td>
-        </tr>
-        <tr>
-            <td style="text-align: right; ">Grand Total</td>
-            <td style="text-align: left; font-weight: bold;">{{ 'Rp. ' .  number_format($grandTotal, 0, ',', '.') }}</td>
-        </tr>
-    </tbody>
-</table>
-
+    <!-- Tabel total penjualan fee dan grand total -->
+    <table style="width: 50%; margin-left: auto; margin-right: 0; background-color: yellow">
+        <tbody>
+            <tr style="border: none;">
+                <td style="text-align: right; border: none;">Total Penjualan :</td>
+                <td style="text-align: right; font-weight: bold; border: none;">{{ number_format($grandTotal, 0, ',', '.') }}</td>
+            </tr>
+            <tr style="border: none;">
+                <td style="text-align: right; width: 60%; border: none;">Fee Penjualan :</td>
+                <td style="text-align: right; font-weight: bold; width: 40%; border: none;">{{ number_format($grandTotalFee, 0, ',', '.') }}</td>
+            </tr>
+            <tr style="border-top: 2px solid black;">
+                <td style="text-align: right; border: none;">Grand Total Penjualan :</td>
+                <td style="text-align: right; font-weight: bold; border: none;">{{'Rp. ' .   number_format($grandTotal - $grandTotalFee, 0, ',', '.') }}</td>
+            </tr>
+          
+        </tbody>
+    </table>
 </body>
 </html>
