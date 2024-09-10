@@ -26,6 +26,11 @@ class Detailtokobanjaran extends Model
    'harga_awal',
    'diskon_awal',
    'tanggal_perubahan',
+   'member_hargaawal',
+   'non_member_hargaawal',
+   'member_diskonawal',
+   'non_member_diskonawal',
+
     ];
 
     use SoftDeletes;
@@ -45,6 +50,10 @@ class Detailtokobanjaran extends Model
     public function produk()
     {
         return $this->belongsTo(Produk::class, 'produk_id', 'id');
+    }
+    public function tokobanjaran()
+    {
+        return $this->belongsTo(Tokobanjaran::class, 'tokobanjaran_id');
     }
 
         

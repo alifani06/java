@@ -52,5 +52,10 @@ class Tokobanjaran extends Model
         return $this->belongsTo(Toko::class, 'toko_id');
     }
 
+    public function detailtokobanjaran()
+{
+    return $this->hasMany(Detailtokobanjaran::class);
+}
+
         
 }
