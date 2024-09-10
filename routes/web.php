@@ -124,6 +124,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('admin/hargajual/show', [App\Http\Controllers\Admin\HargajualController::class, 'show'])->name('show');
     Route::get('/cetak-pdf', [HargajualController::class, 'cetakPdf'])->name('cetak.pdf');
     Route::get('/admin/hargajual/filter', [HargajualController::class, 'all'])->name('admin.hargajual.filter');
+    Route::get('/produk/perubahan', [HargajualController::class, 'showPerubahanProduk'])->name('produk.showPerubahan');
+    Route::get('/print-reporthargajual', [HargajualController::class, 'print'])->name('print.reporthargajual');
 
     Route::resource('pemesanan_produk', \App\Http\Controllers\Admin\PemesananprodukController::class);
     Route::get('/admin/pemesanan_produk/cetak/{id}', [PemesananProdukController::class, 'cetak'])->name('admin.pemesanan_produk.cetak');

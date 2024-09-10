@@ -16,7 +16,7 @@
             padding-bottom: 40px;
         }
         .container {
-            width: 80%;
+            width: 100%;
             margin: 0 auto;
         }
         .logo img {
@@ -74,8 +74,9 @@
         }
         th, td {
             padding: 4px;
-            border: 1px solid #ccc;
+            border: 1px solid black;
             text-align: left;
+            font-size: 10px;
         }
         th {
             background-color: white;
@@ -107,10 +108,9 @@
             border-color: #004085;
         }
     </style>
-    
 </head>
 <body>
-    <div class="container">
+ 
         <!-- Kop Surat -->
         <div class="header row">
             <div class="col-2 text-right">
@@ -163,7 +163,7 @@
                     @forelse($perubahanProduks as $perubahan)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ \Carbon\Carbon::parse($perubahan->tanggal_perubahan)->format('d-m-Y H:i') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($perubahan->tanggal_perubahan)->format('d-m-Y') }}</td>
                             <td>{{ $perubahan->produk->kode_lama }}</td>
                             <td>{{ $perubahan->produk->nama_produk }}</td>
                             
@@ -181,49 +181,31 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="12" class="text-center">Tidak ada perubahan data produk.</td>
+                            <td colspan="12" class="text-center">Data tidak ditemukan</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+
         <div class="signature-container">
             <div class="signature">
-                <p>Mengetahui</p>
-                <p>Pimpinan</p>
-                <br><br><br>
-                <p>__________________</p>
+                <p>Tegal, {{ \Carbon\Carbon::now()->format('d M Y') }}</p>
+                <p>Pimpinan,</p>
+                <p><u>( ....................................... )</u></p>
+            </div>
+    
+            <div class="signature">
+                <p>Mengetahui,</p>
+                <p>Admin,</p>
+                <p><u>( ....................................... )</u></p>
             </div>
             <div class="signature">
-                <p>Mengetahui</p>
-                <p>Finance</p>
-                <br><br><br>
-                <p>__________________</p>
-            </div>
-            <div class="signature">
-                <p>Mengetahui</p>
-                <p>Admin</p>
-                <br><br><br>
-                {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}
-                <p>__________________</p>
+                <p>Mengetahui,</p>
+                <p>Finance,</p>
+                <p><u>( ....................................... )</u></p>
             </div>
         </div>
-
-        <div class="d-flex justify-content-between">
-            <div>
-                <a href="{{ url('admin/hargajual') }}" class="btn btn-primary btn-sm">
-                    <i class="fas fa-arrow-left"></i> Kembali
-                </a>
-            </div>
-
-            <div>
-                <a href="{{ route('print.reporthargajual') }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
-                    <i class="fas fa-print"></i> Cetak 
-                </a>
-            </div>
-            
-        </div>
-    </div>
-      
+    
 </body>
 </html>
