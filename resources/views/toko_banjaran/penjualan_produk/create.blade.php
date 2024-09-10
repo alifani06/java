@@ -503,23 +503,23 @@
         }
     
         function updateCalculations() {
-    var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
-    var fee = parseFloat(document.getElementById('fee').value.replace('%', '').trim()) || 0;
-    
-    // Hitung total fee dan bulatkan hasilnya
-    var totalFee = Math.round((subTotal * fee / 100)) || 0; 
-    var finalTotal = subTotal + totalFee;
+        var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+        var fee = parseFloat(document.getElementById('fee').value.replace('%', '').trim()) || 0;
+        
+        // Hitung total fee dan bulatkan hasilnya
+        var totalFee = Math.round((subTotal * fee / 100)) || 0; 
+        var finalTotal = subTotal + totalFee;
 
-    // Format nilai tanpa .00
-    function formatCurrency(value) {
-        var formattedValue = value.toFixed(2).replace(/\.00$/, '');
-        return 'Rp' + formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    }
+        // Format nilai tanpa .00
+        function formatCurrency(value) {
+            var formattedValue = value.toFixed(2).replace(/\.00$/, '');
+            return 'Rp' + formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
 
-    // Update total fee dan sub total akhir
-    document.getElementById('total_fee').value = formatCurrency(totalFee);
-    document.getElementById('sub_total').value = formatCurrency(finalTotal);
-}
+        // Update total fee dan sub total akhir
+        document.getElementById('total_fee').value = formatCurrency(totalFee);
+        document.getElementById('sub_total').value = formatCurrency(finalTotal);
+        }
 
     
         // Add event listeners for initialization
@@ -855,12 +855,27 @@
         });
     }
 
-    // Fungsi untuk menampilkan modal barang
-    function showCategoryModal(urutan) {
+// Fungsi untuk menampilkan modal barang
+function showCategoryModal(urutan) {
+    var kategori = $('#kategori').val(); // Ambil nilai kategori (member/nonmember)
+
+    if (!kategori) {
+        // Jika kategori belum dipilih, tampilkan SweetAlert
+        Swal.fire({
+            icon: 'warning',
+            title: 'Tipe Pelanggan Belum Dipilih!',
+            text: 'Silakan pilih tipe pelanggan terlebih dahulu sebelum memilih produk.',
+            confirmButtonText: 'OK'
+        });
+    } else {
+        // Jika kategori sudah dipilih, tampilkan modal produk
         $('#tableProduk').modal('show');
         // Simpan urutan untuk menyimpan data ke baris yang sesuai
         $('#tableProduk').attr('data-urutan', urutan);
     }
+}
+
+
 
     // Event listener for pilih-btn
     $(document).on('click', '.pilih-btn', function() {
