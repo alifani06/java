@@ -119,8 +119,6 @@ class PemesananprodukbanjaranController extends Controller
         }
     }
    
- 
-    
     public function store(Request $request)
     {
         // Validasi pelanggan
@@ -129,7 +127,7 @@ class PemesananprodukbanjaranController extends Controller
             [
                 'nama_pelanggan' => 'required',
                 'telp' => 'required',
-                'alamat' => 'required',
+                'alamat' => 'nullable',
                 'kategori' => 'required',
             ],
             [
