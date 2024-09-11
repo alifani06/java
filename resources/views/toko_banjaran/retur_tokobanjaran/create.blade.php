@@ -319,11 +319,30 @@ document.addEventListener('DOMContentLoaded', function() {
          item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
          
          // Tambahkan select box untuk memilih toko pada keterangan
-         item_pembelian += '<td><div class="form-group"><select class="form-control" style="font-size:14px" id="keterangan-' + urutan + '" name="keterangan[]">';
-    item_pembelian += '<option value="Produk Gagal"' + (keterangan === 'Produk Gagal' ? ' selected' : '') + '>Produk Gagal</option>';
-    item_pembelian += '<option value="Sampel"' + (keterangan === 'Sampel' ? ' selected' : '') + '>Sampel</option>';
-    item_pembelian += '<option value="Rusak"' + (keterangan === 'Rusak' ? ' selected' : '') + '>Rusak</option>';
-    item_pembelian += '</select></div></td>';
+        item_pembelian += '<td><div class="form-group"><select class="form-control" style="font-size:14px" id="keterangan-' + urutan + '" name="keterangan[]">';
+        item_pembelian += '<option value="PRODUK GAGAL"' + (keterangan === 'PRODUK GAGAL' ? ' selected' : '') + '>PRODUK GAGAL</option>';
+        item_pembelian += '<option value="SAMPEL"' + (keterangan === 'SAMPEL' ? ' selected' : '') + '>SAMPEL</option>';
+        item_pembelian += '<option value="DIVISI 1 / SUGENG"' + (keterangan === 'DIVISI 1 / SUGENG' ? ' selected' : '') + '>DIVISI 1 / SUGENG</option>';
+        item_pembelian += '<option value="DIVISI 2 / WARTA"' + (keterangan === 'DIVISI 2 / WARTA' ? ' selected' : '') + '>DIVISI 2 / WARTA</option>';
+        item_pembelian += '<option value="DIVISI 3 / TOYIB"' + (keterangan === 'DIVISI 3 / TOYIB' ? ' selected' : '') + '>DIVISI 3 / TOYIB</option>';
+        item_pembelian += '<option value="DIVISI 4 / CARLI"' + (keterangan === 'DIVISI 4 / CARLI' ? ' selected' : '') + '>DIVISI 4 / CARLI</option>';
+        item_pembelian += '<option value="DIVISI 5 / GUNAWAN"' + (keterangan === 'DIVISI 5 / GUNAWAN' ? ' selected' : '') + '>DIVISI 5 / GUNAWAN</option>';
+        item_pembelian += '<option value="DIVISI 6 / JAZULI"' + (keterangan === 'DIVISI 6 / JAZULI' ? ' selected' : '') + '>DIVISI 6 / JAZULI</option>';
+        item_pembelian += '<option value="DIVISI 7 / TOHARI"' + (keterangan === 'DIVISI 7 / TOHARI' ? ' selected' : '') + '>DIVISI 7 / TOHARI</option>';
+        item_pembelian += '<option value="DIVISI 8 / WAWAN"' + (keterangan === 'DIVISI 8 / WAWAN' ? ' selected' : '') + '>DIVISI 8 / WAWAN</option>';
+        item_pembelian += '<option value="TART"' + (keterangan === 'TART' ? ' selected' : '') + '>TART</option>';
+        item_pembelian += '<option value="SUGENG CAKE"' + (keterangan === 'SUGENG CAKE' ? ' selected' : '') + '>SUGENG CAKE</option>';
+        item_pembelian += '<option value="KONSINYASI"' + (keterangan === 'KONSINYASI' ? ' selected' : '') + '>KONSINYASI</option>';
+        item_pembelian += '<option value="PACKAGING DIJUAL"' + (keterangan === 'PACKAGING DIJUAL' ? ' selected' : '') + '>PACKAGING DIJUAL</option>';
+        item_pembelian += '<option value="BAKERY"' + (keterangan === 'BAKERY' ? ' selected' : '') + '>BAKERY</option>';
+        item_pembelian += '<option value="BASAHAN"' + (keterangan === 'BASAHAN' ? ' selected' : '') + '>BASAHAN</option>';
+        item_pembelian += '<option value="FREE MAINAN"' + (keterangan === 'FREE MAINAN' ? ' selected' : '') + '>FREE MAINAN</option>';
+        item_pembelian += '<option value="FREE PACKAGING"' + (keterangan === 'FREE PACKAGING' ? ' selected' : '') + '>FREE PACKAGING</option>';
+        item_pembelian += '<option value="MAINAN DIJUAL"' + (keterangan === 'MAINAN DIJUAL' ? ' selected' : '') + '>MAINAN DIJUAL</option>';
+        item_pembelian += '<option value="MAKLON"' + (keterangan === 'MAKLON' ? ' selected' : '') + '>MAKLON</option>';
+        item_pembelian += '<option value="SPECIAL PRODUK"' + (keterangan === 'SPECIAL PRODUK' ? ' selected' : '') + '>SPECIAL PRODUK</option>';
+
+        item_pembelian += '</select></div></td>';
  
          item_pembelian += '<td style="width: 100px"><button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(' + urutan + ')"><i class="fas fa-plus"></i></button><button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' + urutan + ')"><i class="fas fa-trash"></i></button></td>';
          item_pembelian += '</tr>';
