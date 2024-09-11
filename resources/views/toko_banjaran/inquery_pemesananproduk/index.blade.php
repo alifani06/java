@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
-{{-- testt  --}}
-{{-- testt  --}}
+{{-- test --}}
 
 @section('title', 'Produks')
 
