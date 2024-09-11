@@ -948,7 +948,7 @@ public function store(Request $request)
 
     // Return response dengan URL PDF
     return response()->json([
-        'success' => 'Berhasil menambahkan barang jadi',
+        'success' => 'Transaksi Berhasil',
         'pdfUrl' => $pdfUrl,
     ]);
 }
