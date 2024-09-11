@@ -221,7 +221,8 @@ document.addEventListener('DOMContentLoaded', function() {
        });
 
    </script>
-   
+   <script src="{{ asset('js/script.js') }}?v={{ time() }}"></script>
+
    <script>
    var data_pembelian = @json(session('data_pembelians'));
    var jumlah_ban = 0;
