@@ -368,11 +368,12 @@
                             @endif
                         </tr>
                         
+                        @if($penjualan->metode_id !== NULL)
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>No. </strong></td>
                             <td style="font-size: 8px;">{{$penjualan->keterangan}}</td>
                         </tr>
-                        
+                        @endif
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total </strong></td>
                             <td style="font-size: 8px;">{{ 'Rp.' . number_format($penjualan->sub_total, 0, ',', '.') }}</td>
