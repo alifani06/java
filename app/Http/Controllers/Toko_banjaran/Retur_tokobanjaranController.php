@@ -61,10 +61,9 @@ class Retur_tokobanjaranController extends Controller{
 
     public function create()
     {
-        // Fetch all products
         $produks = Produk::all();
         $tokos = Toko::all();
-        $klasifikasis = Klasifikasi::all(); 
+        $klasifikasis = Klasifikasi::all(); // Pastikan ini ada
     
         return view('toko_banjaran.retur_tokobanjaran.create', compact('produks', 'tokos', 'klasifikasis'));
     }
@@ -79,7 +78,7 @@ class Retur_tokobanjaranController extends Controller{
             'jumlah' => 'required|array',
             'jumlah.*' => 'integer|min:1',
             'keterangan' => 'required|array',
-            'keterangan.*' => 'in:produk_gagal,oper,sampel',
+            // 'keterangan.*' => 'in:produk_gagal,oper,sampel',
         ]);
 
         $kode = $this->kode();
