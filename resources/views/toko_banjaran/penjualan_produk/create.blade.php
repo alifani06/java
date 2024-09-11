@@ -495,11 +495,6 @@
         });
     </script>
     
-    
-    
-    
-
-
     <script>
         function getData1() {
             var metodeId = document.getElementById('nama_metode').value;
