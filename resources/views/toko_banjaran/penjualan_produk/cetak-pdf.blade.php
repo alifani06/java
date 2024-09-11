@@ -348,19 +348,30 @@
                         @endforeach
                         <tr>
                             @if($penjualan->metode_id !== null)
-                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee {{$penjualan->metodepembayaran->nama_metode}} {{$penjualan->metodepembayaran->fee}}%</strong></td>
-                            <td style="font-size: 8px; text-align: right;">
-                                    @php
-                                        // Menghapus semua karakter kecuali angka
-                                        $total_fee = preg_replace('/[^\d]/', '', $penjualan->total_fee);
-                                        // Konversi ke tipe float
-                                        $total_fee = (float) $total_fee;
-                                    @endphp
-                                    {{ 'Rp. ' . number_format($total_fee, 0, ',', '.') }}
+                                <td colspan="5" style="text-align: right; font-size: 8px;">
+                                    <strong> Fee {{$penjualan->metodepembayaran->nama_metode}}</strong>
+                                    @if($penjualan->total_fee != 0)
+                                        {{$penjualan->metodepembayaran->fee}}%
+                                    @endif
+                                </td>
+                                <td style="font-size: 8px; text-align: right;">
+                                    @if($penjualan->total_fee != 0)
+                                        @php
+                                            // Menghapus semua karakter kecuali angka
+                                            $total_fee = preg_replace('/[^\d]/', '', $penjualan->total_fee);
+                                            // Konversi ke tipe float
+                                            $total_fee = (float) $total_fee;
+                                        @endphp
+                                        {{ 'Rp. ' . number_format($total_fee, 0, ',', '.') }}
+                                    @endif
                                 </td>
                             @endif
                         </tr>
                         
+                        <tr>
+                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong>No. </strong></td>
+                            <td style="font-size: 8px;">{{$penjualan->keterangan}}</td>
+                        </tr>
                         
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total </strong></td>
