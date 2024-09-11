@@ -320,14 +320,15 @@ document.addEventListener('DOMContentLoaded', function() {
             item_pembelian += '<td><div class="form-group"><select class="form-control" style="font-size:14px" id="keterangan-' + urutan + '" name="keterangan[]" onchange="checkKeterangan(' + urutan + ')">';
             
             // Assuming you have a list of classifications available globally in JavaScript
-            @foreach ($klasifikasis as $klasifikasi)
-            item_pembelian += '<option value="{{ $klasifikasi->nama }}"' + (keterangan === '{{ $klasifikasi->id }}' ? ' selected' : '') + '>{{ $klasifikasi->nama }}</option>';
-            @endforeach
+            // @foreach ($klasifikasis as $klasifikasi)
+            // item_pembelian += '<option value="{{ $klasifikasi->nama }}"' + (keterangan === '{{ $klasifikasi->id }}' ? ' selected' : '') + '>{{ $klasifikasi->nama }}</option>';
+            // @endforeach
 
             item_pembelian += '<option value="PRODUK GAGAL"' + (keterangan === 'produk_gagal' ? ' selected' : '') + '>PRODUK GAGAL</option>';
             item_pembelian += '<option value="SAMPEL"' + (keterangan === 'sampel' ? ' selected' : '') + '>SAMPEL</option>';
+            item_pembelian += '<option value="DIVISI 1 / SUGENG"' + (keterangan === 'DIVISI 1 / SUGENG' ? ' selected' : '') + '>DIVISI 1 / SUGENG</option>';
 
-            item_pembelian += '</select></div><div class="form-group" id="tokoSelectContainer-' + urutan + '"></div></td>';
+            // item_pembelian += '</select></div><div class="form-group" id="tokoSelectContainer-' + urutan + '"></div></td>';
             item_pembelian += '<td style="width: 100px"><button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(' + urutan + ')"><i class="fas fa-plus"></i></button><button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' + urutan + ')"><i class="fas fa-trash"></i></button></td>';
             item_pembelian += '</tr>';
 
