@@ -64,8 +64,7 @@ class Retur_tokobanjaranController extends Controller{
         // Fetch all products
         $produks = Produk::all();
         $tokos = Toko::all();
-        // Fetch all classifications
-        $klasifikasis = Klasifikasi::all(); // Asumsi Anda memiliki model Klasifikasi
+        $klasifikasis = Klasifikasi::all(); 
     
         return view('toko_banjaran.retur_tokobanjaran.create', compact('produks', 'tokos', 'klasifikasis'));
     }
