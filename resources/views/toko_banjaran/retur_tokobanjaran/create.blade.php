@@ -35,7 +35,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Retur Barang Jadii</h1>
+                    <h1 class="m-0">Retur Barang Jadi</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -415,48 +415,41 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
  
-    function itemPembelian(urutan, key, value = null) {
-            var produk_id = '';
-            var kode_produk = '';
-            var nama_produk = '';
-            var jumlah = '';
-            var keterangan = '';
-
-            if (value !== null) {
-                produk_id = value.produk_id;
-                kode_produk = value.kode_produk;
-                nama_produk = value.nama_produk;
-                jumlah = value.jumlah;
-                keterangan = value.keterangan;
-            }
-
-            var item_pembelian = '<tr id="pembelian-' + urutan + '">';
-            item_pembelian += '<td style="width: 70px; font-size:14px" class="text-center" id="urutan-' + urutan + '">' + urutan + '</td>';
-            item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="produk_id-' + urutan + '" name="produk_id[]" value="' + produk_id + '"></div></td>';
-            item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
-            item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
-            item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
-            item_pembelian += '<td><div class="form-group"><select class="form-control" style="font-size:14px" id="keterangan-' + urutan + '" name="keterangan[]" onchange="checkKeterangan(' + urutan + ')">';
-            
-            // Assuming you have a list of classifications available globally in JavaScript
-            @foreach ($klasifikasis as $klasifikasi)
-            item_pembelian += '<option value="{{ $klasifikasi->id }}"' + (keterangan === '{{ $klasifikasi->id }}' ? ' selected' : '') + '>{{ $klasifikasi->nama }}</option>';
-            @endforeach
-
-            item_pembelian += '<option value="produk_gagal"' + (keterangan === 'produk_gagal' ? ' selected' : '') + '>PRODUK GAGAL</option>';
-            item_pembelian += '<option value="sampel"' + (keterangan === 'sampel' ? ' selected' : '') + '>SAMPEL</option>';
-
-            item_pembelian += '</select></div><div class="form-group" id="tokoSelectContainer-' + urutan + '"></div></td>';
-            item_pembelian += '<td style="width: 100px"><button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(' + urutan + ')"><i class="fas fa-plus"></i></button><button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' + urutan + ')"><i class="fas fa-trash"></i></button></td>';
-            item_pembelian += '</tr>';
-
-            $('#tabel-pembelian').append(item_pembelian);
-
-            // Call checkKeterangan to initialize the toko select if keterangan is already 'oper'
-            if (keterangan === 'oper') {
-                checkKeterangan(urutan, keterangan);
-            }
-        }
+     function itemPembelian(urutan, key, value = null) {
+         var produk_id = '';
+         var kode_produk = '';
+         var nama_produk = '';
+         var jumlah = '';
+         var keterangan = '';
+ 
+         if (value !== null) {
+             produk_id = value.produk_id;
+             kode_produk = value.kode_produk;
+             nama_produk = value.nama_produk;
+             jumlah = value.jumlah;
+             keterangan = value.keterangan;
+         }
+ 
+         var item_pembelian = '<tr id="pembelian-' + urutan + '">';
+         item_pembelian += '<td style="width: 70px; font-size:14px" class="text-center" id="urutan-' + urutan + '">' + urutan + '</td>';
+         item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="produk_id-' + urutan + '" name="produk_id[]" value="' + produk_id + '"></div></td>';
+         item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
+         item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
+         item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
+         
+         // Tambahkan select box untuk memilih toko pada keterangan
+         item_pembelian += '<td><div class="form-group"><select class="form-control" style="font-size:14px" id="keterangan-' + urutan + '" name="keterangan[]">';
+         item_pembelian += '<option value="">-Pilih-</option>';
+         @foreach ($klasifikasis as $klasifikasis)
+         item_pembelian += '<option value="{{ $klasifikasis->nama }}"' + (keterangan === '{{ $klasifikasis->nama }}' ? ' selected' : '') + '>{{ $klasifikasis->nama }}</option>';
+         @endforeach
+         item_pembelian += '</select></div></td>';
+ 
+         item_pembelian += '<td style="width: 100px"><button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(' + urutan + ')"><i class="fas fa-plus"></i></button><button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' + urutan + ')"><i class="fas fa-trash"></i></button></td>';
+         item_pembelian += '</tr>';
+ 
+         $('#tabel-pembelian').append(item_pembelian);
+     }
  
  
  </script>
