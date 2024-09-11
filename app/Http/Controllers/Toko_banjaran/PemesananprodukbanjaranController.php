@@ -57,16 +57,12 @@ class PemesananprodukbanjaranController extends Controller
         return view('toko_banjaran.pemesanan_produk.index', compact('inquery'));
     }
     
-
-    
-
     public function pelanggan($id)
     {
         $user = Pelanggan::where('id', $id)->first();
 
         return json_decode($user);
     }
-
 
     public function create()
     {
@@ -290,20 +286,44 @@ class PemesananprodukbanjaranController extends Controller
         return $pdf->stream('pemesanan.pdf');
     }
 
+    // public function kode()
+    // {
+    //     $lastPemesanan = Pemesananproduk::latest()->first();
+    //     if (!$lastPemesanan) {
+    //         $num = 1;
+    //     } else {
+    //         $lastCode = $lastPemesanan->kode_pemesanan;
+    //         $num = (int) substr($lastCode, 3) + 1; // Mengambil angka setelah prefix 'SPP'
+    //     }
+        
+    //     $formattedNum = sprintf("%06s", $num); // Mengformat nomor urut menjadi 6 digit
+    //     $prefix = 'SPP';
+    //     $newCode = $prefix . $formattedNum; // Gabungkan prefix dengan nomor urut yang diformat
+    
+    //     return $newCode;
+    // }
+
     public function kode()
     {
-        $lastPemesanan = Pemesananproduk::latest()->first();
-        if (!$lastPemesanan) {
+        $prefix = 'QBNJ';
+        $year = date('y'); // Dua digit terakhir dari tahun
+        $date = date('md'); // Format bulan dan hari: MMDD
+    
+        // Mengambil kode retur terakhir yang dibuat pada hari yang sama
+        $lastBarang = Pemesananproduk::whereDate('tanggal_pemesanan', Carbon::today())
+                                      ->orderBy('kode_pemesanan', 'desc')
+                                      ->first();
+    
+        if (!$lastBarang) {
             $num = 1;
         } else {
-            $lastCode = $lastPemesanan->kode_pemesanan;
-            $num = (int) substr($lastCode, 3) + 1; // Mengambil angka setelah prefix 'SPP'
+            $lastCode = $lastBarang->kode_pemesanan;
+            $lastNum = (int) substr($lastCode, strlen($prefix . $year . $date)); // Mengambil urutan terakhir
+            $num = $lastNum + 1;
         }
-        
-        $formattedNum = sprintf("%06s", $num); // Mengformat nomor urut menjadi 6 digit
-        $prefix = 'SPP';
-        $newCode = $prefix . $formattedNum; // Gabungkan prefix dengan nomor urut yang diformat
     
+        $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
+        $newCode = $prefix . $year . $date . $formattedNum;
         return $newCode;
     }
 

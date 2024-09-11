@@ -158,13 +158,13 @@
                                                         href="{{ url('toko_slawi/inquery_penjualanproduk/' . $item->id . '/edit') }}">Update</a>
                                                 
                                                     <a class="dropdown-item"
-                                                    href="{{ url('/toko_slawi/penjualan_produk/' . $item->id ) }}">Show</a>
+                                                    href="{{ url('/toko_banjaran/penjualan_produk/' . $item->id ) }}">Show</a>
                                                     @endif
                                             @if ($item->status == 'posting')
                                                     <a class="dropdown-item unpost-btn"
                                                         data-memo-id="{{ $item->id }}">Unpost</a>
                                                     <a class="dropdown-item"
-                                                    href="{{ url('/toko_slawi/penjualan_produk/' . $item->id ) }}">Show</a>
+                                                    href="{{ url('/toko_banjaran/penjualan_produk/' . $item->id ) }}">Show</a>
                                             @endif
                                            
                                         </div>
@@ -213,7 +213,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_slawi/inquery_penjualanproduk') }}";
+            form.action = "{{ url('toko_banjaran/inquery_penjualanprodukbanjaran') }}";
             form.submit();
         }
 
@@ -256,7 +256,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan unpost
                 $.ajax({
-                    url: "{{ url('toko_slawi/inquery_penjualanproduk/unpost_penjualanproduk/') }}/" + memoId,
+                    url: "{{ url('toko_banjaran/inquery_penjualanprodukbanjaran/unpost_penjualanproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -297,7 +297,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan posting
                 $.ajax({
-                    url: "{{ url('toko_slawi/inquery_penjualanproduk/posting_penjualanproduk/') }}/" + memoId,
+                    url: "{{ url('toko_banjaran/inquery_penjualanprodukbanjaran/posting_penjualanproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

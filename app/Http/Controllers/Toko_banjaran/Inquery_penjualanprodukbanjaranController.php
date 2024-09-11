@@ -81,6 +81,7 @@ public function posting_penjualanproduk($id)
         ]);
     return back()->with('success', 'Berhasil');
 }
+
 public function unpost_penjualanproduk($id)
 {
     $item = Penjualanproduk::where('id', $id)->first();
