@@ -35,7 +35,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Retur Barang Jadii</h1>
+                    <h1 class="m-0">Retur Barang Jadi</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -85,7 +85,7 @@
                                         <div class="card-header">
                                             <h3 class="card-title"><span></span></h3>
                                             <div class="float-right">
-                                                <button  type="button" class="btn btn-primary btn-sm" onclick="addPesanan()">
+                                                <button  type="button" class="btn btn-primary btn-sm" onclick="addRetur()">
                                                     <i class="fas fa-plus"></i>
                                                 </button>
                                             </div>
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
        document.getElementById('jumlah-' + urutan).focus();
    }
    
-   function addPesanan() {
+   function addRetur() {
        jumlah_ban = jumlah_ban + 1;
        if (jumlah_ban === 1) {
            $('#tabel-pembelian').empty();
@@ -338,10 +338,6 @@ document.addEventListener('DOMContentLoaded', function() {
         checkKeterangan(urutan, keterangan);
     }
 }
-
-
-
-
 
    </script>
 @endsection
