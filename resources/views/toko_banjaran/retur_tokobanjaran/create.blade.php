@@ -439,8 +439,8 @@ document.addEventListener('DOMContentLoaded', function() {
          
          // Tambahkan select box untuk memilih toko pada keterangan
          item_pembelian += '<td><div class="form-group"><select class="form-control" style="font-size:14px" id="keterangan-' + urutan + '" name="keterangan[]">';
-         @foreach ($tokos as $toko)
-         item_pembelian += '<option value="{{ $toko->nama_toko }}"' + (keterangan === '{{ $toko->nama_toko }}' ? ' selected' : '') + '>{{ $toko->nama_toko }}</option>';
+         @foreach ($klasifikasis as $item)
+         item_pembelian += '<option value="{{ $item->nama }}"' + (keterangan === '{{ $item->nama }}' ? ' selected' : '') + '>{{ $item->nama }}</option>';
          @endforeach
          item_pembelian += '</select></div></td>';
  
