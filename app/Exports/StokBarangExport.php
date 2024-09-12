@@ -33,6 +33,7 @@ class StokBarangExport implements FromCollection, WithHeadings, WithMapping, Wit
         $tanggal_akhir = $this->request->tanggal_akhir;
         $toko_id = $this->request->toko_id;
         $klasifikasi_id = $this->request->klasifikasi_id;
+        $produk_id = $this->request->produk; // Tambahkan filter produk
 
         $query = Penjualanproduk::with('detailPenjualanProduk.produk')
             ->when($status, function ($query, $status) {
@@ -68,7 +69,7 @@ class StokBarangExport implements FromCollection, WithHeadings, WithMapping, Wit
             foreach ($penjualan->detailPenjualanProduk as $detail) {
                 $produk = $detail->produk;
 
-                if ($produk) {
+                if ($produk && (!$produk_id || $produk->id == $produk_id)) {
                     $key = $produk->id;
 
                     if (!isset($this->finalResults[$key])) {

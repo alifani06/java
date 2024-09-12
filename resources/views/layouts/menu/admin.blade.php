@@ -677,7 +677,7 @@
                 <a href="{{ url('admin/laporan_hasilpenjualan') }}"
                     class="nav-link {{ request()->is('admin/laporan_hasilpenjualan*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                    <p style="font-size: 14px;">Laporan Hasil Penjualan</p>
+                    <p style="font-size: 14px;">Laporan Histori Barang</p>
                 </a>
             </li>
         {{-- @endif --}}

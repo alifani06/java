@@ -81,16 +81,22 @@
                                 <label for="toko_id">(Pilih Toko)</label>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="klasifikasi_id" name="klasifikasi_id">
-                                    <option value="">- Semua Klasifikasi -</option>
-                                    <!-- Populate klasifikasi options dynamically -->
-                                    @foreach($klasifikasis as $klasifikasi)
-                                        <option value="{{ $klasifikasi->id }}" {{ Request::get('klasifikasi_id') == $klasifikasi->id ? 'selected' : '' }}>
-                                            {{ $klasifikasi->nama }}
-                                        </option>
+                                <select class="custom-select form-control" id="klasifikasi" name="klasifikasi_id" onchange="filterProduk()">
+                                    <option value="">- Semua Divisi -</option>
+                                    @foreach ($klasifikasis as $klasifikasi)
+                                        <option value="{{ $klasifikasi->id }}" {{ Request::get('klasifikasi_id') == $klasifikasi->id ? 'selected' : '' }}>{{ $klasifikasi->nama }}</option>
                                     @endforeach
                                 </select>
-                                <label for="klasifikasi_id">(Pilih Klasifikasi)</label>
+                                <label for="klasifikasi">(Pilih Divisi)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="produk" name="produk">
+                                    <option value="">- Semua Produk -</option>
+                                    @foreach ($produks as $produk)
+                                        <option value="{{ $produk->id }}" data-klasifikasi="{{ $produk->klasifikasi_id }}" {{ Request::get('produk') == $produk->id ? 'selected' : '' }}>{{ $produk->nama_produk }}</option>
+                                    @endforeach
+                                </select>
+                                <label for="produk">(Pilih Produk)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
@@ -108,7 +114,6 @@
                     
                     <form id="searchForm" method="GET">
                         <!-- Form fields go here -->
-                    
                         <div class="col-md-3 mb-3">
                             <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
                                 <i class="fas fa-search"></i> Cari
@@ -192,7 +197,27 @@
             </div>
         </div>
     </section>
+    
+<script>
+function filterProduk() {
+    var klasifikasiId = document.getElementById('klasifikasi').value;
+    var produkSelect = document.getElementById('produk');
+    var produkOptions = produkSelect.options;
 
+    for (var i = 0; i < produkOptions.length; i++) {
+        var option = produkOptions[i];
+        if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
+            option.style.display = "block";
+        } else {
+            option.style.display = "none";
+        }
+    }
+
+    // Reset the selected value of the product select box
+    produkSelect.selectedIndex = 0;
+}
+
+    </script>
 
     <!-- /.card -->
     <script>
