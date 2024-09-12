@@ -82,7 +82,7 @@
 <body>
    
     <div class="container">
-        <h1 style="text-align: center; margin-bottom: 5px;">LAPORAN PENJUALAN PRODUK GLOBAL</h1>
+        <h1 style="text-align: center; margin-bottom: 5px;">LAPORAN PENJUALAN PRODUK RINCI</h1>
     </div>
     
     <div class="text" style="text-align: center;">

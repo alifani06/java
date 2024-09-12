@@ -21,11 +21,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Barang Keluar Global </h1>
+                    <h1 class="m-0">Laporan Barang Keluar Rinci </h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Laporan Barang Keluar Global </li>
+                        <li class="breadcrumb-item active">Laporan Barang Keluar Rinci </li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -64,7 +64,7 @@
                             <option value="retur" {{ old('kategori1') == 'retur' ? 'selected' : '' }}>Barang Retur</option>
                         </select>
                     </div>
-                    <h3 class="card-title">Laporan Barang Keluar Global</h3>
+                    <h3 class="card-title">Laporan Barang Keluar Rinci</h3>
                 </div>
                 <!-- /.card-header -->
                  
@@ -139,14 +139,12 @@
                                             <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
                                         @endforeach
                                 </select>
-
                                 {{-- <label style="margin-top:7px"  for="created_at">Jenis Laporan</label>
                                 <select class="custom-select form-control" id="status" name="status">
                                     <option value="">- Pilih Laporan -</option>
                                     <option value="bk">Laporan Barang Keluar Rinci</option>
                                     <option value="bkglobal" selected>Laporan Barang Keluar Global</option>
                                 </select> --}}
-                                
                             </div>
 
                             <div class="col-md-3 mb-3">
@@ -245,10 +243,7 @@
                             </tr>
                         </tfoot>
                     </table>
-                    
-                    
-                    
-                    
+
                     
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
@@ -329,7 +324,7 @@
     
         function cari() {
             var form = document.getElementById('form-action');
-            form.action = "{{ route('barangKeluar') }}";
+            form.action = "{{ route('barangKeluarRinci') }}";
             form.submit();
         }
     </script>
@@ -370,7 +365,7 @@
         }
 
     const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printLaporanBK') }}";
+    form.action = "{{ url('admin/printLaporanBKrinci') }}";
     form.target = "_blank";
     form.submit();
     }
