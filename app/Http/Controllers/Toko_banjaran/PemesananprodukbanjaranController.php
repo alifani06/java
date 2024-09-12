@@ -242,19 +242,23 @@ class PemesananprodukbanjaranController extends Controller
                 'kode_dppemesanan' => $this->kodedp(), // Panggil fungsi kode untuk mendapatkan kode_dppemesanan
                 'dp_pemesanan' => preg_replace('/[^0-9]/', '', $request->dp_pemesanan),
                 'kekurangan_pemesanan' => preg_replace('/[^0-9]/', '', $request->kekurangan_pemesanan),
+                'tanggal_dp' => Carbon::now('Asia/Jakarta'),
+
             ]);
         }
 
         // Ambil detail pemesanan untuk ditampilkan di halaman cetak
         $details = Detailpemesananproduk::where('pemesananproduk_id', $cetakpdf->id)->get();
 
-        return redirect()->route('toko_banjaran.pemesanan_produk.cetak-pdf', ['id' => $cetakpdf->id])
-        ->with([
-            'success' => 'Berhasil menambahkan barang jadi',
-            'pemesanan' => $cetakpdf,
-            'details' => $details,
-            'open_in_new_tab' => true, // Menambahkan flag
-        ]);
+
+            // Kirimkan URL untuk tab baru
+    $pdfUrl = route('toko_banjaran.pemesanan_produk.cetak-pdf', ['id' => $cetakpdf->id]);
+
+    // Return response dengan URL PDF
+    return response()->json([
+        'success' => 'Transaksi Berhasil',
+        'pdfUrl' => $pdfUrl,
+    ]);
     }
 
 
@@ -329,18 +333,25 @@ class PemesananprodukbanjaranController extends Controller
 
     public function kodedp()
     {
-        $lastPemesanan = Dppemesanan::latest()->first();
-        if (!$lastPemesanan) {
+        $prefix = 'DPBNJ';
+        $year = date('y'); // Dua digit terakhir dari tahun
+        $date = date('md'); // Format bulan dan hari: MMDD
+    
+        // Mengambil kode retur terakhir yang dibuat pada hari yang sama
+        $lastBarang = Dppemesanan::whereDate('tanggal_dp', Carbon::today())
+                                      ->orderBy('kode_dppemesanan', 'desc')
+                                      ->first();
+    
+        if (!$lastBarang) {
             $num = 1;
         } else {
-            $lastCode = $lastPemesanan->kode_dppemesanan;
-            $num = (int) substr($lastCode, 3) + 1; // Mengambil angka setelah prefix 'SPP'
+            $lastCode = $lastBarang->kode_dppemesanan;
+            $lastNum = (int) substr($lastCode, strlen($prefix . $year . $date)); // Mengambil urutan terakhir
+            $num = $lastNum + 1;
         }
-        
-        $formattedNum = sprintf("%06s", $num); // Mengformat nomor urut menjadi 6 digit
-        $prefix = 'DPP';
-        $newCode = $prefix . $formattedNum; // Gabungkan prefix dengan nomor urut yang diformat
     
+        $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
+        $newCode = $prefix . $year . $date . $formattedNum;
         return $newCode;
     }
 

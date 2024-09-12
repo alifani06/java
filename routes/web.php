@@ -464,6 +464,7 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('/get-product', [PenjualanprodukbanjaranController::class, 'getProductByKode']);
     Route::get('/penjualan-produk/fetch-product-data', [PenjualanprodukbanjaranController::class, 'fetchProductData'])->name('toko_banjaran.penjualan_produk.fetchProductData');
     Route::get('/search-product', [PenjualanprodukbanjaranController::class, 'searchProduct']);
+    
 
 
 

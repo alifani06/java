@@ -72,7 +72,7 @@
                     @endif
                 </div>
             @endif
-            <form action="{{ route('penjualan_produk.pelunasan.simpan') }}" method="POST" enctype="multipart/form-data"
+            <form id="pelunasanForm" action="{{ route('penjualan_produk.pelunasan.simpan') }}" method="POST" enctype="multipart/form-data"
                 autocomplete="off">
                 @csrf
                 <div class="card">
@@ -296,7 +296,7 @@
                                     <th>Kode Pemesanan</th>
                                     <th>Pelanggan</th>
                                     <th>Tanggal Ambil</th>
-                                    <th>Total</th>
+                                    <th>Nominal</th>
                                     <th>Opsi</th>
                                 </tr>
                             </thead>
@@ -314,7 +314,7 @@
                                         <td>{{ $return->pemesananproduk ? $return->pemesananproduk->kode_pemesanan : 'No Data' }}</td>
                                         <td>{{ $return->pemesananproduk ? $return->pemesananproduk->nama_pelanggan : 'No Data' }}</td>
                                         <td>{{ $return->pemesananproduk ? $return->pemesananproduk->tanggal_kirim : 'No Data' }}</td>
-                                        <td>{{ 'Rp. ' .number_format($return->pemesananproduk ? $return->pemesananproduk->sub_total : 0, 0, ',', '.') }}</td>
+                                        <td>{{number_format($return->dp_pemesanan, 0, ',', '.') }}</td>
                                         <td   td class="text-center">
                                         <button type="button" class="btn btn-primary btn-sm"
                                             onclick="GetReturn(
@@ -340,6 +340,50 @@
 
     </section>
     
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function() {
+        $('#pelunasanForm').submit(function(event) {
+            event.preventDefault(); // Mencegah pengiriman form default
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.pdfUrl) {
+                        // Membuka URL di tab baru
+                        window.open(response.pdfUrl, '_blank');
+                    }
+                    if (response.success) {
+                        // Tampilkan pesan sukses menggunakan SweetAlert2
+                        Swal.fire({
+                            title: 'Sukses!',
+                            text: response.success,
+                            icon: 'success',
+                            confirmButtonText: 'OK',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Lakukan refresh halaman setelah menekan OK
+                                location.reload(); // Ini akan merefresh seluruh halaman
+                            }
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    // Tangani error jika diperlukan
+                    console.log(xhr.responseText);
+                }
+            });
+        });
+
+        // Menyimpan nilai default untuk setiap elemen form ketika halaman dimuat
+        $('#pelunasanForm').find('input[type="text"], input[type="number"], textarea, select').each(function() {
+            $(this).data('default-value', $(this).val());
+        });
+    });
+</script>
 
 <script>
     var itemCounter = 0;

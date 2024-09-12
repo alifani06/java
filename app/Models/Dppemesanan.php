@@ -21,6 +21,7 @@ class Dppemesanan extends Model
         'pemesananproduk_id',
         'dp_pemesanan',
         'kekurangan_pemesanan',
+        'tanggal_dp',
         
   
     ];
@@ -68,5 +69,10 @@ class Dppemesanan extends Model
     public function dppemesanans()
 {
     return $this->hasMany(Dppemesanan::class, 'pelunasan_id'); // Sesuaikan nama kolom foreign key jika perlu
+}
+
+public function pelunasan()
+{
+    return $this->hasMany(Pelunasan::class);
 }
 }

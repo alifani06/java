@@ -72,7 +72,7 @@
                     @endforeach
                 </div>
             @endif
-            <form action="{{ url('toko_banjaran/pemesanan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form id="pemesananForm" action="{{ url('toko_banjaran/pemesanan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 {{-- detail pelanggan --}}
                 <div class="card">
@@ -449,6 +449,51 @@
             });
         });
     </script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function() {
+        $('#pemesananForm').submit(function(event) {
+            event.preventDefault(); // Mencegah pengiriman form default
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.pdfUrl) {
+                        // Membuka URL di tab baru
+                        window.open(response.pdfUrl, '_blank');
+                    }
+                    if (response.success) {
+                        // Tampilkan pesan sukses menggunakan SweetAlert2
+                        Swal.fire({
+                            title: 'Sukses!',
+                            text: response.success,
+                            icon: 'success',
+                            confirmButtonText: 'OK',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Lakukan refresh halaman setelah menekan OK
+                                location.reload(); // Ini akan merefresh seluruh halaman
+                            }
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    // Tangani error jika diperlukan
+                    console.log(xhr.responseText);
+                }
+            });
+        });
+
+        // Menyimpan nilai default untuk setiap elemen form ketika halaman dimuat
+        $('#pemesananForm').find('input[type="text"], input[type="number"], textarea, select').each(function() {
+            $(this).data('default-value', $(this).val());
+        });
+    });
+</script>
 
 <script>
      function getData1() {

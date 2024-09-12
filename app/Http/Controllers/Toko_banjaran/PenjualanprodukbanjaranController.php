@@ -156,9 +156,6 @@ class PenjualanprodukbanjaranController extends Controller
         return view('toko_banjaran.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
     }
 
-
-    
-
     public function pelunasan()
     {
         $barangs = Barang::all();
@@ -334,15 +331,19 @@ class PenjualanprodukbanjaranController extends Controller
             'kembali' => 'nullable|numeric',
         ]);
 
+        // Jika nilai pelunasan kosong atau 0, set default ke 1
+        $validated['pelunasan'] = $validated['pelunasan'] > 0 ? $validated['pelunasan'] : 1;
+
         // Update kolom pelunasan di tabel dppemesanans
         $dppemesanans = Dppemesanan::find($validated['dppemesanan_id']);
         if (!$dppemesanans) {
             return redirect()->back()->withErrors(['error' => 'Data pesanan tidak ditemukan']);
         }
 
+        // Update pelunasan di tabel dppemesanans
         $dppemesanans->pelunasan += $validated['pelunasan'];
         $dppemesanans->save();
-
+        
         // Generate kode untuk penjualan
         $kode_penjualan = $this->kode();
 
@@ -415,17 +416,19 @@ class PenjualanprodukbanjaranController extends Controller
         // Ambil detail pelunasan untuk ditampilkan di halaman cetak
         $details = DetailPenjualanProduk::where('penjualanproduk_id', $penjualan->id)->get();
 
-        // Redirect ke halaman cetak dengan menyertakan data sukses dan detail pelunasan
-        return redirect()->route('toko_banjaran.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id])->with([
-            'success' => 'Data berhasil disimpan.',
+            // Kirimkan URL untuk tab baru
+        $pdfUrl = route('toko_banjaran.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id]);
+
+        // Return response dengan URL PDF
+        return response()->json([
+            'success' => 'Transaksi Berhasil',
             'pelunasan' => $pelunasan,
             'penjualan' => $penjualan,
             'details' => $details,
+            'pdfUrl' => $pdfUrl,
         ]);
+
     }
-
-
-
 
     public function getCustomerByKode($kode)
     {

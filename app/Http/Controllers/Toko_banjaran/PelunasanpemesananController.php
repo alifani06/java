@@ -405,23 +405,44 @@ class PelunasanpemesananController extends Controller
         return view('toko_banjaran.penjualan_produk.cetakpelunasan', compact('penjualan', 'pelanggans', 'tokos'));
     }
     
+    // public function cetakPdf($id)
+    // {
+    //     // Mengambil satu item Pelunasan berdasarkan ID
+    //     $inquery = Pelunasan::with(['metodePembayaran', 'penjualanproduk.detailpenjualanproduk'])
+    //     ->findOrFail($id);
+
+    //     // Mengambil semua pelanggan
+    //     $pelanggans = Pelanggan::all();
+
+    //     // Mengakses toko dari $inquery yang sekarang menjadi instance model
+    //     $tokos = $inquery->toko;
+            
+    //     $pdf = FacadePdf::loadView('toko_banjaran.pelunasan_pemesanan.cetak-pdf', compact('inquery', 'tokos', 'pelanggans'));
+    //     $pdf->setPaper('a4', 'portrait');
+        
+    //     return $pdf->stream('pelunasan.pdf');
+    // }
     public function cetakPdf($id)
     {
-     // Mengambil satu item Pelunasan berdasarkan ID
-     $inquery = Pelunasan::with(['metodePembayaran', 'penjualanproduk.detailpenjualanproduk'])
-     ->findOrFail($id);
+        // Mengambil satu item Pelunasan berdasarkan ID
+        $inquery = Pelunasan::with(['metodePembayaran', 'penjualanproduk.detailpenjualanproduk', 'dppemesanan'])
+            ->findOrFail($id);
 
-    // Mengambil semua pelanggan
-    $pelanggans = Pelanggan::all();
+        // Mengambil kode_dppemesanan
+        $kode_dppemesanan = $inquery->dppemesanan->kode_dppemesanan ?? 'N/A'; // Mengakses kode_dppemesanan
 
-    // Mengakses toko dari $inquery yang sekarang menjadi instance model
-    $tokos = $inquery->toko;
+        // Mengambil semua pelanggan
+        $pelanggans = Pelanggan::all();
+
+        // Mengakses toko dari $inquery yang sekarang menjadi instance model
+        $tokos = $inquery->toko;
         
-    $pdf = FacadePdf::loadView('toko_banjaran.pelunasan_pemesanan.cetak-pdf', compact('inquery', 'tokos', 'pelanggans'));
-    $pdf->setPaper('a4', 'portrait');
-    
-    return $pdf->stream('pelunasan.pdf');
+        $pdf = FacadePdf::loadView('toko_banjaran.pelunasan_pemesanan.cetak-pdf', compact('inquery', 'tokos', 'pelanggans', 'kode_dppemesanan'));
+        $pdf->setPaper('a4', 'portrait');
+        
+        return $pdf->stream('pelunasan.pdf');
     }
+
 
 
     public function show($id)
