@@ -74,18 +74,16 @@
         .summary-table .bold {
             font-weight: bold;
         }
-        .footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            text-align: right;
+        .page-number {
+            position: absolute;
+            bottom: -10px;
+            right: 0;
             font-size: 10px;
-            border-top: 1px solid #000;
-            padding-top: 5px;
         }
-        .footer .page:after {
-            content: "Page " counter(page) " of " counter(pages);
+        .page-number:before {
+            content: "Halaman " counter(page);
         }
+      
     </style>
 </head>
 <body>
@@ -154,10 +152,9 @@
             </table>
         </div>
     @endforeach
-
-    <div class="footer">
-        <span class="page"></span>
-    </div>
+  <!-- Page Number -->
+  <div class="page-number"></div>
     
 </body>
+
 </html>
