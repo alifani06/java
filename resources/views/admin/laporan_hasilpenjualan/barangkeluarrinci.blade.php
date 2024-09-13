@@ -139,12 +139,12 @@
                                             <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
                                         @endforeach
                                 </select>
-                                {{-- <label style="margin-top:7px"  for="created_at">Jenis Laporan</label>
+                                <label style="margin-top:7px"  for="created_at">Jenis Laporan</label>
                                 <select class="custom-select form-control" id="status" name="status">
                                     <option value="">- Pilih Laporan -</option>
                                     <option value="bk">Laporan Barang Keluar Rinci</option>
                                     <option value="bkglobal" selected>Laporan Barang Keluar Global</option>
-                                </select> --}}
+                                </select>
                             </div>
 
                             <div class="col-md-3 mb-3">

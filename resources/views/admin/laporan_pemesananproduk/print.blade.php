@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laporan Pemesanan Produk</title>
+    <title>Laporan Pemesanan Rinci </title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -31,6 +31,16 @@
         .header .title {
             font-weight: bold;
             font-size: 28px;
+            margin-bottom: 5px;
+        }
+        .header .title1 {
+            margin-top: 5px;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .header .title2 {
+            font-weight: bold;
+            font-size: 18px;
         }
         .header .address, .header .contact {
             font-size: 12px;
@@ -64,83 +74,90 @@
         .summary-table .bold {
             font-weight: bold;
         }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: right;
+            font-size: 10px;
+            border-top: 1px solid #000;
+            padding-top: 5px;
+        }
+        .footer .page:after {
+            content: "Page " counter(page) " of " counter(pages);
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1 class="title">LAPORAN PEMESANAN PRODUK</h1>
-    </div>
 
-    <div class="text" style="text-align: center;">
+    <div class="header">
+        <h1 class="title">JAVA BAKERY</h1>
+        <p class="title1">Cabang: {{ $selectedCabang }}</p> 
+        <div class="divider"></div>
+        <h1 class="title2">LAPORAN PEMESANAN PRODUK RINCI</h1>
+
         @php
-            \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
-    
-            $formattedStartDate = \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y');
-            $formattedEndDate = \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y');
-            $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
+            use Carbon\Carbon;
+            Carbon::setLocale('id');
+            $formattedStartDate = $startDate ? Carbon::parse($startDate)->translatedFormat('d F Y') : 'Tidak ada';
+            $formattedEndDate = $endDate ? Carbon::parse($endDate)->translatedFormat('d F Y') : 'Tidak ada';
+            $currentDateTime = Carbon::now()->translatedFormat('d F Y H:i');
         @endphp
 
-        @if ($startDate && $endDate)
-            <p>
-                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }}<br><br>
-                Cabang: {{ $branchName }}
-            </p>
-        @else
-            <p>
-                Periode: Tidak ada tanggal awal dan akhir yang diteruskan.<br>
-                Cabang: {{ $branchName }}
-            </p>
-        @endif
-
-        <p style="text-align: right; margin-top: -20px;">{{ $currentDateTime }}</p>
+        <p class="period">
+            Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }}
+        </p>
+        <p class="period right-align" style="font-size: 10px; position: absolute; top: 0; right: 0; margin: 10px;">
+            {{ $currentDateTime }}
+        </p>
     </div>
 
     @foreach ($groupedByKlasifikasi as $klasifikasi => $items)
-    <div class="table-container">
-        <h2>{{ $klasifikasi }}</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th class="text-center">No</th>
-                    <th>Kode Pemesanan</th>
-                    <th>Kategori</th>
-                    <th>Produk</th>
-                    <th>Catatan</th>
-                    <th>Jumlah</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php
-                    $grandTotalJumlah = 0; // Inisialisasi total jumlah
-                @endphp
-                @foreach ($items as $item)
-                    @foreach ($item->detailpemesananproduk as $detail)
-                        @php
-                            $subKlasifikasi = $detail->produk->klasifikasi->subklasifikasi->where('klasifikasi_id', $detail->produk->klasifikasi->id)->first(); // Access subklasifikasi
-                            $grandTotalJumlah += $detail->jumlah; // Hitung total jumlah produk
-                        @endphp
-                        <tr>
-                            <td class="text-center">{{ $loop->parent->iteration }}</td>
-                            <td>{{ $item->kode_pemesanan }}</td>
-                            <td>{{ $subKlasifikasi->nama ?? 'Tidak Diketahui' }}</td>
-                            <td>{{ $detail->produk->nama_produk }}</td>
-                            <td>{{ $item->catatan }}</td>
-                            <td style="text-align: right">
-                                {{ number_format($detail->jumlah, 0, ',', '.') }}
-                            </td>
-                        </tr>
+        <div class="table-container">
+            <h2>{{ $klasifikasi }}</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="text-center">No</th>
+                        <th>Kode Pemesanan</th>
+                        <th>Kategori</th>
+                        <th>Produk</th>
+                        <th>Catatan</th>
+                        <th>Jumlah</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php
+                        $grandTotalJumlah = 0;
+                    @endphp
+                    @foreach ($items as $item)
+                        @foreach ($item->detailpemesananproduk as $detail)
+                            @php
+                                $subKlasifikasi = $detail->produk->klasifikasi->subklasifikasi->where('klasifikasi_id', $detail->produk->klasifikasi->id)->first();
+                                $grandTotalJumlah += $detail->jumlah;
+                            @endphp
+                            <tr>
+                                <td class="text-center">{{ $loop->parent->iteration }}</td>
+                                <td>{{ $item->kode_pemesanan }}</td>
+                                <td>{{ $subKlasifikasi->nama ?? 'Tidak Diketahui' }}</td>
+                                <td>{{ $detail->produk->nama_produk }}</td>
+                                <td>{{ $item->catatan }}</td>
+                                <td style="text-align: right">{{ number_format($detail->jumlah, 0, ',', '.') }}</td>
+                            </tr>
+                        @endforeach
                     @endforeach
-                @endforeach
-                <tr>
-                    <td colspan="5" class="text-right"><strong>Total Jumlah</strong></td>
-                    <td style="text-align: right">{{ number_format($grandTotalJumlah, 0, ',', '.') }}</td>
-                </tr>
-            </tbody>
-        </table>
+                    <tr>
+                        <td colspan="5" class="text-right"><strong>Total Jumlah</strong></td>
+                        <td style="text-align: right">{{ number_format($grandTotalJumlah, 0, ',', '.') }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    @endforeach
+
+    <div class="footer">
+        <span class="page"></span>
     </div>
-@endforeach
-
-
-
+    
 </body>
 </html>
