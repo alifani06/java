@@ -31,8 +31,22 @@
             display: block;
         }
         .header .title {
+        font-weight: bold;
+        font-size: 28px;
+        margin-bottom: 5px;
+        }
+        .header .title1 {
+        margin-top: 5px;
+        font-size: 14px;
+        margin-bottom: 5px;
+        }
+        .header .title2 {
             font-weight: bold;
-            font-size: 28px;
+            font-size: 18px;
+        }
+        .header .period {
+            font-size: 12px;
+            margin-top: 10px;
         }
         .header .address, .header .contact {
             font-size: 12px;
@@ -55,34 +69,32 @@
 </head>
 <body>
 
-    <div class="container">
-        <h1 style="text-align: center; margin-bottom: 5px;">LAPORAN PENJUALAN PRODUK GLOBAL</h1>
-    </div>
+    <div class="header">
+        <h1 class="title">JAVA BAKERY</h1>
+        <p class="title1">Cabang: {{ strtoupper($branchName) }}</p>
+        <div class="divider"></div>
     
-    <div class="text" style="text-align: center;">
+        <h1 class="title2">LAPORAN PENJUALAN PRODUK GLOBAL</h1>
+    
         @php
             \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
-    
-            $formattedStartDate = \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y');
-            $formattedEndDate = \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y');
+            $formattedStartDate = $startDate ? \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y') : 'Tidak ada';
+            $formattedEndDate = $endDate ? \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y') : 'Tidak ada';
             $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
         @endphp
     
-        @if ($startDate && $endDate)
-            <p>
-                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }}<br><br>
-                Cabang: {{ $branchName }}
-            </p>
-        @else
-            <p>
-                Periode: Tidak ada tanggal awal dan akhir yang diteruskan.<br>
-                Cabang: {{ $branchName }}
-            </p>
-        @endif
+        <p class="period">
+            @if ($startDate && $endDate)
+                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }}
+            @else
+                Periode: Tidak ada tanggal awal dan akhir yang diteruskan.
+            @endif
+        </p>
     
-        <p style="text-align: right; margin-top: -20px;">{{ $currentDateTime }}</p>
+        <p class="period right-align" style="font-size: 10px; position: absolute; top: 0; right: 0; margin: 10px;">
+            {{ $currentDateTime }}
+        </p>
     </div>
-
     <!-- Tabel utama -->
     <table>
         <thead>

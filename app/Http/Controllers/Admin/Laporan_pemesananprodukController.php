@@ -258,86 +258,6 @@ class Laporan_pemesananprodukController extends Controller
         return $pdf->stream('laporan_pemesanan_produk.pdf');
     }
     
-    // public function printReportPemesanan(Request $request)
-    // {
-    //     $status = $request->status;
-    //     $tanggalPemesanan = $request->tanggal_pemesanan;
-    //     $tanggalAkhir = $request->tanggal_akhir;
-    //     $produk = $request->produk;
-    //     $tokoId = $request->toko_id;
-    //     $klasifikasiId = $request->klasifikasi_id;
-    
-    //     // Query dasar untuk mengambil data pemesanan produk
-    //     $query = Pemesananproduk::query();
-    
-    //     // Filter berdasarkan status
-    //     if ($status) {
-    //         $query->where('status', $status);
-    //     }
-    
-    //     // Filter berdasarkan tanggal pemesanan
-    //     if ($tanggalPemesanan && $tanggalAkhir) {
-    //         $tanggalPemesanan = Carbon::parse($tanggalPemesanan)->startOfDay();
-    //         $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
-    //         $query->whereBetween('tanggal_pemesanan', [$tanggalPemesanan, $tanggalAkhir]);
-    //     } elseif ($tanggalPemesanan) {
-    //         $tanggalPemesanan = Carbon::parse($tanggalPemesanan)->startOfDay();
-    //         $query->where('tanggal_pemesanan', '>=', $tanggalPemesanan);
-    //     } elseif ($tanggalAkhir) {
-    //         $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
-    //         $query->where('tanggal_pemesanan', '<=', $tanggalAkhir);
-    //     } else {
-    //         // Jika tidak ada filter tanggal, tampilkan data untuk hari ini
-    //         $query->whereDate('tanggal_pemesanan', Carbon::today());
-    //     }
-    
-    //     // Filter berdasarkan produk
-    //     if ($produk) {
-    //         $query->whereHas('detailpemesananproduk', function ($query) use ($produk) {
-    //             $query->where('produk_id', $produk);
-    //         });
-    //     }
-    
-    //     // Filter berdasarkan toko
-    //     if ($tokoId) {
-    //         $query->where('toko_id', $tokoId);
-    //     }
-    
-    //     // Filter berdasarkan klasifikasi
-    //     if ($klasifikasiId) {
-    //         $query->whereHas('detailpemesananproduk.produk.klasifikasi', function ($query) use ($klasifikasiId) {
-    //             $query->where('id', $klasifikasiId);
-    //         });
-    //     }
-    
-    //     // Ambil data pemesanan produk dengan eager loading
-    //     $inquery = $query->with([
-    //         'toko',
-    //         'detailpemesananproduk.produk.klasifikasi.subklasifikasi' // Pastikan eager load subklasifikasi jika ada
-    //     ])->get();
-    
-    //     $selectedCabang = $tokoId ? $inquery->first()->toko->nama_toko : 'Semua Toko';
-    
-    //     // Kelompokkan data berdasarkan klasifikasi
-    //     $groupedByKlasifikasi = $inquery->groupBy(function($item) {
-    //         return $item->detailpemesananproduk->first()->produk->klasifikasi->nama ?? 'Tidak Diketahui';
-    //     });
-    
-    //     $pdf = FacadePdf::loadView('admin.laporan_pemesananproduk.print', [
-    //         'groupedByKlasifikasi' => $groupedByKlasifikasi,
-    //         'startDate' => $tanggalPemesanan,
-    //         'endDate' => $tanggalAkhir,
-    //         'branchName' => $tokoId ? $inquery->first()->toko->nama_toko : 'Semua Cabang',
-    //         'selectedCabang' => $selectedCabang
-    //     ]);
-        
-    //     return $pdf->setOption('footer-html', view('admin.laporan_pemesananproduk.footer')->render())
-    //                ->setOption('page-size', 'A4')
-    //                ->setOption('orientation', 'Portrait')
-    //                ->setOption('footer-html', '<div class="footer">Page [page] of [topage]</div>')
-    //                ->stream('laporan_pemesanan_produk.pdf');
-        
-    // }
 
     
     public function printReportPemesananglobal(Request $request)
@@ -435,8 +355,9 @@ class Laporan_pemesananprodukController extends Controller
                 // Map toko_id ke field toko yang sesuai
                 $tokoField = $tokoFieldMap[$item->toko_id] ?? null;
                 if ($tokoField) {
-                    $groupedData[$klasifikasi][$key][$tokoField] += $detail->jumlah;
-                    $groupedData[$klasifikasi][$key]['subtotal'] += $detail->jumlah;
+                    $groupedData[$klasifikasi][$key][$tokoField] += (int) $detail->jumlah;
+                    $groupedData[$klasifikasi][$key]['subtotal'] += (int) $detail->jumlah;
+
                 }
             }
         }

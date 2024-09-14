@@ -126,28 +126,29 @@
                 </thead>
                 <tbody>
                     @php
-                        $grandTotalJumlah = 0;
-                    @endphp
-                    @foreach ($items as $item)
-                        @foreach ($item->detailpemesananproduk as $detail)
-                            @php
-                                $subKlasifikasi = $detail->produk->klasifikasi->subklasifikasi->where('klasifikasi_id', $detail->produk->klasifikasi->id)->first();
-                                $grandTotalJumlah += $detail->jumlah;
-                            @endphp
-                            <tr>
-                                <td class="text-center">{{ $loop->parent->iteration }}</td>
-                                <td>{{ $item->kode_pemesanan }}</td>
-                                <td>{{ $subKlasifikasi->nama ?? 'Tidak Diketahui' }}</td>
-                                <td>{{ $detail->produk->nama_produk }}</td>
-                                <td>{{ $item->catatan }}</td>
-                                <td style="text-align: right">{{ number_format($detail->jumlah, 0, ',', '.') }}</td>
-                            </tr>
-                        @endforeach
+                    $grandTotalJumlah = 0;
+                @endphp
+                @foreach ($items as $item)
+                    @foreach ($item->detailpemesananproduk as $detail)
+                        @php
+                            $subKlasifikasi = $detail->produk->klasifikasi->subklasifikasi->where('klasifikasi_id', $detail->produk->klasifikasi->id)->first();
+                            $grandTotalJumlah += (int)$detail->jumlah; // Ensure jumlah is treated as an integer
+                        @endphp
+                        <tr>
+                            <td class="text-center">{{ $loop->parent->iteration }}</td>
+                            <td>{{ $item->kode_pemesanan }}</td>
+                            <td>{{ $subKlasifikasi->nama ?? 'Tidak Diketahui' }}</td>
+                            <td>{{ $detail->produk->nama_produk }}</td>
+                            <td>{{ $item->catatan }}</td>
+                            <td style="text-align: right">{{ number_format((int)$detail->jumlah, 0, ',', '.') }}</td>
+                        </tr>
                     @endforeach
-                    <tr>
-                        <td colspan="5" class="text-right"><strong>Total Jumlah</strong></td>
-                        <td style="text-align: right">{{ number_format($grandTotalJumlah, 0, ',', '.') }}</td>
-                    </tr>
+                @endforeach
+                <tr>
+                    <td colspan="5" class="text-right"><strong>Total Jumlah</strong></td>
+                    <td style="text-align: right">{{ number_format($grandTotalJumlah, 0, ',', '.') }}</td>
+                </tr>
+                
                 </tbody>
             </table>
         </div>
