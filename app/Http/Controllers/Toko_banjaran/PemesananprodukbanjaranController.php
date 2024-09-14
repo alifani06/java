@@ -311,7 +311,7 @@ class PemesananprodukbanjaranController extends Controller
     {
         $prefix = 'QBNJ';
         $year = date('y'); // Dua digit terakhir dari tahun
-        $date = date('md'); // Format bulan dan hari: MMDD
+        $date = date('dm'); // Format bulan dan hari: MMDD
     
         // Mengambil kode retur terakhir yang dibuat pada hari yang sama
         $lastBarang = Pemesananproduk::whereDate('tanggal_pemesanan', Carbon::today())
@@ -322,12 +322,12 @@ class PemesananprodukbanjaranController extends Controller
             $num = 1;
         } else {
             $lastCode = $lastBarang->kode_pemesanan;
-            $lastNum = (int) substr($lastCode, strlen($prefix . $year . $date)); // Mengambil urutan terakhir
+            $lastNum = (int) substr($lastCode, strlen($prefix . $date . $year)); // Mengambil urutan terakhir
             $num = $lastNum + 1;
         }
     
         $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
-        $newCode = $prefix . $year . $date . $formattedNum;
+        $newCode = $prefix. $date  . $year . $formattedNum;
         return $newCode;
     }
 
@@ -335,7 +335,7 @@ class PemesananprodukbanjaranController extends Controller
     {
         $prefix = 'DPBNJ';
         $year = date('y'); // Dua digit terakhir dari tahun
-        $date = date('md'); // Format bulan dan hari: MMDD
+        $date = date('dm'); // Format bulan dan hari: MMDD
     
         // Mengambil kode retur terakhir yang dibuat pada hari yang sama
         $lastBarang = Dppemesanan::whereDate('tanggal_dp', Carbon::today())
@@ -346,12 +346,12 @@ class PemesananprodukbanjaranController extends Controller
             $num = 1;
         } else {
             $lastCode = $lastBarang->kode_dppemesanan;
-            $lastNum = (int) substr($lastCode, strlen($prefix . $year . $date)); // Mengambil urutan terakhir
+            $lastNum = (int) substr($lastCode, strlen($prefix. $date . $year )); // Mengambil urutan terakhir
             $num = $lastNum + 1;
         }
     
         $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
-        $newCode = $prefix . $year . $date . $formattedNum;
+        $newCode = $prefix. $date . $year  . $formattedNum;
         return $newCode;
     }
 

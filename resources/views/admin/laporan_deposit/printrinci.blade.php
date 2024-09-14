@@ -28,8 +28,22 @@
             display: block;
         }
         .header .title {
+        font-weight: bold;
+        font-size: 28px;
+        margin-bottom: 5px;
+        }
+        .header .title1 {
+        margin-top: 5px;
+        font-size: 14px;
+        margin-bottom: 5px;
+        }
+        .header .title2 {
             font-weight: bold;
-            font-size: 28px;
+            font-size: 18px;
+        }
+        .header .period {
+            font-size: 12px;
+            margin-top: 10px;
         }
         .header .address, .header .contact {
             font-size: 12px;
@@ -38,6 +52,17 @@
             border: 0.5px solid;
             margin-top: 3px;
             margin-bottom: 1px;
+        }
+        .divider1 {
+            border: 1px dashed #000; /* Garis putus-putus dengan warna hitam */
+            margin-top: 3px;
+            margin-bottom: 1px;
+        }
+
+        .admin-info {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 12px;
         }
         .table-container {
             margin-bottom: 30px;
@@ -80,41 +105,49 @@
         .no-border {
         border: none;
     }
+   
+    /* .no-border-row td {
+        border: none !important;
+    } */
+</style>
+
     </style>
 </head>
 <body>
    
-    <div class="container">
-        <h1 style="text-align: center; margin-bottom: 5px;">LAPORAN DEPOSIT RINCI</h1>
-    </div>
+
+    <div class="header">
+        <h1 class="title">JAVA BAKERY</h1>
+        <p class="title1">Cabang: {{ strtoupper($branchName) }}</p>
+        <div class="divider"></div>
     
-    <div class="text" style="text-align: center;">
-        @php
-            \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
-    
-            // Gunakan variabel yang dikirim dari controller
-            $formattedStartDate = isset($formattedStartDate) ? \Carbon\Carbon::parse($formattedStartDate)->translatedFormat('d F Y') : null;
-            $formattedEndDate = isset($formattedEndDate) ? \Carbon\Carbon::parse($formattedEndDate)->translatedFormat('d F Y') : null;
-            $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
-        @endphp
-    
-        @if ($formattedStartDate && $formattedEndDate)
-            <p>
-                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }}<br><br>
-                Cabang: {{ $branchName }}
-            </p>
+        @if ($status_pelunasan == 'diambil')
+            <h1 class="title2">LAPORAN PENGAMBILAN DEPOSIT</h1>
         @else
-            <p>
-                Periode: Tidak ada tanggal awal dan akhir yang diteruskan.<br>
-                Cabang: {{ $branchName }}
-            </p>
+            <h1 class="title2">LAPORAN DEPOSIT</h1>
         @endif
+
+        @php
+        \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
+
+        // Gunakan variabel yang dikirim dari controller
+        $formattedStartDate = isset($formattedStartDate) ? \Carbon\Carbon::parse($formattedStartDate)->translatedFormat('d F Y') : null;
+        $formattedEndDate = isset($formattedEndDate) ? \Carbon\Carbon::parse($formattedEndDate)->translatedFormat('d F Y') : null;
+        $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
+    @endphp
     
-        <p style="text-align: right; margin-top: -20px;">{{ $currentDateTime }}</p>
+        <p class="period">
+            @if ($formattedStartDate && $formattedEndDate)
+                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }}
+            @else
+                Periode: Tidak ada tanggal awal dan akhir yang diteruskan.
+            @endif
+        </p>
+    
+        <p class="period right-align" style="font-size: 10px; position: absolute; top: 0; right: 0; margin: 10px;">
+            {{ $currentDateTime }}
+        </p>
     </div>
-    
-    
-    
 
     @php 
         $grandTotal = 0;
@@ -131,7 +164,6 @@
             @endphp
 
         <table class="no-border mb-1">
-        
                     <tr>
                         <td class="text-left"><strong>Nama Pelanggan</strong></td>
                         <td>: {{ $firstItem->pemesananproduk->nama_pelanggan }}</td>
@@ -149,90 +181,93 @@
         
         </table>
 
-
-            <table>
+        <table>
+            <tr>
+                <td colspan="3" class="text-left"><strong>No Deposit : {{ $kodeDppemesanan }}</strong></td>
+                <td colspan="2" class="text-right"><strong>Tanggal Deposit : {{ $formattedDate}}</strong></td>
+                <td colspan="2" class="text-right"><strong>Tanggal Ambil : {{ $formatambil}}</strong></td>
+            </tr>
+            <thead>
                 <tr>
-                    <td colspan="3" class="text-left"><strong>No Deposit : {{ $kodeDppemesanan }}</strong></td>
-                    <td colspan="3" class="text-right"><strong>Tanggal Deposit : {{ $formattedDate}}</strong></td>
-                    <td colspan="2" class="text-right"><strong>Tanggal Ambil : {{ $formatambil}}</strong></td>
-                </tr>              
-                <thead>
-                    <tr>
-                        <th class="text-center">No</th>
-                        <th>Divisi</th>
-                        <th>Kode Produk</th>
-                        <th>Produk</th>
-                        <th>Qty</th>
-                        <th>Harga</th>
-                        <th>Diskon</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php $subTotal = 0; @endphp
-                    @foreach ($items as $item)
-                        @foreach ($item->detailpemesananproduk as $detail)
-                            @php
-                                $totalForDetail = $detail->jumlah * $detail->harga;
-                                $subTotal += $totalForDetail;
-                                $grandTotal += $totalForDetail; // Tambahkan ke grand total
-                                $diskon = floatval($detail->diskon);
-                            @endphp
-                            <tr>
-                                <td class="text-center">{{ $globalCounter++ }}</td>
-                                <td>
-                                    @if ($item->detailpemesananproduk->isNotEmpty())
-                                        {{ $item->detailpemesananproduk->pluck('produk.klasifikasi.nama')->implode(', ') }}
-                                    @else
-                                        tidak ada
-                                    @endif
-                                </td>  
-                                <td>{{ $detail->kode_lama }}</td>
-                                <td>{{ $detail->nama_produk }}</td>
-                                <td>{{ $detail->jumlah }}</td>
-                                <td>{{ number_format($detail->harga, 0, ',', '.') }}</td>
-                                <td>{{ $detail->diskon}}</td>
-                                <td>{{number_format($totalForDetail, 0, ',', '.') }}</td>
-                            </tr>
-                        @endforeach
+                    <th class="text-center">No</th>
+                    {{-- <th>Divisi</th> --}}
+                    <th>Kode Produk</th>
+                    <th>Produk</th>
+                    <th>Qty</th>
+                    <th>Harga</th>
+                    <th>Diskon</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $subTotal = 0;
+                    $totalDiskon = 0;
+                    $grandTotal = 0;
+                @endphp
+                @foreach ($items as $item)
+                    @foreach ($item->detailpemesananproduk as $detail)
+                        @php
+                            $totalForDetail = $detail->jumlah * $detail->harga;
+                            $diskon = floatval($detail->diskon);
+                            $diskonAmount = ($totalForDetail * $diskon) / 100;
+                            $totalAfterDiskon = $totalForDetail - $diskonAmount;
+                            $subTotal += $totalForDetail;
+                            $totalDiskon += $diskonAmount;
+                            $grandTotal += $totalAfterDiskon;
+                        @endphp
+                        <tr>
+                            <td class="text-center">{{ $globalCounter++ }}</td>
+                            {{-- <td>
+                                @if ($item->detailpemesananproduk->isNotEmpty())
+                                    {{ $item->detailpemesananproduk->pluck('produk.klasifikasi.nama')->implode(', ') }}
+                                @else
+                                    tidak ada
+                                @endif
+                            </td> --}}
+                            <td>{{ $detail->kode_lama }}</td>
+                            <td>{{ $detail->nama_produk }}</td>
+                            <td style="text-align: right">{{ $detail->jumlah }}</td>
+                            <td style="text-align: right">{{ number_format($detail->harga, 0, ',', '.') }}</td>
+                            <td style="text-align: right">{{ $detail->diskon }}%</td>
+                            <td style="text-align: right">{{ number_format($totalForDetail, 0, ',', '.') }}</td>
+                            
+                        </tr>
                     @endforeach
+                @endforeach
+   
+            </tbody>
+        </table>
 
-                    <tr>
-                        <td colspan="7" class="text-right"><strong>Sub Total</strong></td>
-                        <td>{{number_format($detail->total, 0, ',', '.') }}</td>
-                    </tr>
-                    
-                    <tr>
-                        <td colspan="7" class="text-right"><strong>Diskon</strong></td>
-                        <td>{{number_format($detail->diskon, 0, ',', '.') }}</td>
-                    </tr>
-                 
-                    <tr>
-                        <td colspan="7" class="text-right"><strong>DP (Min.50%)</strong></td>
-                        <td>{{number_format($item->dp_pemesanan, 0, ',', '.') }}</td>
-                    </tr>
-                 
-         
-                </tbody>
-            </table>
-
-            
+        <table style="width: 40%; margin-left: auto; margin-right: 0;">
+            <tbody>
+                <tr>
+                    <td style="text-align: left ; width: 60%;"><strong>Sub Total</strong></td>
+                    <td style="text-align: right ; width: 40%;">{{ number_format($subTotal, 0, ',', '.') }}</td>
+                </tr>
+                
+                <tr>
+                    <td style="text-align: left ; width: 60%;"><strong>Diskon</strong></td>
+                    <td style="text-align: right ; width: 40%;">{{ number_format($totalDiskon, 0, ',', '.') }}</td>
+                </tr>
+                
+                <tr>
+                    <td style="text-align: left ; width: 60%;"><strong>Total Pesanan</strong></td>
+                    <td style="text-align: right ; width: 40%;">{{ number_format($grandTotal, 0, ',', '.') }}</td>
+                </tr>
+                
+                <tr>
+                    <td style="text-align: left ; width: 60%;"><strong>DP (Min.50%)</strong></td>
+                    <td style="text-align: right ; width: 40%;">{{ number_format($item->dp_pemesanan, 0, ',', '.') }}</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="divider1"></div>
+   
         </div>
     @endforeach
 
- <!-- Tabel total penjualan fee dan grand total -->
- <table style="width: 50%; margin-left: auto; margin-right: 0; background-color: yellow">
-    <tbody>
-        <tr>
-            <td style="text-align: right;  width: 70%;">Total Fee Penjualan</td>
-            <td style="text-align: left; font-weight: bold; width: 30%;">{{ 'Rp. ' .  number_format($grandTotalFee, 0, ',', '.') }}</td>
-        </tr>
-        <tr>
-            <td style="text-align: right; ">Grand Total</td>
-            <td style="text-align: left; font-weight: bold;">{{ 'Rp. ' .  number_format($grandTotal, 0, ',', '.') }}</td>
-        </tr>
-    </tbody>
-</table>
 
 </body>
 </html>
