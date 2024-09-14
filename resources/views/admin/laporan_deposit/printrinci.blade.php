@@ -160,7 +160,7 @@
             @php
                 $firstItem = $items->first();
                 $formattedDate = \Carbon\Carbon::parse($firstItem->pemesananproduk->first()->tanggal_pemesanan)->format('d/m/Y');
-                $formatambil = \Carbon\Carbon::parse($firstItem->pemesananproduk->first()->tanggal_kirim)->format('d/m/Y');
+                $formatambil = \Carbon\Carbon::parse($firstItem->pemesananproduk->tanggal_kirim)->format('d/m/Y');
             @endphp
 
         <table class="no-border mb-1">
@@ -181,7 +181,7 @@
         
         </table>
 
-        <table>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 0;">
             <tr>
                 <td colspan="3" class="text-left"><strong>No Deposit : {{ $kodeDppemesanan }}</strong></td>
                 <td colspan="2" class="text-right"><strong>Tanggal Deposit : {{ $formattedDate}}</strong></td>
@@ -239,18 +239,16 @@
             </tbody>
         </table>
 
-        <table style="width: 40%; margin-left: auto; margin-right: 0;">
+        <table style="width: 40%; margin-left: auto; margin-right: 0; margin-top: 0px;">
             <tbody>
                 <tr>
                     <td style="text-align: left ; width: 60%;"><strong>Sub Total</strong></td>
                     <td style="text-align: right ; width: 40%;">{{ number_format($subTotal, 0, ',', '.') }}</td>
                 </tr>
-                
                 <tr>
                     <td style="text-align: left ; width: 60%;"><strong>Diskon</strong></td>
                     <td style="text-align: right ; width: 40%;">{{ number_format($totalDiskon, 0, ',', '.') }}</td>
                 </tr>
-                
                 <tr>
                     <td style="text-align: left ; width: 60%;"><strong>Total Pesanan</strong></td>
                     <td style="text-align: right ; width: 40%;">{{ number_format($grandTotal, 0, ',', '.') }}</td>

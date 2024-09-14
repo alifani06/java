@@ -66,13 +66,13 @@
                             <label for="toko">(Pilih Toko)</label>
                         </div>
                             <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_pemesanan" name="tanggal_pemesanan" type="date"
-                                    value="{{ Request::get('tanggal_pemesanan') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_pemesanan">(Dari Tanggal)</label>
+                                <input class="form-control" id="tanggal_kirim" name="tanggal_kirim" type="date"
+                                    value="{{ Request::get('tanggal_kirim') }}"  />
+                                <label for="tanggal_kirim">(Dari Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
-                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
+                                    value="{{ Request::get('tanggal_akhir') }}"  />
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
                            
@@ -93,6 +93,7 @@
                             <tr>
                                 <th class="text-center">No</th>
                                 <th>Cabang</th>
+                                <th>Tanggal</th>
                                 <th>Kode Deposit</th>
                                 <th>Nama Pelanggan</th>
                                 <th>No HP</th>
@@ -106,6 +107,7 @@
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $deposit->pemesananproduk->toko->nama_toko ?? 'Tidak Ada Toko' }}</td> <!-- Akses nama_toko -->
+                                    <td>{{ $deposit->pemesananproduk->tanggal_kirim }}</td> <!-- Akses nama_toko -->
                                     <td>{{ $deposit->kode_dppemesanan }}</td>
                                     <td>{{ $deposit->pemesananproduk->nama_pelanggan ?? 'Tidak Ada Nama' }}</td> 
                                     <td>{{ $deposit->pemesananproduk->telp ?? 'Tidak Ada No HP' }}</td> 
@@ -129,7 +131,7 @@
 
 
     <script>
-        var tanggalAwal = document.getElementById('tanggal_pemesanan');
+        var tanggalAwal = document.getElementById('tanggal_kirim');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
         if (tanggalAwal.value == "") {
             tanggalAkhir.readOnly = true;
