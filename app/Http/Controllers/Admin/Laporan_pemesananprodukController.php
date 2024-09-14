@@ -241,7 +241,7 @@ class Laporan_pemesananprodukController extends Controller
             return $item->detailpemesananproduk->first()->produk->klasifikasi->nama ?? 'Tidak Diketahui';
         });
     
-        // Generate PDF
+        // Generate PDF menggunakan Facade PDF
         $pdf = FacadePdf::loadView('admin.laporan_pemesananproduk.print', [
             'groupedByKlasifikasi' => $groupedByKlasifikasi,
             'startDate' => $tanggalPemesanan,
@@ -251,14 +251,29 @@ class Laporan_pemesananprodukController extends Controller
         ]);
     
         // Menambahkan nomor halaman di footer
-        $pdf->setOption('footer-right', 'Halaman [page] dari [toPage]')
-            ->setOption('footer-font-size', '8') // Menyesuaikan ukuran font
-            ->setOption('footer-line', false); // Menghapus garis footer default
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF();
+        $canvas = $dompdf->getCanvas();
+        $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+            $text = "Page $pageNumber of $pageCount";
+            $font = $fontMetrics->getFont('Arial', 'normal');
+            $size = 10;
     
+            // Menghitung lebar teks
+            $width = $fontMetrics->getTextWidth($text, $font, $size);
+    
+            // Mengatur koordinat X dan Y
+            $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+            $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+    
+            // Menambahkan teks ke posisi yang ditentukan
+            $canvas->text($x, $y, $text, $font, $size);
+        });
+    
+        // Output PDF ke browser
         return $pdf->stream('laporan_pemesanan_produk.pdf');
     }
     
-
     
     public function printReportPemesananglobal(Request $request)
     {
@@ -411,35 +426,6 @@ class Laporan_pemesananprodukController extends Controller
         return $pdf->stream('Laporan_Pemesanan_Produk.pdf');
     }
 
-    public function create()
-    {
-   
-    }
     
-    public function store(Request $request)
-    {
-
-    }
-
-    public function show($id)
-    {
-        //
-    }
-
-  
-    public function edit($id)
-    {
-
-    }
-
-    public function update(Request $request, $id)
-    {
-       
-    }
-
-    public function destroy($id)
-    {
-        //
-    }
 
 }

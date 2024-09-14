@@ -154,7 +154,7 @@
         </div>
     @endforeach
   <!-- Page Number -->
-  <div class="page-number"></div>
+  {{-- <div class="page-number"></div> --}}
     
 </body>
 
