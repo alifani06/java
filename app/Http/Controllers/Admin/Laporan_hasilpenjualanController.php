@@ -519,6 +519,7 @@ class Laporan_hasilpenjualanController extends Controller
         return view('admin.laporan_hasilpenjualan.barangretur', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'totalJumlah', 'grandTotal'));
     }
     
+
     // public function printLaporanBm(Request $request)
     // {
     //     // Ambil parameter filter dari request
@@ -538,28 +539,30 @@ class Laporan_hasilpenjualanController extends Controller
     //         $toko = Toko::find($toko_id);
     //         $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
     //     }
-    
+
     //     // Query dasar untuk mengambil data Pengiriman_barangjadi
-    //     $query = Pengiriman_barangjadi::with('produk.klasifikasi')
-    //         ->orderBy('tanggal_pengiriman', 'desc');
-    
+    //     $query = Pengiriman_barangjadi::join('produks', 'pengiriman_barangjadis.produk_id', '=', 'produks.id')
+    //     ->join('klasifikasis', 'produks.klasifikasi_id', '=', 'klasifikasis.id')
+    //     ->select('pengiriman_barangjadis.*', 'produks.kode_lama')
+    //     ->with('produk.klasifikasi');
+
     //     // Filter berdasarkan status
     //     if ($status) {
     //         $query->where('status', $status);
     //     }
-    
+
     //     // Filter berdasarkan toko_id
     //     if ($toko_id) {
     //         $query->where('toko_id', $toko_id);
     //     }
-    
+
     //     // Filter berdasarkan klasifikasi_id
     //     if ($klasifikasi_id) {
     //         $query->whereHas('produk', function ($q) use ($klasifikasi_id) {
     //             $q->where('klasifikasi_id', $klasifikasi_id);
     //         });
     //     }
-    
+
     //     // Filter berdasarkan tanggal pengiriman
     //     if ($tanggal_pengiriman && $tanggal_akhir) {
     //         $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
@@ -575,39 +578,26 @@ class Laporan_hasilpenjualanController extends Controller
     //         // Jika tidak ada filter tanggal, tampilkan data untuk hari ini
     //         $query->whereDate('tanggal_pengiriman', Carbon::today());
     //     }
-    
+
     //     // Eksekusi query dan dapatkan hasilnya
-    //     $stokBarangJadi = $query->get();
-    
-    //     // Inisialisasi DOMPDF
-    //     $options = new \Dompdf\Options();
-    //     $options->set('isHtml5ParserEnabled', true);
-    //     $options->set('isRemoteEnabled', true);
-    
-    //     $dompdf = new \Dompdf\Dompdf($options);
-    
+    //     $stokBarangJadi = $query->orderBy('produks.kode_lama', 'asc')->get();
+
     //     // Memuat konten HTML dari view
-    //     $html = view('admin.laporan_hasilpenjualan.printbm', [
+    //     $pdf = FacadePdf::loadView('admin.laporan_hasilpenjualan.printbm', [
     //         'stokBarangJadi' => $stokBarangJadi,
     //         'startDate' => $formattedStartDate,
     //         'endDate' => $formattedEndDate,
     //         'branchName' => $branchName,
-    //     ])->render();
-    
-    //     $dompdf->loadHtml($html);
-    
-    //     // Set ukuran kertas dan orientasi
-    //     $dompdf->setPaper('A4', 'portrait');
-    
-    //     // Render PDF
-    //     $dompdf->render();
-    
+    //     ]);
+
     //     // Menambahkan nomor halaman di kanan bawah
+    //     $pdf->output();
+    //     $dompdf = $pdf->getDomPDF();
     //     $canvas = $dompdf->getCanvas();
     //     $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
-    //         $text = "Halaman $pageNumber dari $pageCount";
+    //         $text = "Page $pageNumber of $pageCount";
     //         $font = $fontMetrics->getFont('Arial', 'normal');
-    //         $size = 10;
+    //         $size = 8;
     
     //         // Menghitung lebar teks
     //         $width = $fontMetrics->getTextWidth($text, $font, $size);
@@ -621,7 +611,7 @@ class Laporan_hasilpenjualanController extends Controller
     //     });
     
     //     // Output PDF ke browser
-    //     return $dompdf->stream('laporan_hasilpenjualan.pdf', ['Attachment' => false]);
+    //     return $pdf->stream('laporan_penjualan_produk.pdf');
     // }
 
     public function printLaporanBm(Request $request)
@@ -643,30 +633,30 @@ class Laporan_hasilpenjualanController extends Controller
             $toko = Toko::find($toko_id);
             $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
         }
-
+    
         // Query dasar untuk mengambil data Pengiriman_barangjadi
         $query = Pengiriman_barangjadi::join('produks', 'pengiriman_barangjadis.produk_id', '=', 'produks.id')
         ->join('klasifikasis', 'produks.klasifikasi_id', '=', 'klasifikasis.id')
-        ->select('pengiriman_barangjadis.*', 'produks.kode_lama')
+        ->select('pengiriman_barangjadis.*', 'produks.kode_lama', 'produks.nama_produk', 'produks.harga')
         ->with('produk.klasifikasi');
-
+    
         // Filter berdasarkan status
         if ($status) {
             $query->where('status', $status);
         }
-
+    
         // Filter berdasarkan toko_id
         if ($toko_id) {
             $query->where('toko_id', $toko_id);
         }
-
+    
         // Filter berdasarkan klasifikasi_id
         if ($klasifikasi_id) {
             $query->whereHas('produk', function ($q) use ($klasifikasi_id) {
                 $q->where('klasifikasi_id', $klasifikasi_id);
             });
         }
-
+    
         // Filter berdasarkan tanggal pengiriman
         if ($tanggal_pengiriman && $tanggal_akhir) {
             $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
@@ -682,18 +672,29 @@ class Laporan_hasilpenjualanController extends Controller
             // Jika tidak ada filter tanggal, tampilkan data untuk hari ini
             $query->whereDate('tanggal_pengiriman', Carbon::today());
         }
-
+    
         // Eksekusi query dan dapatkan hasilnya
         $stokBarangJadi = $query->orderBy('produks.kode_lama', 'asc')->get();
-
+    
+        // Mengelompokkan produk yang sama dan menjumlahkan jumlah serta total
+        $groupedData = $stokBarangJadi->groupBy('produk_id')->map(function ($items) {
+            return [
+                'produk' => $items->first()->produk,
+                'jumlah' => $items->sum('jumlah'),
+                'total' => $items->sum(function ($item) {
+                    return $item->jumlah * $item->produk->harga;
+                }),
+            ];
+        });
+    
         // Memuat konten HTML dari view
         $pdf = FacadePdf::loadView('admin.laporan_hasilpenjualan.printbm', [
-            'stokBarangJadi' => $stokBarangJadi,
+            'groupedData' => $groupedData,
             'startDate' => $formattedStartDate,
             'endDate' => $formattedEndDate,
             'branchName' => $branchName,
         ]);
-
+    
         // Menambahkan nomor halaman di kanan bawah
         $pdf->output();
         $dompdf = $pdf->getDomPDF();
@@ -717,8 +718,7 @@ class Laporan_hasilpenjualanController extends Controller
         // Output PDF ke browser
         return $pdf->stream('laporan_penjualan_produk.pdf');
     }
-
-
+    
     public function printLaporanBK(Request $request)
     {
         // Ambil parameter filter dari request
