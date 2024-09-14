@@ -6,6 +6,8 @@
     <div id="loadingSpinner" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
         <i class="fas fa-spinner fa-spin" style="font-size: 3rem;"></i>
     </div>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/css/select2.min.css" rel="stylesheet" />
+
     <style>
         .permintaan-header {
             cursor: pointer;
@@ -81,8 +83,8 @@
                 <div class="card-body">
                     <!-- Tabel -->
                     <form method="GET" id="form-action">
-                        <div class="row">
 
+                        <div class="row">
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="toko_id" name="toko_id">
                                     <option value="">- Semua Toko -</option>
@@ -92,6 +94,7 @@
                                 </select>
                                 <label for="toko_id">(Pilih Toko)</label>
                             </div>
+
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="klasifikasi_id" name="klasifikasi_id">
                                     <option value="">- Semua Klasifikasi -</option>
@@ -103,6 +106,21 @@
                                 </select>
                                 <label for="klasifikasi_id">(Pilih Klasifikasi)</label>
                             </div>
+                            
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" name="produk_id"
+                                    data-placeholder="Pilih Produk" style="width: 100%;" data-select2-id="23"
+                                    tabindex="-1" aria-hidden="true" id="produk_id">
+                                    <option value="">- Semua Produk -</option> <!-- Opsi untuk semua produk -->
+                                    @foreach ($produks as $produk)
+                                        <option value="{{ $produk->id }}" data-klasifikasi="{{ $produk->klasifikasi_id }}" {{ Request::get('produk_id') == $produk->id ? 'selected' : '' }}>
+                                            {{ $produk->nama_produk }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <label style="margin-top:7px" for="produk_id">Produk</label>
+                            </div>
+                            
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_pengiriman" name="tanggal_pengiriman" type="date"
                                     value="{{ Request::get('tanggal_pengiriman') }}" max="{{ date('Y-m-d') }}" />
@@ -126,6 +144,8 @@
                             </div>
                         </div>
                     </form>
+                
+
                     <table id="datatables66" class="table table-bordered" style="font-size: 13px">
                         <thead>
                             <tr>
@@ -255,6 +275,7 @@
         form.submit();
     }
 </script>
+
 
 
 <script>
