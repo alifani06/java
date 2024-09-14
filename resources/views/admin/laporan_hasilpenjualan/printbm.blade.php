@@ -94,11 +94,11 @@
         <thead>
             <tr>
                 <th style="width: 5%; text-align: left">No</th>
-                <th style="width: 15%; text-align: left">Kode Produk</th>
-                <th style="width: 30%; text-align: left">Produk</th>
-                <th style="width: 10%; text-align: left">Jumlah</th>
-                <th style="width: 20%; text-align: left">Harga</th>
-                <th style="width: 20%; text-align: left">Total</th>
+                <th style="width: 10%; text-align: left">Kode Produk</th>
+                <th style="width: 50%; text-align: left">Produk</th>
+                <th style="width: 5%; text-align: left">Jumlah</th>
+                <th style="width: 15%; text-align: left">Harga</th>
+                <th style="width: 15%; text-align: left">Total</th>
             </tr>
         </thead>
         <tbody>
