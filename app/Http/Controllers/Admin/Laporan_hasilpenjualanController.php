@@ -637,14 +637,27 @@ class Laporan_hasilpenjualanController extends Controller
         ]);
 
         // Menambahkan nomor halaman di kanan bawah
-        $pdf->setPaper('A4', 'portrait')
-            ->setOption('isHtml5ParserEnabled', true)
-            ->setOption('isRemoteEnabled', true)
-            ->setOption('defaultFont', 'Arial')
-            ->setOption('footer', 'Halaman {PAGE_NUM} dari {PAGE_COUNT}');
-
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF();
+        $canvas = $dompdf->getCanvas();
+        $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+            $text = "Page $pageNumber of $pageCount";
+            $font = $fontMetrics->getFont('Arial', 'normal');
+            $size = 8;
+    
+            // Menghitung lebar teks
+            $width = $fontMetrics->getTextWidth($text, $font, $size);
+    
+            // Mengatur koordinat X dan Y
+            $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+            $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+    
+            // Menambahkan teks ke posisi yang ditentukan
+            $canvas->text($x, $y, $text, $font, $size);
+        });
+    
         // Output PDF ke browser
-        return $pdf->stream('laporan_hasilpenjualan.pdf', ['Attachment' => false]);
+        return $pdf->stream('laporan_penjualan_produk.pdf');
     }
 
 
