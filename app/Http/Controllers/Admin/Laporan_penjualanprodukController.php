@@ -265,7 +265,7 @@ class Laporan_penjualanprodukController extends Controller
         $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
             $text = "Page $pageNumber of $pageCount";
             $font = $fontMetrics->getFont('Arial', 'normal');
-            $size = 10;
+            $size = 8;
     
             // Menghitung lebar teks
             $width = $fontMetrics->getTextWidth($text, $font, $size);
@@ -447,7 +447,7 @@ class Laporan_penjualanprodukController extends Controller
         $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
             $text = "Page $pageNumber of $pageCount";
             $font = $fontMetrics->getFont('Arial', 'normal');
-            $size = 10;
+            $size = 8;
     
             // Menghitung lebar teks
             $width = $fontMetrics->getTextWidth($text, $font, $size);

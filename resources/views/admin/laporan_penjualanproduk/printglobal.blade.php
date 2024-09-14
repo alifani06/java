@@ -56,15 +56,12 @@
             margin-top: 3px;
             margin-bottom: 1px;
         }
-    
-        /* CSS untuk nomor halaman */
-        @page {
-            margin: 10mm;
-            @bottom-right {
-                content: "Halaman " counter(page);
-                font-size: 10px;
-            }
+        .admin-info {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 12px;
         }
+
     </style>
 </head>
 <body>
@@ -186,8 +183,12 @@
         </tbody>
     </table>
     
-    
+     <!-- Informasi Admin Toko -->
+     <div class="admin-info">
+        <p><strong>Admin</strong></p><br><br>
+        <p>{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</p>
 
+    </div>
     
 </body>
 </html>

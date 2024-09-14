@@ -20,22 +20,59 @@
         th, td {
             padding: 4px;
             text-align: left;
-            font-size: 12px;
+            font-size: 11px;
         }
         th {
             background-color: #f2f2f2;
         }
         .change-header {
             text-align: center;
-            font-size: 24px;
+            margin-top: 3px;
+        }
+        .change-header span {
+            display: block;
+        }
+        .change-header .title {
+        font-weight: bold;
+        font-size: 28px;
+        margin-bottom: 5px;
+        }
+        .change-header .title1 {
+        margin-top: 5px;
+        font-size: 14px;
+        margin-bottom: 5px;
+        }
+        .change-header .title2 {
             font-weight: bold;
-            margin-top: 20px;
-            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        .header .period {
+            font-size: 12px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="change-header">LAPORAN STOK BARANG JADI</div>
+    {{-- <div class="change-header">LAPORAN STOK BARANG JADI</div> --}}
+    <div class="change-header">
+        <h1 class="title">JAVA BAKERY</h1>
+        <p class="title1">Cabang: {{ $tokoCabang }}</p> <!-- Menampilkan nama cabang -->
+        <div class="divider"></div>
+    
+        <h1 class="title2">LAPORAN STOK TOKO</h1>
+        @php
+        \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesi
+        $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
+        $periodDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y');
+    @endphp
+      
+      <p class="period">
+        {{ $periodDateTime }}
+    </p>
+      <p class="period right-align" style="font-size: 10px; position: absolute; top: 0; right: 0; margin: 10px;">
+        {{ $currentDateTime }}
+    </p>
+    </div>
     
     <table>
         <thead>
@@ -44,7 +81,7 @@
                 <th>Kode Produk</th>
                 <th>Nama Produk</th>
                 <th>Stok</th>
-                <th>Harga</th>
+                <th>Harga Jual</th>
                 <th>Sub Total</th>
             </tr>
         </thead>
