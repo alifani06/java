@@ -386,32 +386,81 @@ public function SimpanPengirimanpemesanan(Request $request)
 
 
     
-    public function print($id)
-    {
-  // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-  $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_pengiriman');
+    // public function print($id)
+    // {
+    //     // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
+    //     $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_pengiriman');
+                
+    //     // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
+    //     if (!$detailStokBarangJadi) {
+    //         return redirect()->back()->with('error', 'Data tidak ditemukan.');
+    //     }
         
-  // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
-  if (!$detailStokBarangJadi) {
-      return redirect()->back()->with('error', 'Data tidak ditemukan.');
-  }
-  
-  // Ambil semua data dengan kode_pengiriman yang sama, termasuk relasi ke klasifikasi
-  $pengirimanBarangJadi = Pengiriman_barangjadi::with([
-      'produk.subklasifikasi.klasifikasi', 
-      'toko'
-  ])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+    //     // Ambil semua data dengan kode_pengiriman yang sama, termasuk relasi ke klasifikasi
+    //     $pengirimanBarangJadi = Pengiriman_barangjadi::with([
+    //         'produk.subklasifikasi.klasifikasi', 
+    //         'toko'
+    //     ])->where('kode_pengiriman', $detailStokBarangJadi)->get();
 
-  // Kelompokkan data berdasarkan klasifikasi
-  $groupedByKlasifikasi = $pengirimanBarangJadi->groupBy(function($item) {
-      return $item->produk->subklasifikasi->klasifikasi->nama;
-  });
-        // Ambil item pertama untuk informasi toko
-        $firstItem = $pengirimanBarangJadi->first();
-        $pdf = FacadePdf::loadView('admin.pengiriman_barangjadi.print', compact('groupedByKlasifikasi', 'firstItem'));
+    //     // Kelompokkan data berdasarkan klasifikasi
+    //     $groupedByKlasifikasi = $pengirimanBarangJadi->groupBy(function($item) {
+    //         return $item->produk->subklasifikasi->klasifikasi->nama;
+    //     });
+    //             // Ambil item pertama untuk informasi toko
+    //             $firstItem = $pengirimanBarangJadi->first();
+    //             $pdf = FacadePdf::loadView('admin.pengiriman_barangjadi.print', compact('groupedByKlasifikasi', 'firstItem'));
 
-        return $pdf->stream('surat_permintaan_produk.pdf');
+    //             return $pdf->stream('surat_permintaan_produk.pdf');
+    // }
+    public function print($id)
+{
+    // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
+    $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_pengiriman');
+        
+    // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
+    if (!$detailStokBarangJadi) {
+        return redirect()->back()->with('error', 'Data tidak ditemukan.');
     }
+    
+    // Ambil semua data dengan kode_pengiriman yang sama, termasuk relasi ke klasifikasi
+    $pengirimanBarangJadi = Pengiriman_barangjadi::with([
+        'produk.subklasifikasi.klasifikasi', 
+        'toko'
+    ])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+
+    // Kelompokkan data berdasarkan klasifikasi
+    $groupedByKlasifikasi = $pengirimanBarangJadi->groupBy(function($item) {
+        return $item->produk->subklasifikasi->klasifikasi->nama;
+    });
+
+    // Ambil item pertama untuk informasi toko
+    $firstItem = $pengirimanBarangJadi->first();
+    $pdf = FacadePdf::loadView('admin.pengiriman_barangjadi.print', compact('groupedByKlasifikasi', 'firstItem'));
+
+    // Menambahkan nomor halaman di kanan bawah
+    $pdf->output();
+    $dompdf = $pdf->getDomPDF();
+    $canvas = $dompdf->getCanvas();
+    $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+        $text = "Page $pageNumber of $pageCount";
+        $font = $fontMetrics->getFont('Arial', 'normal');
+        $size = 8;
+
+        // Menghitung lebar teks
+        $width = $fontMetrics->getTextWidth($text, $font, $size);
+
+        // Mengatur koordinat X dan Y
+        $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+        $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+
+        // Menambahkan teks ke posisi yang ditentukan
+        $canvas->text($x, $y, $text, $font, $size);
+    });
+
+    // Output PDF ke browser
+    return $pdf->stream('surat_permintaan_produk.pdf');
+}
+
 
 
     public function unpost(Request $request, $id)

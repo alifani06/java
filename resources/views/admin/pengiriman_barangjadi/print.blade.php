@@ -11,7 +11,7 @@
             font-size: 12px;
             margin: 0;
             padding: 0;
-            padding-bottom: 40px;
+            padding-bottom: 60px;
         }
         .container {
             width: 80%;
@@ -24,8 +24,7 @@
         .header {
             width: 100%;
             border-bottom: 1px solid #000;
-            margin-top: 5px;
-            padding: 0 10px;
+            padding: 10px;
         }
         .header td {
             border: none;
@@ -39,15 +38,13 @@
         }
         .divider {
             border: 0.5px solid #000;
-            margin-top: 10px;
-            margin-bottom: 10px;
+            margin: 10px 0;
         }
         .change-header {
             text-align: center;
             font-size: 24px;
             font-weight: bold;
-            margin-top: 10px;
-            margin-bottom: 5px;
+            margin: 10px 0;
         }
         .change-header1 {
             text-align: center;
@@ -81,42 +78,13 @@
         th {
             background-color: white;
         }
-        .signature-container {
-            margin-top: 60px;
-        }
-        .signature-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 0 20px;
-        }
-        .signaturea {
-            flex: 1;
-            text-align: left;
-            margin: 0 10px; /* Space between signatures */
-        }
-        .signatureb {
-            flex: 1;
-            text-align: center;
-            margin: 0 10px;
-            margin-top: -200px; /* Space between signatures */
-        }
-        .signaturec {
-            flex: 1;
-            text-align: right;
-            margin: 0 10px; 
-            margin-top: -200px; /* Space between signatures */
-        }
-        .signature p {
-            margin: 0;
-            margin-top: 10px;
-        }
         .row p {
             margin: 0;
         }
         .total-row {
             font-weight: bold;
         }
-
+        
         /* CSS untuk tampilan cetak */
         @media print {
             body {
@@ -146,9 +114,32 @@
             .change-header {
                 page-break-before: always;
             }
-            .signature-container {
-                page-break-before: always;
-            }
+        }
+
+        .signature-section {
+            margin-top: 40px;
+        }
+        .signature-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .signature-table td {
+            padding: 20px;
+            vertical-align: top;
+            border: none;
+        }
+        .signature-title {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .signature-line {
+            border-top: 1px solid black;
+            margin-top: 40px;
+            margin-bottom: 5px;
+        }
+        .signature-name {
+            text-align: center;
         }
     </style>
 </head>
@@ -162,10 +153,8 @@
             {{-- <div>
                 <span class="title">PT JAVA BAKERY FACTORY</span><br>
                 <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
-            
             </div> --}}
         </div>
-    
         <div class="col-8 text-center">
             <div class="logo">
                 <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
@@ -173,35 +162,28 @@
             <span class="title">PT JAVA BAKERY FACTORY</span><br>
             <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
         </div>
-        {{-- <div class="col-2 text-left">
-            <div class="title">JAVA BAKERY</div>
-            <p>Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
-            <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
-        </div> --}}
     </div>
-    {{-- <hr class="divider"> --}}
 
     <!-- Judul Surat -->
-    <div class="change-header">SURAT PENGIRIMAN BARANG JADI</div>
-        <div class="change-header1">
-            <p style="margin-bottom: 2px;">Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
-            <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
-        </div>
+    <div class="change-header">SURAT PENGIRIMAN BARANG JADI - STOK TOKO</div>
+    <div class="change-header1">
+        <p style="margin-bottom: 2px; font-size: 18px;">{{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
+        <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
+    </div>
+
     <!-- Informasi Permintaan -->
-
-        <div>
-            <p style="margin-bottom: 2px;">
-                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Pengiriman</strong></span>
-                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $firstItem->kode_pengiriman }}</span>
-            </p>
-            <p style="margin-bottom: 2px;">
-                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal Kirim</strong> </span>
-                <span style="min-width: 50px; display: inline-flex; align-items: center;">
-                    : {{ $firstItem->created_at->locale('id')->translatedFormat('d F Y H:i') }}
-                </span>
-            </p> 
-        </div>
-
+    <div>
+        <p style="margin-bottom: 2px;">
+            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Pengiriman</strong></span>
+            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $firstItem->kode_pengiriman }}</span>
+        </p>
+        <p style="margin-bottom: 2px;">
+            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal Kirim</strong> </span>
+            <span style="min-width: 50px; display: inline-flex; align-items: center;">
+                : {{ $firstItem->created_at->locale('id')->translatedFormat('d F Y H:i') }}
+            </span>
+        </p> 
+    </div>
 
     <!-- Detail Produk -->
     @foreach($groupedByKlasifikasi as $klasifikasi => $items)
@@ -234,28 +216,29 @@
             </tr>
         </tfoot>
     </table><br>
-@endforeach
+    @endforeach
 
-
-    <div class="signature-container">
-        <div class="signature-row">
-            <div class="signaturea">
-                <p style="margin-left: 30px;"><strong>Pengirim</strong></p><br><br>
-                <p style="margin-bottom: 2px;">____________________</p>
-                <p>Admin Barang Jadi</p>
-            </div>
-            <div class="signatureb">
-                <p><strong>Sopir</strong></p><br><br>
-                <p style="margin-bottom: 2px;">____________________</p>
-                <p>Sopir</p>
-            </div>
-            <div class="signaturec">
-                <p style="margin-right: 60px;"><strong>Penerima</strong></p><br><br>
-                <p style="margin-bottom: 2px;">____________________</p>
-                <p style="margin-right: 49px;">Admin Toko</p>
-            </div>
-        </div>
+    <!-- Tanda Tangan -->
+    <div class="signature-section">
+        <table class="signature-table">
+            <tr>
+                <td>
+                    <div class="signature-title">Pengirim</div>
+                    <div class="signature-line"></div>
+                    <div class="signature-name">Nama Pengirim</div>
+                </td>
+                <td>
+                    <div class="signature-title">Sopir</div>
+                    <div class="signature-line"></div>
+                    <div class="signature-name">Nama Sopir</div>
+                </td>
+                <td>
+                    <div class="signature-title">Penerima</div>
+                    <div class="signature-line"></div>
+                    <div class="signature-name">Nama Penerima</div>
+                </td>
+            </tr>
+        </table>
     </div>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </html>
