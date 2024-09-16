@@ -22,32 +22,33 @@
             height: 77px;
         }
         .header {
-            width: 100%;
-            border-bottom: 1px solid #000;
-            margin-top: 20px;
-            padding: 0 10px;
+            text-align: center;
+            margin-top: 3px;
         }
-        .header td {
-            border: none;
+        .header span {
+            display: block;
         }
         .header .title {
             font-weight: bold;
-            font-size: 30px;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        .header .title1 {
+            margin-top: 5px;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .header .title2 {
+            font-weight: bold;
+            font-size: 18px;
         }
         .header .address, .header .contact {
             font-size: 12px;
         }
         .divider {
-            border: 0.5px solid #000;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-        .change-header {
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 20px;
-            margin-bottom: 10px;
+            border: 0.5px solid;
+            margin-top: 3px;
+            margin-bottom: 1px;
         }
         .tanggal {
             text-align: left;
@@ -157,28 +158,26 @@
 </head>
 <body>
     <!-- Header -->
-    <div class="change-header">LAPORAN PENGIRIMAN PESANAN</div>
+    <div class="header">
+        <h1 class="title">JAVA BAKERY</h1>
+        <p class="title1">Cabang: {{ $selectedCabang }}</p> 
+        <div class="divider"></div>
+        <h1 class="title2">LAPORAN PENGIRIMAN PESANAN</h1>
 
-    <div class="text" style="margin-bottom: 1px;">
         @php
-            \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
-    
-            $formattedStartDate = \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y');
-            $formattedEndDate = \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y');
-            $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
+            use Carbon\Carbon;
+            Carbon::setLocale('id');
+            $formattedStartDate = $startDate ? Carbon::parse($startDate)->translatedFormat('d F Y') : 'Tidak ada';
+            $formattedEndDate = $endDate ? Carbon::parse($endDate)->translatedFormat('d F Y') : 'Tidak ada';
+            $currentDateTime = Carbon::now()->translatedFormat('d F Y H:i');
         @endphp
-    
-        @if ($startDate && $endDate)
-            <p>
-                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }} &nbsp;&nbsp;&nbsp;
-                <span style="float: right; font-style: italic">{{ $currentDateTime }}</span>
-            </p>
-        @else
-            <p>
-                Periode: Tidak ada tanggal awal dan akhir yang diteruskan. &nbsp;&nbsp;&nbsp;
-                <span style="float: right;">{{ $currentDateTime }}</span>
-            </p>
-        @endif
+
+        <p class="period">
+            Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }}
+        </p>
+        <p class="period right-align" style="font-size: 10px; position: absolute; top: 0; right: 0; margin: 10px;">
+            {{ $currentDateTime }}
+        </p>
     </div>
     
     <!-- Detail Produk -->
