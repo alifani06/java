@@ -179,6 +179,39 @@ class Laporan_depositController extends Controller
         return view('admin.laporan_deposit.indexrinci', compact('inquery', 'tokos'));
     }
 
+    public function indexsaldo(Request $request)
+    {
+        // Ambil parameter filter dari request
+        $toko_id = $request->toko_id;
+
+        // Ambil daftar toko untuk filter
+        $tokos = Toko::all();
+
+        // Query dasar untuk mengambil data Dppemesanan
+        $inquery = Dppemesanan::with(['pemesananproduk.toko'])
+            ->orderBy('created_at', 'desc');
+
+        // Filter berdasarkan toko_id
+        if ($toko_id) {
+            $inquery->whereHas('pemesananproduk', function ($query) use ($toko_id) {
+                $query->where('toko_id', $toko_id);
+            });
+        }
+
+        // Ambil data dppemesanan berdasarkan toko yang dipilih dan status_pelunasan NULL
+        $inquery = $inquery->get()->groupBy('pemesananproduk.toko_id');
+
+        // Hitung saldo untuk setiap toko (jumlah dp_pemesanan di mana status_pelunasan NULL)
+        $saldoPerToko = [];
+        foreach ($inquery as $tokoId => $dpPemesanan) {
+            $totalSaldo = $dpPemesanan->whereNull('pelunasan')->sum('dp_pemesanan');
+            $saldoPerToko[$tokoId] = $totalSaldo;
+        }
+
+        // Kirim data ke view
+        return view('admin.laporan_deposit.indexsaldo', compact('saldoPerToko', 'tokos', 'toko_id'));
+    }
+
     // public function printReportdeposit(Request $request)
     // {
     //     // Ambil parameter filter dari request
@@ -258,6 +291,7 @@ class Laporan_depositController extends Controller
     //     // Return PDF
     //     return $pdf->stream('laporan_deposit.pdf');
     // }
+
     public function printReportdeposit(Request $request)
     {
         // Ambil parameter filter dari request
@@ -380,8 +414,6 @@ class Laporan_depositController extends Controller
         // Output PDF ke browser
         return $pdf->stream('laporan_deposit.pdf');
     }
-
-
 
     // public function printReportdepositrinci(Request $request)
     // {
@@ -614,6 +646,121 @@ class Laporan_depositController extends Controller
         // Output PDF ke browser
         return $pdf->stream('laporan_deposit.pdf');
     }
+
+    // public function printReportsaldo(Request $request)
+    // {
+    //     // Ambil parameter filter dari request
+    //     $toko_id = $request->toko_id;
+    
+    //     // Ambil daftar toko untuk filter
+    //     $tokos = Toko::all();
+    
+    //     // Dapatkan nama toko berdasarkan toko_id
+    //     $branchName = $toko_id ? Toko::find($toko_id)->nama_toko : 'Semua Cabang';
+    
+    //     // Query dasar untuk mengambil data Dppemesanan dan relasi pemesananproduk
+    //     $inquery = Dppemesanan::with(['pemesananproduk.toko'])
+    //         ->orderBy('created_at', 'desc');
+    
+    //     // Filter berdasarkan toko_id
+    //     if ($toko_id) {
+    //         $inquery->whereHas('pemesananproduk', function ($query) use ($toko_id) {
+    //             $query->where('toko_id', $toko_id);
+    //         });
+    //     }
+    
+    //     // Eksekusi query dan group by toko
+    //     $inquery = $inquery->get()->groupBy('pemesananproduk.toko_id');
+    
+    //     // Hitung saldo untuk setiap toko (jumlah dp_pemesanan di mana status_pelunasan NULL)
+    //     $saldoPerToko = [];
+    //     foreach ($inquery as $tokoId => $dpPemesanan) {
+    //         $totalSaldo = $dpPemesanan->whereNull('pelunasan')->sum('dp_pemesanan');
+    //         $saldoPerToko[$tokoId] = $totalSaldo;
+    //     }
+    
+    //     // Kirim data ke view cetak
+    //     $pdf = FacadePdf::loadView('admin.laporan_deposit.printsaldo', compact(
+    //         'saldoPerToko', 
+    //         'tokos', 
+    //         'toko_id', 
+    //         'branchName'
+    //     ));
+    
+    //     // Menambahkan nomor halaman di kanan bawah
+    //     $pdf->output();
+    //     $dompdf = $pdf->getDomPDF();
+    //     $canvas = $dompdf->getCanvas();
+    //     $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+    //         $text = "Page $pageNumber of $pageCount";
+    //         $font = $fontMetrics->getFont('Arial', 'normal');
+    //         $size = 8;
+    
+    //         // Menghitung lebar teks
+    //         $width = $fontMetrics->getTextWidth($text, $font, $size);
+    
+    //         // Mengatur koordinat X dan Y
+    //         $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+    //         $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+    
+    //         // Menambahkan teks ke posisi yang ditentukan
+    //         $canvas->text($x, $y, $text, $font, $size);
+    //     });
+    
+    //     // Output PDF ke browser
+    //     return $pdf->stream('laporan_deposit.pdf');
+    // }
+
+    public function printReportsaldo(Request $request)
+{
+    // Ambil parameter filter dari request
+    $toko_id = $request->toko_id;
+
+    // Ambil daftar toko untuk filter
+    $tokos = Toko::all();
+
+    // Dapatkan nama toko berdasarkan toko_id
+    $branchName = $toko_id ? Toko::find($toko_id)->nama_toko : 'Semua Cabang';
+
+    // Dapatkan alamat toko berdasarkan toko_id
+    $branchAddress = $toko_id ? Toko::find($toko_id)->alamat : 'Alamat tidak tersedia';
+
+    // Query dasar untuk mengambil data Dppemesanan dan relasi pemesananproduk
+    $inquery = Dppemesanan::with(['pemesananproduk.toko'])
+        ->orderBy('created_at', 'desc');
+
+    // Filter berdasarkan toko_id
+    if ($toko_id) {
+        $inquery->whereHas('pemesananproduk', function ($query) use ($toko_id) {
+            $query->where('toko_id', $toko_id);
+        });
+    }
+
+    // Eksekusi query dan group by toko
+    $inquery = $inquery->get()->groupBy('pemesananproduk.toko_id');
+
+    // Hitung saldo untuk setiap toko (jumlah dp_pemesanan di mana status_pelunasan NULL)
+    $saldoPerToko = [];
+    foreach ($inquery as $tokoId => $dpPemesanan) {
+        $totalSaldo = $dpPemesanan->whereNull('pelunasan')->sum('dp_pemesanan');
+        $saldoPerToko[$tokoId] = $totalSaldo;
+    }
+
+    // Kirim data ke view cetak
+    $pdf = FacadePdf::loadView('admin.laporan_deposit.printsaldo', compact(
+        'saldoPerToko',
+        'tokos',
+        'toko_id',
+        'branchName',
+        'branchAddress'
+    ));
+
+    // Output PDF ke browser
+    return $pdf->stream('laporan_deposit.pdf');
+}
+
+    
+
 
 
     

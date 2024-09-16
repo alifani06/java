@@ -40,6 +40,7 @@
                             <option value="">- Pilih -</option>
                             <option value="global" {{ old('kategori1') == 'global' ? 'selected' : '' }}>Laporan Deposit Global</option>
                             <option value="rinci" {{ old('kategori1') == 'rinci' ? 'selected' : '' }}>Laporan Deposit Rinci</option>
+                            <option value="saldo" {{ old('kategori1') == 'saldo' ? 'selected' : '' }}>Saldo Deposit</option>
                         </select>
                     </div>
    
@@ -164,6 +165,8 @@
                 window.location.href = "{{ url('admin/laporan_deposit') }}";
             } else if (selectedValue === 'rinci') {
                 window.location.href = "{{ url('admin/indexrinci') }}";
+            } else if (selectedValue === 'saldo') {
+                window.location.href = "{{ url('admin/indexsaldo') }}";
             }
         });
     </script>
