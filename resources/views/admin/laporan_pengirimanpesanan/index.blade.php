@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Inquery Pengiriman')
+@section('title', 'Produks')
 
 @section('content')
     <div id="loadingSpinner" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
@@ -33,10 +33,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Inquery Pengiriman Stok</h1>
+                    <h1 class="m-0">Laporan Pengiriman Pesanan</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
+                        {{-- <li class="breadcrumb-item active">Laporan penjualan Produk</li> --}}
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -67,17 +68,19 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                    <div class="float-right">
-                        <select class="form-control" id="kategori1" name="kategori">
-                            <option value="">- Pilih -</option>
-                            <option value="permintaan" {{ old('kategori1') == 'permintaan' ? 'selected' : '' }}>Pengiriman Permintaan</option>
-                            <option value="pemesanan" {{ old('kategori1') == 'pemesanan' ? 'selected' : '' }}>Pengiriman Pesanan</option>
-                        </select>
-                    </div>
+                    <h3 class="card-title">Laporan Pengiriman Pesanan</h3>
+                        <div class="float-right">
+                            <select class="form-control" id="kategori1" name="kategori">
+                                <option value="">- Pilih -</option>
+                                <option value="permintaan" {{ old('kategori1') == 'permintaan' ? 'selected' : '' }}>Pengiriman Permintaan</option>
+                                <option value="pemesanan" {{ old('kategori1') == 'pemesanan' ? 'selected' : '' }}>Pengiriman Pesanan</option>
+                            </select>
+                        </div>
                 </div>
-                
+
+                <!-- /.card-header -->
+                 
                 <div class="card-body">
-                    <!-- Tabel -->
                     <form method="GET" id="form-action">
                         <div class="row">
                             <div class="col-md-3 mb-3">
@@ -108,13 +111,16 @@
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
+                                <button type="submit" class="btn btn-outline-primary btn-block">
                                     <i class="fas fa-search"></i> Cari
+                                </button>
+                                <button type="button" class="btn btn-primary btn-block" onclick="printReport()" target="_blank">
+                                    <i class="fas fa-print"></i> Cetak
                                 </button>
                             </div>
                         </div>
                     </form>
-                    
+                
                     <table id="datatables66" class="table table-bordered" style="font-size: 13px">
                         <thead>
                             <tr>
@@ -122,9 +128,7 @@
                                 <th>Kode Pengiriman</th>
                                 <th>Cabang</th>
                                 <th>Tanggal Pengiriman</th>
-                                <th>Tanggal Terima</th>
                                 <th>Status</th>
-                              
                             </tr>
                         </thead>
                         <tbody>
@@ -136,9 +140,7 @@
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $firstItem->kode_pengiriman }}</td>
                                 <td>{{ $firstItem->toko->nama_toko ?? 'Toko Tidak Ditemukan' }}</td> <!-- Memanggil relasi toko -->
-                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_pengiriman)->format('d/m/Y H:i') }} </td>
-                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') }} </td>
-                                  
+                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_pengiriman)->format('d-m-Y H:i') }}</td>
                                 <td class="text-center">
                                     @if ($firstItem->status == 'posting')
                                         <button type="button" class="btn btn-success btn-sm">
@@ -150,27 +152,9 @@
                                         <i class="fas fa-times"></i>
                                     </button>
                                     @endif
-                                 
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        @if ($firstItem->status == 'unpost')
-                                           
-{{--                                 
-                                                    <a class="dropdown-item"
-                                                    href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a> --}}
-                                            
-                                                <a class="dropdown-item"
-                                                href="{{ url('/admin/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
-                                                @endif
-                                        @if ($firstItem->status == 'posting')
-                                                <a class="dropdown-item unpost-btn"
-                                                    data-memo-id="{{ $firstItem->id }}">Unpost</a>
-                                                <a class="dropdown-item"
-                                                href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
-                                        @endif
-                                       
-                                    </div>
-                                </td>
+                                </td> 
                             </tr>
+
                             <tr class="permintaan-details" id="details-{{ $firstItem->id }}" style="display: none;">
                                 <td colspan="5">
                                     <table class="table table-bordered" style="font-size: 13px;">
@@ -188,7 +172,7 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $detail->produk->klasifikasi->nama }}</td>
-                                                <td>{{ $detail->produk->kode_lama }}</td>
+                                                <td>{{ $detail->produk->kode_produk }}</td>
                                                 <td>{{ $detail->produk->nama_produk }}</td>
                                                 <td>{{ $detail->jumlah }}</td>
                                             </tr>
@@ -197,12 +181,10 @@
                                     </table>
                                 </td>
                             </tr>
-                     
                         @endforeach
                         </tbody>
-                    </table> 
-               
-                    
+                    </table>
+
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
                         aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">
@@ -221,6 +203,7 @@
         </div>
     </section>
 
+    <!-- /.card -->
     <script>
         var tanggalAwal = document.getElementById('tanggal_pengiriman');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
@@ -238,77 +221,9 @@
             tanggalAkhir.value = today;
             tanggalAkhir.setAttribute('min', this.value);
         });
-        var form = document.getElementById('form-action')
-
-        function cari() {
-            form.action = "{{ url('admin/inquery_pengirimanbarangjadi') }}";
-            form.submit();
-        }
-
     </script>
 
-
-
-    {{-- unpost stok  --}}
-    <script>
-        $(document).ready(function() {
-            $('.unpost-btn').click(function() {
-                var memoId = $(this).data('memo-id');
-                $(this).addClass('disabled');
-
-                $('#modal-loading').modal('show');
-
-                $.ajax({
-                    url: "{{ url('admin/inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/') }}/" + memoId,
-                    type: 'GET',
-                    data: {
-                        id: memoId
-                    },
-                    success: function(response) {
-                        $('#modal-loading').modal('hide');
-                        console.log(response);
-                        $('#modal-posting-' + memoId).modal('hide');
-                        location.reload();
-                    },
-                    error: function(error) {
-                        $('#modal-loading').modal('hide');
-                        console.log(error);
-                    }
-                });
-            });
-        });
-    </script>
-
-    {{-- posting stok --}}
-    <script>
-        $(document).ready(function() {
-            $('.posting-btn').click(function() {
-                var memoId = $(this).data('memo-id');
-                $(this).addClass('disabled');
-
-                $('#modal-loading').modal('show');
-
-                $.ajax({
-                    url: "{{ url('admin/inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/') }}/" + memoId,
-                    type: 'GET',
-                    data: {
-                        id: memoId
-                    },
-                    success: function(response) {
-                        $('#modal-loading').modal('hide');
-                        console.log(response);
-                        $('#modal-posting-' + memoId).modal('hide');
-                        location.reload();
-                    },
-                    error: function(error) {
-                        $('#modal-loading').modal('hide');
-                        console.log(error);
-                    }
-                });
-            });
-        });
-    </script>
- <script>
+<script>
     $(document).ready(function() {
     $('tbody tr.dropdown').click(function(e) {
         // Memeriksa apakah yang diklik adalah checkbox
@@ -372,6 +287,37 @@
         $('tr.dropdown').removeClass('selected').css('background-color', ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
     });
 });
+</script> 
+
+
+<script>
+    function printReport() {
+        const form = document.getElementById('form-action');
+        const tanggalPengiriman = document.getElementById('tanggal_pengiriman').value;
+        const tanggalAkhir = document.getElementById('tanggal_akhir').value;
+        const status = document.getElementById('status').value;
+
+        // Validasi apakah tanggal telah dipilih
+        if (tanggalPengiriman === "" || tanggalAkhir === "") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tanggal Belum Dipilih!',
+                text: 'Silakan isi tanggal pengiriman dan tanggal akhir terlebih dahulu.',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#3085d6',
+                background: '#fff',
+                customClass: {
+                    popup: 'animated bounceIn'
+                }
+            });
+            return; // Jangan submit form jika validasi gagal
+        }
+
+        // Jika validasi berhasil, atur action dan submit form
+        form.action = `{{ url('admin/printpesanan') }}?tanggal_pengiriman=${tanggalPengiriman}&tanggal_akhir=${tanggalAkhir}&status=${status}`;
+        form.target = "_blank";
+        form.submit();
+    }
 </script>
 
 <script>
@@ -379,9 +325,9 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'permintaan') {
-            window.location.href = "{{ url('admin/inquery_pengirimanbarangjadi') }}"; 
+            window.location.href = "{{ url('admin/laporan_pengirimanbarangjadi') }}"; 
         } else if (selectedValue === 'pemesanan') {
-            window.location.href = "{{ url('admin/inquery_pengirimanpesanan') }}"; 
+            window.location.href = "{{ url('admin/laporan_pengirimanpesanan') }}"; 
         }
     });
 </script>

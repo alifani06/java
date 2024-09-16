@@ -37,14 +37,49 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Pengiriman_barangjadi;
+use App\Models\Pengiriman_barangjadipesanan;
 use Maatwebsite\Excel\Facades\Excel;
 
 
 
 
-class Inquery_pengirimanbarangjadiController extends Controller{
+class Inquery_pengirimanpesananController extends Controller{
 
+    // public function index(Request $request)
+    // {
+    //         $status = $request->status;
+    //         $tanggal_pengiriman = $request->tanggal_pengiriman;
+    //         $tanggal_akhir = $request->tanggal_akhir;
 
+    //         $query = Pengiriman_barangjadipesanan::with('produk.klasifikasi');
+
+    //         if ($status) {
+    //             $query->where('status', $status);
+    //         }
+
+    //         if ($tanggal_pengiriman && $tanggal_akhir) {
+    //             $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
+    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //             $query->whereBetween('tanggal_pengiriman', [$tanggal_pengiriman, $tanggal_akhir]);
+    //         } elseif ($tanggal_pengiriman) {
+    //             $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
+    //             $query->where('tanggal_pengiriman', '>=', $tanggal_pengiriman);
+    //         } elseif ($tanggal_akhir) {
+    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //             $query->where('tanggal_pengiriman', '<=', $tanggal_akhir);
+    //         } else {
+    //             // Jika tidak ada filter tanggal, tampilkan data hari ini
+    //             $query->whereDate('tanggal_pengiriman', Carbon::today());
+    //         }
+
+    //         // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
+    //         $stokBarangJadi = $query
+    //         ->orderBy('created_at', 'desc')
+    //         ->get()
+    //         ->groupBy('kode_pengiriman');
+
+    //         return view('admin.inquery_pengirimanpesanan.index', compact('stokBarangJadi'));
+    // }
     public function index(Request $request)
     {
         $status = $request->status;
@@ -52,7 +87,7 @@ class Inquery_pengirimanbarangjadiController extends Controller{
         $tanggal_akhir = $request->tanggal_akhir;
         $toko_id = $request->toko_id;  // Ambil toko_id dari request
 
-        $query = Pengiriman_barangjadi::with(['produk.klasifikasi', 'toko']); // Pastikan toko diload
+        $query = Pengiriman_barangjadipesanan::with(['produk.klasifikasi', 'toko']); // Pastikan toko diload
 
         if ($status) {
             $query->where('status', $status);
@@ -85,15 +120,13 @@ class Inquery_pengirimanbarangjadiController extends Controller{
         // Ambil daftar toko untuk dropdown
         $tokos = Toko::all();
 
-        return view('admin.inquery_pengirimanbarangjadi.index', compact('stokBarangJadi', 'tokos'));
+        return view('admin.inquery_pengirimanpesanan.index', compact('stokBarangJadi', 'tokos'));
     }
-
-
     
     public function show($id)
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-        $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_pengiriman');
+        $detailStokBarangJadi = Pengiriman_barangjadipesanan::where('id', $id)->value('kode_pengiriman');
         
         // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -101,7 +134,7 @@ class Inquery_pengirimanbarangjadiController extends Controller{
         }
         
         // Ambil semua data dengan kode_pengiriman yang sama, termasuk relasi ke klasifikasi
-        $pengirimanBarangJadi = Pengiriman_barangjadi::with([
+        $pengirimanBarangJadi = Pengiriman_barangjadipesanan::with([
             'produk.subklasifikasi.klasifikasi', 
             'toko'
         ])->where('kode_pengiriman', $detailStokBarangJadi)->get();
@@ -114,7 +147,7 @@ class Inquery_pengirimanbarangjadiController extends Controller{
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        return view('admin.inquery_pengirimanbarangjadi.show', compact('groupedByKlasifikasi', 'firstItem'));
+        return view('admin.inquery_pengirimanpesanan.show', compact('groupedByKlasifikasi', 'firstItem'));
     }
 
     public function edit($id)
@@ -188,7 +221,7 @@ class Inquery_pengirimanbarangjadiController extends Controller{
         public function unpost_pengirimanbarangjadi($id)
         {
             // Ambil data stok barang berdasarkan ID
-            $stok = Pengiriman_barangjadi::where('id', $id)->first();
+            $stok = Pengiriman_barangjadipesanan::where('id', $id)->first();
         
             // Pastikan data ditemukan
             if (!$stok) {
@@ -199,7 +232,7 @@ class Inquery_pengirimanbarangjadiController extends Controller{
             $kodeInput = $stok->kode_pengiriman;
         
             // Update status untuk semua stok dengan kode_input yang sama di tabel stok_barangjadi
-            Pengiriman_barangjadi::where('kode_pengiriman', $kodeInput)->update([
+            Pengiriman_barangjadipesanan::where('kode_pengiriman', $kodeInput)->update([
                 'status' => 'unpost'
             ]);
             return back()->with('success', 'Berhasil mengubah status semua produk dan detail terkait dengan kode_input yang sama.');
@@ -209,7 +242,7 @@ class Inquery_pengirimanbarangjadiController extends Controller{
         public function posting_pengirimanbarangjadi($id)
         {
            // Ambil data pengiriman_barangjadi berdasarkan ID
-            $pengiriman = Pengiriman_barangjadi::where('id', $id)->first();
+            $pengiriman = Pengiriman_barangjadipesanan::where('id', $id)->first();
         
             // Pastikan data ditemukan
             if (!$pengiriman) {
@@ -220,7 +253,7 @@ class Inquery_pengirimanbarangjadiController extends Controller{
             $kodePengiriman = $pengiriman->kode_pengiriman;
         
             // Update status untuk semua pengiriman_barangjadi dengan kode_pengiriman yang sama
-            Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->update([
+            Pengiriman_barangjadipesanan::where('kode_pengiriman', $kodePengiriman)->update([
                 'status' => 'posting'
             ]);
         
@@ -234,54 +267,77 @@ class Inquery_pengirimanbarangjadiController extends Controller{
 
        
 
-        public function print($id)
-        {
-            // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-            $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_pengiriman');
-                
-            // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
-            if (!$detailStokBarangJadi) {
-                return redirect()->back()->with('error', 'Data tidak ditemukan.');
-            }
+    // public function print($id)
+    // {
+    //     // $permintaanProduk = PermintaanProduk::where('id', $id)->firstOrFail();
+        
+    //     // $detailPermintaanProduks = $permintaanProduk->detailpermintaanproduks;
+    //     $permintaanProduk = PermintaanProduk::find($id);
+    //     $detailPermintaanProduks = DetailPermintaanProduk::where('permintaanproduk_id', $id)->get();
+    
+    //     // Mengelompokkan produk berdasarkan divisi
+    //     $produkByDivisi = $detailPermintaanProduks->groupBy(function($item) {
+    //         return $item->produk->klasifikasi->nama; // Ganti dengan nama divisi jika diperlukan
+    //     });
+    
+    //     // Menghitung total jumlah per divisi
+    //     $totalPerDivisi = $produkByDivisi->map(function($produks) {
+    //         return $produks->sum('jumlah');
+    //     });
+    //     $toko = $detailPermintaanProduks->first()->toko;
+
+    //     $pdf = FacadePdf::loadView('admin.permintaan_produk.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi','toko'));
+
+    //     return $pdf->stream('surat_permintaan_produk.pdf');
+    // }
+    public function print($id)
+    {
+        // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
+        $detailStokBarangJadi = Pengiriman_barangjadipesanan::where('id', $id)->value('kode_pengiriman');
             
-            // Ambil semua data dengan kode_pengiriman yang sama, termasuk relasi ke klasifikasi
-            $pengirimanBarangJadi = Pengiriman_barangjadi::with([
-                'produk.subklasifikasi.klasifikasi', 
-                'toko'
-            ])->where('kode_pengiriman', $detailStokBarangJadi)->get();
-    
-            // Kelompokkan data berdasarkan klasifikasi
-            $groupedByKlasifikasi = $pengirimanBarangJadi->groupBy(function($item) {
-                return $item->produk->subklasifikasi->klasifikasi->nama;
-            });
-    
-            // Ambil item pertama untuk informasi toko
-            $firstItem = $pengirimanBarangJadi->first();
-            $pdf = FacadePdf::loadView('admin.inquery_pengirimanbarangjadi.print', compact('groupedByKlasifikasi', 'firstItem'));
-    
-            // Menambahkan nomor halaman di kanan bawah
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF();
-            $canvas = $dompdf->getCanvas();
-            $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
-                $text = "Page $pageNumber of $pageCount";
-                $font = $fontMetrics->getFont('Arial', 'normal');
-                $size = 8;
-    
-                // Menghitung lebar teks
-                $width = $fontMetrics->getTextWidth($text, $font, $size);
-    
-                // Mengatur koordinat X dan Y
-                $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
-                $y = $canvas->get_height() - 15; // 15 pixel dari bawah
-    
-                // Menambahkan teks ke posisi yang ditentukan
-                $canvas->text($x, $y, $text, $font, $size);
-            });
-    
-            // Output PDF ke browser
-            return $pdf->stream('surat_permintaan_produk.pdf');
+        // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
+        if (!$detailStokBarangJadi) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
         }
+        
+        // Ambil semua data dengan kode_pengiriman yang sama, termasuk relasi ke klasifikasi
+        $pengirimanBarangJadi = Pengiriman_barangjadipesanan::with([
+            'produk.subklasifikasi.klasifikasi', 
+            'toko'
+        ])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+
+        // Kelompokkan data berdasarkan klasifikasi
+        $groupedByKlasifikasi = $pengirimanBarangJadi->groupBy(function($item) {
+            return $item->produk->subklasifikasi->klasifikasi->nama;
+        });
+
+        // Ambil item pertama untuk informasi toko
+        $firstItem = $pengirimanBarangJadi->first();
+        $pdf = FacadePdf::loadView('admin.inquery_pengirimanpesanan.print', compact('groupedByKlasifikasi', 'firstItem'));
+
+        // Menambahkan nomor halaman di kanan bawah
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF();
+        $canvas = $dompdf->getCanvas();
+        $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+            $text = "Page $pageNumber of $pageCount";
+            $font = $fontMetrics->getFont('Arial', 'normal');
+            $size = 8;
+
+            // Menghitung lebar teks
+            $width = $fontMetrics->getTextWidth($text, $font, $size);
+
+            // Mengatur koordinat X dan Y
+            $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+            $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+
+            // Menambahkan teks ke posisi yang ditentukan
+            $canvas->text($x, $y, $text, $font, $size);
+        });
+
+        // Output PDF ke browser
+        return $pdf->stream('surat_permintaan_produk.pdf');
+    }
 
     public function unpost(Request $request, $id)
     {

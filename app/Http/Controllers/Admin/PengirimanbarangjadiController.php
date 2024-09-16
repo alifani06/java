@@ -439,7 +439,7 @@ public function store(Request $request)
 
     //             return $pdf->stream('surat_permintaan_produk.pdf');
     // }
-        public function print($id)
+    public function print($id)
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
         $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_pengiriman');

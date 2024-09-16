@@ -28,6 +28,7 @@ use App\Models\Stok_barangjadi;
 use App\Models\Permintaanproduk;
 use App\Models\Detailpermintaanproduk;
 use App\Models\Pengiriman_barangjadi;
+use App\Models\Pengiriman_barangjadipesanan;
 use Carbon\Carbon;
 use App\Models\Toko;
 use Dompdf\Dompdf;
@@ -36,7 +37,7 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
-class Laporan_pengirimanbarangjadiController extends Controller
+class Laporan_pengirimanpesananController extends Controller
 {
 
     public function index(Request $request)
@@ -47,7 +48,7 @@ class Laporan_pengirimanbarangjadiController extends Controller
             $toko_id = $request->toko_id;  // Ambil toko_id dari request
 
 
-            $query = Pengiriman_barangjadi::with(['produk.klasifikasi', 'toko']); // Pastikan toko diload
+            $query = Pengiriman_barangjadipesanan::with(['produk.klasifikasi', 'toko']); // Pastikan toko diload
 
             if ($status) {
                 $query->where('status', $status);
@@ -76,89 +77,10 @@ class Laporan_pengirimanbarangjadiController extends Controller
             $stokBarangJadi = $query->get()->groupBy('kode_pengiriman');
             $tokos = Toko::all();
 
-            return view('admin.laporan_pengirimanbarangjadi.index', compact('stokBarangJadi', 'tokos'));
+            return view('admin.laporan_pengirimanpesanan.index', compact('stokBarangJadi', 'tokos'));
     }
 
-    // public function printReport(Request $request)
-    // {
-    //     // Ambil parameter dari request
-    //     $tanggalPengiriman = $request->input('tanggal_pengiriman');
-    //     $tanggalAkhir = $request->input('tanggal_akhir');
-    //     $status = $request->input('status');
-        
-    //     // Buat query untuk ambil data berdasarkan filter
-    //     $query = Pengiriman_barangjadi::query();
-        
-    //     if ($tanggalPengiriman) {
-    //         $query->whereDate('tanggal_pengiriman', '>=', $tanggalPengiriman);
-    //     }
-        
-    //     if ($tanggalAkhir) {
-    //         $query->whereDate('tanggal_pengiriman', '<=', $tanggalAkhir);
-    //     }
-        
-    //     if ($status) {
-    //         $query->where('status', $status);
-    //     }
-        
-    //     $formattedStartDate = $tanggalPengiriman ? Carbon::parse($tanggalPengiriman)->format('d-m-Y') : 'N/A';
-    //         $formattedEndDate = $tanggalAkhir ? Carbon::parse($tanggalAkhir)->format('d-m-Y') : 'N/A';
-    //     // Ambil data yang telah difilter
-    //     $pengirimanBarangJadi = $query->with(['produk.subklasifikasi', 'toko'])->get();
-        
-    //     // Kelompokkan data berdasarkan kode_pengiriman
-    //     $groupedData = $pengirimanBarangJadi->groupBy('kode_pengiriman');
-        
-    //     // Ambil item pertama untuk informasi toko
-    //     $firstItem = $pengirimanBarangJadi->first();
-        
-    //     // Inisialisasi DOMPDF
-    //     $options = new \Dompdf\Options();
-    //     $options->set('isHtml5ParserEnabled', true);
-    //     $options->set('isRemoteEnabled', true); // Jika menggunakan URL eksternal untuk gambar atau CSS
-        
-    //     $dompdf = new \Dompdf\Dompdf($options);
-        
-    //     // Memuat konten HTML dari view
-    //     $html = view('admin.laporan_pengirimanbarangjadi.print', [
-    //     'groupedData'  => $groupedData, 
-    //     'firstItem' => $firstItem , 
-    //     'tanggalPengiriman', 
-    //     'tanggalAkhir',
-    //     'startDate' => $formattedStartDate,
-    //     'endDate' => $formattedEndDate,
-    //     ])->render();
-        
-        
-    //     $dompdf->loadHtml($html);
-        
-    //     // Set ukuran kertas dan orientasi
-    //     $dompdf->setPaper('A4', 'portrait');
-        
-    //     // Render PDF
-    //     $dompdf->render();
-        
-    //     // Menambahkan nomor halaman di kanan bawah
-    //     $canvas = $dompdf->getCanvas();
-    //     $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
-    //         $text = "Page $pageNumber of $pageCount";
-    //         $font = $fontMetrics->getFont('Arial', 'normal');
-    //         $size = 10;
-        
-    //         // Menghitung lebar teks
-    //         $width = $fontMetrics->getTextWidth($text, $font, $size);
-        
-    //         // Mengatur koordinat X dan Y
-    //         $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
-    //         $y = $canvas->get_height() - 15; // 15 pixel dari bawah
-        
-    //         // Menambahkan teks ke posisi yang ditentukan
-    //         $canvas->text($x, $y, $text, $font, $size);
-    //     });
-        
-    //     // Output PDF ke browser
-    //     return $dompdf->stream('laporan_pengiriman_barang_jadi.pdf', ['Attachment' => false]);
-    // }
+    
     public function printReport(Request $request)
 {
     // Ambil parameter dari request
@@ -168,7 +90,7 @@ class Laporan_pengirimanbarangjadiController extends Controller
     $toko_id = $request->input('toko_id'); // Tambahkan toko_id dari request
     
     // Buat query untuk ambil data berdasarkan filter
-    $query = Pengiriman_barangjadi::query();
+    $query = Pengiriman_barangjadipesanan::query();
     
     if ($tanggalPengiriman) {
         $query->whereDate('tanggal_pengiriman', '>=', $tanggalPengiriman);
@@ -206,7 +128,7 @@ class Laporan_pengirimanbarangjadiController extends Controller
     $dompdf = new \Dompdf\Dompdf($options);
     
     // Memuat konten HTML dari view
-    $html = view('admin.laporan_pengirimanbarangjadi.print', [
+    $html = view('admin.laporan_pengirimanpesanan.print', [
         'groupedData'  => $groupedData, 
         'firstItem' => $firstItem , 
         'tanggalPengiriman', 

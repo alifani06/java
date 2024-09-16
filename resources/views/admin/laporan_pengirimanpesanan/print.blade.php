@@ -157,7 +157,7 @@
 </head>
 <body>
     <!-- Header -->
-    <div class="change-header">LAPORAN PENGIRIMAN STOK</div>
+    <div class="change-header">LAPORAN PENGIRIMAN PESANAN</div>
 
     <div class="text" style="margin-bottom: 1px;">
         @php

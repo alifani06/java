@@ -131,7 +131,7 @@
         {{-- <hr class="divider"> --}}
 
         <!-- Judul Surat -->
-        <div class="change-header">SURAT PENGIRIMAN BARANG JADI - STOK TOKO</div>
+        <div class="change-header">SURAT PENGIRIMAN BARANG JADI - PESANAN</div>
         <div class="change-header1">
             <p style="margin-bottom: 2px; font-size: 18px;">{{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
             <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
@@ -183,12 +183,12 @@
 
         <div class="d-flex justify-content-between">
             <div>
-                <a href="{{ url('admin/inquery_pengirimanbarangjadi') }}" class="btn btn-primary btn-sm">
+                <a href="{{ url('admin/inquery_pengirimanpesanan') }}" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus"></i> Kembali
                 </a>
             </div>
             <div>
-                <a href="{{ route('inquery_pengirimanbarangjadi.print', $firstItem->id) }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
+                <a href="{{ route('inquery_pengirimanpesanan.print', $firstItem->id) }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
                     <i class="fas fa-print"></i> Cetak 
                 </a>
             </div>  

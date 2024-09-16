@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Inquery Pengiriman Stok</h1>
+                    <h1 class="m-0">Inquery Pengiriman Pesanan</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -114,7 +114,6 @@
                             </div>
                         </div>
                     </form>
-                    
                     <table id="datatables66" class="table table-bordered" style="font-size: 13px">
                         <thead>
                             <tr>
@@ -154,18 +153,18 @@
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         @if ($firstItem->status == 'unpost')
                                            
-{{--                                 
-                                                    <a class="dropdown-item"
-                                                    href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a> --}}
+                                               
+                                                    {{-- <a class="dropdown-item"
+                                                    href="{{ url('admin/inquery_pengirimanpesanan/' . $firstItem->id . '/edit') }}">Update</a> --}}
                                             
                                                 <a class="dropdown-item"
-                                                href="{{ url('/admin/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/admin/inquery_pengirimanpesanan/' . $firstItem->id ) }}">Show</a>
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 <a class="dropdown-item unpost-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Unpost</a>
                                                 <a class="dropdown-item"
-                                                href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('admin/inquery_pengirimanpesanan/' . $firstItem->id ) }}">Show</a>
                                         @endif
                                        
                                     </div>
@@ -241,7 +240,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('admin/inquery_pengirimanbarangjadi') }}";
+            form.action = "{{ url('admin/inquery_pengirimanpesanan') }}";
             form.submit();
         }
 
@@ -259,7 +258,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('admin/inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/') }}/" + memoId,
+                    url: "{{ url('admin/inquery_pengirimanbarangjadipesanan/unpost_pengirimanbarangjadipesanan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -289,7 +288,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('admin/inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/') }}/" + memoId,
+                    url: "{{ url('admin/inquery_pengirimanbarangjadipesanan/posting_pengirimanbarangjadipesanan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

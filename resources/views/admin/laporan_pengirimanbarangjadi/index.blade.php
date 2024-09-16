@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Pengiriman Barang Jadi</h1>
+                    <h1 class="m-0">Laporan Pengiriman Stok</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -68,7 +68,14 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Laporan Pengiriman Barang Jadi</h3>
+                    <h3 class="card-title">Laporan Pengiriman Stok</h3>
+                        <div class="float-right">
+                            <select class="form-control" id="kategori1" name="kategori">
+                                <option value="">- Pilih -</option>
+                                <option value="permintaan" {{ old('kategori1') == 'permintaan' ? 'selected' : '' }}>Pengiriman Permintaan</option>
+                                <option value="pemesanan" {{ old('kategori1') == 'pemesanan' ? 'selected' : '' }}>Pengiriman Pesanan</option>
+                            </select>
+                        </div>
                 </div>
 
                 <!-- /.card-header -->
@@ -83,6 +90,15 @@
                                     <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
                                 </select>
                                 <label for="status">(Pilih Status)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="toko" name="toko_id">
+                                    <option value="">- Semua Toko -</option>
+                                    @foreach ($tokos as $toko)
+                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
+                                    @endforeach
+                                </select>
+                                <label for="toko">(Pilih Toko)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_pengiriman" name="tanggal_pengiriman" type="date"
@@ -104,14 +120,13 @@
                             </div>
                         </div>
                     </form>
-                    
                 
-                    
                     <table id="datatables66" class="table table-bordered" style="font-size: 13px">
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
                                 <th>Kode Pengiriman</th>
+                                <th>Cabang</th>
                                 <th>Tanggal Pengiriman</th>
                                 <th>Status</th>
                             </tr>
@@ -124,6 +139,7 @@
                                 <tr class="dropdown" data-permintaan-id="{{ $firstItem->id }}">
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $firstItem->kode_pengiriman }}</td>
+                                <td>{{ $firstItem->toko->nama_toko ?? 'Toko Tidak Ditemukan' }}</td> <!-- Memanggil relasi toko -->
                                 <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_pengiriman)->format('d-m-Y H:i') }}</td>
                                 <td class="text-center">
                                     @if ($firstItem->status == 'posting')
@@ -274,7 +290,7 @@
 </script> 
 
 
-<script>
+{{-- <script>
     function printReport() {
     const form = document.getElementById('form-action');
     const tanggalPengiriman = document.getElementById('tanggal_pengiriman').value;
@@ -285,6 +301,48 @@
     form.target = "_blank";
     form.submit();
 }
+</script> --}}
 
+<script>
+    function printReport() {
+        const form = document.getElementById('form-action');
+        const tanggalPengiriman = document.getElementById('tanggal_pengiriman').value;
+        const tanggalAkhir = document.getElementById('tanggal_akhir').value;
+        const status = document.getElementById('status').value;
+
+        // Validasi apakah tanggal telah dipilih
+        if (tanggalPengiriman === "" || tanggalAkhir === "") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tanggal Belum Dipilih!',
+                text: 'Silakan isi tanggal pengiriman dan tanggal akhir terlebih dahulu.',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#3085d6',
+                background: '#fff',
+                customClass: {
+                    popup: 'animated bounceIn'
+                }
+            });
+            return; // Jangan submit form jika validasi gagal
+        }
+
+        // Jika validasi berhasil, atur action dan submit form
+        form.action = `{{ url('admin/print') }}?tanggal_pengiriman=${tanggalPengiriman}&tanggal_akhir=${tanggalAkhir}&status=${status}`;
+        form.target = "_blank";
+        form.submit();
+    }
+</script>
+
+
+<script>
+    document.getElementById('kategori1').addEventListener('change', function() {
+        var selectedValue = this.value;
+
+        if (selectedValue === 'permintaan') {
+            window.location.href = "{{ url('admin/laporan_pengirimanbarangjadi') }}"; 
+        } else if (selectedValue === 'pemesanan') {
+            window.location.href = "{{ url('admin/laporan_pengirimanpesanan') }}"; 
+        }
+    });
 </script>
 @endsection

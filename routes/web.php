@@ -14,6 +14,8 @@ use App\Http\Controllers\Admin\Inquery_pemesananprodukController;
 use App\Http\Controllers\Admin\Inquery_pemindahanbarangjadiController;
 use App\Http\Controllers\Admin\Inquery_pemusnahanbarangjadiController;
 use App\Http\Controllers\Admin\Inquery_pengirimanbarangjadiController;
+use App\Http\Controllers\Admin\Inquery_pengirimanbarangjadipesananController;
+use App\Http\Controllers\Admin\Inquery_pengirimanpesananController;
 use App\Http\Controllers\Admin\Inquery_penjualanprodukController;
 use App\Http\Controllers\Admin\Inquery_returbarangjadiController;
 use App\Http\Controllers\Admin\Inquery_stokbarangjadiController;
@@ -241,15 +243,18 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/pengiriman_barangjadipesanan/{id}/print', [PengirimanbarangjadipesananController::class, 'print'])->name('pengiriman_barangjadipesanan.print');
 
     Route::resource('inquery_pengirimanbarangjadi', \App\Http\Controllers\Admin\Inquery_pengirimanbarangjadiController::class);
+    Route::get('/inquery_pengirimanbarangjadi/{id}/print', [Inquery_pengirimanbarangjadiController::class, 'print'])->name('inquery_pengirimanbarangjadi.print');
     Route::get('inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Admin\Inquery_pengirimanbarangjadiController::class, 'unpost_pengirimanbarangjadi']);
     Route::get('inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Admin\Inquery_pengirimanbarangjadiController::class, 'posting_pengirimanbarangjadi']);
-    // Route::get('inquery_pengirimanbarangjadi/{id}/edit', [Inquery_pengirimanbarangjadiController::class, 'edit'])->name('inquery_pengirimanbarangjadi.edit');
-    // Route::get('admin/inquery_pengirimanbarangjadi/{id}/edit', [Inquery_pengirimanbarangjadiController::class, 'edit'])->name('inquery_pengirimanbarangjadi.edit');
-    // Route::put('admin/inquery_pengirimanbarangjadi/{id}', [Inquery_pengirimanbarangjadiController::class, 'update'])->name('inquery_pengirimanbarangjadi.update');
+   
+    Route::resource('inquery_pengirimanpesanan', \App\Http\Controllers\Admin\Inquery_pengirimanpesananController::class);
+    Route::get('/inquery_pengirimanpesanan/{id}/print', [Inquery_pengirimanpesananController::class, 'print'])->name('inquery_pengirimanpesanan.print');
 
     Route::resource('laporan_pengirimanbarangjadi', \App\Http\Controllers\Admin\Laporan_pengirimanbarangjadiController::class);
     Route::get('print', [\App\Http\Controllers\Admin\Laporan_pengirimanbarangjadiController::class, 'printReport']);
 
+    Route::resource('laporan_pengirimanpesanan', \App\Http\Controllers\Admin\Laporan_pengirimanpesananController::class);
+    Route::get('printpesanan', [\App\Http\Controllers\Admin\Laporan_pengirimanpesananController::class, 'printReport']);
 
     Route::resource('retur_barangjadi', \App\Http\Controllers\Admin\ReturbarangjadiController::class);
 
