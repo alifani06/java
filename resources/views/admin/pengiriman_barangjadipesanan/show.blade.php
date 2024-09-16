@@ -139,7 +139,7 @@
         <!-- Informasi Permintaan -->
         <div>
             <p style="margin-bottom: 2px;">
-                <strong>Kode Pengiriman:</strong> {{ $firstItem->kode_pengiriman }}
+                <strong>Kode Pengiriman:</strong> {{ $firstItem->kode_pengirimanpesanan }}
             </p>
             <p style="margin-bottom: 2px;">
                 <strong>Tanggal Kirim:</strong> {{ \Carbon\Carbon::now()->format('d-m-Y H:m') }}

@@ -100,7 +100,7 @@ class PengirimanbarangjadipesananController extends Controller{
 
                 // Simpan pengiriman tanpa mengurangi stok
                 $pengiriman = Pengiriman_barangjadipesanan::create([
-                    'kode_pengiriman' => $kode,
+                    'kode_pengirimanpesanan' => $kode,
                     'qrcode_pengiriman' => 'https://javabakery.id/pengiriman_produk/' . $kode,
                     'produk_id' => $produkId,
                     'toko_id' => $tokoId,
@@ -114,7 +114,7 @@ class PengirimanbarangjadipesananController extends Controller{
                     case 1:
                         Pengirimanpemesanan_tokobanjaran::create([
                             'pengiriman_barangjadi_id' => $pengiriman->id,
-                            'kode_pengiriman' => $kode,
+                            'kode_pengirimanpesanan' => $kode,
                             'produk_id' => $produkId,
                             'jumlah' => $jumlah,
                             'status' => 'unpost',
@@ -181,25 +181,38 @@ class PengirimanbarangjadipesananController extends Controller{
 
     public function kode()
     {
-        $lastBarang = Pengiriman_barangjadipesanan::latest()->first();
-        if (!$lastBarang) {
-            $num = 1;
-        } else {
-            $lastCode = $lastBarang->kode_pengiriman;
-            $num = (int) substr($lastCode, strlen('SB')) + 1; 
-        }
-        $formattedNum = sprintf("%06s", $num);
-        $prefix = 'JXp';
-        $newCode = $prefix . $formattedNum;
-        return $newCode;
+        // Gunakan database transaction untuk menghindari race conditions
+        return DB::transaction(function () {
+            // Ambil kode pengiriman terakhir
+            $lastBarang = Pengiriman_barangjadipesanan::latest('kode_pengirimanpesanan')->lockForUpdate()->first();
+            
+            if (!$lastBarang) {
+                // Jika tidak ada data, mulai dari 1
+                $num = 1;
+            } else {
+                // Ambil kode terakhir dan pecah untuk mengambil angka
+                $lastCode = $lastBarang->kode_pengirimanpesanan;
+                $num = (int) substr($lastCode, strlen('JXp')) + 1;
+            }
+    
+            // Format angka menjadi 6 digit
+            $formattedNum = sprintf("%06s", $num);
+    
+            // Buat prefix baru
+            $prefix = 'JXp';
+            $newCode = $prefix . $formattedNum;
+    
+            return $newCode;
+        });
     }
+    
    
     
 
     public function show($id)
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-        $detailStokBarangJadi = Pengiriman_barangjadipesanan::where('id', $id)->value('kode_pengiriman');
+        $detailStokBarangJadi = Pengiriman_barangjadipesanan::where('id', $id)->value('kode_pengirimanpesanan');
         
         // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -210,7 +223,7 @@ class PengirimanbarangjadipesananController extends Controller{
         $pengirimanBarangJadi = Pengiriman_barangjadipesanan::with([
             'produk.subklasifikasi.klasifikasi', 
             'toko'
-        ])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+        ])->where('kode_pengirimanpesanan', $detailStokBarangJadi)->get();
     
         // Kelompokkan data berdasarkan klasifikasi
         $groupedByKlasifikasi = $pengirimanBarangJadi->groupBy(function($item) {
@@ -220,7 +233,7 @@ class PengirimanbarangjadipesananController extends Controller{
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        return view('admin.pengiriman_barangjadi.show', compact('groupedByKlasifikasi', 'firstItem'));
+        return view('admin.pengiriman_barangjadipesanan.show', compact('groupedByKlasifikasi', 'firstItem'));
     }
 
     // public function showPesanan($id)
@@ -254,7 +267,7 @@ class PengirimanbarangjadipesananController extends Controller{
     public function print($id)
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-        $detailStokBarangJadi = Pengiriman_barangjadipesanan::where('id', $id)->value('kode_pengiriman');
+        $detailStokBarangJadi = Pengiriman_barangjadipesanan::where('id', $id)->value('kode_pengirimanpesanan');
             
         // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -265,7 +278,7 @@ class PengirimanbarangjadipesananController extends Controller{
         $pengirimanBarangJadi = Pengiriman_barangjadipesanan::with([
             'produk.subklasifikasi.klasifikasi', 
             'toko'
-        ])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+        ])->where('kode_pengirimanpesanan', $detailStokBarangJadi)->get();
 
         // Kelompokkan data berdasarkan klasifikasi
         $groupedByKlasifikasi = $pengirimanBarangJadi->groupBy(function($item) {

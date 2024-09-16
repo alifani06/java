@@ -39,6 +39,7 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Pengiriman_barangjadi;
+use App\Models\Pengiriman_barangjadipesanan;
 use App\Models\Stok_tokoslawi;
 use App\Models\Pengiriman_tokobanjaran;
 use App\Models\Pengirimanpemesanan_tokobanjaran;
@@ -128,7 +129,7 @@ class Pengiriman_tokobanjaranController extends Controller{
             ->get()
             ->groupBy(function ($item) {
                 // Memeriksa apakah pengiriman_barangjadi ada sebelum mengakses kode_pengiriman
-                return $item->pengiriman_barangjadi ? $item->pengiriman_barangjadi->kode_pengiriman : 'undefined';
+                return $item->pengiriman_barangjadi ? $item->pengiriman_barangjadi->kode_pengirimanpesanan : 'undefined';
             });
     
         return view('toko_banjaran.pengiriman_tokobanjaran.pengiriman_pemesanan', compact('stokBarangJadi'));
@@ -265,11 +266,11 @@ class Pengiriman_tokobanjaranController extends Controller{
         }
     
         // Ambil kode_pengiriman dan pengiriman_barangjadi_id dari stok yang diambil
-        $kodePengiriman = $stok->kode_pengiriman;
+        $kodePengiriman = $stok->kode_pengirimanpesanan;
         $pengirimanId = $stok->pengiriman_barangjadi_id;
     
         // Ambil pengiriman terkait dari tabel pengiriman_barangjadi
-        $pengiriman = Pengiriman_barangjadi::find($pengirimanId);
+        $pengiriman = Pengiriman_barangjadipesanan::find($pengirimanId);
     
         // Pastikan data pengiriman ditemukan
         if (!$pengiriman) {
@@ -277,7 +278,7 @@ class Pengiriman_tokobanjaranController extends Controller{
         }
     
         // Ambil semua produk yang terkait dengan pengiriman
-        $productsInPengiriman = Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->get();
+        $productsInPengiriman = Pengiriman_barangjadipesanan::where('kode_pengirimanpesanan', $kodePengiriman)->get();
     
         foreach ($productsInPengiriman as $pengirimanItem) {
             // Ambil detail stok barang jadi terkait produk ini
@@ -317,13 +318,13 @@ class Pengiriman_tokobanjaranController extends Controller{
         }
     
         // Update status untuk semua stok_tokobanjaran dengan kode_pengiriman yang sama
-        Pengirimanpemesanan_tokobanjaran::where('kode_pengiriman', $kodePengiriman)->update([
+        Pengirimanpemesanan_tokobanjaran::where('kode_pengirimanpesanan', $kodePengiriman)->update([
             'status' => 'posting',
             'tanggal_terima' => Carbon::now('Asia/Jakarta'),
         ]);
     
         // Update status untuk pengiriman_barangjadi
-        Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->update([
+        Pengiriman_barangjadipesanan::where('kode_pengirimanpesanan', $kodePengiriman)->update([
             'status' => 'posting',
             'tanggal_terima' => Carbon::now('Asia/Jakarta'),
         ]);

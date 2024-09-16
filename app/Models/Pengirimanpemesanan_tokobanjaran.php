@@ -22,7 +22,7 @@ class Pengirimanpemesanan_tokobanjaran extends Model
         'pengiriman_barangjadi_id',
         'tanggal_input',
         'status',
-        'kode_pengiriman',
+        'kode_pengirimanpesanan',
         'kode_terima',
      
     ];

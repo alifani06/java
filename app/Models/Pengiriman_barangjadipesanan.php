@@ -18,7 +18,7 @@ class Pengiriman_barangjadipesanan extends Model
     
     protected $fillable = [
      
-        'kode_pengiriman',
+        'kode_pengirimanpesanan',
         'qrcode_pengiriman',
         'tanggal_pengiriman',
         'tanggal_akhir',
