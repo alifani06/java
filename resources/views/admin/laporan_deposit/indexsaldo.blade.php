@@ -79,10 +79,19 @@
                 <h3 class="card-title">Saldo Deposit Toko</h3>
             </div>
             <div class="card-body">
+
                 @foreach ($saldoPerToko as $tokoId => $saldo)
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <strong>Cabang:</strong> {{ $tokos->find($tokoId)->nama_toko }}
+                            @php
+                                $toko = $tokos->find($tokoId);
+                            @endphp
+
+                            @if ($toko)
+                                <strong>Cabang:</strong> {{ $toko->nama_toko }}
+                            @else
+                                <strong>Cabang:</strong> Toko tidak ditemukan
+                            @endif
                         </div>
                         <div class="col-md-6 text-right">
                             <strong>Saldo:</strong> {{ formatRupiah($saldo) }}
