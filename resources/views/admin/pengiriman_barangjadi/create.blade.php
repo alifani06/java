@@ -81,7 +81,8 @@
                 <!-- /.card-header -->
                 <div class="card-body">
                     
-                    <form action="{{ url('admin/pengiriman_barangjadi') }}" method="POST">
+                   <form action="{{ url('admin/pengiriman_barangjadi') }}" method="POST" enctype="multipart/form-data"
+                    autocomplete="off"> 
                         @csrf
                         <input type="hidden" name="toko_id" > <!-- Assuming $toko is passed from the controller -->
                         <div class="row">
@@ -354,7 +355,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (selectedValue === 'permintaan') {
             window.location.href = "{{ route('admin.pengiriman_barangjadi.create') }}"; 
         } else if (selectedValue === 'pemesanan') {
-            window.location.href = "{{ route('admin.pengiriman_barangjadi.pengiriman_pemesanan') }}"; 
+            window.location.href = "{{ route('admin.pengiriman_barangjadipesanan.create') }}"; 
         }
     });
 </script>

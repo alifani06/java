@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\Laporan_stoktokoController;
 use App\Http\Controllers\Admin\PemusnahanbarangjadiController;
 use App\Http\Controllers\Admin\Pengiriman_tokoslawiController;
 use App\Http\Controllers\Admin\PengirimanbarangjadiController;
+use App\Http\Controllers\Admin\PengirimanbarangjadipesananController;
 use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\Admin\Stok_barangjadiController;
 use App\Http\Controllers\KategoriDropdownController;
@@ -232,6 +233,12 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('admin/pengiriman_barangjadi/create', [PengirimanbarangjadiController::class, 'create'])->name('admin.pengiriman_barangjadi.create');
     Route::get('/admin/pengiriman_barangjadi/pengiriman_pemesanan', [PengirimanbarangjadiController::class, 'pengiriman_pemesanan'])->name('admin.pengiriman_barangjadi.pengiriman_pemesanan');
     Route::post('admin/pengiriman_barangjadi/pengiriman_pemesanan', [PengirimanbarangjadiController::class, 'SimpanPengirimanpemesanan'])->name('pengiriman_barangjadi.pengirimanpemesanan.simpan');
+    // Route::get('pengiriman_barangjadi/{id}', [PengirimanbarangjadiController::class, 'showPesanan'])->name('pengiriman_barangjadi.showpesanan');
+
+
+    Route::resource('pengiriman_barangjadipesanan', \App\Http\Controllers\Admin\PengirimanbarangjadipesananController::class);
+    Route::get('admin/pengiriman_barangjadipesanan/create', [PengirimanbarangjadipesananController::class, 'create'])->name('admin.pengiriman_barangjadipesanan.create');
+    Route::get('/pengiriman_barangjadipesanan/{id}/print', [PengirimanbarangjadipesananController::class, 'print'])->name('pengiriman_barangjadipesanan.print');
 
     Route::resource('inquery_pengirimanbarangjadi', \App\Http\Controllers\Admin\Inquery_pengirimanbarangjadiController::class);
     Route::get('inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Admin\Inquery_pengirimanbarangjadiController::class, 'unpost_pengirimanbarangjadi']);

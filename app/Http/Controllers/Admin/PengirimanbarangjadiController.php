@@ -221,103 +221,103 @@ public function store(Request $request)
         ->with('success', 'Berhasil menambahkan permintaan produk');
 }
 
-public function SimpanPengirimanpemesanan(Request $request)
-{
-    $kode = $this->kode();
-    $produkData = $request->input('produk_id', []);
-    $jumlahData = $request->input('jumlah', []);
-    $tokoId = $request->input('toko_id');
+// public function SimpanPengirimanpemesanan(Request $request)
+// {
+//     $kode = $this->kode();
+//     $produkData = $request->input('produk_id', []);
+//     $jumlahData = $request->input('jumlah', []);
+//     $tokoId = $request->input('toko_id');
 
-    // Array untuk menyimpan ID pengiriman
-    $pengirimanIds = [];
+//     // Array untuk menyimpan ID pengiriman
+//     $pengirimanIds = [];
 
-    foreach ($produkData as $key => $produkId) {
-        $jumlah = $jumlahData[$key] ?? null;
+//     foreach ($produkData as $key => $produkId) {
+//         $jumlah = $jumlahData[$key] ?? null;
 
-        if (!is_null($jumlah) && $jumlah !== '') {
-            // Ambil kode produk untuk pesan error
-            $kodeProduk = Produk::where('id', $produkId)->value('kode_produk');
+//         if (!is_null($jumlah) && $jumlah !== '') {
+//             // Ambil kode produk untuk pesan error
+//             $kodeProduk = Produk::where('id', $produkId)->value('kode_produk');
 
-            // Simpan pengiriman tanpa mengurangi stok
-            $pengiriman = Pengiriman_barangjadi::create([
-                'kode_pengiriman' => $kode,
-                'qrcode_pengiriman' => 'https://javabakery.id/pengiriman_produk/' . $kode,
-                'produk_id' => $produkId,
-                'toko_id' => $tokoId,
-                'jumlah' => $jumlah,
-                'status' => 'unpost',
-                'tanggal_pengiriman' => Carbon::now('Asia/Jakarta'),
-            ]);
+//             // Simpan pengiriman tanpa mengurangi stok
+//             $pengiriman = Pengiriman_barangjadi::create([
+//                 'kode_pengiriman' => $kode,
+//                 'qrcode_pengiriman' => 'https://javabakery.id/pengiriman_produk/' . $kode,
+//                 'produk_id' => $produkId,
+//                 'toko_id' => $tokoId,
+//                 'jumlah' => $jumlah,
+//                 'status' => 'unpost',
+//                 'tanggal_pengiriman' => Carbon::now('Asia/Jakarta'),
+//             ]);
 
-            // Buat catatan stok di toko terkait
-            switch ($tokoId) {
-                case 1:
-                    Pengirimanpemesanan_tokobanjaran::create([
-                        'pengiriman_barangjadi_id' => $pengiriman->id,
-                        'kode_pengiriman' => $kode,
-                        'produk_id' => $produkId,
-                        'jumlah' => $jumlah,
-                        'status' => 'unpost',
-                        'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//             // Buat catatan stok di toko terkait
+//             switch ($tokoId) {
+//                 case 1:
+//                     Pengirimanpemesanan_tokobanjaran::create([
+//                         'pengiriman_barangjadi_id' => $pengiriman->id,
+//                         'kode_pengiriman' => $kode,
+//                         'produk_id' => $produkId,
+//                         'jumlah' => $jumlah,
+//                         'status' => 'unpost',
+//                         'tanggal_input' => Carbon::now('Asia/Jakarta'),
                         
-                    ]);
-                    break;
-                case 2:
-                    Stok_tokotegal::create([
-                        'pengiriman_barangjadi_id' => $pengiriman->id,
-                        'kode_pengiriman' => $kode,
-                        'produk_id' => $produkId,
-                        'jumlah' => $jumlah,
-                        'tanggal_input' => Carbon::now('Asia/Jakarta'),
-                    ]);
-                    break;
-                case 3:
-                    Stok_tokoslawi::create([
-                        'pengiriman_barangjadi_id' => $pengiriman->id,
-                        'kode_pengiriman' => $kode,
-                        'produk_id' => $produkId,
-                        'jumlah' => $jumlah,
-                        'status' => 'unpost',
-                        'tanggal_input' => Carbon::now('Asia/Jakarta'),
-                    ]);
-                    break;
-                case 4:
-                    Stok_tokopemalang::create([
-                        'pengiriman_barangjadi_id' => $pengiriman->id,
-                        'kode_pengiriman' => $kode,
-                        'produk_id' => $produkId,
-                        'jumlah' => $jumlah,
-                        'tanggal_input' => Carbon::now('Asia/Jakarta'),
-                    ]);
-                    break;
-                case 5:
-                    Stok_tokobumiayu::create([
-                        'pengiriman_barangjadi_id' => $pengiriman->id,
-                        'kode_pengiriman' => $kode,
-                        'produk_id' => $produkId,
-                        'jumlah' => $jumlah,
-                        'tanggal_input' => Carbon::now('Asia/Jakarta'),
-                    ]);
-                    break;
-                default:
-                    return redirect()->back()->with('error', 'Toko ID tidak valid');
-            }
+//                     ]);
+//                     break;
+//                 case 2:
+//                     Stok_tokotegal::create([
+//                         'pengiriman_barangjadi_id' => $pengiriman->id,
+//                         'kode_pengiriman' => $kode,
+//                         'produk_id' => $produkId,
+//                         'jumlah' => $jumlah,
+//                         'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//                     ]);
+//                     break;
+//                 case 3:
+//                     Stok_tokoslawi::create([
+//                         'pengiriman_barangjadi_id' => $pengiriman->id,
+//                         'kode_pengiriman' => $kode,
+//                         'produk_id' => $produkId,
+//                         'jumlah' => $jumlah,
+//                         'status' => 'unpost',
+//                         'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//                     ]);
+//                     break;
+//                 case 4:
+//                     Stok_tokopemalang::create([
+//                         'pengiriman_barangjadi_id' => $pengiriman->id,
+//                         'kode_pengiriman' => $kode,
+//                         'produk_id' => $produkId,
+//                         'jumlah' => $jumlah,
+//                         'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//                     ]);
+//                     break;
+//                 case 5:
+//                     Stok_tokobumiayu::create([
+//                         'pengiriman_barangjadi_id' => $pengiriman->id,
+//                         'kode_pengiriman' => $kode,
+//                         'produk_id' => $produkId,
+//                         'jumlah' => $jumlah,
+//                         'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//                     ]);
+//                     break;
+//                 default:
+//                     return redirect()->back()->with('error', 'Toko ID tidak valid');
+//             }
 
-            // Simpan ID pengiriman yang baru dibuat
-            $pengirimanIds[] = $pengiriman->id;
-        }
-    }
+//             // Simpan ID pengiriman yang baru dibuat
+//             $pengirimanIds[] = $pengiriman->id;
+//         }
+//     }
 
-    // Jika ada ID pengiriman yang baru dibuat, arahkan ke halaman show
-    if (!empty($pengirimanIds)) {
-        $firstId = $pengirimanIds[0]; // Ambil ID pengiriman yang pertama
-        return redirect()->route('pengiriman_barangjadi.show', $firstId)
-            ->with('success', 'Berhasil menambahkan permintaan produk');
-    }
+//     // Jika ada ID pengiriman yang baru dibuat, arahkan ke halaman show
+//     if (!empty($pengirimanIds)) {
+//         $firstId = $pengirimanIds[0]; // Ambil ID pengiriman yang pertama
+//         return redirect()->route('pengiriman_barangjadi.showpesanan', $firstId)
+//             ->with('success', 'Berhasil menambahkan permintaan produk');
+//     }
 
-    return redirect()->route('pengiriman_barangjadi.index')
-        ->with('success', 'Berhasil menambahkan permintaan produk');
-}
+//     return redirect()->route('pengiriman_barangjadi.index')
+//         ->with('success', 'Berhasil menambahkan permintaan produk');
+// }
 
 
 
@@ -382,6 +382,33 @@ public function SimpanPengirimanpemesanan(Request $request)
         
         return view('admin.pengiriman_barangjadi.show', compact('groupedByKlasifikasi', 'firstItem'));
     }
+
+    public function showPesanan($id)
+    {
+        // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
+        $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_pengiriman');
+        
+        // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
+        if (!$detailStokBarangJadi) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        }
+        
+        // Ambil semua data dengan kode_pengiriman yang sama, termasuk relasi ke klasifikasi
+        $pengirimanBarangJadi = Pengiriman_barangjadi::with([
+            'produk.subklasifikasi.klasifikasi', 
+            'toko'
+        ])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+    
+        // Kelompokkan data berdasarkan klasifikasi
+        $groupedByKlasifikasi = $pengirimanBarangJadi->groupBy(function($item) {
+            return $item->produk->subklasifikasi->klasifikasi->nama;
+        });
+    
+        // Ambil item pertama untuk informasi toko
+        $firstItem = $pengirimanBarangJadi->first();
+        
+        return view('admin.pengiriman_barangjadi.showpesanan', compact('groupedByKlasifikasi', 'firstItem'));
+    }
     
 
 
@@ -412,54 +439,103 @@ public function SimpanPengirimanpemesanan(Request $request)
 
     //             return $pdf->stream('surat_permintaan_produk.pdf');
     // }
-    public function print($id)
-{
-    // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-    $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_pengiriman');
+        public function print($id)
+    {
+        // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
+        $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_pengiriman');
+            
+        // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
+        if (!$detailStokBarangJadi) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        }
         
-    // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
-    if (!$detailStokBarangJadi) {
-        return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        // Ambil semua data dengan kode_pengiriman yang sama, termasuk relasi ke klasifikasi
+        $pengirimanBarangJadi = Pengiriman_barangjadi::with([
+            'produk.subklasifikasi.klasifikasi', 
+            'toko'
+        ])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+
+        // Kelompokkan data berdasarkan klasifikasi
+        $groupedByKlasifikasi = $pengirimanBarangJadi->groupBy(function($item) {
+            return $item->produk->subklasifikasi->klasifikasi->nama;
+        });
+
+        // Ambil item pertama untuk informasi toko
+        $firstItem = $pengirimanBarangJadi->first();
+        $pdf = FacadePdf::loadView('admin.pengiriman_barangjadi.print', compact('groupedByKlasifikasi', 'firstItem'));
+
+        // Menambahkan nomor halaman di kanan bawah
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF();
+        $canvas = $dompdf->getCanvas();
+        $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+            $text = "Page $pageNumber of $pageCount";
+            $font = $fontMetrics->getFont('Arial', 'normal');
+            $size = 8;
+
+            // Menghitung lebar teks
+            $width = $fontMetrics->getTextWidth($text, $font, $size);
+
+            // Mengatur koordinat X dan Y
+            $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+            $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+
+            // Menambahkan teks ke posisi yang ditentukan
+            $canvas->text($x, $y, $text, $font, $size);
+        });
+
+        // Output PDF ke browser
+        return $pdf->stream('surat_permintaan_produk.pdf');
     }
-    
-    // Ambil semua data dengan kode_pengiriman yang sama, termasuk relasi ke klasifikasi
-    $pengirimanBarangJadi = Pengiriman_barangjadi::with([
-        'produk.subklasifikasi.klasifikasi', 
-        'toko'
-    ])->where('kode_pengiriman', $detailStokBarangJadi)->get();
 
-    // Kelompokkan data berdasarkan klasifikasi
-    $groupedByKlasifikasi = $pengirimanBarangJadi->groupBy(function($item) {
-        return $item->produk->subklasifikasi->klasifikasi->nama;
-    });
+    public function printpesanan($id)
+    {
+        // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
+        $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_pengiriman');
+            
+        // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
+        if (!$detailStokBarangJadi) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        }
+        
+        // Ambil semua data dengan kode_pengiriman yang sama, termasuk relasi ke klasifikasi
+        $pengirimanBarangJadi = Pengiriman_barangjadi::with([
+            'produk.subklasifikasi.klasifikasi', 
+            'toko'
+        ])->where('kode_pengiriman', $detailStokBarangJadi)->get();
 
-    // Ambil item pertama untuk informasi toko
-    $firstItem = $pengirimanBarangJadi->first();
-    $pdf = FacadePdf::loadView('admin.pengiriman_barangjadi.print', compact('groupedByKlasifikasi', 'firstItem'));
+        // Kelompokkan data berdasarkan klasifikasi
+        $groupedByKlasifikasi = $pengirimanBarangJadi->groupBy(function($item) {
+            return $item->produk->subklasifikasi->klasifikasi->nama;
+        });
 
-    // Menambahkan nomor halaman di kanan bawah
-    $pdf->output();
-    $dompdf = $pdf->getDomPDF();
-    $canvas = $dompdf->getCanvas();
-    $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
-        $text = "Page $pageNumber of $pageCount";
-        $font = $fontMetrics->getFont('Arial', 'normal');
-        $size = 8;
+        // Ambil item pertama untuk informasi toko
+        $firstItem = $pengirimanBarangJadi->first();
+        $pdf = FacadePdf::loadView('admin.pengiriman_barangjadi.print', compact('groupedByKlasifikasi', 'firstItem'));
 
-        // Menghitung lebar teks
-        $width = $fontMetrics->getTextWidth($text, $font, $size);
+        // Menambahkan nomor halaman di kanan bawah
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF();
+        $canvas = $dompdf->getCanvas();
+        $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+            $text = "Page $pageNumber of $pageCount";
+            $font = $fontMetrics->getFont('Arial', 'normal');
+            $size = 8;
 
-        // Mengatur koordinat X dan Y
-        $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
-        $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+            // Menghitung lebar teks
+            $width = $fontMetrics->getTextWidth($text, $font, $size);
 
-        // Menambahkan teks ke posisi yang ditentukan
-        $canvas->text($x, $y, $text, $font, $size);
-    });
+            // Mengatur koordinat X dan Y
+            $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+            $y = $canvas->get_height() - 15; // 15 pixel dari bawah
 
-    // Output PDF ke browser
-    return $pdf->stream('surat_permintaan_produk.pdf');
-}
+            // Menambahkan teks ke posisi yang ditentukan
+            $canvas->text($x, $y, $text, $font, $size);
+        });
+
+        // Output PDF ke browser
+        return $pdf->stream('surat_permintaan_produk.pdf');
+    }
 
 
 

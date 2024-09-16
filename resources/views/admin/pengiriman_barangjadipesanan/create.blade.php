@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Produks')
+@section('title', 'Pengiriman Pesanan')
 
 @section('content')
     <div id="loadingSpinner" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
@@ -35,7 +35,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Pengiriman Barang Jadi (Permintaan)</h1>
+                    <h1 class="m-0">Pengiriman Barang Jadi (Pesanan)</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -76,13 +76,14 @@
                             <option value="pemesanan" {{ old('kategori1') == 'pemesanan' ? 'selected' : '' }}>Pengiriman Pesanan</option>
                         </select>
                     </div>
-
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ url('admin/pengiriman_barangjadi') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="toko_id" value="{{ old('toko_id') }}">
+                    
+                    <form action="{{ url('admin/pengiriman_barangjadipesanan') }}" method="POST" enctype="multipart/form-data"
+                    autocomplete="off">                        
+                    @csrf
+                        <input type="hidden" name="toko_id" > <!-- Assuming $toko is passed from the controller -->
                         <div class="row">
                             <div class="col-md-12 mb-3">
                                 <table class="table table-bordered">
@@ -91,7 +92,7 @@
                                             <select class="custom-select form-control" id="toko" name="toko_id">
                                                 <option value="">- Pilih Toko -</option>
                                                 @foreach ($tokos as $toko)
-                                                    <option value="{{ $toko->id }}" {{ old('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
+                                                    <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -100,7 +101,7 @@
                                         <div class="card-header">
                                             <h3 class="card-title"><span></span></h3>
                                             <div class="float-right">
-                                                <button type="button" class="btn btn-primary btn-sm" onclick="addPesanan()">
+                                                <button  type="button" class="btn btn-primary btn-sm" onclick="addPesanan()">
                                                     <i class="fas fa-plus"></i>
                                                 </button>
                                             </div>
@@ -133,8 +134,7 @@
                                 </table>
                             </div>
                         </div>
-                    
-                        <!-- Modal -->
+
                         <div class="modal fade" id="tableProduk" data-backdrop="static">
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
@@ -155,22 +155,28 @@
                                                     <th>Kode Produk</th>
                                                     <th>Kode Lama</th>
                                                     <th>Nama Produk</th>
+                                                    <th>Stok</th>
                                                     <th>Opsi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($detailStokBarangjadi as $item)
+                                                @foreach ($uniqueStokBarangjadi as $item)
                                                     <tr class="pilih-btn"
                                                         data-id="{{ $item->produk->id }}"
                                                         data-kode="{{ $item->produk->kode_produk }}"
                                                         data-nama="{{ $item->produk->nama_produk }}">
+                                                        
                                                         <td class="text-center">{{ $loop->iteration }}</td>
-                                                        <td>{{ $item->produk->kode_produk }}</td>
-                                                        <td>{{ $item->produk->kode_lama }}</td>
-                                                        <td>{{ $item->produk->nama_produk }}</td>
+                                                        <td>{{ $item->produk ? $item->produk->kode_produk : 'N/A' }}</td>
+                                                        <td>{{ $item->produk ? $item->produk->kode_lama : 'N/A' }}</td>
+                                                        <td>{{ $item->produk ? $item->produk->nama_produk : 'N/A' }}</td>
+                                                        <td>{{ $item['stok'] }}</td>
                                                         <td class="text-center">
-                                                            <button type="button" class="btn btn-primary btn-sm pilih" title="Pilih">
-                                                                <i class="fas fa-check"></i>
+                                                            <button type="button" class="btn btn-primary btn-sm pilih-btn"
+                                                                    data-id="{{ $item->produk->id }}"
+                                                                    data-kode="{{ $item->produk->kode_produk }}"
+                                                                    data-nama="{{ $item->produk->nama_produk }}">
+                                                                <i class="fas fa-plus"></i>
                                                             </button>
                                                         </td>
                                                     </tr>
@@ -178,14 +184,11 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
+                        
                     </form>
-                    
                     
              
                     <!-- Modal Loading -->
@@ -350,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (selectedValue === 'permintaan') {
             window.location.href = "{{ route('admin.pengiriman_barangjadi.create') }}"; 
         } else if (selectedValue === 'pemesanan') {
-            window.location.href = "{{ route('admin.pengiriman_barangjadi.pengiriman_pemesanan') }}"; 
+            window.location.href = "{{ route('admin.pengiriman_barangjadipesanan.create') }}"; 
         }
     });
 </script>
