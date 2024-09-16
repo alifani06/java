@@ -34,12 +34,13 @@
             border: 1px solid black;
             padding: 15px;
             margin-bottom: 20px;
+            font-size: 20px;
         }
         .receipt .content {
             margin-bottom: 20px;
         }
         .receipt .nominal {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
         }
         .receipt .terbilang {
@@ -95,13 +96,16 @@
             $toko = $tokos->find($tokoId);
         @endphp
         <div class="receipt">
-           
-            <div class="nominal">
-                Nominal : {{ number_format($saldo, 0, ',', '.') }} Rupiah
-            </div>
-            <div class="terbilang">
-                Terbilang: {{ ucwords(terbilang($saldo)) }} rupiah
-            </div>
+            <table>
+                <tr>
+                    <td class="label"><strong>Nominal</strong> </td>
+                    <td class="value">:  {{'Rp. '. number_format($saldo, 0, ',', '.') }} </td>
+                </tr><br>
+                <tr>
+                    <td class="label"><strong>Terbilang</strong> </td>
+                    <td class="value" style="font-style: italic">:  {{ ucwords(terbilang($saldo)) }} Rupiah</td>
+                </tr>
+            </table>
         </div>
     @endforeach
 </body>
