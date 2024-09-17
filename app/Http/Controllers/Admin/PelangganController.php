@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ConditionalRules;
 use Barryvdh\DomPDF\Facade ;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use App\Imports\PelangganImport;
+use Maatwebsite\Excel\Facades\Excel;
 // use Barryvdh\DomPDF\PDF as DomPDFPDF;
 
 class PelangganController extends Controller
@@ -60,12 +62,12 @@ class PelangganController extends Controller
                 // 'kode_lama' => 'required',
                 'nama_pelanggan' => 'required',
                 'alamat' => 'required',
-                'gender' => 'required',
+                'gender' => 'nullable',
                 'telp' => 'required',
-                'email' => 'required',
-                'pekerjaan' => 'required',
-                'tanggal_lahir' => 'required',
-                'tanggal_awal' => 'required',
+                'email' => 'nullable',
+                'pekerjaan' => 'nullable',
+                'tanggal_lahir' => 'nullable',
+                'tanggal_awal' => 'nullable',
                 'tanggal_akhir' => 'required',
                 'gambar' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ],
@@ -74,14 +76,14 @@ class PelangganController extends Controller
                 'kode_lama.required' => 'Masukkan kode lama',
                 'nama_pelanggan.required' => 'Masukkan nama pelanggan',
                
-                'pekerjaan.required' => 'masukan pekerjaan',
-                'gender.required' => 'peilih gender',
-                'email.required' => 'Masukkan email',
+                'pekerjaan.nullable' => 'masukan pekerjaan',
+                'gender.nullable' => 'peilih gender',
+                'email.nullable' => 'Masukkan email',
                 // 'jabatan.required' => 'Pilih jabatan',
                 'telp.required' => 'Masukkan no telepon',
                 'alamat.required' => 'Masukkan alamat',
-                'tanggal_lahir.required' => 'Masukkan tanggal lahir',
-                'tanggal_awal.required' => 'Masukkan tanggal gabung',
+                'tanggal_lahir.nullable' => 'Masukkan tanggal lahir',
+                'tanggal_awal.nullable' => 'Masukkan tanggal gabung',
                 'tanggal_akhir.required' => 'Masukkan tanggal expired',
                 'gambar.image' => 'Gambar yang dimasukan salah!',
             ]
@@ -150,28 +152,28 @@ class PelangganController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'nama_pelanggan' => 'required',
-                'gender' => 'required',
-                'tanggal_lahir' => 'required',
-                'tanggal_awal' => 'required',
-                'tanggal_akhir' => 'required',
-                'telp' => 'required',
-                'email' => 'required',
-                'pekerjaan' => 'required',
-                'alamat' => 'required',
+                'nama_pelanggan' => 'nullable',
+                'gender' => 'nullable',
+                'tanggal_lahir' => 'nullable',
+                'tanggal_awal' => 'nullable',
+                'tanggal_akhir' => 'nullable',
+                'telp' => 'nullable',
+                'email' => 'nullable',
+                'pekerjaan' => 'nullable',
+                'alamat' => 'nullable',
                 // 'gambar_ktp' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ],
             [
-                'nama_pelanggan.required' => 'Masukkan nama lengkap',
-                'gender.required' => 'Pilih gender',
-                // 'umur.required' => 'Masukkan umur',
-                'alamat.required' => 'Masukkan alamat',
-                'tanggal_lahir.required' => 'Masukkan tanggal lahir',
-                'tanggal_awal.required' => 'Masukkan tanggal gabung',
-                'tanggal_akhir.required' => 'Masukkan tanggal expired',
-                'telp.required' => 'Masukkan no telepon',
-                'email.required' => 'Masukkan email',
-                'pekerjaan.required' => 'Masukkan pekerjaan',
+                'nama_pelanggan.nullable' => 'Masukkan nama lengkap',
+                'gender.nullable' => 'Pilih gender',
+                // 'umur.nullable' => 'Masukkan umur',
+                'alamat.nullable' => 'Masukkan alamat',
+                'tanggal_lahir.nullable' => 'Masukkan tanggal lahir',
+                'tanggal_awal.nullable' => 'Masukkan tanggal gabung',
+                'tanggal_akhir.nullable' => 'Masukkan tanggal expired',
+                'telp.nullable' => 'Masukkan no telepon',
+                'email.nullable' => 'Masukkan email',
+                'pekerjaan.nullable' => 'Masukkan pekerjaan',
                 // 'gambar_ktp.image' => 'Gambar yang dimasukan salah!',
             ]
         );
@@ -299,5 +301,16 @@ class PelangganController extends Controller
         // Mengirimkan view PDF sebagai respons
         return $pdf->stream('kartu_member.pdf');
 
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|file|mimes:xlsx,xls',
+        ]);
+    
+        Excel::import(new PelangganImport, $request->file('file_excel'));
+    
+        return redirect('admin/pelanggan')->with('success', 'Berhasil mengimpor pelanggan dari Excel');
     }
 }
