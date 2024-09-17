@@ -64,11 +64,15 @@ class PemesananprodukbanjaranController extends Controller
         return json_decode($user);
     }
 
-    public function create()
+    public function create(Request $request)
     {
-
+        $search = $request->input('search'); // Ambil input pencarian
         $barangs = Barang::all();
         $pelanggans = Pelanggan::all();
+        // $pelanggans = Pelanggan::when($search, function ($query, $search) {
+        //     return $query->where('nama_pelanggan', 'like', '%' . $search . '%')
+        //                  ->orWhere('kode_lama', 'like', '%' . $search . '%');
+        // }) ->paginate(10);
         $details = Detailbarangjadi::all();
         $tokoslawis = Tokoslawi::all();
         $tokobanjaran = Tokobanjaran::all();
@@ -81,7 +85,7 @@ class PemesananprodukbanjaranController extends Controller
     
         return view('toko_banjaran.pemesanan_produk.create', compact('barangs','metodes', 
         'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 
-        'kategoriPelanggan','tokobanjaran',));
+        'kategoriPelanggan','tokobanjaran','search'));
     }
     
     public function getCustomerByKode($kode)
