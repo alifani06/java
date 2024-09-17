@@ -280,6 +280,7 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">No</th>
+                                            <th>Kode Produk</th>
                                             <th>Kode Lama</th>
                                             <th>Nama Produk</th>
                                             <th>Harga Member</th>
@@ -308,7 +309,7 @@
                                                 data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
 
                                                 <td class="text-center">{{ $loop->iteration }}</td>
-                                                <td hidden>{{ $item->kode_produk }}</td>
+                                                <td >{{ $item->kode_produk }}</td>
                                                 <td>{{ $item->kode_lama }}</td>
                                                 <td>{{ $item->nama_produk }}</td>
                                                 <td>
