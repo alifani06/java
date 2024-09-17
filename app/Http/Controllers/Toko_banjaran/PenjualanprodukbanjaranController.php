@@ -137,24 +137,43 @@ class PenjualanprodukbanjaranController extends Controller
         return json_decode($metode);
     }
 
+    // public function create()
+    // {
+
+    //     $barangs = Barang::all();
+    //     $pelanggans = Pelanggan::all();
+    //     $details = Detailbarangjadi::all();
+    //     $tokoslawis = Tokoslawi::all();
+    //     $tokos = Toko::all();
+    //     $dppemesanans = Dppemesanan::all();
+    //     $pemesananproduks = Pemesananproduk::all();
+    //     $metodes = Metodepembayaran::all();
+    
+    //     $produks = Produk::with('tokobanjaran')->get();
+
+    //     $kategoriPelanggan = 'member';
+    
+    //     return view('toko_banjaran.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
+    // }
     public function create()
-    {
-
-        $barangs = Barang::all();
-        $pelanggans = Pelanggan::all();
-        $details = Detailbarangjadi::all();
-        $tokoslawis = Tokoslawi::all();
-        $tokos = Toko::all();
-        $dppemesanans = Dppemesanan::all();
-        $pemesananproduks = Pemesananproduk::all();
-        $metodes = Metodepembayaran::all();
+{
+    $barangs = Barang::all();
+    $pelanggans = Pelanggan::all();
+    $details = Detailbarangjadi::all();
+    $tokoslawis = Tokoslawi::all();
+    $tokos = Toko::all();
+    $dppemesanans = Dppemesanan::all();
+    $pemesananproduks = Pemesananproduk::all();
+    $metodes = Metodepembayaran::all();
     
-        $produks = Produk::with('tokobanjaran')->get();
+    // Pastikan kita memanggil relasi stokbanjaran
+    $produks = Produk::with(['tokobanjaran', 'stok_tokobanjaran'])->get();
 
-        $kategoriPelanggan = 'member';
+    $kategoriPelanggan = 'member';
     
-        return view('toko_banjaran.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
-    }
+    return view('toko_banjaran.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
+}
+
 
     public function pelunasan()
     {

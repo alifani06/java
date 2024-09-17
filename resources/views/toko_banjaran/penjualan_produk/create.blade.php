@@ -280,13 +280,13 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">No</th>
-                                            <th>Kode Produk</th>
                                             <th>Kode Lama</th>
                                             <th>Nama Produk</th>
                                             <th>Harga Member</th>
                                             <th>Diskon Member</th>
                                             <th>Harga Non Member</th>
                                             <th>Diskon Non Member</th>
+                                            <th>Stok</th> <!-- Tambahkan kolom stok -->
                                             <th>Opsi</th>
                                         </tr>
                                     </thead>
@@ -294,6 +294,7 @@
                                         @foreach ($produks as $item)
                                             @php
                                                 $tokobanjaran = $item->tokobanjaran->first();
+                                                $stok_tokobanjaran = $item->stok_tokobanjaran ? $item->stok_tokobanjaran->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
                                             @endphp
                                             <tr class="pilih-btn"
                                                 data-id="{{ $item->id }}"
@@ -305,8 +306,9 @@
                                                 data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
                                                 data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
                                                 data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
+
                                                 <td class="text-center">{{ $loop->iteration }}</td>
-                                                <td>{{ $item->kode_produk }}</td>
+                                                <td hidden>{{ $item->kode_produk }}</td>
                                                 <td>{{ $item->kode_lama }}</td>
                                                 <td>{{ $item->nama_produk }}</td>
                                                 <td>
@@ -321,6 +323,10 @@
                                                 <td>
                                                     <span class="non_diskon_slw">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}</span>
                                                 </td>
+                                                <td class="text-center">
+                                                    {{ $stok_tokobanjaran }} <!-- Tampilkan stok produk -->
+                                                </td>
+
                                                 <td class="text-center">
                                                     <button type="button" class="btn btn-primary btn-sm pilih-btn"
                                                         data-id="{{ $item->id }}"
@@ -339,12 +345,11 @@
                                         @endforeach
                                     </tbody>
                                 </table>
-                                
                             </div>
-                 
                         </div>
                     </div>
                 </div>
+                
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <div class="card">

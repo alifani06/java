@@ -204,8 +204,8 @@ public function store(Request $request)
                 $pengirimanIds[] = $pengiriman->id;
             } else {
                 // Jika stok produk tidak cukup, tampilkan pesan error
-                $kodeProduk = Produk::where('id', $produkId)->value('kode_produk');
-                return redirect()->back()->with('error', 'Stok produk dengan kode ' . $kodeProduk . ' tidak cukup.');
+                $kodeProduk = Produk::where('id', $produkId)->value('nama_produk');
+                return redirect()->back()->with('error', 'Stok produk  ' . $kodeProduk . ' tidak cukup.');
             }
         }
     }

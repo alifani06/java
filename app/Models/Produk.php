@@ -57,6 +57,10 @@ class Produk extends Model
         return $this->hasMany(Tokobanjaran::class);
     }
 
+    public function stok_tokobanjaran()
+    {
+        return $this->hasOne(Stok_tokobanjaran::class, 'produk_id');
+    }
     public function tokotegal()
     {
         return $this->hasMany(Tokotegal::class);

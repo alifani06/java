@@ -145,7 +145,9 @@
                                             </button>
                                         @endif
                                         @if ($item->status == 'unpost')
-                                      
+                                        <button type="button" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-times"></i>
+                                        </button>
                                         @endif
                                      
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -154,17 +156,22 @@
                                                     <a class="dropdown-item posting-btn"
                                                         data-memo-id="{{ $item->id }}">Posting</a>
                                              
-                                                    <a class="dropdown-item"
-                                                        href="{{ url('toko_slawi/inquery_penjualanproduk/' . $item->id . '/edit') }}">Update</a>
+                                                    {{-- <a class="dropdown-item"
+                                                        href="{{ url('toko_banjaran/inquery_penjualanproduk/' . $item->id . '/edit') }}">Update</a> --}}
                                                 
                                                     <a class="dropdown-item"
-                                                    href="{{ url('/toko_banjaran/penjualan_produk/' . $item->id ) }}">Show</a>
-                                                    @endif
+                                                    href="{{ url('/toko_banjaran/inquery_penjualanproduk/' . $item->id ) }}">Show</a>
+                                                    <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="dropdown-item">Delete</button>
+                                                    </form>
+                                            @endif
                                             @if ($item->status == 'posting')
                                                     <a class="dropdown-item unpost-btn"
                                                         data-memo-id="{{ $item->id }}">Unpost</a>
                                                     <a class="dropdown-item"
-                                                    href="{{ url('/toko_banjaran/penjualan_produk/' . $item->id ) }}">Show</a>
+                                                    href="{{ url('/toko_banjaran/inquery_penjualanproduk/' . $item->id ) }}">Show</a>
                                             @endif
                                            
                                         </div>
@@ -219,30 +226,6 @@
 
     </script>
 
-    <script>
-        $(function(e) {
-            $("#select_all_ids").click(function() {
-                $('.checkbox_ids').prop('checked', $(this).prop('checked'))
-            })
-        });
-
-        function printSelectedData() {
-            var selectedIds = document.querySelectorAll(".checkbox_ids:checked");
-            if (selectedIds.length === 0) {
-                alert("Harap centang setidaknya satu item sebelum mencetak.");
-            } else {
-                var selectedCheckboxes = document.querySelectorAll('.checkbox_ids:checked');
-                var selectedIds = [];
-                selectedCheckboxes.forEach(function(checkbox) {
-                    selectedIds.push(checkbox.value);
-                });
-                document.getElementById('selectedIds').value = selectedIds.join(',');
-                var selectedIdsString = selectedIds.join(',');
-                window.location.href = "{{ url('toko_slawi/cetak_fakturekspedisifilter') }}?ids=" + selectedIdsString;
-                // var url = "{{ url('toko_slawi/ban/cetak_pdffilter') }}?ids=" + selectedIdsString;
-            }
-        }
-    </script>
 
     {{-- unpost memo  --}}
     <script>

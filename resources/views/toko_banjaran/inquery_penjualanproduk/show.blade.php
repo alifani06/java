@@ -5,6 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cetak penjualan Produk</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
     <style>
         html,
             body {
@@ -16,10 +18,10 @@
             /* padding: 0; */
             padding-right: 450px;
             font-size: 10px;
-            background-color: #fff;
+            background-color: #f2f2f2;
         }
             .container {
-            width: 70mm; /* Adjusted width */
+            width: 80mm; /* Adjusted width */
             margin: 0 auto;
             border: 1px solid #ddd;
             padding: 20px;
@@ -63,6 +65,7 @@
             padding-bottom: 5px;
             text-align: center;
             margin-bottom: 5px;
+            margin-top: 15px;
             font-size: 12px;
             text-transform: uppercase;
         }
@@ -76,7 +79,7 @@
             padding: 5px;
             font-size: 8px;
         }
-        
+     
         .float-right {
             text-align: right;
             margin-top: 10px;
@@ -99,20 +102,30 @@
             margin-top: -24px;
             flex-direction: column;
         }
-        .detail-info .pengiriman{
-            display: flex;
-            margin-top: 0px;
-            margin-bottom: 2px;
-            flex-direction: column;
-            /* border-bottom: 1px solid #ccc;
-            padding-bottom: 5px; */
-
-        }
+       
         .detail-info .penjualan{
             display: flex;
             margin-top: 2px;
             margin-bottom: 2px;
-            flex-direction: column;
+            /* flex-direction: column; */
+            /* border-bottom: 1px solid #ccc;
+            padding-bottom: 5px; */
+
+        }
+        .detail-info .pelanggan{
+            display: flex;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            /* flex-direction: column; */
+            /* border-bottom: 1px solid #ccc;
+            padding-bottom: 5px; */
+
+        }
+        .detail-info .kasir{
+            display: flex;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            /* flex-direction: column; */
             /* border-bottom: 1px solid #ccc;
             padding-bottom: 5px; */
 
@@ -133,18 +146,16 @@
             white-space: nowrap; /* Agar teks tidak pindah ke baris baru */
         }
         .penjualan p span {
-            margin-top: 3px;
+            margin-top: 1px;
         }
         .pelanggan p span {
-            margin-top: 3px;
+            margin-top: 1px;
             
         }
-        .telepon p span {
-            margin-top: 3px;
+        .kasir p span {
+            margin-top: 1px;
         }
-        .alamat p span {
-            margin-top: 3px;
-        }
+        
         .tanggal p span {
             margin-top: 3px;
         }
@@ -154,7 +165,7 @@
             margin-bottom: 2px;
             border-bottom: 2px solid #0f0e0e;
         }
-    .terimakasih p{
+        .terimakasih p{
         border-top: 1px solid #ccc;
         border-bottom: 1px solid #ccc;
         padding-bottom: 5px;
@@ -163,112 +174,16 @@
         margin-top: 10px;
         font-size: 10px;
     }
-        @media print {
-    body {
-        font-size: 10px;
-        background-color: #fff;
-        margin: 0;
-        padding: 0;
-    }
-    .container {
-        width: 70mm; /* Sesuaikan dengan lebar kertas thermal */
-        margin: 0 auto;
-        border: none;
-        padding: 0;
-        box-shadow: none;
-    }
-    .header .logo img {
-        max-width: 80px; /* Sesuaikan jika perlu */
-        height: auto;
-    }
-    .section table {
-        width: 100%;
-        margin-top: 5px;
-    }
-    .section table th, .section table td {
-        border: 1px solid #ccc;
-        padding: 5px;
-        font-size: 8px;
-    }
-    .signatures {
-        display: flex;
-        justify-content: space-between;
-    }
-    .signature1, .signature2 {
-        font-size: 7px;
-        text-align: left;
-    }
-    .signature2 {
-        margin-top: -65px; /* Atur posisi jika perlu */
-    }
-    
-    .signature p {
-        margin-top: 10px;
-        line-height: 1.2;
-    }
-    .detail-info p strong {
-        min-width: 130px; /* Sesuaikan dengan kebutuhan */
-        font-size: 8px;
-    }
-    .float-right button {
-        font-size: 10px;
-        padding: 5px 10px;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        cursor: pointer;
-        border-radius: 3px;
-        box-shadow: 0px 1px 3px rgba(0,0,0,0.1);
-    }
-    .float-right button:hover {
-        background-color: #0056b3;
-    }
-    .detail-info {
-        margin-top: -24px;
-        flex-direction: column;
-    }
-    .detail-info p {
-        margin: -1px 0;
-        display: flex;
-        justify-content: space-between;
-    }
-    .penjualan p span {
-        margin-top: 3px;
-    }
-    .pelanggan p span {
-        margin-top: 3px;
-    }
-    .telepon p span {
-        margin-top: 3px;
-    }
-    .alamat p span {
-        margin-top: 3px;
-    }
-    .tanggal p span {
-        margin-top: 3px;
-    }
-    .divider {
-        border: 0.5px solid;
-        margin-top: 3px;
-        margin-bottom: 1px;
-        border-bottom: 1px solid #0f0e0e;
-    }
-    @page {
-        size: 70mm auto; /* Sesuaikan dengan ukuran kertas thermal */
-        margin: 0mm; /* Set margin ke 0 untuk semua sisi */
-    }
-}
+
 
     </style>
-
-    
 </head>
 <body>
     <div class="container">
         <div class="header">
             <div class="text">
                 <h1>PT JAVA BAKERY FACTORY</h1>
-                <p>Cabang : {{ $tokos->nama_toko }}</p>
+                <p>Cabang : {{ $tokos->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
                 <p>{{ $tokos->alamat }}</p>
             </div>
         </div>
@@ -308,6 +223,7 @@
                     </div>
                 @endif
 
+                
                 @if($penjualan->detailpenjualanproduk->isEmpty())
                     <p>Tidak ada detail penjualan produk.</p>
                 @else
@@ -339,41 +255,29 @@
                                         -
                                     @endif
                                 </td>
-                                <td style="font-size: 8px; text-align: right;">{{number_format($detail->total , 0, ',', '.')}}</td>
+                                <td style="font-size: 8px; text-align: right;">{{'Rp.'. number_format($detail->total , 0, ',', '.')}}</td>
                             </tr>
                             @php
                                 $total = is_numeric($detail->total) ? $detail->total : 0;
                                 $subtotal += $total;
                             @endphp
-                        @endforeach
-                        <tr>
-                            @if($penjualan->metode_id !== null)
-                                <td colspan="5" style="text-align: right; font-size: 8px;">
-                                    <strong> Fee {{$penjualan->metodepembayaran->nama_metode}}</strong>
-                                    @if($penjualan->total_fee != 0)
-                                        {{$penjualan->metodepembayaran->fee}}%
-                                    @endif
-                                </td>
-                                <td style="font-size: 8px; text-align: right;">
-                                    @if($penjualan->total_fee != 0)
+                            @endforeach
+                            <tr>
+                                @if($penjualan->metode_id !== null)
+                                    <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee {{$penjualan->metodepembayaran->nama_metode}} {{$penjualan->metodepembayaran->fee}}%</strong></td>
+                                    <td style="font-size: 8px; text-align: right;">
                                         @php
                                             // Menghapus semua karakter kecuali angka
                                             $total_fee = preg_replace('/[^\d]/', '', $penjualan->total_fee);
                                             // Konversi ke tipe float
                                             $total_fee = (float) $total_fee;
                                         @endphp
-                                        {{ number_format($total_fee, 0, ',', '.') }}
-                                    @endif
-                                </td>
-                            @endif
-                        </tr>
+                                        {{ 'Rp. ' . number_format($total_fee, 0, ',', '.') }}
+                                    </td>
+                                @endif
+                            </tr>
                         
-                        @if($penjualan->metode_id !== NULL)
-                        <tr>
-                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong>No. </strong></td>
-                            <td style="font-size: 8px;">{{$penjualan->keterangan}}</td>
-                        </tr>
-                        @endif
+                        
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total </strong></td>
                             <td style="font-size: 8px;">{{ 'Rp.' . number_format($penjualan->sub_total, 0, ',', '.') }}</td>
@@ -391,42 +295,82 @@
                             
                         @endif
                     </tbody>
-                    
                 </table>
+                
+                
+                
                 @endif
             </div>
-           
+            
             @if(!is_null($penjualan->catatan))
-                <div class="catatan">
-                    <label>Catatan:</label>
-                    <p>{{$penjualan->catatan}}</p>
-                </div>
-            @endif
-
-            @if(preg_replace('/[^0-9]/', '', $penjualan->sub_total) < preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli))
-            <div class="hemat">
-                <label>Anda telah hemat: </label>
-                <span><strong>{{ 'Rp. ' . number_format(preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli) - preg_replace('/[^0-9]/', '', $penjualan->sub_total), 0, ',', '.') }}</strong></span>
+            <div class="catatan">
+                <label>Catatan:</label>
+                <p>{{$penjualan->catatan}}</p>
             </div>
-            @endif
+             @endif
+             
+             @if(preg_replace('/[^0-9]/', '', $penjualan->sub_total) < preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli))
+             <div class="hemat">
+                 <label>Anda telah hemat: </label>
+                 <span><strong>{{ 'Rp. ' . number_format(preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli) - preg_replace('/[^0-9]/', '', $penjualan->sub_total), 0, ',', '.') }}</strong></span>
+             </div>
+             @endif
+             
+         
             <div class="terimakasih">
                 <p>Untuk pemesanan, kritik dan saran Hubungi.082136638003.</p>
             </div>
 
-            <div class="terimakasihd" style="text-align: left; margin-top: -15px ; font-size: 10px; font-style: italic" >
+            <div class="terimakasihd" style="text-align: left; margin-top: 2px ; font-size: 10px; font-style: italic" >
                 <p>Barang yang sudah dibeli tidak bisa dikembalikan atau ditukar.</p><br> 
             </div>
             <div class="terimakasihd" style="text-align: center; margin-top: -35px" >
                 <p>Terimakasih atas kunjungannya</p><br> 
             </div>
-            <div class="qr" style="display: flex; justify-content: center; align-items: center; margin-top: -10px; margin-left: 120px">
+            <div class="qr" style="display: flex; justify-content: center; align-items: center; margin-top: 10px; margin-left: 4px">
                 <div style="text-align: center;">
                     {!! DNS2D::getBarcodeHTML($penjualan->qrcode_penjualan, 'QRCODE', 1.5, 1.5) !!}
                 </div>
-            </div>  
+            </div> 
+            
+            <div class="d-flex justify-content-between">
+                <div>
+                    <a href="{{ url('toko_banjaran/inquery_penjualanproduk') }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i> Kembali
+                    </a>
+                </div>
+                <div>
+                    <a href="{{ route('toko_banjaran.inquery_penjualanproduk.cetak-pdf', $penjualan->id) }}"  id="printButton" target="_blank" class="btn btn-primary btn-sm">
+                        <i class="fas fa-print"></i> Cetak PDF
+                    </a>
+                </div>
+            </div>
         </div>
-        
-        
+    
     </body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("keydown", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    document.getElementById("printButton").click();
+                }
+            });
+        });
+    </script>
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                document.getElementById("printButton").click();
+            }
+        });
+    });
+</script>
     </html>
     

@@ -29,6 +29,8 @@ use App\Models\Toko;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+
 
 
 
@@ -36,84 +38,88 @@ class Inquery_penjualanprodukbanjaranController extends Controller
 {
 
     public function index(Request $request)
-
-{
-    $status = $request->status;
-    $tanggal_penjualan = $request->tanggal_penjualan;
-    $tanggal_akhir = $request->tanggal_akhir;
-
-    $inquery = Penjualanproduk::query();
-
-    if ($status) {
-        $inquery->where('status', $status);
-    }
-
-    if ($tanggal_penjualan && $tanggal_akhir) {
-        $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-        $inquery->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
-    } elseif ($tanggal_penjualan) {
-        $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-        $inquery->where('tanggal_penjualan', '>=', $tanggal_penjualan);
-    } elseif ($tanggal_akhir) {
-        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-        $inquery->where('tanggal_penjualan', '<=', $tanggal_akhir);
-    } else {
-        // Jika tidak ada filter tanggal hari ini
-        $inquery->whereDate('tanggal_penjualan', Carbon::today());
-    }
-
-    $inquery->orderBy('id', 'DESC');
-    $inquery = $inquery->get();
-
-    return view('toko_banjaran.inquery_penjualanproduk.index', compact('inquery'));
-}
-
-
-public function posting_penjualanproduk($id)
-{
-    $item = Penjualanproduk::where('id', $id)->first();
-
-    
-        // Update status deposit_driver menjadi 'posting'
-        $item->update([
-            'status' => 'posting'
-        ]);
-    return back()->with('success', 'Berhasil');
-}
-
-public function unpost_penjualanproduk($id)
-{
-    $item = Penjualanproduk::where('id', $id)->first();
-
-    
-        // Update status deposit_driver menjadi 'posting'
-        $item->update([
-            'status' => 'unpost'
-        ]);
-    return back()->with('success', 'Berhasil');
-}
-
-
-
-
-
-    public function create()
     {
+        $status = $request->status;
+        $tanggal_penjualan = $request->tanggal_penjualan;
+        $tanggal_akhir = $request->tanggal_akhir;
 
-       
+        $inquery = Penjualanproduk::query();
+
+        if ($status) {
+            $inquery->where('status', $status);
+        }
+
+        if ($tanggal_penjualan && $tanggal_akhir) {
+            $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $inquery->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+        } elseif ($tanggal_penjualan) {
+            $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+            $inquery->where('tanggal_penjualan', '>=', $tanggal_penjualan);
+        } elseif ($tanggal_akhir) {
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $inquery->where('tanggal_penjualan', '<=', $tanggal_akhir);
+        } else {
+            // Jika tidak ada filter tanggal hari ini
+            $inquery->whereDate('tanggal_penjualan', Carbon::today());
+        }
+
+        $inquery->orderBy('id', 'DESC');
+        $inquery = $inquery->get();
+
+        return view('toko_banjaran.inquery_penjualanproduk.index', compact('inquery'));
     }
-    
-    public function store(Request $request)
-{
-
-}
 
 
+    public function posting_penjualanproduk($id)
+    {
+        $item = Penjualanproduk::where('id', $id)->first();
+
+        
+            // Update status deposit_driver menjadi 'posting'
+            $item->update([
+                'status' => 'posting'
+            ]);
+        return back()->with('success', 'Berhasil');
+    }
+
+    public function unpost_penjualanproduk($id)
+    {
+        $item = Penjualanproduk::where('id', $id)->first();
+
+        
+            // Update status deposit_driver menjadi 'posting'
+            $item->update([
+                'status' => 'unpost'
+            ]);
+        return back()->with('success', 'Berhasil');
+    }
 
     public function show($id)
+    {   
+      // Retrieve the specific pemesanan by ID along with its details
+      $penjualan = Penjualanproduk::with('detailpenjualanproduk', 'toko')->findOrFail($id);
+    
+      // Retrieve all pelanggans (assuming you need this for the view)
+      $pelanggans = Pelanggan::all();
+      $tokos = $penjualan->toko;
+
+      // Pass the retrieved data to the view
+      return view('toko_banjaran.inquery_penjualanproduk.show', compact('penjualan', 'pelanggans', 'tokos'));
+    }
+
+    public function cetakPdf($id)
     {
-        //
+        $penjualan = Penjualanproduk::findOrFail($id);
+        $pelanggans = Pelanggan::all();
+        
+    
+        $tokos = $penjualan->toko;
+    
+        $pdf = FacadePdf::loadView('toko_banjaran.inquery_penjualanproduk.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans'));
+        $pdf->setPaper('a4', 'portrait');
+    
+        return $pdf->stream('penjualan.pdf');
     }
 
     public function edit($id)
@@ -129,7 +135,7 @@ public function unpost_penjualanproduk($id)
             return view('toko_banjaran.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
         }
         
-        public function update(Request $request, $id)
+    public function update(Request $request, $id)
         {
             // Validasi pelanggan
             $validasi_pelanggan = Validator::make(
