@@ -168,10 +168,10 @@
                         @foreach ($produkList as $detail)
                             <tr>
                                 <td>{{ $no++ }}</td> 
-                                <td>{{ $detail->produk->kode_produk }}</td>
+                                <td>{{ $detail->produk->kode_lama }}</td>
                                 <td>{{ $subklasifikasi }}</td>
                                 <td>{{ $detail->produk->nama_produk }}</td>
-                                <td>{{ $detail->jumlah }}</td>
+                                <td style="text-align: right">{{ $detail->jumlah }}</td>
                             </tr>
                         @endforeach
                 @endforeach
@@ -180,7 +180,7 @@
             <tfoot>
                 <tr class="total-row">
                     <td colspan="4">Total </td>
-                    <td>{{ $produks->sum('jumlah') }}</td>
+                    <td style="text-align: right;">{{ $produks->sum('jumlah') }}</td>
                 </tr>
             </tfoot>
         </table><br>

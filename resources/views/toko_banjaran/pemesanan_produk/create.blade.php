@@ -171,11 +171,11 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Detail Pengiriman</h3>
+                        <h3 class="card-title">Detail Pengambilan</h3>
                     </div>
                     <div class="card-body">
                         <div class="col-md-4 mb-3">
-                            <label for="tanggal_kirim">Tanggal Pengiriman:</label>
+                            <label for="tanggal_kirim">Tanggal Pengambilan:</label>
                             <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
                                 <input type="text" id="tanggal_kirim" name="tanggal_kirim"
                                        class="form-control datetimepicker-input"

@@ -37,7 +37,13 @@
                 </script>
             @endif
             <div class="card">
-                
+                <div class="card-header">
+                    <div class="float-right">
+                        <a href="{{ url('toko_banjaran/stok_tokobanjaran/create') }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> 
+                        </a>
+                    </div>
+                </div>
                 <!-- /.card-header -->
                 <div class="card-body">
                     <form method="GET" id="form-action">

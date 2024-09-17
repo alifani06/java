@@ -41,45 +41,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class Stok_tokobanjaranController extends Controller{
 
-// public function index(Request $request)
-// {
-//     $klasifikasis = Klasifikasi::all();
-//     $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);
-
-//     // Filter berdasarkan klasifikasi_id
-//     if ($request->has('klasifikasi_id') && $request->klasifikasi_id) {
-//         $produkQuery->where('klasifikasi_id', $request->klasifikasi_id);
-//     }
-
-//     // Filter berdasarkan subklasifikasi_id
-//     if ($request->has('subklasifikasi_id') && $request->subklasifikasi_id) {
-//         $produkQuery->where('subklasifikasi_id', $request->subklasifikasi_id);
-//     }
-
-//     $produk = $produkQuery->get();
-
-//     $stok_tokobanjaran = Stok_tokobanjaran::with('produk')->get();
-//     $stokGrouped = $stok_tokobanjaran->groupBy('produk_id')->map(function ($group) {
-//         $firstItem = $group->first();
-//         $totalJumlah = $group->sum('jumlah');
-//         $firstItem->jumlah = $totalJumlah;
-//         return $firstItem;
-//     })->values();
-
-//     $produkWithStok = $produk->map(function ($item) use ($stokGrouped) {
-//         $stokItem = $stokGrouped->firstWhere('produk_id', $item->id);
-//         $item->jumlah = $stokItem ? $stokItem->jumlah : 0;
-//         return $item;
-//     });
-
-//     // Kirim data subklasifikasi jika ada klasifikasi_id
-//     $subklasifikasis = $request->has('klasifikasi_id') 
-//         ? SubKlasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get() 
-//         : collect();
-
-//     return view('toko_banjaran.stok_tokobanjaran.index', compact('produkWithStok', 'klasifikasis', 'subklasifikasis'));
-// }
-
 public function index(Request $request)
 {
     
@@ -141,32 +102,71 @@ public function create()
 }
 
 
-public function store(Request $request)
-{
-    $request->validate([
-        // 'toko_id' => 'required|exists:tokos,id',
-        'produk_id' => 'required|array',
-        'produk_id.*' => 'exists:produks,id',
-        'jumlah' => 'required|array',
-        'jumlah.*' => 'integer|min:1'
-    ]);
+// public function store(Request $request)
+// {
+//     $request->validate([
+//         // 'toko_id' => 'required|exists:tokos,id',
+//         'produk_id' => 'required|array',
+//         'produk_id.*' => 'exists:produks,id',
+//         'jumlah' => 'required|array',
+//         'jumlah.*' => 'integer|min:1'
+//     ]);
 
-    // $toko_id = $request->input('toko_id');
-    $produk_ids = $request->input('produk_id');
-    $jumlahs = $request->input('jumlah');
+//     // $toko_id = $request->input('toko_id');
+//     $produk_ids = $request->input('produk_id');
+//     $jumlahs = $request->input('jumlah');
 
-    foreach ($produk_ids as $index => $produk_id) {
-        Stok_tokoslawi::create([
-            // 'toko_id' => $toko_id,
-            'produk_id' => $produk_id,
-            'status' => 'posting',
-            'jumlah' => $jumlahs[$index],
-            'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//     foreach ($produk_ids as $index => $produk_id) {
+//         Stok_tokobanjaran::create([
+//             // 'toko_id' => $toko_id,
+//             'produk_id' => $produk_id,
+//             'status' => 'posting',
+//             'jumlah' => $jumlahs[$index],
+//             'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//         ]);
+//     }
+
+//     return redirect()->route('stok_tokobanjaran.index')->with('success', 'Data stok barang berhasil disimpan.');
+// }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            // 'toko_id' => 'required|exists:tokos,id',
+            'produk_id' => 'required|array',
+            'produk_id.*' => 'exists:produks,id',
+            'jumlah' => 'required|array',
+            'jumlah.*' => 'integer|min:1'
         ]);
+
+        // $toko_id = $request->input('toko_id');
+        $produk_ids = $request->input('produk_id');
+        $jumlahs = $request->input('jumlah');
+
+        foreach ($produk_ids as $index => $produk_id) {
+            $stok = Stok_tokobanjaran::where('produk_id', $produk_id)->first();
+
+            if ($stok) {
+                // Jika stok sudah ada, lakukan update jumlah
+                $stok->update([
+                    'jumlah' => $stok->jumlah + $jumlahs[$index], // Menambahkan jumlah baru ke jumlah yang ada
+                    'tanggal_input' => Carbon::now('Asia/Jakarta'),
+                ]);
+            } else {
+                // Jika stok belum ada, buat entri baru
+                Stok_tokobanjaran::create([
+                    // 'toko_id' => $toko_id,
+                    'produk_id' => $produk_id,
+                    'status' => 'posting',
+                    'jumlah' => $jumlahs[$index],
+                    'tanggal_input' => Carbon::now('Asia/Jakarta'),
+                ]);
+            }
+        }
+
+        return redirect()->route('stok_tokobanjaran.index')->with('success', 'Data stok barang berhasil disimpan.');
     }
 
-    return redirect()->route('stok_tokoslawi.index')->with('success', 'Data stok barang berhasil disimpan.');
-}
 
 
 

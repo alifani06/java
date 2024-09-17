@@ -35,7 +35,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Tambah Stok Barang Jadi</h1>
+                    <h1 class="m-0">Tambah Stok Toko</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -73,7 +73,7 @@
                 <div class="card-body">
                     
 
-                    <form action="{{ url('toko_slawi/stok_tokoslawi') }}" method="POST">
+                    <form action="{{ url('toko_banjaran/stok_tokobanjaran') }}" method="POST">
                         @csrf
                         <input type="hidden" name="toko_id" > <!-- Assuming $toko is passed from the controller -->
                         <div class="row">
@@ -118,7 +118,7 @@
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h4 class="modal-title">Data Stok Barang Jadi</h4>
+                                        <h4 class="modal-title">Data Produk</h4>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
@@ -140,7 +140,7 @@
                                                 @foreach ($produks as $item)
                                                     <tr class="pilih-btn" data-id="{{ $item->id }}" data-kode="{{ $item->kode_produk }}" data-nama="{{ $item->nama_produk }}">
                                                         <td class="text-center">{{ $loop->iteration }}</td>
-                                                        <td>{{ $item->kode_produk }}</td>
+                                                        <td>{{ $item->kode_lama }}</td>
                                                         <td>{{ $item->nama_produk }}</td>
                                                         <td class="text-center">
                                                             <button type="button" class="btn btn-primary btn-sm pilih-btn" data-id="{{ $item->id }}" data-kode="{{ $item->kode_produk }}" data-nama="{{ $item->nama_produk }}">
