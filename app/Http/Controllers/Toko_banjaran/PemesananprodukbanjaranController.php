@@ -79,7 +79,7 @@ class PemesananprodukbanjaranController extends Controller
         $tokos = Toko::all();
         $metodes = Metodepembayaran::all();
 
-        $produks = Produk::with('tokobanjaran')->get();
+        $produks = Produk::with(['tokobanjaran', 'stokpesanan_tokobanjaran'])->get();
 
         $kategoriPelanggan = 'member';
     

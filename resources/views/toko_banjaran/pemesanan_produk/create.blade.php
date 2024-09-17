@@ -258,7 +258,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <table id="datatables5" class="table table-bordered table-striped" style="font-size: 14px;">
+                                <table id="datatables5" class="table table-bordered table-striped" style="font-size: 12px;">
                                     <thead>
                                         <tr>
                                             <th class="text-center">No</th>
@@ -269,6 +269,7 @@
                                             <th>Diskon Member</th>
                                             <th>Harga Non Member</th>
                                             <th>Diskon Non Member</th>
+                                            <th>Stok</th>
                                             <th>Opsi</th>
                                         </tr>
                                     </thead>
@@ -276,6 +277,8 @@
                                         @foreach ($produks as $item)
                                             @php
                                                 $tokobanjaran = $item->tokobanjaran->first();
+                                                $stokpesanan_tokobanjaran = $item->stokpesanan_tokobanjaran ? $item->stokpesanan_tokobanjaran->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
+
                                             @endphp
                                             <tr class="pilih-btn"
                                                 data-id="{{ $item->id }}"
@@ -302,6 +305,9 @@
                                                 </td>
                                                 <td>
                                                     <span class="non_diskon_slw">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ $stokpesanan_tokobanjaran }} <!-- Tampilkan stok produk -->
                                                 </td>
                                                 <td class="text-center">
                                                     <button type="button" class="btn btn-primary btn-sm pilih-btn"
