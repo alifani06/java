@@ -983,9 +983,22 @@
 
         // Fungsi untuk menampilkan modal barang
         function showCategoryModal(urutan) {
-            $('#tableProduk').modal('show');
-            // Simpan urutan untuk menyimpan data ke baris yang sesuai
-            $('#tableProduk').attr('data-urutan', urutan);
+            var kategori = $('#kategori').val(); // Ambil nilai kategori (member/nonmember)
+
+            if (!kategori) {
+                // Jika kategori belum dipilih, tampilkan SweetAlert
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Tipe Pelanggan Belum Dipilih!',
+                    text: 'Silakan pilih tipe pelanggan terlebih dahulu sebelum memilih produk.',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                // Jika kategori sudah dipilih, tampilkan modal produk
+                $('#tableProduk').modal('show');
+                // Simpan urutan untuk menyimpan data ke baris yang sesuai
+                $('#tableProduk').attr('data-urutan', urutan);
+            }
         }
 
         // Event listener for pilih-btn
