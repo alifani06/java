@@ -23,7 +23,15 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-
+            {{-- @if (session('success'))
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <h5>
+                        <i class="icon fas fa-check"></i> Success!
+                    </h5>
+                    {{ session('success') }}
+                </div>
+            @endif --}}
             @if (session('success'))
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
@@ -42,11 +50,6 @@
                     <h3 class="card-title">Data Pelanggann</h3>
 
                     <div class="float-right">
-                        {{-- <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal"
-                        data-target="#modal-add">
-                        <i class="fas fa-plus"></i> Data Baru
-                    </button> --}}
-
                     <a href="{{ url('toko_banjaran/pelanggan/create') }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i>
                     </a>
@@ -55,7 +58,17 @@
     
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="datatables1" class="table table-bordered table-striped">
+                    <form method="GET" action="{{ url('toko_banjaran/pelanggan') }}" class="form-inline float-right">
+                        <div class="input-group">
+                            <input type="text" name="search" value="{{ $search }}" class="form-control form-control-sm" placeholder="Cari pelanggan...">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary btn-sm" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form><br><br>
+                    <table id="data" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>

@@ -20,25 +20,42 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class PelangganController extends Controller
 {
-    public function index(Request $request)
-    {
+    // public function index(Request $request)
+    // {
 
-        // $pelanggans = Pelanggan::whereNotNull('kode_pelanggan')->get();
-        // return view('admin.pelanggan.index', compact('pelanggans'));
-    $filter = $request->input('filter');
+    //     // $pelanggans = Pelanggan::whereNotNull('kode_pelanggan')->get();
+    //     // return view('admin.pelanggan.index', compact('pelanggans'));
+    // $filter = $request->input('filter');
 
-    if ($filter == 'new') {
-        $pelanggans = Pelanggan::whereNotNull('kode_pelanggan')->get();
-    } elseif ($filter == 'old') {
-        $pelanggans = Pelanggan::whereNull('kode_pelanggan')->get();
-    } else {
-        $pelanggans = Pelanggan::whereNotNull('kode_pelanggan')->get();
-    }
+    // if ($filter == 'new') {
+    //     $pelanggans = Pelanggan::whereNotNull('kode_pelanggan')->get();
+    // } elseif ($filter == 'old') {
+    //     $pelanggans = Pelanggan::whereNull('kode_pelanggan')->get();
+    // } else {
+    //     $pelanggans = Pelanggan::whereNotNull('kode_pelanggan')->get();
+    // }
 
-      return view('toko_banjaran.pelanggan.index', compact('pelanggans'));
+    //   return view('toko_banjaran.pelanggan.index', compact('pelanggans'));
         
     // }
+    public function index(Request $request)
+    {
+ 
+
+    $search = $request->input('search'); // Ambil input pencarian
+
+    // $pelanggans = Pelanggan::all();
+    $pelanggans = Pelanggan::when($search, function ($query, $search) {
+        return $query->where('nama_pelanggan', 'like', '%' . $search . '%')
+                     ->orWhere('kode_lama', 'like', '%' . $search . '%');
+    }) ->paginate(10);
+
+      return view('toko_banjaran.pelanggan.index', compact('pelanggans', 'search'));
+        
+    
     }
+
+
     public function create()
     {
         $pelanggans = Pelanggan::all();
