@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Penjualan Produk')
+@section('title', 'Penjualan Produks')
 
 @section('content')
     <div id="loadingSpinner" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
@@ -21,7 +21,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Penjualan Proasasaduk</h1>
+                    <h1 class="m-0">Penjualan Produk</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
