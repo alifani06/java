@@ -486,6 +486,7 @@
                     // Jika kecocokan ditemukan, ambil data dan masukkan ke tabel yang dipilih
                     if (found) {
                         const productData = {
+                            id: row.querySelector('td:nth-child(1)').innerText, // Ambil produk_id dari kolom pertama
                             kode: row.querySelector('td:nth-child(2)').innerText,
                             kodel: row.querySelector('td:nth-child(3)').innerText,
                             nama: row.querySelector('td:nth-child(4)').innerText,
@@ -510,52 +511,49 @@
         });
 
         // Fungsi untuk menghitung total dari tabel produk dan menampilkannya di sub_total
-function calculateSubTotal() {
-    const rows = document.querySelectorAll('#selected-products-body tr'); // Ambil semua baris di tabel
-    let total = 0;
+        function calculateSubTotal() {
+            const rows = document.querySelectorAll('#selected-products-body tr'); // Ambil semua baris di tabel
+            let total = 0;
 
-    // Loop melalui setiap baris dan tambahkan nilai total-amount ke total keseluruhan
-    rows.forEach(row => {
-        const totalAmount = parseFloat(removeRupiahFormat(row.querySelector('.total-amount').innerText)) || 0;
-        total += totalAmount;
-    });
+            // Loop melalui setiap baris dan tambahkan nilai total-amount ke total keseluruhan
+            rows.forEach(row => {
+                const totalAmount = parseFloat(removeRupiahFormat(row.querySelector('.total-amount').innerText)) || 0;
+                total += totalAmount;
+            });
 
-    // Tampilkan total ke dalam input sub_total
-    const subTotalElement = document.getElementById('sub_total');
-    // Jika total merupakan bilangan bulat, tampilkan tanpa desimal
-    subTotalElement.value = Number.isInteger(total) ? formatRupiah(total.toString()) : formatRupiah(total.toFixed(2));
-}
-
-
-    // Fungsi untuk menghapus format Rupiah dan mengembalikan nilai numerik
-    function removeRupiahFormat(value) {
-        return parseFloat(value.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
-    }
-
-    // Format angka menjadi format Rupiah
-    function formatRupiah(value) {
-        let numberString = value.toString().replace(/[^,\d]/g, ''),
-            split = numberString.split(','),
-            sisa = split[0].length % 3,
-            rupiah = split[0].substr(0, sisa),
-            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-        if (ribuan) {
-            let separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
+            // Tampilkan total ke dalam input sub_total
+            const subTotalElement = document.getElementById('sub_total');
+            // Jika total merupakan bilangan bulat, tampilkan tanpa desimal
+            subTotalElement.value = Number.isInteger(total) ? formatRupiah(total.toString()) : formatRupiah(total.toFixed(2));
         }
 
-        return split[1] !== undefined ? 'Rp. ' + rupiah + ',' + split[1] : 'Rp. ' + rupiah;
-    }
-    
-        // Fungsi untuk menambahkan produk ke tabel di card
-        function addProductToCard(productData) {
+
+        // Fungsi untuk menghapus format Rupiah dan mengembalikan nilai numerik
+        function removeRupiahFormat(value) {
+            return parseFloat(value.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
+        }
+
+        // Format angka menjadi format Rupiah
+        function formatRupiah(value) {
+            let numberString = value.toString().replace(/[^,\d]/g, ''),
+                split = numberString.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                let separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            return split[1] !== undefined ? 'Rp. ' + rupiah + ',' + split[1] : 'Rp. ' + rupiah;
+        }
+        
+            function addProductToCard(productData) {
             const tbody = document.getElementById('selected-products-body');
-    
             let harga = 0;
             let diskon = 0;
-    
-            // Tentukan harga dan diskon berdasarkan tipe pelanggan yang dipilih
+
             if (kategoriPelanggan === 'member') {
                 harga = parseFloat(productData.member) || 0;
                 diskon = parseFloat(productData.diskonmember) || 0;
@@ -564,117 +562,120 @@ function calculateSubTotal() {
                 diskon = parseFloat(productData.diskonnonmember) || 0;
             } else {
                 Swal.fire({
-            icon: 'warning',
-            title: 'Tipe Pelanggan Belum Dipilih',
-            text: 'Silakan pilih tipe pelanggan terlebih dahulu.',
-            confirmButtonText: 'OK'
-        });
-        return; // Jangan lanjutkan jika tipe pelanggan belum dipilih
+                    icon: 'warning',
+                    title: 'Tipe Pelanggan Belum Dipilih',
+                    text: 'Silakan pilih tipe pelanggan terlebih dahulu.',
+                    confirmButtonText: 'OK'
+                });
+                return;
             }
-    
-            // Tambahkan baris baru ke tabel
+
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${productData.kode}</td>
                 <td>${productData.kodel}</td>
                 <td>${productData.nama}</td>
                 <td><input type="number" class="form-control jumlah-input" value="1" min="1"></td>
-                <td>${diskon}%</td> 
+                <td>${diskon}%</td>
                 <td>${harga}</td>
-                <td class="total-amount">${calculateTotal(harga, diskon, 1)}</td> 
+                <td class="total-amount">${calculateTotal(harga, diskon, 1)}</td>
+                <input type="hidden" name="produk_id[]" value="${productData.id}" /> <!-- Menggunakan productData.id sebagai pengganti productData.kode -->
+                <input type="hidden" name="kode_produk[]" value="${productData.kode}" />
+                <input type="hidden" name="kode_lama[]" value="${productData.kodel}" />
+                <input type="hidden" name="nama_produk[]" value="${productData.nama}" />
+                <input type="hidden" name="harga[]" value="${harga}" />
+                <input type="hidden" name="diskon[]" value="${diskon}" />
+                <input type="hidden" name="total[]" value="${calculateTotal(harga, diskon, 1)}" />
+                <input type="hidden" name="totalasli[]" value="${harga}" />
+                <input type="hidden" name="jumlah[]" value="1" />  <!-- Pastikan elemen ini ada -->
             `;
             tbody.appendChild(row);
 
-            // Tampilkan card jika belum ditampilkan
             document.getElementById('selected-products-card').style.display = 'block';
-
-            // Hitung ulang subtotal setelah produk ditambahkan
             calculateSubTotal();
 
-     // Update total saat jumlah diubah
-        row.querySelector('.jumlah-input').addEventListener('input', function() {
-            const jumlah = parseInt(this.value, 10) || 0;
-            const hargaProduk = parseFloat(harga) || 0;
-            const diskonProduk = parseFloat(diskon) || 0;
-            const total = calculateTotal(hargaProduk, diskonProduk, jumlah); // Hitung ulang total
-            row.querySelector('.total-amount').innerText = total;
-
-            // Hitung ulang subtotal setelah jumlah produk diubah
-            calculateSubTotal();
-        });
-    }
-
-    function calculateTotal(harga, diskon, jumlah) {
-    const diskonAmount = harga * (diskon / 100); // Hitung diskon berdasarkan persentase
-    const hargaSetelahDiskon = harga - diskonAmount; // Kurangi harga dengan diskon
-    const total = jumlah * hargaSetelahDiskon; // Total untuk jumlah produk
-
-    // Jika total merupakan bilangan bulat, tampilkan tanpa desimal
-    return Number.isInteger(total) ? total : total.toFixed(2);
-}
-
-    // Fungsi untuk format input 'bayar' dan update kembali
-    function formatAndUpdateKembali() {
-        let subTotalElement = document.getElementById('sub_total');
-        let bayarElement = document.getElementById('bayar');
-        let kembaliElement = document.getElementById('kembali');
-
-        // Mengambil nilai sub_total
-        let subTotal = removeRupiahFormat(subTotalElement.value);
-
-        // Format dan ambil nilai bayar
-        let bayarValue = bayarElement.value.replace(/[^0-9,-]/g, '').replace(',', '.');
-        let bayar = parseFloat(bayarValue) || 0;
-
-        // Format input 'bayar'
-        bayarElement.value = formatRupiah(bayarValue);
-
-        // Hitung kembalian
-        let kembali = bayar - subTotal;
-
-        // Validasi pelunasan
-        if (bayar < subTotal) {
-            bayarElement.setCustomValidity('Nominal bayar tidak cukup.');
-        } else {
-            bayarElement.setCustomValidity('');
+            row.querySelector('.jumlah-input').addEventListener('input', function() {
+                const jumlah = parseInt(this.value, 10) || 0;
+                const total = calculateTotal(harga, diskon, jumlah);
+                row.querySelector('.total-amount').innerText = total;
+                row.querySelector('input[name="total[]"]').value = total;
+                calculateSubTotal();
+            });
         }
 
-        // Format hasil kembalian sebagai Rupiah
-        kembaliElement.value = kembali >= 0 ? formatRupiah(kembali) : 'Rp. 0';
-    }
 
-    // Panggil fungsi ini saat halaman dimuat untuk format sub_total yang mungkin sudah ada
-    document.addEventListener('DOMContentLoaded', function() {
-        let subTotalElement = document.getElementById('sub_total');
-        let subTotal = removeRupiahFormat(subTotalElement.value);
-        subTotalElement.value = formatRupiah(subTotal);
-    });
+
+        function calculateTotal(harga, diskon, jumlah) {
+        const diskonAmount = harga * (diskon / 100); // Hitung diskon berdasarkan persentase
+        const hargaSetelahDiskon = harga - diskonAmount; // Kurangi harga dengan diskon
+        const total = jumlah * hargaSetelahDiskon; // Total untuk jumlah produk
+
+        // Jika total merupakan bilangan bulat, tampilkan tanpa desimal
+        return Number.isInteger(total) ? total : total.toFixed(2);
+        }
+
+        // Fungsi untuk format input 'bayar' dan update kembali
+        function formatAndUpdateKembali() {
+            let subTotalElement = document.getElementById('sub_total');
+            let bayarElement = document.getElementById('bayar');
+            let kembaliElement = document.getElementById('kembali');
+
+            // Mengambil nilai sub_total
+            let subTotal = removeRupiahFormat(subTotalElement.value);
+
+            // Format dan ambil nilai bayar
+            let bayarValue = bayarElement.value.replace(/[^0-9,-]/g, '').replace(',', '.');
+            let bayar = parseFloat(bayarValue) || 0;
+
+            // Format input 'bayar'
+            bayarElement.value = formatRupiah(bayarValue);
+
+            // Hitung kembalian
+            let kembali = bayar - subTotal;
+
+            // Validasi pelunasan
+            if (bayar < subTotal) {
+                bayarElement.setCustomValidity('Nominal bayar tidak cukup.');
+            } else {
+                bayarElement.setCustomValidity('');
+            }
+
+            // Format hasil kembalian sebagai Rupiah
+            kembaliElement.value = kembali >= 0 ? formatRupiah(kembali) : 'Rp. 0';
+        }
+
+        // Panggil fungsi ini saat halaman dimuat untuk format sub_total yang mungkin sudah ada
+        document.addEventListener('DOMContentLoaded', function() {
+            let subTotalElement = document.getElementById('sub_total');
+            let subTotal = removeRupiahFormat(subTotalElement.value);
+            subTotalElement.value = formatRupiah(subTotal);
+        });
                         
-                    // Event listener untuk tombol "pilih"
-                    document.querySelectorAll('.pilih-btn').forEach(button => {
-                        button.addEventListener('click', function() {
+        // Event listener untuk tombol "pilih"
+        document.querySelectorAll('.pilih-btn').forEach(button => {
+            button.addEventListener('click', function() {
                             // Ambil data produk berdasarkan tipe pelanggan
-                            const productData = {
-                                kode: this.dataset.kode,
-                                kodel: this.dataset.kodel,
-                                nama: this.dataset.nama,
-                                member: this.dataset.member,
-                                diskonmember: this.dataset.diskonmember,
-                                nonmember: this.dataset.nonmember,
-                                diskonnonmember: this.dataset.diskonnonmember
-                            };
+                const productData = {
+                    kode: this.dataset.kode,
+                    kodel: this.dataset.kodel,
+                    nama: this.dataset.nama,
+                    member: this.dataset.member,
+                    diskonmember: this.dataset.diskonmember,
+                    nonmember: this.dataset.nonmember,
+                    diskonnonmember: this.dataset.diskonnonmember
+                };
                 
                             // Masukkan produk ke tabel berdasarkan tipe pelanggan
-                            addProductToCard(productData);
-                        });
-                    });
+                addProductToCard(productData);
+            });
+            });
                 
                     // Fungsi penyimpanan hanya berjalan ketika tombol simpan ditekan
-                    document.getElementById('saveButton').addEventListener('click', function() {
+            document.getElementById('saveButton').addEventListener('click', function() {
                         // Tambahkan logika penyimpanan di sini
-                        console.log('Simpan data ke server');
+            console.log('Simpan data ke server');
                         // Contoh: Mengirim data ke server menggunakan AJAX atau form submit
-                    });
+            });
     </script>
     
 
