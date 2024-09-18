@@ -105,7 +105,7 @@
                             <tr>
                                 <th class="text-center">No</th>
                                 <th>Penjualan Kotor</th>
-                                <th>Diskon Penjualan</th>
+                                <th>Diskon Penjualan</th> <!-- Kolom diskon -->
                                 <th>Penjualan Bersih</th>
                                 <th>Deposit Keluar</th>
                                 <th>Deposit Masuk</th>
@@ -122,9 +122,8 @@
                             <tr>
                                 <td class="text-center">1</td>
                                 <td>{{ number_format($penjualan_kotor, 0, ',', '.') }}</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
+                                <td>{{ number_format($diskon_penjualan, 0, ',', '.') }}</td> <!-- Tampilkan diskon penjualan -->
+                                <td>{{ number_format($penjualan_bersih, 0, ',', '.') }}</td>                                <td>0</td>
                                 <td>0</td>
                                 <td>0</td>
                                 <td>0</td>
@@ -136,6 +135,7 @@
                             </tr>
                         </tbody>
                     </table>
+                    
                     
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"

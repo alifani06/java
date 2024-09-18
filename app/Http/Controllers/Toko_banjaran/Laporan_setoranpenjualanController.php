@@ -128,7 +128,7 @@ class Laporan_setoranpenjualanController extends Controller
         $toko_id = $request->toko_id;
         $klasifikasi_id = $request->klasifikasi_id;
         $kasir = $request->kasir;
-    
+        
         // Query dasar untuk mengambil data penjualan produk
         $query = Penjualanproduk::query();
     
@@ -185,6 +185,10 @@ class Laporan_setoranpenjualanController extends Controller
         // Hitung total penjualan kotor (sub_totalasli) berdasarkan kasir
         $penjualan_kotor = $query->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))->value('total');
     
+        // Hitung total diskon penjualan (nominal_diskon) berdasarkan kasir
+        $diskon_penjualan = $query->sum('nominal_diskon');
+    
+        $penjualan_bersih = $penjualan_kotor - $diskon_penjualan;
         // Ambil semua data produk untuk dropdown
         $produks = Produk::all();
     
@@ -197,8 +201,8 @@ class Laporan_setoranpenjualanController extends Controller
         // Ambil daftar kasir yang unik dari tabel penjualanproduk
         $kasirs = Penjualanproduk::select('kasir')->distinct()->get();
     
-        // Kembalikan view dengan data penjualan produk, produk, toko, kasir, klasifikasi, dan total penjualan kotor
-        return view('toko_banjaran.laporan_setoranpenjualan.index', compact('inquery', 'produks', 'tokos', 'klasifikasis', 'kasirs', 'penjualan_kotor'));
+        // Kembalikan view dengan data penjualan produk, produk, toko, kasir, klasifikasi, total penjualan kotor, dan diskon penjualan
+        return view('toko_banjaran.laporan_setoranpenjualan.index', compact('inquery', 'produks', 'tokos', 'klasifikasis', 'kasirs', 'penjualan_kotor', 'diskon_penjualan','penjualan_bersih'));
     }
     
 
