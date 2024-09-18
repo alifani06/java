@@ -31,6 +31,7 @@ class Penjualanproduk extends Model
         'sub_total',
         'sub_totalasli',
         'bayar',
+        'nominal_diskon',
         'kembali',
         'tanggal',
         'qrcode_penjualan',

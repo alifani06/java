@@ -370,6 +370,8 @@ class PenjualanprodukbanjaranController extends Controller
                 $total = $request->input('total.' . $i, '');
                 $totalasli = $request->input('totalasli.' . $i, '');
 
+                $nominal_diskon = ($harga * ($diskon / 100)) * $jumlah;
+
                 $data_pembelians->push([
                     'kode_produk' => $kode_produk,
                     'kode_lama' => $kode_lama,
@@ -407,6 +409,8 @@ class PenjualanprodukbanjaranController extends Controller
             'qrcode_penjualan' => 'https://javabakery.id/penjualan/' . $kode,
             'tanggal_penjualan' => Carbon::now('Asia/Jakarta'),
             'status' => 'posting',
+            'nominal_diskon' => $nominal_diskon, // Simpan total nominal diskon
+
         ]);
 
         // Dapatkan ID transaksi baru
