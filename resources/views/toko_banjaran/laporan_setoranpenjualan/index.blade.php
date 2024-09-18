@@ -110,8 +110,8 @@
                                 <th>Deposit Keluar</th>
                                 <th>Deposit Masuk</th>
                                 <th>Total Penjualan</th>
-                                <th>Gobiz</th>
                                 <th>Mesin EDC</th>
+                                <th>Gobiz</th>
                                 <th>Transfer</th>
                                 <th>Voucher</th>
                                 <th>Qris</th>
@@ -122,18 +122,20 @@
                             <tr>
                                 <td class="text-center">1</td>
                                 <td>{{ number_format($penjualan_kotor, 0, ',', '.') }}</td>
-                                <td>{{ number_format($diskon_penjualan, 0, ',', '.') }}</td> <!-- Tampilkan diskon penjualan -->
-                                <td>{{ number_format($penjualan_bersih, 0, ',', '.') }}</td>                                <td>0</td>
+                                <td>{{ number_format($diskon_penjualan, 0, ',', '.') }}</td>
+                                <td>{{ number_format($penjualan_bersih, 0, ',', '.') }}</td>
+                                <td>{{ number_format(0, 0, ',', '.') }}</td> <!-- Deposit Keluar -->
+                                <td>{{ number_format($deposit_masuk, 0, ',', '.') }}</td> <!-- Deposit Masuk -->
+                                <td>{{ number_format($total_penjualan, 0, ',', '.') }}</td>
+                                <td>{{ $mesin_edc ? number_format($mesin_edc, 0, ',', '.') : '0' }}</td>
+                                <td>{{ $gobiz ? number_format($gobiz, 0, ',', '.') : '0' }}</td>
+                                <td>{{ $transfer ? number_format($transfer, 0, ',', '.') : '0' }}</td>
                                 <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
+                                <td>{{ $qris ? number_format($qris, 0, ',', '.') : '0' }}</td>
+                                <td>{{ number_format($total_setoran, 0, ',', '.') }}</td>
                             </tr>
                         </tbody>
+                        
                     </table>
                     
                     
@@ -184,7 +186,7 @@
 <script>
     function printReport() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printReport') }}";
+    form.action = "{{ url('toko_banjaran/printReportsetoran') }}";
     form.target = "_blank";
     form.submit();
 }

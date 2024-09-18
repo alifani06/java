@@ -41,6 +41,7 @@ use App\Http\Controllers\Toko_banjaran\Inquery_penjualanprodukbanjaranController
 use App\Http\Controllers\Toko_banjaran\Inquery_returbanjaranController;
 use App\Http\Controllers\Toko_banjaran\Laporan_pemesananprodukbanjaranController;
 use App\Http\Controllers\Toko_banjaran\Laporan_pemindahanbanjaranController;
+use App\Http\Controllers\Toko_banjaran\Laporan_setoranpenjualanController;
 use App\Http\Controllers\Toko_banjaran\PelunasanpemesananController;
 use App\Http\Controllers\Toko_banjaran\PemesananprodukbanjaranController;
 use App\Http\Controllers\Toko_banjaran\Pengiriman_tokobanjaranController;
@@ -569,6 +570,7 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('printpengirimantokobanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_pengirimantokobanjaranController::class, 'printReport']);
 
     Route::resource('laporan_setorantokobanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_setoranpenjualanController::class);
+    Route::get('printReportsetoran', [Laporan_setoranpenjualanController::class, 'printReportsetoran'])->name('laporan_setoranpenjualan.print');
 
 
 });

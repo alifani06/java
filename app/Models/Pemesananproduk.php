@@ -35,6 +35,7 @@ class Pemesananproduk extends Model
         'tanggal_kirim',
         'toko_id',
         'status',
+        'kasir',
         'tanggaL_akhir',
         'metode_id',
         'sub_totalasli',

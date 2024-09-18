@@ -213,6 +213,7 @@ class PemesananprodukbanjaranController extends Controller
             'alamat_penerima' => $request->alamat_penerima,
             'tanggal_kirim' => $tanggal_kirim,
             'toko_id' => '1',
+            'kasir' => ucfirst(auth()->user()->karyawan->nama_lengkap),
             'metode_id' => $request->metode_id, 
             'sub_totalasli' => $request->sub_totalasli,
             'total_fee' => $request->total_fee, 
