@@ -19,6 +19,7 @@ class Penjualanproduk extends Model
     protected $fillable = [
         'kode_penjualan',
         'kode_pelanggan',
+        'kode_lama',
         'nama_pelanggan',
         'alamat',
         'kasir',

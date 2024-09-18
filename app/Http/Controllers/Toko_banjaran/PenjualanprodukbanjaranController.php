@@ -394,6 +394,7 @@ class PenjualanprodukbanjaranController extends Controller
         $cetakpdf = Penjualanproduk::create([
             'nama_pelanggan' => $request->nama_pelanggan ?? null,
             'kode_pelanggan' => $request->kode_pelanggan ?? null,
+            'kode_lama' => $request->kode_lama1 ?? null,
             'telp' => $request->telp ?? null,
             'alamat' => $request->alamat ?? null,
             'kategori' => $request->kategori,
