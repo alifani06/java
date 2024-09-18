@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Produks')
+@section('title', 'Laporan Penjualan')
 
 @section('content')
     <div id="loadingSpinner" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
@@ -22,7 +22,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Pemesanan Produk Rinci </h1>
+                    <h1 class="m-0">Laporan Setoran Penjualan</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -57,15 +57,9 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                        <div class="float-right">
-                            <select class="form-control" id="kategori1" name="kategori">
-                                <option value="">- Pilih -</option>
-                                <option value="global" {{ old('kategori1') == 'global' ? 'selected' : '' }}>Laporan Pemesanan Global</option>
-                                <option value="rinci" {{ old('kategori1') == 'rinci' ? 'selected' : '' }}>Laporan Pemesanan Rinci</option>
-                            </select>
-                        </div>
+
        
-                    <h3 class="card-title">Laporan Pemesanan Produk</h3>
+                    <h3 class="card-title">Laporan Setoran Penjualan</h3>
                 </div>
 
                 <!-- /.card-header -->
@@ -74,9 +68,9 @@
                     <form method="GET" id="form-action">
                         <div class="row">
                             <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_pemesanan" name="tanggal_pemesanan" type="date"
-                                    value="{{ Request::get('tanggal_pemesanan') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_pemesanan">(Dari Tanggal)</label>
+                                <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
+                                    value="{{ Request::get('tanggal_penjualan') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_penjualan">(Dari Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
@@ -84,82 +78,62 @@
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="klasifikasi" name="klasifikasi_id" onchange="filterProduk()">
-                                    <option value="">- Semua Divisi -</option>
-                                    @foreach ($klasifikasis as $klasifikasi)
-                                        <option value="{{ $klasifikasi->id }}" {{ Request::get('klasifikasi_id') == $klasifikasi->id ? 'selected' : '' }}>{{ $klasifikasi->nama }}</option>
+                                <select class="custom-select form-control" id="kasir" name="kasir">
+                                    <option value="">- Semua Kasir -</option>
+                                    @foreach ($kasirs as $kasir)
+                                        <option value="{{ $kasir->kasir }}" {{ Request::get('kasir') == $kasir->kasir ? 'selected' : '' }}>{{ $kasir->kasir }}</option>
                                     @endforeach
                                 </select>
-                                <label for="klasifikasi">(Pilih Divisi)</label>
+                                <label for="kasir">(Pilih Kasir)</label>
                             </div>
-                            <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="produk" name="produk">
-                                    <option value="">- Semua Produk -</option>
-                                    @foreach ($produks as $produk)
-                                        <option value="{{ $produk->id }}" data-klasifikasi="{{ $produk->klasifikasi_id }}" {{ Request::get('produk') == $produk->id ? 'selected' : '' }}>{{ $produk->nama_produk }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="produk">(Pilih Produk)</label>
-                            </div>
+                            
+                            
                             <div class="col-md-3 mb-3">
                                 <button type="submit" class="btn btn-outline-primary btn-block">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
-                                <button type="button" class="btn btn-primary btn-block" onclick="printReportpemesnan()" target="_blank">
+                                <button type="button" class="btn btn-primary btn-block" onclick="printReport()" target="_blank">
                                     <i class="fas fa-print"></i> Cetak
                                 </button>
                             </div>
                         </div>
                     </form>
                     
-                    
                    
-                    <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
-                        <thead>
+                    <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 10px">
+                        <thead class="">
                             <tr>
                                 <th class="text-center">No</th>
-                                <th>Kode Pemesanan</th>
-                                <th>Tanggal Pemesanan</th>
-                                <th>Cabang</th>
-                                <th>Divisi</th>
-                                <th>Produk</th>
-                                <th>Jumlah</th>
+                                <th>Penjualan Kotor</th>
+                                <th>Diskon Penjualan</th>
+                                <th>Penjualan Bersih</th>
+                                <th>Deposit Keluar</th>
+                                <th>Deposit Masuk</th>
+                                <th>Total Penjualan</th>
+                                <th>Gobiz</th>
+                                <th>Mesin EDC</th>
+                                <th>Transfer</th>
+                                <th>Voucher</th>
+                                <th>Qris</th>
+                                <th>Total Setoran</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @php
-                                $grandTotal = 0;
-                            @endphp
-                            @foreach ($inquery as $item)
-                                @php
-                                    $grandTotal += $item->sub_total;
-                                @endphp
-                                <tr>
-                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $item->kode_pemesanan }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($item->tanggal_pemesanan)->format('d/m/Y H:i') }}</td>
-                                    <td>{{ $item->toko->nama_toko }}</td>
-                                    <td>
-                                        @if ($item->detailpemesananproduk->isNotEmpty())
-                                            {{ $item->detailpemesananproduk->pluck('produk.klasifikasi.nama')->implode(', ') }}
-                                        @else
-                                            tidak ada
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if ($item->detailpemesananproduk->isNotEmpty())
-                                            @foreach ($item->detailpemesananproduk as $detail)
-                                                {{ $detail->produk->nama_produk }}<br>
-                                            @endforeach
-                                        @else
-                                            tidak ada
-                                        @endif
-                                    </td>
-                                    <td>{{ $detail->jumlah }}</td>
-                                    {{-- <td>{{ number_format($item->sub_total, 0, ',', '.') }}</td> --}}
-                                </tr>
-                            @endforeach
-                           
+                            <tr>
+                                <td class="text-center">1</td>
+                                <td>{{ number_format($penjualan_kotor, 0, ',', '.') }}</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
                         </tbody>
                     </table>
                     
@@ -183,7 +157,7 @@
 
     <!-- /.card -->
     <script>
-        var tanggalAwal = document.getElementById('tanggal_pemesanan');
+        var tanggalAwal = document.getElementById('tanggal_penjualan');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
         if (tanggalAwal.value == "") {
             tanggalAkhir.readOnly = true;
@@ -202,38 +176,19 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_banjaran/laporan_pemesananprodukbnjr') }}";
+            form.action = "{{ url('toko_banjaran/laporan_setorantokobanjaran') }}";
             form.submit();
         }
     </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 
 <script>
-    function printReportpemesnan() {
-        var tanggalAwal = document.getElementById('tanggal_pemesanan').value;
-        var tanggalAkhir = document.getElementById('tanggal_akhir').value;
-
-        if (tanggalAwal === "" || tanggalAkhir === "") {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Tanggal Belum Dipilih!',
-                text: 'Silakan isi tanggal terlebih dahulu.',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#3085d6',
-                background: '#fff',
-                customClass: {
-                    popup: 'animated bounceIn'
-                }
-            });
-            return;
-        }
-
-        const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printReportpemesananbnjr') }}";
+    function printReport() {
+    const form = document.getElementById('form-action');
+    form.action = "{{ url('toko_banjaran/printReport') }}";
     form.target = "_blank";
     form.submit();
-    }
+}
+
 </script>
 
 <script>
@@ -241,9 +196,9 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'global') {
-            window.location.href = "{{ url('toko_banjaran/indexpemesananglobalbnjr') }}";
+            window.location.href = "{{ url('toko_banjaran/indexglobal') }}";
         } else if (selectedValue === 'rinci') {
-            window.location.href = "{{ url('toko_banjaran/laporan_pemesananprodukbnjr') }}";
+            window.location.href = "{{ url('toko_banjaran/laporan_penjualanproduk') }}";
         }
     });
 </script>

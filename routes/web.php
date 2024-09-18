@@ -39,6 +39,7 @@ use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\Toko_banjaran\Inquery_pemindahanbanjaranController;
 use App\Http\Controllers\Toko_banjaran\Inquery_penjualanprodukbanjaranController;
 use App\Http\Controllers\Toko_banjaran\Inquery_returbanjaranController;
+use App\Http\Controllers\Toko_banjaran\Laporan_pemesananprodukbanjaranController;
 use App\Http\Controllers\Toko_banjaran\Laporan_pemindahanbanjaranController;
 use App\Http\Controllers\Toko_banjaran\PelunasanpemesananController;
 use App\Http\Controllers\Toko_banjaran\PemesananprodukbanjaranController;
@@ -467,9 +468,11 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('inquery_pemesananproduk/unpost_pemesananproduk/{id}', [\App\Http\Controllers\Toko_banjaran\Inquery_pemesananprodukController::class, 'unpost_pemesananproduk']);
     Route::get('inquery_pemesananproduk/posting_pemesananproduk/{id}', [\App\Http\Controllers\Toko_banjaran\Inquery_pemesananprodukController::class, 'posting_pemesananproduk']);
 
-    Route::resource('laporan_pemesananproduk', \App\Http\Controllers\Toko_banjaran\Laporan_pemesananprodukController::class);
-    Route::get('print_pemesanan', [\App\Http\Controllers\Toko_banjaran\Laporan_pemesananprodukController::class, 'print_pemesanan']);
-
+    Route::resource('laporan_pemesananprodukbnjr', \App\Http\Controllers\Toko_banjaran\Laporan_pemesananprodukbanjaranController::class);
+    Route::get('print_pemesananbnjr', [\App\Http\Controllers\Toko_banjaran\Laporan_pemesananprodukbanjaranController::class, 'print_pemesanan']);
+    Route::get('printReportpemesananbnjr', [Laporan_pemesananprodukController::class, 'printReportPemesanan'])->name('printReportPemesanan');
+    Route::get('indexpemesananglobalbnjr', [\App\Http\Controllers\Toko_banjaran\Laporan_pemesananprodukbanjaranController::class, 'indexpemesananglobal']);
+    Route::get('printReportpemesananglobalbnjr', [Laporan_pemesananprodukbanjaranController::class, 'printReportPemesananglobal'])->name('printReportPemesananglobal');
 
     Route::resource('penjualan_produk', \App\Http\Controllers\Toko_banjaran\PenjualanprodukbanjaranController::class);
     Route::get('/toko_banjaran/penjualan_produk/cetak/{id}', [PenjualanprodukbanjaranController::class, 'cetak'])->name('toko_banjaran.penjualan_produk.cetak');
@@ -564,6 +567,9 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
 
     Route::resource('laporan_pengirimantokobanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_pengirimantokobanjaranController::class);
     Route::get('printpengirimantokobanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_pengirimantokobanjaranController::class, 'printReport']);
+
+    Route::resource('laporan_setorantokobanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_setoranpenjualanController::class);
+
 
 });
 

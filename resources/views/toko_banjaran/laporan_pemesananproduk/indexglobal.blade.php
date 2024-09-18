@@ -22,7 +22,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Pemesanan Produk Rinci </h1>
+                    <h1 class="m-0">Laporan Pemesanan Produk Global </h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -65,7 +65,7 @@
                             </select>
                         </div>
        
-                    <h3 class="card-title">Laporan Pemesanan Produk</h3>
+                    <h3 class="card-title">Laporan Pemesanan Produk Gobal</h3>
                 </div>
 
                 <!-- /.card-header -->
@@ -82,6 +82,15 @@
                                 <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
                                     value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="toko" name="toko_id">
+                                    <option value="">- Semua Toko -</option>
+                                    @foreach ($tokos as $toko)
+                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
+                                    @endforeach
+                                </select>
+                                <label for="toko">(Pilih Toko)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="klasifikasi" name="klasifikasi_id" onchange="filterProduk()">
@@ -105,13 +114,12 @@
                                 <button type="submit" class="btn btn-outline-primary btn-block">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
-                                <button type="button" class="btn btn-primary btn-block" onclick="printReportpemesnan()" target="_blank">
+                                <button type="button" class="btn btn-primary btn-block" onclick="printReportpemesnanglobal()" target="_blank">
                                     <i class="fas fa-print"></i> Cetak
                                 </button>
                             </div>
                         </div>
                     </form>
-                    
                     
                    
                     <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
@@ -206,34 +214,15 @@
             form.submit();
         }
     </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 
 <script>
-    function printReportpemesnan() {
-        var tanggalAwal = document.getElementById('tanggal_pemesanan').value;
-        var tanggalAkhir = document.getElementById('tanggal_akhir').value;
-
-        if (tanggalAwal === "" || tanggalAkhir === "") {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Tanggal Belum Dipilih!',
-                text: 'Silakan isi tanggal terlebih dahulu.',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#3085d6',
-                background: '#fff',
-                customClass: {
-                    popup: 'animated bounceIn'
-                }
-            });
-            return;
-        }
-
-        const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printReportpemesananbnjr') }}";
+    function printReportpemesnanglobal() {
+    const form = document.getElementById('form-action');
+    form.action = "{{ url('toko_banjaran/printReportpemesananglobal') }}";
     form.target = "_blank";
     form.submit();
-    }
+}
+
 </script>
 
 <script>

@@ -255,11 +255,6 @@ class PenjualanprodukbanjaranController extends Controller
     //     ]);
     // }
     
-
-
-
-
-
     public function getProductByKode(Request $request)
     {
         $kode = $request->get('kode');
