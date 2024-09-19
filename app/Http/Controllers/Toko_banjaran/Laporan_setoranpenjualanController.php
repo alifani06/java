@@ -327,9 +327,7 @@ class Laporan_setoranpenjualanController extends Controller
         // Ambil data penjualan produk dengan relasi
         $inquery = $query->with(['toko', 'detailpenjualanproduk.produk.klasifikasi'])->get();
     
-        $penjualan_kotor = $query->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
-        // ->groupBy('kasir') 
-        ->value('total');
+        $penjualan_kotor = $query->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED)'));
 
         
         // Hitung total diskon penjualan (nominal_diskon)
