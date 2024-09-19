@@ -377,6 +377,12 @@
                                 </td>
                             @endif
                         </tr>
+                        @if($pemesanan->metode_id !== NULL)
+                        <tr>
+                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong>No. </strong></td>
+                            <td style="font-size: 8px;">{{$pemesanan->keterangan}}</td>
+                        </tr>
+                        @endif
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total </strong></td>
                             <td style="font-size: 8px;">{{number_format($pemesanan->sub_total, 0, ',', '.') }}</td>
