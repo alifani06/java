@@ -236,6 +236,23 @@ class Laporan_setoranpenjualanController extends Controller
         }
     })->sum('dp_pemesanan');
 
+
+    // Query untuk menghitung total deposit keluar dari tabel dppemesanan
+    $deposit_keluar = Dppemesanan::whereHas('penjualanproduk', function ($q) use ($kasir, $tanggal_penjualan, $tanggal_akhir) {
+        if ($tanggal_penjualan && $tanggal_akhir) {
+            $q->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+        } elseif ($tanggal_penjualan) {
+            $q->where('tanggal_penjualan', '>=', $tanggal_penjualan);
+        } elseif ($tanggal_akhir) {
+            $q->where('tanggal_penjualan', '<=', $tanggal_akhir);
+        }
+        // Filter berdasarkan kasir
+        if ($kasir) {
+            $q->where('kasir', $kasir);
+        }
+    })->sum('dp_pemesanan');
+
+
     // Hitung total dari berbagai metode pembayaran
     $mesin_edc = Penjualanproduk::where('metode_id', 1)
         ->where('kasir', $kasir)
@@ -282,7 +299,8 @@ class Laporan_setoranpenjualanController extends Controller
         'qris',
         'gobiz',
         'transfer',
-        'total_setoran'
+        'total_setoran',
+        'deposit_keluar'
     ));
 }
 
@@ -382,6 +400,7 @@ class Laporan_setoranpenjualanController extends Controller
     
         // Ambil semua data kasir yang unik
         $kasirs = Penjualanproduk::select('kasir')->distinct()->get();
+
         $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
         $total_setoran = $total_penjualan - $total_metode;
 

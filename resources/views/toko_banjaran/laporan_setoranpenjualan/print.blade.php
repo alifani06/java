@@ -203,7 +203,7 @@
                 </tr>
                 <tr>
                     <td class="text-left"><strong>DEPOSIT KELUAR</strong></td>
-                    <td style="text-align: right">{{ number_format(0, 0, ',', '.') }}</td> <!-- Deposit Keluar -->
+                    <td style="text-align: right">{{ number_format($deposit_keluar, 0, ',', '.') }}</td> <!-- Deposit Keluar -->
                 </tr>
                 <tr>
                     <td class="text-left"><strong>DEPOSIT MASUK</strong></td>

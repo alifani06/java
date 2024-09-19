@@ -343,7 +343,7 @@
                                         <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="Rp0" oninput="updateCalculations();">
                                     </div>
                                 </div>
-                                <div class="row"hidden>
+                                <div class="row" hidden>
                                     <div class="col mb-3 d-flex align-items-center">
                                         <label for="sub_totalasli" class="mr-2">Sub Total Asli</label>
                                         <input type="text" class="form-control large-font" id="sub_totalasli" name="sub_totalasli" value="Rp0" oninput="updateCalculations();">
@@ -820,74 +820,8 @@
             }
     </script>
       
+
     {{-- <script>
-            // Fungsi untuk menghapus format Rupiah dan mengembalikan nilai numerik
-            function removeRupiahFormat(value) {
-                return parseFloat(value.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
-            }
-
-            // Format angka menjadi format Rupiah
-            function formatRupiah(value) {
-                let numberString = value.toString().replace(/[^,\d]/g, ''),
-                    split = numberString.split(','),
-                    sisa = split[0].length % 3,
-                    rupiah = split[0].substr(0, sisa),
-                    ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-                if (ribuan) {
-                    let separator = sisa ? '.' : '';
-                    rupiah += separator + ribuan.join('.');
-                }
-
-                return split[1] !== undefined ? 'Rp. ' + rupiah + ',' + split[1] : 'Rp. ' + rupiah;
-            }
-
-            // Format input dan update kekurangan_pemesananan
-            function formatAndUpdateKembali() {
-                let subTotalElement = document.getElementById('sub_total');
-                let dp_pemesananElement = document.getElementById('dp_pemesanan');
-                let kekurangan_pemesananElement = document.getElementById('kekurangan_pemesanan');
-
-                // Mengambil nilai sub_total
-                let subTotal = removeRupiahFormat(subTotalElement.value);
-
-                // Format dan ambil nilai dp_pemesanan
-                let dp_pemesananValue = dp_pemesananElement.value.replace(/[^0-9,-]/g, '').replace(',', '.');
-                let dp_pemesanan = parseFloat(dp_pemesananValue) || 0; // Jika tidak valid, set 0
-
-                // Format input 'dp_pemesanan'
-                dp_pemesananElement.value = formatRupiah(dp_pemesananValue);
-
-                // Hitung kekurangan_pemesananan
-                let kekurangan_pemesanan =  subTotal - dp_pemesanan ;
-                
-                // Format hasil kekurangan_pemesananan sebagai Rupiah
-                kekurangan_pemesananElement.value = kekurangan_pemesanan >= 0 ? formatRupiah(kekurangan_pemesanan) : 'Rp. 0';
-            }
-
-            // Panggil fungsi ini saat halaman dimuat untuk format sub_total yang mungkin sudah ada
-            document.addEventListener('DOMContentLoaded', function() {
-                let subTotalElement = document.getElementById('sub_total');
-                let subTotal = removeRupiahFormat(subTotalElement.value);
-                subTotalElement.value = formatRupiah(subTotal);
-            });
-
-            document.querySelector('form').addEventListener('submit', function(event) {
-                let subTotalElement = document.getElementById('sub_total');
-                let dp_pemesananElement = document.getElementById('dp_pemesanan');
-                let kekurangan_pemesananElement = document.getElementById('kekurangan_pemesanan');
-
-                // Menghapus format Rupiah dari input sebelum submit
-                subTotalElement.value = removeRupiahFormat(subTotalElement.value);
-                dp_pemesananElement.value = removeRupiahFormat(dp_pemesananElement.value);
-                kekurangan_pemesananElement.value = removeRupiahFormat(kekurangan_pemesananElement.value);
-
-                // Formulir akan disubmit dengan nilai numerik
-            });
-
-    </script> --}}
-
-    <script>
         function formatAndUpdateKembali() {
                 let subTotalElement = document.getElementById('sub_total');
                 let dp_pemesananElement = document.getElementById('dp_pemesanan');
@@ -953,6 +887,87 @@
 
                 // Formulir akan disubmit dengan nilai numerik
             });
+    </script> --}}
+
+    <script>
+        function formatAndUpdateKembali() {
+            let subTotalElement = document.getElementById('sub_total');
+            let subTotalAsliElement = document.getElementById('sub_totalasli');
+            let dp_pemesananElement = document.getElementById('dp_pemesanan');
+            let kekurangan_pemesananElement = document.getElementById('kekurangan_pemesanan');
+    
+            // Mengambil nilai sub_total dan sub_totalasli
+            let subTotal = removeRupiahFormat(subTotalElement.value);
+            let subTotalAsli = removeRupiahFormat(subTotalAsliElement.value);
+    
+            // Format dan ambil nilai dp_pemesanan
+            let dp_pemesananValue = dp_pemesananElement.value.replace(/[^0-9,-]/g, '').replace(',', '.');
+            let dp_pemesanan = parseFloat(dp_pemesananValue) || 0; // Jika tidak valid, set 0
+    
+            // Format input 'dp_pemesanan'
+            dp_pemesananElement.value = formatRupiah(dp_pemesananValue);
+    
+            // Hitung kekurangan_pemesananan
+            let kekurangan_pemesanan = subTotal - dp_pemesanan;
+    
+            // Format hasil kekurangan_pemesananan sebagai Rupiah
+            kekurangan_pemesananElement.value = kekurangan_pemesanan >= 0 ? formatRupiah(kekurangan_pemesanan) : 'Rp. 0';
+    
+            // Validasi DP
+            validateDP();
+        }
+    
+        // Fungsi untuk menghapus format Rupiah dan mengembalikan nilai numerik
+        function removeRupiahFormat(value) {
+            return parseFloat(value.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
+        }
+    
+        // Format angka menjadi format Rupiah
+        function formatRupiah(value) {
+            let numberString = value.toString().replace(/[^,\d]/g, ''),
+                split = numberString.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+    
+            if (ribuan) {
+                let separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+    
+            return split[1] !== undefined ? 'Rp. ' + rupiah + ',' + split[1] : 'Rp. ' + rupiah;
+        }
+    
+        // Fungsi untuk mengupdate perhitungan saat nilai berubah
+        function updateCalculations() {
+            formatAndUpdateKembali();
+        }
+    
+        // Panggil fungsi ini saat halaman dimuat untuk format sub_total yang mungkin sudah ada
+        document.addEventListener('DOMContentLoaded', function() {
+            let subTotalElement = document.getElementById('sub_total');
+            let subTotalAsliElement = document.getElementById('sub_totalasli');
+            let subTotal = removeRupiahFormat(subTotalElement.value);
+            let subTotalAsli = removeRupiahFormat(subTotalAsliElement.value);
+            
+            subTotalElement.value = formatRupiah(subTotal);
+            subTotalAsliElement.value = formatRupiah(subTotalAsli);
+        });
+    
+        document.querySelector('form').addEventListener('submit', function(event) {
+            let subTotalElement = document.getElementById('sub_total');
+            let subTotalAsliElement = document.getElementById('sub_totalasli');
+            let dp_pemesananElement = document.getElementById('dp_pemesanan');
+            let kekurangan_pemesananElement = document.getElementById('kekurangan_pemesanan');
+    
+            // Menghapus format Rupiah dari input sebelum submit
+            subTotalElement.value = removeRupiahFormat(subTotalElement.value);
+            subTotalAsliElement.value = removeRupiahFormat(subTotalAsliElement.value);
+            dp_pemesananElement.value = removeRupiahFormat(dp_pemesananElement.value);
+            kekurangan_pemesananElement.value = removeRupiahFormat(kekurangan_pemesananElement.value);
+    
+            // Formulir akan disubmit dengan nilai numerik
+        });
     </script>
 
     <script>

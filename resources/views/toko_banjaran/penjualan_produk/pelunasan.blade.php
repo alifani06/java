@@ -179,7 +179,13 @@
                                         <div class="row">
                                             <div class="col mb-3 ml-auto d-flex align-items-center">
                                                 <label for="sub_total" class="mr-2 label-width">Sub Total</label>
-                                                <input type="text" class="form-control large-font input-width" id="sub_total" name="sub_total" value="{{ old('sub_total', 'Rp') }}" readonly oninput="updateCalculations();">
+                                                <input type="text" class="form-control large-font input-width" id="sub_total" name="sub_total" value="{{ old('sub_total', 'Rp') }}" >
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col mb-3 d-flex align-items-center">
+                                                <label for="sub_totalasli" class="mr-2">Sub Total Asli</label>
+                                                <input type="text" class="form-control large-font" id="sub_totalasli" name="sub_totalasli" value="{{ old('sub_totalasli', 'Rp') }}">
                                             </div>
                                         </div>
                                         <div class="row">
@@ -404,6 +410,7 @@
                 document.getElementById('telp_penerima').value = response.telp_penerima;
                 document.getElementById('alamat_penerima').value = response.alamat_penerima;
                 document.getElementById('sub_total').value = formatRupiah(response.sub_total);
+                document.getElementById('sub_totalasli').value = formatRupiah(response.sub_totalasli);
                 document.getElementById('dp_pemesanan').value = formatRupiah(response.dp_pemesanan);
                 document.getElementById('kekurangan_pemesanan').value = formatRupiah(response.kekurangan_pemesanan);
 

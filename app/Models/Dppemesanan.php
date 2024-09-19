@@ -75,4 +75,11 @@ public function pelunasan()
 {
     return $this->hasMany(Pelunasan::class);
 }
+
+// Dppemesanan.php (model)
+public function penjualanproduk()
+{
+    return $this->hasMany(Penjualanproduk::class, 'dppemesanan_id');
+}
+
 }

@@ -784,6 +784,7 @@ class PenjualanprodukbanjaranController extends Controller
                 'telp_penerima' => $data->pemesananproduk->telp_penerima ?? '',
                 'alamat_penerima' => $data->pemesananproduk->alamat_penerima ?? '',
                 'sub_total' => $data->pemesananproduk->sub_total ?? 0,
+                'sub_totalasli' => $data->pemesananproduk->sub_totalasli ?? 0,
                 'dp_pemesanan' => $data->dp_pemesanan,
                 'kekurangan_pemesanan' => $data->kekurangan_pemesanan,
                 'products' => $data->detailpemesananproduk->map(function ($item) {
