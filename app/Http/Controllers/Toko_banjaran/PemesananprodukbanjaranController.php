@@ -172,6 +172,8 @@ class PemesananprodukbanjaranController extends Controller
                 $harga = $request->harga[$i] ?? '';
                 $total = $request->total[$i] ?? '';
 
+                $nominal_diskon = ($harga * ($diskon / 100)) * $jumlah;
+
                 $data_pembelians->push([
                     'kode_produk' => $kode_produk,
                     'kode_lama' => $kode_lama,
@@ -222,6 +224,8 @@ class PemesananprodukbanjaranController extends Controller
             'qrcode_pemesanan' => 'https://javabakery.id/pemesanan/' . $kode,
             'tanggal_pemesanan' => Carbon::now('Asia/Jakarta'),
             'status' => 'posting',
+            'nominal_diskon' => $nominal_diskon, // Simpan total nominal diskon
+
         ]);
 
         // Simpan detail pemesanan

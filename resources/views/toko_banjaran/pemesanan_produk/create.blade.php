@@ -234,6 +234,7 @@
                                             <th style="font-size:14px">Nama Produk</th>
                                             <th style="font-size:14px">Jumlah</th>
                                             <th style="font-size:14px">Diskon</th>
+                                            <th style="font-size:14px">Nomminal Diskon</th>
                                             <th style="font-size:14px">Harga</th>
                                             <th style="font-size:14px">Total</th>
                                             <th style="font-size:14px; text-align:center">Opsi</th>
@@ -1065,10 +1066,12 @@
             var diskon = parseFloat($('#diskon-' + urutan).val()) || 0;
             var jumlah = parseFloat($('#jumlah-' + urutan).val()) || 0;
 
+            var nominalDiskon = (harga * (diskon / 100)) * jumlah; // Hitung nominal diskon
             var hargaSetelahDiskon = harga - (harga * (diskon / 100));
             var total = hargaSetelahDiskon * jumlah;
             var totalasli = harga * jumlah;
 
+            $('#nominal_diskon-' + urutan).val(nominalDiskon); // Format dua desimal
             // Format total ke dalam format rupiah dan set nilai input total
             $('#total-' + urutan).val(total);
             $('#totalasli-' + urutan).val(totalasli);
@@ -1129,6 +1132,7 @@
             var nama_produk = '';
             var jumlah = '';
             var diskon = '';
+            var nominal_diskon = '';
             var harga = '';
             var total = '';
             var totalasli = '';
@@ -1140,6 +1144,7 @@
                 nama_produk = value.nama_produk;
                 jumlah = value.jumlah;
                 diskon = value.diskon;
+                nominal_diskon = value.nominal_diskon;
                 harga = value.harga;
                 total = value.total;
                 totalasli = value.totalasli;
@@ -1153,6 +1158,7 @@
             item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
             item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
             item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')" style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" readonly id="diskon-' + urutan + '" name="diskon[]" value="' + diskon + '" ></div></td>';
+            item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nominal_diskon-' + urutan + '" name="nominal_diskon[]" value="' + nominal_diskon + '"></div></td>'; // Kolom nominal diskon
             item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="harga-' + urutan + '" name="harga[]" value="' + harga + '"></div></td>';
             item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="total-' + urutan + '" name="total[]" value="' + total + '"></div></td>';
             item_pembelian += '<td hidden onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" hidden id="totalasli-' + urutan + '" name="totalasli[]" value="' + totalasli + '"></div></td>';

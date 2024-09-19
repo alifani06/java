@@ -318,7 +318,7 @@
                         <p><span style="min-width: 100px; display: inline-flex; align-items: center;">No Telp</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: 0{{ $pemesanan->telp_penerima ?? $pemesanan->telp }}</span></p>
                     </div>
                     <div class="alamat">
-                        <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Tanggal Ambil</span><span style="min-width: 100px; display: inline-flex; align-items: center;"><span>:{{ \Carbon\Carbon::parse($pemesanan->tanggal_kirim)->locale('id')->translatedFormat('d F Y') }}
+                        <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Tanggal Ambil</span><span style="min-width: 100px; display: inline-flex; align-items: center;"><span>:{{ \Carbon\Carbon::parse($pemesanan->tanggal_kirim)->locale('id')->translatedFormat('d F Y H:i') }}
                         </span></p>
                     </div>
 

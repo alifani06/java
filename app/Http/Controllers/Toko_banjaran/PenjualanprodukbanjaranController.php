@@ -657,6 +657,8 @@ class PenjualanprodukbanjaranController extends Controller
         $penjualan->telp = $dppemesanans->pemesananproduk->telp;
         $penjualan->alamat = $dppemesanans->pemesananproduk->alamat;
         $penjualan->sub_total = $dppemesanans->pemesananproduk->sub_total;
+        $penjualan->sub_totalasli = $dppemesanans->pemesananproduk->sub_totalasli;
+        $penjualan->nominal_diskon = $dppemesanans->pemesananproduk->nominal_diskon;
         $penjualan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
         $penjualan->total_fee = $validated['total_fee'];
         $penjualan->keterangan = $validated['keterangan'];
@@ -785,6 +787,7 @@ class PenjualanprodukbanjaranController extends Controller
                 'alamat_penerima' => $data->pemesananproduk->alamat_penerima ?? '',
                 'sub_total' => $data->pemesananproduk->sub_total ?? 0,
                 'sub_totalasli' => $data->pemesananproduk->sub_totalasli ?? 0,
+                'nominal_diskon' => $data->pemesananproduk->nominal_diskon ?? 0,
                 'dp_pemesanan' => $data->dp_pemesanan,
                 'kekurangan_pemesanan' => $data->kekurangan_pemesanan,
                 'products' => $data->detailpemesananproduk->map(function ($item) {

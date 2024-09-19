@@ -41,6 +41,7 @@ class Pemesananproduk extends Model
         'sub_totalasli',
         'total_fee',
         'keterangan',
+        'nominal_diskon',
   
     ];
 
