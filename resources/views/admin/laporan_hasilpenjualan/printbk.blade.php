@@ -100,12 +100,13 @@
             <tr>
                 <th>No</th>
                 {{-- <th>Tanggal Penjualan</th> --}}
-                <th>Kode Lama</th>
+                <th>Kode</th>
                 <th>Nama Produk</th>
-                <th>Harga</th>
                 <th>Jumlah</th>
+                <th>Harga</th>
+                <th>Penjualan Kotor</th>
                 <th>Diskon</th>
-                <th>Total</th>
+                <th>Penjualan Bersih</th>
             </tr>
         </thead>
         <tbody>
@@ -116,8 +117,9 @@
                     {{-- <td>{{ \Carbon\Carbon::parse($produk['tanggal_penjualan'])->translatedFormat('d F Y') }}</td> --}}
                     <td>{{ $produk['kode_lama'] }}</td>
                     <td>{{ $produk['nama_produk'] }}</td>
-                    <td style="text-align: right">{{ number_format($produk['harga'], 0, ',', '.') }}</td>
                     <td style="text-align: right">{{ $produk['jumlah'] }}</td>
+                    <td style="text-align: right">{{ number_format($produk['harga'], 0, ',', '.') }}</td>
+                    <td style="text-align: right">{{ number_format($produk['penjualan_kotor'], 0, ',', '.') }}</td>
                     <td style="text-align: right">{{ number_format($produk['diskon'], 0, ',', '.') }}</td>
                     <td style="text-align: right">{{ number_format($produk['total'], 0, ',', '.') }}</td>
                 </tr>
@@ -128,10 +130,13 @@
                 $totalJumlah = collect($finalResults)->sum('jumlah');
                 $grandTotal = collect($finalResults)->sum('total');
                 $totalDiskon = collect($finalResults)->sum('diskon');
+                $totalKotor = collect($finalResults)->sum('penjualan_kotor');
             @endphp
             <tr>
-                <th colspan="4">Total</th>
+                <th colspan="3">Total</th>
                 <th>{{ $totalJumlah }}</th>
+                <th></th>
+                <th>{{ number_format($totalKotor, 0, ',', '.') }}</th>
                 <th>{{ number_format($totalDiskon, 0, ',', '.') }}</th>
                 <th>{{ number_format($grandTotal, 0, ',', '.') }}</th>
             </tr>
