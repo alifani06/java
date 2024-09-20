@@ -121,14 +121,14 @@
                     <td style="text-align: right">{{ number_format($produk['harga'], 0, ',', '.') }}</td>
                     <td style="text-align: right">{{ number_format($produk['penjualan_kotor'], 0, ',', '.') }}</td>
                     <td style="text-align: right">{{ number_format($produk['diskon'], 0, ',', '.') }}</td>
-                    <td style="text-align: right">{{ number_format($produk['total'], 0, ',', '.') }}</td>
+                    <td style="text-align: right">{{ number_format($produk['penjualan_bersih'], 0, ',', '.') }}</td>
                 </tr>
             @endforeach
         </tbody>
         <tfoot>
             @php
                 $totalJumlah = collect($finalResults)->sum('jumlah');
-                $grandTotal = collect($finalResults)->sum('total');
+                $grandTotal = collect($finalResults)->sum('penjualan_bersih');
                 $totalDiskon = collect($finalResults)->sum('diskon');
                 $totalKotor = collect($finalResults)->sum('penjualan_kotor');
             @endphp

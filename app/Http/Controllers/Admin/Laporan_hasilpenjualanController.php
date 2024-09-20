@@ -646,11 +646,11 @@ class Laporan_hasilpenjualanController extends Controller
         foreach ($inquery as $penjualan) {
             foreach ($penjualan->detailPenjualanProduk as $detail) {
                 $produk = $detail->produk;
-    
+        
                 // Pastikan produk tidak null sebelum mengakses properti dan cocok dengan filter produk_id
                 if ($produk && (!$produk_id || $produk->id == $produk_id)) {
                     $key = $produk->id; // Menggunakan ID produk sebagai key
-    
+        
                     if (!isset($finalResults[$key])) {
                         $finalResults[$key] = [
                             'tanggal_penjualan' => $penjualan->tanggal_penjualan,
@@ -661,23 +661,27 @@ class Laporan_hasilpenjualanController extends Controller
                             'diskon' => 0,
                             'total' => 0,
                             'penjualan_kotor' => 0, // Tambahkan ini
+                            'penjualan_bersih' => 0, // Tambahkan ini untuk penjualan bersih
                         ];
                     }
-    
+        
                     // Jumlahkan jumlah dan total
                     $finalResults[$key]['jumlah'] += $detail->jumlah;
-                    $finalResults[$key]['total'] += $detail->total;
-    
                     $finalResults[$key]['penjualan_kotor'] += $detail->jumlah * $produk->harga;
-
+                    $finalResults[$key]['total'] += $detail->total;
+        
                     // Hitung diskon 10% dari jumlah * harga
                     if ($detail->diskon > 0) {
                         $diskonPerItem = $produk->harga * 0.10; // Diskon per unit
                         $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
                     }
+        
+                    // Kalkulasi penjualan bersih (penjualan kotor - diskon)
+                    $finalResults[$key]['penjualan_bersih'] = $finalResults[$key]['penjualan_kotor'] - $finalResults[$key]['diskon'];
                 }
             }
         }
+        
     
         // Mengurutkan finalResults berdasarkan kode_lama
         uasort($finalResults, function ($a, $b) {
