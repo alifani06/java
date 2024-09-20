@@ -860,10 +860,8 @@ class PenjualanprodukbanjaranController extends Controller
     
     public function cetakPdf($id)
     {
-        $penjualan = Penjualanproduk::findOrFail($id);
+        $penjualan = Penjualanproduk::with('toko', 'metodepembayaran')->findOrFail($id); // Eager load relasi
         $pelanggans = Pelanggan::all();
-        
-    
         $tokos = $penjualan->toko;
     
         $pdf = FacadePdf::loadView('toko_banjaran.penjualan_produk.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans'));
@@ -871,6 +869,7 @@ class PenjualanprodukbanjaranController extends Controller
     
         return $pdf->stream('penjualan.pdf');
     }
+    
 
 
     public function show($id)

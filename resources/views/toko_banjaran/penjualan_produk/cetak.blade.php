@@ -255,7 +255,7 @@
                                         -
                                     @endif
                                 </td>
-                                <td style="font-size: 8px; text-align: right;">{{'Rp.'. number_format($detail->total , 0, ',', '.')}}</td>
+                                <td style="font-size: 8px; text-align: right;">{{number_format($detail->total , 0, ',', '.')}}</td>
                             </tr>
                             @php
                                 $total = is_numeric($detail->total) ? $detail->total : 0;
@@ -272,7 +272,7 @@
                                             // Konversi ke tipe float
                                             $total_fee = (float) $total_fee;
                                         @endphp
-                                        {{ 'Rp. ' . number_format($total_fee, 0, ',', '.') }}
+                                        {{ number_format($total_fee, 0, ',', '.') }}
                                     </td>
                                 @endif
                             </tr>
@@ -280,16 +280,16 @@
                         
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total </strong></td>
-                            <td style="font-size: 8px;">{{ 'Rp.' . number_format($penjualan->sub_total, 0, ',', '.') }}</td>
+                            <td style="font-size: 8px;">{{ number_format($penjualan->sub_total, 0, ',', '.') }}</td>
                         </tr>
                         @if($penjualan->metode_id == Null)
                             <tr>
                                 <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Bayar</strong></td>
-                                <td style="font-size: 8px;">{{ 'Rp.' . number_format($penjualan->bayar, 0, ',', '.') }}</td>
+                                <td style="font-size: 8px;">{{ number_format($penjualan->bayar, 0, ',', '.') }}</td>
                             </tr>
                             <tr>
                                 <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kembali</strong></td>
-                                <td style="font-size: 8px;">{{ 'Rp.' . number_format($penjualan->kembali, 0, ',', '.') }}</td>
+                                <td style="font-size: 8px;">{{ number_format($penjualan->kembali, 0, ',', '.') }}</td>
                             </tr>
                         @elseif($penjualan->metode_bayar == 'mesinedc' || $penjualan->metode_bayar == 'gobiz')
                             
@@ -312,7 +312,7 @@
              @if(preg_replace('/[^0-9]/', '', $penjualan->sub_total) < preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli))
              <div class="hemat">
                  <label>Anda telah hemat: </label>
-                 <span><strong>{{ 'Rp. ' . number_format(preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli) - preg_replace('/[^0-9]/', '', $penjualan->sub_total), 0, ',', '.') }}</strong></span>
+                 <span><strong>{{ number_format(preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli) - preg_replace('/[^0-9]/', '', $penjualan->sub_total), 0, ',', '.') }}</strong></span>
              </div>
              @endif
              
