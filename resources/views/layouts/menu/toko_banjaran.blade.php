@@ -213,7 +213,7 @@
 
 <li
     class="nav-item {{ request()->is('toko_banjaran/inquery_pemesananproduk*') ||
-    request()->is('toko_banjaran/inquery_penjualanproduk*')|| 
+    request()->is('toko_banjaran/inquery_penjualanprodukbanjaran*')|| 
     request()->is('toko_banjaran/inquery_perubahanharga*')|| 
     request()->is('toko_banjaran/inquery_permintaanproduk*')|| 
     request()->is('toko_banjaran/inquery_stokbarangjadi*')|| 
@@ -226,7 +226,7 @@
         : '' }}">
     <a href="#"
         class="nav-link {{ request()->is('toko_banjaran/inquery_pemesananproduk*') ||
-        request()->is('toko_banjaran/inquery_penjualanproduk*')||
+        request()->is('toko_banjaran/inquery_penjualanprodukbanjaran*')||
         request()->is('toko_banjaran/inquery_perubahanharga*')||
         request()->is('toko_banjaran/inquery_permintaanproduk*')||
         request()->is('toko_banjaran/inquery_stokbarangjadi*')||
@@ -257,8 +257,8 @@
 
         {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
         <li class="nav-item">
-            <a href="{{ url('toko_banjaran/inquery_penjualanproduk') }}"
-                class="nav-link {{ request()->is('toko_banjaran/inquery_penjualanproduk*') ? 'active' : '' }}">
+            <a href="{{ url('toko_banjaran/inquery_penjualanprodukbanjaran') }}"
+                class="nav-link {{ request()->is('toko_banjaran/inquery_penjualanprodukbanjaran*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Inquery Penjualan Produk</p>
             </a>
@@ -310,7 +310,7 @@
 
 <li
     class="nav-item {{ request()->is('toko_banjaran/laporan_pemesananprodukbnjr*') ||
-    request()->is('toko_banjaran/laporan_penjualanprodukbanjaran*')  ||
+    request()->is('toko_banjaran/laporan_penjualanproduk*')  ||
     request()->is('toko_banjaran/laporan_perubahanharga*')||
     request()->is('toko_banjaran/laporan_permintaanproduk*')||
     request()->is('toko_banjaran/laporan_pengirimanproduk*')||
@@ -326,7 +326,7 @@
         : '' }}">
     <a href="#"
         class="nav-link {{ request()->is('toko_banjaran/laporan_pemesananprodukbnjr*') ||
-        request()->is('toko_banjaran/laporan_penjualanprodukbanjaran*')|| 
+        request()->is('toko_banjaran/laporan_penjualanproduk*')|| 
         request()->is('toko_banjaran/laporan_perubahanharga*') ||
         request()->is('toko_banjaran/laporan_permintaanproduk*')|| 
         request()->is('toko_banjaran/laporan_pengirimanproduk*')|| 
@@ -360,8 +360,8 @@
 
         {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
         <li class="nav-item">
-            <a href="{{ url('toko_banjaran/laporan_penjualanprodukbanjaran') }}"
-                class="nav-link {{ request()->is('toko_banjaran/laporan_penjualanprodukbanjaran*') ? 'active' : '' }}">
+            <a href="{{ url('toko_banjaran/laporan_penjualanproduk') }}"
+                class="nav-link {{ request()->is('toko_banjaran/laporan_penjualanproduk*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Laporan Penjualan Produk</p>
             </a>
