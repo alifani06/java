@@ -339,31 +339,32 @@
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col mb-3 d-flex align-items-center">
-                                        <label for="sub_total" class="mr-2">Sub Total</label>
+                                        <label for="sub_total" class="mr-2" style="width: 150px;">Sub Total</label>
                                         <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="Rp0" oninput="updateCalculations();">
                                     </div>
                                 </div>
-                                <div class="row"hidden>
+                                <div class="row" hidden>
                                     <div class="col mb-3 d-flex align-items-center">
-                                        <label for="sub_totalasli" class="mr-2">Sub Total Asli</label>
+                                        <label for="sub_totalasli" class="mr-2" style="width: 150px;">Sub Total Asli</label>
                                         <input type="text" class="form-control large-font" id="sub_totalasli" name="sub_totalasli" value="Rp0" oninput="updateCalculations();">
                                     </div>
                                 </div>
                                 <div class="row" id="payment-row">
                                     <div class="col mb-3 d-flex align-items-center">
-                                        <label for="dp_pemesanan" class="mr-2">DP</label>
+                                        <label for="dp_pemesanan" class="mr-2" style="width: 150px;">DP</label>
                                         <input type="text" class="form-control large-font" id="dp_pemesanan" name="dp_pemesanan" value="{{ old('dp_pemesanan') }}" oninput="formatAndUpdateKembali()">
                                     </div>
                                 </div>
                                 <div class="row" id="change-row">
                                     <div class="col mb-3 d-flex align-items-center">
-                                        <label for="kekurangan_pemesanan" class="mr-2">Kurang</label>
+                                        <label for="kekurangan_pemesanan" class="mr-2" style="width: 150px;">Kurang</label>
                                         <input type="text" class="form-control large-font" id="kekurangan_pemesanan" name="kekurangan_pemesanan" value="{{ old('kekurangan_pemesanan') }}" readonly>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
                     
                     <div class="col-md-6">
                         <div class="form-group" style="flex: 8;">
@@ -899,22 +900,27 @@
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Panggil fungsi itemPembelian dengan baris default
-            // itemPembelian(1, 0); // Misalnya, menambahkan satu baris default
+       document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('keydown', function(event) {
+        // Cek apakah elemen yang aktif adalah textarea
+        const activeElement = document.activeElement;
+        if (activeElement.tagName === 'TEXTAREA') {
+            return; // Jika ya, biarkan Enter untuk pindah ke baris baru
+        }
 
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault(); // Mencegah aksi default dari tombol Enter
-                    addPesanan(); // Memanggil addPesanan saat tombol Enter ditekan
-                }
-                if (event.key === 'F1') { // Misalnya, F1 untuk menampilkan modal produk
-                    event.preventDefault(); // Mencegah aksi default dari tombol F1
-                    var urutan = $('#tabel-pembelian tr').length; // Ambil urutan terakhir atau default
-                    showCategoryModal(urutan); // Menampilkan modal produk
-                }
-            });
-        });
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Mencegah aksi default dari tombol Enter
+            addPesanan(); // Memanggil addPesanan saat tombol Enter ditekan
+        }
+        
+        if (event.key === 'F1') { // Misalnya, F1 untuk menampilkan modal produk
+            event.preventDefault(); // Mencegah aksi default dari tombol F1
+            var urutan = $('#tabel-pembelian tr').length; // Ambil urutan terakhir atau default
+            showCategoryModal(urutan); // Menampilkan modal produk
+        }
+    });
+});
+
 
 
         var data_pembelian = @json(session('data_pembelians'));
@@ -1074,17 +1080,17 @@
             }
 
             var item_pembelian = '<tr id="pembelian-' + urutan + '">';
-            item_pembelian += '<td style="width: 70px; font-size:14px" class="text-center" id="urutan-' + urutan + '">' + urutan + '</td>'; 
+            item_pembelian += '<td style="width: 5%; font-size:14px" class="text-center" id="urutan-' + urutan + '">' + urutan + '</td>'; 
             item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="produk_id-' + urutan + '" name="produk_id[]" value="' + produk_id + '"></div></td>';
-            item_pembelian += '<td hidden onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
-            item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_lama-' + urutan + '" name="kode_lama[]" value="' + kode_lama + '"></div></td>';
-            item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
-            item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
-            item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')" style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" readonly id="diskon-' + urutan + '" name="diskon[]" value="' + diskon + '" ></div></td>';
-            item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="harga-' + urutan + '" name="harga[]" value="' + harga + '"></div></td>';
-            item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="total-' + urutan + '" name="total[]" value="' + total + '"></div></td>';
-            item_pembelian += '<td hidden onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" hidden id="totalasli-' + urutan + '" name="totalasli[]" value="' + totalasli + '"></div></td>';
-            item_pembelian += '<td style="width: 100px"><button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(' + urutan + ')"><i class="fas fa-plus"></i></button><button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' + urutan + ')"><i class="fas fa-trash"></i></button></td>';
+            item_pembelian += '<td style="width: 10%" hidden onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
+            item_pembelian += '<td style="width: 10%" onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_lama-' + urutan + '" name="kode_lama[]" value="' + kode_lama + '"></div></td>';
+            item_pembelian += '<td style="width: 30%" onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
+            item_pembelian += '<td style="width: 10%" style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
+            item_pembelian += '<td style="width: 10%" onclick="showCategoryModal(' + urutan + ')" style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" readonly id="diskon-' + urutan + '" name="diskon[]" value="' + diskon + '" ></div></td>';
+            item_pembelian += '<td style="width: 10%" onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="harga-' + urutan + '" name="harga[]" value="' + harga + '"></div></td>';
+            item_pembelian += '<td style="width: 10%" onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="total-' + urutan + '" name="total[]" value="' + total + '"></div></td>';
+            item_pembelian += '<td style="width: 10%" hidden onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" hidden id="totalasli-' + urutan + '" name="totalasli[]" value="' + totalasli + '"></div></td>';
+            item_pembelian += '<td style="width: 10%"><button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(' + urutan + ')"><i class="fas fa-plus"></i></button><button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' + urutan + ')"><i class="fas fa-trash"></i></button></td>';
             item_pembelian += '</tr>';
 
             $('#tabel-pembelian').append(item_pembelian);
