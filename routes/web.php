@@ -575,7 +575,13 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
 
     Route::resource('inquery_depositbanjaran', \App\Http\Controllers\Toko_banjaran\Inquery_depositbanjaranController::class);
 
-
+    Route::resource('laporan_depositbanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_depositbanjaranController::class);
+    Route::get('indexrinci', [\App\Http\Controllers\Toko_banjaran\Laporan_depositbanjaranController::class, 'indexrinci']);
+    Route::get('indexsaldo', [\App\Http\Controllers\Toko_banjaran\Laporan_depositbanjaranController::class, 'indexsaldo']);
+    Route::get('saldo', [\App\Http\Controllers\Toko_banjaran\Laporan_depositbanjaranController::class, 'saldo']);
+    Route::get('printReportdeposit', [\App\Http\Controllers\Toko_banjaran\Laporan_depositbanjaranController::class, 'printReportdeposit']);
+    Route::get('printReportdepositrinci', [\App\Http\Controllers\Toko_banjaran\Laporan_depositbanjaranController::class, 'printReportdepositrinci']);
+    Route::get('printReportsaldo', [\App\Http\Controllers\Toko_banjaran\Laporan_depositbanjaranController::class, 'printReportsaldo']);
 });
 
     // Route::get('/toko/slawi', [SlawiController::class, 'index']);
