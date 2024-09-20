@@ -377,6 +377,12 @@ class Laporan_pemesananprodukController extends Controller
             }
         }
 
+        foreach ($groupedData as $klasifikasi => &$items) {
+            // Urutkan berdasarkan kode_lama (asumsikan kode_lama adalah string atau integer)
+            uasort($items, function ($a, $b) {
+                return strcmp($a['kode_lama'], $b['kode_lama']); // Menggunakan strcmp untuk sorting string
+            });
+        }
         // Format tanggal untuk tampilan PDF
         $formattedStartDate = $tanggalPemesanan ? Carbon::parse($tanggalPemesanan)->format('d-m-Y') : null;
         $formattedEndDate = $tanggalAkhir ? Carbon::parse($tanggalAkhir)->format('d-m-Y') : null;
