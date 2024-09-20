@@ -124,7 +124,7 @@
                                 <td>{{ number_format($penjualan_kotor, 0, ',', '.') }}</td>
                                 <td>{{ number_format($diskon_penjualan, 0, ',', '.') }}</td>
                                 <td>{{ number_format($penjualan_bersih, 0, ',', '.') }}</td>
-                                <td>{{ number_format(0, 0, ',', '.') }}</td> <!-- Deposit Keluar -->
+                                <td>{{ number_format($deposit_keluar, 0, ',', '.') }}</td> <!-- Deposit Masuk -->
                                 <td>{{ number_format($deposit_masuk, 0, ',', '.') }}</td> <!-- Deposit Masuk -->
                                 <td>{{ number_format($total_penjualan, 0, ',', '.') }}</td>
                                 <td>{{ $mesin_edc ? number_format($mesin_edc, 0, ',', '.') : '0' }}</td>

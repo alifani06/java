@@ -63,14 +63,14 @@
                 <div class="card-body">
                     <form method="GET" id="form-action">
                         <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <select class="custom-select form-control" id="status" name="status">
-                                <option value="">- Semua Status -</option>
-                                <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
-                                <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
-                            </select>
-                            <label for="status">(Pilih Status)</label>
-                        </div>
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="status" name="status">
+                                    <option value="">- Semua Status -</option>
+                                    <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
+                                    <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
+                                </select>
+                                <label for="status">(Pilih Status)</label>
+                            </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
                                     value="{{ Request::get('tanggal_penjualan') }}" max="{{ date('Y-m-d') }}" />
@@ -85,10 +85,10 @@
                                 <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
-                                
                             </div>
                         </div>
                     </form>
+                    
 
                    
                     <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
@@ -200,7 +200,7 @@
 
 
     <!-- /.card -->
-    <script>
+    {{-- <script>
         var tanggalAwal = document.getElementById('tanggal_penjualan');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
         if (tanggalAwal.value == "") {
@@ -224,8 +224,39 @@
             form.submit();
         }
 
+    </script> --}}
+    <script>
+        var tanggalAwal = document.getElementById('tanggal_penjualan');
+        var tanggalAkhir = document.getElementById('tanggal_akhir');
+    
+        // Jika tanggalAwal kosong, tanggalAkhir tidak bisa diisi
+        if (tanggalAwal.value == "") {
+            tanggalAkhir.readOnly = true;
+        }
+    
+        // Event Listener untuk tanggalAwal (dari tanggal)
+        tanggalAwal.addEventListener('change', function() {
+            if (this.value == "") {
+                tanggalAkhir.readOnly = true; // Disable input tanggalAkhir
+            } else {
+                tanggalAkhir.readOnly = false; // Enable input tanggalAkhir
+            }
+    
+            // Reset nilai tanggalAkhir dan set batas minimalnya
+            tanggalAkhir.value = "";
+            var today = new Date().toISOString().split('T')[0]; // Tanggal hari ini
+            tanggalAkhir.value = today; // Set default ke hari ini
+            tanggalAkhir.setAttribute('min', this.value); // Set tanggalAkhir minimum sesuai tanggalAwal
+        });
+    
+        // Fungsi untuk mengirim form
+        function cari() {
+            var form = document.getElementById('form-action');
+            form.action = "{{ url('toko_banjaran/inquery_penjualanprodukbanjaran') }}";
+            form.submit();
+        }
     </script>
-
+    
 
     {{-- unpost memo  --}}
     <script>
