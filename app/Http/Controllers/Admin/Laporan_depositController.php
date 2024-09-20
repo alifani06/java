@@ -21,6 +21,85 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 class Laporan_depositController extends Controller
 {
  
+    // public function index(Request $request)
+    // {
+    //     // Ambil parameter filter dari request
+    //     $status = $request->status;
+    //     $tanggal_kirim = $request->tanggal_kirim;
+    //     $tanggal_akhir = $request->tanggal_akhir;
+    //     $status_pelunasan = $request->status_pelunasan;
+    //     $toko_id = $request->toko_id; // Ambil filter toko_id dari request
+        
+    //     // Ambil daftar toko untuk filter
+    //     $tokos = Toko::all();
+    
+    //     // Query dasar untuk mengambil data Dppemesanan
+    //     $inquery = Dppemesanan::with(['pemesananproduk.toko']) // Memuat relasi toko melalui pemesananproduk
+    //         ->orderBy('created_at', 'desc');
+        
+    //     // Filter berdasarkan status
+    //     if ($status) {
+    //         $inquery->whereHas('pemesananproduk', function ($query) use ($status) {
+    //             $query->where('status', $status);
+    //         });
+    //     }
+        
+    //     // Filter berdasarkan toko_id
+    //     if ($toko_id) {
+    //         $inquery->whereHas('pemesananproduk', function ($query) use ($toko_id) {
+    //             $query->where('toko_id', $toko_id);
+    //         });
+    //     }
+        
+    //     // Filter berdasarkan tanggal pemesanan
+    //     if ($tanggal_kirim && $tanggal_akhir) {
+    //         $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
+    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //         $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_kirim, $tanggal_akhir) {
+    //             $query->whereBetween('tanggal_kirim', [$tanggal_kirim, $tanggal_akhir]);
+    //         });
+    //     } elseif ($tanggal_kirim) {
+    //         $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
+    //         $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_kirim) {
+    //             $query->where('tanggal_kirim', '>=', $tanggal_kirim);
+    //         });
+    //     } elseif ($tanggal_akhir) {
+    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //         $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_akhir) {
+    //             $query->where('tanggal_kirim', '<=', $tanggal_akhir);
+    //         });
+    //     } else {
+    //         // Jika tidak ada filter tanggal, tampilkan data untuk hari ini
+    //         $inquery->whereHas('pemesananproduk', function ($query) {
+    //             $query->whereDate('tanggal_kirim', Carbon::today());
+    //         });
+    //     }
+        
+    //     // Filter berdasarkan status pelunasan
+    //     if ($status_pelunasan == 'diambil') {
+    //         $inquery->where(function ($query) {
+    //             $query->whereNotNull('pelunasan')
+    //                   ->where(function ($query) {
+    //                       $query->where('pelunasan', '>', 0) // Memastikan pelunasan lebih dari 0
+    //                             ->orWhere('pelunasan', 0); // Atau 0 jika perlu
+    //                   });
+    //         });
+    //     } elseif ($status_pelunasan == 'belum_diambil') {
+    //         $inquery->where(function ($query) {
+    //             $query->whereNull('pelunasan')
+    //                   ->orWhere(function ($query) {
+    //                       $query->where('pelunasan', 0); // Memastikan pelunasan 0 dianggap belum diambil
+    //                   });
+    //         });
+    //     }
+        
+    //     // Eksekusi query dan dapatkan hasilnya
+    //     $inquery = $inquery->get();
+        
+    //     // Kirim data ke view
+    //     return view('admin.laporan_deposit.index', compact('inquery', 'tokos'));
+    // }
+
     public function index(Request $request)
     {
         // Ambil parameter filter dari request
@@ -28,14 +107,14 @@ class Laporan_depositController extends Controller
         $tanggal_kirim = $request->tanggal_kirim;
         $tanggal_akhir = $request->tanggal_akhir;
         $status_pelunasan = $request->status_pelunasan;
-        $toko_id = $request->toko_id; // Ambil filter toko_id dari request
+        $toko_id = $request->toko_id; 
+        $filter_tanggal = $request->filter_tanggal; // Ambil filter tanggal dari request
         
         // Ambil daftar toko untuk filter
         $tokos = Toko::all();
-    
+        
         // Query dasar untuk mengambil data Dppemesanan
-        $inquery = Dppemesanan::with(['pemesananproduk.toko']) // Memuat relasi toko melalui pemesananproduk
-            ->orderBy('created_at', 'desc');
+        $inquery = Dppemesanan::with(['pemesananproduk.toko'])->orderBy('created_at', 'desc');
         
         // Filter berdasarkan status
         if ($status) {
@@ -43,62 +122,79 @@ class Laporan_depositController extends Controller
                 $query->where('status', $status);
             });
         }
-        
+    
         // Filter berdasarkan toko_id
         if ($toko_id) {
             $inquery->whereHas('pemesananproduk', function ($query) use ($toko_id) {
                 $query->where('toko_id', $toko_id);
             });
         }
-        
-        // Filter berdasarkan tanggal pemesanan
-        if ($tanggal_kirim && $tanggal_akhir) {
-            $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
-            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-            $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_kirim, $tanggal_akhir) {
-                $query->whereBetween('tanggal_kirim', [$tanggal_kirim, $tanggal_akhir]);
-            });
-        } elseif ($tanggal_kirim) {
-            $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
-            $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_kirim) {
-                $query->where('tanggal_kirim', '>=', $tanggal_kirim);
-            });
-        } elseif ($tanggal_akhir) {
-            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-            $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_akhir) {
-                $query->where('tanggal_kirim', '<=', $tanggal_akhir);
-            });
+    
+        // Filter berdasarkan tanggal
+        if ($filter_tanggal == 'tanggal_kirim') {
+            if ($tanggal_kirim && $tanggal_akhir) {
+                $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
+                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+                $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_kirim, $tanggal_akhir) {
+                    $query->whereBetween('tanggal_kirim', [$tanggal_kirim, $tanggal_akhir]);
+                });
+            } elseif ($tanggal_kirim) {
+                $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
+                $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_kirim) {
+                    $query->where('tanggal_kirim', '>=', $tanggal_kirim);
+                });
+            } elseif ($tanggal_akhir) {
+                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+                $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_akhir) {
+                    $query->where('tanggal_kirim', '<=', $tanggal_akhir);
+                });
+            }
+        } elseif ($filter_tanggal == 'tanggal_pemesanan') {
+            if ($tanggal_kirim && $tanggal_akhir) {
+                $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
+                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+                $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_kirim, $tanggal_akhir) {
+                    $query->whereBetween('tanggal_pemesanan', [$tanggal_kirim, $tanggal_akhir]);
+                });
+            } elseif ($tanggal_kirim) {
+                $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
+                $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_kirim) {
+                    $query->where('tanggal_pemesanan', '>=', $tanggal_kirim);
+                });
+            } elseif ($tanggal_akhir) {
+                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+                $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_akhir) {
+                    $query->where('tanggal_pemesanan', '<=', $tanggal_akhir);
+                });
+            }
         } else {
             // Jika tidak ada filter tanggal, tampilkan data untuk hari ini
             $inquery->whereHas('pemesananproduk', function ($query) {
                 $query->whereDate('tanggal_kirim', Carbon::today());
             });
         }
-        
+    
         // Filter berdasarkan status pelunasan
         if ($status_pelunasan == 'diambil') {
             $inquery->where(function ($query) {
                 $query->whereNotNull('pelunasan')
-                      ->where(function ($query) {
-                          $query->where('pelunasan', '>', 0) // Memastikan pelunasan lebih dari 0
-                                ->orWhere('pelunasan', 0); // Atau 0 jika perlu
-                      });
+                      ->where('pelunasan', '>', 0);
             });
         } elseif ($status_pelunasan == 'belum_diambil') {
             $inquery->where(function ($query) {
                 $query->whereNull('pelunasan')
-                      ->orWhere(function ($query) {
-                          $query->where('pelunasan', 0); // Memastikan pelunasan 0 dianggap belum diambil
-                      });
+                      ->orWhere('pelunasan', 0);
             });
         }
-        
+    
         // Eksekusi query dan dapatkan hasilnya
         $inquery = $inquery->get();
         
         // Kirim data ke view
         return view('admin.laporan_deposit.index', compact('inquery', 'tokos'));
     }
+    
+
 
     public function indexrinci(Request $request)
     {
@@ -212,116 +308,161 @@ class Laporan_depositController extends Controller
         return view('admin.laporan_deposit.indexsaldo', compact('saldoPerToko', 'tokos', 'toko_id'));
     }
 
-    // public function printReportdeposit(Request $request)
-    // {
-    //     // Ambil parameter filter dari request
-    //     $status = $request->status;
-    //     $tanggal_kirim = $request->tanggal_kirim;
-    //     $tanggal_akhir = $request->tanggal_akhir;
-    //     $status_pelunasan = $request->status_pelunasan;
-    //     $toko_id = $request->toko_id;
 
-    //     // Ambil daftar toko untuk filter
-    //     $tokos = Toko::all();
+//     public function printReportdeposit(Request $request)
+// {
+//     // Ambil parameter filter dari request
+//     $status = $request->status;
+//     $tanggal_kirim = $request->tanggal_kirim;
+//     $tanggal_akhir = $request->tanggal_akhir;
+//     $status_pelunasan = $request->status_pelunasan;
+//     $toko_id = $request->toko_id;
 
-    //     // Query dasar untuk mengambil data Dppemesanan
-    //     $inquery = Dppemesanan::with(['pemesananproduk.toko'])
-    //         ->orderBy('created_at', 'desc');
+//     // Ambil daftar toko untuk filter
+//     $tokos = Toko::all();
 
-    //     // Filter berdasarkan status
-    //     if ($status) {
-    //         $inquery->whereHas('pemesananproduk', function ($query) use ($status) {
-    //             $query->where('status', $status);
-    //         });
-    //     }
+//     // Query dasar untuk mengambil data Dppemesanan
+//     $inquery = Dppemesanan::with(['pemesananproduk.toko']);
 
-    //     // Filter berdasarkan toko_id
-    //     if ($toko_id) {
-    //         $inquery->whereHas('pemesananproduk', function ($query) use ($toko_id) {
-    //             $query->where('toko_id', $toko_id);
-    //         });
-    //     }
+//     // Filter berdasarkan status
+//     if ($status) {
+//         $inquery->whereHas('pemesananproduk', function ($query) use ($status) {
+//             $query->where('status', $status);
+//         });
+//     }
 
-    //     // Filter berdasarkan tanggal pemesanan
-    //     if ($tanggal_kirim && $tanggal_akhir) {
-    //         $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
-    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //         $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_kirim, $tanggal_akhir) {
-    //             $query->whereBetween('tanggal_kirim', [$tanggal_kirim, $tanggal_akhir]);
-    //         });
-    //     } elseif ($tanggal_kirim) {
-    //         $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
-    //         $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_kirim) {
-    //             $query->where('tanggal_kirim', '>=', $tanggal_kirim);
-    //         });
-    //     } elseif ($tanggal_akhir) {
-    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //         $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_akhir) {
-    //             $query->where('tanggal_kirim', '<=', $tanggal_akhir);
-    //         });
-    //     } else {
-    //         // Jika tidak ada filter tanggal, tampilkan data untuk hari ini
-    //         $inquery->whereHas('pemesananproduk', function ($query) {
-    //             $query->whereDate('tanggal_kirim', Carbon::today());
-    //         });
-    //     }
+//     // Filter berdasarkan toko_id
+//     if ($toko_id) {
+//         $inquery->whereHas('pemesananproduk', function ($query) use ($toko_id) {
+//             $query->where('toko_id', $toko_id);
+//         });
+//     }
 
-    //     // Filter berdasarkan status pelunasan
-    //     if ($status_pelunasan == 'diambil') {
-    //         $inquery->whereNotNull('pelunasan');
-    //     } elseif ($status_pelunasan == 'belum_diambil') {
-    //         $inquery->whereNull('pelunasan');
-    //     }
+//     // Filter berdasarkan tanggal pemesanan
+//     if ($tanggal_kirim && $tanggal_akhir) {
+//         $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
+//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+//         $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_kirim, $tanggal_akhir) {
+//             $query->whereBetween('tanggal_kirim', [$tanggal_kirim, $tanggal_akhir]);
+//         });
+//     } elseif ($tanggal_kirim) {
+//         $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
+//         $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_kirim) {
+//             $query->where('tanggal_kirim', '>=', $tanggal_kirim);
+//         });
+//     } elseif ($tanggal_akhir) {
+//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+//         $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_akhir) {
+//             $query->where('tanggal_kirim', '<=', $tanggal_akhir);
+//         });
+//     } else {
+//         // Jika tidak ada filter tanggal, tampilkan data untuk hari ini
+//         $inquery->whereHas('pemesananproduk', function ($query) {
+//             $query->whereDate('tanggal_kirim', Carbon::today());
+//         });
+//     }
 
-    //     // Eksekusi query dan dapatkan hasilnya
-    //     $inquery = $inquery->get();
+//     // Filter berdasarkan status pelunasan
+//     if ($status_pelunasan == 'diambil') {
+//         $inquery->whereNotNull('pelunasan');
+//     } elseif ($status_pelunasan == 'belum_diambil') {
+//         $inquery->whereNull('pelunasan');
+//     }
 
-    //     // Hitung total deposit, fee deposit, dan sub total
-    //     $totalDeposit = $inquery->sum(function ($deposit) {
-    //         return (int)$deposit->dp_pemesanan; // Pastikan nilai numerik
-    //     });
-    //     $totalFee = $inquery->sum(function ($deposit) {
-    //         return (int)($deposit->pemesananproduk->total_fee ?? 0); // Pastikan nilai numerik
-    //     });
-    //     $subTotal = $totalDeposit + $totalFee;
+//     // Eksekusi query dan dapatkan hasilnya
+//     $inquery = $inquery->get();
 
-    //     // Kirim data ke view cetak
-    //     $pdf = FacadePdf::loadView('admin.laporan_deposit.print', compact('inquery', 'tokos', 'status', 'tanggal_kirim', 'tanggal_akhir', 'status_pelunasan', 'toko_id', 'totalDeposit', 'totalFee', 'subTotal'));
+//     // Hitung total deposit, fee deposit, dan sub total
+//     $totalDeposit = $inquery->sum(function ($deposit) {
+//         return (int)$deposit->dp_pemesanan; // Pastikan nilai numerik
+//     });
+//     $totalFee = $inquery->sum(function ($deposit) {
+//         return (int)($deposit->pemesananproduk->total_fee ?? 0); // Pastikan nilai numerik
+//     });
+//     $subTotal = $totalDeposit + $totalFee;
 
-    //     // Return PDF
-    //     return $pdf->stream('laporan_deposit.pdf');
-    // }
+//     // Format tanggal untuk tampilan PDF
+//     $formattedStartDate = $tanggal_kirim ? Carbon::parse($tanggal_kirim)->format('d-m-Y') : null;
+//     $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : null;
 
-    public function printReportdeposit(Request $request)
-    {
-        // Ambil parameter filter dari request
-        $status = $request->status;
-        $tanggal_kirim = $request->tanggal_kirim;
-        $tanggal_akhir = $request->tanggal_akhir;
-        $status_pelunasan = $request->status_pelunasan;
-        $toko_id = $request->toko_id;
+//     // Ambil nama toko berdasarkan ID
+//     if ($toko_id) {
+//         $toko = Toko::find($toko_id); // Ambil nama toko berdasarkan ID
+//         $branchName = $toko ? $toko->nama_toko : 'Semua Toko'; // Nama toko atau default jika tidak ditemukan
+//     } else {
+//         $branchName = 'Semua Toko'; // Default jika tidak ada filter toko
+//     }
 
-        // Ambil daftar toko untuk filter
-        $tokos = Toko::all();
+//     // Buat PDF menggunakan Facade PDF
+//     $pdf = FacadePdf::loadView('admin.laporan_deposit.print', [
+//         'inquery' => $inquery,
+//         'tokos' => $tokos,
+//         'status' => $status,
+//         'startDate' => $formattedStartDate,
+//         'endDate' => $formattedEndDate,
+//         'status_pelunasan' => $status_pelunasan,
+//         'toko_id' => $toko_id,
+//         'totalDeposit' => $totalDeposit,
+//         'totalFee' => $totalFee,
+//         'subTotal' => $subTotal,
+//         'branchName' => $branchName // Sertakan variabel nama cabang toko
+//     ]);
 
-        // Query dasar untuk mengambil data Dppemesanan
-        $inquery = Dppemesanan::with(['pemesananproduk.toko']);
+//     // Menambahkan nomor halaman di kanan bawah
+//     $pdf->output();
+//     $dompdf = $pdf->getDomPDF();
+//     $canvas = $dompdf->getCanvas();
+//     $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+//         $text = "Page $pageNumber of $pageCount";
+//         $font = $fontMetrics->getFont('Arial', 'normal');
+//         $size = 8;
 
-        // Filter berdasarkan status
-        if ($status) {
-            $inquery->whereHas('pemesananproduk', function ($query) use ($status) {
-                $query->where('status', $status);
-            });
-        }
+//         // Menghitung lebar teks
+//         $width = $fontMetrics->getTextWidth($text, $font, $size);
 
-        // Filter berdasarkan toko_id
-        if ($toko_id) {
-            $inquery->whereHas('pemesananproduk', function ($query) use ($toko_id) {
-                $query->where('toko_id', $toko_id);
-            });
-        }
+//         // Mengatur koordinat X dan Y
+//         $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+//         $y = $canvas->get_height() - 15; // 15 pixel dari bawah
 
-        // Filter berdasarkan tanggal pemesanan
+//         // Menambahkan teks ke posisi yang ditentukan
+//         $canvas->text($x, $y, $text, $font, $size);
+//     });
+
+//     // Output PDF ke browser
+//     return $pdf->stream('laporan_deposit.pdf');
+// }
+public function printReportdeposit(Request $request)
+{
+    // Ambil parameter filter dari request
+    $status = $request->status;
+    $tanggal_kirim = $request->tanggal_kirim;
+    $tanggal_akhir = $request->tanggal_akhir;
+    $status_pelunasan = $request->status_pelunasan;
+    $toko_id = $request->toko_id;
+    $filter_tanggal = $request->filter_tanggal; // Ambil filter tanggal dari request
+
+    // Ambil daftar toko untuk filter
+    $tokos = Toko::all();
+
+    // Query dasar untuk mengambil data Dppemesanan
+    $inquery = Dppemesanan::with(['pemesananproduk.toko']);
+
+    // Filter berdasarkan status
+    if ($status) {
+        $inquery->whereHas('pemesananproduk', function ($query) use ($status) {
+            $query->where('status', $status);
+        });
+    }
+
+    // Filter berdasarkan toko_id
+    if ($toko_id) {
+        $inquery->whereHas('pemesananproduk', function ($query) use ($toko_id) {
+            $query->where('toko_id', $toko_id);
+        });
+    }
+
+    // Filter berdasarkan tanggal
+    if ($filter_tanggal == 'tanggal_kirim') {
         if ($tanggal_kirim && $tanggal_akhir) {
             $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
@@ -338,82 +479,96 @@ class Laporan_depositController extends Controller
             $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_akhir) {
                 $query->where('tanggal_kirim', '<=', $tanggal_akhir);
             });
-        } else {
-            // Jika tidak ada filter tanggal, tampilkan data untuk hari ini
-            $inquery->whereHas('pemesananproduk', function ($query) {
-                $query->whereDate('tanggal_kirim', Carbon::today());
+        }
+    } elseif ($filter_tanggal == 'tanggal_pemesanan') {
+        if ($tanggal_kirim && $tanggal_akhir) {
+            $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_kirim, $tanggal_akhir) {
+                $query->whereBetween('tanggal_pemesanan', [$tanggal_kirim, $tanggal_akhir]);
+            });
+        } elseif ($tanggal_kirim) {
+            $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
+            $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_kirim) {
+                $query->where('tanggal_pemesanan', '>=', $tanggal_kirim);
+            });
+        } elseif ($tanggal_akhir) {
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_akhir) {
+                $query->where('tanggal_pemesanan', '<=', $tanggal_akhir);
             });
         }
-
-        // Filter berdasarkan status pelunasan
-        if ($status_pelunasan == 'diambil') {
-            $inquery->whereNotNull('pelunasan');
-        } elseif ($status_pelunasan == 'belum_diambil') {
-            $inquery->whereNull('pelunasan');
-        }
-
-        // Eksekusi query dan dapatkan hasilnya
-        $inquery = $inquery->get();
-
-        // Hitung total deposit, fee deposit, dan sub total
-        $totalDeposit = $inquery->sum(function ($deposit) {
-            return (int)$deposit->dp_pemesanan; // Pastikan nilai numerik
+    } else {
+        // Jika tidak ada filter tanggal, tampilkan data untuk hari ini
+        $inquery->whereHas('pemesananproduk', function ($query) {
+            $query->whereDate('tanggal_kirim', Carbon::today());
         });
-        $totalFee = $inquery->sum(function ($deposit) {
-            return (int)($deposit->pemesananproduk->total_fee ?? 0); // Pastikan nilai numerik
-        });
-        $subTotal = $totalDeposit + $totalFee;
-
-        // Format tanggal untuk tampilan PDF
-        $formattedStartDate = $tanggal_kirim ? Carbon::parse($tanggal_kirim)->format('d-m-Y') : null;
-        $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : null;
-
-        // Ambil nama toko berdasarkan ID
-        if ($toko_id) {
-            $toko = Toko::find($toko_id); // Ambil nama toko berdasarkan ID
-            $branchName = $toko ? $toko->nama_toko : 'Semua Toko'; // Nama toko atau default jika tidak ditemukan
-        } else {
-            $branchName = 'Semua Toko'; // Default jika tidak ada filter toko
-        }
-
-        // Buat PDF menggunakan Facade PDF
-        $pdf = FacadePdf::loadView('admin.laporan_deposit.print', [
-            'inquery' => $inquery,
-            'tokos' => $tokos,
-            'status' => $status,
-            'startDate' => $formattedStartDate,
-            'endDate' => $formattedEndDate,
-            'status_pelunasan' => $status_pelunasan,
-            'toko_id' => $toko_id,
-            'totalDeposit' => $totalDeposit,
-            'totalFee' => $totalFee,
-            'subTotal' => $subTotal,
-            'branchName' => $branchName // Sertakan variabel nama cabang toko
-        ]);
-
-        // Menambahkan nomor halaman di kanan bawah
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF();
-        $canvas = $dompdf->getCanvas();
-        $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
-            $text = "Page $pageNumber of $pageCount";
-            $font = $fontMetrics->getFont('Arial', 'normal');
-            $size = 8;
-
-            // Menghitung lebar teks
-            $width = $fontMetrics->getTextWidth($text, $font, $size);
-
-            // Mengatur koordinat X dan Y
-            $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
-            $y = $canvas->get_height() - 15; // 15 pixel dari bawah
-
-            // Menambahkan teks ke posisi yang ditentukan
-            $canvas->text($x, $y, $text, $font, $size);
-        });
-
-        // Output PDF ke browser
-        return $pdf->stream('laporan_deposit.pdf');
     }
+
+    // Filter berdasarkan status pelunasan
+    if ($status_pelunasan == 'diambil') {
+        $inquery->whereNotNull('pelunasan');
+    } elseif ($status_pelunasan == 'belum_diambil') {
+        $inquery->whereNull('pelunasan');
+    }
+
+    // Eksekusi query dan dapatkan hasilnya
+    $inquery = $inquery->get();
+
+    // Hitung total deposit, fee deposit, dan sub total
+    $totalDeposit = $inquery->sum(function ($deposit) {
+        return (int)$deposit->dp_pemesanan; // Pastikan nilai numerik
+    });
+    $totalFee = $inquery->sum(function ($deposit) {
+        return (int)($deposit->pemesananproduk->total_fee ?? 0); // Pastikan nilai numerik
+    });
+    $subTotal = $totalDeposit + $totalFee;
+
+    // Format tanggal untuk tampilan PDF
+    $formattedStartDate = $tanggal_kirim ? Carbon::parse($tanggal_kirim)->format('d-m-Y') : null;
+    $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : null;
+
+    // Ambil nama toko berdasarkan ID
+    $branchName = $toko_id ? Toko::find($toko_id)->nama_toko : 'Semua Toko';
+
+    // Buat PDF menggunakan Facade PDF
+    $pdf = FacadePdf::loadView('admin.laporan_deposit.print', [
+        'inquery' => $inquery,
+        'tokos' => $tokos,
+        'status' => $status,
+        'startDate' => $formattedStartDate,
+        'endDate' => $formattedEndDate,
+        'status_pelunasan' => $status_pelunasan,
+        'toko_id' => $toko_id,
+        'totalDeposit' => $totalDeposit,
+        'totalFee' => $totalFee,
+        'subTotal' => $subTotal,
+        'branchName' => $branchName
+    ]);
+
+    // Menambahkan nomor halaman di kanan bawah
+    $pdf->output();
+    $dompdf = $pdf->getDomPDF();
+    $canvas = $dompdf->getCanvas();
+    $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+        $text = "Page $pageNumber of $pageCount";
+        $font = $fontMetrics->getFont('Arial', 'normal');
+        $size = 8;
+
+        // Menghitung lebar teks
+        $width = $fontMetrics->getTextWidth($text, $font, $size);
+
+        // Mengatur koordinat X dan Y
+        $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+        $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+
+        // Menambahkan teks ke posisi yang ditentukan
+        $canvas->text($x, $y, $text, $font, $size);
+    });
+
+    // Output PDF ke browser
+    return $pdf->stream('laporan_deposit.pdf');
+}
 
     // public function printReportdepositrinci(Request $request)
     // {

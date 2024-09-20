@@ -49,6 +49,15 @@
                 <div class="card-body">
                     <form method="GET" id="form-action">
                         <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="filter_tanggal" name="filter_tanggal">
+                                    <option value="">- Pilih Filter Tanggal -</option>
+                                    <option value="tanggal_pemesanan" {{ Request::get('filter_tanggal') == 'tanggal_pemesanan' ? 'selected' : '' }}>Tanggal Pemesanan</option>
+                                    <option value="tanggal_kirim" {{ Request::get('filter_tanggal') == 'tanggal_kirim' ? 'selected' : '' }}>Tanggal Kirim</option>
+                                </select>
+                                <label for="filter_tanggal">(Filter Tanggal)</label>
+                            </div>
+                            
                         <div class="col-md-3 mb-3">
                             <select class="custom-select form-control" id="status_pelunasan" name="status_pelunasan">
                                 <option value="">- Semua Pelunasan -</option>
@@ -95,6 +104,7 @@
                                 <th class="text-center">No</th>
                                 <th>Cabang</th>
                                 <th>Tanggal</th>
+                                <th>Kode Pemesanan</th>
                                 <th>Kode Deposit</th>
                                 <th>Nama Pelanggan</th>
                                 <th>No HP</th>
@@ -107,12 +117,21 @@
                             @foreach ($inquery as $deposit)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $deposit->pemesananproduk->toko->nama_toko ?? 'Tidak Ada Toko' }}</td> <!-- Akses nama_toko -->
-                                    <td>{{ $deposit->pemesananproduk->tanggal_kirim }}</td> <!-- Akses nama_toko -->
+                                    <td>{{ $deposit->pemesananproduk->toko->nama_toko ?? 'Tidak Ada Toko' }}</td>
+                                    <td>
+                                        @if (Request::get('filter_tanggal') == 'tanggal_pemesanan')
+                                            {{ $deposit->pemesananproduk->tanggal_pemesanan }}
+                                        @elseif (Request::get('filter_tanggal') == 'tanggal_kirim')
+                                            {{ $deposit->pemesananproduk->tanggal_kirim }}
+                                        @else
+                                            {{ 'Tanggal Tidak Ditemukan' }} <!-- Optional: Default message if no filter is selected -->
+                                        @endif
+                                    </td>
+                                    <td>{{ $deposit->pemesananproduk->kode_pemesanan }}</td>
                                     <td>{{ $deposit->kode_dppemesanan }}</td>
-                                    <td>{{ $deposit->pemesananproduk->nama_pelanggan ?? 'Tidak Ada Nama' }}</td> 
-                                    <td>{{ $deposit->pemesananproduk->telp ?? 'Tidak Ada No HP' }}</td> 
-                                    <td>{{ $deposit->pemesananproduk->alamat ?? 'Tidak Ada Alamat' }}</td> 
+                                    <td>{{ $deposit->pemesananproduk->nama_pelanggan ?? 'Tidak Ada Nama' }}</td>
+                                    <td>{{ $deposit->pemesananproduk->telp ?? 'Tidak Ada No HP' }}</td>
+                                    <td>{{ $deposit->pemesananproduk->alamat ?? 'Tidak Ada Alamat' }}</td>
                                     <td>{{ 'Rp ' . number_format($deposit->dp_pemesanan, 0, ',', '.') }}</td>
                                     <td>
                                         @if($deposit->pelunasan)
@@ -120,10 +139,11 @@
                                         @else
                                             <span class="badge badge-warning">Belum Diambil</span>
                                         @endif
-                                    </td> <!-- Tampilkan status diambil/belum diambil -->
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
+                        
                     </table>
                 </div>
             </div>

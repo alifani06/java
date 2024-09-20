@@ -110,49 +110,53 @@
         </p>
     </div>
 
-    @foreach ($groupedByKlasifikasi as $klasifikasi => $items)
-        <div class="table-container">
-            <h2>{{ $klasifikasi }}</h2>
+    @foreach ($finalGrouped as $klasifikasi => $groupedByProduk)
+    <div class="table-container">
+        <h2>{{ $klasifikasi }}</h2>
+
+        @foreach ($groupedByProduk as $produkId => $produkItems)
             <table>
                 <thead>
                     <tr>
                         <th class="text-center">No</th>
                         <th>Kode Pemesanan</th>
-                        <th>Kategori</th>
-                        <th>Produk</th>
+                        <th>Pemesan</th>
                         <th>Catatan</th>
                         <th>Jumlah</th>
                     </tr>
                 </thead>
                 <tbody>
                     @php
-                    $grandTotalJumlah = 0;
-                @endphp
-                @foreach ($items as $item)
-                    @foreach ($item->detailpemesananproduk as $detail)
-                        @php
-                            $subKlasifikasi = $detail->produk->klasifikasi->subklasifikasi->where('klasifikasi_id', $detail->produk->klasifikasi->id)->first();
-                            $grandTotalJumlah += (int)$detail->jumlah; // Ensure jumlah is treated as an integer
-                        @endphp
+                        $grandTotalJumlah = 0;
+                    @endphp
+                    @foreach ($produkItems as $item)
                         <tr>
-                            <td class="text-center">{{ $loop->parent->iteration }}</td>
-                            <td>{{ $item->kode_pemesanan }}</td>
-                            <td>{{ $subKlasifikasi->nama ?? 'Tidak Diketahui' }}</td>
-                            <td>{{ $detail->produk->nama_produk }}</td>
-                            <td>{{ $item->catatan }}</td>
-                            <td style="text-align: right">{{ number_format((int)$detail->jumlah, 0, ',', '.') }}</td>
+                            <td class="text-center">{{ $loop->iteration }}</td>
+                            <td>{{ $item['kode_pemesanan'] }}</td>
+                            <td>{{ $item['nama_pelanggan'] }} / {{ $item['kode_pelanggan'] }}</td>
+                            <td>{{ $item['catatan'] }}</td>
+
+                            <td style="text-align: right">{{ number_format((int)$item['jumlah'], 0, ',', '.') }}</td>
                         </tr>
+                        @php
+                            $grandTotalJumlah += (int)$item['jumlah'];
+                        @endphp
                     @endforeach
-                @endforeach
-                <tr>
-                    <td colspan="5" class="text-right"><strong>Total Jumlah</strong></td>
-                    <td style="text-align: right">{{ number_format($grandTotalJumlah, 0, ',', '.') }}</td>
-                </tr>
-                
+                    <tr>
+                        <td colspan="4" class="text-right" style="background-color: rgb(245, 245, 144);"><strong>{{ $produkItems->first()['produk']->kode_lama }} - {{ $produkItems->first()['produk']->nama_produk }}</strong></td>
+                        <td style="text-align: right; background-color: rgb(245, 245, 144);">{{ number_format($grandTotalJumlah, 0, ',', '.') }}</td>
+                    </tr>
                 </tbody>
             </table>
-        </div>
-    @endforeach
+            <br> <!-- Spasi antara tabel produk -->
+        @endforeach
+    </div>
+    <hr style="border: 1px dashed #000; margin: 20px 0;"> <!-- Divider putus-putus -->
+@endforeach
+
+
+
+
   <!-- Page Number -->
   {{-- <div class="page-number"></div> --}}
     

@@ -237,14 +237,33 @@ class Laporan_pemesananprodukController extends Controller
         $selectedCabang = $tokoId ? $inquery->first()->toko->nama_toko : 'Semua Toko';
     
         // Kelompokkan data berdasarkan klasifikasi
-        $groupedByKlasifikasi = $inquery->groupBy(function($item) {
-            return $item->detailpemesananproduk->first()->produk->klasifikasi->nama ?? 'Tidak Diketahui';
+       // Kelompokkan data berdasarkan klasifikasi
+$groupedByKlasifikasi = $inquery->groupBy(function($item) {
+    return $item->detailpemesananproduk->first()->produk->klasifikasi->nama ?? 'Tidak Diketahui';
+});
+
+// Untuk setiap klasifikasi, kelompokkan berdasarkan produk dan pelanggan
+$finalGrouped = $groupedByKlasifikasi->map(function ($items) {
+    return $items->flatMap(function ($item) {
+        return $item->detailpemesananproduk->map(function ($detail) use ($item) {
+            return [
+                'kode_pemesanan' => $item->kode_pemesanan,
+                'nama_pelanggan' => $item->nama_pelanggan,
+                'kode_pelanggan' => $item->kode_pelanggan,
+                'catatan' => $item->catatan,
+                'produk' => $detail->produk,
+                'jumlah' => $detail->jumlah,
+            ];
         });
-    
+    })->groupBy('produk.id');
+});
+
+
         // Generate PDF menggunakan Facade PDF
         $pdf = FacadePdf::loadView('admin.laporan_pemesananproduk.print', [
             'groupedByKlasifikasi' => $groupedByKlasifikasi,
             'startDate' => $tanggalPemesanan,
+            'finalGrouped' => $finalGrouped,
             'endDate' => $tanggalAkhir,
             'branchName' => $tokoId ? $inquery->first()->toko->nama_toko : 'Semua Cabang',
             'selectedCabang' => $selectedCabang // Pass the selected cabang to the view
