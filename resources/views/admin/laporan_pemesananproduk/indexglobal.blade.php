@@ -74,13 +74,13 @@
                     <form method="GET" id="form-action">
                         <div class="row">
                             <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_pemesanan" name="tanggal_pemesanan" type="date"
-                                    value="{{ Request::get('tanggal_pemesanan') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_pemesanan">(Dari Tanggal)</label>
+                                <input class="form-control" id="tanggal_kirim" name="tanggal_kirim" type="date"
+                                    value="{{ Request::get('tanggal_kirim') }}"  />
+                                <label for="tanggal_kirim">(Dari Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
-                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
+                                    value="{{ Request::get('tanggal_akhir') }}"  />
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
@@ -127,7 +127,7 @@
                             <tr>
                                 <th class="text-center">No</th>
                                 <th>Kode Pemesanan</th>
-                                <th>Tanggal Pemesanan</th>
+                                <th>Tanggal Ambil</th>
                                 <th>Cabang</th>
                                 <th>Divisi</th>
                                 <th>Produk</th>
@@ -145,7 +145,7 @@
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $item->kode_pemesanan }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($item->tanggal_pemesanan)->format('d/m/Y H:i') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($item->tanggal_kirim)->format('d/m/Y H:i') }}</td>
                                     <td>{{ $item->toko->nama_toko }}</td>
                                     <td>
                                         @if ($item->detailpemesananproduk->isNotEmpty())
@@ -191,7 +191,7 @@
 
     <!-- /.card -->
     <script>
-        var tanggalAwal = document.getElementById('tanggal_pemesanan');
+        var tanggalAwal = document.getElementById('tanggal_kirim');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
         if (tanggalAwal.value == "") {
             tanggalAkhir.readOnly = true;
@@ -217,13 +217,24 @@
 
 <script>
     function printReportpemesnanglobal() {
-    const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printReportpemesananglobal') }}";
-    form.target = "_blank";
-    form.submit();
-}
+        const form = document.getElementById('form-action');
+        const tokoSelect = document.getElementById('toko');
+        const selectedToko = tokoSelect.value;
 
+        // Cek apakah toko dipilih
+        if (selectedToko) {
+            // Jika toko dipilih, arahkan ke URL ini
+            form.action = "{{ url('admin/printReportpemesananglobal1') }}";
+        } else {
+            // Jika tidak ada toko yang dipilih, arahkan ke URL ini
+            form.action = "{{ url('admin/printReportpemesananglobal') }}";
+        }
+
+        form.target = "_blank";
+        form.submit();
+    }
 </script>
+
 
 <script>
     document.getElementById('kategori1').addEventListener('change', function() {

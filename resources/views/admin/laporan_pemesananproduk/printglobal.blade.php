@@ -31,6 +31,7 @@
             font-weight: bold;
             font-size: 28px;
             margin-bottom: 5px;
+            margin-top: 5px;
         }
         .header .title1 {
             margin-top: 5px;
@@ -53,12 +54,19 @@
             text-align: right;
             font-size: 10px;
         }
+        .logo img {
+            width: 100px;
+            height: 60px;
+        }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1 class="title">JAVA BAKERY</h1>
+        <div class="logo">
+            <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
+        </div>
+        <h1 class="title">PT JAVA BAKERY FACTORY</h1>
         <p class="title1">Cabang: {{ strtoupper($selectedCabang) }}</p>
         <div class="divider"></div>
 
@@ -86,7 +94,7 @@
 
     {{-- <div class="divider"></div> --}}
 
-   {{-- <table>
+   <table>
     <thead>
         <tr>
             <th>No</th>
@@ -137,8 +145,8 @@
             </tr>
         </tfoot>
     @endif
-</table> --}}
-<table>
+</table>
+{{-- <table>
     <thead>
         <tr>
             <th>No</th>
@@ -189,6 +197,6 @@
             @endif
         </tr>
     </tfoot>
-</table>
+</table> --}}
 </body>
 </html>

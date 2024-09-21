@@ -155,6 +155,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('printReportpemesanan', [Laporan_pemesananprodukController::class, 'printReportPemesanan'])->name('printReportPemesanan');
     Route::get('indexpemesananglobal', [\App\Http\Controllers\Admin\Laporan_pemesananprodukController::class, 'indexpemesananglobal']);
     Route::get('printReportpemesananglobal', [Laporan_pemesananprodukController::class, 'printReportPemesananglobal'])->name('printReportPemesananglobal');
+    Route::get('printReportpemesananglobal1', [Laporan_pemesananprodukController::class, 'printReportPemesananglobal1'])->name('printReportPemesananglobal1');
     Route::get('/laporan/pemesanan', [Laporan_pemesananprodukController::class, 'printReportPemesananglobal'])->name('laporan.pemesanan.printglobal');
 
 
