@@ -20,14 +20,28 @@
         }
         .header {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 3px;
+        }
+        .header span {
+            display: block;
         }
         .header .title {
-            font-weight: bold;
-            font-size: 28px;
+        font-weight: bold;
+        font-size: 28px;
+        margin-bottom: 5px;
         }
-        .header .address, .header .contact {
+        .header .title1 {
+        margin-top: 5px;
+        font-size: 14px;
+        margin-bottom: 5px;
+        }
+        .header .title2 {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .header .period {
             font-size: 12px;
+            margin-top: 10px;
         }
         .divider {
             border: 0.5px solid #000;
@@ -62,34 +76,9 @@
         th {
             background-color: #f2f2f2;
         }
-        .signature-container {
-            margin-top: 60px;
-        }
-        .signature-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 0 20px;
-        }
-        .signaturea {
-            flex: 1;
-            text-align: left;
-            margin: 0 10px; /* Space between signatures */
-        }
-        .signatureb {
-            flex: 1;
-            text-align: center;
-            margin: 0 10px;
-            margin-top: -200px; /* Space between signatures */
-        }
-        .signaturec {
-            flex: 1;
-            text-align: right;
-            margin: 0 10px; 
-            margin-top: -200px; /* Space between signatures */
-        }
-        .signature p {
-            margin: 0;
-            margin-top: 10px;
+        .logo img {
+            width: 100px;
+            height: 60px;
         }
         .total-row {
             font-weight: bold;
@@ -120,40 +109,36 @@
     </style>
 </head>
 <body>
-    {{-- <div class="header">
+
+
+    <div class="header">
         <div class="logo">
             <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
         </div>
-        <div>
-            <span class="title">PT JAVA BAKERY FACTORY</span><br>
-            <span class="address">JL. HOS COKRO AMINOTO NO 5 SLAWI TEGAL</span><br>
-            <span class="contact">Telp / Fax, Email :</span>
-        </div>
-        <br>
-        <hr class="divider">
-    </div> --}}
-
-    <div class="change-header">LAPORAN STOK BARANG JADI</div>
-    <div class="text" style="margin-bottom: 1px;">
+        <h1 class="title">PT JAVA BAKERY FACTORY</h1>
+        {{-- <p class="title1">Cabang: {{ strtoupper($branchName) }}</p> --}}
+        <div class="divider"></div>
+    
+        <h1 class="title2">LAPORAN STOK BARANG JADI</h1>
+    
         @php
             \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
-    
-            $formattedStartDate = \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y');
-            $formattedEndDate = \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y');
+            $formattedStartDate = $startDate ? \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y') : 'Tidak ada';
+            $formattedEndDate = $endDate ? \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y') : 'Tidak ada';
             $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
         @endphp
     
-        @if ($startDate && $endDate)
-            <p>
-                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }} &nbsp;&nbsp;&nbsp;
-                <span style="float: right; font-style: italic">{{ $currentDateTime }}</span>
-            </p>
-        @else
-            <p>
-                Periode: Tidak ada tanggal awal dan akhir yang diteruskan. &nbsp;&nbsp;&nbsp;
-                <span style="float: right;">{{ $currentDateTime }}</span>
-            </p>
-        @endif
+        <p class="period">
+            @if ($startDate && $endDate)
+                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }}
+            @else
+                Periode: Tidak ada tanggal awal dan akhir yang diteruskan.
+            @endif
+        </p>
+    
+        <p class="period right-align" style="font-size: 10px; position: absolute; top: 0; right: 0; margin: 10px;">
+            {{ $currentDateTime }}
+        </p>
     </div>
     @php
         use Carbon\Carbon;
@@ -161,55 +146,55 @@
         $totalStok = 0; // Initialize total stock counter
     @endphp
 
-    @foreach ($stokBarangJadi as $index => $item)
-        @if ($currentKodeInput != $item->kode_input)
-            @if ($index != 0)
-                <tr class="total-row">
-                    <td colspan="6" class="text-end">Total:</td>
-                    <td>{{ $totalStok }}</td>
-                </tr>
-                </tbody></table>
-                <div class="page-break"></div> <!-- Page break added here -->
-            @endif
-            @php
-                $totalStok = 0; // Reset total stock counter
-                $currentKodeInput = $item->kode_input;
-            @endphp
-            <div class="section-title" style="margin-top: 2px;">Kode Input: {{ $currentKodeInput }}</div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Kode Inputan</th>
-                        <th>Tanggal Inputan</th>
-                        <th>Divisi</th>
-                        <th>Kode Produk</th>
-                        <th>Produk</th>
-                        <th>Stok</th>
-                    </tr>
-                </thead>
-                <tbody>
-        @endif
-        <tr>
-            <td>{{ $index + 1 }}</td>
-            <td>{{ $item->kode_input }}</td>
-            <td>{{ Carbon::parse($item->tanggal_input)->translatedFormat('d F Y') }}</td>
-            <td>{{ $item->produk->klasifikasi->nama }}</td>
-            <td>{{ $item->produk->kode_produk }}</td>
-            <td>{{ $item->produk->nama_produk }}</td>
-            <td style="text-align: left">{{ $item->stok }}</td>
+@foreach ($stokBarangJadi as $index => $item)
+@if ($currentKodeInput != $item->kode_input)
+    @if ($index != 0)
+        <tr class="total-row">
+            <td colspan="3" class="text-end">Total:</td>
+            <td>{{ $totalStok }}</td>
         </tr>
-        @php
-            $totalStok += $item->stok; // Accumulate stock total
-        @endphp
-    @endforeach
-    <!-- Display total stock for the last set of data -->
-    <tr class="total-row">
-        <td colspan="6" class="text-end">Total:</td>
-        <td>{{ $totalStok }}</td>
-    </tr>
-                </tbody>
-            </table>
+        </tbody></table>
+        <div class="page-break"></div> <!-- Page break added here -->
+    @endif
+    @php
+        $totalStok = 0; // Reset total stock counter
+        $currentKodeInput = $item->kode_input;
+    @endphp
+    
+    <!-- Section title and klasifikasi displayed together -->
+    <div class="section-title" style="margin-top: 2px;">Kode Input: {{ $currentKodeInput }}</div>
+    <div class="klasifikasi" style="font-size: 12px; margin-bottom: 10px;">
+        Divisi: {{ $item->produk->klasifikasi->nama }}
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Kode Produk</th>
+                <th>Produk</th>
+                <th>Stok</th>
+            </tr>
+        </thead>
+        <tbody>
+@endif
+<tr>
+    <td>{{ $index + 1 }}</td>
+    <td>{{ $item->produk->kode_lama }}</td>
+    <td>{{ $item->produk->nama_produk }}</td>
+    <td style="text-align: left">{{ $item->stok }}</td>
+</tr>
+@php
+    $totalStok += $item->stok; // Accumulate stock total
+@endphp
+@endforeach
+<!-- Display total stock for the last set of data -->
+<tr class="total-row">
+<td colspan="3" class="text-end">Total:</td>
+<td>{{ $totalStok }}</td>
+</tr>
+</tbody>
+</table>
 
             
 </body>
