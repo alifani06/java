@@ -229,14 +229,30 @@
         }
     </script>
 
-<script>
+{{-- <script>
     function printReport() {
     const form = document.getElementById('form-action');
     form.action = "{{ url('admin/printReport1') }}";
     form.target = "_blank";
     form.submit();
 }
-
+</script> --}}
+<script>
+    function printReport() {
+        const form = document.getElementById('form-action');
+        const toko = document.getElementById('toko').value; // Mendapatkan nilai toko yang dipilih
+        
+        if (toko) {
+            // Jika toko dipilih, arahkan ke printReport2
+            form.action = "{{ url('admin/printReport2') }}";
+        } else {
+            // Jika toko tidak dipilih, arahkan ke printReport1
+            form.action = "{{ url('admin/printReport1') }}";
+        }
+        
+        form.target = "_blank"; // Cetak di tab baru
+        form.submit();
+    }
 </script>
 
 <script>

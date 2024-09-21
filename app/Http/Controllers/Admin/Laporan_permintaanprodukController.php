@@ -283,6 +283,102 @@ public function printReport(Request $request)
     return $pdf->stream('laporan_permintaan_barangjadi.pdf');
 }
 
+public function printReporttoko(Request $request)
+{
+    $klasifikasi_id = $request->get('klasifikasi_id');
+    $toko_id = $request->get('toko_id');
+    $tanggal_permintaan = $request->get('tanggal_permintaan');
+    $tanggal_akhir = $request->get('tanggal_akhir');
+
+    $query = PermintaanProduk::with([
+        'detailpermintaanproduks.produk.klasifikasi.subklasifikasi',
+        'detailpermintaanproduks.toko'
+    ]);
+
+    // Filter berdasarkan tanggal dan toko
+    if ($tanggal_permintaan && $tanggal_akhir) {
+        $tanggal_permintaan = Carbon::parse($tanggal_permintaan)->startOfDay();
+        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+        $query->whereHas('detailpermintaanproduks', function ($query) use ($tanggal_permintaan, $tanggal_akhir) {
+            $query->whereBetween('tanggal_permintaan', [$tanggal_permintaan, $tanggal_akhir]);
+        });
+    } elseif ($tanggal_permintaan) {
+        $tanggal_permintaan = Carbon::parse($tanggal_permintaan)->startOfDay();
+        $query->whereHas('detailpermintaanproduks', function ($query) use ($tanggal_permintaan) {
+            $query->where('tanggal_permintaan', '>=', $tanggal_permintaan);
+        });
+    } elseif ($tanggal_akhir) {
+        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+        $query->whereHas('detailpermintaanproduks', function ($query) use ($tanggal_akhir) {
+            $query->where('tanggal_permintaan', '<=', $tanggal_akhir);
+        });
+    } else {
+        $query->whereHas('detailpermintaanproduks', function ($query) {
+            $query->whereDate('tanggal_permintaan', Carbon::today());
+        });
+    }
+
+    if ($toko_id) {
+        $query->whereHas('detailpermintaanproduks', function ($query) use ($toko_id) {
+            $query->where('toko_id', $toko_id);
+        });
+    }
+
+    if ($klasifikasi_id) {
+        $query->whereHas('detailpermintaanproduks.produk.klasifikasi', function ($query) use ($klasifikasi_id) {
+            $query->where('id', $klasifikasi_id);
+        });
+    }
+
+    $permintaanProduk = $query->get();
+    $tokoData = $toko_id ? Toko::where('id', $toko_id)->get() : Toko::all();
+
+    $filteredKlasifikasi = null;
+    if ($klasifikasi_id) {
+        $filteredKlasifikasi = Klasifikasi::find($klasifikasi_id);
+    }
+
+    $formattedStartDate = $tanggal_permintaan ? Carbon::parse($tanggal_permintaan)->format('d-m-Y') : 'N/A';
+    $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : 'N/A';
+
+    // Menentukan nama toko
+    $branchName = $toko_id ? Toko::find($toko_id)->nama_toko : 'Semua Toko';
+
+    // Buat PDF menggunakan Facade Pdf
+    $pdf = FacadePdf::loadView('admin.laporan_permintaanproduk.printglobaltoko', [
+        'permintaanProduk' => $permintaanProduk,
+        'tokoData' => $tokoData,
+        'klasifikasi_id' => $klasifikasi_id,
+        'filteredKlasifikasi' => $filteredKlasifikasi,
+        'startDate' => $formattedStartDate,
+        'endDate' => $formattedEndDate,
+        'branchName' => $branchName, // Sertakan variabel nama cabang toko
+    ]);
+
+    // Menambahkan nomor halaman di kanan bawah
+    $pdf->output();
+    $dompdf = $pdf->getDomPDF();
+    $canvas = $dompdf->getCanvas();
+    $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+        $text = "Page $pageNumber of $pageCount";
+        $font = $fontMetrics->getFont('Arial', 'normal');
+        $size = 8;
+
+        // Menghitung lebar teks
+        $width = $fontMetrics->getTextWidth($text, $font, $size);
+
+        // Mengatur koordinat X dan Y
+        $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+        $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+
+        // Menambahkan teks ke posisi yang ditentukan
+        $canvas->text($x, $y, $text, $font, $size);
+    });
+
+    // Output PDF ke browser
+    return $pdf->stream('laporan_permintaan_barangjadi.pdf');
+}
+
 
 public function printReportRinci(Request $request)
 {
@@ -346,6 +442,7 @@ public function printReportRinci(Request $request)
             $divisi = $detail->produk->klasifikasi->nama;
             $subklasifikasi = $detail->produk->klasifikasi->subklasifikasi->first()->nama ?? '-';
             $kodeProduk = $detail->produk->kode_produk;
+            $kodeLama = $detail->produk->kode_lama;
             $namaProduk = $detail->produk->nama_produk;
 
             if (!isset($produkByKodePermintaan[$kodePermintaan][$toko][$divisi])) {
@@ -354,6 +451,7 @@ public function printReportRinci(Request $request)
 
             $produkByKodePermintaan[$kodePermintaan][$toko][$divisi]->push([
                 'kode_produk' => $kodeProduk,
+                'kode_lama' => $kodeLama,
                 'nama_produk' => $namaProduk,
                 'subklasifikasi' => $subklasifikasi,
                 'jumlah' => $detail->jumlah
@@ -363,6 +461,7 @@ public function printReportRinci(Request $request)
 
     $formattedStartDate = $tanggal_permintaan ? Carbon::parse($tanggal_permintaan)->format('d-m-Y') : 'N/A';
     $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : 'N/A';
+    $branchName = $toko_id ? Toko::find($toko_id)->nama_toko : 'Semua Toko';
 
     // Generate PDF with Facade PDF
     $pdf = FacadePdf::loadView('admin.laporan_permintaanproduk.printrinci', [
@@ -373,6 +472,7 @@ public function printReportRinci(Request $request)
         'produkByKodePermintaan' => $produkByKodePermintaan,
         'startDate' => $formattedStartDate,
         'endDate' => $formattedEndDate,
+        'branchName' => $branchName, 
     ]);
 
     // Menambahkan nomor halaman di kanan bawah

@@ -89,27 +89,32 @@
             {{ $currentDateTime }}
         </p>
     </div>
-    <table>
+
+    @php
+    $tokoTerpilih = Request::get('toko_id'); // Ambil toko yang dipilih dari request
+@endphp
+
+<table>
     <thead>
         <tr>
             <th class="text-center">No</th>
-            <th>Kode Permintaan</th>
             <th>Divisi</th>
-            {{-- <th>Kategori</th> --}}
-            {{-- <th>Subklasifikasi</th> --}}
+            <th>Kode Produk</th>
             <th>Produk</th>
             @foreach ($tokoData as $toko)
                 <th>{{ $toko->nama_toko }}</th>
             @endforeach
-            <th>Total</th> <!-- Tambahkan kolom untuk total per produk -->
+            @if (!$tokoTerpilih) <!-- Jika tidak ada toko yang dipilih (semua toko) -->
+                <th>Total</th> <!-- Kolom total ditampilkan -->
+            @endif
         </tr>
     </thead>
     <tbody>
         @php
             $no = 1;
             $produkData = [];
-            $totalPerToko = []; // Total untuk setiap toko
-            $grandTotal = 0; // Total keseluruhan
+            $totalPerToko = [];
+            $grandTotal = 0;
         @endphp
 
         @foreach ($permintaanProduk as $permintaan)
@@ -119,17 +124,15 @@
                     $klasifikasi = $produk->klasifikasi;
                     $subklasifikasi = $klasifikasi->subklasifikasi;
 
-                    // Total per toko
                     $totalPerToko[$detail->toko_id] = ($totalPerToko[$detail->toko_id] ?? 0) + $detail->jumlah;
 
-                    // Data produk
                     $produkData[$detail->produk_id]['produk'] = $detail->produk->nama_produk;
+                    $produkData[$detail->produk_id]['kode_lama'] = $detail->produk->kode_lama;
                     $produkData[$detail->produk_id]['kode_permintaan'] = $permintaan->kode_permintaan;
                     $produkData[$detail->produk_id]['kategori'] = $klasifikasi->nama ?? '-';
                     $produkData[$detail->produk_id]['total'] = ($produkData[$detail->produk_id]['total'] ?? 0) + $detail->jumlah;
                     $produkData[$detail->produk_id]['detail'][$detail->toko_id] = ($produkData[$detail->produk_id]['detail'][$detail->toko_id] ?? 0) + $detail->jumlah;
 
-                    // Total keseluruhan
                     $grandTotal += $detail->jumlah;
                 @endphp
             @endforeach
@@ -138,28 +141,31 @@
         @foreach ($produkData as $produkId => $data)
             <tr>
                 <td class="text-center">{{ $no++ }}</td>
-                <td>{{ $data['kode_permintaan'] }}</td>
-                {{-- <td>{{ $data['divisi'] }}</td> --}}
                 <td>{{ $data['kategori'] }}</td>
-                {{-- <td>{{ $data['subklasifikasi'] }}</td> --}}
+                <td>{{ $data['kode_lama'] }}</td>
                 <td>{{ $data['produk'] }}</td>
                 @foreach ($tokoData as $toko)
                     <td class="text-center">{{ $data['detail'][$toko->id] ?? 0 }}</td>
                 @endforeach
-                <td class="text-center">{{ $data['total'] }}</td>
+                @if (!$tokoTerpilih) <!-- Jika tidak ada toko yang dipilih (semua toko) -->
+                    <td class="text-center">{{ $data['total'] }}</td>
+                @endif
             </tr>
         @endforeach
     </tbody>
     <tfoot>
         <tr>
-            <th colspan="4" class="text-center">Total</th>
+            <th colspan="3" class="text-center">Total</th>
             @foreach ($tokoData as $toko)
                 <th class="text-center">{{ $totalPerToko[$toko->id] ?? 0 }}</th>
             @endforeach
-            <th class="text-center">{{ $grandTotal }}</th>
+            @if (!$tokoTerpilih) <!-- Jika tidak ada toko yang dipilih (semua toko) -->
+                <th class="text-center">{{ $grandTotal }}</th>
+            @endif
         </tr>
     </tfoot>
-    </table>
+</table>
+
 </body>
 </html>
 

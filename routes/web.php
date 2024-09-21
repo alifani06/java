@@ -195,6 +195,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::resource('laporan_permintaanproduk', \App\Http\Controllers\Admin\Laporan_permintaanprodukController::class);
     Route::get('printReport1', [\App\Http\Controllers\Admin\Laporan_permintaanprodukController::class, 'printReport']);
+    Route::get('printReport2', [\App\Http\Controllers\Admin\Laporan_permintaanprodukController::class, 'printReporttoko']);
     Route::get('indexpermintaanrinci', [\App\Http\Controllers\Admin\Laporan_permintaanprodukController::class, 'indexpermintaanrinci']);
     Route::get('printReportRinci', [\App\Http\Controllers\Admin\Laporan_permintaanprodukController::class, 'printReportRinci']);
 

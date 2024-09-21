@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surat Permintaan Produk</title>
+    <title>Laporan Permintaan Produk</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -82,7 +82,7 @@
     <!-- Judul Surat -->
     <div class="header">
         <h1 class="title">JAVA BAKERY</h1>
-        {{-- <p class="title1">Cabang: {{ strtoupper($branchName) }}</p> --}}
+        <p class="title1">Cabang: {{ strtoupper($branchName) }}</p>
         <div class="divider"></div>
     
         <h1 class="title2">LAPORAN PERMINTAAN PRODUK RINCI</h1>
@@ -119,12 +119,12 @@
 
     @foreach ($tokoDivisiData as $toko => $divisiData)
         <!-- Pembatas Cabang -->
-        <div>
+        {{-- <div>
             <p>
                 <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Cabang</strong></span>
                 <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $toko }}</span>
             </p>
-        </div>
+        </div> --}}
         @foreach ($divisiData as $divisi => $produks)
             <div>
                 <p>
@@ -151,7 +151,7 @@
                         <tr>
                             <td>{{ $no++ }}</td> 
                             <td>{{ $detail['subklasifikasi'] }}</td>
-                            <td>{{ $detail['kode_produk'] }}</td>
+                            <td>{{ $detail['kode_lama'] }}</td>
                             <td>{{ $detail['nama_produk'] }}</td>
                             <td style="text-align: right">{{ $detail['jumlah'] }}</td>
                         </tr>
