@@ -81,10 +81,10 @@
                 <!-- /.card-header -->
                 <div class="card-body">
                     
-                   <form action="{{ url('admin/pengiriman_barangjadi') }}" method="POST" enctype="multipart/form-data"
-                    autocomplete="off"> 
+                    <form action="{{ url('admin/pengiriman_barangjadi') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                         @csrf
-                        <input type="hidden" name="toko_id" > <!-- Assuming $toko is passed from the controller -->
+                        <input type="hidden" name="toko_id" value="{{ old('toko_id', $toko_id) }}"> <!-- Assuming $toko_id is passed from the controller -->
+                    
                         <div class="row">
                             <div class="col-md-12 mb-3">
                                 <table class="table table-bordered">
@@ -93,7 +93,7 @@
                                             <select class="custom-select form-control" id="toko" name="toko_id">
                                                 <option value="">- Pilih Toko -</option>
                                                 @foreach ($tokos as $toko)
-                                                    <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
+                                                    <option value="{{ $toko->id }}" {{ old('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -102,7 +102,7 @@
                                         <div class="card-header">
                                             <h3 class="card-title"><span></span></h3>
                                             <div class="float-right">
-                                                <button  type="button" class="btn btn-primary btn-sm" onclick="addPesanan()">
+                                                <button type="button" class="btn btn-primary btn-sm" onclick="addPesanan()">
                                                     <i class="fas fa-plus"></i>
                                                 </button>
                                             </div>
@@ -121,6 +121,37 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody id="tabel-pembelian">
+                                                            @if(old('produk_id'))
+                                                                @foreach(old('produk_id') as $key => $produkId)
+                                                                    <tr id="pembelian-{{ $key }}">
+                                                                        <td style="width: 70px; font-size:14px" class="text-center" id="urutan-{{ $key }}">{{ $key + 1 }}</td>
+                                                                        <td hidden>
+                                                                            <div class="form-group">
+                                                                                <input type="text" class="form-control" id="produk_id-{{ $key }}" name="produk_id[]" value="{{ $produkId }}">
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="form-group">
+                                                                                <input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-{{ $key }}" name="kode_produk[]" value="{{ old('kode_produk')[$key] ?? '' }}">
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="form-group">
+                                                                                <input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-{{ $key }}" name="nama_produk[]" value="{{ old('nama_produk')[$key] ?? '' }}">
+                                                                            </div>
+                                                                        </td>
+                                                                        <td style="width: 150px">
+                                                                            <div class="form-group">
+                                                                                <input type="number" class="form-control" style="font-size:14px" id="jumlah-{{ $key }}" name="jumlah[]" value="{{ old('jumlah')[$key] ?? '' }}" oninput="hitungTotal({{ $key }})" onkeydown="handleEnter(event, {{ $key }})">
+                                                                            </div>
+                                                                        </td>
+                                                                        <td style="width: 100px">
+                                                                            <button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal({{ $key }})"><i class="fas fa-plus"></i></button>
+                                                                            <button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan({{ $key }})"><i class="fas fa-trash"></i></button>
+                                                                        </td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            @endif
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -135,6 +166,8 @@
                                 </table>
                             </div>
                         </div>
+                    </form>
+                    
 
                         <div class="modal fade" id="tableProduk" data-backdrop="static">
                             <div class="modal-dialog modal-lg">
@@ -190,7 +223,7 @@
                         </div>
                         
                         
-                    </form>
+
                     
              
                     <!-- Modal Loading -->
@@ -247,9 +280,9 @@ document.addEventListener('DOMContentLoaded', function() {
            }
        });
 
-   </script>
+</script>
    
-   <script>
+<script>
    var data_pembelian = @json(session('data_pembelians'));
    var jumlah_ban = 0;
    
