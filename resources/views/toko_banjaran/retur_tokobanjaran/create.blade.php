@@ -331,7 +331,7 @@ document.addEventListener('DOMContentLoaded', function() {
         item_pembelian += '<option value="DIVISI 7 / TOHARI"' + (keterangan === 'DIVISI 7 / TOHARI' ? ' selected' : '') + '>DIVISI 7 / TOHARI</option>';
         item_pembelian += '<option value="DIVISI 8 / WAWAN"' + (keterangan === 'DIVISI 8 / WAWAN' ? ' selected' : '') + '>DIVISI 8 / WAWAN</option>';
         item_pembelian += '<option value="TART"' + (keterangan === 'TART' ? ' selected' : '') + '>TART</option>';
-        item_pembelian += '<option value="SUGENG CAKE"' + (keterangan === 'SUGENG CAKE' ? ' selected' : '') + '>SUGENG CAKE</option>';
+        item_pembelian += '<option value="CAKE SUGENG "' + (keterangan === 'CAKE SUGENG ' ? ' selected' : '') + '>CAKE SUGENG</option>';
         item_pembelian += '<option value="KONSINYASI"' + (keterangan === 'KONSINYASI' ? ' selected' : '') + '>KONSINYASI</option>';
         item_pembelian += '<option value="PACKAGING DIJUAL"' + (keterangan === 'PACKAGING DIJUAL' ? ' selected' : '') + '>PACKAGING DIJUAL</option>';
         item_pembelian += '<option value="BAKERY"' + (keterangan === 'BAKERY' ? ' selected' : '') + '>BAKERY</option>';
