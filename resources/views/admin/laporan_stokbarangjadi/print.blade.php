@@ -62,6 +62,13 @@
             font-size: 16px;
             text-align: left;
         }
+        .klasifikasi {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: left;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -147,52 +154,52 @@
     @endphp
 
 @foreach ($stokBarangJadi as $index => $item)
-@if ($currentKodeInput != $item->kode_input)
-    @if ($index != 0)
+    @if ($currentKodeInput != $item->kode_input)
+        @if ($index != 0)
+            <tr class="total-row">
+                <td colspan="3" class="text-end">Total:</td>
+                <td>{{ $totalStok }}</td>
+            </tr>
+            </tbody></table>
+            <div class="page-break"></div> <!-- Page break added here -->
+        @endif
+        @php
+            $totalStok = 0; // Reset total stock counter
+            $currentKodeInput = $item->kode_input;
+        @endphp
+        
+        <!-- Section title and klasifikasi displayed together -->
+        <div class="section-title" style="margin-top: 2px;">Kode Input: {{ $currentKodeInput }}</div>
+        <div class="klasifikasi" style="font-size: 12px; margin-bottom: 10px;">
+        {{ $item->produk->klasifikasi->nama }}
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="width: 5%;">No</th>
+                    <th style="width: 25%;">Kode Produk</th>
+                    <th style="width: 50%;">Produk</th>
+                    <th style="width: 10%;">Stok</th>
+                </tr>
+            </thead>
+            <tbody>
+    @endif
+        <tr>
+            <td>{{ $index + 1 }}</td>
+            <td>{{ $item->produk->kode_lama }}</td>
+            <td>{{ $item->produk->nama_produk }}</td>
+            <td style="text-align: left">{{ $item->stok }}</td>
+        </tr>
+        @php
+            $totalStok += $item->stok; // Accumulate stock total
+        @endphp
+@endforeach
+        <!-- Display total stock for the last set of data -->
         <tr class="total-row">
             <td colspan="3" class="text-end">Total:</td>
             <td>{{ $totalStok }}</td>
         </tr>
-        </tbody></table>
-        <div class="page-break"></div> <!-- Page break added here -->
-    @endif
-    @php
-        $totalStok = 0; // Reset total stock counter
-        $currentKodeInput = $item->kode_input;
-    @endphp
-    
-    <!-- Section title and klasifikasi displayed together -->
-    <div class="section-title" style="margin-top: 2px;">Kode Input: {{ $currentKodeInput }}</div>
-    <div class="klasifikasi" style="font-size: 12px; margin-bottom: 10px;">
-        Divisi: {{ $item->produk->klasifikasi->nama }}
-    </div>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Kode Produk</th>
-                <th>Produk</th>
-                <th>Stok</th>
-            </tr>
-        </thead>
-        <tbody>
-@endif
-<tr>
-    <td>{{ $index + 1 }}</td>
-    <td>{{ $item->produk->kode_lama }}</td>
-    <td>{{ $item->produk->nama_produk }}</td>
-    <td style="text-align: left">{{ $item->stok }}</td>
-</tr>
-@php
-    $totalStok += $item->stok; // Accumulate stock total
-@endphp
-@endforeach
-<!-- Display total stock for the last set of data -->
-<tr class="total-row">
-<td colspan="3" class="text-end">Total:</td>
-<td>{{ $totalStok }}</td>
-</tr>
 </tbody>
 </table>
 

@@ -31,6 +31,7 @@
         font-weight: bold;
         font-size: 28px;
         margin-bottom: 5px;
+        margin-top: 5px;
         }
         .header .title1 {
         margin-top: 5px;
@@ -90,12 +91,19 @@
         .summary-table .bold {
             font-weight: bold;
         }
+        .logo img {
+            width: 100px;
+            height: 60px;
+        }
 
     </style>
 </head>
 <body>
    
     <div class="header">
+        <div class="logo">
+            <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
+        </div>
         <h1 class="title">JAVA BAKERY</h1>
         <p class="title1">Cabang: {{ strtoupper($branchName) }}</p>
         <div class="divider"></div>
@@ -135,95 +143,88 @@
                 $formattedDate = \Carbon\Carbon::parse($firstItem->tanggal_penjualan)->format('d/m/Y H:i');
             @endphp
 
-            <table>
+<table>
+    <tr>
+        <td colspan="2" class="text-left"><strong>Kode Penjualan : {{ $kodePenjualan }}</strong></td>
+        <td colspan="3" class="text-right"><strong>Tanggal : {{ $formattedDate}}</strong></td>
+        <td colspan="2" class="text-right"><strong>{{ $items->first()->toko->nama_toko }}</strong></td>
+    </tr>              
+    <thead>
+        <tr>
+            <th class="text-center" style="width: 5%;">No</th>
+            <th style="width: 15%;">Kode Produk</th>
+            <th style="width: 30%;">Produk</th>
+            <th style="width: 10%;">Qty</th>
+            <th style="width: 15%;">Harga</th>
+            <th style="width: 10%;">Diskon</th>
+            <th style="width: 15%;">Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @php $subTotal = 0; @endphp
+        @foreach ($items as $item)
+            @foreach ($item->detailpenjualanproduk as $detail)
+                @php
+                    $totalForDetail = $detail->jumlah * $detail->harga;
+                    $subTotal += $totalForDetail;
+                    $diskon = floatval($detail->diskon);
+                @endphp
                 <tr>
-                    <td colspan="2" class="text-left"><strong>Kode Penjualan : {{ $kodePenjualan }}</strong></td>
-                    <td colspan="3" class="text-right"><strong>Tanggal : {{ $formattedDate}}</strong></td>
-                    <td colspan="2" class="text-right"><strong>{{ $items->first()->toko->nama_toko }}</strong></td>
-                </tr>              
-                <thead>
-                    <tr>
-                        <th class="text-center">No</th>
-                        {{-- <th>Divisi</th> --}}
-                        <th>Kode Produk</th>
-                        <th>Produk</th>
-                        <th>Qty</th>
-                        <th>Harga</th>
-                        <th>Diskon</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php $subTotal = 0; @endphp
-                    @foreach ($items as $item)
-                        @foreach ($item->detailpenjualanproduk as $detail)
-                            @php
-                                $totalForDetail = $detail->jumlah * $detail->harga;
-                                $subTotal += $totalForDetail;
-                                $diskon = floatval($detail->diskon);
-                            @endphp
-                            <tr>
-                                <td class="text-center">{{ $globalCounter++ }}</td>
-                                {{-- <td>
-                                    @if ($item->detailpenjualanproduk->isNotEmpty())
-                                        {{ $item->detailpenjualanproduk->pluck('produk.klasifikasi.nama')->implode(', ') }}
-                                    @else
-                                        tidak ada
-                                    @endif
-                                </td>   --}}
-                                <td>{{ $detail->kode_lama }}</td>
-                                <td>{{ $detail->nama_produk }}</td>
-                                <td>{{ $detail->jumlah }}</td>
-                                <td>{{ number_format($detail->harga, 0, ',', '.') }}</td>
-                                <td>{{ $detail->diskon}}</td>
-                                <td>{{'Rp. ' .  number_format($totalForDetail, 0, ',', '.') }}</td>
-                            </tr>
-                        @endforeach
-                    @endforeach
+                    <td class="text-center">{{ $globalCounter++ }}</td>
+                    <td>{{ $detail->kode_lama }}</td>
+                    <td>{{ $detail->nama_produk }}</td>
+                    <td>{{ $detail->jumlah }}</td>
+                    <td>{{ number_format($detail->harga, 0, ',', '.') }}</td>
+                    <td>{{ $detail->diskon }}</td>
+                    <td>{{ 'Rp. ' . number_format($totalForDetail, 0, ',', '.') }}</td>
+                </tr>
+            @endforeach
+        @endforeach
 
-                    <tr>
-                        <td colspan="6" class="text-right"><strong>Sub Total</strong></td>
-                        <td>{{'Rp. ' .  number_format($subTotal, 0, ',', '.') }}</td>
-                    </tr>
-                    <tr>
-                        @if($item->metode_id !== null)
-                        <td colspan="6" class="text-right"><strong> Fee {{$item->metodepembayaran->fee}}%</strong></td>
-                        <td>
-                            @php
-                                $total_fee = preg_replace('/[^\d]/', '', $item->total_fee);
-                                $total_fee = (float) $total_fee;
-                                $grandTotalFee += $total_fee; // Tambahkan ke grand total fee
-                            @endphp
-                            {{ 'Rp. ' . number_format($total_fee, 0, ',', '.') }}
-                        </td>
-                    @endif
-                    </tr>
-                    <tr>
-                        <td colspan="6" class="text-right"><strong>Metode Pembayaran</strong></td>
-                        <td>{{ $item->metodePembayaran ? $item->metodePembayaran->nama_metode : 'Tunai' }}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="6" class="text-right"><strong>Total Bayar</strong></td>
-                        <td>
-                            @php
-                                $totalBayar = $item->sub_total;
-                                $grandTotal += $totalBayar; // Tambahkan total bayar ke grand total
-                            @endphp
-                            {{'Rp. ' .  number_format($totalBayar, 0, ',', '.') }}
-                        </td>
-                    </tr>
-                    @if($item->metode_id == Null)
-                    <tr>
-                        <td colspan="6" class="text-right"><strong>Uang Bayar</strong></td>
-                        <td>{{'Rp. ' .  number_format($item->bayar, 0, ',', '.') }}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="6" class="text-right"><strong>Kembali</strong></td>
-                        <td>{{'Rp. ' .  number_format($item->kembali, 0, ',', '.') }}</td>
-                    </tr>
-                  @endif
-                </tbody>
-            </table>
+        <tr>
+            <td colspan="6" class="text-right"><strong>Sub Total</strong></td>
+            <td>{{'Rp. ' .  number_format($subTotal, 0, ',', '.') }}</td>
+        </tr>
+        <tr>
+            @if($item->metode_id !== null)
+            <td colspan="6" class="text-right"><strong>Fee {{$item->metodepembayaran->fee}}%</strong></td>
+            <td>
+                @php
+                    $total_fee = preg_replace('/[^\d]/', '', $item->total_fee);
+                    $total_fee = (float) $total_fee;
+                    $grandTotalFee += $total_fee;
+                @endphp
+                {{ 'Rp. ' . number_format($total_fee, 0, ',', '.') }}
+            </td>
+            @endif
+        </tr>
+        <tr>
+            <td colspan="6" class="text-right"><strong>Metode Pembayaran</strong></td>
+            <td>{{ $item->metodePembayaran ? $item->metodePembayaran->nama_metode : 'Tunai' }}</td>
+        </tr>
+        <tr>
+            <td colspan="6" class="text-right"><strong>Total Bayar</strong></td>
+            <td>
+                @php
+                    $totalBayar = $item->sub_total;
+                    $grandTotal += $totalBayar;
+                @endphp
+                {{ 'Rp. ' . number_format($totalBayar, 0, ',', '.') }}
+            </td>
+        </tr>
+        @if($item->metode_id == Null)
+        <tr>
+            <td colspan="6" class="text-right"><strong>Uang Bayar</strong></td>
+            <td>{{ 'Rp. ' . number_format($item->bayar, 0, ',', '.') }}</td>
+        </tr>
+        <tr>
+            <td colspan="6" class="text-right"><strong>Kembali</strong></td>
+            <td>{{ 'Rp. ' . number_format($item->kembali, 0, ',', '.') }}</td>
+        </tr>
+        @endif
+    </tbody>
+</table>
+
         </div>
     @endforeach
 
