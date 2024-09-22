@@ -36,6 +36,7 @@
             font-weight: bold;
             font-size: 28px;
             margin-bottom: 5px;
+            margin-top: 5px;
         }
         .header .title1 {
             margin-top: 5px;
@@ -58,36 +59,19 @@
             margin-top: 3px;
             margin-bottom: 1px;
         }
+        .logo img {
+            width: 100px;
+            height: 60px;
+        }
     </style>
 </head>
 <body>
-    {{-- <h1 class="text-center">LAPORAN BARANG RETUR</h1>
-    <div class="text" style="text-align: center;">
-        @php
-            \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
-        
-            $formattedStartDate = \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y');
-            $formattedEndDate = \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y');
-            $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
-        @endphp
-        
-        @if ($startDate && $endDate)
-            <p>
-                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }}<br><br>
-                Cabang: {{ $branchName }}
-            </p>
-        @else
-            <p>
-                Periode: Tidak ada tanggal awal dan akhir yang diteruskan.<br>
-                Cabang: {{ $branchName }}
-            </p>
-        @endif
-        
-        <p style="text-align: right; margin-top: -20px;">{{ $currentDateTime }}</p>
-    </div> --}}
-    
+   
     <div class="header">
-        <h1 class="title">JAVA BAKERY</h1>
+        <div class="logo">
+            <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
+        </div>
+        <h1 class="title">PT JAVA BAKERY FACTORY</h1>
         <p class="title1">Cabang: {{ strtoupper($branchName) }}</p>
         <div class="divider"></div>
 

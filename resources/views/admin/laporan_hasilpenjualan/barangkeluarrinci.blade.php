@@ -69,68 +69,21 @@
                 <!-- /.card-header -->
                  
                 <div class="card-body">
-                    {{-- <form method="GET" id="form-action">
-                        <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="toko_id" name="toko_id">
-                                    <option value="">- Semua Toko -</option>
-                                    @foreach($tokos as $toko)
-                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="toko_id">(Pilih Toko)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="klasifikasi" name="klasifikasi_id" onchange="filterProduk()">
-                                    <option value="">- Semua Divisi -</option>
-                                    @foreach ($klasifikasis as $klasifikasi)
-                                        <option value="{{ $klasifikasi->id }}" {{ Request::get('klasifikasi_id') == $klasifikasi->id ? 'selected' : '' }}>{{ $klasifikasi->nama }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="klasifikasi">(Pilih Divisi)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="produk" name="produk">
-                                    <option value="">- Semua Produk -</option>
-                                    @foreach ($produks as $produk)
-                                        <option value="{{ $produk->id }}" data-klasifikasi="{{ $produk->klasifikasi_id }}" {{ Request::get('produk') == $produk->id ? 'selected' : '' }}>{{ $produk->nama_produk }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="produk">(Pilih Produk)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
-                                    value="{{ Request::get('tanggal_penjualan') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_penjualan">(Dari Tanggal)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
-                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_akhir">(Sampai Tanggal)</label>
-                            </div>
-                        </div>
-                    
-                    </form>
-                    
-                    <form id="searchForm" method="GET">
-                        <!-- Form fields go here -->
-                        <div class="col-md-3 mb-3">
-                            <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
-                                <i class="fas fa-search"></i> Cari
-                            </button>
-                            <button type="button" class="btn btn-primary btn-block" onclick="printReport()">
-                                <i class="fas fa-print"></i> Cetak
-                            </button>
-                            <button type="button" class="btn btn-success btn-block" onclick="exportExcelBK()">
-                                <i class="fas fa-file-excel"></i> Export Excel
-                            </button>
-                        </div>
-                    </form> --}}
+        
 
                     <form method="GET" id="form-action">
                         <div class="row">
                             <div class="col-md-3 mb-3">
-                                <label for="status">Pilih Toko</label>
+
+                                <label  for="created_at">Jenis Laporan</label>
+                                <select class="custom-select form-control" id="kategori2" name="kategori">
+                                    
+                                    <option value="">- Pilih -</option>
+                                    <option value="bk" {{ old('kategori2') == 'bk' ? 'selected' : '' }}>Laporan Barang Keluar Rinci</option>
+                                    <option value="bkglobal" {{ old('kategori2') == 'bkglobal' ? 'selected' : '' }}>Laporan Barang Keluar Global</option>
+                                </select>
+
+                                <label style="margin-top:7px"  for="status">Pilih Toko</label>
                                 <select class="select2bs4 select2-hidden-accessible" name="toko_id"
                                     data-placeholder="Pilih Toko" style="width: 100%;" data-select2-id="23"
                                     tabindex="-1" aria-hidden="true" id="toko_id">
@@ -139,12 +92,8 @@
                                             <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
                                         @endforeach
                                 </select>
-                                <label style="margin-top:7px"  for="created_at">Jenis Laporan</label>
-                                <select class="custom-select form-control" id="status" name="status">
-                                    <option value="">- Pilih Laporan -</option>
-                                    <option value="bk">Laporan Barang Keluar Rinci</option>
-                                    <option value="bkglobal" selected>Laporan Barang Keluar Global</option>
-                                </select>
+
+                                
                             </div>
 
                             <div class="col-md-3 mb-3">
@@ -264,27 +213,17 @@
     </section>
    
     <script>
-        $(document).ready(function() {
-            // Detect the change event on the 'status' dropdown
-            $('#status').on('change', function() {
-                // Get the selected value
-                var selectedValue = $(this).val();
-
-                // Check the selected value and redirect accordingly
-                switch (selectedValue) {
-                    case 'bk':
-                        window.location.href = "{{ url('admin/barangKeluarRinci') }}";
-                        break;
-                    case 'bkglobal':
-                        window.location.href = "{{ url('admin/barangKeluar') }}";
-                        break;
-                    default:
-                        break;
-                }
-            });
+        document.getElementById('kategori2').addEventListener('change', function() {
+            var selectedValue = this.value;
+    
+            if (selectedValue === 'bk') {
+                window.location.href = "{{ url('admin/barangKeluarRinci') }}";
+            } else if (selectedValue === 'bkglobal') {
+                window.location.href = "{{ url('admin/barangKeluar') }}";
+            }
         });
     </script>
-
+    
     <script>
         function filterProduk() {
             var klasifikasiId = document.getElementById('klasifikasi').value;
