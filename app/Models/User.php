@@ -92,6 +92,13 @@ class User extends Authenticatable
         }
         return false;
     }
+    public function isTokobumiayu()
+    {
+        if ($this->level == 'toko_bumiayu') {
+            return true;
+        }
+        return false;
+    }
 
     public function karyawan()
     {
