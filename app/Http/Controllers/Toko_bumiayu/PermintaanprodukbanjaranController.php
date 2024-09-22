@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_bumiayu;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -39,7 +39,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 
 
-class PermintaanprodukbanjaranController extends Controller{
+class PermintaanprodukbumiayuController extends Controller{
 
     public function index()
     {
@@ -53,7 +53,7 @@ class PermintaanprodukbanjaranController extends Controller{
             ->with('detailpermintaanproduks')  // Eager load detailpermintaanproduks untuk tampilan
             ->get();
     
-        return view('toko_banjaran.permintaan_produk.index', compact('permintaanProduks'));
+        return view('toko_bumiayu.permintaan_produk.index', compact('permintaanProduks'));
     }
     
     
@@ -62,7 +62,7 @@ class PermintaanprodukbanjaranController extends Controller{
     {
         $klasifikasis = Klasifikasi::with('produks')->get();
         
-        return view('toko_banjaran.permintaan_produk.create', compact('klasifikasis'));
+        return view('toko_bumiayu.permintaan_produk.create', compact('klasifikasis'));
     }
 
     public function store(Request $request)
@@ -138,7 +138,7 @@ public function show($id)
     // Mengambil nama toko dari salah satu detail permintaan produk
     $toko = $detailPermintaanProduks->first()->toko;
 
-    return view('toko_banjaran.permintaan_produk.show', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi', 'subklasifikasiByDivisi', 'toko'));
+    return view('toko_bumiayu.permintaan_produk.show', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi', 'subklasifikasiByDivisi', 'toko'));
 }
 
 
@@ -161,7 +161,7 @@ public function show($id)
         });
         $toko = $detailPermintaanProduks->first()->toko;
 
-        $pdf = FacadePdf::loadView('toko_banjaran.permintaan_produk.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi','toko'));
+        $pdf = FacadePdf::loadView('toko_bumiayu.permintaan_produk.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi','toko'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
     }
@@ -196,7 +196,7 @@ public function edit($id)
     $klasifikasis = Klasifikasi::with('produks')->get();
     $detailPermintaanProduk = $permintaanProduk->detailpermintaanproduks()->get();
 
-    return view('toko_banjaran.permintaan_produk.update', compact('permintaanProduk', 'klasifikasis', 'detailPermintaanProduk'));
+    return view('toko_bumiayu.permintaan_produk.update', compact('permintaanProduk', 'klasifikasis', 'detailPermintaanProduk'));
 }
 
 

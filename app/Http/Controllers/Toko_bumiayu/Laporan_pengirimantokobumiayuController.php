@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_bumiayu;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -37,7 +37,7 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
-class Laporan_pengirimantokobanjaranController extends Controller
+class Laporan_pengirimantokobumiayuController extends Controller
 {
 
     public function index(Request $request)
@@ -70,7 +70,7 @@ class Laporan_pengirimantokobanjaranController extends Controller
             // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
             $stokBarangJadi = $query->get()->groupBy('kode_pengiriman');
 
-            return view('toko_banjaran.laporan_pengirimantokobanjaran.index', compact('stokBarangJadi'));
+            return view('toko_bumiayu.laporan_pengirimantokobumiayu.index', compact('stokBarangJadi'));
     }
 
 
@@ -116,7 +116,7 @@ class Laporan_pengirimantokobanjaranController extends Controller
     $dompdf = new \Dompdf\Dompdf($options);
     
     // Memuat konten HTML dari view
-    $html = view('toko_banjaran.laporan_pengirimantokobanjaran.print', [
+    $html = view('toko_bumiayu.laporan_pengirimantokobumiayu.print', [
     'groupedData'  => $groupedData, 
     'firstItem' => $firstItem , 
     'tanggalPengiriman', 

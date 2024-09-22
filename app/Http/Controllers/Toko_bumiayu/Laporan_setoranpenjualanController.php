@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_bumiayu;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -160,7 +160,7 @@ class Laporan_setoranpenjualanController extends Controller
     //     $total_setoran = $total_penjualan - $total_metode;
 
     //     // Kembalikan view dengan data yang diperlukan
-    //     return view('toko_banjaran.laporan_setoranpenjualan.index', compact(
+    //     return view('toko_bumiayu.laporan_setoranpenjualan.index', compact(
     //         'inquery',
     //         'kasirs',
     //         'penjualan_kotor',
@@ -294,7 +294,7 @@ class Laporan_setoranpenjualanController extends Controller
     $total_setoran = $total_penjualan - $total_metode;
 
     // Kembalikan view dengan data yang diperlukan
-    return view('toko_banjaran.laporan_setoranpenjualan.index', compact(
+    return view('toko_bumiayu.laporan_setoranpenjualan.index', compact(
         'inquery',
         'kasirs',
         'penjualan_kotor',
@@ -427,7 +427,7 @@ class Laporan_setoranpenjualanController extends Controller
         $total_setoran = $total_penjualan - $total_metode;
 
         // Buat PDF dari view 'print'
-        $pdf = FacadePdf::loadView('toko_banjaran.laporan_setoranpenjualan.print', compact(
+        $pdf = FacadePdf::loadView('toko_bumiayu.laporan_setoranpenjualan.print', compact(
             'inquery',
             'kasirs',
             'penjualan_kotor',

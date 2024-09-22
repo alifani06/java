@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_bumiayu;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -32,7 +32,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class Laporan_pemesananprodukbanjaranController extends Controller
+class Laporan_pemesananprodukbumiayuController extends Controller
 {
     
    
@@ -99,7 +99,7 @@ class Laporan_pemesananprodukbanjaranController extends Controller
         $klasifikasis = Klasifikasi::all();
     
         // Kembalikan view dengan data yang dibutuhkan
-        return view('toko_banjaran.laporan_pemesananproduk.index', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
+        return view('toko_bumiayu.laporan_pemesananproduk.index', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
     }
     
     
@@ -173,7 +173,7 @@ class Laporan_pemesananprodukbanjaranController extends Controller
         $klasifikasis = Klasifikasi::all();
     
         // Kembalikan view dengan data pemesanan produk, produk, toko, dan klasifikasi
-        return view('toko_banjaran.laporan_pemesananproduk.indexglobal', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
+        return view('toko_bumiayu.laporan_pemesananproduk.indexglobal', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
     }
     
    
@@ -242,7 +242,7 @@ class Laporan_pemesananprodukbanjaranController extends Controller
         });
 
         // Generate PDF menggunakan Facade PDF
-        $pdf = FacadePdf::loadView('toko_banjaran.laporan_pemesananproduk.print', [
+        $pdf = FacadePdf::loadView('toko_bumiayu.laporan_pemesananproduk.print', [
             'groupedByKlasifikasi' => $groupedByKlasifikasi,
             'startDate' => $tanggalPemesanan,
             'endDate' => $tanggalAkhir,
@@ -391,7 +391,7 @@ class Laporan_pemesananprodukbanjaranController extends Controller
     //     }
 
     //     // Buat PDF menggunakan Facade PDF
-    //     $pdf = FacadePdf::loadView('toko_banjaran.laporan_pemesananproduk.printglobal', [
+    //     $pdf = FacadePdf::loadView('toko_bumiayu.laporan_pemesananproduk.printglobal', [
     //         'groupedData' => $groupedData,
     //         'totalSubtotal' => $totalSubtotal,
     //         'startDate' => $formattedStartDate,
@@ -525,7 +525,7 @@ class Laporan_pemesananprodukbanjaranController extends Controller
         }
     
         // Buat PDF menggunakan Facade PDF
-        $pdf = FacadePdf::loadView('toko_banjaran.laporan_pemesananproduk.printglobal', [
+        $pdf = FacadePdf::loadView('toko_bumiayu.laporan_pemesananproduk.printglobal', [
             'groupedData' => $groupedData,
             'totalSubtotal' => $totalSubtotal,
             'startDate' => $formattedStartDate,

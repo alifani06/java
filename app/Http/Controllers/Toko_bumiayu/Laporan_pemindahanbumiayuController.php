@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_bumiayu;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -41,7 +41,7 @@ use App\Imports\ProdukImport;
 use App\Models\Retur_barnagjadi;
 use Maatwebsite\Excel\Facades\Excel;
 
-class Laporan_pemindahanbanjaranController extends Controller{
+class Laporan_pemindahanbumiayuController extends Controller{
 
     public function index(Request $request)
     {
@@ -73,7 +73,7 @@ class Laporan_pemindahanbanjaranController extends Controller{
             // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
             $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pemindahan');
 
-            return view('toko_banjaran.laporan_pemindahanslawi.index', compact('stokBarangJadi'));
+            return view('toko_bumiayu.laporan_pemindahanbumiayu.index', compact('stokBarangJadi'));
     }
 
 
@@ -149,7 +149,7 @@ public function show($id)
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    return view('toko_banjaran.inquery_pemindahanslawi.show', compact('pengirimanBarangJadi', 'firstItem'));
+    return view('toko_bumiayu.inquery_pemindahanslawi.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
 // public function printReport(Request $request)
@@ -182,7 +182,7 @@ public function show($id)
 //     // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
 //     $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pemindahan');
 
-//     return view('toko_banjaran.laporan_pemindahanslawi.print', compact('stokBarangJadi', 'status', 'tanggal_input', 'tanggal_akhir'));
+//     return view('toko_bumiayu.laporan_pemindahanbumiayu.print', compact('stokBarangJadi', 'status', 'tanggal_input', 'tanggal_akhir'));
 // }
 
 public function printReport(Request $request)
@@ -216,7 +216,7 @@ public function printReport(Request $request)
     $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pemindahan');
 
     // Generate PDF
-    $pdf = FacadePdf::loadView('toko_banjaran.laporan_pemindahanslawi.print', compact('stokBarangJadi', 'status', 'tanggal_input', 'tanggal_akhir'));
+    $pdf = FacadePdf::loadView('toko_bumiayu.laporan_pemindahanbumiayu.print', compact('stokBarangJadi', 'status', 'tanggal_input', 'tanggal_akhir'));
 
     // Download PDF file
     return $pdf->stream('laporan_pemindahan.pdf');

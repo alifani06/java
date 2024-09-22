@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_bumiayu;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -17,7 +17,7 @@ class Metode_pembayaranController extends Controller
     public function index()
     {
         $metodes = Metodepembayaran::all();
-        return view('toko_banjaran.metode_pembayaran.index', compact('metodes'));
+        return view('toko_bumiayu.metode_pembayaran.index', compact('metodes'));
         // tidak memiliki akses
     }
 
@@ -35,7 +35,7 @@ class Metode_pembayaranController extends Controller
     public function create()
     {
         $metodes = Metodepembayaran::all();
-        return view('toko_banjaran/metode_pembayaran.create', compact('metodes'));
+        return view('toko_bumiayu/metode_pembayaran.create', compact('metodes'));
         // tidak memiliki akses
     }
 
@@ -75,7 +75,7 @@ class Metode_pembayaranController extends Controller
             ]
         ));
 
-        return redirect('toko_banjaran/metode_pembayaran')->with('success', 'Berhasil menambahkan metode pembayaran');
+        return redirect('toko_bumiayu/metode_pembayaran')->with('success', 'Berhasil menambahkan metode pembayaran');
     }
 
     public function kode()
@@ -98,14 +98,14 @@ class Metode_pembayaranController extends Controller
     {
 
         $karyawan = Karyawan::where('id', $id)->first();
-        return view('toko_banjaran/karyawan.show', compact('karyawan'));
+        return view('toko_bumiayu/karyawan.show', compact('karyawan'));
     }
 
     public function edit($id)
     {
 
         $metode = Metodepembayaran::where('id', $id)->first();
-        return view('toko_banjaran/metode_pembayaran.update', compact('metode'));
+        return view('toko_bumiayu/metode_pembayaran.update', compact('metode'));
     }
 
     public function update(Request $request, $id)
@@ -137,7 +137,7 @@ class Metode_pembayaranController extends Controller
         
         $metode->save();
 
-        return redirect('toko_banjaran/metode_pembayaran')->with('success', 'Berhasil mengubah metode');
+        return redirect('toko_bumiayu/metode_pembayaran')->with('success', 'Berhasil mengubah metode');
     }
 
     public function destroy($id)
@@ -145,6 +145,6 @@ class Metode_pembayaranController extends Controller
         $metode = Metodepembayaran::find($id);
         $metode->delete();
 
-        return redirect('toko_banjaran/metode_pembayaran')->with('success', 'Berhasil menghapus Metode pembayaran');
+        return redirect('toko_bumiayu/metode_pembayaran')->with('success', 'Berhasil menghapus Metode pembayaran');
     }
 }

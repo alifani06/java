@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_bumiayu;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -46,7 +46,7 @@ use App\Models\Pemindahan_tokobanjaran;
 use App\Models\Retur_barnagjadi;
 use Maatwebsite\Excel\Facades\Excel;
 
-class Pemindahan_tokobanjaranController extends Controller{
+class Pemindahan_tokobumiayuController extends Controller{
 
     public function index()
     {
@@ -56,7 +56,7 @@ class Pemindahan_tokobanjaranController extends Controller{
                             ->orderBy('created_at', 'desc')
                             ->get();
     
-        return view('toko_banjaran.pemindahan_tokobanjaran.index', compact('pemindahan_tokobanjaran'));
+        return view('toko_bumiayu.pemindahan_tokobanjaran.index', compact('pemindahan_tokobanjaran'));
     }
       
 
@@ -66,7 +66,7 @@ public function create()
     $produks = Produk::all();
     $tokos = Toko::all();
 
-    return view('toko_banjaran.pemindahan_tokobanjaran.create', compact('produks', 'tokos'));
+    return view('toko_bumiayu.pemindahan_tokobanjaran.create', compact('produks', 'tokos'));
 }
 
 
@@ -244,7 +244,7 @@ public function show($id)
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    return view('toko_banjaran.inquery_returbanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
+    return view('toko_bumiayu.inquery_returbanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
 public function print($id)
@@ -262,11 +262,11 @@ public function print($id)
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        $pdf = FacadePdf::loadView('toko_banjaran.inquery_returbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
+        $pdf = FacadePdf::loadView('toko_bumiayu.inquery_returbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
         
-        // return view('toko_banjaran.retur_tokoslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
+        // return view('toko_bumiayu.retur_tokoslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
         }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_bumiayu;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -41,7 +41,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class PenjualanprodukbanjaranController extends Controller
+class PenjualanprodukbumiayuController extends Controller
 {
     public function index(Request $request)
     {
@@ -59,7 +59,7 @@ class PenjualanprodukbanjaranController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
     
-        return view('toko_banjaran.penjualan_produk.index', compact('inquery'));
+        return view('toko_bumiayu.penjualan_produk.index', compact('inquery'));
     }
     
 
@@ -97,7 +97,7 @@ class PenjualanprodukbanjaranController extends Controller
     
     //     $kategoriPelanggan = 'member';
         
-    //     return view('toko_banjaran.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks', 'metodes', 'allProduks'));
+    //     return view('toko_bumiayu.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks', 'metodes', 'allProduks'));
     // }
     
  
@@ -246,7 +246,7 @@ class PenjualanprodukbanjaranController extends Controller
     //     $details = Detailpenjualanproduk::where('penjualanproduk_id', $cetakpdf->id)->get();
     
     //     // Kirimkan URL untuk tab baru
-    //     $pdfUrl = route('toko_banjaran.penjualan_produk.cetak-pdf', ['id' => $cetakpdf->id]);
+    //     $pdfUrl = route('toko_bumiayu.penjualan_produk.cetak-pdf', ['id' => $cetakpdf->id]);
     
     //     // Return response dengan URL PDF
     //     return response()->json([
@@ -306,7 +306,7 @@ class PenjualanprodukbanjaranController extends Controller
 
         $kategoriPelanggan = 'member';
         
-        return view('toko_banjaran.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
+        return view('toko_bumiayu.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
     }
 
         //store lama
@@ -448,7 +448,7 @@ class PenjualanprodukbanjaranController extends Controller
         $details = Detailpenjualanproduk::where('penjualanproduk_id', $cetakpdf->id)->get();
 
         // Kirimkan URL untuk tab baru
-        $pdfUrl = route('toko_banjaran.penjualan_produk.cetak-pdf', ['id' => $cetakpdf->id]);
+        $pdfUrl = route('toko_bumiayu.penjualan_produk.cetak-pdf', ['id' => $cetakpdf->id]);
 
         // Return response dengan URL PDF
         return response()->json([
@@ -472,7 +472,7 @@ class PenjualanprodukbanjaranController extends Controller
         $produks = Produk::with('tokobanjaran')->get();
         $kategoriPelanggan = 'member';
  
-        return view('toko_banjaran.penjualan_produk.pelunasan', compact('barangs','metodes', 'tokos', 'produks', 'details', 'tokoslawis', 'tokobanjarans', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks'));
+        return view('toko_bumiayu.penjualan_produk.pelunasan', compact('barangs','metodes', 'tokos', 'produks', 'details', 'tokoslawis', 'tokobanjarans', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks'));
     }
     
     public function fetchProductData(Request $request)
@@ -599,7 +599,7 @@ class PenjualanprodukbanjaranController extends Controller
     //     $details = DetailPenjualanProduk::where('penjualanproduk_id', $penjualan->id)->get();
     
     //     // Redirect ke halaman cetak dengan menyertakan data sukses dan detail pelunasan
-    //     return redirect()->route('toko_banjaran.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id])->with([
+    //     return redirect()->route('toko_bumiayu.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id])->with([
     //         'success' => 'Data berhasil disimpan.',
     //         'pelunasan' => $pelunasan,
     //         'penjualan' => $penjualan,
@@ -721,7 +721,7 @@ class PenjualanprodukbanjaranController extends Controller
         $details = DetailPenjualanProduk::where('penjualanproduk_id', $penjualan->id)->get();
 
             // Kirimkan URL untuk tab baru
-        $pdfUrl = route('toko_banjaran.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id]);
+        $pdfUrl = route('toko_bumiayu.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id]);
 
         // Return response dengan URL PDF
         return response()->json([
@@ -842,7 +842,7 @@ class PenjualanprodukbanjaranController extends Controller
         $tokos = $penjualan->toko;
 
         // Pass the retrieved data to the view
-        return view('toko_banjaran.penjualan_produk.cetak', compact('penjualan', 'pelanggans', 'tokos'));
+        return view('toko_bumiayu.penjualan_produk.cetak', compact('penjualan', 'pelanggans', 'tokos'));
     }
 
     public function cetakpelunasan($id)
@@ -855,7 +855,7 @@ class PenjualanprodukbanjaranController extends Controller
         $tokos = $penjualan->toko;
 
         // Pass the retrieved data to the view
-        return view('toko_banjaran.penjualan_produk.cetakpelunasan', compact('penjualan', 'pelanggans', 'tokos'));
+        return view('toko_bumiayu.penjualan_produk.cetakpelunasan', compact('penjualan', 'pelanggans', 'tokos'));
     }
     
     public function cetakPdf($id)
@@ -864,7 +864,7 @@ class PenjualanprodukbanjaranController extends Controller
         $pelanggans = Pelanggan::all();
         $tokos = $penjualan->toko;
     
-        $pdf = FacadePdf::loadView('toko_banjaran.penjualan_produk.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans'));
+        $pdf = FacadePdf::loadView('toko_bumiayu.penjualan_produk.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans'));
         $pdf->setPaper('a4', 'portrait');
     
         return $pdf->stream('penjualan.pdf');
@@ -882,7 +882,7 @@ class PenjualanprodukbanjaranController extends Controller
       $tokos = $penjualan->toko;
 
       // Pass the retrieved data to the view
-      return view('toko_banjaran.penjualan_produk.cetak', compact('penjualan', 'pelanggans', 'tokos'));
+      return view('toko_bumiayu.penjualan_produk.cetak', compact('penjualan', 'pelanggans', 'tokos'));
     }
     
 
@@ -896,7 +896,7 @@ class PenjualanprodukbanjaranController extends Controller
             $inquery = Pemesananproduk::with('detailpemesananproduk')->where('id', $id)->first();
             $selectedTokoId = $inquery->toko_id; // ID toko yang dipilih
 
-            return view('toko_banjaran.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
+            return view('toko_bumiayu.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
         }
         
 
@@ -1025,7 +1025,7 @@ class PenjualanprodukbanjaranController extends Controller
             $details = Detailpemesananproduk::where('pemesananproduk_id', $pemesanan->id)->get();
         
             // Redirect ke halaman indeks pemesananproduk
-            return redirect('toko_banjaran/pemesanan_produk');
+            return redirect('toko_bumiayu/pemesanan_produk');
 
         }
         
@@ -1062,7 +1062,7 @@ class PenjualanprodukbanjaranController extends Controller
         //         $penjualan->delete();
         //     });
         
-        //     return redirect('toko_banjaran/penjualan_produk')->with('success', 'Berhasil menghapus data penjualan');
+        //     return redirect('toko_bumiayu/penjualan_produk')->with('success', 'Berhasil menghapus data penjualan');
         // }
         public function destroy($id)
         {
@@ -1086,7 +1086,7 @@ class PenjualanprodukbanjaranController extends Controller
                 $penjualan->delete();
             });
 
-            return redirect('toko_banjaran/penjualan_produk')->with('success', 'Berhasil menghapus data penjualan');
+            return redirect('toko_bumiayu/penjualan_produk')->with('success', 'Berhasil menghapus data penjualan');
         }
 
         

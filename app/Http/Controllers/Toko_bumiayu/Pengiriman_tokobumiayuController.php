@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_bumiayu;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -48,7 +48,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 
 
-class Pengiriman_tokobanjaranController extends Controller{
+class Pengiriman_tokobumiayuController extends Controller{
 
 
     public function index(Request $request)
@@ -90,7 +90,7 @@ class Pengiriman_tokobanjaranController extends Controller{
                 return $item->pengiriman_barangjadi ? $item->pengiriman_barangjadi->kode_pengiriman : 'undefined';
             });
     
-        return view('toko_banjaran.pengiriman_tokobanjaran.index', compact('stokBarangJadi'));
+        return view('toko_bumiayu.pengiriman_tokobanjaran.index', compact('stokBarangJadi'));
     }
 
     public function pengiriman_pemesanan(Request $request)
@@ -132,7 +132,7 @@ class Pengiriman_tokobanjaranController extends Controller{
                 return $item->pengiriman_barangjadi ? $item->pengiriman_barangjadi->kode_pengirimanpesanan : 'undefined';
             });
     
-        return view('toko_banjaran.pengiriman_tokobanjaran.pengiriman_pemesanan', compact('stokBarangJadi'));
+        return view('toko_bumiayu.pengiriman_tokobanjaran.pengiriman_pemesanan', compact('stokBarangJadi'));
     }
     
     public function show($id)
@@ -151,7 +151,7 @@ class Pengiriman_tokobanjaranController extends Controller{
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        return view('toko_banjaran.pengiriman_tokobanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
+        return view('toko_bumiayu.pengiriman_tokobanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
     }
 
     public function print($id)
@@ -169,7 +169,7 @@ class Pengiriman_tokobanjaranController extends Controller{
 
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
-        $pdf = FacadePdf::loadView('toko_banjaran.pengiriman_tokobanjaran.print', compact('detailStokBarangJadi', 'pengirimanBarangJadi', 'firstItem'));
+        $pdf = FacadePdf::loadView('toko_bumiayu.pengiriman_tokobanjaran.print', compact('detailStokBarangJadi', 'pengirimanBarangJadi', 'firstItem'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
     }
@@ -388,7 +388,7 @@ public function unpost_pengiriman($id)
         $stok_barangjadi = Stok_Barangjadi::findOrFail($id);
         $klasifikasis = Klasifikasi::all(); // Menyediakan daftar klasifikasi
 
-        return view('toko_banjaran.stok_barangjadi.edit', compact('stok_barangjadi', 'klasifikasis'));
+        return view('toko_bumiayu.stok_barangjadi.edit', compact('stok_barangjadi', 'klasifikasis'));
     }
 
     // Method untuk memproses update data
@@ -426,7 +426,7 @@ public function unpost_pengiriman($id)
                 $pemesanan->delete();
             });
         
-            return redirect('toko_banjaran/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
+            return redirect('toko_bumiayu/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
         }
         
         public function import(Request $request)
@@ -445,6 +445,6 @@ public function unpost_pengiriman($id)
         {
             $klasifikasis = Klasifikasi::with('produks')->get();
             $importedData = session('imported_data', []);
-            return view('toko_banjaran.permintaan_produk.form', compact('klasifikasis', 'importedData'));
+            return view('toko_bumiayu.permintaan_produk.form', compact('klasifikasis', 'importedData'));
         }
 }

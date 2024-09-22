@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_bumiayu;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -107,7 +107,7 @@ class Laporan_penjualanprodukController extends Controller
         $klasifikasis = Klasifikasi::all();
 
         // Kembalikan view dengan data penjualan produk, produk, toko, dan klasifikasi
-        return view('toko_banjaran.laporan_penjualanproduk.index', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
+        return view('toko_bumiayu.laporan_penjualanproduk.index', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
     }
 
 
@@ -178,7 +178,7 @@ class Laporan_penjualanprodukController extends Controller
         $klasifikasis = Klasifikasi::all();
 
         // Kembalikan view dengan data penjualan produk, produk, dan toko
-        return view('toko_banjaran.laporan_penjualanproduk.global', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
+        return view('toko_bumiayu.laporan_penjualanproduk.global', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
     }
  
 
@@ -245,7 +245,7 @@ public function printReport(Request $request)
     $formattedEndDate = $tanggalAkhir ? Carbon::parse($tanggalAkhir)->format('d-m-Y') : 'N/A';
 
     // Generate PDF
-    $pdf = FacadePdf::loadView('toko_banjaran.laporan_penjualanproduk.print', [
+    $pdf = FacadePdf::loadView('toko_bumiayu.laporan_penjualanproduk.print', [
         'inquery' => $inquery,
         'startDate' => $formattedStartDate,
         'endDate' => $formattedEndDate,
@@ -318,7 +318,7 @@ public function printReportglobal(Request $request)
     $dompdf = new Dompdf($options);
 
     // Memuat konten HTML dari view
-    $html = view('toko_banjaran.laporan_penjualanproduk.printglobal', [
+    $html = view('toko_bumiayu.laporan_penjualanproduk.printglobal', [
         'inquery' => $inquery,
         'startDate' => $formattedStartDate,
         'endDate' => $formattedEndDate,
@@ -415,7 +415,7 @@ public function posting_penjualanproduk($id)
             $inquery = Pemesananproduk::with('detailpemesananproduk')->where('id', $id)->first();
             $selectedTokoId = $inquery->toko_id; // ID toko yang dipilih
 
-            return view('toko_banjaran.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
+            return view('toko_bumiayu.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
         }
         
         public function update(Request $request, $id)
@@ -543,7 +543,7 @@ public function posting_penjualanproduk($id)
             $details = Detailpemesananproduk::where('pemesananproduk_id', $pemesanan->id)->get();
         
             // Redirect ke halaman indeks pemesananproduk
-            return redirect('toko_banjaran/inquery_pemesananproduk');
+            return redirect('toko_bumiayu/inquery_pemesananproduk');
 
         }
         

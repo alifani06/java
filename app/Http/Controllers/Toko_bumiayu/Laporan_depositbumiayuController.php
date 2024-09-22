@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_bumiayu;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -18,7 +18,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class Laporan_depositbanjaranController extends Controller
+class Laporan_depositbumiayuController extends Controller
 {
  
 
@@ -114,7 +114,7 @@ class Laporan_depositbanjaranController extends Controller
     //     $inquery = $inquery->get();
         
     //     // Kirim data ke view
-    //     return view('toko_banjaran.laporan_depositbanjaran.index', compact('inquery', 'tokos'));
+    //     return view('toko_bumiayu.laporan_depositbumiayu.index', compact('inquery', 'tokos'));
     // }
 
     public function index(Request $request)
@@ -203,7 +203,7 @@ class Laporan_depositbanjaranController extends Controller
     $inquery = $inquery->get();
     
     // Kirim data ke view
-    return view('toko_banjaran.laporan_depositbanjaran.index', compact('inquery', 'tokos'));
+    return view('toko_bumiayu.laporan_depositbumiayu.index', compact('inquery', 'tokos'));
 }
 
     
@@ -285,7 +285,7 @@ class Laporan_depositbanjaranController extends Controller
         $inquery = $inquery->get();
         
         // Kirim data ke view
-        return view('toko_banjaran.laporan_depositbanjaran.indexrinci', compact('inquery', 'tokos'));
+        return view('toko_bumiayu.laporan_depositbumiayu.indexrinci', compact('inquery', 'tokos'));
     }
 
     public function indexsaldo(Request $request)
@@ -318,7 +318,7 @@ class Laporan_depositbanjaranController extends Controller
         }
 
         // Kirim data ke view
-        return view('toko_banjaran.laporan_depositbanjaran.indexsaldo', compact('saldoPerToko', 'tokos', 'toko_id'));
+        return view('toko_bumiayu.laporan_depositbumiayu.indexsaldo', compact('saldoPerToko', 'tokos', 'toko_id'));
     }
 
 
@@ -424,7 +424,7 @@ class Laporan_depositbanjaranController extends Controller
         $branchName = Toko::find($toko_id)->nama_toko ?? 'Toko Banjaran';
     
         // Buat PDF menggunakan Facade PDF
-        $pdf = FacadePdf::loadView('toko_banjaran.laporan_depositbanjaran.print', [
+        $pdf = FacadePdf::loadView('toko_bumiayu.laporan_depositbumiayu.print', [
             'inquery' => $inquery,
             'tokos' => $tokos,
             'status' => $status,
@@ -549,7 +549,7 @@ class Laporan_depositbanjaranController extends Controller
         });
 
         // Kirim data ke view cetak
-        $pdf = FacadePdf::loadView('toko_banjaran.laporan_depositbanjaran.printrinci', compact(
+        $pdf = FacadePdf::loadView('toko_bumiayu.laporan_depositbumiayu.printrinci', compact(
             'inquery', 
             'tokos', 
             'status', 
@@ -627,7 +627,7 @@ class Laporan_depositbanjaranController extends Controller
     }
 
     // Kirim data ke view cetak
-    $pdf = FacadePdf::loadView('toko_banjaran.laporan_depositbanjaran.printsaldo', compact(
+    $pdf = FacadePdf::loadView('toko_bumiayu.laporan_depositbumiayu.printsaldo', compact(
         'saldoPerToko',
         'tokos',
         'toko_id',

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_bumiayu;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -46,7 +46,7 @@ use App\Imports\ProdukImport;
 use App\Models\Retur_barnagjadi;
 use Maatwebsite\Excel\Facades\Excel;
 
-class Inquery_pemindahanbanjaranController extends Controller{
+class Inquery_pemindahanbumiayuController extends Controller{
 
     // public function index(Request $request)
     // {
@@ -78,7 +78,7 @@ class Inquery_pemindahanbanjaranController extends Controller{
     //         // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
     //         $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pemindahan');
 
-    //         return view('toko_banjaran.inquery_pemindahanbanjaran.index', compact('stokBarangJadi'));
+    //         return view('toko_bumiayu.inquery_pemindahanbanjaran.index', compact('stokBarangJadi'));
     // }
     public function index(Request $request)
     {
@@ -122,7 +122,7 @@ class Inquery_pemindahanbanjaranController extends Controller{
             ->get()
             ->groupBy('kode_pemindahan');
     
-        return view('toko_banjaran.inquery_pemindahanbanjaran.index', compact('stokBarangJadi'));
+        return view('toko_bumiayu.inquery_pemindahanbanjaran.index', compact('stokBarangJadi'));
     }
 
 
@@ -300,7 +300,7 @@ public function show($id)
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    return view('toko_banjaran.inquery_pemindahanbanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
+    return view('toko_bumiayu.inquery_pemindahanbanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
 public function print($id)
@@ -318,11 +318,11 @@ public function print($id)
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        $pdf = FacadePdf::loadView('toko_banjaran.inquery_pemindahanbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
+        $pdf = FacadePdf::loadView('toko_bumiayu.inquery_pemindahanbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
         
-        // return view('toko_banjaran.retur_tokoslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
+        // return view('toko_bumiayu.retur_tokoslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
     }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_bumiayu;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -45,7 +45,7 @@ use Dompdf\Options;
 
 
 
-class Laporan_stoktokobanjaranController extends Controller
+class Laporan_stoktokobumiayuController extends Controller
 {
 
     public function index(Request $request)
@@ -118,7 +118,7 @@ class Laporan_stoktokobanjaranController extends Controller
             ? SubKlasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get() 
             : collect();
     
-        return view('toko_banjaran.laporan_stoktokobanjaran.index', compact('produkWithStok', 'klasifikasis', 'subklasifikasis', 'totalHarga', 'totalStok', 'totalSubTotal'));
+        return view('toko_bumiayu.laporan_stoktokobanjaran.index', compact('produkWithStok', 'klasifikasis', 'subklasifikasis', 'totalHarga', 'totalStok', 'totalSubTotal'));
     }
     
     
@@ -197,7 +197,7 @@ class Laporan_stoktokobanjaranController extends Controller
         $dompdf = new Dompdf($options);
     
         // Memuat konten HTML dari view
-        $html = view('toko_banjaran.laporan_stoktokobanjaran.print', [
+        $html = view('toko_bumiayu.laporan_stoktokobanjaran.print', [
             'produkWithStok' => $produkWithStok,
             'klasifikasis' => $klasifikasis,
             'subklasifikasis' => $subklasifikasis,

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_bumiayu;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Pelanggan;
 use App\Models\Hargajual;
 use App\Models\Tokoslawi;
-use App\Models\Tokobanjaran;
 use App\Models\Tokobenjaran;
 use App\Models\Tokotegal;
 use App\Models\Tokopemalang;
@@ -34,29 +33,69 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class PemesananprodukbanjaranController extends Controller
+class Inquery_depositbumiayuController extends Controller
 {
-    
+ 
     public function index(Request $request)
     {
-        $today = Carbon::today();
+        // Ambil parameter filter dari request
+        $status = $request->status;
+        $tanggal_pemesanan = $request->tanggal_pemesanan;
+        $tanggal_akhir = $request->tanggal_akhir;
+        $status_pelunasan = $request->status_pelunasan;
     
-        $inquery = Pemesananproduk::with('dppemesanan') // Memuat relasi dppemesanan
-            ->where('toko_id', 1) // Hanya tampilkan data dengan toko_id = 1
-            ->where(function ($query) use ($today) {
-                $query->whereDate('created_at', $today)
-                      ->orWhere(function ($query) use ($today) {
-                          $query->where('status', 'unpost')
-                                ->whereDate('created_at', '<', $today);
-                      });
-            })
-            ->orderBy('created_at', 'desc')
-            ->get();
+        // Query dasar untuk mengambil data Dppemesanan
+        $inquery = Dppemesanan::with(['pemesananproduk.toko']) ;// Memuat relasi toko melalui pemesananproduk
+            // ->orderBy('created_at', 'desc');
+    
+        // Filter berdasarkan status
+        if ($status) {
+            $inquery->whereHas('pemesananproduk', function ($query) use ($status) {
+                $query->where('status', $status);
+            });
+        }
+    
+        // Filter berdasarkan tanggal pemesanan
+        if ($tanggal_pemesanan && $tanggal_akhir) {
+            $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_pemesanan, $tanggal_akhir) {
+                $query->whereBetween('tanggal_pemesanan', [$tanggal_pemesanan, $tanggal_akhir]);
+            });
+        } elseif ($tanggal_pemesanan) {
+            $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
+            $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_pemesanan) {
+                $query->where('tanggal_pemesanan', '>=', $tanggal_pemesanan);
+            });
+        } elseif ($tanggal_akhir) {
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_akhir) {
+                $query->where('tanggal_pemesanan', '<=', $tanggal_akhir);
+            });
+        } else {
+            // Jika tidak ada filter tanggal, tampilkan data untuk hari ini
+            $inquery->whereHas('pemesananproduk', function ($query) {
+                $query->whereDate('tanggal_pemesanan', Carbon::today());
+            });
+        }
+    
+        // Filter berdasarkan status pelunasan
+        if ($status_pelunasan == 'diambil') {
+            $inquery->whereNotNull('pelunasan');
+        } elseif ($status_pelunasan == 'belum_diambil') {
+            $inquery->whereNull('pelunasan');
+        }
+    
+        // Eksekusi query dan dapatkan hasilnya
+        $inquery = $inquery->get();
     
         // Kirim data ke view
-        return view('toko_banjaran.pemesanan_produk.index', compact('inquery'));
+        return view('toko_bumiayu.inquery_deposit.index', compact('inquery'));
     }
     
+    
+    
+
     public function pelanggan($id)
     {
         $user = Pelanggan::where('id', $id)->first();
@@ -64,28 +103,22 @@ class PemesananprodukbanjaranController extends Controller
         return json_decode($user);
     }
 
-    public function create(Request $request)
+
+    public function create()
     {
-        $search = $request->input('search'); // Ambil input pencarian
+
         $barangs = Barang::all();
         $pelanggans = Pelanggan::all();
-        // $pelanggans = Pelanggan::when($search, function ($query, $search) {
-        //     return $query->where('nama_pelanggan', 'like', '%' . $search . '%')
-        //                  ->orWhere('kode_lama', 'like', '%' . $search . '%');
-        // }) ->paginate(10);
         $details = Detailbarangjadi::all();
         $tokoslawis = Tokoslawi::all();
-        $tokobanjaran = Tokobanjaran::all();
         $tokos = Toko::all();
         $metodes = Metodepembayaran::all();
 
-        $produks = Produk::with(['tokobanjaran', 'stokpesanan_tokobanjaran'])->get();
+        $produks = Produk::with('tokoslawi')->get();
 
         $kategoriPelanggan = 'member';
     
-        return view('toko_banjaran.pemesanan_produk.create', compact('barangs','metodes', 
-        'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 
-        'kategoriPelanggan','tokobanjaran','search'));
+        return view('toko_bumiayu.pemesanan_produk.create', compact('barangs','metodes', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan'));
     }
     
     public function getCustomerByKode($kode)
@@ -119,6 +152,8 @@ class PemesananprodukbanjaranController extends Controller
         }
     }
    
+ 
+    
     public function store(Request $request)
     {
         // Validasi pelanggan
@@ -127,7 +162,7 @@ class PemesananprodukbanjaranController extends Controller
             [
                 'nama_pelanggan' => 'required',
                 'telp' => 'required',
-                'alamat' => 'nullable',
+                'alamat' => 'required',
                 'kategori' => 'required',
             ],
             [
@@ -165,18 +200,14 @@ class PemesananprodukbanjaranController extends Controller
                 $produk_id = $request->produk_id[$i] ?? '';
                 $catatanproduk = $request->catatanproduk[$i] ?? '';
                 $kode_produk = $request->kode_produk[$i] ?? '';
-                $kode_lama = $request->kode_lama[$i] ?? '';
                 $nama_produk = $request->nama_produk[$i] ?? '';
                 $jumlah = $request->jumlah[$i] ?? '';
                 $diskon = $request->diskon[$i] ?? '';
                 $harga = $request->harga[$i] ?? '';
                 $total = $request->total[$i] ?? '';
 
-                $nominal_diskon = ($harga * ($diskon / 100)) * $jumlah;
-
                 $data_pembelians->push([
                     'kode_produk' => $kode_produk,
-                    'kode_lama' => $kode_lama,
                     'produk_id' => $produk_id,
                     'catatanproduk' => $catatanproduk,
                     'nama_produk' => $nama_produk,
@@ -200,11 +231,10 @@ class PemesananprodukbanjaranController extends Controller
         $kode = $this->kode();
         $format = 'd/m/Y H:i';
         $tanggal_kirim = Carbon::createFromFormat($format, $request->tanggal_kirim)->format('Y-m-d H:i:s');
-        
+
         // Buat pemesanan baru
         $cetakpdf = Pemesananproduk::create([
             'nama_pelanggan' => $request->nama_pelanggan,
-            'kode_pelanggan' => $request->kode_pelanggan,
             'telp' => $request->telp,
             'alamat' => $request->alamat,
             'kategori' => $request->kategori,
@@ -215,7 +245,6 @@ class PemesananprodukbanjaranController extends Controller
             'alamat_penerima' => $request->alamat_penerima,
             'tanggal_kirim' => $tanggal_kirim,
             'toko_id' => '1',
-            'kasir' => ucfirst(auth()->user()->karyawan->nama_lengkap),
             'metode_id' => $request->metode_id, 
             'sub_totalasli' => $request->sub_totalasli,
             'total_fee' => $request->total_fee, 
@@ -224,8 +253,6 @@ class PemesananprodukbanjaranController extends Controller
             'qrcode_pemesanan' => 'https://javabakery.id/pemesanan/' . $kode,
             'tanggal_pemesanan' => Carbon::now('Asia/Jakarta'),
             'status' => 'posting',
-            'nominal_diskon' => $nominal_diskon, // Simpan total nominal diskon
-
         ]);
 
         // Simpan detail pemesanan
@@ -236,7 +263,6 @@ class PemesananprodukbanjaranController extends Controller
                     'produk_id' => $data_pesanan['produk_id'],
                     'catatanproduk' => $data_pesanan['catatanproduk'],
                     'kode_produk' => $data_pesanan['kode_produk'],
-                    'kode_lama' => $data_pesanan['kode_lama'],
                     'nama_produk' => $data_pesanan['nama_produk'],
                     'jumlah' => $data_pesanan['jumlah'],
                     'diskon' => $data_pesanan['diskon'],
@@ -251,23 +277,18 @@ class PemesananprodukbanjaranController extends Controller
                 'kode_dppemesanan' => $this->kodedp(), // Panggil fungsi kode untuk mendapatkan kode_dppemesanan
                 'dp_pemesanan' => preg_replace('/[^0-9]/', '', $request->dp_pemesanan),
                 'kekurangan_pemesanan' => preg_replace('/[^0-9]/', '', $request->kekurangan_pemesanan),
-                'tanggal_dp' => Carbon::now('Asia/Jakarta'),
-
             ]);
         }
 
         // Ambil detail pemesanan untuk ditampilkan di halaman cetak
         $details = Detailpemesananproduk::where('pemesananproduk_id', $cetakpdf->id)->get();
 
-
-            // Kirimkan URL untuk tab baru
-    $pdfUrl = route('toko_banjaran.pemesanan_produk.cetak-pdf', ['id' => $cetakpdf->id]);
-
-    // Return response dengan URL PDF
-    return response()->json([
-        'success' => 'Transaksi Berhasil',
-        'pdfUrl' => $pdfUrl,
-    ]);
+        // Redirect ke halaman cetak dengan menyertakan data sukses dan detail pemesanan
+        return redirect()->route('toko_bumiayu.pemesanan_produk.cetak', ['id' => $cetakpdf->id])->with([
+            'success' => 'Berhasil menambahkan barang jadi',
+            'pemesanan' => $cetakpdf,
+            'details' => $details,
+        ]);
     }
 
 
@@ -282,7 +303,7 @@ class PemesananprodukbanjaranController extends Controller
         $dp = $pemesanan->dppemesanan;
 
         // Mengirim data yang diambil ke view
-        return view('toko_banjaran.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans', 'tokos', 'dp'));
+        return view('toko_bumiayu.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans', 'tokos', 'dp'));
     }
 
     public function cetakPdf($id)
@@ -293,74 +314,43 @@ class PemesananprodukbanjaranController extends Controller
         $dp = $pemesanan->dppemesanan;
         $tokos = $pemesanan->toko;
     
-        $pdf = FacadePdf::loadView('toko_banjaran.pemesanan_produk.cetak-pdf', compact('pemesanan', 'tokos', 'pelanggans','dp'));
+        $pdf = FacadePdf::loadView('toko_bumiayu.pemesanan_produk.cetak-pdf', compact('pemesanan', 'tokos', 'pelanggans','dp'));
         $pdf->setPaper('a4', 'portrait');
     
         return $pdf->stream('pemesanan.pdf');
     }
 
-    // public function kode()
-    // {
-    //     $lastPemesanan = Pemesananproduk::latest()->first();
-    //     if (!$lastPemesanan) {
-    //         $num = 1;
-    //     } else {
-    //         $lastCode = $lastPemesanan->kode_pemesanan;
-    //         $num = (int) substr($lastCode, 3) + 1; // Mengambil angka setelah prefix 'SPP'
-    //     }
-        
-    //     $formattedNum = sprintf("%06s", $num); // Mengformat nomor urut menjadi 6 digit
-    //     $prefix = 'SPP';
-    //     $newCode = $prefix . $formattedNum; // Gabungkan prefix dengan nomor urut yang diformat
-    
-    //     return $newCode;
-    // }
-
     public function kode()
     {
-        $prefix = 'QBNJ';
-        $year = date('y'); // Dua digit terakhir dari tahun
-        $date = date('dm'); // Format bulan dan hari: MMDD
-    
-        // Mengambil kode retur terakhir yang dibuat pada hari yang sama
-        $lastBarang = Pemesananproduk::whereDate('tanggal_pemesanan', Carbon::today())
-                                      ->orderBy('kode_pemesanan', 'desc')
-                                      ->first();
-    
-        if (!$lastBarang) {
+        $lastPemesanan = Pemesananproduk::latest()->first();
+        if (!$lastPemesanan) {
             $num = 1;
         } else {
-            $lastCode = $lastBarang->kode_pemesanan;
-            $lastNum = (int) substr($lastCode, strlen($prefix . $date . $year)); // Mengambil urutan terakhir
-            $num = $lastNum + 1;
+            $lastCode = $lastPemesanan->kode_pemesanan;
+            $num = (int) substr($lastCode, 3) + 1; // Mengambil angka setelah prefix 'SPP'
         }
+        
+        $formattedNum = sprintf("%06s", $num); // Mengformat nomor urut menjadi 6 digit
+        $prefix = 'SPP';
+        $newCode = $prefix . $formattedNum; // Gabungkan prefix dengan nomor urut yang diformat
     
-        $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
-        $newCode = $prefix. $date  . $year . $formattedNum;
         return $newCode;
     }
 
     public function kodedp()
     {
-        $prefix = 'DPBNJ';
-        $year = date('y'); // Dua digit terakhir dari tahun
-        $date = date('dm'); // Format bulan dan hari: MMDD
-    
-        // Mengambil kode retur terakhir yang dibuat pada hari yang sama
-        $lastBarang = Dppemesanan::whereDate('tanggal_dp', Carbon::today())
-                                      ->orderBy('kode_dppemesanan', 'desc')
-                                      ->first();
-    
-        if (!$lastBarang) {
+        $lastPemesanan = Dppemesanan::latest()->first();
+        if (!$lastPemesanan) {
             $num = 1;
         } else {
-            $lastCode = $lastBarang->kode_dppemesanan;
-            $lastNum = (int) substr($lastCode, strlen($prefix. $date . $year )); // Mengambil urutan terakhir
-            $num = $lastNum + 1;
+            $lastCode = $lastPemesanan->kode_dppemesanan;
+            $num = (int) substr($lastCode, 3) + 1; // Mengambil angka setelah prefix 'SPP'
         }
+        
+        $formattedNum = sprintf("%06s", $num); // Mengformat nomor urut menjadi 6 digit
+        $prefix = 'DPP';
+        $newCode = $prefix . $formattedNum; // Gabungkan prefix dengan nomor urut yang diformat
     
-        $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
-        $newCode = $prefix. $date . $year  . $formattedNum;
         return $newCode;
     }
 
@@ -375,11 +365,11 @@ class PemesananprodukbanjaranController extends Controller
         $dp = $pemesanan->dppemesanan;
 
         // Mengirim data yang diambil ke view
-        return view('toko_banjaran.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans', 'tokos', 'dp'));
+        return view('toko_bumiayu.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans', 'tokos', 'dp'));
     }
 
-        public function edit($id)
-        {
+    public function edit($id)
+    {
             // Mengambil semua data yang diperlukan
             $pelanggans = Pelanggan::all();
             $tokoslawis = Tokoslawi::all();
@@ -396,12 +386,12 @@ class PemesananprodukbanjaranController extends Controller
             $metodes = Metodepembayaran::all();
         
             // Mengembalikan view dengan data yang diperlukan
-            return view('toko_banjaran.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks', 'selectedTokoId', 'metodes'));
-        }
+            return view('toko_bumiayu.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks', 'selectedTokoId', 'metodes'));
+    }
         
 
-        public function update(Request $request, $id)
-        {
+    public function update(Request $request, $id)
+    {
             // Validasi pelanggan
             $validasi_pelanggan = Validator::make(
                 $request->all(),
@@ -525,13 +515,12 @@ class PemesananprodukbanjaranController extends Controller
             $details = Detailpemesananproduk::where('pemesananproduk_id', $pemesanan->id)->get();
         
             // Redirect ke halaman indeks pemesananproduk
-            return redirect('toko_banjaran/pemesanan_produk');
+            return redirect('toko_bumiayu/pemesanan_produk');
 
-        }
+    }
         
-
-        public function destroy($id)
-        {
+    public function destroy($id)
+    {
             DB::transaction(function () use ($id) {
                 $pemesanan = Pemesananproduk::findOrFail($id);
         
@@ -542,8 +531,8 @@ class PemesananprodukbanjaranController extends Controller
                 $pemesanan->delete();
             });
         
-            return redirect('toko_banjaran/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
-        }
+            return redirect('toko_bumiayu/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
+    }
         
 
 }
