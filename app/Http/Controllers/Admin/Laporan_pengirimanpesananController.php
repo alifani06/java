@@ -74,56 +74,134 @@ class Laporan_pengirimanpesananController extends Controller
             }
 
             // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
-            $stokBarangJadi = $query->get()->groupBy('kode_pengiriman');
+            $stokBarangJadi = $query->get()->groupBy('kode_pengirimanpesanan');
             $tokos = Toko::all();
 
             return view('admin.laporan_pengirimanpesanan.index', compact('stokBarangJadi', 'tokos'));
     }
 
     
-    public function printReport(Request $request)
-    {
-        // Ambil parameter dari request
-        $tanggalPengiriman = $request->input('tanggal_pengiriman');
-        $tanggalAkhir = $request->input('tanggal_akhir');
-        $status = $request->input('status');
-        $toko_id = $request->input('toko_id'); // Tambahkan toko_id dari request
+// public function printReport(Request $request)
+//     {
+//         // Ambil parameter dari request
+//         $tanggalPengiriman = $request->input('tanggal_pengiriman');
+//         $tanggalAkhir = $request->input('tanggal_akhir');
+//         $status = $request->input('status');
+//         $toko_id = $request->input('toko_id'); // Tambahkan toko_id dari request
         
-        // Buat query untuk ambil data berdasarkan filter
-        $query = Pengiriman_barangjadipesanan::query();
+//         // Buat query untuk ambil data berdasarkan filter
+//         $query = Pengiriman_barangjadipesanan::query();
         
-        if ($tanggalPengiriman) {
-            $query->whereDate('tanggal_pengiriman', '>=', $tanggalPengiriman);
-        }
+//         if ($tanggalPengiriman) {
+//             $query->whereDate('tanggal_pengiriman', '>=', $tanggalPengiriman);
+//         }
         
-        if ($tanggalAkhir) {
-            $query->whereDate('tanggal_pengiriman', '<=', $tanggalAkhir);
-        }
+//         if ($tanggalAkhir) {
+//             $query->whereDate('tanggal_pengiriman', '<=', $tanggalAkhir);
+//         }
         
-        if ($status) {
-            $query->where('status', $status);
-        }
+//         if ($status) {
+//             $query->where('status', $status);
+//         }
         
-        if ($toko_id) {
-            $query->where('toko_id', $toko_id); // Tambahkan filter berdasarkan toko_id
-        }
+//         if ($toko_id) {
+//             $query->where('toko_id', $toko_id); // Tambahkan filter berdasarkan toko_id
+//         }
 
 
-        $formattedStartDate = $tanggalPengiriman ? Carbon::parse($tanggalPengiriman)->format('d-m-Y') : 'N/A';
-        $formattedEndDate = $tanggalAkhir ? Carbon::parse($tanggalAkhir)->format('d-m-Y') : 'N/A';
+//         $formattedStartDate = $tanggalPengiriman ? Carbon::parse($tanggalPengiriman)->format('d-m-Y') : 'N/A';
+//         $formattedEndDate = $tanggalAkhir ? Carbon::parse($tanggalAkhir)->format('d-m-Y') : 'N/A';
 
-        // Ambil data yang telah difilter
-        $pengirimanBarangJadi = $query->with(['produk.subklasifikasi', 'toko'])->get();
+//         // Ambil data yang telah difilter
+//         $pengirimanBarangJadi = $query->with(['produk.subklasifikasi', 'toko'])->get();
         
-        $selectedCabang = $toko_id ? $pengirimanBarangJadi->first()->toko->nama_toko : 'Semua Toko';
+//         $selectedCabang = $toko_id ? $pengirimanBarangJadi->first()->toko->nama_toko : 'Semua Toko';
 
-        // Kelompokkan data berdasarkan kode_pengiriman
-        $groupedData = $pengirimanBarangJadi->groupBy('kode_pengirimanpesanan');
+//         // Kelompokkan data berdasarkan kode_pengirimanpesanan
+//         $groupedData = $pengirimanBarangJadi->groupBy('kode_pengirimanpesananpesanan');
         
-        // Ambil item pertama untuk informasi toko
-        $firstItem = $pengirimanBarangJadi->first();
+//         // Ambil item pertama untuk informasi toko
+//         $firstItem = $pengirimanBarangJadi->first();
         
-       // Buat PDF menggunakan Facade PDF
+//        // Buat PDF menggunakan Facade PDF
+//     $pdf = FacadePdf::loadView('admin.laporan_pengirimanpesanan.print', [
+//         'groupedData'  => $groupedData, 
+//         'firstItem' => $firstItem, 
+//         'tanggalPengiriman' => $tanggalPengiriman,
+//         'tanggalAkhir' => $tanggalAkhir,
+//         'startDate' => $formattedStartDate,
+//         'endDate' => $formattedEndDate,
+//         'selectedCabang' => $selectedCabang // Pass the selected cabang to the view
+//     ]);
+
+//     // Menambahkan nomor halaman di kanan bawah
+//     $pdf->output();
+//     $dompdf = $pdf->getDomPDF();
+//     $canvas = $dompdf->getCanvas();
+//     $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+//         $text = "Page $pageNumber of $pageCount";
+//         $font = $fontMetrics->getFont('Arial', 'normal');
+//         $size = 10;
+
+//         // Menghitung lebar teks
+//         $width = $fontMetrics->getTextWidth($text, $font, $size);
+
+//         // Mengatur koordinat X dan Y
+//         $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+//         $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+
+//         // Menambahkan teks ke posisi yang ditentukan
+//         $canvas->text($x, $y, $text, $font, $size);
+//     });
+
+//     // Output PDF ke browser
+//     return $pdf->stream('laporan_pengiriman_barang_jadi.pdf');
+// }
+
+public function printReport(Request $request)
+{
+    // Ambil parameter dari request
+    $tanggalPengiriman = $request->input('tanggal_pengiriman');
+    $tanggalAkhir = $request->input('tanggal_akhir');
+    $status = $request->input('status');
+    $toko_id = $request->input('toko_id'); // Tambahkan toko_id dari request
+    
+    // Buat query untuk ambil data berdasarkan filter
+    $query = Pengiriman_barangjadipesanan::query();
+    
+    if ($tanggalPengiriman) {
+        $query->whereDate('tanggal_pengiriman', '>=', $tanggalPengiriman);
+    }
+    
+    if ($tanggalAkhir) {
+        $query->whereDate('tanggal_pengiriman', '<=', $tanggalAkhir);
+    }
+    
+    if ($status) {
+        $query->where('status', $status);
+    }
+    
+    if ($toko_id) {
+        $query->where('toko_id', $toko_id); // Tambahkan filter berdasarkan toko_id
+    }
+
+    $formattedStartDate = $tanggalPengiriman ? Carbon::parse($tanggalPengiriman)->format('d-m-Y') : 'N/A';
+    $formattedEndDate = $tanggalAkhir ? Carbon::parse($tanggalAkhir)->format('d-m-Y') : 'N/A';
+
+    // Ambil data yang telah difilter
+    $pengirimanBarangJadi = $query->with(['produk.klasifikasi', 'toko'])->get();
+    
+    $selectedCabang = $toko_id ? $pengirimanBarangJadi->first()->toko->nama_toko : 'Semua Toko';
+
+    // Kelompokkan data berdasarkan kode_pengirimanpesanan dan klasifikasi produk
+    $groupedData = $pengirimanBarangJadi->groupBy(function ($item) {
+        return $item->kode_pengirimanpesanan .   '|'  . $item->produk->klasifikasi->nama;
+    });
+    
+    // Ambil item pertama untuk informasi toko
+    $firstItem = $pengirimanBarangJadi->first();
+
+    // Buat PDF menggunakan Facade PDF
     $pdf = FacadePdf::loadView('admin.laporan_pengirimanpesanan.print', [
         'groupedData'  => $groupedData, 
         'firstItem' => $firstItem, 
