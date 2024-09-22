@@ -281,7 +281,7 @@ class Laporan_setoranpenjualanController extends Controller
         ->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
         ->value('total');
 
-    $total_penjualan = $penjualan_bersih + $deposit_masuk;
+    $total_penjualan = $penjualan_bersih - ($deposit_keluar - $deposit_masuk);
 
     // Ambil semua data produk, toko, kasir, klasifikasi untuk dropdown
     $produks = Produk::all();
@@ -418,7 +418,7 @@ class Laporan_setoranpenjualanController extends Controller
             ->value('total');
     
         // Hitung total penjualan
-        $total_penjualan = $penjualan_bersih + $deposit_masuk;
+        $total_penjualan = $penjualan_bersih - ($deposit_keluar - $deposit_masuk);
     
         // Ambil semua data kasir yang unik
         $kasirs = Penjualanproduk::select('kasir')->distinct()->get();
