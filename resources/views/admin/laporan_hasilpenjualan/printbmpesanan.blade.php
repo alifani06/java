@@ -38,7 +38,6 @@
             font-size: 28px;
             margin-bottom: 5px;
             margin-top: 5px;
-
         }
         .header .title1 {
             margin-top: 5px;
@@ -76,7 +75,7 @@
         <p class="title1">Cabang: {{ strtoupper($branchName) }}</p>
         <div class="divider"></div>
 
-        <h1 class="title2">LAPORAN BARANG MASUK PERMINTAAN</h1>
+        <h1 class="title2">LAPORAN BARANG MASUK PESANAN</h1>
 
         @php
             \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia

@@ -35,7 +35,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Barang Masuk Permintaan</h1>
+                    <h1 class="m-0">Laporan Barang Masuk Pesanan</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -77,7 +77,7 @@
                             <option value="retur" {{ old('kategori1') == 'retur' ? 'selected' : '' }}>Barang Retur</option>
                         </select>
                     </div>
-                    <h3 class="card-title">Laporan Barang Masuk Permintaan</h3>
+                    <h3 class="card-title">Laporan Barang Masuk</h3>
                 </div>
                 
                 <div class="card-body">
@@ -236,7 +236,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('admin/laporan_hasilpenjualan') }}";
+            form.action = "{{ route('barangMasukpesanan') }}";
             form.submit();
         }
 
@@ -252,17 +252,6 @@
             window.location.href = "{{ url('admin/barangKeluar') }}";
         }else if (selectedValue === 'retur') {
             window.location.href = "{{ url('admin/barangRetur') }}";
-        }
-    });
-</script>
-<script>
-    document.getElementById('kategori2').addEventListener('change', function() {
-        var selectedValue = this.value;
-
-        if (selectedValue === 'permintaan') {
-            window.location.href = "{{ url('admin/laporan_hasilpenjualan') }}";
-        } else if (selectedValue === 'pemesanan') {
-            window.location.href = "{{ url('admin/barangMasukpesanan') }}";
         }
     });
 </script>
@@ -288,12 +277,22 @@
         }
 
         const form = document.getElementById('form-action');
-        form.action = "{{ url('admin/printLaporanBm') }}";
+        form.action = "{{ url('admin/printLaporanBmpesanan') }}";
         form.target = "_blank";
         form.submit();
     }
 </script>
+<script>
+    document.getElementById('kategori2').addEventListener('change', function() {
+        var selectedValue = this.value;
 
+        if (selectedValue === 'permintaan') {
+            window.location.href = "{{ url('admin/laporan_hasilpenjualan') }}";
+        } else if (selectedValue === 'pemesanan') {
+            window.location.href = "{{ url('admin/barangMasukpesanan') }}";
+        }
+    });
+</script>
 
 
 <script>

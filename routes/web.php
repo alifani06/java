@@ -315,6 +315,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('barangKeluar', [\App\Http\Controllers\Admin\Inquery_hasilpenjualanController::class, 'barangKeluar'])->name('barangKeluar');
 
     Route::resource('laporan_hasilpenjualan', \App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class);
+    Route::get('barangMasukpesanan', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'barangMasukpesanan']);
+    Route::get('barangMasukpesanan', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'barangMasukpesanan'])->name('barangMasukpesanan');
     Route::get('barangKeluar', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'barangKeluar']);
     Route::get('barangKeluarRinci', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'barangKeluarRinci']);
     Route::get('barangRetur', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'barangRetur']);
@@ -323,6 +325,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('barangRetur', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'barangRetur'])->name('barangRetur');
     Route::get('/print-report', [Laporan_hasilpenjualanController::class, 'printReport'])->name('print.report');
     Route::get('printLaporanBm', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'printLaporanBm']);
+    Route::get('printLaporanBmpesanan', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'printLaporanBmpesanan']);
     Route::get('printLaporanBK', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'printLaporanBK']);
     Route::get('printLaporanBKrinci', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'printLaporanBKrinci']);
     Route::get('printLaporanBR', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'printLaporanBR']);
