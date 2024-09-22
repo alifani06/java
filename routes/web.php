@@ -288,6 +288,13 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::resource('laporan_estimasiproduksi', \App\Http\Controllers\Admin\Laporan_estimasiproduksiController::class);
     Route::get('printReport', [\App\Http\Controllers\Admin\Laporan_estimasiproduksiController::class, 'printReport']);
+    Route::get('printReportPermintaan', [\App\Http\Controllers\Admin\Laporan_estimasiproduksiController::class, 'printReportPermintaan']);
+    Route::get('printReportPermintaantoko', [\App\Http\Controllers\Admin\Laporan_estimasiproduksiController::class, 'printReportPermintaantoko']);
+    Route::get('printReportPemesanan', [\App\Http\Controllers\Admin\Laporan_estimasiproduksiController::class, 'printReportPemesanan']);
+    Route::get('printReportPemesanantoko', [\App\Http\Controllers\Admin\Laporan_estimasiproduksiController::class, 'printReportPemesanantoko']);
+    Route::get('printReportAll', [\App\Http\Controllers\Admin\Laporan_estimasiproduksiController::class, 'printReportAll']);
+    Route::get('indexpemesanan', [\App\Http\Controllers\Admin\Laporan_estimasiproduksiController::class, 'indexpemesanan']);
+    Route::get('indexpermintaan', [\App\Http\Controllers\Admin\Laporan_estimasiproduksiController::class, 'indexpermintaan']);
 
     Route::resource('inquery_pemindahanbarangjadi', \App\Http\Controllers\Admin\Inquery_pemindahanbarangjadiController::class);
     Route::get('/inquery_pemindahanbarangjadi/{id}/print', [Inquery_pemindahanbarangjadiController::class, 'print'])->name('inquery_pemindahanbarangjadi.print');

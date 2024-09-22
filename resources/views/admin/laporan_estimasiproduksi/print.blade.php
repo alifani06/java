@@ -1,267 +1,141 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan Estimasi Produksi</title>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <style>
         body {
             font-family: Arial, sans-serif;
-            font-size: 12px;
+            font-size: 10px; /* Ukuran font kecil agar muat dalam satu halaman */
         }
-        .logo img {
-            width: 150px;
-            height: 77px;
+
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            padding: 10px;
         }
-        .header {
+
+        h1, h2 {
             text-align: center;
-            margin-top: 20px;
-        }
-        .header .title {
-            font-weight: bold;
-            font-size: 24px;
-        }
-        .header .address, .header .contact {
-            font-size: 12px;
-        }
-        .change-header {
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 20px;
             margin-bottom: 20px;
         }
+
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: collapse; /* Menghilangkan space antara border sel */
             margin-bottom: 20px;
-            font-size: 9px; /* Menetapkan ukuran font kecil untuk tabel */
         }
-        table, th, td {
-            border: 1px solid black;
-        }
+
         th, td {
+            border: 1px solid #000; /* Border hitam untuk tabel */
             padding: 5px;
-            text-align: left;
+            text-align: center; /* Pusatkan teks dalam tabel */
         }
-        .total-row {
+
+        th {
+            background-color: #f2f2f2; /* Warna background header */
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9; /* Warna background untuk baris genap */
+        }
+
+        .table-title {
+            text-align: center;
             font-weight: bold;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
 
-    <div class="change-header">LAPORAN ESTIMASI PRODUKSI</div>
+        <h1>Laporan Estimasi Produksi</h1>
+        <h2>Dari: {{ $tanggal }} Sampai: {{ $tanggal_akhir }}</h2>
 
-    @if($tanggalAwal && $tanggalAkhir)
-    <div class="date-range">
-        Periode Tanggal: {{ \Carbon\Carbon::parse($tanggalAwal)->format('d M Y') }} - {{ \Carbon\Carbon::parse($tanggalAkhir)->format('d M Y') }}
-    </div>
-    @endif
-
-    <!-- Tabel Pesanan -->
-    @if($tableType == 'pemesanan')
-    <h3>Atas Pesanan</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Divisi</th>
-                <th>Produk</th>
-                <th>Banjaran</th>
-                <th>Tegal</th>
-                <th>Slawi</th>
-                <th>Pemalang</th>
-                <th>Bumiayu</th>
-                <th>Cilacap</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            @php
-                $totalBanjaran = $totalTegal = $totalSlawi = $totalPemalang = $totalBumiayu = $totalCilacap = $totalSemua = 0;
-            @endphp
-            @foreach($pemesananProduk as $produkId => $tokoDetails)
-                @php
-                    $produk = $tokoDetails->first()['produk'];
-                    $klasifikasi = $produk->klasifikasi->nama ?? 'Tidak Ditemukan';
-                    $totalJumlah = 0;
-                @endphp
+        <table class="table table-bordered">
+            <thead>
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $klasifikasi }}</td>
-                    <td>{{ $produk->nama_produk ?? 'Produk Tidak Ditemukan' }}</td>
-                    @foreach(['banjaran', 'tegal', 'slawi', 'pemalang', 'bumiayu', 'cilacap'] as $store)
-                        @php
-                            $jumlah = $tokoDetails->filter(function ($detail) use ($store) {
-                                return strtolower($detail['toko']->nama_toko) === $store;
-                            })->sum('jumlah');
-                            $totalJumlah += $jumlah;
-                            ${'total' . ucfirst($store)} += $jumlah;
-                        @endphp
-                        <td style="text-align: right">{{ $jumlah }}</td>
-                    @endforeach
-                    <td style="text-align: right">{{ $totalJumlah }}</td>
-                    @php $totalSemua += $totalJumlah; @endphp
+                    <th>Klasifikasi</th>
+                    <th>Kode Produk</th>
+                    <th>Nama Produk</th>
+                    <th colspan="2">Banjaran</th>
+                    <th colspan="2">Tegal</th>
+                    <th colspan="2">Slawi</th>
+                    <th colspan="2">Bumiayu</th>
+                    <th colspan="2">Pemalang</th>
+                    <th colspan="2">Cilacap</th>
+                    <th>Total Pesanan</th>
+                    <th>Total Permintaan</th>
+                    <th>Total Semua</th>
                 </tr>
-            @endforeach
-            <tr class="total-row">
-                <td colspan="3">Total</td>
-                <td style="text-align: right">{{ $totalBanjaran }}</td>
-                <td style="text-align: right">{{ $totalTegal }}</td>
-                <td style="text-align: right">{{ $totalSlawi }}</td>
-                <td style="text-align: right">{{ $totalPemalang }}</td>
-                <td style="text-align: right">{{ $totalBumiayu }}</td>
-                <td style="text-align: right">{{ $totalCilacap }}</td>
-                <td style="text-align: right">{{ $totalSemua }}</td>
-            </tr>
-        </tbody>
-    </table>
-    @endif
-
-    <!-- Tabel Permintaan -->
-    @if($tableType == 'permintaan')
-    <h3>Atas Permintaan</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Divisi</th>
-                <th>Produk</th>
-                <th>Banjaran</th>
-                <th>Tegal</th>
-                <th>Slawi</th>
-                <th>Pemalang</th>
-                <th>Bumiayu</th>
-                <th>Cilacap</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            @php
-                $totalBanjaran = $totalTegal = $totalSlawi = $totalPemalang = $totalBumiayu = $totalCilacap = $totalSemua = 0;
-            @endphp
-            @foreach($permintaanProduks as $produkId => $tokoDetails)
-                @php
-                    $produk = $tokoDetails->first()['produk'];
-                    $klasifikasi = $produk->klasifikasi->nama ?? 'Tidak Ditemukan';
-                    $totalJumlah = 0;
-                @endphp
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $klasifikasi }}</td>
-                    <td>{{ $produk->nama_produk ?? 'Produk Tidak Ditemukan' }}</td>
-                    @foreach(['banjaran', 'tegal', 'slawi', 'pemalang', 'bumiayu', 'cilacap'] as $store)
-                        @php
-                            $jumlah = $tokoDetails->filter(function ($detail) use ($store) {
-                                return strtolower($detail['toko']->nama_toko) === $store;
-                            })->sum('jumlah');
-                            $totalJumlah += $jumlah;
-                            ${'total' . ucfirst($store)} += $jumlah;
-                        @endphp
-                        <td style="text-align: right">{{ $jumlah }}</td>
-                    @endforeach
-                    <td style="text-align: right">{{ $totalJumlah }}</td>
-                    @php $totalSemua += $totalJumlah; @endphp
-                </tr>
-            @endforeach
-            <tr class="total-row">
-                <td colspan="3">Total</td>
-                <td style="text-align: right">{{ $totalBanjaran }}</td>
-                <td style="text-align: right">{{ $totalTegal }}</td>
-                <td style="text-align: right">{{ $totalSlawi }}</td>
-                <td style="text-align: right">{{ $totalPemalang }}</td>
-                <td style="text-align: right">{{ $totalBumiayu }}</td>
-                <td style="text-align: right">{{ $totalCilacap }}</td>
-                <td style="text-align: right">{{ $totalSemua }}</td>
-            </tr>
-        </tbody>
-    </table>
-    @endif
-
-    <!-- Tabel Gabungan Pesanan dan Permintaan -->
-    @if($tableType == 'all')
-    <h3>Atas Permintaan dan Atas Pesanan</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Divisi</th>
-                <th>Produk</th>
-                @foreach(['Banjaran', 'Tegal', 'Slawi', 'Pemalang', 'Bumiayu', 'Cilacap'] as $store)
-                    <th colspan="2">{{ $store }}</th>
-                @endforeach
-                <th>Total</th>
-            </tr>
-            <tr>
-                <th colspan="3"></th>
-                @foreach(['Banjaran', 'Tegal', 'Slawi', 'Pemalang', 'Bumiayu', 'Cilacap'] as $store)
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>Stok</th>
                     <th>Pes</th>
                     <th>Stok</th>
+                    <th>Pes</th>
+                    <th>Stok</th>
+                    <th>Pes</th>
+                    <th>Stok</th>
+                    <th>Pes</th>
+                    <th>Stok</th>
+                    <th>Pes</th>
+                    <th>Stok</th>
+                    <th>Pes</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($pemesanan as $order)
+                    @foreach ($order->detailpemesananproduk as $detail)
+                        <tr>
+                            <td>{{ $detail->produk->klasifikasi->nama }}</td>
+                            <td>{{ $detail->produk->kode_lama }}</td>
+                            <td>{{ $detail->produk->nama_produk }}</td>
+            
+                            <!-- Banjaran -->
+                            <td>{{ $order->stok_banjaran ?? 0 }}</td> <!-- Stok Banjaran -->
+                            <td>{{ $order->pesanan_banjaran ?? 0 }}</td> <!-- Pesanan Banjaran -->
+            
+                            <!-- Tegal -->
+                            <td>{{ $order->stok_tegal ?? 0 }}</td> <!-- Stok Tegal -->
+                            <td>{{ $order->pesanan_tegal ?? 0 }}</td> <!-- Pesanan Tegal -->
+            
+                            <!-- Slawi -->
+                            <td>{{ $order->stok_slawi ?? 0 }}</td> <!-- Stok Slawi -->
+                            <td>{{ $order->pesanan_slawi ?? 0 }}</td> <!-- Pesanan Slawi -->
+            
+                            <!-- Bumiayu -->
+                            <td>{{ $order->stok_bumiayu ?? 0 }}</td> <!-- Stok Bumiayu -->
+                            <td>{{ $order->pesanan_bumiayu ?? 0 }}</td> <!-- Pesanan Bumiayu -->
+            
+                            <!-- Pemalang -->
+                            <td>{{ $order->stok_pemalang ?? 0 }}</td> <!-- Stok Pemalang -->
+                            <td>{{ $order->pesanan_pemalang ?? 0 }}</td> <!-- Pesanan Pemalang -->
+            
+                            <!-- Cilacap -->
+                            <td>{{ $order->stok_cilacap ?? 0 }}</td> <!-- Stok Cilacap -->
+                            <td>{{ $order->pesanan_cilacap ?? 0 }}</td> <!-- Pesanan Cilacap -->
+            
+                            <!-- Total Pesanan -->
+                            <td>{{ $order->jumlah_pesanan }}</td>
+            
+                            <!-- Total Permintaan -->
+                            <td>{{ $order->jumlah_permintaan }}</td>
+            
+                            <!-- Total Semua -->
+                            <td>{{ $order->jumlah_pesanan + $order->jumlah_permintaan }}</td>
+                        </tr>
+                    @endforeach
                 @endforeach
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @php
-                $totalBanjaranPes = $totalBanjaranStok = $totalTegalPes = $totalTegalStok = $totalSlawiPes = $totalSlawiStok = 0;
-                $totalPemalangPes = $totalPemalangStok = $totalBumiayuPes = $totalBumiayuStok = $totalCilacapPes = $totalCilacapStok = 0;
-                $totalSemua = 0;
-            @endphp
-           @foreach($combinedData as $produkId => $tokoDetails)
-           @php
-               $produk = $tokoDetails->first()['produk'];
-               $klasifikasi = $produk->klasifikasi->nama ?? 'Tidak Ditemukan';
-               $totalPesanan = 0;
-               $totalPermintaan = 0;
-           @endphp
-           <tr>
-               <td>{{ $loop->iteration }}</td>
-               <td>{{ $klasifikasi }}</td>
-               <td>{{ $produk->nama_produk ?? 'Produk Tidak Ditemukan' }}</td>
-               @foreach(['banjaran', 'tegal', 'slawi', 'pemalang', 'bumiayu', 'cilacap'] as $store)
-                   @php
-                       $pesanan = $tokoDetails->filter(function ($detail) use ($store) {
-                           return strtolower($detail['toko']->nama_toko) === $store && isset($detail['pesanan']);
-                       })->sum('pesanan');
-                       
-                       $permintaan = $tokoDetails->filter(function ($detail) use ($store) {
-                           return strtolower($detail['toko']->nama_toko) === $store && isset($detail['permintaan']);
-                       })->sum('permintaan');
-                       
-                       $totalPesanan += $pesanan;
-                       $totalPermintaan += $permintaan;
-       
-                       // Update total per toko
-                       ${'total' . ucfirst($store) . 'Pes'} += $pesanan;
-                       ${'total' . ucfirst($store) . 'Stok'} += $permintaan;
-                   @endphp
-                   <td style="text-align: right">{{ $pesanan }}</td>
-                   <td style="text-align: right">{{ $permintaan }}</td>
-               @endforeach
-               <td style="text-align: right">{{ $totalPesanan + $totalPermintaan }}</td>
-           </tr>
-       @endforeach
-
-            <tr class="total-row">
-                <td colspan="3">Total</td>
-                <td style="text-align: right">{{ $totalBanjaranPes }}</td>
-                <td style="text-align: right">{{ $totalBanjaranStok }}</td>
-                <td style="text-align: right">{{ $totalTegalPes }}</td>
-                <td style="text-align: right">{{ $totalTegalStok }}</td>
-                <td style="text-align: right">{{ $totalSlawiPes }}</td>
-                <td style="text-align: right">{{ $totalSlawiStok }}</td>
-                <td style="text-align: right">{{ $totalPemalangPes }}</td>
-                <td style="text-align: right">{{ $totalPemalangStok }}</td>
-                <td style="text-align: right">{{ $totalBumiayuPes }}</td>
-                <td style="text-align: right">{{ $totalBumiayuStok }}</td>
-                <td style="text-align: right">{{ $totalCilacapPes }}</td>
-                <td style="text-align: right">{{ $totalCilacapStok }}</td>
-                <td style="text-align: right">{{ $totalSemua }}</td>
-            </tr>
-        </tbody>
-    </table>
-    @endif
+            </tbody>
+            
+            
+        </table>
 
 </body>
 </html>

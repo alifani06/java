@@ -6,7 +6,18 @@
     <div id="loadingSpinner" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
         <i class="fas fa-spinner fa-spin" style="font-size: 3rem;"></i>
     </div>
-
+    <style>
+        .permintaan-header {
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .permintaan-header:hover {
+            background-color: #f0f0f0;
+        }
+        .permintaan-header.active {
+            background-color: #e0e0e0;
+        }
+    </style>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             setTimeout(function() {
@@ -22,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Estimasi Produksi All </h1>
+                    <h1 class="m-0">Laporan Estimasi Permintaan</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -57,16 +68,15 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                        <div class="float-right">
-                            <select class="form-control" id="kategori1" name="kategori">
-                                <option value="">- Pilih -</option>
-                                <option value="all" {{ old('kategori1') == 'all' ? 'selected' : '' }}>Semua Estimasi</option>
-                                <option value="pemesanan" {{ old('kategori1') == 'pemesanan' ? 'selected' : '' }}>Estimasi Pemesanan</option>
-                                <option value="permintaan" {{ old('kategori1') == 'permintaan' ? 'selected' : '' }}>Estimasi Permintaan</option>
-                            </select>
-                        </div>
-       
-                    <h3 class="card-title">Laporan Estimasi Produksi All</h3>
+                    <div class="float-right">
+                        <select class="form-control" id="kategori1" name="kategori">
+                            <option value="">- Pilih -</option>
+                            <option value="all" {{ old('kategori1') == 'all' ? 'selected' : '' }}>Semua Estimasi</option>
+                            <option value="pemesanan" {{ old('kategori1') == 'pemesanan' ? 'selected' : '' }}>Estimasi Pemesanan</option>
+                            <option value="permintaan" {{ old('kategori1') == 'permintaan' ? 'selected' : '' }}>Estimasi Permintaan</option>
+                        </select>
+                    </div>
+                    <h3 class="card-title">Laporan Estimasi Permintaan</h3>
                 </div>
 
                 <!-- /.card-header -->
@@ -75,11 +85,13 @@
                     <form method="GET" id="form-action">
                         <div class="row">
                             <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal" name="tanggal" type="date" value="{{ Request::get('tanggal') }}" />
-                                <label for="tanggal">(Dari Tanggal)</label>
+                                <input class="form-control" id="tanggal_permintaan" name="tanggal_permintaan" type="date"
+                                    value="{{ Request::get('tanggal_permintaan') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_permintaan">(Dari Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date" value="{{ Request::get('tanggal_akhir') }}" />
+                                <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
+                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
@@ -100,77 +112,75 @@
                                 </select>
                                 <label for="klasifikasi">(Pilih Divisi)</label>
                             </div>
-                            <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="produk" name="produk">
-                                    <option value="">- Semua Produk -</option>
-                                    @foreach ($produks as $produk)
-                                        <option value="{{ $produk->id }}" data-klasifikasi="{{ $produk->klasifikasi_id }}" {{ Request::get('produk') == $produk->id ? 'selected' : '' }}>{{ $produk->nama_produk }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="produk">(Pilih Produk)</label>
-                            </div>
+                            
                             <div class="col-md-3 mb-3">
                                 <button type="submit" class="btn btn-outline-primary btn-block">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
-                                <button type="button" class="btn btn-primary btn-block" onclick="printReportpemesnanglobal()" target="_blank">
+                                <button type="button" class="btn btn-primary btn-block" onclick="printReport()" target="_blank">
                                     <i class="fas fa-print"></i> Cetak
                                 </button>
                             </div>
                         </div>
                     </form>
-                    
-                    
-                   
-                    <div class="container">
 
-                        <table id="datatables66" class="table table-bordered" style="font-size: 13px">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">No</th>
-                                    <th>Cabang</th>
-                                    <th>Kode Transaksi</th>
-                                    <th>Tanggal</th>
-                                    <th>Jumlah Produk</th>
-                                    <th>Jenis Transaksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{-- Tampilkan data Pemesanan --}}
-                                @foreach ($pemesanan as $pesanan)
-                                <tr>
+                <table id="datatables66" class="table table-bordered" style="font-size: 13px">
+                    <thead>
+                        <tr>
+                            <th class="text-center">No</th>
+                            <th>Cabang</th>
+                            <th>Kode Permintaan</th>
+                            <th>Tanggal Permintaan</th>
+                            <th>Jumlah Produk</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($inquery as $permintaan)
+                            @php
+                                $filteredDetails = $permintaan->detailpermintaanproduks->filter(function ($detail) use ($klasifikasi_id) {
+                                    return !$klasifikasi_id || $detail->produk->klasifikasi_id == $klasifikasi_id;
+                                });
+                            @endphp
+                            @if ($filteredDetails->isNotEmpty())
+                                <tr class="permintaan-header" data-permintaan-id="{{ $permintaan->id }}">
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ optional($pesanan->toko)->nama_toko ?? 'Toko tidak ditemukan' }}</td>
-                                    <td>{{ $pesanan->kode_pemesanan }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($pesanan->tanggal_kirim)->format('d/m/Y H:i') }}</td>
-                                    <td>
-                                        {{ $pesanan->detailpemesananproduk->pluck('produk.nama_produk')->implode(', ') }}
-                                    </td>
-                                    <td>Pemesanan</td>
+                                    <td>{{ optional($permintaan->detailpermintaanproduks->first()->toko)->nama_toko ?? 'Toko tidak ditemukan' }}</td>
+                                    <td>{{ $permintaan->kode_permintaan }}</td>
+                                    <td>{{ $permintaan->created_at->format('d-m-Y') }}</td>
+                                    <td>{{ $filteredDetails->count() }}</td>
+                                
                                 </tr>
-                            @endforeach
-                            
-                        
-                                {{-- Tampilkan data Permintaan --}}
-                                @foreach ($permintaan as $permintaanItem)
-                                <tr>
-                                    <td class="text-center">{{ $loop->iteration + $pemesanan->count() }}</td>
-                                    <td>{{ optional($permintaanItem->detailpermintaanproduks->first()->toko)->nama_toko ?? 'Toko tidak ditemukan' }}</td>
-                                    <td>{{ $permintaanItem->kode_permintaan }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($permintaanItem->created_at)->format('d/m/Y H:i') }}</td>
-                                    <td>
-                                        {{ $permintaanItem->detailpermintaanproduks->pluck('produk.nama_produk')->implode(', ') }}
+                                <tr class="permintaan-details" id="details-{{ $permintaan->id }}" style="display: none;">
+                                    <td colspan="6">
+                                        <table class="table table-bordered" style="font-size: 13px;">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Divisi</th>
+                                                    <th>Kode Produk</th>
+                                                    <th>Produk</th>
+                                                    <th>Jumlah</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($filteredDetails as $detail)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $detail->produk->klasifikasi->nama }}</td>
+                                                        <td>{{ $detail->produk->kode_produk }}</td>
+                                                        <td>{{ $detail->produk->nama_produk }}</td>
+                                                        <td>{{ $detail->jumlah }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
                                     </td>
-                                    <td>Permintaan</td>
                                 </tr>
-                            @endforeach
-                            
-                            </tbody>
-                        </table>
-                        
-                    </div>
-                    
-                    
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
+
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
                         aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">
@@ -191,7 +201,7 @@
 
     <!-- /.card -->
     <script>
-        var tanggalAwal = document.getElementById('tanggal_kirim');
+        var tanggalAwal = document.getElementById('tanggal_permintaan');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
         if (tanggalAwal.value == "") {
             tanggalAkhir.readOnly = true;
@@ -215,26 +225,24 @@
         }
     </script>
 
+
 <script>
-    function printReportpemesnanglobal() {
+    function printReport() {
         const form = document.getElementById('form-action');
-        const tokoSelect = document.getElementById('toko');
-        const selectedToko = tokoSelect.value;
-
-        // Cek apakah toko dipilih
-        if (selectedToko) {
-            // Jika toko dipilih, arahkan ke URL ini
-            form.action = "{{ url('admin/printReportAll') }}";
+        const toko = document.getElementById('toko').value; // Mendapatkan nilai toko yang dipilih
+        
+        if (toko) {
+            // Jika toko dipilih, arahkan ke printReport2
+            form.action = "{{ url('admin/printReportPermintaantoko') }}";
         } else {
-            // Jika tidak ada toko yang dipilih, arahkan ke URL ini
-            form.action = "{{ url('admin/printReportAll') }}";
+            // Jika toko tidak dipilih, arahkan ke printReport1
+            form.action = "{{ url('admin/printReportPermintaan') }}";
         }
-
-        form.target = "_blank";
+        
+        form.target = "_blank"; // Cetak di tab baru
         form.submit();
     }
 </script>
-
 
 <script>
     document.getElementById('kategori1').addEventListener('change', function() {
@@ -270,4 +278,47 @@
         produkSelect.selectedIndex = 0;
     }
     </script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+ // Handle click event for permintaan-header
+ const permintaanHeaders = document.querySelectorAll('.permintaan-header');
+ 
+ permintaanHeaders.forEach(header => {
+     header.addEventListener('click', function() {
+         const permintaanId = header.dataset.permintaanId;
+         const detailsRow = document.getElementById(`details-${permintaanId}`);
+         
+         // Hide all details rows and remove active class from all headers
+         const allDetailsRows = document.querySelectorAll('.permintaan-details');
+         const allHeaders = document.querySelectorAll('.permintaan-header');
+         
+         // Check if the clicked row is already open
+         const isActive = header.classList.contains('active');
+
+         allDetailsRows.forEach(row => row.style.display = 'none');
+         allHeaders.forEach(h => h.classList.remove('active'));
+         
+         // Toggle the clicked row only if it wasn't already active
+         if (!isActive) {
+             detailsRow.style.display = '';
+             header.classList.add('active');
+         }
+     });
+ });
+
+ // Handle click event for show-btn
+ document.querySelectorAll('.show-btn').forEach(button => {
+     button.addEventListener('click', function() {
+         const permintaanId = this.dataset.permintaanId;
+         const href = this.dataset.href;
+
+         // Redirect to the specified URL
+         window.location.href = href;
+     });
+ });
+});
+
+ </script>
 @endsection

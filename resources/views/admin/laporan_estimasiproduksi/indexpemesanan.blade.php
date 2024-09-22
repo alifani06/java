@@ -22,7 +22,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Estimasi Produksi All </h1>
+                    <h1 class="m-0">Laporan Estimasi Pemesanan </h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -57,16 +57,16 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                        <div class="float-right">
-                            <select class="form-control" id="kategori1" name="kategori">
-                                <option value="">- Pilih -</option>
-                                <option value="all" {{ old('kategori1') == 'all' ? 'selected' : '' }}>Semua Estimasi</option>
-                                <option value="pemesanan" {{ old('kategori1') == 'pemesanan' ? 'selected' : '' }}>Estimasi Pemesanan</option>
-                                <option value="permintaan" {{ old('kategori1') == 'permintaan' ? 'selected' : '' }}>Estimasi Permintaan</option>
-                            </select>
-                        </div>
+                    <div class="float-right">
+                        <select class="form-control" id="kategori1" name="kategori">
+                            <option value="">- Pilih -</option>
+                            <option value="all" {{ old('kategori1') == 'all' ? 'selected' : '' }}>Semua Estimasi</option>
+                            <option value="pemesanan" {{ old('kategori1') == 'pemesanan' ? 'selected' : '' }}>Estimasi Pemesanan</option>
+                            <option value="permintaan" {{ old('kategori1') == 'permintaan' ? 'selected' : '' }}>Estimasi Permintaan</option>
+                        </select>
+                    </div>
        
-                    <h3 class="card-title">Laporan Estimasi Produksi All</h3>
+                    <h3 class="card-title">Laporan Estimasi Pemesanan</h3>
                 </div>
 
                 <!-- /.card-header -->
@@ -75,11 +75,13 @@
                     <form method="GET" id="form-action">
                         <div class="row">
                             <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal" name="tanggal" type="date" value="{{ Request::get('tanggal') }}" />
-                                <label for="tanggal">(Dari Tanggal)</label>
+                                <input class="form-control" id="tanggal_kirim" name="tanggal_kirim" type="date"
+                                    value="{{ Request::get('tanggal_kirim') }}"  />
+                                <label for="tanggal_kirim">(Dari Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date" value="{{ Request::get('tanggal_akhir') }}" />
+                                <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
+                                    value="{{ Request::get('tanggal_akhir') }}"  />
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
@@ -120,56 +122,55 @@
                         </div>
                     </form>
                     
-                    
                    
-                    <div class="container">
-
-                        <table id="datatables66" class="table table-bordered" style="font-size: 13px">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">No</th>
-                                    <th>Cabang</th>
-                                    <th>Kode Transaksi</th>
-                                    <th>Tanggal</th>
-                                    <th>Jumlah Produk</th>
-                                    <th>Jenis Transaksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{-- Tampilkan data Pemesanan --}}
-                                @foreach ($pemesanan as $pesanan)
+                    <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
+                        <thead>
+                            <tr>
+                                <th class="text-center">No</th>
+                                <th>Kode Pemesanan</th>
+                                <th>Tanggal Ambil</th>
+                                <th>Cabang</th>
+                                <th>Divisi</th>
+                                <th>Produk</th>
+                                <th>Jumlah</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $grandTotal = 0;
+                            @endphp
+                            @foreach ($inquery as $item)
+                                @php
+                                    $grandTotal += $item->sub_total;
+                                @endphp
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ optional($pesanan->toko)->nama_toko ?? 'Toko tidak ditemukan' }}</td>
-                                    <td>{{ $pesanan->kode_pemesanan }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($pesanan->tanggal_kirim)->format('d/m/Y H:i') }}</td>
+                                    <td>{{ $item->kode_pemesanan }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($item->tanggal_kirim)->format('d/m/Y H:i') }}</td>
+                                    <td>{{ $item->toko->nama_toko }}</td>
                                     <td>
-                                        {{ $pesanan->detailpemesananproduk->pluck('produk.nama_produk')->implode(', ') }}
+                                        @if ($item->detailpemesananproduk->isNotEmpty())
+                                            {{ $item->detailpemesananproduk->pluck('produk.klasifikasi.nama')->implode(', ') }}
+                                        @else
+                                            tidak ada
+                                        @endif
                                     </td>
-                                    <td>Pemesanan</td>
+                                    <td>
+                                        @if ($item->detailpemesananproduk->isNotEmpty())
+                                            @foreach ($item->detailpemesananproduk as $detail)
+                                                {{ $detail->produk->nama_produk }}<br>
+                                            @endforeach
+                                        @else
+                                            tidak ada
+                                        @endif
+                                    </td>
+                                    <td>{{ $detail->jumlah }}</td>
+                                    {{-- <td>{{ number_format($item->sub_total, 0, ',', '.') }}</td> --}}
                                 </tr>
                             @endforeach
-                            
-                        
-                                {{-- Tampilkan data Permintaan --}}
-                                @foreach ($permintaan as $permintaanItem)
-                                <tr>
-                                    <td class="text-center">{{ $loop->iteration + $pemesanan->count() }}</td>
-                                    <td>{{ optional($permintaanItem->detailpermintaanproduks->first()->toko)->nama_toko ?? 'Toko tidak ditemukan' }}</td>
-                                    <td>{{ $permintaanItem->kode_permintaan }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($permintaanItem->created_at)->format('d/m/Y H:i') }}</td>
-                                    <td>
-                                        {{ $permintaanItem->detailpermintaanproduks->pluck('produk.nama_produk')->implode(', ') }}
-                                    </td>
-                                    <td>Permintaan</td>
-                                </tr>
-                            @endforeach
-                            
-                            </tbody>
-                        </table>
-                        
-                    </div>
-                    
+                           
+                        </tbody>
+                    </table>
                     
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
@@ -224,10 +225,10 @@
         // Cek apakah toko dipilih
         if (selectedToko) {
             // Jika toko dipilih, arahkan ke URL ini
-            form.action = "{{ url('admin/printReportAll') }}";
+            form.action = "{{ url('admin/printReportPemesanantoko') }}";
         } else {
             // Jika tidak ada toko yang dipilih, arahkan ke URL ini
-            form.action = "{{ url('admin/printReportAll') }}";
+            form.action = "{{ url('admin/printReportPemesanan') }}";
         }
 
         form.target = "_blank";
