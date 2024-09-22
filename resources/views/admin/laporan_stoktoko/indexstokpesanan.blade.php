@@ -8,7 +8,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Data Stok Toko </h1>
+                    <h1 class="m-0">Data Stok Pesanan Toko </h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -49,6 +49,9 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
+                    
+                   
+
                     <form method="GET" id="form-action">
                         <div class="row">
                             <!-- Filter Toko -->
@@ -148,6 +151,7 @@
         </div>
     </section>
     
+
     <script>
         document.getElementById('kategori1').addEventListener('change', function() {
             var selectedValue = this.value;
@@ -159,12 +163,11 @@
             }
         });
     </script>
-
     <script>
     function printReport() {
         if (event) event.preventDefault();
     const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printstoktoko') }}";
+    form.action = "{{ url('admin/printstoktokopesanan') }}";
     form.target = "_blank";
     form.submit();
 }

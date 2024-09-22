@@ -215,7 +215,9 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('print1', [\App\Http\Controllers\Admin\Laporan_stokbarangjadiController::class, 'printReport']);
 
     Route::resource('laporan_stoktoko', \App\Http\Controllers\Admin\Laporan_stoktokoController::class);
+    Route::get('stoktokopesanan', [\App\Http\Controllers\Admin\Laporan_stoktokoController::class, 'stoktokopesanan']);
     Route::get('printstoktoko', [\App\Http\Controllers\Admin\Laporan_stoktokoController::class, 'printReport']);
+    Route::get('printstoktokopesanan', [\App\Http\Controllers\Admin\Laporan_stoktokoController::class, 'printReportstokpesanan']);
     Route::get('printExcelStok', [Laporan_stoktokoController::class, 'exportExcelStok'])->name('printExcelStok');
 
 

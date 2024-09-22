@@ -46,8 +46,6 @@ use App\Exports\StokBarangExportBR;
 class Laporan_hasilpenjualanController extends Controller
 {
 
-
-
     public function index(Request $request)
     {
         $status = $request->status;
