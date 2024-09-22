@@ -155,19 +155,19 @@
 
     </script>
 
-    <script>
-        document.getElementById('kategori1').addEventListener('change', function() {
-            var selectedValue = this.value;
+<script>
+    document.getElementById('kategori1').addEventListener('change', function() {
+        var selectedValue = this.value;
 
-            if (selectedValue === 'global') {
-                window.location.href = "{{ url('admin/laporan_deposit') }}";
-            } else if (selectedValue === 'rinci') {
-                window.location.href = "{{ url('admin/indexrinci') }}";
-            }else if (selectedValue === 'saldo') {
-                window.location.href = "{{ url('admin/indexsaldo') }}";
-            }
-        });
-    </script>
+        if (selectedValue === 'global') {
+            window.location.href = "{{ url('toko_banjaran/laporan_depositbanjaran') }}";
+        } else if (selectedValue === 'rinci') {
+            window.location.href = "{{ url('toko_banjaran/indexrinci') }}";
+        } else if (selectedValue === 'saldo') {
+            window.location.href = "{{ url('toko_banjaran/indexsaldo') }}";
+        }
+    });
+</script>
 
 <script>
     function printReport() {

@@ -83,15 +83,7 @@
                                     value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
-                            <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="toko" name="toko_id">
-                                    <option value="">- Semua Toko -</option>
-                                    @foreach ($tokos as $toko)
-                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="toko">(Pilih Toko)</label>
-                            </div>
+                          
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="klasifikasi" name="klasifikasi_id" onchange="filterProduk()">
                                     <option value="">- Semua Divisi -</option>
@@ -218,7 +210,7 @@
 <script>
     function printReportpemesnanglobal() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printReportpemesananglobal') }}";
+    form.action = "{{ url('toko_banjaran/printReportpemesananglobalbnjr') }}";
     form.target = "_blank";
     form.submit();
 }

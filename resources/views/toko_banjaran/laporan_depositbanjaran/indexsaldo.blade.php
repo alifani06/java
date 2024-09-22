@@ -51,7 +51,7 @@
             <div class="card-body">
                 <form method="GET" id="form-action">
                     <div class="row">
-                        <div class="col-md-3 mb-3">
+                        {{-- <div class="col-md-3 mb-3">
                             <select class="custom-select form-control" id="toko" name="toko_id">
                                 <option value="">- Semua Toko -</option>
                                 @foreach ($tokos as $toko)
@@ -59,12 +59,12 @@
                                 @endforeach
                             </select>
                             <label for="toko">(Pilih Toko)</label>
-                        </div>
+                        </div> --}}
 
                         <div class="col-md-3 mb-3">
-                            <button type="submit" class="btn btn-outline-primary btn-block">
+                            {{-- <button type="submit" class="btn btn-outline-primary btn-block">
                                 <i class="fas fa-search"></i> Cari
-                            </button>
+                            </button> --}}
                             <button type="button" class="btn btn-primary btn-block" onclick="printReport()">
                                 <i class="fas fa-print"></i> Cetak
                             </button>
@@ -113,17 +113,19 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'global') {
-            window.location.href = "{{ url('admin/laporan_deposit') }}";
+            window.location.href = "{{ url('toko_banjaran/laporan_depositbanjaran') }}";
         } else if (selectedValue === 'rinci') {
-            window.location.href = "{{ url('admin/indexrinci') }}";
+            window.location.href = "{{ url('toko_banjaran/indexrinci') }}";
         } else if (selectedValue === 'saldo') {
-            window.location.href = "{{ url('admin/saldo') }}";
+            window.location.href = "{{ url('toko_banjaran/indexsaldo') }}";
         }
     });
+</script>
 
+<script>
     function printReport() {
         const form = document.getElementById('form-action');
-        form.action = "{{ url('admin/printReportsaldo') }}";
+        form.action = "{{ url('toko_banjaran/printReportsaldo') }}";
         form.target = "_blank";
         form.submit();
     }
