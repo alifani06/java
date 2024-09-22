@@ -77,7 +77,7 @@
         <div class="logo">
             <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
         </div>
-        <h1 class="title">JAVA BAKERY</h1>
+        <h1 class="title">PT JAVA BAKERY FACTORY</h1>
         <p class="title1">Cabang: {{ strtoupper($branchName) }}</p>
         <div class="divider"></div>
     
