@@ -30,6 +30,8 @@ use App\Models\Penjualanproduk;
 use App\Models\Toko;
 use App\Models\Dppemesanan;
 use App\Models\Metodepembayaran;
+use App\Models\Stok_tokobumiayu;
+use App\Models\Stokpesanan_tokobumiayu;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Log;
@@ -302,7 +304,7 @@ class PenjualanprodukbumiayuController extends Controller
         $metodes = Metodepembayaran::all();
         
         // Pastikan kita memanggil relasi stokbanjaran
-        $produks = Produk::with(['tokobanjaran', 'stok_tokobanjaran'])->get();
+        $produks = Produk::with(['tokobumiayu', 'stok_tokobumiayu'])->get();
 
         $kategoriPelanggan = 'member';
         
@@ -403,7 +405,7 @@ class PenjualanprodukbumiayuController extends Controller
             'metode_id' => $request->metode_id, 
             'total_fee' => $request->total_fee, 
             'keterangan' => $request->keterangan, 
-            'toko_id' => 1,
+            'toko_id' => 5,
             'kasir' => ucfirst(auth()->user()->karyawan->nama_lengkap),
             'kode_penjualan' => $kode,
             'qrcode_penjualan' => 'https://javabakery.id/penjualan/' . $kode,
@@ -432,7 +434,7 @@ class PenjualanprodukbumiayuController extends Controller
             ]);
 
             // Kurangi stok di tabel stok_tokobanjaran
-            $stok = Stok_tokobanjaran::where('produk_id', $data_pesanan['produk_id'])->first();
+            $stok = Stok_tokobumiayu::where('produk_id', $data_pesanan['produk_id'])->first();
             if ($stok) {
                 // Jika jumlah stok 0, maka kurangi dengan nilai jumlah dari inputan dan buat stok jadi minus
                 if ($stok->jumlah == 0) {
@@ -464,16 +466,22 @@ class PenjualanprodukbumiayuController extends Controller
         $pelanggans = Pelanggan::all();
         $details = Detailbarangjadi::all();
         $tokoslawis = Tokoslawi::all();
-        $tokobanjarans = Tokobanjaran::all();
+        $tokobumiayus = Tokobumiayu::all();
         $tokos = Toko::all();
         $metodes = Metodepembayaran::all();
-        $dppemesanans = Dppemesanan::all();
+    
+        // Filter Dppemesanan berdasarkan toko_id = 5
+        $dppemesanans = Dppemesanan::whereHas('pemesananproduk', function($query) {
+            $query->where('toko_id', 5);
+        })->get();
+    
         $pemesananproduks = Pemesananproduk::all();
-        $produks = Produk::with('tokobanjaran')->get();
+        $produks = Produk::with('tokobumiayu')->get();
         $kategoriPelanggan = 'member';
- 
-        return view('toko_bumiayu.penjualan_produk.pelunasan', compact('barangs','metodes', 'tokos', 'produks', 'details', 'tokoslawis', 'tokobanjarans', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks'));
+    
+        return view('toko_bumiayu.penjualan_produk.pelunasan', compact('barangs','metodes', 'tokos', 'produks', 'details', 'tokoslawis', 'tokobumiayus', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks'));
     }
+    
     
     public function fetchProductData(Request $request)
     {
@@ -495,117 +503,7 @@ class PenjualanprodukbumiayuController extends Controller
     }
     
     
-    // public function SimpanPelunasan(Request $request)
-    // {
-    //     // Validasi input
-    //     $validated = $request->validate([
-    //         'dppemesanan_id' => 'required|string',
-    //         'pelunasan' => 'required|numeric',
-    //         'metode_id' => 'nullable|integer',
-    //         'total_fee' => 'nullable|numeric',
-    //         'keterangan' => 'nullable|string',
-    //         'kode_produk' => 'nullable|array',
-    //         'kode_produk.*' => 'nullable|string',
-    //         'kode_lama.*' => 'nullable|string',
-    //         'nama_produk' => 'nullable|array',
-    //         'nama_produk.*' => 'nullable|string',
-    //         'jumlah' => 'nullable|array',
-    //         'jumlah.*' => 'nullable|integer',
-    //         'harga' => 'nullable|array', 
-    //         'harga.*' => 'nullable|numeric', 
-    //         'total' => 'nullable|array',
-    //         'total.*' => 'nullable|numeric',
-    //         'diskon' => 'nullable|array',
-    //         'diskon.*' => 'nullable|numeric',
-    //         'produk_id' => 'nullable|array',
-    //         'produk_id.*' => 'nullable|numeric',
-    //         'kembali' => 'nullable|numeric',
-    //     ]);
-    
-    //     // Update kolom pelunasan di tabel dppemesanans
-    //     $dppemesanans = Dppemesanan::find($validated['dppemesanan_id']);
-    //     if (!$dppemesanans) {
-    //         return redirect()->back()->withErrors(['error' => 'Data pesanan tidak ditemukan']);
-    //     }
-    
-    //     $dppemesanans->pelunasan += $validated['pelunasan'];
-    //     $dppemesanans->save();
-    
-    //     $kode = $this->kode();
-    //     // Simpan data ke tabel penjualan_produk
-    //     $penjualan = new PenjualanProduk();
-    //     $penjualan->dppemesanan_id = $validated['dppemesanan_id'];
-    //     $penjualan->nama_pelanggan = $dppemesanans->pemesananproduk->nama_pelanggan;
-    //     $penjualan->kode_pelanggan = $dppemesanans->pemesananproduk->kode_pelanggan;
-    //     $penjualan->telp = $dppemesanans->pemesananproduk->telp;
-    //     $penjualan->alamat = $dppemesanans->pemesananproduk->alamat;
-    //     $penjualan->sub_total = $dppemesanans->pemesananproduk->sub_total;
-    //     $penjualan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
-    //     $penjualan->total_fee = $validated['total_fee'];
-    //     $penjualan->keterangan = $validated['keterangan'];
-    //     $penjualan->metode_id = $validated['metode_id'];
-    //     $penjualan->kembali = $validated['kembali'];
-    //     $penjualan->bayar = $validated['pelunasan'];
-    //     $penjualan->status = 'posting';
-    //     $penjualan->toko_id = 1;
-    //     $penjualan->kode_penjualan = $this->kode();
-    //     $penjualan->tanggal_penjualan = Carbon::now('Asia/Jakarta');
-    //     $penjualan->qrcode_penjualan = 'https://javabakery.id/penjualan/' . $kode;
-
-    //     $penjualan->save();
-    
-    //     // Simpan data ke tabel pelunasan
-    //     $pelunasan = new Pelunasan();
-    //     $pelunasan->dppemesanan_id = $validated['dppemesanan_id'];
-    //     $pelunasan->penjualanproduk_id = $penjualan->id;
-    //     $pelunasan->pelunasan = $validated['pelunasan'];
-    //     $pelunasan->metode_id = $validated['metode_id'];
-    //     $pelunasan->total_fee = $validated['total_fee'];
-    //     $pelunasan->keterangan = $validated['keterangan'];
-    //     $pelunasan->kembali = $validated['kembali'];
-    //     $pelunasan->tanggal_pelunasan = Carbon::now('Asia/Jakarta');
-    //     $pelunasan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
-    //     $pelunasan->status = 'posting';
-    //     $pelunasan->kode_penjualan = $this->kode();
-    //     $pelunasan->save();
-    
-    //     // Simpan data ke tabel detailpenjualanproduk dan kurangi stok
-    //     foreach ($validated['kode_produk'] as $index => $kode_produk) {
-    //         $detail = new DetailPenjualanProduk();
-    //         $detail->penjualanproduk_id = $penjualan->id;
-    //         $detail->kode_produk = $kode_produk;
-    //         $detail->kode_lama = $validated['kode_lama'][$index];
-    //         $detail->produk_id = $validated['produk_id'][$index];
-    //         $detail->nama_produk = $validated['nama_produk'][$index];
-    //         $detail->jumlah = $validated['jumlah'][$index];
-    //         $detail->harga = $validated['harga'][$index];
-    //         $detail->diskon = $validated['diskon'][$index];
-    //         $detail->total = $validated['total'][$index];
-    //         $detail->save();
-    
-    //         // Kurangi stok di tabel stok_tokobanjaran
-    //         $stok = Stokpesanan_tokobanjaran::where('produk_id', $detail->produk_id)->first();
-    //         if ($stok) {
-    //             if ($stok->jumlah >= $detail->jumlah) {
-    //                 $stok->jumlah -= $detail->jumlah;
-    //             } else {
-    //                 return redirect()->back()->withErrors(['error' => 'Stok tidak mencukupi untuk produk: ' . $detail->nama_produk]);
-    //             }
-    //             $stok->save();
-    //         }
-    //     }
-    
-    //     // Ambil detail pelunasan untuk ditampilkan di halaman cetak
-    //     $details = DetailPenjualanProduk::where('penjualanproduk_id', $penjualan->id)->get();
-    
-    //     // Redirect ke halaman cetak dengan menyertakan data sukses dan detail pelunasan
-    //     return redirect()->route('toko_bumiayu.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id])->with([
-    //         'success' => 'Data berhasil disimpan.',
-    //         'pelunasan' => $pelunasan,
-    //         'penjualan' => $penjualan,
-    //         'details' => $details,
-    //     ]);
-    // }
+   
     public function SimpanPelunasan(Request $request)
     {
         // Validasi input
@@ -666,7 +564,7 @@ class PenjualanprodukbumiayuController extends Controller
         $penjualan->kembali = $validated['kembali'];
         $penjualan->bayar = $validated['pelunasan'];
         $penjualan->status = 'posting';
-        $penjualan->toko_id = 1;
+        $penjualan->toko_id = 5;
         $penjualan->kode_penjualan = $kode_penjualan;
         $penjualan->tanggal_penjualan = Carbon::now('Asia/Jakarta');
         $penjualan->qrcode_penjualan = 'https://javabakery.id/penjualan/' . $kode_penjualan;
@@ -684,6 +582,7 @@ class PenjualanprodukbumiayuController extends Controller
         $pelunasan->tanggal_pelunasan = Carbon::now('Asia/Jakarta');
         $pelunasan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
         $pelunasan->status = 'posting';
+        $pelunasan->toko_id = '5'; 
         $pelunasan->kode_penjualan = $penjualan->kode_penjualan; // Menggunakan kode_penjualan dari penjualan
         $pelunasan->save();
 
@@ -702,14 +601,14 @@ class PenjualanprodukbumiayuController extends Controller
             $detail->save();
 
             // Kurangi stok di tabel stok_tokobanjaran
-            $stok = Stokpesanan_tokobanjaran::where('produk_id', $detail->produk_id)->first();
+            $stok = Stokpesanan_tokobumiayu::where('produk_id', $detail->produk_id)->first();
             if ($stok) {
                 // Kurangi stok tanpa memeriksa apakah stok mencukupi
                 $stok->jumlah -= $detail->jumlah;
                 $stok->save();
             } else {
                 // Jika stok tidak ditemukan, buat stok baru dengan nilai negatif
-                Stokpesanan_tokobanjaran::create([
+                Stokpesanan_tokobumiayu::create([
                     'produk_id' => $detail->produk_id,
                     'jumlah' => -$detail->jumlah,
                 ]);
@@ -810,7 +709,7 @@ class PenjualanprodukbumiayuController extends Controller
  
     public function kode()
     {
-        $prefix = 'PBNJ';
+        $prefix = 'PBMY';
         $year = date('y'); // Dua digit terakhir dari tahun
         $monthDay = date('dm'); // Format bulan dan hari: MMDD
         

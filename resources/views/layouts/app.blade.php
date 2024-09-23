@@ -131,6 +131,9 @@
                         @if (auth()->user()->isTokobanjaran())
                             @include('layouts.menu.toko_banjaran')
                         @endif
+                        @if (auth()->user()->isTokobumiayu())
+                            @include('layouts.menu.toko_bumiayu')
+                        @endif
 
                     </ul>
                 </nav>

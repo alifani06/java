@@ -74,18 +74,18 @@ class PemesananprodukbumiayuController extends Controller
         //                  ->orWhere('kode_lama', 'like', '%' . $search . '%');
         // }) ->paginate(10);
         $details = Detailbarangjadi::all();
-        $tokoslawis = Tokoslawi::all();
-        $tokobanjaran = Tokobanjaran::all();
+  
+        $tokobumiayu = Tokobumiayu::all();
         $tokos = Toko::all();
         $metodes = Metodepembayaran::all();
 
-        $produks = Produk::with(['tokobanjaran', 'stokpesanan_tokobanjaran'])->get();
+        $produks = Produk::with(['tokobumiayu', 'stokpesanan_tokobumiayu'])->get();
 
         $kategoriPelanggan = 'member';
     
         return view('toko_bumiayu.pemesanan_produk.create', compact('barangs','metodes', 
-        'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 
-        'kategoriPelanggan','tokobanjaran','search'));
+        'tokos', 'produks', 'details', 'tokobumiayu', 'pelanggans', 
+        'kategoriPelanggan','search'));
     }
     
     public function getCustomerByKode($kode)
@@ -214,7 +214,7 @@ class PemesananprodukbumiayuController extends Controller
             'telp_penerima' => $request->telp_penerima,
             'alamat_penerima' => $request->alamat_penerima,
             'tanggal_kirim' => $tanggal_kirim,
-            'toko_id' => '1',
+            'toko_id' => '5',
             'kasir' => ucfirst(auth()->user()->karyawan->nama_lengkap),
             'metode_id' => $request->metode_id, 
             'sub_totalasli' => $request->sub_totalasli,
@@ -318,7 +318,7 @@ class PemesananprodukbumiayuController extends Controller
 
     public function kode()
     {
-        $prefix = 'QBNJ';
+        $prefix = 'QBMY';
         $year = date('y'); // Dua digit terakhir dari tahun
         $date = date('dm'); // Format bulan dan hari: MMDD
     
@@ -342,7 +342,7 @@ class PemesananprodukbumiayuController extends Controller
 
     public function kodedp()
     {
-        $prefix = 'DPBNJ';
+        $prefix = 'DPBMY';
         $year = date('y'); // Dua digit terakhir dari tahun
         $date = date('dm'); // Format bulan dan hari: MMDD
     

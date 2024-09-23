@@ -54,14 +54,6 @@
                 </div>
             @endif
             <div class="card">
-                {{-- <div class="card-header">
-                    <div class="float-right">
-                        <a href="{{ url('toko_banjaran/penjualan_produk/create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus"></i> 
-                        </a>
-                    </div>
-                </div> --}}
-                <!-- /.card-header -->
                 <div class="card-body">
                     <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
                         <thead class="">
@@ -113,7 +105,7 @@
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($item->status == 'unpost')
                                                 <a class="dropdown-item posting-btn" data-memo-id="{{ $item->id }}">Posting</a>
-                                                <a class="dropdown-item" href="{{ url('/toko_banjaran/pelunasan_pemesanan/' . $item->id ) }}">Show</a>
+                                                <a class="dropdown-item" href="{{ url('/toko_bumiayu/pelunasan_pemesanan/' . $item->id ) }}">Show</a>
                                                 <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
                                                     @csrf
                                                     @method('DELETE')
@@ -122,7 +114,7 @@
                                             @endif
                                             @if ($item->status == 'posting')
                                                 <a class="dropdown-item unpost-btn" data-memo-id="{{ $item->id }}">Unpost</a>
-                                                <a class="dropdown-item" href="{{ url('/toko_banjaran/pelunasan_pemesanan/' . $item->id ) }}">Show</a>
+                                                <a class="dropdown-item" href="{{ url('/toko_bumiayu/pelunasan_pemesanan/' . $item->id ) }}">Show</a>
                                             @endif
                                         </div>
                                     </td>
@@ -177,7 +169,7 @@
         var form = document.getElementById('form-action');
 
         function cari() {
-            form.action = "{{ url('toko_banjaran/inquery_penjualanprodukbanjaran') }}";
+            form.action = "{{ url('toko_bumiayu/inquery_penjualanprodukbumiayu') }}";
             form.submit();
         }
     </script>
@@ -201,8 +193,8 @@
                 });
                 document.getElementById('selectedIds').value = selectedIds.join(',');
                 var selectedIdsString = selectedIds.join(',');
-                window.location.href = "{{ url('toko_banjaran/cetak_fakturekspedisifilter') }}?ids=" + selectedIdsString;
-                // var url = "{{ url('toko_banjaran/ban/cetak_pdffilter') }}?ids=" + selectedIdsString;
+                window.location.href = "{{ url('toko_bumiayu/cetak_fakturekspedisifilter') }}?ids=" + selectedIdsString;
+                // var url = "{{ url('toko_bumiayu/ban/cetak_pdffilter') }}?ids=" + selectedIdsString;
             }
         }
     </script>
@@ -219,7 +211,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan unpost
                 $.ajax({
-                    url: "{{ url('toko_banjaran/inquery_penjualanprodukbanjaran/unpost_penjualanproduk/') }}/" + memoId,
+                    url: "{{ url('toko_bumiayu/inquery_penjualanprodukbumiayu/unpost_penjualanproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -260,7 +252,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan posting
                 $.ajax({
-                    url: "{{ url('toko_banjaran/inquery_penjualanprodukbanjaran/posting_penjualanproduk/') }}/" + memoId,
+                    url: "{{ url('toko_bumiayu/inquery_penjualanprodukbumiayu/posting_penjualanproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

@@ -42,10 +42,16 @@ class PelunasanpemesananController extends Controller
 {
     public function index()
     {
-        $inquery = Pelunasan::with(['metodePembayaran', 'dppemesanan.pemesananproduk'])->get();
-    
+        // Filter Pelunasan berdasarkan toko_id = 5
+        $inquery = Pelunasan::with(['metodePembayaran', 'dppemesanan.pemesananproduk'])
+                    ->whereHas('dppemesanan.pemesananproduk', function($query) {
+                        $query->where('toko_id', 5);
+                    })
+                    ->get();
+        
         return view('toko_bumiayu.pelunasan_pemesanan.index', compact('inquery'));
     }
+    
     
     
     public function pelanggan($id)
@@ -119,7 +125,7 @@ class PelunasanpemesananController extends Controller
         $pelunasan->total_fee = $validated['total_fee'];
         $pelunasan->keterangan = $validated['keterangan'];
         $pelunasan->tanggal_pelunasan = Carbon::now('Asia/Jakarta'); 
-        $pelunasan->toko_id = '1'; 
+        $pelunasan->toko_id = '5'; 
         $pelunasan->status = 'posting'; 
     
         $pelunasan->save();
@@ -364,18 +370,6 @@ class PelunasanpemesananController extends Controller
         ]);
     }
 
-    // public function cetak($id)
-    // {
-    //     // Retrieve the specific pemesanan by ID along with its details
-    //     $penjualan = Penjualanproduk::with('detailpenjualanproduk', 'toko')->findOrFail($id);
-    
-    //     // Retrieve all pelanggans (assuming you need this for the view)
-    //     $pelanggans = Pelanggan::all();
-    //     $tokos = $penjualan->toko;
-
-    //     // Pass the retrieved data to the view
-    //     return view('toko_bumiayu/pelunasan_pemesanan/cetak', compact('penjualan', 'pelanggans', 'tokos'));
-    // }
     public function cetak($id)
     {   
         // Mengambil satu item Pelunasan berdasarkan ID

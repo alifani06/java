@@ -36,10 +36,6 @@ class Pelunasan extends Model
   
     ];
 
-    protected $attributes = [
-        'toko_id' => '1', // Nilai default untuk toko_id
-    ];
-
     use SoftDeletes;
     protected $dates = ['deleted_at'];
 

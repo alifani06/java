@@ -40,7 +40,7 @@
             @endif
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Penjualan Produk Banjaran</h1>
+                    <h1 class="m-0">Penjualan Produk Bumiayu</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                  
@@ -68,7 +68,7 @@
                     @endforeach
                 </div>
             @endif
-            <form id="penjualanForm" action="{{ url('toko_banjaran/penjualan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form id="penjualanForm" action="{{ url('toko_bumiayu/penjualan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 {{-- detail pelanggan --}}
                 <div class="card">
@@ -146,46 +146,7 @@
                     </div>
                 </div>
        
-                 {{-- <div class="modal fade" id="tableDeposit" data-backdrop="static">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Data Deposit</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <table id="datatables6" class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">No</th>
-                                            <th>Kode Deposit</th>
-                                            <th>Kode Pemesanan</th>
-                                            <th>Alamat</th>
-                                            <th>Opsi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($dppemesanans as $item)
-                                            <tr onclick="getSelectedDataDeposit('{{ $item->kode_dppemesanan }}', '{{ $item->dp_pemesanan }}', '{{ $item->kekurangan_pemesanan }}')">
-                                                <td class="text-center">{{ $loop->iteration }}</td>
-                                                <td>{{ $item->kode_dppemesanan }}</td>
-                                                <td>{{ $item->dp_pemesanan }}</td>
-                                                <td>{{ $item->kekurangan_pemesanan }}</td>
-                                                <td class="text-center">
-                                                    <button type="button" class="btn btn-primary btn-sm" >
-                                                        <i class="fas fa-plus"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        @endforeach 
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
+                 
 
                 <div class="modal fade" id="tableMarketing" data-backdrop="static">
                     <div class="modal-dialog modal-lg">
@@ -296,8 +257,8 @@
                                     <tbody>
                                         @foreach ($produks as $item)
                                             @php
-                                                $tokobanjaran = $item->tokobanjaran->first();
-                                                $stok_tokobanjaran = $item->stok_tokobanjaran ? $item->stok_tokobanjaran->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
+                                                $tokobumiayu = $item->tokobumiayu->first();
+                                                $stok_tokobumiayu = $item->stok_tokobumiayu ? $item->stok_tokobumiayu->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
                                             @endphp
                                             <tr class="pilih-btn"
                                                 data-id="{{ $item->id }}"
@@ -305,29 +266,29 @@
                                                 data-kodel="{{ $item->kode_lama }}"
                                                 data-catatan="{{ $item->catatanproduk }}"
                                                 data-nama="{{ $item->nama_produk }}"
-                                                data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
-                                                data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
-                                                data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
-                                                data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
+                                                data-member="{{ $tokobumiayu ? $tokobumiayu->member_harga_bmy : '' }}"
+                                                data-diskonmember="{{ $tokobumiayu ? $tokobumiayu->member_diskon_bmy : '' }}"
+                                                data-nonmember="{{ $tokobumiayu ? $tokobumiayu->non_harga_bmy : '' }}"
+                                                data-diskonnonmember="{{ $tokobumiayu ? $tokobumiayu->non_diskon_bmy : '' }}">
 
                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td >{{ $item->kode_produk }}</td>
                                                 <td>{{ $item->kode_lama }}</td>
                                                 <td>{{ $item->nama_produk }}</td>
                                                 <td>
-                                                    <span class="member_harga_slw">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}</span>
+                                                    <span class="member_harga_slw">{{ $tokobumiayu ? $tokobumiayu->member_harga_bmy : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="member_diskon_slw">{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}</span>
+                                                    <span class="member_diskon_slw">{{ $tokobumiayu ? $tokobumiayu->member_diskon_bmy : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="non_harga_slw">{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}</span>
+                                                    <span class="non_harga_slw">{{ $tokobumiayu ? $tokobumiayu->non_harga_bmy : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="non_diskon_slw">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}</span>
+                                                    <span class="non_diskon_slw">{{ $tokobumiayu ? $tokobumiayu->non_diskon_bmy : '' }}</span>
                                                 </td>
                                                 <td class="text-center">
-                                                    {{ $stok_tokobanjaran }} <!-- Tampilkan stok produk -->
+                                                    {{ $stok_tokobumiayu }} <!-- Tampilkan stok produk -->
                                                 </td>
 
                                                 <td class="text-center">
@@ -337,10 +298,10 @@
                                                         data-kodel="{{ $item->kode_lama }}"
                                                         data-catatan="{{ $item->catatanproduk }}"
                                                         data-nama="{{ $item->nama_produk }}"
-                                                        data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
-                                                        data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
-                                                        data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
-                                                        data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
+                                                        data-member="{{ $tokobumiayu ? $tokobumiayu->member_harga_bmy : '' }}"
+                                                        data-diskonmember="{{ $tokobumiayu ? $tokobumiayu->member_diskon_bmy : '' }}"
+                                                        data-nonmember="{{ $tokobumiayu ? $tokobumiayu->non_harga_bmy : '' }}"
+                                                        data-diskonnonmember="{{ $tokobumiayu ? $tokobumiayu->non_diskon_bmy : '' }}">
                                                         <i class="fas fa-plus"></i> 
                                                     </button>
                                                 </td>
@@ -520,7 +481,7 @@
                 changeRow.style.display = 'block';
             } else if (metodeId) {
                 $.ajax({
-                    url: "{{ url('toko_banjaran/metodebayar/metode') }}" + "/" + metodeId,
+                    url: "{{ url('toko_bumiayu/metodebayar/metode') }}" + "/" + metodeId,
                     type: "GET",
                     dataType: "json",
                     success: function(response) {
@@ -1091,9 +1052,9 @@ function showCategoryModal(urutan) {
         var selectedValue = this.value;
 
         if (selectedValue === 'penjualan') {
-            window.location.href = "{{ route('toko_banjaran.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
+            window.location.href = "{{ route('toko_bumiayu.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
         } else if (selectedValue === 'pelunasan') {
-            window.location.href = "{{ route('toko_banjaran.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
+            window.location.href = "{{ route('toko_bumiayu.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
         }
     });
 </script>

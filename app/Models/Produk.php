@@ -65,6 +65,19 @@ class Produk extends Model
     {
         return $this->hasOne(Stokpesanan_tokobanjaran::class, 'produk_id');
     }
+    public function tokobumiayu()
+    {
+        return $this->hasMany(Tokobumiayu::class);
+    }
+
+    public function stok_tokobumiayu()
+    {
+        return $this->hasOne(Stok_tokobumiayu::class, 'produk_id');
+    }
+    public function stokpesanan_tokobumiayu()
+    {
+        return $this->hasOne(Stokpesanan_tokobumiayu::class, 'produk_id');
+    }
     public function tokotegal()
     {
         return $this->hasMany(Tokotegal::class);
@@ -73,10 +86,7 @@ class Produk extends Model
     {
         return $this->hasMany(Tokopemalang::class);
     }
-    public function tokobumiayu()
-    {
-        return $this->hasMany(Tokobumiayu::class);
-    }
+
     public function tokocilacap()
     {
         return $this->hasMany(Tokocilacap::class);
