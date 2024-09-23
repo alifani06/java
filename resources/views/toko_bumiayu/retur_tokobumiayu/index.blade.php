@@ -33,7 +33,8 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Inquery Retur Toko Banjaran</h1>
+                    <h1 class="m-0">Retur Toko Bumiayu</h1>
+                    
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -66,37 +67,16 @@
                 </div>
             @endif
             <div class="card">
-            
-                
+            <div class="card-body">
+                <div class="float-right">
+                    <a href="{{ url('toko_bumiayu/retur_tokobumiayu/create') }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i> 
+                    </a>
+                </div>  
+            </div>
                 <div class="card-body">
                     <!-- Tabel -->
-                    <form method="GET" id="form-action">
-                        <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="status" name="status">
-                                    <option value="">- Semua Status -</option>
-                                    <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
-                                    <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
-                                </select>
-                                <label for="status">(Pilih Status)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_pengiriman" name="tanggal_pengiriman" type="date"
-                                    value="{{ Request::get('tanggal_pengiriman') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_pengiriman">(Dari Tanggal)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
-                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_akhir">(Sampai Tanggal)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
-                                    <i class="fas fa-search"></i> Cari
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                    
                     <table id="datatables66" class="table table-bordered" style="font-size: 13px">
                         <thead>
                             <tr>
@@ -146,13 +126,13 @@
                                                     href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a> --}}
                                             
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_banjaran/retur_tokobanjaran/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/toko_bumiayu/retur_tokobumiayu/' . $firstItem->id ) }}">Show</a>
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 {{-- <a class="dropdown-item unpost-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Unpost</a> --}}
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_banjaran/retur_tokobanjaran/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/toko_bumiayu/retur_tokobumiayu/' . $firstItem->id ) }}">Show</a>
                                         @endif
                                        
                                     </div>
@@ -175,7 +155,7 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $detail->produk->klasifikasi->nama }}</td>
-                                                <td>{{ $detail->produk->kode_lama }}</td>
+                                                <td>{{ $detail->produk->kode_lama}}</td>
                                                 <td>{{ $detail->produk->nama_produk }}</td>
                                                 <td>{{ $detail->jumlah }}</td>
                                             </tr>
@@ -228,7 +208,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_banjaran/inquery_returbanjaran') }}";
+            form.action = "{{ url('toko_bumiayu/inquery_returslawi') }}";
             form.submit();
         }
 
@@ -246,7 +226,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_banjaran/retur_tokobanjaran/unpost_retur/') }}/" + memoId,
+                    url: "{{ url('toko_bumiayu/retur_tokobumiayu/unpost_retur/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -276,7 +256,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_banjaran/retur_tokobanjaran/posting_retur/') }}/" + memoId,
+                    url: "{{ url('toko_bumiayu/retur_tokobumiayu/posting_retur/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

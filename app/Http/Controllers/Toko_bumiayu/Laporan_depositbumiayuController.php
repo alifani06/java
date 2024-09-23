@@ -22,101 +22,6 @@ class Laporan_depositbumiayuController extends Controller
 {
  
 
-
-    // public function index(Request $request)
-    // {
-    //     // Ambil parameter filter dari request
-    //     $status = $request->status;
-    //     $tanggal_kirim = $request->tanggal_kirim;
-    //     $tanggal_akhir = $request->tanggal_akhir;
-    //     $status_pelunasan = $request->status_pelunasan;
-    //     $toko_id = $request->toko_id; 
-    //     $filter_tanggal = $request->filter_tanggal; // Ambil filter tanggal dari request
-        
-    //     // Ambil daftar toko untuk filter
-    //     $tokos = Toko::all();
-        
-    //     // Query dasar untuk mengambil data Dppemesanan
-    //     $inquery = Dppemesanan::with(['pemesananproduk.toko'])->orderBy('created_at', 'desc');
-        
-    //     // Filter berdasarkan status
-    //     if ($status) {
-    //         $inquery->whereHas('pemesananproduk', function ($query) use ($status) {
-    //             $query->where('status', $status);
-    //         });
-    //     }
-    
-    //     // Filter berdasarkan toko_id
-    //     if ($toko_id) {
-    //         $inquery->whereHas('pemesananproduk', function ($query) use ($toko_id) {
-    //             $query->where('toko_id', $toko_id);
-    //         });
-    //     }
-    
-    //     // Filter berdasarkan tanggal
-    //     if ($filter_tanggal == 'tanggal_kirim') {
-    //         if ($tanggal_kirim && $tanggal_akhir) {
-    //             $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
-    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //             $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_kirim, $tanggal_akhir) {
-    //                 $query->whereBetween('tanggal_kirim', [$tanggal_kirim, $tanggal_akhir]);
-    //             });
-    //         } elseif ($tanggal_kirim) {
-    //             $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
-    //             $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_kirim) {
-    //                 $query->where('tanggal_kirim', '>=', $tanggal_kirim);
-    //             });
-    //         } elseif ($tanggal_akhir) {
-    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //             $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_akhir) {
-    //                 $query->where('tanggal_kirim', '<=', $tanggal_akhir);
-    //             });
-    //         }
-    //     } elseif ($filter_tanggal == 'tanggal_pemesanan') {
-    //         if ($tanggal_kirim && $tanggal_akhir) {
-    //             $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
-    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //             $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_kirim, $tanggal_akhir) {
-    //                 $query->whereBetween('tanggal_pemesanan', [$tanggal_kirim, $tanggal_akhir]);
-    //             });
-    //         } elseif ($tanggal_kirim) {
-    //             $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
-    //             $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_kirim) {
-    //                 $query->where('tanggal_pemesanan', '>=', $tanggal_kirim);
-    //             });
-    //         } elseif ($tanggal_akhir) {
-    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //             $inquery->whereHas('pemesananproduk', function ($query) use ($tanggal_akhir) {
-    //                 $query->where('tanggal_pemesanan', '<=', $tanggal_akhir);
-    //             });
-    //         }
-    //     } else {
-    //         // Jika tidak ada filter tanggal, tampilkan data untuk hari ini
-    //         $inquery->whereHas('pemesananproduk', function ($query) {
-    //             $query->whereDate('tanggal_kirim', Carbon::today());
-    //         });
-    //     }
-    
-    //     // Filter berdasarkan status pelunasan
-    //     if ($status_pelunasan == 'diambil') {
-    //         $inquery->where(function ($query) {
-    //             $query->whereNotNull('pelunasan')
-    //                   ->where('pelunasan', '>', 0);
-    //         });
-    //     } elseif ($status_pelunasan == 'belum_diambil') {
-    //         $inquery->where(function ($query) {
-    //             $query->whereNull('pelunasan')
-    //                   ->orWhere('pelunasan', 0);
-    //         });
-    //     }
-    
-    //     // Eksekusi query dan dapatkan hasilnya
-    //     $inquery = $inquery->get();
-        
-    //     // Kirim data ke view
-    //     return view('toko_bumiayu.laporan_depositbumiayu.index', compact('inquery', 'tokos'));
-    // }
-
     public function index(Request $request)
 {
     // Ambil parameter filter dari request
@@ -131,7 +36,7 @@ class Laporan_depositbumiayuController extends Controller
     // Query dasar untuk mengambil data Dppemesanan
     $inquery = Dppemesanan::with(['pemesananproduk.toko'])
         ->whereHas('pemesananproduk', function ($query) {
-            $query->where('toko_id', 1); // Secara default ambil toko_id = 1
+            $query->where('toko_id', 5); 
         })
         ->orderBy('created_at', 'desc');
 
@@ -222,8 +127,11 @@ class Laporan_depositbumiayuController extends Controller
         $tokos = Toko::all();
     
         // Query dasar untuk mengambil data Dppemesanan
-        $inquery = Dppemesanan::with(['pemesananproduk.toko']) // Memuat relasi toko melalui pemesananproduk
-            ->orderBy('created_at', 'desc');
+        $inquery = Dppemesanan::with(['pemesananproduk.toko'])
+        ->whereHas('pemesananproduk', function ($query) {
+            $query->where('toko_id', 5); 
+        })
+        ->orderBy('created_at', 'desc');
         
         // Filter berdasarkan status
         if ($status) {
@@ -298,7 +206,10 @@ class Laporan_depositbumiayuController extends Controller
 
         // Query dasar untuk mengambil data Dppemesanan
         $inquery = Dppemesanan::with(['pemesananproduk.toko'])
-            ->orderBy('created_at', 'desc');
+        ->whereHas('pemesananproduk', function ($query) {
+            $query->where('toko_id', 5); 
+        })
+        ->orderBy('created_at', 'desc');
 
         // Filter berdasarkan toko_id
         if ($toko_id) {
@@ -325,7 +236,7 @@ class Laporan_depositbumiayuController extends Controller
     public function printReportdeposit(Request $request)
     {
         // Set default toko_id untuk Banjaran
-        $banjaranTokoId = 1;
+        $banjaranTokoId = 5;
     
         // Ambil parameter filter dari request
         $status = $request->status;
@@ -592,52 +503,51 @@ class Laporan_depositbumiayuController extends Controller
    
 
     public function printReportsaldo(Request $request)
-{
-    // Ambil parameter filter dari request
-    $toko_id = $request->toko_id;
-
-    // Ambil daftar toko untuk filter
-    $tokos = Toko::all();
-
-    // Dapatkan nama toko berdasarkan toko_id
-    $branchName = $toko_id ? Toko::find($toko_id)->nama_toko : 'Semua Cabang';
-
-    // Dapatkan alamat toko berdasarkan toko_id
-    $branchAddress = $toko_id ? Toko::find($toko_id)->alamat : 'Alamat tidak tersedia';
-
-    // Query dasar untuk mengambil data Dppemesanan dan relasi pemesananproduk
-    $inquery = Dppemesanan::with(['pemesananproduk.toko'])
-        ->orderBy('created_at', 'desc');
-
-    // Filter berdasarkan toko_id
-    if ($toko_id) {
+    {
+        // Set toko_id ke 5
+        $toko_id = 5;
+    
+        // Ambil daftar toko untuk filter
+        $tokos = Toko::all();
+    
+        // Dapatkan nama toko berdasarkan toko_id
+        $branchName = Toko::find($toko_id)->nama_toko;
+    
+        // Dapatkan alamat toko berdasarkan toko_id
+        $branchAddress = Toko::find($toko_id)->alamat;
+    
+        // Query dasar untuk mengambil data Dppemesanan dan relasi pemesananproduk
+        $inquery = Dppemesanan::with(['pemesananproduk.toko'])
+            ->orderBy('created_at', 'desc');
+    
+        // Filter berdasarkan toko_id
         $inquery->whereHas('pemesananproduk', function ($query) use ($toko_id) {
             $query->where('toko_id', $toko_id);
         });
+    
+        // Eksekusi query dan group by toko
+        $inquery = $inquery->get()->groupBy('pemesananproduk.toko_id');
+    
+        // Hitung saldo untuk setiap toko (jumlah dp_pemesanan di mana status_pelunasan NULL)
+        $saldoPerToko = [];
+        foreach ($inquery as $tokoId => $dpPemesanan) {
+            $totalSaldo = $dpPemesanan->whereNull('pelunasan')->sum('dp_pemesanan');
+            $saldoPerToko[$tokoId] = $totalSaldo;
+        }
+    
+        // Kirim data ke view cetak
+        $pdf = FacadePdf::loadView('toko_bumiayu.laporan_depositbumiayu.printsaldo', compact(
+            'saldoPerToko',
+            'tokos',
+            'toko_id',
+            'branchName',
+            'branchAddress'
+        ));
+    
+        // Output PDF ke browser
+        return $pdf->stream('laporan_deposit.pdf');
     }
-
-    // Eksekusi query dan group by toko
-    $inquery = $inquery->get()->groupBy('pemesananproduk.toko_id');
-
-    // Hitung saldo untuk setiap toko (jumlah dp_pemesanan di mana status_pelunasan NULL)
-    $saldoPerToko = [];
-    foreach ($inquery as $tokoId => $dpPemesanan) {
-        $totalSaldo = $dpPemesanan->whereNull('pelunasan')->sum('dp_pemesanan');
-        $saldoPerToko[$tokoId] = $totalSaldo;
-    }
-
-    // Kirim data ke view cetak
-    $pdf = FacadePdf::loadView('toko_bumiayu.laporan_depositbumiayu.printsaldo', compact(
-        'saldoPerToko',
-        'tokos',
-        'toko_id',
-        'branchName',
-        'branchAddress'
-    ));
-
-    // Output PDF ke browser
-    return $pdf->stream('laporan_deposit.pdf');
-}
+    
 
     
 

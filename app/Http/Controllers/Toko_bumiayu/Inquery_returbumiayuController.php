@@ -39,6 +39,7 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Retur_barnagjadi;
+use App\Models\Retur_tokobumiayu;
 use Maatwebsite\Excel\Facades\Excel;
 
 class Inquery_returbumiayuController extends Controller{
@@ -56,7 +57,7 @@ class Inquery_returbumiayuController extends Controller{
             $tanggal_input = $request->tanggal_input;
             $tanggal_akhir = $request->tanggal_akhir;
 
-            $query = Retur_tokobanjaran::with('produk.klasifikasi');
+            $query = Retur_tokobumiayu::with('produk.klasifikasi');
 
             if ($status) {
                 $query->where('status', $status);
@@ -91,13 +92,13 @@ public function create()
     $produks = Produk::all();
     $tokos = Toko::all();
 
-    return view('toko_bumiayu.retur_tokoslawi.create', compact('produks', 'tokos'));
+    return view('toko_bumiayu.retur_tokobumiayu.create', compact('produks', 'tokos'));
 }
 
 public function show($id)
 {
     // Ambil kode_retur dari pengiriman_barangjadi berdasarkan id
-    $detailStokBarangJadi = Retur_tokoslawi::where('id', $id)->value('kode_retur');
+    $detailStokBarangJadi = Retur_tokobumiayu::where('id', $id)->value('kode_retur');
     
     // Jika kode_retur tidak ditemukan, tampilkan pesan error
     if (!$detailStokBarangJadi) {
@@ -105,17 +106,17 @@ public function show($id)
     }
     
     // Ambil semua data dengan kode_retur yang sama
-    $pengirimanBarangJadi = Retur_tokoslawi::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
+    $pengirimanBarangJadi = Retur_tokobumiayu::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
     
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    return view('toko_bumiayu.inquery_returslawi.show', compact('pengirimanBarangJadi', 'firstItem'));
+    return view('toko_bumiayu.inquery_returbumiayu.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
 public function print($id)
     {
-        $detailStokBarangJadi = Retur_tokobanjaran::where('id', $id)->value('kode_retur');
+        $detailStokBarangJadi = Retur_tokobumiayu::where('id', $id)->value('kode_retur');
     
         // Jika kode_retur tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -123,7 +124,7 @@ public function print($id)
         }
         
         // Ambil semua data dengan kode_retur yang sama
-        $pengirimanBarangJadi = Retur_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
+        $pengirimanBarangJadi = Retur_tokobumiayu::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
         
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
