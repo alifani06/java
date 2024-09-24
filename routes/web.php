@@ -62,6 +62,7 @@ use App\Http\Controllers\Toko_slawi\Laporan_pemindahanslawiController;
 use App\Http\Controllers\Toko_slawi\Pengiriman_tokoslawiController as Toko_slawiPengiriman_tokoslawiController;
 use App\Http\Controllers\Toko_slawi\Retur_tokoslawiController;
 use App\Models\Pengiriman_barangjadi;
+use App\Models\Setoran_penjualan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -343,6 +344,10 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('printExcelBk', [Laporan_hasilpenjualanController::class, 'exportExcelBK'])->name('printExcelBk');
     Route::get('printExcelBr', [Laporan_hasilpenjualanController::class, 'exportExcelBR'])->name('printExcelBr');
 
+    Route::resource('setoran_pelunasan', \App\Http\Controllers\Admin\Setoran_pelunasanController::class);
+    Route::post('/get-penjualan-kotor', [Setoran_pelunasanController::class, 'getdata1'])->name('getdata1');
+    Route::get('/print-penjualan-kotor', [Setoran_pelunasanController::class, 'printPenjualanKotor'])->name('print.penjualan.kotor');
+
     //TOKO SLAWI
     Route::resource('stok_tokoslawi', \App\Http\Controllers\Admin\Stok_tokoslawiController::class);
 
@@ -357,8 +362,9 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::resource('metode_pembayaran', \App\Http\Controllers\Admin\Metode_pembayaranController::class);
     
-    Route::resource('setoran_pelunasan', \App\Http\Controllers\Admin\Setoran_pelunasanController::class);
-    Route::post('/get-penjualan-kotor', [Setoran_pelunasanController::class, 'getdata1'])->name('getdata1');
+
+
+
 
 });
 
