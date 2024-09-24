@@ -512,6 +512,12 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('printReportdeposit', [\App\Http\Controllers\Toko_banjaran\Laporan_depositbanjaranController::class, 'printReportdeposit']);
     Route::get('printReportdepositrinci', [\App\Http\Controllers\Toko_banjaran\Laporan_depositbanjaranController::class, 'printReportdepositrinci']);
     Route::get('printReportsaldo', [\App\Http\Controllers\Toko_banjaran\Laporan_depositbanjaranController::class, 'printReportsaldo']);
+    
+    Route::resource('inquery_setorantunaibanjaran', \App\Http\Controllers\Toko_banjaran\Inquery_setorantunaibanjaranController::class);
+    
+    Route::resource('laporan_setorantunaibanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_setorantunaibanjaranController::class);
+
+
 });
 
 

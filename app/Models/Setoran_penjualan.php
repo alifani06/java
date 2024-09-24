@@ -33,6 +33,7 @@ class Setoran_penjualan extends Model
         'nominal_setoran',
         'plusminus',
         'toko_id',
+        'status',
     ];
     
 

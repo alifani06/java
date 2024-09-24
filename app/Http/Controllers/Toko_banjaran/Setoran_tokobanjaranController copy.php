@@ -311,7 +311,6 @@ class Setoran_tokobanjaranController extends Controller
             'nominal_setoran' => $request->nominal_setoran,
             'plusminus' => $request->plusminus,
             'toko_id' => 1, // Menyimpan toko_id dengan nilai 1
-            'status' => 'unpost',
 
         ]);
 

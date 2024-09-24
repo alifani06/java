@@ -56,17 +56,36 @@
                 </div>
             @endif
             <div class="card">
-                <div class="card-header">
-                    <div class="float-right">
-                        <a href="{{ url('toko_banjaran/setoran_tokobanjaran/create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus"></i> 
-                        </a>
-                    </div>
-       
-                    <h3 class="card-title">Setoran Tunai Penjualan</h3>
-                </div>
+
                  
                 <div class="card-body">
+                    <form method="GET" id="form-action">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
+                                    value="{{ Request::get('tanggal_penjualan') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_penjualan">(Dari Tanggal)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
+                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_akhir">(Sampai Tanggal)</label>
+                            </div>
+                            <div class="col-md-3 mb-3" style="color: white">
+                                
+                            </div>
+                            
+
+                            <div class="col-md-3 mb-3">
+                                <button type="submit" class="btn btn-outline-primary btn-block">
+                                    <i class="fas fa-search"></i> Cari
+                                </button>
+                                <button type="button" class="btn btn-primary btn-block" onclick="printReport()" target="_blank">
+                                    <i class="fas fa-print"></i> Cetak
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                     <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 10px">
                         <thead>
                             <tr>
@@ -110,9 +129,6 @@
                         </tbody>
                     </table>
                     
-                    
-                    
-                    
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
                         aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">
@@ -152,50 +168,19 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_banjaran/laporan_setorantokobanjaran') }}";
+            form.action = "{{ url('toko_banjaran/laporan_setorantunai') }}";
             form.submit();
         }
     </script>
 
-<script>
-    function printReport() {
-    const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printReportsetoran') }}";
-    form.target = "_blank";
-    form.submit();
-}
-
-</script>
-
-<script>
-    document.getElementById('kategori1').addEventListener('change', function() {
-        var selectedValue = this.value;
-
-        if (selectedValue === 'global') {
-            window.location.href = "{{ url('toko_banjaran/indexglobal') }}";
-        } else if (selectedValue === 'rinci') {
-            window.location.href = "{{ url('toko_banjaran/laporan_penjualanproduk') }}";
-        }
-    });
-</script>
-
-<script>
-    function filterProduk() {
-        var klasifikasiId = document.getElementById('klasifikasi').value;
-        var produkSelect = document.getElementById('produk');
-        var produkOptions = produkSelect.options;
-    
-        for (var i = 0; i < produkOptions.length; i++) {
-            var option = produkOptions[i];
-            if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
-                option.style.display = "block";
-            } else {
-                option.style.display = "none";
-            }
-        }
-    
-        // Reset the selected value of the product select box
-        produkSelect.selectedIndex = 0;
+    <script>
+        function printReport() {
+        const form = document.getElementById('form-action');
+        form.action = "{{ url('toko_banjaran/printReportsetoran') }}";
+        form.target = "_blank";
+        form.submit();
     }
     </script>
+
+
 @endsection

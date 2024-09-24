@@ -182,8 +182,10 @@
         <hr class="divider">
         <div class="section">
             <h2>NOTA SETORAN PENJUALAN</h2>
+            <strong>Kasir:</strong> {{ $kasir ? $kasir : 'Semua Kasir' }}
             <p style="text-align: right; font-size: 8px;">
-            </p><br>
+            </p>
+            
             <table class="no-border mb-1">
                 <tr>
                     <td class="text-left"><strong>PENJUALAN KOTOR</strong></td>

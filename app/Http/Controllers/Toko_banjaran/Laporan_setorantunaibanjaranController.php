@@ -39,21 +39,27 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class Setoran_tokobanjaranController extends Controller
+class Laporan_setorantunaibanjaranController extends Controller
 {
-
     public function index(Request $request)
     {
-        // Ambil semua data setoran penjualan
-        $setoranPenjualans = Setoran_penjualan::orderBy('id', 'DESC')->get();
+        // Ambil parameter tanggal dari request
+        $tanggalPenjualan = $request->input('tanggal_penjualan');
+        $tanggalAkhir = $request->input('tanggal_akhir');
+    
+        // Ambil semua data setoran penjualan dengan filter tanggal jika ada
+        $setoranPenjualans = Setoran_penjualan::when($tanggalPenjualan, function ($query) use ($tanggalPenjualan, $tanggalAkhir) {
+            return $query->whereDate('tanggal_setoran', '>=', $tanggalPenjualan)
+                         ->whereDate('tanggal_setoran', '<=', $tanggalAkhir ?? $tanggalPenjualan);
+        })
+        ->orderBy('id', 'DESC')
+        ->get();
     
         // Kirim data ke view
-        return view('toko_banjaran.setoran_tokobanjaran.index', compact('setoranPenjualans'));
+        return view('toko_banjaran.laporan_setorantunai.index', compact('setoranPenjualans'));
     }
     
     
-
-
     public function create(Request $request)
     {
         $status = $request->status;
@@ -311,7 +317,6 @@ class Setoran_tokobanjaranController extends Controller
             'nominal_setoran' => $request->nominal_setoran,
             'plusminus' => $request->plusminus,
             'toko_id' => 1, // Menyimpan toko_id dengan nilai 1
-            'status' => 'unpost',
 
         ]);
 

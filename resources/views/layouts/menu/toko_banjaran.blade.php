@@ -215,7 +215,7 @@
             <a href="{{ url('toko_banjaran/setoran_tokobanjaran') }}"
                 class="nav-link {{ request()->is('toko_banjaran/setoran_tokobanjaran*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Setoran Penjualan</p>
+                <p style="font-size: 14px;">Setoran Tunai Penjualan</p>
             </a>
         </li>
         {{-- @endif --}}
@@ -231,6 +231,7 @@
     request()->is('toko_banjaran/pengiriman_tokobanjaran*')|| 
     request()->is('toko_banjaran/inquery_pemindahanbanjaran*')|| 
     request()->is('toko_banjaran/inquery_depositbanjaran*')|| 
+    request()->is('toko_banjaran/inquery_setorantunaibanjaran*')|| 
     request()->is('toko_banjaran/inquery_pengirimanbarangjadi*') 
     // request()->is('toko_banjaran/input*')
   
@@ -245,6 +246,7 @@
         request()->is('toko_banjaran/pengiriman_tokobanjaran*')||
         request()->is('toko_banjaran/inquery_pemindahanbanjaran*')||
         request()->is('toko_banjaran/inquery_depositbanjaran*')||
+        request()->is('toko_banjaran/inquery_setorantunaibanjaran*')||
         request()->is('toko_banjaran/inquerypengirimanbarangjadi*')
         // request()->is('toko_banjaran/input*')
       
@@ -326,6 +328,16 @@
             </a>
         </li>
         {{-- @endif --}}
+        
+          {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+          <li class="nav-item">
+            <a href="{{ url('toko_banjaran/inquery_setorantunaibanjaran') }}"
+                class="nav-link {{ request()->is('toko_banjaran/inquery_setorantunaibanjaran*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Inquery Setotan Tunai</p>
+            </a>
+        </li>
+        {{-- @endif --}}
 
     </ul>
 </li>
@@ -341,6 +353,7 @@
     request()->is('toko_banjaran/laporan_stokbarangjadi*')||
     request()->is('toko_banjaran/laporan_stoktokobanjaran*')||
     request()->is('toko_banjaran/laporan_setorantokobanjaran*')||
+    request()->is('toko_banjaran/laporan_setorantunaibanjaran*')||
     request()->is('toko_banjaran/laporan_depositbanjaran*')||
     request()->is('toko_banjaran/laporan_pengirimanbarangjadi*')
     // request()->is('toko_banjaran/input*')
@@ -358,6 +371,7 @@
         request()->is('toko_banjaran/laporan_stokbarangjadi*')|| 
         request()->is('toko_banjaran/laporan_stoktokobanjaran*')|| 
         request()->is('toko_banjaran/laporan_setorantokobanjaran*')|| 
+        request()->is('toko_banjaran/laporan_setorantunaibanjaran*')|| 
         request()->is('toko_banjaran/laporan_depositbanjaran*')|| 
         request()->is('toko_banjaran/laporan_spengirimanarangjadi*') 
         // request()->is('toko_banjaran/input*')
@@ -440,15 +454,27 @@
                 </a>
             </li>
             {{-- @endif --}}
+
             {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
               <li class="nav-item">
                 <a href="{{ url('toko_banjaran/laporan_setorantokobanjaran') }}"
                     class="nav-link {{ request()->is('toko_banjaran/laporan_setorantokobanjaran*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                    <p style="font-size: 13px;">Laporan Setoran Penjualan</p>
+                    <p style="font-size: 13px;">Laporan Setoran Kasir</p>
                 </a>
             </li>
             {{-- @endif --}}
+
+                        {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+                        <li class="nav-item">
+                            <a href="{{ url('toko_banjaran/laporan_setorantunaibanjaran') }}"
+                                class="nav-link {{ request()->is('toko_banjaran/laporan_setorantunaibanjaran*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                                <p style="font-size: 13px;">Laporan Setoran Tunai</p>
+                            </a>
+                        </li>
+                        {{-- @endif --}}
+
             {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
               <li class="nav-item">
                 <a href="{{ url('toko_banjaran/laporan_depositbanjaran') }}"
