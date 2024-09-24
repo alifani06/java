@@ -32,6 +32,7 @@ class Setoran_penjualan extends Model
         'tanggal_setoran',
         'nominal_setoran',
         'plusminus',
+        'toko_id',
     ];
     
 
