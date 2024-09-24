@@ -207,6 +207,7 @@
     request()->is('admin/retur_barangjadi*')|| 
     request()->is('admin/pemindahan_barangjadi*')|| 
     request()->is('admin/pemusnahan_barangjadi*')|| 
+    request()->is('admin/setoran_pelunasan*')|| 
     request()->is('admin/estimasi_produksi*') 
     // request()->is('admin/input*')
   
@@ -222,6 +223,7 @@
         request()->is('admin/retur_barangjadi*')||  
         request()->is('admin/pemindahan_barangjadi*')||  
         request()->is('admin/pemusnahan_barangjadi*')||  
+        request()->is('admin/setoran_pelunasan*')||  
         request()->is('admin/estimasi_produksi')  
         // request()->is('admin/input*')
       
@@ -332,6 +334,15 @@
                 class="nav-link {{ request()->is('admin/estimasi_produksi*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Estimasi Produksi</p>
+            </a>
+        </li>
+        {{-- @endif --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['estimasi produksi']) --}}
+        <li class="nav-item">
+            <a href="{{ url('admin/setoran_pelunasan') }}"
+                class="nav-link {{ request()->is('admin/setoran_pelunasan*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Setoran Pelunasan</p>
             </a>
         </li>
         {{-- @endif --}}
