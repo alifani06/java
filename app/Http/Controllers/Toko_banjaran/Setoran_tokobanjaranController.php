@@ -19,6 +19,7 @@ use App\Models\Tokocilacap;
 use App\Models\Barang;
 use App\Models\Detailbarangjadi;
 use App\Models\Detailpemesananproduk;
+use App\Models\Detailpenjualanproduk;
 use App\Models\Detailtokoslawi;
 use App\Models\Dppemesanan;
 use App\Models\Input;
@@ -176,54 +177,62 @@ class Setoran_tokobanjaranController extends Controller
         $request->validate([
             'tanggal_penjualan' => 'required|date',
         ]);
-
+    
         // Ambil tanggal dari request
         $tanggalPenjualan = $request->input('tanggal_penjualan');
-
+    
         // Query untuk menghitung penjualan kotor
         $penjualan_kotor = Penjualanproduk::whereDate('tanggal_penjualan', $tanggalPenjualan)
             ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED)'));
-
-        // Query untuk menghitung diskon penjualan
-        $diskon_penjualan = Penjualanproduk::whereDate('tanggal_penjualan', $tanggalPenjualan)
-            ->sum('nominal_diskon');
-
+    
+        // Query untuk menghitung diskon penjualan dari detailpenjualanproduks
+        $diskon_penjualan = Detailpenjualanproduk::whereHas('penjualanproduk', function ($q) use ($tanggalPenjualan) {
+            $q->whereDate('tanggal_penjualan', $tanggalPenjualan);
+        })->get()->sum(function ($detail) {
+            // Menghitung total diskon
+            $harga = (float)str_replace(['Rp.', '.'], '', $detail->harga); // Hapus "Rp." dan "." dari harga
+            $jumlah = $detail->jumlah;
+            $diskon = $detail->diskon / 100; // Ubah diskon persen menjadi desimal
+    
+            return $harga * $jumlah * $diskon; // Hitung diskon
+        });
+    
         // Hitung penjualan bersih
         $penjualan_bersih = $penjualan_kotor - $diskon_penjualan;
-
+    
         // Hitung total deposit keluar
         $deposit_keluar = Dppemesanan::whereHas('penjualanproduk', function ($q) use ($tanggalPenjualan) {
             $q->whereDate('tanggal_penjualan', $tanggalPenjualan);
         })->sum('dp_pemesanan');
-
+    
         // Hitung total deposit masuk
         $deposit_masuk = Dppemesanan::whereHas('pemesananproduk', function ($q) use ($tanggalPenjualan) {
             $q->whereDate('tanggal_pemesanan', $tanggalPenjualan);
         })->sum('dp_pemesanan');
-
+    
         // Hitung total dari berbagai metode pembayaran
         $mesin_edc = Penjualanproduk::where('metode_id', 1)
             ->whereDate('tanggal_penjualan', $tanggalPenjualan)
             ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
-
+    
         $qris = Penjualanproduk::where('metode_id', 17)
             ->whereDate('tanggal_penjualan', $tanggalPenjualan)
             ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
-
+    
         $gobiz = Penjualanproduk::where('metode_id', 2)
             ->whereDate('tanggal_penjualan', $tanggalPenjualan)
             ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
-
+    
         $transfer = Penjualanproduk::where('metode_id', 3)
             ->whereDate('tanggal_penjualan', $tanggalPenjualan)
             ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
-
+    
         // Hitung total penjualan
         $total_penjualan = $penjualan_bersih - ($deposit_keluar - $deposit_masuk);
         $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
         $total_setoran = $total_penjualan - $total_metode;
-
-        //Kembalikan hasil dalam format JSON untuk diproses di frontend
+    
+        // Kembalikan hasil dalam format JSON untuk diproses di frontend
         return response()->json([
             'penjualan_kotor' => number_format($penjualan_kotor, 0, ',', '.'),
             'diskon_penjualan' => number_format($diskon_penjualan, 0, ',', '.'),
@@ -238,8 +247,6 @@ class Setoran_tokobanjaranController extends Controller
             'total_metode' => number_format($total_metode, 0, ',', '.'),
             'total_setoran' => number_format($total_setoran, 0, ',', '.'),
         ]);
-
-
     }
 
 

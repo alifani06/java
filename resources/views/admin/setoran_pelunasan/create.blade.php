@@ -71,8 +71,6 @@
                                     </button>
                                 </div>
                             </div>
-                            
-
                             <!-- Diskon Penjualan -->
                             <div class="form-group row mb-3">
                                 <label for="diskon_penjualan" class="col-sm-3 col-form-label">
@@ -94,24 +92,25 @@
                                 <div class="col-sm-3 offset-sm-3">
                                     <hr style="border: 1px solid #000;"> <!-- Ubah nilai 2px sesuai ketebalan yang diinginkan -->
                                 </div>
-                                <div class="form-group row mb-3">
-                                    <label for="penjualan_bersih" class="col-sm-3 col-form-label">
+
+                            <div class="form-group row mb-3">
+                                <label for="penjualan_bersih" class="col-sm-3 col-form-label">
                                         <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Penjualan Bersih</a>
-                                    </label>
-                                    <div>
+                                </label>
+                                <div>
                                         <input type="checkbox" class="form-check-input custom-checkbox" id="check_penjualan_bersih" onchange="toggleGreenCheck('penjualan_bersih')">
-                                    </div>                            
-                                    <div class="col-sm-3">
+                                </div>                            
+                                <div class="col-sm-3">
                                         <input type="text" class="form-control" id="penjualan_bersih" name="penjualan_bersih" >
-                                    </div>
-                                    <div class="col-sm-1">
+                                </div>
+                                <div class="col-sm-1">
                                         <button type="button" class="btn btn-success d-none" id="btn_penjualan_bersih">
                                             ✓
                                         </button>
-                                    </div>
                                 </div>
+                            </div>
 
-                                <div class="form-group row mb-3">
+                            <div class="form-group row mb-3">
                                     <label for="deposit_keluar" class="col-sm-3 col-form-label">
                                         <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Deposit Keluar</a>
                                     </label>
@@ -126,9 +125,9 @@
                                             ✓
                                         </button>
                                     </div>
-                                </div>
+                            </div>
 
-                                <div class="form-group row mb-3">
+                            <div class="form-group row mb-3">
                                     <label for="deposit_masuk" class="col-sm-3 col-form-label">
                                         <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Deposit Masuk</a>
                                     </label>
@@ -143,13 +142,13 @@
                                             ✓
                                         </button>
                                     </div>
-                                </div>
+                            </div>
 
-                                <div class="col-sm-3 offset-sm-3">
+                            <div class="col-sm-3 offset-sm-3">
                                     <hr style="border: 1px solid #000;"> <!-- Ubah nilai 2px sesuai ketebalan yang diinginkan -->
-                                </div>
+                            </div>
 
-                                <div class="form-group row mb-3">
+                            <div class="form-group row mb-3">
                                     <label for="total_penjualan" class="col-sm-3 col-form-label">
                                         <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Total Penjualan</a>
                                     </label>
@@ -164,9 +163,9 @@
                                             ✓
                                         </button>
                                     </div>
-                                </div>
+                            </div>
 
-                                <div class="form-group row mb-3">
+                            <div class="form-group row mb-3">
                                     <label for="mesin_edc" class="col-sm-3 col-form-label">
                                         <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Mesin EDC</a>
                                     </label>
@@ -181,9 +180,9 @@
                                             ✓
                                         </button>
                                     </div>
-                                </div>
+                            </div>
 
-                                <div class="form-group row mb-3">
+                            <div class="form-group row mb-3">
                                     <label for="qris" class="col-sm-3 col-form-label">
                                         <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">QRIS</a>
                                     </label>
@@ -198,9 +197,9 @@
                                             ✓
                                         </button>
                                     </div>
-                                </div>
+                            </div>
 
-                                <div class="form-group row mb-3">
+                            <div class="form-group row mb-3">
                                     <label for="gobiz" class="col-sm-3 col-form-label">
                                         <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Gobiz</a>
                                     </label>
@@ -215,9 +214,9 @@
                                             ✓
                                         </button>
                                     </div>
-                                </div>
+                            </div>
 
-                                <div class="form-group row mb-3">
+                            <div class="form-group row mb-3">
                                     <label for="transfer" class="col-sm-3 col-form-label">
                                         <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Transfer</a>
                                     </label>
@@ -232,7 +231,7 @@
                                             ✓
                                         </button>
                                     </div>
-                                </div>
+                            </div>
 
 
                             <div class="col-sm-3 offset-sm-3">
@@ -283,9 +282,7 @@
                                 <div class="col-sm-3">
                                     <input type="text" class="form-control" id="plusminus" name="plusminus" > 
                                 </div>
-                            </div>
-                
-                            
+                            </div>  
                         </div>       
                         </div>   
                         <button type="submit" class="btn btn-primary">Simpan</button>
