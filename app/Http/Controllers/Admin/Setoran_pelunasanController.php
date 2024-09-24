@@ -49,125 +49,135 @@ class Setoran_pelunasanController extends Controller
         // Kirim data ke view
         return view('admin.setoran_pelunasan.index', compact('setoranPenjualans'));
     }
-    
-    
-
-
     public function create(Request $request)
     {
-        $status = $request->status;
-        $tanggal_penjualan = $request->tanggal_penjualan;
-        $tanggal_akhir = $request->tanggal_akhir;
-        $kasir = $request->kasir;
-
-        // Ambil semua data produk, toko, kasir, klasifikasi untuk dropdown
-        $produks = Produk::all();
-        $tokos = Toko::all();
-        $klasifikasis = Klasifikasi::all();
-        $kasirs = Penjualanproduk::select('kasir')->distinct()->get();
-
-        // Buat query dasar untuk menghitung total penjualan kotor
-        $query = Penjualanproduk::query();
-
-        // Filter berdasarkan status
-        if ($status) {
-            $query->where('status', $status);
-        }
-
-        // Filter berdasarkan tanggal penjualan
-        if ($tanggal_penjualan && $tanggal_akhir) {
-            $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-            $query->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
-        } elseif ($tanggal_penjualan) {
-            $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-            $query->where('tanggal_penjualan', '>=', $tanggal_penjualan);
-        } elseif ($tanggal_akhir) {
-            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-            $query->where('tanggal_penjualan', '<=', $tanggal_akhir);
-        }
-
-        // Filter berdasarkan kasir
-        if ($kasir) {
-            $query->where('kasir', $kasir);
-        }
-
-        // Hitung total penjualan kotor
-        $penjualan_kotor = $query->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED)'));
-
-        // Hitung total diskon penjualan (nominal_diskon)
-        $diskon_penjualan = $query->sum('nominal_diskon');
-
-        // Hitung penjualan bersih
-        $penjualan_bersih = $penjualan_kotor - $diskon_penjualan;
-
-        // Query terpisah untuk menghitung total deposit masuk
-        $deposit_masuk = Dppemesanan::whereHas('pemesananproduk', function ($q) use ($tanggal_penjualan, $tanggal_akhir, $kasir) {
-            if ($tanggal_penjualan && $tanggal_akhir) {
-                $q->whereBetween('tanggal_pemesanan', [$tanggal_penjualan, $tanggal_akhir]);
-            } elseif ($tanggal_penjualan) {
-                $q->where('tanggal_pemesanan', '>=', $tanggal_penjualan);
-            } elseif ($tanggal_akhir) {
-                $q->where('tanggal_pemesanan', '<=', $tanggal_akhir);
-            }
-            if ($kasir) {
-                $q->where('kasir', $kasir);
-            }
-        })->sum('dp_pemesanan');
-
-        // Hitung total deposit keluar
-        $deposit_keluar = Dppemesanan::whereHas('penjualanproduk', function ($q) use ($kasir, $tanggal_penjualan, $tanggal_akhir) {
-            if ($tanggal_penjualan && $tanggal_akhir) {
-                $q->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
-            } elseif ($tanggal_penjualan) {
-                $q->where('tanggal_penjualan', '>=', $tanggal_penjualan);
-            } elseif ($tanggal_akhir) {
-                $q->where('tanggal_penjualan', '<=', $tanggal_akhir);
-            }
-            if ($kasir) {
-                $q->where('kasir', $kasir);
-            }
-        })->sum('dp_pemesanan');
-
-        // Hitung total dari berbagai metode pembayaran
-        $mesin_edc = Penjualanproduk::where('metode_id', 1)
-            ->where('kasir', $kasir)
-            ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
-
-        $qris = Penjualanproduk::where('metode_id', 17)
-            ->where('kasir', $kasir)
-            ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
-
-        $gobiz = Penjualanproduk::where('metode_id', 2)
-            ->where('kasir', $kasir)
-            ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
-
-        $transfer = Penjualanproduk::where('metode_id', 3)
-            ->where('kasir', $kasir)
-            ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
-
-        $total_penjualan = $penjualan_bersih - ($deposit_keluar - $deposit_masuk);
-        $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
-        $total_setoran = $total_penjualan - $total_metode;
-
-        return view('admin.setoran_pelunasan.create', compact(
-            'produks',
-            'tokos',
-            'klasifikasis',
-            'kasirs',
-            'penjualan_kotor',
-            'diskon_penjualan',
-            'penjualan_bersih',
-            'deposit_masuk',
-            'total_penjualan',
-            'mesin_edc',
-            'qris',
-            'gobiz',
-            'transfer',
-            'total_setoran',
-            'deposit_keluar'
-        ));
+        // Ambil semua data setoran penjualan
+        $setoranPenjualans = Setoran_penjualan::orderBy('id', 'DESC')->get();
+    
+        // Kirim data ke view
+        return view('admin.setoran_pelunasan.create', compact('setoranPenjualans'));
     }
+    
+    
+
+
+    // public function create(Request $request)
+    // {
+    //     $status = $request->status;
+    //     $tanggal_penjualan = $request->tanggal_penjualan;
+    //     $tanggal_akhir = $request->tanggal_akhir;
+    //     $kasir = $request->kasir;
+
+    //     // Ambil semua data produk, toko, kasir, klasifikasi untuk dropdown
+    //     $produks = Produk::all();
+    //     $tokos = Toko::all();
+    //     $klasifikasis = Klasifikasi::all();
+    //     $kasirs = Penjualanproduk::select('kasir')->distinct()->get();
+
+    //     // Buat query dasar untuk menghitung total penjualan kotor
+    //     $query = Penjualanproduk::query();
+
+    //     // Filter berdasarkan status
+    //     if ($status) {
+    //         $query->where('status', $status);
+    //     }
+
+    //     // Filter berdasarkan tanggal penjualan
+    //     if ($tanggal_penjualan && $tanggal_akhir) {
+    //         $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //         $query->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+    //     } elseif ($tanggal_penjualan) {
+    //         $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+    //         $query->where('tanggal_penjualan', '>=', $tanggal_penjualan);
+    //     } elseif ($tanggal_akhir) {
+    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //         $query->where('tanggal_penjualan', '<=', $tanggal_akhir);
+    //     }
+
+    //     // Filter berdasarkan kasir
+    //     if ($kasir) {
+    //         $query->where('kasir', $kasir);
+    //     }
+
+    //     // Hitung total penjualan kotor
+    //     $penjualan_kotor = $query->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED)'));
+
+    //     // Hitung total diskon penjualan (nominal_diskon)
+    //     $diskon_penjualan = $query->sum('nominal_diskon');
+
+    //     // Hitung penjualan bersih
+    //     $penjualan_bersih = $penjualan_kotor - $diskon_penjualan;
+
+    //     // Query terpisah untuk menghitung total deposit masuk
+    //     $deposit_masuk = Dppemesanan::whereHas('pemesananproduk', function ($q) use ($tanggal_penjualan, $tanggal_akhir, $kasir) {
+    //         if ($tanggal_penjualan && $tanggal_akhir) {
+    //             $q->whereBetween('tanggal_pemesanan', [$tanggal_penjualan, $tanggal_akhir]);
+    //         } elseif ($tanggal_penjualan) {
+    //             $q->where('tanggal_pemesanan', '>=', $tanggal_penjualan);
+    //         } elseif ($tanggal_akhir) {
+    //             $q->where('tanggal_pemesanan', '<=', $tanggal_akhir);
+    //         }
+    //         if ($kasir) {
+    //             $q->where('kasir', $kasir);
+    //         }
+    //     })->sum('dp_pemesanan');
+
+    //     // Hitung total deposit keluar
+    //     $deposit_keluar = Dppemesanan::whereHas('penjualanproduk', function ($q) use ($kasir, $tanggal_penjualan, $tanggal_akhir) {
+    //         if ($tanggal_penjualan && $tanggal_akhir) {
+    //             $q->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+    //         } elseif ($tanggal_penjualan) {
+    //             $q->where('tanggal_penjualan', '>=', $tanggal_penjualan);
+    //         } elseif ($tanggal_akhir) {
+    //             $q->where('tanggal_penjualan', '<=', $tanggal_akhir);
+    //         }
+    //         if ($kasir) {
+    //             $q->where('kasir', $kasir);
+    //         }
+    //     })->sum('dp_pemesanan');
+
+    //     // Hitung total dari berbagai metode pembayaran
+    //     $mesin_edc = Penjualanproduk::where('metode_id', 1)
+    //         ->where('kasir', $kasir)
+    //         ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
+
+    //     $qris = Penjualanproduk::where('metode_id', 17)
+    //         ->where('kasir', $kasir)
+    //         ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
+
+    //     $gobiz = Penjualanproduk::where('metode_id', 2)
+    //         ->where('kasir', $kasir)
+    //         ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
+
+    //     $transfer = Penjualanproduk::where('metode_id', 3)
+    //         ->where('kasir', $kasir)
+    //         ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
+
+    //     $total_penjualan = $penjualan_bersih - ($deposit_keluar - $deposit_masuk);
+    //     $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
+    //     $total_setoran = $total_penjualan - $total_metode;
+
+    //     return view('admin.setoran_pelunasan.create', compact(
+    //         'produks',
+    //         'tokos',
+    //         'klasifikasis',
+    //         'kasirs',
+    //         'penjualan_kotor',
+    //         'diskon_penjualan',
+    //         'penjualan_bersih',
+    //         'deposit_masuk',
+    //         'total_penjualan',
+    //         'mesin_edc',
+    //         'qris',
+    //         'gobiz',
+    //         'transfer',
+    //         'total_setoran',
+    //         'deposit_keluar'
+    //     ));
+    // }
+
+
 
     // public function getdata1(Request $request)
     // {
@@ -179,214 +189,196 @@ class Setoran_pelunasanController extends Controller
     //     // Ambil tanggal dari request
     //     $tanggalPenjualan = $request->input('tanggal_penjualan');
 
-    //     // Query untuk menghitung penjualan kotor
-    //     $penjualan_kotor = Penjualanproduk::whereDate('tanggal_penjualan', $tanggalPenjualan)
-    //         ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED)'));
+    //     // Query untuk mengambil data dari tabel setoran_penjualan berdasarkan tanggal
+    //     $setoranPenjualan = Setoran_penjualan::whereDate('tanggal_penjualan', $tanggalPenjualan)->first();
 
-    //     // Query untuk menghitung diskon penjualan
-    //     $diskon_penjualan = Penjualanproduk::whereDate('tanggal_penjualan', $tanggalPenjualan)
-    //         ->sum('nominal_diskon');
+    //     // Jika tidak ada data yang ditemukan, kembalikan respons default
+    //     if (!$setoranPenjualan) {
+    //         return response()->json([
+    //             'penjualan_kotor' => 0,
+    //             'diskon_penjualan' => 0,
+    //             'penjualan_bersih' => 0,
+    //             'deposit_keluar' => 0,
+    //             'deposit_masuk' => 0,
+    //             'mesin_edc' => 0,
+    //             'qris' => 0,
+    //             'gobiz' => 0,
+    //             'transfer' => 0,
+    //             'total_penjualan' => 0,
+    //             'total_setoran' => 0,
+    //             'nominal_setoran' => 0,
+    //             'plusminus' => 0,
+    //         ]);
+    //     }
 
-    //     // Hitung penjualan bersih
-    //     $penjualan_bersih = $penjualan_kotor - $diskon_penjualan;
-
-    //     // Hitung total deposit keluar
-    //     $deposit_keluar = Dppemesanan::whereHas('penjualanproduk', function ($q) use ($tanggalPenjualan) {
-    //         $q->whereDate('tanggal_penjualan', $tanggalPenjualan);
-    //     })->sum('dp_pemesanan');
-
-    //     // Hitung total deposit masuk
-    //     $deposit_masuk = Dppemesanan::whereHas('pemesananproduk', function ($q) use ($tanggalPenjualan) {
-    //         $q->whereDate('tanggal_pemesanan', $tanggalPenjualan);
-    //     })->sum('dp_pemesanan');
-
-    //     // Hitung total dari berbagai metode pembayaran
-    //     $mesin_edc = Penjualanproduk::where('metode_id', 1)
-    //         ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-    //         ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
-
-    //     $qris = Penjualanproduk::where('metode_id', 17)
-    //         ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-    //         ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
-
-    //     $gobiz = Penjualanproduk::where('metode_id', 2)
-    //         ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-    //         ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
-
-    //     $transfer = Penjualanproduk::where('metode_id', 3)
-    //         ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-    //         ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
-
-    //     // Hitung total penjualan
-    //     $total_penjualan = $penjualan_bersih - ($deposit_keluar - $deposit_masuk);
-    //     $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
-    //     $total_setoran = $total_penjualan - $total_metode;
-
-    //     //Kembalikan hasil dalam format JSON untuk diproses di frontend
+    //     // Kembalikan hasil dari setoran_penjualan dalam format JSON
     //     return response()->json([
-    //         'penjualan_kotor' => number_format($penjualan_kotor, 0, ',', '.'),
-    //         'diskon_penjualan' => number_format($diskon_penjualan, 0, ',', '.'),
-    //         'penjualan_bersih' => number_format($penjualan_bersih, 0, ',', '.'),
-    //         'deposit_keluar' => number_format($deposit_keluar, 0, ',', '.'),
-    //         'deposit_masuk' => number_format($deposit_masuk, 0, ',', '.'),
-    //         'mesin_edc' => number_format($mesin_edc, 0, ',', '.'),
-    //         'qris' => number_format($qris, 0, ',', '.'),
-    //         'gobiz' => number_format($gobiz, 0, ',', '.'),
-    //         'transfer' => number_format($transfer, 0, ',', '.'),
-    //         'total_penjualan' => number_format($total_penjualan, 0, ',', '.'),
-    //         'total_metode' => number_format($total_metode, 0, ',', '.'),
-    //         'total_setoran' => number_format($total_setoran, 0, ',', '.'),
+    //         'penjualan_kotor' => $setoranPenjualan->penjualan_kotor,
+    //         'diskon_penjualan' => $setoranPenjualan->diskon_penjualan,
+    //         'penjualan_bersih' => $setoranPenjualan->penjualan_bersih,
+    //         'deposit_keluar' => $setoranPenjualan->deposit_keluar,
+    //         'deposit_masuk' => $setoranPenjualan->deposit_masuk,
+    //         'mesin_edc' => $setoranPenjualan->mesin_edc,
+    //         'qris' => $setoranPenjualan->qris,
+    //         'gobiz' => $setoranPenjualan->gobiz,
+    //         'transfer' => $setoranPenjualan->transfer,
+    //         'total_penjualan' => $setoranPenjualan->total_penjualan,
+    //         'total_setoran' => $setoranPenjualan->total_setoran,
+    //         'nominal_setoran' => $setoranPenjualan->nominal_setoran,
+    //         'plusminus' => $setoranPenjualan->plusminus,
     //     ]);
-
-
     // }
-
     public function getdata1(Request $request)
-    {
-        // Validasi input tanggal
-        $request->validate([
-            'tanggal_penjualan' => 'required|date',
-        ]);
+{
+    // Validasi input tanggal
+    $request->validate([
+        'tanggal_penjualan' => 'required|date',
+    ]);
+
+    // Ambil tanggal dari request
+    $tanggalPenjualan = $request->input('tanggal_penjualan');
     
-        // Ambil tanggal dari request
-        $tanggalPenjualan = $request->input('tanggal_penjualan');
+    // Query untuk mengambil data dari tabel setoran_penjualan berdasarkan tanggal
+    $setoranPenjualan = Setoran_penjualan::whereDate('tanggal_penjualan', $tanggalPenjualan)->first();
     
-        // Query untuk menghitung penjualan kotor
-        $penjualan_kotor = Penjualanproduk::whereDate('tanggal_penjualan', $tanggalPenjualan)
-            ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED)'));
-    
-        // Query untuk menghitung diskon penjualan dari detailpenjualanproduks
-        $diskon_penjualan = DetailPenjualanProduk::whereHas('penjualanproduk', function ($q) use ($tanggalPenjualan) {
-            $q->whereDate('tanggal_penjualan', $tanggalPenjualan);
-        })->get()->sum(function ($detail) {
-            // Menghitung total diskon
-            $harga = (float)str_replace(['Rp.', '.'], '', $detail->harga); // Hapus "Rp." dan "." dari harga
-            $jumlah = $detail->jumlah;
-            $diskon = $detail->diskon / 100; // Ubah diskon persen menjadi desimal
-    
-            return $harga * $jumlah * $diskon; // Hitung diskon
-        });
-    
-        // Hitung penjualan bersih
-        $penjualan_bersih = $penjualan_kotor - $diskon_penjualan;
-    
-        // Hitung total deposit keluar
-        $deposit_keluar = Dppemesanan::whereHas('penjualanproduk', function ($q) use ($tanggalPenjualan) {
-            $q->whereDate('tanggal_penjualan', $tanggalPenjualan);
-        })->sum('dp_pemesanan');
-    
-        // Hitung total deposit masuk
-        $deposit_masuk = Dppemesanan::whereHas('pemesananproduk', function ($q) use ($tanggalPenjualan) {
-            $q->whereDate('tanggal_pemesanan', $tanggalPenjualan);
-        })->sum('dp_pemesanan');
-    
-        // Hitung total dari berbagai metode pembayaran
-        $mesin_edc = Penjualanproduk::where('metode_id', 1)
-            ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-            ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
-    
-        $qris = Penjualanproduk::where('metode_id', 17)
-            ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-            ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
-    
-        $gobiz = Penjualanproduk::where('metode_id', 2)
-            ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-            ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
-    
-        $transfer = Penjualanproduk::where('metode_id', 3)
-            ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-            ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
-    
-        // Hitung total penjualan
-        $total_penjualan = $penjualan_bersih - ($deposit_keluar - $deposit_masuk);
-        $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
-        $total_setoran = $total_penjualan - $total_metode;
-    
-        // Kembalikan hasil dalam format JSON untuk diproses di frontend
+    // Jika tidak ada data yang ditemukan, kembalikan respons default
+    if (!$setoranPenjualan) {
         return response()->json([
-            'penjualan_kotor' => number_format($penjualan_kotor, 0, ',', '.'),
-            'diskon_penjualan' => number_format($diskon_penjualan, 0, ',', '.'),
-            'penjualan_bersih' => number_format($penjualan_bersih, 0, ',', '.'),
-            'deposit_keluar' => number_format($deposit_keluar, 0, ',', '.'),
-            'deposit_masuk' => number_format($deposit_masuk, 0, ',', '.'),
-            'mesin_edc' => number_format($mesin_edc, 0, ',', '.'),
-            'qris' => number_format($qris, 0, ',', '.'),
-            'gobiz' => number_format($gobiz, 0, ',', '.'),
-            'transfer' => number_format($transfer, 0, ',', '.'),
-            'total_penjualan' => number_format($total_penjualan, 0, ',', '.'),
-            'total_metode' => number_format($total_metode, 0, ',', '.'),
-            'total_setoran' => number_format($total_setoran, 0, ',', '.'),
+            'id' => null, // ID setoran_penjualan
+            'penjualan_kotor' => 0,
+            'diskon_penjualan' => 0,
+            'penjualan_bersih' => 0,
+            'deposit_keluar' => 0,
+            'deposit_masuk' => 0,
+            'mesin_edc' => 0,
+            'qris' => 0,
+            'gobiz' => 0,
+            'transfer' => 0,
+            'total_penjualan' => 0,
+            'total_setoran' => 0,
+            'nominal_setoran' => 0,
+            'plusminus' => 0,
         ]);
     }
-    
-    
 
-    public function store(Request $request)
+    // Kembalikan hasil dari setoran_penjualan dalam format JSON
+    return response()->json([
+        'id' => $setoranPenjualan->id, // Ambil ID
+        'penjualan_kotor' => $setoranPenjualan->penjualan_kotor,
+        'diskon_penjualan' => $setoranPenjualan->diskon_penjualan,
+        'penjualan_bersih' => $setoranPenjualan->penjualan_bersih,
+        'deposit_keluar' => $setoranPenjualan->deposit_keluar,
+        'deposit_masuk' => $setoranPenjualan->deposit_masuk,
+        'mesin_edc' => $setoranPenjualan->mesin_edc,
+        'qris' => $setoranPenjualan->qris,
+        'gobiz' => $setoranPenjualan->gobiz,
+        'transfer' => $setoranPenjualan->transfer,
+        'total_penjualan' => $setoranPenjualan->total_penjualan,
+        'total_setoran' => $setoranPenjualan->total_setoran,
+        'nominal_setoran' => $setoranPenjualan->nominal_setoran,
+        'plusminus' => $setoranPenjualan->plusminus,
+    ]);
+}
+
+
+    
+// public function store(Request $request)
+// {
+//     // Validasi input dengan custom error messages
+//     $validator = Validator::make($request->all(), [
+//         'id' => 'required|exists:setoran_penjualan,id', // Pastikan id ada di tabel
+//     ], [
+//         'id.required' => 'ID tidak boleh kosong.',
+//         'id.exists' => 'ID yang dipilih tidak valid.',
+//     ]);
+
+//     // Jika validasi gagal, redirect kembali dengan error messages
+//     if ($validator->fails()) {
+//         return redirect()->back()->withErrors($validator)->withInput();
+//     }
+
+//     // Temukan record berdasarkan ID yang diberikan
+//     $setoranPenjualan = Setoran_penjualan::find($request->id);
+
+//     // Jika data tidak ditemukan, redirect kembali dengan pesan error
+//     if (!$setoranPenjualan) {
+//         return redirect()->back()->with('error', 'Data tidak ditemukan.');
+//     }
+
+//     // Cek status saat ini
+//     if ($setoranPenjualan->status === 'posting') {
+//         return redirect()->back()->with('info', 'Status sudah dalam keadaan posting.');
+//     }
+
+//     // Update status ke 'posting' jika belum
+//     $setoranPenjualan->status = 'posting';
+//     $setoranPenjualan->save(); // Simpan perubahan
+
+//     return redirect()->back()->with('success', 'Status berhasil diupdate menjadi posting.');
+// }
+public function store(Request $request)
+{
+    // Validasi data
+    $request->validate([
+        'penjualan_kotor' => 'required|numeric',
+        'diskon_penjualan' => 'required|numeric',
+        'penjualan_bersih' => 'required|numeric',
+        'deposit_keluar' => 'required|numeric',
+        'deposit_masuk' => 'required|numeric',
+        'total_penjualan' => 'required|numeric',
+        'mesin_edc' => 'required|numeric',
+        'qris' => 'required|numeric',
+        'gobiz' => 'required|numeric',
+        'transfer' => 'required|numeric',
+        'tanggal_penjualan' => 'required|date',
+    ]);
+
+    // Simpan data ke database
+    $setoranPelunasan = new Setoran_penjualan();
+    $setoranPelunasan->penjualan_kotor = $request->penjualan_kotor;
+    $setoranPelunasan->diskon_penjualan = $request->diskon_penjualan;
+    $setoranPelunasan->penjualan_bersih = $request->penjualan_bersih;
+    $setoranPelunasan->deposit_keluar = $request->deposit_keluar;
+    $setoranPelunasan->deposit_masuk = $request->deposit_masuk;
+    $setoranPelunasan->total_penjualan = $request->total_penjualan;
+    $setoranPelunasan->mesin_edc = $request->mesin_edc;
+    $setoranPelunasan->qris = $request->qris;
+    $setoranPelunasan->gobiz = $request->gobiz;
+    $setoranPelunasan->transfer = $request->transfer;
+    $setoranPelunasan->tanggal_penjualan = $request->tanggal_penjualan;
+    $setoranPelunasan->total_setoran = $request->total_setoran;
+    $setoranPelunasan->nominal_setoran = $request->nominal_setoran;
+    $setoranPelunasan->plusminus = $request->plusminus;
+    $setoranPelunasan->status = 'posting';
+    $setoranPelunasan->save();
+
+    // Redirect ke halaman lain atau berikan pesan sukses
+    return redirect()->back()->with('success', 'Data berhasil disimpan!');
+}
+
+
+public function updateStatus(Request $request)
     {
-        // Validasi input dengan custom error messages
-        $validator = Validator::make($request->all(), [
-            'tanggal_penjualan' => 'required|date',
-            'penjualan_kotor' => 'required|numeric',
-            'diskon_penjualan' => 'required|numeric',
-            'penjualan_bersih' => 'required|numeric',
-            'deposit_keluar' => 'required|numeric',
-            'deposit_masuk' => 'required|numeric',
-            'total_penjualan' => 'required|numeric',
-            'mesin_edc' => 'required|numeric',
-            'qris' => 'required|numeric',
-            'gobiz' => 'required|numeric',
-            'transfer' => 'required|numeric',
-            'total_setoran' => 'required|numeric',
-            'tanggal_setoran' => 'required|date',
-            'nominal_setoran' => 'required|numeric',
-            'plusminus' => 'required|numeric',
-        ], [
-            'tanggal_penjualan.required' => 'Tanggal penjualan tidak boleh kosong.',
-            'penjualan_kotor.required' => 'Penjualan kotor tidak boleh kosong.',
-            'diskon_penjualan.required' => 'Diskon penjualan tidak boleh kosong.',
-            'penjualan_bersih.required' => 'Penjualan bersih tidak boleh kosong.',
-            'deposit_keluar.required' => 'Deposit keluar tidak boleh kosong.',
-            'deposit_masuk.required' => 'Deposit masuk tidak boleh kosong.',
-            'total_penjualan.required' => 'Total penjualan tidak boleh kosong.',
-            'mesin_edc.required' => 'Mesin EDC tidak boleh kosong.',
-            'qris.required' => 'QRIS tidak boleh kosong.',
-            'gobiz.required' => 'Gobiz tidak boleh kosong.',
-            'transfer.required' => 'Transfer tidak boleh kosong.',
-            'total_setoran.required' => 'Total setoran tidak boleh kosong.',
-            'tanggal_setoran.required' => 'Tanggal setoran tidak boleh kosong.',
-            'nominal_setoran.required' => 'Nominal setoran tidak boleh kosong.',
-            'plusminus.required' => 'Kolom +/- tidak boleh kosong.',
-            'numeric' => ':attribute harus berupa angka.',
-            'date' => ':attribute harus berupa tanggal yang valid.',
-        ]);
+        // Ambil id setoran dari request
+        $setoran_id = $request->input('id');
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+        // Cari setoran_penjualan berdasarkan id
+        $setoran = Setoran_penjualan::find($setoran_id);
+
+        if ($setoran) {
+            // Update status menjadi 'posting'
+            $setoran->status = 'posting';
+            $setoran->save();
+
+            // Redirect atau response dengan pesan sukses
+            return redirect()->route('setoran_pelunasan.index')->with('success', 'Status berhasil diupdate menjadi posting');
         }
 
-        // Simpan data ke database
-        Setoran_penjualan::create([
-            'tanggal_penjualan' => $request->tanggal_penjualan,
-            'penjualan_kotor' => $request->penjualan_kotor,
-            'diskon_penjualan' => $request->diskon_penjualan,
-            'penjualan_bersih' => $request->penjualan_bersih,
-            'deposit_keluar' => $request->deposit_keluar,
-            'deposit_masuk' => $request->deposit_masuk,
-            'total_penjualan' => $request->total_penjualan,
-            'mesin_edc' => $request->mesin_edc,
-            'qris' => $request->qris,
-            'gobiz' => $request->gobiz,
-            'transfer' => $request->transfer,
-            'total_setoran' => $request->total_setoran,
-            'tanggal_setoran' => $request->tanggal_setoran,
-            'nominal_setoran' => $request->nominal_setoran,
-            'plusminus' => $request->plusminus,
-            'toko_id' => 1, // Menyimpan toko_id dengan nilai 1
-
-        ]);
-
-        return redirect()->back()->with('success', 'Data berhasil disimpan.');
+        // Jika setoran tidak ditemukan
+        return redirect()->back()->with('error', 'Setoran tidak ditemukan');
     }
+    
+    
 
     public function printPenjualanKotor(Request $request) 
     {

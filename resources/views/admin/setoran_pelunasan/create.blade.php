@@ -40,10 +40,8 @@
                 {{ session('error') }}
             </div>
         @endif
-    
-
-                <form action="{{ url('admin/setoran_pelunasan') }}" method="GET" enctype="multipart/form-data" autocomplete="off">
-                    @csrf
+        <form action="{{ route('setoran_pelunasan.update_status') }}" method="POST" enctype="multipart/form-data">
+            @csrf
                     <div class="card">
                         <div class="card-header">
                             <div class="col-md-3 mb-3">
@@ -53,6 +51,9 @@
                         </div>
                 
                         <div class="card-body">
+
+                                <input type="text" id="setoran_id" name="id" class="form-control" hidden/>
+                          
                             <!-- Tempat untuk menampilkan Penjualan Kotor -->
                             <div class="form-group row mb-3">
                                 <label for="penjualan_kotor" class="col-sm-3 col-form-label">
@@ -255,11 +256,44 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-3 offset-sm-3">
+                            <div class="form-group row mb-3">
+                                <label for="nominal_setoran" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Nominal Setoran</a>
+                                </label>
+                                <div>
+                                    <input type="checkbox" class="form-check-input custom-checkbox" id="check_nominal_setoran" onchange="toggleGreenCheck('nominal_setoran')">
+                                </div>                            
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="nominal_setoran" name="nominal_setoran" >
+                                </div>
+                                <div class="col-sm-1">
+                                    <button type="button" class="btn btn-success d-none" id="btn_nominal_setoran">
+                                        ✓
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group row mb-3">
+                                <label for="plusminus" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">+/-</a>
+                                </label>
+                                <div>
+                                    <input type="checkbox" class="form-check-input custom-checkbox" id="check_plusminus" onchange="toggleGreenCheck('plusminus')">
+                                </div>                            
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="plusminus" name="plusminus" >
+                                </div>
+                                <div class="col-sm-1">
+                                    <button type="button" class="btn btn-success d-none" id="btn_plusminus">
+                                        ✓
+                                    </button>
+                                </div>
+                            </div>
+
+                            {{-- <div class="col-sm-3 offset-sm-3">
                                 <hr style="border: 1px solid #000;"> <!-- Ubah nilai 2px sesuai ketebalan yang diinginkan -->
                             </div>
                             <!-- Checkbox untuk memunculkan 2 input tambahan -->
-                            <div class="form-check">
+                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="tambahInputCheckbox">
                                 <label class="form-check-label" for="tambahInputCheckbox">2 X</label>
                             </div>
@@ -282,16 +316,74 @@
                                 <div class="col-sm-3">
                                     <input type="text" class="form-control" id="plusminus" name="plusminus" > 
                                 </div>
-                            </div>  
+                            </div>   --}}
                         </div>       
                         </div>   
                         <button type="submit" class="btn btn-primary">Simpan</button>
                 </form>
+
+                {{-- <form action="{{ url('admin/setoran_pelunasan') }}" method="GET" enctype="multipart/form-data" autocomplete="off">
+                    @csrf
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="col-md-3 mb-3">
+                                <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
+                                       value="{{ Request::get('tanggal_penjualan') }}" onchange="updateLink()" />
+                            </div>                    
+                        </div>
+                
+                        <div class="card-body">
+                            <input type="text" id="setoran_id" name="id" class="form-control" hidden />
+                
+                            <!-- Section for displaying sales information -->
+                            @foreach([
+                                'penjualan_kotor' => 'Penjualan Kotor',
+                                'diskon_penjualan' => 'Diskon Penjualan',
+                                'penjualan_bersih' => 'Penjualan Bersih',
+                                'deposit_keluar' => 'Deposit Keluar',
+                                'deposit_masuk' => 'Deposit Masuk',
+                                'total_penjualan' => 'Total Penjualan',
+                                'mesin_edc' => 'Mesin EDC',
+                                'qris' => 'QRIS',
+                                'gobiz' => 'Gobiz',
+                                'transfer' => 'Transfer',
+                                'total_setoran' => 'Total Setoran',
+                                'nominal_setoran' => 'Nominal Setoran',
+                                'plusminus' => '+/-'
+                            ] as $field => $label)
+                                <div class="form-group row mb-3">
+                                    <label for="{{ $field }}" class="col-sm-3 col-form-label">
+                                        <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">{{ $label }}</a>
+                                    </label>
+                                    <div>
+                                        <input type="checkbox" class="form-check-input custom-checkbox" id="check_{{ $field }}" onchange="toggleGreenCheck('{{ $field }}')">
+                                    </div>                            
+                                    <div class="col-sm-3">
+                                        <input type="text" class="form-control" id="{{ $field }}" name="{{ $field }}" placeholder="">
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-success d-none" id="btn_{{ $field }}">
+                                            ✓
+                                        </button>
+                                    </div>
+                                </div>
+                                @if (!$loop->last) <!-- Add a separator if not the last item -->
+                                    <div class="col-sm-3 offset-sm-3">
+                                        <hr style="border: 1px solid #000;">
+                                    </div>
+                                @endif
+                            @endforeach
+                
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+
+                </form> --}}
         </div>
         
     </section>
 
-    <script>
+    {{-- <script>
         function updateLink() {
             const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
             const baseUrl = "{{ route('print.penjualan.kotor') }}"; // Menggunakan route Laravel
@@ -307,8 +399,24 @@
             // Update href link
             document.getElementById('penjualan_kotor_link').href = url.toString();
         }
+    </script> --}}
+    <script>
+        function updateLink() {
+        var tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
+
+        if (tanggalPenjualan) {
+            // Fetch setoran_id berdasarkan tanggal_penjualan
+            fetch(`/api/get-setoran-id?tanggal_penjualan=${tanggalPenjualan}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('setoran_id').value = data.id;
+                })
+                .catch(error => {
+                    console.error('Error fetching setoran id:', error);
+                });
+        }
+        }
     </script>
-    
     
 
     <script>
@@ -325,34 +433,33 @@
             }
         }
     </script>
-    <script>
-document.getElementById('tambahInputCheckbox').addEventListener('change', function() {
-    const extraRowsContainer = document.getElementById('extraRows');
     
-    if (this.checked) {
-        // Buat elemen input tambahan (dua set input untuk tanggal_setoran dan nominal_setoran)
-        const newRow1 = document.createElement('div');
-        newRow1.className = 'form-group row mb-3';
-        newRow1.innerHTML = `
-            <div class="col-sm-3">
-                <input class="form-control" name="tanggal_setoran[]" type="date">
-            </div>
-            <div class="col-sm-3">
-                <input type="text" class="form-control" name="nominal_setoran[]" oninput="formatNumber(this);">
-            </div>
-        `;
+    <script>
+        document.getElementById('tambahInputCheckbox').addEventListener('change', function() {
+            const extraRowsContainer = document.getElementById('extraRows');
+            
+            if (this.checked) {
+                // Buat elemen input tambahan (dua set input untuk tanggal_setoran dan nominal_setoran)
+                const newRow1 = document.createElement('div');
+                newRow1.className = 'form-group row mb-3';
+                newRow1.innerHTML = `
+                    <div class="col-sm-3">
+                        <input class="form-control" name="tanggal_setoran[]" type="date">
+                    </div>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" name="nominal_setoran[]" oninput="formatNumber(this);">
+                    </div>
+                `;
 
-        // Tambahkan kedua row ke container
-        extraRowsContainer.appendChild(newRow1);
-    } else {
-        // Hapus semua input tambahan jika checkbox di-uncheck
-        extraRowsContainer.innerHTML = '';
-    }
-});
-
+                // Tambahkan kedua row ke container
+                extraRowsContainer.appendChild(newRow1);
+            } else {
+                // Hapus semua input tambahan jika checkbox di-uncheck
+                extraRowsContainer.innerHTML = '';
+            }
+        });
     </script>
     
-
     <script>
         // Fungsi untuk menghapus format angka
         function unformatNumber(number) {
@@ -412,7 +519,7 @@ document.getElementById('tambahInputCheckbox').addEventListener('change', functi
 <!-- Tambahkan script JQuery untuk Ajax -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script>
+{{-- <script>
     $(document).ready(function () {
         $('#tanggal_penjualan').on('change', function () {
             var tanggalPenjualan = $(this).val();
@@ -438,6 +545,8 @@ document.getElementById('tambahInputCheckbox').addEventListener('change', functi
                     $('#transfer').val(response.transfer);
                     $('#total_penjualan').val(response.total_penjualan);
                     $('#total_setoran').val(response.total_setoran);
+                    $('#nominal_setoran').val(response.nominal_setoran);
+                    $('#plusminus').val(response.plusminus);
                 },
                     error: function (xhr) {
                         console.log(xhr.responseText); // Debugging
@@ -446,8 +555,45 @@ document.getElementById('tambahInputCheckbox').addEventListener('change', functi
             }
         });
     });
-</script>
+</script> --}}
+<script>
+    $(document).ready(function () {
+        $('#tanggal_penjualan').on('change', function () {
+            var tanggalPenjualan = $(this).val();
 
+            if (tanggalPenjualan) {
+                $.ajax({
+                    url: "{{ route('getdata1') }}",
+                    type: "POST",
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        tanggal_penjualan: tanggalPenjualan
+                    },
+                    success: function(response) {
+                        // Populate form fields with response data
+                        $('#setoran_id').val(response.id); // Menampilkan ID setoran
+                        $('#penjualan_kotor').val(response.penjualan_kotor);
+                        $('#diskon_penjualan').val(response.diskon_penjualan);
+                        $('#penjualan_bersih').val(response.penjualan_bersih);
+                        $('#deposit_keluar').val(response.deposit_keluar);
+                        $('#deposit_masuk').val(response.deposit_masuk);
+                        $('#mesin_edc').val(response.mesin_edc);
+                        $('#qris').val(response.qris);
+                        $('#gobiz').val(response.gobiz);
+                        $('#transfer').val(response.transfer);
+                        $('#total_penjualan').val(response.total_penjualan);
+                        $('#total_setoran').val(response.total_setoran);
+                        $('#nominal_setoran').val(response.nominal_setoran);
+                        $('#plusminus').val(response.plusminus);
+                    },
+                    error: function (xhr) {
+                        console.log(xhr.responseText); // Debugging
+                    }
+                });
+            }
+        });
+    });
+</script>
 
 
 <script>
