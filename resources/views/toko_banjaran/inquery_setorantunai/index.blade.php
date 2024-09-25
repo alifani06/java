@@ -146,14 +146,12 @@
                                      
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($item->status == 'unpost')
-                                                    <a class="dropdown-item"
-                                                    href="{{ url('/toko_banjaran/inquery_setorantunai/' . $item->id ) }}">Show</a>
+                                            <a class="dropdown-item" href="{{ route('inquery_setorantunai.print', $item->id) }}" target="_blank">Print</a>
                                                  
                                             @endif
                                             @if ($item->status == 'posting')
-                                                    <a class="dropdown-item"
-                                                    href="{{ url('/toko_banjaran/inquery_setorantunai/' . $item->id ) }}">Show</a>
-                                            @endif
+                                                    <a class="dropdown-item" href="{{ route('inquery_setorantunai.print', $item->id) }}" target="_blank">Print</a>
+                                                    @endif
                                            
                                         </div>
                                     </td>
