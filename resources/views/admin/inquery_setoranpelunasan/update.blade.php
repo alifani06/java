@@ -53,7 +53,9 @@
                         <div class="card-body">
 
                                 <input type="text" id="setoran_id" name="id" class="form-control" hidden/>
-                          
+                                <div id="alert-message" class="alert alert-danger d-none" role="alert">
+                                    Ceklis semua terlebih dahulu sebelum menyimpan data.
+                                </div>
                             <!-- Tempat untuk menampilkan Penjualan Kotor -->
                             <div class="form-group row mb-3">
                                 <label for="penjualan_kotor" class="col-sm-3 col-form-label">
@@ -267,6 +269,25 @@
                                 </div>
                             </div>
 
+                            @if(is_null($setoranPenjualan->nominal_setoran))
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="tambahInputCheckbox">
+                                <label class="form-check-label" for="tambahInputCheckbox">2 x setoran</label>
+                                </div>
+                            <div class="form-group row mb-3" id="row1">
+                                <div class="col-sm-3">
+                                    <input class="form-control" id="tanggal_setoran" name="tanggal_setoran" type="date" value="{{ Request::get('tanggal_setoran') }}" />
+                                </div>  
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="nominal_setoran" name="nominal_setoran" oninput="formatNumber(this); updatePlusMinus();">
+                                </div>
+                            </div>
+                
+                            <!-- Tempat tambahan input ketika checkbox di centang -->
+                            <div id="extraRows"></div>
+                         
+                            @else
+
                             <div class="form-group row mb-3">
                                 <label for="nominal_setoran" class="col-sm-3 col-form-label">
                                     <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Nominal Setoran</a>
@@ -284,6 +305,13 @@
                                     </button>
                                 </div>
                             </div>
+                            <div class="form-group row mb-3">
+                                <div class="col-sm-3">
+                                    <input class="form-control" id="tanggal_setoran" name="tanggal_setoran" type="date" value="{{ Request::get('tanggal_setoran') }}" />
+                                </div>  
+                            
+                            </div>
+                            
                             @if($setoranPenjualan->nominal_setoran2 !== null) <!-- Kondisi untuk memeriksa nilai nominal_setoran2 -->
                             <div class="form-group row mb-3">
                                 <label for="nominal_setoran2" class="col-sm-3 col-form-label">
@@ -303,7 +331,9 @@
                                 </div>
                             </div>
                             @endif
-                                <div class="form-group row mb-3">
+                            @endif
+                            
+                            <div class="form-group row mb-3">
                                 <label for="plusminus" class="col-sm-3 col-form-label">
                                     <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">+/-</a>
                                 </label>
@@ -320,35 +350,13 @@
                                     </button>
                                 </div>
                             </div>
+                            
 
                             <div class="col-sm-3 offset-sm-3">
                                 <hr style="border: 1px solid #000;"> <!-- Ubah nilai 2px sesuai ketebalan yang diinginkan -->
                             </div>
                             <!-- Checkbox untuk memunculkan 2 input tambahan -->
-                             {{-- <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="tambahInputCheckbox">
-                                <label class="form-check-label" for="tambahInputCheckbox">2 X</label>
-                            </div>
-                            <div class="form-group row mb-3" id="row1">
-                                <div class="col-sm-3">
-                                    <input class="form-control" id="tanggal_setoran" name="tanggal_setoran[]" type="date" value="{{ Request::get('tanggal_setoran') }}" />
-                                </div>  
-                                <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="nominal_setoran" name="nominal_setoran[]" oninput="formatNumber(this); updatePlusMinus();">
-                                </div>
-                            </div>
-                
-                            <!-- Tempat tambahan input ketika checkbox di centang -->
-                            <div id="extraRows"></div>
-                
-                            <div class="form-group row mb-3">
-                                <label for="plusminus" class="col-sm-3 col-form-label">
-                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">+/-</a>
-                                </label>                             
-                                <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="plusminus" name="plusminus" > 
-                                </div>
-                            </div>   --}}
+                            
                         </div>       
                         </div>   
                         <button type="submit" class="btn btn-primary">Simpan</button>
@@ -357,7 +365,35 @@
         </div>
         
     </section>
-
+    <script>
+        function validateForm(event) {
+            // Ambil status checkbox
+            const checkPenjualanKotor = document.getElementById('check_penjualan_kotor').checked;
+            const checkDiskonPenjualan = document.getElementById('check_diskon_penjualan').checked;
+            const checkPenjualanBersih = document.getElementById('check_penjualan_bersih').checked;
+            const checkDeposiMasuk = document.getElementById('check_deposit_masuk').checked;
+            const checkDepositKeluar = document.getElementById('check_deposit_keluar').checked;
+            const checkTotalPenjualan = document.getElementById('check_total_penjualan').checked;
+            const checkMesinEdc = document.getElementById('check_mesin_edc').checked;
+            const checkGobiz = document.getElementById('check_gobiz').checked;
+            const checkTransfer= document.getElementById('check_transfer').checked;
+            const checkTotalSetoran = document.getElementById('check_total_setoran').checked;
+        
+            // Cek apakah semua checkbox dicentang
+            if (!checkPenjualanKotor || !checkDiskonPenjualan || !checkPenjualanBersih || !checkDeposiMasuk || !checkDepositKeluar ||
+                !checkTotalPenjualan || !checkMesinEdc || !checkGobiz || !checkTransfer || !checkTotalSetoran
+            ) {
+                event.preventDefault(); // Mencegah pengiriman formulir
+                document.getElementById('alert-message').classList.remove('d-none'); // Tampilkan pesan alert
+            } else {
+                document.getElementById('alert-message').classList.add('d-none'); // Sembunyikan pesan alert jika semua dicentang
+            }
+        }
+        
+        // Tambahkan event listener pada form
+        document.querySelector('form').addEventListener('submit', validateForm);
+        </script>
+        
   
     {{-- <script>
         function updateLink() {
@@ -376,6 +412,7 @@
             document.getElementById('penjualan_kotor_link').href = url.toString();
         }
     </script> --}}
+
     <script>
         function updateLink() {
             const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
@@ -423,7 +460,7 @@
         }
     </script>
     
-    <script>
+    {{-- <script>
         document.getElementById('tambahInputCheckbox').addEventListener('change', function() {
             const extraRowsContainer = document.getElementById('extraRows');
             
@@ -433,10 +470,10 @@
                 newRow1.className = 'form-group row mb-3';
                 newRow1.innerHTML = `
                     <div class="col-sm-3">
-                        <input class="form-control" name="tanggal_setoran[]" type="date">
+                        <input class="form-control" name="tanggal_setoran2" type="date">
                     </div>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control" name="nominal_setoran[]" oninput="formatNumber(this);">
+                        <input type="text" class="form-control" name="nominal_setoran2" oninput="formatNumber(this);">
                     </div>
                 `;
 
@@ -447,9 +484,33 @@
                 extraRowsContainer.innerHTML = '';
             }
         });
-    </script>
+    </script> --}}
     
-    <script>
+     <script>
+        document.getElementById('tambahInputCheckbox').addEventListener('change', function() {
+            const extraRowsContainer = document.getElementById('extraRows');
+            
+            if (this.checked) {
+                // Buat elemen input tambahan
+                const newRow1 = document.createElement('div');
+                newRow1.className = 'form-group row mb-3';
+                newRow1.innerHTML = `
+                    <div class="col-sm-3">
+                        <input class="form-control" name="tanggal_setoran2" type="date">
+                    </div>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" name="nominal_setoran2" oninput="formatNumber(this); updatePlusMinus();">
+                    </div>
+                `;
+    
+                // Tambahkan kedua row ke container
+                extraRowsContainer.appendChild(newRow1);
+            } else {
+                // Hapus semua input tambahan jika checkbox di-uncheck
+                extraRowsContainer.innerHTML = '';
+            }
+        });
+    
         // Fungsi untuk menghapus format angka
         function unformatNumber(number) {
             return parseFloat(number.replace(/\./g, '').replace(',', '.')) || 0;
@@ -465,10 +526,19 @@
     
         // Fungsi untuk menghitung nilai plus/minus
         function updatePlusMinus() {
-            const nominalSetoran = unformatNumber(document.getElementById('nominal_setoran').value);
             const totalSetoran = unformatNumber(document.getElementById('total_setoran').value);
-            const plusMinus = nominalSetoran - totalSetoran;
+            let totalNominalSetoran = 0;
     
+            // Ambil semua input nominal_setoran dan hitung totalnya
+            const nominalInputs = document.querySelectorAll('input[name^="nominal_setoran"]');
+            nominalInputs.forEach(input => {
+                totalNominalSetoran += unformatNumber(input.value);
+            });
+    
+            // Hitung selisih antara total setoran dan total nominal setoran
+            const plusMinus = totalNominalSetoran - totalSetoran;
+    
+            // Update nilai plusminus dengan format yang benar
             document.getElementById('plusminus').value = new Intl.NumberFormat('id-ID').format(plusMinus);
         }
     </script>

@@ -211,7 +211,6 @@
             .then(response => response.json())
             .then(data => {
                 if (data.url) {
-                    // Membuka URL print di tab baru
                     window.open(data.url, '_blank');
                 }
             })

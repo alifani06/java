@@ -523,8 +523,8 @@
           <li class="nav-item">
             <a href="{{ url('admin/inquery_setoranpelunasan') }}"
                 class="nav-link {{ request()->is('admin/inquery_setoranpelunasan*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Inquery Setoran Pelunasan</p>
+                <i class="far fa-circle nav-icon" style="font-size: 11px;"></i>
+                <p style="font-size: 14px;">Inquery Pelunasan Penjualan</p>
             </a>
         </li>
         {{-- @endif --}}

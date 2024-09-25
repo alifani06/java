@@ -21,11 +21,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Inquery Setoran Pelunasan</h1>
+                    <h1 class="m-0">Inquery Pelunasan Penjualan</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Inquery Setoran Pelunasan</li>
+                        <li class="breadcrumb-item active">Inquery Pelunasan Penjualan</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -56,7 +56,7 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Setoran Penjualan</h3>
+                    <h3 class="card-title">Pelunasan Penjualan</h3>
                 </div>
                 <!-- /.card-header -->
                  
@@ -70,6 +70,15 @@
                                     <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
                                 </select>
                                 <label for="status">(Pilih Status)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="toko" name="toko_id">
+                                    <option value="">- Semua Toko -</option>
+                                    @foreach ($tokos as $toko)
+                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
+                                    @endforeach
+                                </select>
+                                <label for="toko">(Pilih Toko)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_setoran" name="tanggal_setoran" type="date"
@@ -93,6 +102,8 @@
                    
                     <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
                         <thead>
+                            @foreach ($setoranPenjualans as $index => $item)
+
                             <tr>
                                 <th class="text-center">No</th>
                                 <th>Tanggal Setoran</th> 
@@ -108,13 +119,17 @@
                                 <th>Qris</th>
                                 <th>Total Setoran</th>
                                 <th>Noiminal Setoran</th>
+
+                                @if($item->nominal_setoran2 !== null) <!-- Kondisi untuk memeriksa nilai nominal_setoran2 -->
+                                <th>Noiminal Setoran 2</th>
+                                @endif
+
                                 <th>Plus Minus</th>
                                 <th class="text-center" width="20">Opsi</th>
 
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($setoranPenjualans as $index => $item)
                             <tr class="dropdown"{{ $item->id }}>
                                 <td class="text-center">{{ $index + 1 }}</td>
                                 <td>{{ $item->tanggal_setoran ? \Carbon\Carbon::parse($item->tanggal_setoran)->format('d-m-Y') : '-' }}</td> <!-- Menampilkan Tanggal item -->
@@ -130,6 +145,11 @@
                                 <td>{{ $item->qris ?? '0' }}</td>
                                 <td>{{ $item->total_setoran }}</td>
                                 <td>{{ $item->nominal_setoran }}</td>
+                                
+                                @if($item->nominal_setoran2 !== null) <!-- Kondisi untuk memeriksa nilai nominal_setoran2 -->
+                                <td>{{ $item->nominal_setoran2 }}</td>
+                                @endif
+
                                 <td>{{ $item->plusminus }}</td>
                         
                                     <td class="text-center">
