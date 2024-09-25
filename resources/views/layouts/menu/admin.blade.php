@@ -365,6 +365,7 @@
     request()->is('admin/inquery_pemusnahanbarangjadi*')|| 
     request()->is('admin/inquery_deposit*')|| 
     request()->is('admin/inquery_hasilpenjualan*')|| 
+    request()->is('admin/inquery_setoranpelunasan*')|| 
     request()->is('admin/inquery_estimasiproduksi')  
     // request()->is('admin/input*')
   
@@ -381,6 +382,7 @@
         request()->is('admin/inquery_pemusnahanbarangjadi*')||
         request()->is('admin/inquery_deposit*')||
         request()->is('admin/inquery_hasilpenjualan*')||
+        request()->is('admin/inquery_setoranpelunasan*')||
         request()->is('admin/inquery_estimasiproduksi*') 
         // request()->is('admin/input*')
       
@@ -513,6 +515,16 @@
                 class="nav-link {{ request()->is('admin/inquery_hasilpenjualan*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Inquery Hasil Penjualan</p>
+            </a>
+        </li>
+        {{-- @endif --}}
+
+        {{-- @if (auth()->check() && auth()->user()->menu['inquery hasilpenjualan']) --}}
+          <li class="nav-item">
+            <a href="{{ url('admin/inquery_setoranpelunasan') }}"
+                class="nav-link {{ request()->is('admin/inquery_setoranpelunasan*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Inquery Setoran Pelunasan</p>
             </a>
         </li>
         {{-- @endif --}}

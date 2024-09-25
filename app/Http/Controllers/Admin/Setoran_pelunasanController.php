@@ -49,6 +49,7 @@ class Setoran_pelunasanController extends Controller
         // Kirim data ke view
         return view('admin.setoran_pelunasan.index', compact('setoranPenjualans'));
     }
+    
     public function create(Request $request)
     {
         // Ambil semua data setoran penjualan
