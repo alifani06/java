@@ -63,7 +63,7 @@
                                     <input type="checkbox" class="form-check-input custom-checkbox" id="check_penjualan_kotor" onchange="toggleGreenCheck('penjualan_kotor')">
                                 </div>
                                 <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="penjualan_kotor" name="penjualan_kotor" 
+                                    <input readonly type="text" class="form-control" id="penjualan_kotor" name="penjualan_kotor" 
                                     value="{{ old('penjualan_kotor', $setoranPenjualan->penjualan_kotor) }}">
                                 </div>
                                
@@ -76,13 +76,13 @@
                             <!-- Diskon Penjualan -->
                             <div class="form-group row mb-3">
                                 <label for="diskon_penjualan" class="col-sm-3 col-form-label">
-                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Diskon Penjualan</a>
+                                    <a id="diskon_penjualan_link" href="{{ route('print.diskon.penjualan') }}" target="_blank" class="text-decoration-none">Diskon Penjualan</a>
                                 </label>
                                 <div>
                                     <input type="checkbox" class="form-check-input custom-checkbox" id="check_diskon_penjualan" onchange="toggleGreenCheck('diskon_penjualan')">
                                 </div>                            
                                 <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="diskon_penjualan" name="diskon_penjualan"
+                                    <input readonly type="text" class="form-control" id="diskon_penjualan" name="diskon_penjualan"
                                     value="{{ old('diskon_penjualan', $setoranPenjualan->diskon_penjualan) }}" >
                                 </div>
                                 <div class="col-sm-1">
@@ -104,7 +104,7 @@
                                         <input type="checkbox" class="form-check-input custom-checkbox" id="check_penjualan_bersih" onchange="toggleGreenCheck('penjualan_bersih')">
                                 </div>                            
                                 <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="penjualan_bersih" name="penjualan_bersih"
+                                        <input readonly type="text" class="form-control" id="penjualan_bersih" name="penjualan_bersih"
                                         value="{{ old('penjualan_bersih', $setoranPenjualan->penjualan_bersih) }}" >
                                 </div>
                                 <div class="col-sm-1">
@@ -116,13 +116,13 @@
 
                             <div class="form-group row mb-3">
                                     <label for="deposit_keluar" class="col-sm-3 col-form-label">
-                                        <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Deposit Keluar</a>
+                                        <a id="deposit_keluar_link" href="{{ route('print.deposit.keluar') }}" target="_blank" class="text-decoration-none">Deposit Keluar</a>
                                     </label>
                                     <div>
                                         <input type="checkbox" class="form-check-input custom-checkbox" id="check_deposit_keluar" onchange="toggleGreenCheck('deposit_keluar')">
                                     </div>                            
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="deposit_keluar" name="deposit_keluar" 
+                                        <input readonly type="text" class="form-control" id="deposit_keluar" name="deposit_keluar" 
                                         value="{{ old('deposit_keluar', $setoranPenjualan->deposit_keluar) }}">
                                     </div>
                                     <div class="col-sm-1">
@@ -140,7 +140,7 @@
                                         <input type="checkbox" class="form-check-input custom-checkbox" id="check_deposit_masuk" onchange="toggleGreenCheck('deposit_masuk')">
                                     </div>                            
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="deposit_masuk" name="deposit_masuk"
+                                        <input readonly type="text" class="form-control" id="deposit_masuk" name="deposit_masuk"
                                         value="{{ old('deposit_masuk', $setoranPenjualan->deposit_masuk) }}" >
                                     </div>
                                     <div class="col-sm-1">
@@ -162,7 +162,7 @@
                                         <input type="checkbox" class="form-check-input custom-checkbox" id="check_total_penjualan" onchange="toggleGreenCheck('total_penjualan')">
                                     </div>                            
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="total_penjualan" name="total_penjualan"
+                                        <input readonly type="text" class="form-control" id="total_penjualan" name="total_penjualan"
                                         value="{{ old('total_penjualan', $setoranPenjualan->total_penjualan) }}" >
                                     </div>
                                     <div class="col-sm-1">
@@ -180,7 +180,7 @@
                                         <input type="checkbox" class="form-check-input custom-checkbox" id="check_mesin_edc" onchange="toggleGreenCheck('mesin_edc')">
                                     </div>                            
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="mesin_edc" name="mesin_edc"
+                                        <input readonly type="text" class="form-control" id="mesin_edc" name="mesin_edc"
                                         value="{{ old('mesin_edc', $setoranPenjualan->mesin_edc) }}" >
                                     </div>
                                     <div class="col-sm-1">
@@ -198,7 +198,7 @@
                                         <input type="checkbox" class="form-check-input custom-checkbox" id="check_qris" onchange="toggleGreenCheck('qris')">
                                     </div>                            
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="qris" name="qris"
+                                        <input readonly type="text" class="form-control" id="qris" name="qris"
                                         value="{{ old('qris', $setoranPenjualan->qris) }}" >
                                     </div>
                                     <div class="col-sm-1">
@@ -216,7 +216,7 @@
                                         <input type="checkbox" class="form-check-input custom-checkbox" id="check_gobiz" onchange="toggleGreenCheck('gobiz')">
                                     </div>                            
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="gobiz" name="gobiz" 
+                                        <input readonly type="text" class="form-control" id="gobiz" name="gobiz" 
                                         value="{{ old('gobiz', $setoranPenjualan->gobiz) }}">
                                     </div>
                                     <div class="col-sm-1">
@@ -234,7 +234,7 @@
                                         <input type="checkbox" class="form-check-input custom-checkbox" id="check_transfer" onchange="toggleGreenCheck('transfer')">
                                     </div>                            
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="transfer" name="transfer"
+                                        <input readonly type="text" class="form-control" id="transfer" name="transfer"
                                         value="{{ old('transfer', $setoranPenjualan->transfer) }}" >
                                     </div>
                                     <div class="col-sm-1">
@@ -257,7 +257,7 @@
                                     <input type="checkbox" class="form-check-input custom-checkbox" id="check_total_setoran" onchange="toggleGreenCheck('total_setoran')">
                                 </div>                            
                                 <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="total_setoran" name="total_setoran" 
+                                    <input readonly type="text" class="form-control" id="total_setoran" name="total_setoran" 
                                     value="{{ old('total_setoran', $setoranPenjualan->total_setoran) }}">
                                 </div>
                                 <div class="col-sm-1">
@@ -284,7 +284,26 @@
                                     </button>
                                 </div>
                             </div>
+                            @if($setoranPenjualan->nominal_setoran2 !== null) <!-- Kondisi untuk memeriksa nilai nominal_setoran2 -->
                             <div class="form-group row mb-3">
+                                <label for="nominal_setoran2" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Nominal Setoran 2</a>
+                                </label>
+                                <div>
+                                    <input type="checkbox" class="form-check-input custom-checkbox" id="check_nominal_setoran2" onchange="toggleGreenCheck('nominal_setoran2')">
+                                </div>                            
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="nominal_setoran2" name="nominal_setoran2" 
+                                    value="{{ old('nominal_setoran2', $setoranPenjualan->nominal_setoran2) }}">
+                                </div>
+                                <div class="col-sm-1">
+                                    <button type="button" class="btn btn-success d-none" id="btn_nominal_setoran2">
+                                        ✓
+                                    </button>
+                                </div>
+                            </div>
+                            @endif
+                                <div class="form-group row mb-3">
                                 <label for="plusminus" class="col-sm-3 col-form-label">
                                     <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">+/-</a>
                                 </label>
@@ -340,7 +359,7 @@
     </section>
 
   
-    <script>
+    {{-- <script>
         function updateLink() {
             const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
             const baseUrl = "{{ route('print.penjualan.kotor') }}"; // Menggunakan route Laravel
@@ -356,8 +375,38 @@
             // Update href link
             document.getElementById('penjualan_kotor_link').href = url.toString();
         }
+    </script> --}}
+    <script>
+        function updateLink() {
+            const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
+            const baseUrlKotor = "{{ route('print.penjualan.kotor') }}"; // Menggunakan route Laravel
+            const urlKotor = new URL(baseUrlKotor);
+            
+            // Tambahkan parameter tanggal_penjualan ke URL Penjualan Kotor
+            if (tanggalPenjualan) {
+                urlKotor.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+            } else {
+                urlKotor.searchParams.delete('tanggal_penjualan'); // Hapus jika tidak ada tanggal
+            }
+            
+            // Update href link Penjualan Kotor
+            document.getElementById('penjualan_kotor_link').href = urlKotor.toString();
+            
+            // Update href link Diskon Penjualan
+            const baseUrlDiskon = "{{ route('print.diskon.penjualan') }}"; // Menggunakan route Laravel
+            const urlDiskon = new URL(baseUrlDiskon);
+            
+            // Tambahkan parameter tanggal_penjualan ke URL Diskon Penjualan
+            if (tanggalPenjualan) {
+                urlDiskon.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+            } else {
+                urlDiskon.searchParams.delete('tanggal_penjualan'); // Hapus jika tidak ada tanggal
+            }
+            
+            // Update href link Diskon Penjualan
+            document.getElementById('diskon_penjualan_link').href = urlDiskon.toString();
+        }
     </script>
-    
 
     <script>
         function toggleGreenCheck(inputId) {

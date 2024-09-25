@@ -95,7 +95,7 @@
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
-                                <th>Tanggal Setoran</th> <!-- Tambahkan kolom tanggal setoran -->
+                                <th>Tanggal Setoran</th> 
                                 <th>Penjualan Kotor</th>
                                 <th>Diskon Penjualan</th>
                                 <th>Penjualan Bersih</th>
@@ -135,12 +135,17 @@
                                     <td class="text-center">
                                         @if ($item->status == 'posting')
                                             <button type="button" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-check"></i>
+                                                <i class="fas fa-minus"></i>
                                             </button>
                                         @endif
                                         @if ($item->status == 'unpost')
                                         <button type="button" class="btn btn-danger btn-sm">
                                             <i class="fas fa-times"></i>
+                                        </button>
+                                        @endif
+                                        @if ($item->status == 'approve')
+                                        <button type="button" class="btn btn-success btn-sm">
+                                            <i class="fas fa-check"></i>
                                         </button>
                                         @endif
                                      
@@ -152,8 +157,11 @@
                                             @endif
                                             @if ($item->status == 'posting')
                                                 <a class="dropdown-item unpost-btn" data-memo-id="{{ $item->id }}">Unpost</a>
+                                                {{-- <a class="dropdown-item approve-btn" data-memo-id="{{ $item->id }}">Approve</a> --}}
                                                 <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.print', $item->id) }}" target="_blank">Print</a>
-                                                <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.edit', $item->id) }}">Pelunasan</a>
+                                            @endif
+                                            @if ($item->status == 'approve')
+                                                <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.print', $item->id) }}" target="_blank">Print</a>
                                             @endif
                                         </div>
                                         
@@ -302,6 +310,35 @@
 
             $.ajax({
                 url: "{{ url('admin/inquery_setoranpelunasan/posting_setorantunai/') }}/" + memoId,
+                type: 'GET',
+                data: {
+                    id: memoId
+                },
+                success: function(response) {
+                    $('#modal-loading').modal('hide');
+                    console.log(response);
+                    $('#modal-posting-' + memoId).modal('hide');
+                    location.reload();
+                },
+                error: function(error) {
+                    $('#modal-loading').modal('hide');
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('.approve-btn').click(function() {
+            var memoId = $(this).data('memo-id');
+            $(this).addClass('disabled');
+
+            $('#modal-loading').modal('show');
+
+            $.ajax({
+                url: "{{ url('admin/inquery_setoranpelunasan/approve_setorantunai/') }}/" + memoId,
                 type: 'GET',
                 data: {
                     id: memoId

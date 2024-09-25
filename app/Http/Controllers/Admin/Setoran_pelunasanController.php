@@ -49,7 +49,7 @@ class Setoran_pelunasanController extends Controller
         // Kirim data ke view
         return view('admin.setoran_pelunasan.index', compact('setoranPenjualans'));
     }
-    
+
     public function create(Request $request)
     {
         // Ambil semua data setoran penjualan
@@ -230,56 +230,56 @@ class Setoran_pelunasanController extends Controller
     //     ]);
     // }
     public function getdata1(Request $request)
-{
-    // Validasi input tanggal
-    $request->validate([
-        'tanggal_penjualan' => 'required|date',
-    ]);
+    {
+        // Validasi input tanggal
+        $request->validate([
+            'tanggal_penjualan' => 'required|date',
+        ]);
 
-    // Ambil tanggal dari request
-    $tanggalPenjualan = $request->input('tanggal_penjualan');
-    
-    // Query untuk mengambil data dari tabel setoran_penjualan berdasarkan tanggal
-    $setoranPenjualan = Setoran_penjualan::whereDate('tanggal_penjualan', $tanggalPenjualan)->first();
-    
-    // Jika tidak ada data yang ditemukan, kembalikan respons default
-    if (!$setoranPenjualan) {
+        // Ambil tanggal dari request
+        $tanggalPenjualan = $request->input('tanggal_penjualan');
+        
+        // Query untuk mengambil data dari tabel setoran_penjualan berdasarkan tanggal
+        $setoranPenjualan = Setoran_penjualan::whereDate('tanggal_penjualan', $tanggalPenjualan)->first();
+        
+        // Jika tidak ada data yang ditemukan, kembalikan respons default
+        if (!$setoranPenjualan) {
+            return response()->json([
+                'id' => null, // ID setoran_penjualan
+                'penjualan_kotor' => 0,
+                'diskon_penjualan' => 0,
+                'penjualan_bersih' => 0,
+                'deposit_keluar' => 0,
+                'deposit_masuk' => 0,
+                'mesin_edc' => 0,
+                'qris' => 0,
+                'gobiz' => 0,
+                'transfer' => 0,
+                'total_penjualan' => 0,
+                'total_setoran' => 0,
+                'nominal_setoran' => 0,
+                'plusminus' => 0,
+            ]);
+        }
+
+        // Kembalikan hasil dari setoran_penjualan dalam format JSON
         return response()->json([
-            'id' => null, // ID setoran_penjualan
-            'penjualan_kotor' => 0,
-            'diskon_penjualan' => 0,
-            'penjualan_bersih' => 0,
-            'deposit_keluar' => 0,
-            'deposit_masuk' => 0,
-            'mesin_edc' => 0,
-            'qris' => 0,
-            'gobiz' => 0,
-            'transfer' => 0,
-            'total_penjualan' => 0,
-            'total_setoran' => 0,
-            'nominal_setoran' => 0,
-            'plusminus' => 0,
+            'id' => $setoranPenjualan->id, // Ambil ID
+            'penjualan_kotor' => $setoranPenjualan->penjualan_kotor,
+            'diskon_penjualan' => $setoranPenjualan->diskon_penjualan,
+            'penjualan_bersih' => $setoranPenjualan->penjualan_bersih,
+            'deposit_keluar' => $setoranPenjualan->deposit_keluar,
+            'deposit_masuk' => $setoranPenjualan->deposit_masuk,
+            'mesin_edc' => $setoranPenjualan->mesin_edc,
+            'qris' => $setoranPenjualan->qris,
+            'gobiz' => $setoranPenjualan->gobiz,
+            'transfer' => $setoranPenjualan->transfer,
+            'total_penjualan' => $setoranPenjualan->total_penjualan,
+            'total_setoran' => $setoranPenjualan->total_setoran,
+            'nominal_setoran' => $setoranPenjualan->nominal_setoran,
+            'plusminus' => $setoranPenjualan->plusminus,
         ]);
     }
-
-    // Kembalikan hasil dari setoran_penjualan dalam format JSON
-    return response()->json([
-        'id' => $setoranPenjualan->id, // Ambil ID
-        'penjualan_kotor' => $setoranPenjualan->penjualan_kotor,
-        'diskon_penjualan' => $setoranPenjualan->diskon_penjualan,
-        'penjualan_bersih' => $setoranPenjualan->penjualan_bersih,
-        'deposit_keluar' => $setoranPenjualan->deposit_keluar,
-        'deposit_masuk' => $setoranPenjualan->deposit_masuk,
-        'mesin_edc' => $setoranPenjualan->mesin_edc,
-        'qris' => $setoranPenjualan->qris,
-        'gobiz' => $setoranPenjualan->gobiz,
-        'transfer' => $setoranPenjualan->transfer,
-        'total_penjualan' => $setoranPenjualan->total_penjualan,
-        'total_setoran' => $setoranPenjualan->total_setoran,
-        'nominal_setoran' => $setoranPenjualan->nominal_setoran,
-        'plusminus' => $setoranPenjualan->plusminus,
-    ]);
-}
 
 
     
@@ -317,48 +317,48 @@ class Setoran_pelunasanController extends Controller
 
 //     return redirect()->back()->with('success', 'Status berhasil diupdate menjadi posting.');
 // }
-public function store(Request $request)
-{
-    // Validasi data
-    $request->validate([
-        'penjualan_kotor' => 'required|numeric',
-        'diskon_penjualan' => 'required|numeric',
-        'penjualan_bersih' => 'required|numeric',
-        'deposit_keluar' => 'required|numeric',
-        'deposit_masuk' => 'required|numeric',
-        'total_penjualan' => 'required|numeric',
-        'mesin_edc' => 'required|numeric',
-        'qris' => 'required|numeric',
-        'gobiz' => 'required|numeric',
-        'transfer' => 'required|numeric',
-        'tanggal_penjualan' => 'required|date',
-    ]);
+    public function store(Request $request)
+    {
+        // Validasi data
+        $request->validate([
+            'penjualan_kotor' => 'required|numeric',
+            'diskon_penjualan' => 'required|numeric',
+            'penjualan_bersih' => 'required|numeric',
+            'deposit_keluar' => 'required|numeric',
+            'deposit_masuk' => 'required|numeric',
+            'total_penjualan' => 'required|numeric',
+            'mesin_edc' => 'required|numeric',
+            'qris' => 'required|numeric',
+            'gobiz' => 'required|numeric',
+            'transfer' => 'required|numeric',
+            'tanggal_penjualan' => 'required|date',
+        ]);
 
-    // Simpan data ke database
-    $setoranPelunasan = new Setoran_penjualan();
-    $setoranPelunasan->penjualan_kotor = $request->penjualan_kotor;
-    $setoranPelunasan->diskon_penjualan = $request->diskon_penjualan;
-    $setoranPelunasan->penjualan_bersih = $request->penjualan_bersih;
-    $setoranPelunasan->deposit_keluar = $request->deposit_keluar;
-    $setoranPelunasan->deposit_masuk = $request->deposit_masuk;
-    $setoranPelunasan->total_penjualan = $request->total_penjualan;
-    $setoranPelunasan->mesin_edc = $request->mesin_edc;
-    $setoranPelunasan->qris = $request->qris;
-    $setoranPelunasan->gobiz = $request->gobiz;
-    $setoranPelunasan->transfer = $request->transfer;
-    $setoranPelunasan->tanggal_penjualan = $request->tanggal_penjualan;
-    $setoranPelunasan->total_setoran = $request->total_setoran;
-    $setoranPelunasan->nominal_setoran = $request->nominal_setoran;
-    $setoranPelunasan->plusminus = $request->plusminus;
-    $setoranPelunasan->status = 'posting';
-    $setoranPelunasan->save();
+        // Simpan data ke database
+        $setoranPelunasan = new Setoran_penjualan();
+        $setoranPelunasan->penjualan_kotor = $request->penjualan_kotor;
+        $setoranPelunasan->diskon_penjualan = $request->diskon_penjualan;
+        $setoranPelunasan->penjualan_bersih = $request->penjualan_bersih;
+        $setoranPelunasan->deposit_keluar = $request->deposit_keluar;
+        $setoranPelunasan->deposit_masuk = $request->deposit_masuk;
+        $setoranPelunasan->total_penjualan = $request->total_penjualan;
+        $setoranPelunasan->mesin_edc = $request->mesin_edc;
+        $setoranPelunasan->qris = $request->qris;
+        $setoranPelunasan->gobiz = $request->gobiz;
+        $setoranPelunasan->transfer = $request->transfer;
+        $setoranPelunasan->tanggal_penjualan = $request->tanggal_penjualan;
+        $setoranPelunasan->total_setoran = $request->total_setoran;
+        $setoranPelunasan->nominal_setoran = $request->nominal_setoran;
+        $setoranPelunasan->plusminus = $request->plusminus;
+        $setoranPelunasan->status = 'posting';
+        $setoranPelunasan->save();
 
-    // Redirect ke halaman lain atau berikan pesan sukses
-    return redirect()->back()->with('success', 'Data berhasil disimpan!');
-}
+        // Redirect ke halaman lain atau berikan pesan sukses
+        return redirect()->back()->with('success', 'Data berhasil disimpan!');
+    }
 
 
-public function updateStatus(Request $request)
+    public function updateStatus(Request $request)
     {
         // Ambil id setoran dari request
         $setoran_id = $request->input('id');
@@ -372,13 +372,12 @@ public function updateStatus(Request $request)
             $setoran->save();
 
             // Redirect atau response dengan pesan sukses
-            return redirect()->route('setoran_pelunasan.index')->with('success', 'Status berhasil diupdate menjadi posting');
+            return redirect()->route('setoran_pelunasan.index')->with('success', 'Berhasil');
         }
 
         // Jika setoran tidak ditemukan
         return redirect()->back()->with('error', 'Setoran tidak ditemukan');
     }
-    
     
 
     public function printPenjualanKotor(Request $request) 
@@ -473,6 +472,215 @@ public function updateStatus(Request $request)
     
         // Menggunakan Barryvdh\DomPDF\Facade\Pdf untuk memuat dan menghasilkan PDF
         $pdf = FacadePdf::loadView('admin.setoran_pelunasan.printBk', [
+            'finalResults' => $finalResults,
+            'startDate' => $startDate,
+            'branchName' => $branchName,
+            'tokos' => $tokos,
+            'produks' => $produks, // Tambahkan data produk
+            'klasifikasis' => $klasifikasis,
+        ]);
+    
+        // Output PDF ke browser
+        return $pdf->stream('laporan_penjualan_produk.pdf');
+    }
+
+    public function printDiskonPenjualan(Request $request) 
+    {
+        // Ambil parameter tanggal_penjualan dari request
+        $tanggal_penjualan = $request->get('tanggal_penjualan'); // Menggunakan query string
+    
+        // Pastikan tanggal_penjualan tidak null
+        if (!$tanggal_penjualan) {
+            return redirect()->back()->with('error', 'Tanggal penjualan tidak boleh kosong.');
+        }
+    
+        // Ambil filter lain seperti status, toko_id, dll.
+        $status = $request->get('status');
+        $toko_id = $request->get('toko_id');
+        $produk_id = $request->get('produk');
+    
+        // Query data penjualan
+        $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+            ->when($status, function ($query, $status) {
+                return $query->where('status', $status);
+            })
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan)->startOfDay()) // Pastikan menggunakan whereDate
+            ->orderBy('tanggal_penjualan', 'desc');
+    
+        $inquery = $query->get();
+    
+        // Gabungkan hasil berdasarkan produk_id
+        $finalResults = [];
+        
+        foreach ($inquery as $penjualan) {
+            foreach ($penjualan->detailPenjualanProduk as $detail) {
+                $produk = $detail->produk;
+    
+                // Pastikan produk tidak null sebelum mengakses properti dan cocok dengan filter produk_id
+                if ($produk && (!$produk_id || $produk->id == $produk_id)) {
+                    $key = $produk->id; // Menggunakan ID produk sebagai key
+    
+                    if (!isset($finalResults[$key])) {
+                        $finalResults[$key] = [
+                            'tanggal_penjualan' => $penjualan->tanggal_penjualan,
+                            'kode_lama' => $produk->kode_lama,
+                            'nama_produk' => $produk->nama_produk,
+                            'harga' => $produk->harga,
+                            'jumlah' => 0,
+                            'diskon' => 0,
+                            'total' => 0,
+                            'penjualan_kotor' => 0,
+                            'penjualan_bersih' => 0,
+                        ];
+                    }
+    
+                    // Jumlahkan jumlah dan total
+                    $finalResults[$key]['jumlah'] += $detail->jumlah;
+                    $finalResults[$key]['penjualan_kotor'] += $detail->jumlah * $produk->harga;
+                    $finalResults[$key]['total'] += $detail->total;
+    
+                    // Hitung diskon 10% dari jumlah * harga
+                    if ($detail->diskon > 0) {
+                        $diskonPerItem = $produk->harga * 0.10; // Diskon per unit
+                        $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
+                    }
+    
+                    // Kalkulasi penjualan bersih (penjualan kotor - diskon)
+                    $finalResults[$key]['penjualan_bersih'] = $finalResults[$key]['penjualan_kotor'] - $finalResults[$key]['diskon'];
+                }
+            }
+        }
+    
+        // Mengurutkan finalResults berdasarkan kode_lama
+        uasort($finalResults, function ($a, $b) {
+            return strcmp($a['kode_lama'], $b['kode_lama']);
+        });
+    
+        // Ambil data untuk filter
+        $tokos = Toko::all(); // Model untuk tabel toko
+        $klasifikasis = Klasifikasi::all(); // Model untuk tabel klasifikasi
+        $produks = Produk::all(); // Model untuk tabel produk
+    
+        // Dapatkan nama toko berdasarkan toko_id
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+    
+        // Pass raw dates ke view
+        $startDate = $tanggal_penjualan;
+    
+        // Menggunakan Barryvdh\DomPDF\Facade\Pdf untuk memuat dan menghasilkan PDF
+        $pdf = FacadePdf::loadView('admin.setoran_pelunasan.printDiskon', [
+            'finalResults' => $finalResults,
+            'startDate' => $startDate,
+            'branchName' => $branchName,
+            'tokos' => $tokos,
+            'produks' => $produks, // Tambahkan data produk
+            'klasifikasis' => $klasifikasis,
+        ]);
+    
+        // Output PDF ke browser
+        return $pdf->stream('laporan_penjualan_produk.pdf');
+    }
+
+
+    public function printDepositKeluar(Request $request) 
+    {
+        // Ambil parameter tanggal_penjualan dari request
+        $tanggal_penjualan = $request->get('tanggal_penjualan'); // Menggunakan query string
+    
+        // Pastikan tanggal_penjualan tidak null
+        if (!$tanggal_penjualan) {
+            return redirect()->back()->with('error', 'Tanggal penjualan tidak boleh kosong.');
+        }
+    
+        // Ambil filter lain seperti status, toko_id, dll.
+        $status = $request->get('status');
+        $toko_id = $request->get('toko_id');
+        $produk_id = $request->get('produk');
+    
+        // Query data penjualan
+        $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+            ->when($status, function ($query, $status) {
+                return $query->where('status', $status);
+            })
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan)->startOfDay()) // Pastikan menggunakan whereDate
+            ->orderBy('tanggal_penjualan', 'desc');
+    
+        $inquery = $query->get();
+    
+        // Gabungkan hasil berdasarkan produk_id
+        $finalResults = [];
+        
+        foreach ($inquery as $penjualan) {
+            foreach ($penjualan->detailPenjualanProduk as $detail) {
+                $produk = $detail->produk;
+    
+                // Pastikan produk tidak null sebelum mengakses properti dan cocok dengan filter produk_id
+                if ($produk && (!$produk_id || $produk->id == $produk_id)) {
+                    $key = $produk->id; // Menggunakan ID produk sebagai key
+    
+                    if (!isset($finalResults[$key])) {
+                        $finalResults[$key] = [
+                            'tanggal_penjualan' => $penjualan->tanggal_penjualan,
+                            'kode_lama' => $produk->kode_lama,
+                            'nama_produk' => $produk->nama_produk,
+                            'harga' => $produk->harga,
+                            'jumlah' => 0,
+                            'diskon' => 0,
+                            'total' => 0,
+                            'penjualan_kotor' => 0,
+                            'penjualan_bersih' => 0,
+                        ];
+                    }
+    
+                    // Jumlahkan jumlah dan total
+                    $finalResults[$key]['jumlah'] += $detail->jumlah;
+                    $finalResults[$key]['penjualan_kotor'] += $detail->jumlah * $produk->harga;
+                    $finalResults[$key]['total'] += $detail->total;
+    
+                    // Hitung diskon 10% dari jumlah * harga
+                    if ($detail->diskon > 0) {
+                        $diskonPerItem = $produk->harga * 0.10; // Diskon per unit
+                        $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
+                    }
+    
+                    // Kalkulasi penjualan bersih (penjualan kotor - diskon)
+                    $finalResults[$key]['penjualan_bersih'] = $finalResults[$key]['penjualan_kotor'] - $finalResults[$key]['diskon'];
+                }
+            }
+        }
+    
+        // Mengurutkan finalResults berdasarkan kode_lama
+        uasort($finalResults, function ($a, $b) {
+            return strcmp($a['kode_lama'], $b['kode_lama']);
+        });
+    
+        // Ambil data untuk filter
+        $tokos = Toko::all(); // Model untuk tabel toko
+        $klasifikasis = Klasifikasi::all(); // Model untuk tabel klasifikasi
+        $produks = Produk::all(); // Model untuk tabel produk
+    
+        // Dapatkan nama toko berdasarkan toko_id
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+    
+        // Pass raw dates ke view
+        $startDate = $tanggal_penjualan;
+    
+        // Menggunakan Barryvdh\DomPDF\Facade\Pdf untuk memuat dan menghasilkan PDF
+        $pdf = FacadePdf::loadView('admin.setoran_pelunasan.printDiskon', [
             'finalResults' => $finalResults,
             'startDate' => $startDate,
             'branchName' => $branchName,

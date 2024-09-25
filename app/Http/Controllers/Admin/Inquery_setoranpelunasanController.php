@@ -370,6 +370,23 @@ class Inquery_setoranpelunasanController extends Controller
         // Kembalikan respons sukses
         return response()->json(['success' => 'Status berhasil diubah menjadi posting.']);
     }
+
+    public function approve_setorantunai($id)
+    {
+        // Ambil data stok barang berdasarkan ID
+        $stok = Setoran_penjualan::where('id', $id)->first();
+    
+        // Pastikan data ditemukan
+        if (!$stok) {
+            return response()->json(['error' => 'Data tidak ditemukan.'], 404);
+        }
+    
+        // Update status untuk stok yang diambil
+        $stok->update(['status' => 'approve']);
+    
+        // Kembalikan respons sukses
+        return response()->json(['success' => 'Berhasil .']);
+    }
     
 
     public function edit(Request $request, $id)

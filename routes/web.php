@@ -349,12 +349,15 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('setoran_pelunasan', \App\Http\Controllers\Admin\Setoran_pelunasanController::class);
     Route::post('/get-penjualan-kotor', [Setoran_pelunasanController::class, 'getdata1'])->name('getdata1');
     Route::get('/print-penjualan-kotor', [Setoran_pelunasanController::class, 'printPenjualanKotor'])->name('print.penjualan.kotor');
+    Route::get('/print-diskon-penjualan', [Setoran_pelunasanController::class, 'printDiskonPenjualan'])->name('print.diskon.penjualan');
+    Route::get('/print-deposit-keluar', [Setoran_pelunasanController::class, 'printDepositKeluar'])->name('print.deposit.keluar');
     Route::post('/setoran_pelunasan/store', [Setoran_pelunasanController::class, 'store'])->name('setoran_pelunasan.store');
     Route::post('/setoran_pelunasan/update-status', [Setoran_pelunasanController::class, 'updateStatus'])->name('setoran_pelunasan.update_status');
 
     Route::resource('inquery_setoranpelunasan', \App\Http\Controllers\Admin\Inquery_setoranpelunasanController::class);
     Route::get('inquery_setoranpelunasan/unpost_setorantunai/{id}', [\App\Http\Controllers\Admin\Inquery_setoranpelunasanController::class, 'unpost_setorantunai']);
     Route::get('inquery_setoranpelunasan/posting_setorantunai/{id}', [\App\Http\Controllers\Admin\Inquery_setoranpelunasanController::class, 'posting_setorantunai']);
+    Route::get('inquery_setoranpelunasan/approve_setorantunai/{id}', [\App\Http\Controllers\Admin\Inquery_setoranpelunasanController::class, 'approve_setorantunai']);
     Route::get('/admin/inquery_setoranpelunasan/{id}/print', [Inquery_setoranpelunasanController::class, 'print'])->name('inquery_setoranpelunasan.print');
     Route::get('/inquery_setoranpelunasan/edit/{id}', [Inquery_setoranpelunasanController::class, 'edit'])->name('setoranpelunasan.edit');
     Route::post('/inquery_setoranpelunasan/update-status', [Inquery_setoranpelunasanController::class, 'updateStatus'])->name('inquery_setoranpelunasan.update_status');

@@ -134,13 +134,18 @@
                         
                                     <td class="text-center">
                                         @if ($item->status == 'posting')
-                                            <button type="button" class="btn btn-success btn-sm">
-                                                <i class="fas fa-check"></i>
+                                            <button type="button" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-minus"></i>
                                             </button>
                                         @endif
                                         @if ($item->status == 'unpost')
                                         <button type="button" class="btn btn-danger btn-sm">
                                             <i class="fas fa-times"></i>
+                                        </button>
+                                        @endif
+                                        @if ($item->status == 'approve')
+                                        <button type="button" class="btn btn-success btn-sm">
+                                            <i class="fas fa-check"></i>
                                         </button>
                                         @endif
                                      
