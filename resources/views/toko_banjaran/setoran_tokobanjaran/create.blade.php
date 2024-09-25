@@ -31,7 +31,7 @@
         @endif
     
 
-            <form action="{{ url('toko_banjaran/setoran_tokobanjaran') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form id="setoranForm" action="{{ url('toko_banjaran/setoran_tokobanjaran') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <div class="card">
                     <div class="card-header">
@@ -191,7 +191,32 @@
         </div>
         
     </section>
-
+    <script>
+        document.getElementById('setoranForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Mencegah pengiriman form default
+        
+            let formData = new FormData(this);
+        
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.url) {
+                    // Membuka URL print di tab baru
+                    window.open(data.url, '_blank');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+        </script>
 
     <script>
         // Fungsi untuk menghapus format angka

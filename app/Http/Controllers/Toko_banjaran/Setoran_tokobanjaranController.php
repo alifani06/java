@@ -250,76 +250,161 @@ class Setoran_tokobanjaranController extends Controller
     }
 
 
+    // public function store(Request $request)
+    // {
+    //     // Validasi input dengan custom error messages
+    //     $validator = Validator::make($request->all(), [
+    //         'tanggal_penjualan' => 'required|date',
+    //         'penjualan_kotor' => 'required|numeric',
+    //         'diskon_penjualan' => 'required|numeric',
+    //         'penjualan_bersih' => 'required|numeric',
+    //         'deposit_keluar' => 'required|numeric',
+    //         'deposit_masuk' => 'required|numeric',
+    //         'total_penjualan' => 'required|numeric',
+    //         'mesin_edc' => 'required|numeric',
+    //         'qris' => 'required|numeric',
+    //         'gobiz' => 'required|numeric',
+    //         'transfer' => 'required|numeric',
+    //         'total_setoran' => 'required|numeric',
+    //         'tanggal_setoran' => 'required|date',
+    //         'nominal_setoran' => 'required|numeric',
+    //         'plusminus' => 'required|numeric',
+    //     ], [
+    //         'tanggal_penjualan.required' => 'Tanggal penjualan tidak boleh kosong.',
+    //         'penjualan_kotor.required' => 'Penjualan kotor tidak boleh kosong.',
+    //         'diskon_penjualan.required' => 'Diskon penjualan tidak boleh kosong.',
+    //         'penjualan_bersih.required' => 'Penjualan bersih tidak boleh kosong.',
+    //         'deposit_keluar.required' => 'Deposit keluar tidak boleh kosong.',
+    //         'deposit_masuk.required' => 'Deposit masuk tidak boleh kosong.',
+    //         'total_penjualan.required' => 'Total penjualan tidak boleh kosong.',
+    //         'mesin_edc.required' => 'Mesin EDC tidak boleh kosong.',
+    //         'qris.required' => 'QRIS tidak boleh kosong.',
+    //         'gobiz.required' => 'Gobiz tidak boleh kosong.',
+    //         'transfer.required' => 'Transfer tidak boleh kosong.',
+    //         'total_setoran.required' => 'Total setoran tidak boleh kosong.',
+    //         'tanggal_setoran.required' => 'Tanggal setoran tidak boleh kosong.',
+    //         'nominal_setoran.required' => 'Nominal setoran tidak boleh kosong.',
+    //         'plusminus.required' => 'Kolom +/- tidak boleh kosong.',
+    //         'numeric' => ':attribute harus berupa angka.',
+    //         'date' => ':attribute harus berupa tanggal yang valid.',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return redirect()->back()->withErrors($validator)->withInput();
+    //     }
+
+    //     // Simpan data ke database
+    //     Setoran_penjualan::create([
+    //         'tanggal_penjualan' => $request->tanggal_penjualan,
+    //         'penjualan_kotor' => $request->penjualan_kotor,
+    //         'diskon_penjualan' => $request->diskon_penjualan,
+    //         'penjualan_bersih' => $request->penjualan_bersih,
+    //         'deposit_keluar' => $request->deposit_keluar,
+    //         'deposit_masuk' => $request->deposit_masuk,
+    //         'total_penjualan' => $request->total_penjualan,
+    //         'mesin_edc' => $request->mesin_edc,
+    //         'qris' => $request->qris,
+    //         'gobiz' => $request->gobiz,
+    //         'transfer' => $request->transfer,
+    //         'total_setoran' => $request->total_setoran,
+    //         'tanggal_setoran' => $request->tanggal_setoran,
+    //         'tanggal_setoran2' => $request->tanggal_setoran2,
+    //         'nominal_setoran' => $request->nominal_setoran,
+    //         'nominal_setoran2' => $request->nominal_setoran2,
+    //         'plusminus' => $request->plusminus,
+    //         'toko_id' => 1, // Menyimpan toko_id dengan nilai 1
+    //         'status' => 'unpost',
+
+    //     ]);
+
+    //     return redirect()->back()->with('success', 'Data berhasil disimpan.');
+    // }
+
     public function store(Request $request)
-    {
-        // Validasi input dengan custom error messages
-        $validator = Validator::make($request->all(), [
-            'tanggal_penjualan' => 'required|date',
-            'penjualan_kotor' => 'required|numeric',
-            'diskon_penjualan' => 'required|numeric',
-            'penjualan_bersih' => 'required|numeric',
-            'deposit_keluar' => 'required|numeric',
-            'deposit_masuk' => 'required|numeric',
-            'total_penjualan' => 'required|numeric',
-            'mesin_edc' => 'required|numeric',
-            'qris' => 'required|numeric',
-            'gobiz' => 'required|numeric',
-            'transfer' => 'required|numeric',
-            'total_setoran' => 'required|numeric',
-            'tanggal_setoran' => 'required|date',
-            'nominal_setoran' => 'required|numeric',
-            'plusminus' => 'required|numeric',
-        ], [
-            'tanggal_penjualan.required' => 'Tanggal penjualan tidak boleh kosong.',
-            'penjualan_kotor.required' => 'Penjualan kotor tidak boleh kosong.',
-            'diskon_penjualan.required' => 'Diskon penjualan tidak boleh kosong.',
-            'penjualan_bersih.required' => 'Penjualan bersih tidak boleh kosong.',
-            'deposit_keluar.required' => 'Deposit keluar tidak boleh kosong.',
-            'deposit_masuk.required' => 'Deposit masuk tidak boleh kosong.',
-            'total_penjualan.required' => 'Total penjualan tidak boleh kosong.',
-            'mesin_edc.required' => 'Mesin EDC tidak boleh kosong.',
-            'qris.required' => 'QRIS tidak boleh kosong.',
-            'gobiz.required' => 'Gobiz tidak boleh kosong.',
-            'transfer.required' => 'Transfer tidak boleh kosong.',
-            'total_setoran.required' => 'Total setoran tidak boleh kosong.',
-            'tanggal_setoran.required' => 'Tanggal setoran tidak boleh kosong.',
-            'nominal_setoran.required' => 'Nominal setoran tidak boleh kosong.',
-            'plusminus.required' => 'Kolom +/- tidak boleh kosong.',
-            'numeric' => ':attribute harus berupa angka.',
-            'date' => ':attribute harus berupa tanggal yang valid.',
-        ]);
+{
+    // Validasi input dengan custom error messages
+    $validator = Validator::make($request->all(), [
+        'tanggal_penjualan' => 'required|date',
+        'penjualan_kotor' => 'required|numeric',
+        'diskon_penjualan' => 'required|numeric',
+        'penjualan_bersih' => 'required|numeric',
+        'deposit_keluar' => 'required|numeric',
+        'deposit_masuk' => 'required|numeric',
+        'total_penjualan' => 'required|numeric',
+        'mesin_edc' => 'required|numeric',
+        'qris' => 'required|numeric',
+        'gobiz' => 'required|numeric',
+        'transfer' => 'required|numeric',
+        'total_setoran' => 'required|numeric',
+        'tanggal_setoran' => 'required|date',
+        'nominal_setoran' => 'required|numeric',
+        'plusminus' => 'required|numeric',
+    ], [
+        // Custom error messages
+        'tanggal_penjualan.required' => 'Tanggal penjualan tidak boleh kosong.',
+        'penjualan_kotor.required' => 'Penjualan kotor tidak boleh kosong.',
+        'diskon_penjualan.required' => 'Diskon penjualan tidak boleh kosong.',
+        'penjualan_bersih.required' => 'Penjualan bersih tidak boleh kosong.',
+        'deposit_keluar.required' => 'Deposit keluar tidak boleh kosong.',
+        'deposit_masuk.required' => 'Deposit masuk tidak boleh kosong.',
+        'total_penjualan.required' => 'Total penjualan tidak boleh kosong.',
+        'mesin_edc.required' => 'Mesin EDC tidak boleh kosong.',
+        'qris.required' => 'QRIS tidak boleh kosong.',
+        'gobiz.required' => 'Gobiz tidak boleh kosong.',
+        'transfer.required' => 'Transfer tidak boleh kosong.',
+        'total_setoran.required' => 'Total setoran tidak boleh kosong.',
+        'tanggal_setoran.required' => 'Tanggal setoran tidak boleh kosong.',
+        'nominal_setoran.required' => 'Nominal setoran tidak boleh kosong.',
+        'plusminus.required' => 'Kolom +/- tidak boleh kosong.',
+        'numeric' => ':attribute harus berupa angka.',
+        'date' => ':attribute harus berupa tanggal yang valid.',
+    ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        // Simpan data ke database
-        Setoran_penjualan::create([
-            'tanggal_penjualan' => $request->tanggal_penjualan,
-            'penjualan_kotor' => $request->penjualan_kotor,
-            'diskon_penjualan' => $request->diskon_penjualan,
-            'penjualan_bersih' => $request->penjualan_bersih,
-            'deposit_keluar' => $request->deposit_keluar,
-            'deposit_masuk' => $request->deposit_masuk,
-            'total_penjualan' => $request->total_penjualan,
-            'mesin_edc' => $request->mesin_edc,
-            'qris' => $request->qris,
-            'gobiz' => $request->gobiz,
-            'transfer' => $request->transfer,
-            'total_setoran' => $request->total_setoran,
-            'tanggal_setoran' => $request->tanggal_setoran,
-            'nominal_setoran' => $request->nominal_setoran,
-            'plusminus' => $request->plusminus,
-            'toko_id' => 1, // Menyimpan toko_id dengan nilai 1
-            'status' => 'unpost',
-
-        ]);
-
-        return redirect()->back()->with('success', 'Data berhasil disimpan.');
+    if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
     }
 
-    
+    // Simpan data ke database dan ambil ID dari data yang baru disimpan
+    $setoranPenjualan = Setoran_penjualan::create([
+        'tanggal_penjualan' => $request->tanggal_penjualan,
+        'penjualan_kotor' => $request->penjualan_kotor,
+        'diskon_penjualan' => $request->diskon_penjualan,
+        'penjualan_bersih' => $request->penjualan_bersih,
+        'deposit_keluar' => $request->deposit_keluar,
+        'deposit_masuk' => $request->deposit_masuk,
+        'total_penjualan' => $request->total_penjualan,
+        'mesin_edc' => $request->mesin_edc,
+        'qris' => $request->qris,
+        'gobiz' => $request->gobiz,
+        'transfer' => $request->transfer,
+        'total_setoran' => $request->total_setoran,
+        'tanggal_setoran' => $request->tanggal_setoran,
+        'tanggal_setoran2' => $request->tanggal_setoran2,
+        'nominal_setoran' => $request->nominal_setoran,
+        'nominal_setoran2' => $request->nominal_setoran2,
+        'plusminus' => $request->plusminus,
+        'toko_id' => 1, // Menyimpan toko_id dengan nilai 1
+        'status' => 'unpost',
+    ]);
 
+    return response()->json([
+        'url' => route('inquery_setorantunai.print', $setoranPenjualan->id)
+    ]);
+}
+
+
+    
+    public function print($id)
+    {
+        // Ambil data setoran penjualan berdasarkan id yang dipilih
+        $setoranPenjualans = Setoran_penjualan::findOrFail($id);
+    
+        // Load view untuk PDF dan kirimkan data
+        $pdf = FacadePdf::loadView('toko_banjaran.setoran_tokobanjaran.printtunai', compact('setoranPenjualans'));
+    
+        // Return PDF stream agar langsung bisa ditampilkan
+        return $pdf->stream('setoran_penjualan.pdf');
+    }
     
 
     }
