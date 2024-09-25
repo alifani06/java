@@ -383,7 +383,7 @@
         
     </section>
 
-    {{-- <script>
+    <script>
         function updateLink() {
             const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
             const baseUrl = "{{ route('print.penjualan.kotor') }}"; // Menggunakan route Laravel
@@ -399,8 +399,8 @@
             // Update href link
             document.getElementById('penjualan_kotor_link').href = url.toString();
         }
-    </script> --}}
-    <script>
+    </script>
+    {{-- <script>
         function updateLink() {
         var tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
 
@@ -416,7 +416,7 @@
                 });
         }
         }
-    </script>
+    </script> --}}
     
 
     <script>
@@ -516,62 +516,24 @@
     </script>
     
 
-<!-- Tambahkan script JQuery untuk Ajax -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Tambahkan script JQuery untuk Ajax -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-{{-- <script>
-    $(document).ready(function () {
-        $('#tanggal_penjualan').on('change', function () {
-            var tanggalPenjualan = $(this).val();
-    
-            if (tanggalPenjualan) {
-                $.ajax({
-                    url: "{{ route('getdata1') }}",
-                    type: "POST",
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        tanggal_penjualan: tanggalPenjualan
-                    },
-                    success: function(response) {
-                    // Populate form fields with response data
-                    $('#penjualan_kotor').val(response.penjualan_kotor);
-                    $('#diskon_penjualan').val(response.diskon_penjualan);
-                    $('#penjualan_bersih').val(response.penjualan_bersih);
-                    $('#deposit_keluar').val(response.deposit_keluar);
-                    $('#deposit_masuk').val(response.deposit_masuk);
-                    $('#mesin_edc').val(response.mesin_edc);
-                    $('#qris').val(response.qris);
-                    $('#gobiz').val(response.gobiz);
-                    $('#transfer').val(response.transfer);
-                    $('#total_penjualan').val(response.total_penjualan);
-                    $('#total_setoran').val(response.total_setoran);
-                    $('#nominal_setoran').val(response.nominal_setoran);
-                    $('#plusminus').val(response.plusminus);
-                },
-                    error: function (xhr) {
-                        console.log(xhr.responseText); // Debugging
-                    }
-                });
-            }
-        });
-    });
-</script> --}}
-<script>
-    $(document).ready(function () {
-        $('#tanggal_penjualan').on('change', function () {
-            var tanggalPenjualan = $(this).val();
-
-            if (tanggalPenjualan) {
-                $.ajax({
-                    url: "{{ route('getdata1') }}",
-                    type: "POST",
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        tanggal_penjualan: tanggalPenjualan
-                    },
-                    success: function(response) {
+    {{-- <script>
+        $(document).ready(function () {
+            $('#tanggal_penjualan').on('change', function () {
+                var tanggalPenjualan = $(this).val();
+        
+                if (tanggalPenjualan) {
+                    $.ajax({
+                        url: "{{ route('getdata1') }}",
+                        type: "POST",
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            tanggal_penjualan: tanggalPenjualan
+                        },
+                        success: function(response) {
                         // Populate form fields with response data
-                        $('#setoran_id').val(response.id); // Menampilkan ID setoran
                         $('#penjualan_kotor').val(response.penjualan_kotor);
                         $('#diskon_penjualan').val(response.diskon_penjualan);
                         $('#penjualan_bersih').val(response.penjualan_bersih);
@@ -586,30 +548,68 @@
                         $('#nominal_setoran').val(response.nominal_setoran);
                         $('#plusminus').val(response.plusminus);
                     },
-                    error: function (xhr) {
-                        console.log(xhr.responseText); // Debugging
-                    }
-                });
-            }
+                        error: function (xhr) {
+                            console.log(xhr.responseText); // Debugging
+                        }
+                    });
+                }
+            });
         });
-    });
-</script>
+    </script> --}}
+    <script>
+        $(document).ready(function () {
+            $('#tanggal_penjualan').on('change', function () {
+                var tanggalPenjualan = $(this).val();
 
-
-<script>
-    $(document).ready(function() {
-        // Tambahkan event listener pada tombol "Simpan"
-        $('#btnSimpan').click(function() {
-            // Sembunyikan tombol "Simpan" dan "Reset", serta tampilkan elemen loading
-            $(this).hide();
-            $('#btnReset').hide(); // Tambahkan id "btnReset" pada tombol "Reset"
-            $('#loading').show();
-
-            // Lakukan pengiriman formulir
-            $('form').submit();
+                if (tanggalPenjualan) {
+                    $.ajax({
+                        url: "{{ route('getdata1') }}",
+                        type: "POST",
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            tanggal_penjualan: tanggalPenjualan
+                        },
+                        success: function(response) {
+                            // Populate form fields with response data
+                            $('#setoran_id').val(response.id); // Menampilkan ID setoran
+                            $('#penjualan_kotor').val(response.penjualan_kotor);
+                            $('#diskon_penjualan').val(response.diskon_penjualan);
+                            $('#penjualan_bersih').val(response.penjualan_bersih);
+                            $('#deposit_keluar').val(response.deposit_keluar);
+                            $('#deposit_masuk').val(response.deposit_masuk);
+                            $('#mesin_edc').val(response.mesin_edc);
+                            $('#qris').val(response.qris);
+                            $('#gobiz').val(response.gobiz);
+                            $('#transfer').val(response.transfer);
+                            $('#total_penjualan').val(response.total_penjualan);
+                            $('#total_setoran').val(response.total_setoran);
+                            $('#nominal_setoran').val(response.nominal_setoran);
+                            $('#plusminus').val(response.plusminus);
+                        },
+                        error: function (xhr) {
+                            console.log(xhr.responseText); // Debugging
+                        }
+                    });
+                }
+            });
         });
-    });
-</script>
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            // Tambahkan event listener pada tombol "Simpan"
+            $('#btnSimpan').click(function() {
+                // Sembunyikan tombol "Simpan" dan "Reset", serta tampilkan elemen loading
+                $(this).hide();
+                $('#btnReset').hide(); // Tambahkan id "btnReset" pada tombol "Reset"
+                $('#loading').show();
+
+                // Lakukan pengiriman formulir
+                $('form').submit();
+            });
+        });
+    </script>
 
 
 @endsection

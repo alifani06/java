@@ -46,7 +46,7 @@
                         <div class="card-header">
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
-                                 value="{{ Request::get('tanggal_penjualan') }}" onchange="updateLink()" />
+                                 value="{{ old('tanggal_penjualan', Request::get('tanggal_penjualan')) }}" onchange="updateLink()" />
                             </div>                    
                         </div>
                 
@@ -342,19 +342,19 @@
   
     <script>
         function updateLink() {
-        var tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
-
-        if (tanggalPenjualan) {
-            // Fetch setoran_id berdasarkan tanggal_penjualan
-            fetch(`/api/get-setoran-id?tanggal_penjualan=${tanggalPenjualan}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('setoran_id').value = data.id;
-                })
-                .catch(error => {
-                    console.error('Error fetching setoran id:', error);
-                });
-        }
+            const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
+            const baseUrl = "{{ route('print.penjualan.kotor') }}"; // Menggunakan route Laravel
+            const url = new URL(baseUrl);
+    
+            // Tambahkan parameter tanggal_penjualan ke URL
+            if (tanggalPenjualan) {
+                url.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+            } else {
+                url.searchParams.delete('tanggal_penjualan'); // Hapus jika tidak ada tanggal
+            }
+    
+            // Update href link
+            document.getElementById('penjualan_kotor_link').href = url.toString();
         }
     </script>
     

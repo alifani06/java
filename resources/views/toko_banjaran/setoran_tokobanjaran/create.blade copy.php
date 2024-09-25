@@ -159,32 +159,31 @@
                         <div class="col-sm-3 offset-sm-3">
                             <hr style="border: 1px solid #000;"> <!-- Ubah nilai 2px sesuai ketebalan yang diinginkan -->
                         </div>
-
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="tambahInputCheckbox">
-                            <label class="form-check-label" for="tambahInputCheckbox">2 x setoran</label>
-                        </div>
-                        <div class="form-group row mb-3" id="row1">
-                            <div class="col-sm-3">
-                                <input class="form-control" id="tanggal_setoran" name="tanggal_setoran" type="date" value="{{ Request::get('tanggal_setoran') }}" />
-                            </div>  
-                            <div class="col-sm-3">
-                                <input type="text" class="form-control" id="nominal_setoran" name="nominal_setoran" oninput="formatNumber(this); updatePlusMinus();">
+                            <!-- Checkbox untuk memunculkan 2 input tambahan -->
+                             <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="tambahInputCheckbox">
+                                <label class="form-check-label" for="tambahInputCheckbox">2 x setoran</label>
                             </div>
-                        </div>
-                        
-                        <!-- Tempat tambahan input ketika checkbox di centang -->
-                        <div id="extraRows"></div>
-                        
-                        <div class="form-group row mb-3">
-                            <label for="plusminus" class="col-sm-3 col-form-label">
-                                <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">+/-</a>
-                            </label>                             
-                            <div class="col-sm-3">
-                                <input type="text" class="form-control" id="plusminus" name="plusminus"> 
+                            <div class="form-group row mb-3" id="row1">
+                                <div class="col-sm-3">
+                                    <input class="form-control" id="tanggal_setoran" name="tanggal_setoran[]" type="date" value="{{ Request::get('tanggal_setoran') }}" />
+                                </div>  
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="nominal_setoran" name="nominal_setoran[]" oninput="formatNumber(this); updatePlusMinus();">
+                                </div>
                             </div>
-                        </div>
-                        
+                
+                            <!-- Tempat tambahan input ketika checkbox di centang -->
+                            <div id="extraRows"></div>
+                
+                            <div class="form-group row mb-3">
+                                <label for="plusminus" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">+/-</a>
+                                </label>                             
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="plusminus" name="plusminus" > 
+                                </div>
+                            </div> 
                     </div>       
                     </div>   
                     <button type="submit" class="btn btn-primary">Simpan</button>
@@ -192,8 +191,6 @@
         </div>
         
     </section>
-
-
     <script>
         document.getElementById('setoranForm').addEventListener('submit', function(e) {
             e.preventDefault(); // Mencegah pengiriman form default
@@ -244,7 +241,6 @@
             document.getElementById('plusminus').value = new Intl.NumberFormat('id-ID').format(plusMinus);
         }
     </script> --}}
-    
 
     {{-- <script>
         document.getElementById('tambahInputCheckbox').addEventListener('change', function() {
@@ -256,10 +252,10 @@
                 newRow1.className = 'form-group row mb-3';
                 newRow1.innerHTML = `
                     <div class="col-sm-3">
-                        <input class="form-control" name="tanggal_setoran2" type="date">
+                        <input class="form-control" name="tanggal_setoran[]" type="date">
                     </div>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control" name="nominal_setoran2" oninput="formatNumber(this);">
+                        <input type="text" class="form-control" name="nominal_setoran[]" oninput="formatNumber(this);">
                     </div>
                 `;
 
@@ -277,15 +273,15 @@
             const extraRowsContainer = document.getElementById('extraRows');
             
             if (this.checked) {
-                // Buat elemen input tambahan
+                // Buat elemen input tambahan (dua set input untuk tanggal_setoran dan nominal_setoran)
                 const newRow1 = document.createElement('div');
                 newRow1.className = 'form-group row mb-3';
                 newRow1.innerHTML = `
                     <div class="col-sm-3">
-                        <input class="form-control" name="tanggal_setoran2" type="date">
+                        <input class="form-control" name="tanggal_setoran[]" type="date">
                     </div>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control" name="nominal_setoran2" oninput="formatNumber(this); updatePlusMinus();">
+                        <input type="text" class="form-control" name="nominal_setoran[]" oninput="formatNumber(this); updatePlusMinus();">
                     </div>
                 `;
     
@@ -316,7 +312,7 @@
             let totalNominalSetoran = 0;
     
             // Ambil semua input nominal_setoran dan hitung totalnya
-            const nominalInputs = document.querySelectorAll('input[name^="nominal_setoran"]');
+            const nominalInputs = document.querySelectorAll('input[name="nominal_setoran[]"]');
             nominalInputs.forEach(input => {
                 totalNominalSetoran += unformatNumber(input.value);
             });
@@ -329,6 +325,7 @@
         }
     </script>
     
+
 <!-- Tambahkan script JQuery untuk Ajax -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
