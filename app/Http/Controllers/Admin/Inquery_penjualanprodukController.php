@@ -19,11 +19,14 @@ use App\Models\Tokocilacap;
 use App\Models\Barang;
 use App\Models\Detailbarangjadi;
 use App\Models\Detailpemesananproduk;
+use App\Models\Detailpenjualanproduk;
 use App\Models\Detailtokoslawi;
 use App\Models\Input;
 use App\Models\Karyawan;
 use App\Models\Pemesananproduk;
 use App\Models\Penjualanproduk;
+use App\Models\Stok_tokobanjaran;
+use App\Models\Stok_tokoslawi;
 use Carbon\Carbon;
 use App\Models\Toko;
 use Dompdf\Dompdf;
@@ -83,17 +86,72 @@ public function posting_penjualanproduk($id)
 }
 
 
-public function unpost_penjualanproduk($id)
-{
-    $item = Penjualanproduk::where('id', $id)->first();
+// public function unpost_penjualanproduk($id)
+// {
+//     $item = Penjualanproduk::where('id', $id)->first();
 
     
-        // Update status deposit_driver menjadi 'posting'
-        $item->update([
-            'status' => 'unpost'
-        ]);
-    return back()->with('success', 'Berhasil');
+//         // Update status deposit_driver menjadi 'posting'
+//         $item->update([
+//             'status' => 'unpost'
+//         ]);
+//     return back()->with('success', 'Berhasil');
+// }
+
+public function unpost_penjualanproduk($id)
+{
+    // Temukan data penjualan berdasarkan ID
+    $item = Penjualanproduk::where('id', $id)->first();
+
+    // Pastikan data penjualan ditemukan
+    if ($item) {
+        // Ambil detail penjualan terkait
+        $details = Detailpenjualanproduk::where('penjualanproduk_id', $item->id)->get();
+        
+        // Loop melalui setiap detail penjualan untuk mengembalikan stok
+        foreach ($details as $detail) {
+            // Ambil produk_id dan jumlah dari detail penjualan
+            $produkId = $detail->produk_id;
+            $jumlah = $detail->jumlah;
+            
+            // Periksa toko_id dan kembalikan stok ke tabel yang sesuai
+            switch ($item->toko_id) {
+                case 1:
+                    // Kembalikan stok ke stok_tokobanjaran
+                    $stok = Stok_tokobanjaran::where('produk_id', $produkId)->first();
+                    if ($stok) {
+                        $stok->increment('jumlah', $jumlah);
+                    }
+                    break;
+                case 2:
+                    // Kembalikan stok ke stok_tokoslawi
+                    $stok = Stok_tokoslawi::where('produk_id', $produkId)->first();
+                    if ($stok) {
+                        $stok->increment('jumlah', $jumlah);
+                    }
+                    break;
+
+                // Tambahkan case lain untuk toko lain jika ada
+                // case 3: Kembalikan stok ke stok_toko lainnya...
+
+                default:
+                    // Jika toko_id tidak diketahui, bisa ditangani di sini
+                    break;
+            }
+        }
+
+        // Hapus data dari tabel detailpenjualanproduk berdasarkan penjualanproduk_id
+        Detailpenjualanproduk::where('penjualanproduk_id', $item->id)->delete();
+
+        // Update status menjadi 'unpost'
+        $item->update(['status' => 'unpost']);
+        
+        return back()->with('success', 'Berhasil di-unpost, stok dikembalikan, dan detail penjualan dihapus.');
+    }
+
+    return back()->with('error', 'Data tidak ditemukan.');
 }
+
 
 
 
@@ -119,148 +177,49 @@ public function unpost_penjualanproduk($id)
         //
     }
 
+
+        
     public function edit($id)
-        {
-            $pelanggans = Pelanggan::all();
-            $tokoslawis = Tokoslawi::all();
-            $tokos = Toko::all();
+    {
+        $penjualan = Penjualanproduk::find($id);
         
-            $produks = Produk::with('tokoslawi')->get();
-            $inquery = Pemesananproduk::with('detailpemesananproduk')->where('id', $id)->first();
-            $selectedTokoId = $inquery->toko_id; // ID toko yang dipilih
-
-            return view('admin.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
+        // Pastikan data penjualan ditemukan
+        if ($penjualan) {
+            return view('admin.inquery_penjualanproduk.update', compact('penjualan'));
+        } else {
+            return redirect()->back()->with('error', 'Data penjualan tidak ditemukan.');
         }
+    }
+    
+    public function update(Request $request, $id)
+    {
+        $penjualan = Penjualanproduk::find($id);
         
-        public function update(Request $request, $id)
-        {
-            // Validasi pelanggan
-            $validasi_pelanggan = Validator::make(
-                $request->all(),
-                [
-                    'nama_pelanggan' => 'required',
-                    'telp' => 'required',
-                    'alamat' => 'required',
-                    'kategori' => 'required',
-                ],
-                [
-                    'nama_pelanggan.required' => 'Masukkan nama pelanggan',
-                    'telp.required' => 'Masukkan telepon',
-                    'alamat.required' => 'Masukkan alamat',
-                    'kategori.required' => 'Pilih kategori pelanggan',
-                ]
-            );
-        
-            // Handling errors for pelanggan
-            $error_pelanggans = array();
-        
-            if ($validasi_pelanggan->fails()) {
-                array_push($error_pelanggans, $validasi_pelanggan->errors()->all()[0]);
-            }
-        
-            // Handling errors for pesanans
-            $error_pesanans = array();
-            $data_pembelians = collect();
-        
-            if ($request->has('produk_id')) {
-                for ($i = 0; $i < count($request->produk_id); $i++) {
-                    $validasi_produk = Validator::make($request->all(), [
-                        'kode_produk.' . $i => 'required',
-                        'produk_id.' . $i => 'required',
-                        'nama_produk.' . $i => 'required',
-                        'harga.' . $i => 'required',
-                        'total.' . $i => 'required',
-                    ]);
-        
-                    if ($validasi_produk->fails()) {
-                        array_push($error_pesanans, "Barang no " . ($i + 1) . " belum dilengkapi!");
-                    }
-        
-                    $produk_id = is_null($request->produk_id[$i]) ? '' : $request->produk_id[$i];
-                    $kode_produk = is_null($request->kode_produk[$i]) ? '' : $request->kode_produk[$i];
-                    $nama_produk = is_null($request->nama_produk[$i]) ? '' : $request->nama_produk[$i];
-                    $jumlah = is_null($request->jumlah[$i]) ? '' : $request->jumlah[$i];
-                    $diskon = is_null($request->diskon[$i]) ? '' : $request->diskon[$i];
-                    $harga = is_null($request->harga[$i]) ? '' : $request->harga[$i];
-                    $total = is_null($request->total[$i]) ? '' : $request->total[$i];
-        
-                    $data_pembelians->push([
-                        'kode_produk' => $kode_produk,
-                        'produk_id' => $produk_id,
-                        'nama_produk' => $nama_produk,
-                        'jumlah' => $jumlah,
-                        'diskon' => $diskon,
-                        'harga' => $harga,
-                        'total' => $total,
-                    ]);
-                }
-            }
-        
-            // Handling errors for pelanggans or pesanans
-            if ($error_pelanggans || $error_pesanans) {
-                return back()
-                    ->withInput()
-                    ->with('error_pelanggans', $error_pelanggans)
-                    ->with('error_pesanans', $error_pesanans)
-                    ->with('data_pembelians', $data_pembelians);
-            }
-        
-            // Update pemesanan yang ada
-            $pemesanan = Pemesananproduk::find($id);
-            $pemesanan->update([
-                'nama_pelanggan' => $request->nama_pelanggan,
-                'telp' => $request->telp,
-                'alamat' => $request->alamat,
-                'kategori' => $request->kategori,
-                'sub_total' => $request->sub_total,
-                'nama_penerima' => $request->nama_penerima,
-                'telp_penerima' => $request->telp_penerima,
-                'alamat_penerima' => $request->alamat_penerima,
-                'tanggal_kirim' => $request->tanggal_kirim,
-                'toko_id' => $request->toko,
-                'kode_pemesanan' => $request->kode_pemesanan,
-                'qrcode_pemesanan' => 'https://javabakery.id/pemesanan/' . $this->kode(),
-                'tanggal_penjualan' => Carbon::now('Asia/Jakarta'),
-                'status' => 'posting',
-            ]);
-        
-            // Simpan atau perbarui detail pemesanan
-            foreach ($data_pembelians as $data_pesanan) {
-                $detail = Detailpemesananproduk::where('pemesananproduk_id', $pemesanan->id)
-                    ->where('kode_produk', $data_pesanan['kode_produk'])
-                    ->first();
-        
-                if ($detail) {
-                    // Jika detail sudah ada, perbarui
-                    $detail->update([
-                        'nama_produk' => $data_pesanan['nama_produk'],
-                        'jumlah' => $data_pesanan['jumlah'],
-                        'diskon' => $data_pesanan['diskon'],
-                        'harga' => $data_pesanan['harga'],
-                        'total' => $data_pesanan['total'],
-                    ]);
-                } else {
-                    // Jika detail belum ada, buat baru
-                    Detailpemesananproduk::create([
-                        'pemesananproduk_id' => $pemesanan->id,
-                        'kode_produk' => $data_pesanan['kode_produk'],
-                        'nama_produk' => $data_pesanan['nama_produk'],
-                        'jumlah' => $data_pesanan['jumlah'],
-                        'diskon' => $data_pesanan['diskon'],
-                        'harga' => $data_pesanan['harga'],
-                        'total' => $data_pesanan['total'],
-                    ]);
-                }
-            }
-        
-            // Ambil detail pemesanan untuk ditampilkan di halaman cetak
-            $details = Detailpemesananproduk::where('pemesananproduk_id', $pemesanan->id)->get();
-        
-            // Redirect ke halaman indeks pemesananproduk
-            return redirect('admin/inquery_pemesananproduk');
-
-        }
-        
+        // Validasi data yang diinput
+        $request->validate([
+            'kode_penjualan' => 'required',
+            'nama_pelanggan' => 'required',
+            'kode_pelanggan' => 'required',
+            'telp' => 'required',
+            'alamat' => 'required',
+            'kategori' => 'required',
+            // Tambahkan validasi untuk field lainnya jika diperlukan
+        ]);
+    
+        // Update data penjualan
+        $penjualan->update([
+            'kode_penjualan' => $request->kode_penjualan,
+            'nama_pelanggan' => $request->nama_pelanggan,
+            'kode_pelanggan' => $request->kode_pelanggan,
+            'telp' => $request->telp,
+            'alamat' => $request->alamat,
+            'kategori' => $request->kategori,
+            // Tambahkan update untuk field lainnya jika diperlukan
+        ]);
+    
+        return redirect()->route('inquery_penjualanproduk.update', $id)->with('success', 'Data penjualan berhasil diperbarui.');
+    }
+    
 
     public function destroy($id)
     {

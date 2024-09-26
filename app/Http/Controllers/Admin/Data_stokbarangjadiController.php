@@ -40,28 +40,56 @@ use Maatwebsite\Excel\Facades\Excel;
 class Data_stokbarangjadiController extends Controller{
 
 
+// public function index()
+// {
+//     // Mengambil semua produk beserta stok_barangjadi dan detail_stokbarangjadi, diurutkan berdasarkan klasifikasi
+//     $produks = Produk::with(['stok_barangjadii.detail_stokbarangjadi'])
+//         ->get()
+//         ->sortBy(function($produk) {
+//             $stok = $produk->stok_barangjadii->first();
+//             if (!$stok) {
+//                 return ''; // Default value if no stok_barangjadi
+//             }
+
+//             $detail = $stok->detail_stokbarangjadi->first();
+//             if (!$detail) {
+//                 return ''; // Default value if no detail_stokbarangjadi
+//             }
+
+//             $klasifikasi = $detail->produk->klasifikasi;
+//             return $klasifikasi ? $klasifikasi->nama_klasifikasi : ''; // Ensure klasifikasi is not null
+//         });
+
+//     return view('admin.data_stokbarangjadi.index', compact('produks'));
+// }
+
 public function index()
 {
-    // Mengambil semua produk beserta stok_barangjadi dan detail_stokbarangjadi, diurutkan berdasarkan klasifikasi
+    // Mengambil semua produk beserta stok_barangjadi dan detail_stokbarangjadi
     $produks = Produk::with(['stok_barangjadii.detail_stokbarangjadi'])
         ->get()
+        ->map(function($produk) {
+            // Mengambil semua stok yang terkait dengan produk dari detail_stokbarangjadi
+            $totalStok = 0;
+
+            foreach ($produk->stok_barangjadii as $stok) {
+                // Menjumlahkan stok dari semua detail_stokbarangjadi untuk produk ini
+                $totalStok += $stok->detail_stokbarangjadi->sum('stok');
+            }
+
+            // Set total stok ke produk
+            $produk->total_stok = $totalStok;
+
+            return $produk;
+        })
         ->sortBy(function($produk) {
-            $stok = $produk->stok_barangjadii->first();
-            if (!$stok) {
-                return ''; // Default value if no stok_barangjadi
-            }
-
-            $detail = $stok->detail_stokbarangjadi->first();
-            if (!$detail) {
-                return ''; // Default value if no detail_stokbarangjadi
-            }
-
-            $klasifikasi = $detail->produk->klasifikasi;
-            return $klasifikasi ? $klasifikasi->nama_klasifikasi : ''; // Ensure klasifikasi is not null
+            $klasifikasi = $produk->klasifikasi;
+            return $klasifikasi ? $klasifikasi->nama_klasifikasi : ''; // Urutkan berdasarkan klasifikasi
         });
 
     return view('admin.data_stokbarangjadi.index', compact('produks'));
 }
+
 
 
 }

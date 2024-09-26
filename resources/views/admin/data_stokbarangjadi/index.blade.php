@@ -57,23 +57,12 @@
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $produk->klasifikasi->nama ?? 'N/A' }}</td> <!-- Handle null klasifikasi -->
-                                    <td>{{ $produk->kode_produk }}</td>
+                                    <td>{{ $produk->kode_lama }}</td>
                                     <td>{{ $produk->nama_produk }}</td>
-                                    <td>
-                                        @php
-                                            $totalStok = 0;
-                                            foreach ($produk->stok_barangjadii as $stokBarangjadi) {
-                                                foreach ($stokBarangjadi->detail_stokbarangjadi as $detailStok) {
-                                                    if ($detailStok->status === 'posting') {
-                                                        $totalStok += $detailStok->stok;
-                                                    }
-                                                }
-                                            }
-                                            // Jika total stok adalah 0, pastikan tetap menampilkan 0
-                                            $totalStok = $totalStok > 0 ? $totalStok : 0;
-                                        @endphp
-                                        {{ $totalStok }}
-                                    </td>     
+                            
+                                        <td>{{ $produk->total_stok }}</td>
+
+                                        
                                 </tr>
                             @endforeach
                         </tbody>

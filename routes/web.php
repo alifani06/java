@@ -187,7 +187,9 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/admin/inquery_penjualanproduk', [Inquery_penjualanprodukController::class, 'index'])->name('admin.inquery_penjualanproduk.index');
     Route::get('inquery_penjualanproduk/unpost_penjualanproduk/{id}', [\App\Http\Controllers\Admin\Inquery_penjualanprodukController::class, 'unpost_penjualanproduk']);
     Route::get('inquery_penjualanproduk/posting_penjualanproduk/{id}', [\App\Http\Controllers\Admin\Inquery_penjualanprodukController::class, 'posting_penjualanproduk']);
-
+    Route::get('/inquery_penjualanproduk/{id}/edit', [Inquery_penjualanprodukController::class, 'edit'])->name('inquery_penjualanproduk.edit');
+    Route::post('/inquery_penjualanproduk/{id}/update', [Inquery_penjualanprodukController::class, 'update'])->name('inquery_penjualanproduk.update');
+    
     Route::resource('laporan_penjualanproduk', \App\Http\Controllers\Admin\Laporan_penjualanprodukController::class);
     Route::get('printReportpenjualan', [\App\Http\Controllers\Admin\Laporan_penjualanprodukController::class, 'printReportpenjualan']);
     Route::get('printReportglobal', [\App\Http\Controllers\Admin\Laporan_penjualanprodukController::class, 'printReportglobal']);
