@@ -336,7 +336,7 @@
                         @foreach($inquery->penjualanproduk->detailpenjualanproduk as $detail)
                             @if($detail->kode_produk) <!-- Pengecekan jika kode_produk tidak null -->
                                 <tr>
-                                    <td style="font-size: 8px;">{{ $detail->kode_lama }}</td>
+                                    <td style="font-size: 8px; text-transform: uppercase">{{ $detail->kode_lama }}</td>
                                     <td style="font-size: 8px;">{{ $detail->nama_produk }}</td>
                                     <td style="font-size: 8px;">{{ $detail->jumlah }}</td>
                                     <td style="font-size: 8px;">{{ number_format($detail->harga, 0, ',', '.') }}</td>

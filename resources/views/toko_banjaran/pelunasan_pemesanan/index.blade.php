@@ -98,7 +98,15 @@
                                             Tunai
                                         @endif
                                     </td>
-                                    <td>{{ number_format($item->pelunasan, 0, ',', '.') }}</td>
+                                    <td>
+                                        @if ($item->pelunasan == 1)
+                                        {{ number_format($item->dppemesanan->dp_pemesanan , 0, ',', '.') }}
+                                            {{-- {{ $item->dppemesanan->dp_pemesanan ?? 'Data tidak tersedia' }} --}}
+                                        @else
+                                            {{ number_format($item->pelunasan, 0, ',', '.') }}
+                                        @endif
+                                    </td>
+                                    {{-- <td>{{ number_format($item->pelunasan, 0, ',', '.') }}</td> --}}
                                     <td class="text-center">
                                         @if ($item->status == 'posting')
                                             <button type="button" class="btn btn-success btn-sm">
