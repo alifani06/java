@@ -78,7 +78,7 @@
                 
                 <div class="card-body">
                     <!-- Tabel -->
-                    <form method="GET" id="form-action">
+                    <form method="GET" id="form-action" >
                         <div class="row">
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="status" name="status">
@@ -145,14 +145,14 @@
                                                 <a class="dropdown-item posting-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Posting</a>
                                             
-                                                <a class="dropdown-item"
-                                                href="{{ url('/toko_banjaran/pengiriman_tokobanjaran/' . $firstItem->id)  }}">Show</a>
+                                                <<a class="dropdown-item" href="{{ route('toko_banjaran.pengiriman_tokobanjaran.showpemesanan', $firstItem->id) }}">Show</a>
+
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 <a class="dropdown-item unpost-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Unpost</a>
-                                                <a class="dropdown-item"
-                                                href="{{ url('/toko_banjaran/pengiriman_tokobanjaran/' . $firstItem->id)  }}">Show</a>
+                                                    <a class="dropdown-item" href="{{ route('toko_banjaran.pengiriman_tokobanjaran.showpemesanan', $firstItem->id) }}">Show</a>
+
                                         @endif
                                        
                                     </div>
@@ -207,36 +207,31 @@
         </div>
     </section>
 
-    <script>
-        var tanggalAwal = document.getElementById('tanggal_input');
-        var tanggalAkhir = document.getElementById('tanggal_akhir');
-        if (tanggalAwal.value == "") {
-            tanggalAkhir.readOnly = true;
-        }
-        tanggalAwal.addEventListener('change', function() {
-            if (this.value == "") {
-                tanggalAkhir.readOnly = true;
-            } else {
-                tanggalAkhir.readOnly = false;
-            };
-            tanggalAkhir.value = "";
-            var today = new Date().toISOString().split('T')[0];
-            tanggalAkhir.value = today;
-            tanggalAkhir.setAttribute('min', this.value);
-        });
-        var form = document.getElementById('form-action')
-
-
-    </script>
 
 <script>
-    function cari() {
-        // Menetapkan URL action pada form
-        document.getElementById('form-action').action = "{{ url('toko_banjaran/pengiriman_tokobanjaran/pengiriman_pemesanan') }}";
-        
-        // Mengirimkan form
-        document.getElementById('form-action').submit();
+    var tanggalAwal = document.getElementById('tanggal_input');
+    var tanggalAkhir = document.getElementById('tanggal_akhir');
+    if (tanggalAwal.value == "") {
+        tanggalAkhir.readOnly = true;
     }
+    tanggalAwal.addEventListener('change', function() {
+        if (this.value == "") {
+            tanggalAkhir.readOnly = true;
+        } else {
+            tanggalAkhir.readOnly = false;
+        };
+        tanggalAkhir.value = "";
+        var today = new Date().toISOString().split('T')[0];
+        tanggalAkhir.value = today;
+        tanggalAkhir.setAttribute('min', this.value);
+    });
+    var form = document.getElementById('form-action')
+
+    function cari() {
+        form.action = "{{ url('toko_banjaran/pengiriman_tokobanjaran/pengiriman_pemesanan') }}";
+        form.submit();
+    }
+
 </script>
 
     {{-- unpost stok  --}}

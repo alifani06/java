@@ -118,6 +118,7 @@ class PengirimanbarangjadipesananController extends Controller{
                             'produk_id' => $produkId,
                             'jumlah' => $jumlah,
                             'status' => 'unpost',
+                            'toko_id' => $tokoId,
                             'tanggal_input' => Carbon::now('Asia/Jakarta'),
                             
                         ]);

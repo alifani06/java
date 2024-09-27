@@ -22,6 +22,7 @@ class Pengirimanpemesanan_tokobanjaran extends Model
         'pengiriman_barangjadi_id',
         'tanggal_input',
         'status',
+        'toko_id',
         'kode_pengirimanpesanan',
         'kode_terima',
      
@@ -89,8 +90,8 @@ class Pengirimanpemesanan_tokobanjaran extends Model
           return $this->belongsTo(Stok_barangjadi::class, 'stok_barangjadi_id');
       }
 
-      public function pengiriman_barangjadi()
+      public function pengiriman_barangjadipesanan()
       {
-          return $this->belongsTo(Pengiriman_barangjadi::class, 'pengiriman_barangjadi_id');
+          return $this->belongsTo(Pengiriman_barangjadipesanan::class, 'pengiriman_barangjadi_id');
       }
 }

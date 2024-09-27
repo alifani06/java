@@ -48,6 +48,7 @@ use App\Http\Controllers\Toko_banjaran\Laporan_setoranpenjualanController;
 use App\Http\Controllers\Toko_banjaran\PelunasanpemesananController;
 use App\Http\Controllers\Toko_banjaran\PemesananprodukbanjaranController;
 use App\Http\Controllers\Toko_banjaran\Pengiriman_tokobanjaranController;
+use App\Http\Controllers\Toko_banjaran\Pengirimanpemesanan_tokobanjaranController;
 use App\Http\Controllers\Toko_banjaran\PenjualanprodukbanjaranController;
 use App\Http\Controllers\Toko_banjaran\PermintaanprodukbanjaranController;
 use App\Http\Controllers\Toko_banjaran\Setoran_tokobanjaranController;
@@ -189,7 +190,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('inquery_penjualanproduk/posting_penjualanproduk/{id}', [\App\Http\Controllers\Admin\Inquery_penjualanprodukController::class, 'posting_penjualanproduk']);
     Route::get('/inquery_penjualanproduk/{id}/edit', [Inquery_penjualanprodukController::class, 'edit'])->name('inquery_penjualanproduk.edit');
     Route::post('/inquery_penjualanproduk/{id}/update', [Inquery_penjualanprodukController::class, 'update'])->name('inquery_penjualanproduk.update');
-    
+    Route::post('/hapus-produk', [Inquery_penjualanprodukController::class, 'hapusProduk'])->name('hapus.produk');
+
     Route::resource('laporan_penjualanproduk', \App\Http\Controllers\Admin\Laporan_penjualanprodukController::class);
     Route::get('printReportpenjualan', [\App\Http\Controllers\Admin\Laporan_penjualanprodukController::class, 'printReportpenjualan']);
     Route::get('printReportglobal', [\App\Http\Controllers\Admin\Laporan_penjualanprodukController::class, 'printReportglobal']);
@@ -487,8 +489,14 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('pengiriman_tokobanjaran/unpost_pengirimanpemesanan/{id}', [\App\Http\Controllers\Toko_banjaran\Pengiriman_tokobanjaranController::class, 'unpost_pengirimanpemesanan']);
     Route::get('pengiriman_tokobanjaran/posting_pengirimanpemesanan/{id}', [\App\Http\Controllers\Toko_banjaran\Pengiriman_tokobanjaranController::class, 'posting_pengirimanpemesanan']);
     Route::get('/pengiriman_tokobanjaran/{id}/print', [Pengiriman_tokobanjaranController::class, 'print'])->name('pengiriman_tokobanjaran.print');
-    Route::get('toko_banjaran/pengiriman_barangjadi/index', [Pengiriman_tokobanjaranController::class, 'index'])->name('toko_banjaran.pengiriman_tokobanjaran.index');
+    Route::get('/toko_banjaran/pengiriman_tokobanjaran/printpemesanan/{id}', [Pengiriman_tokobanjaranController::class, 'printpemesanan'])->name('pengiriman_tokobanjaran.printpemesanan');
+    Route::get('toko_banjaran/pengiriman_tokobanjaran/index', [Pengiriman_tokobanjaranController::class, 'index'])->name('toko_banjaran.pengiriman_tokobanjaran.index');
     Route::get('/toko_banjaran/pengiriman_tokobanjaran/pengiriman_pemesanan', [Pengiriman_tokobanjaranController::class, 'pengiriman_pemesanan'])->name('toko_banjaran.pengiriman_tokobanjaran.pengiriman_pemesanan');
+    Route::get('/toko_banjaran/pengiriman_tokobanjaran/showpemesanan/{id}', [Pengiriman_tokobanjaranController::class, 'showpemesanan'])->name('toko_banjaran.pengiriman_tokobanjaran.showpemesanan');
+
+    Route::resource('pengirimanpemesanan_tokobanjaran', \App\Http\Controllers\Toko_banjaran\Pengirimanpemesanan_tokobanjaranController::class);
+    Route::get('/pengirimanpemesanan_tokobanjaran/print/{id}', [Pengirimanpemesanan_tokobanjaranController::class, 'print'])->name('pengirimanpemesanan_tokobanjaran.print');
+
 
     Route::resource('retur_tokobanjaran', \App\Http\Controllers\Toko_banjaran\Retur_tokobanjaranController::class);
   

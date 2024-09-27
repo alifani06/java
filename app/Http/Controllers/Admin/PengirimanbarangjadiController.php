@@ -577,24 +577,7 @@ public function store(Request $request)
         return $newCode;
     }
    
-    // public function show($id)
-    // {
-    //     // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-    //     $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_pengiriman');
-        
-    //     // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
-    //     if (!$detailStokBarangJadi) {
-    //         return redirect()->back()->with('error', 'Data tidak ditemukan.');
-    //     }
-        
-    //     // Ambil semua data dengan kode_pengiriman yang sama
-    //     $pengirimanBarangJadi = Pengiriman_barangjadi::with(['produk.subklasifikasi', 'toko'])->where('kode_pengiriman', $detailStokBarangJadi)->get();
-        
-    //     // Ambil item pertama untuk informasi toko
-    //     $firstItem = $pengirimanBarangJadi->first();
-        
-    //     return view('admin.pengiriman_barangjadi.show', compact('pengirimanBarangJadi', 'firstItem'));
-    // }
+ 
 
     public function show($id)
     {
