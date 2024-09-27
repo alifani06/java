@@ -243,7 +243,7 @@ class Laporan_stoktokoController extends Controller
                 break;
             case '4':
                 $stok = Stok_tokopemalang::with('produk')->get();
-                $tokoCabang = 'PEMMALANG';
+                $tokoCabang = 'PEMALANG';
                 break;
             case '5':
                 $stok = Stok_tokobumiayu::with('produk')->get();

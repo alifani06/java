@@ -8,11 +8,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Data Stok Toko </h1>
+                    <h1 class="m-0">Data Stok Pesanan </h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Data Stok </li>
+                        <li class="breadcrumb-item active">Data Stok Pesanan </li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -152,7 +152,7 @@
     function printReport() {
         if (event) event.preventDefault();
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printstoktokobanjaran') }}";
+    form.action = "{{ url('toko_banjaran/printstoktokopesananbanjaran') }}";
     form.target = "_blank";
     form.submit();
 }
