@@ -38,7 +38,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
+use App\Models\Pemindahan_tokobanjaran;
 use App\Models\Retur_barnagjadi;
+use App\Models\Stok_tokobanjaran;
 use Maatwebsite\Excel\Facades\Excel;
 
 class Inquery_pemindahanbarangjadiController extends Controller{
@@ -78,95 +80,48 @@ class Inquery_pemindahanbarangjadiController extends Controller{
 
 
 
-// public function unpost_retur($id)
-// {
-//     // Ambil data stok barang berdasarkan ID
-//     $stok = Retur_tokoslawi::where('id', $id)->first();
+    public function posting_pemindahan($id)
+    {
+        $pemindahan = Pemindahan_tokobanjaran::findOrFail($id);
 
-//     // Pastikan data ditemukan
-//     if (!$stok) {
-//         return back()->with('error', 'Data tidak ditemukan.');
-//     }
+        if ($pemindahan->status == 'unpost') {
+            $stok_items = Stok_tokobanjaran::where('produk_id', $pemindahan->produk_id)
+                ->where('jumlah', '>', 0)
+                ->orderBy('jumlah', 'asc')
+                ->get();
 
-//     // Ambil kode_input dari stok yang diambil
-//     $kodeInput = $stok->kode_retur;
+            $jumlah_yang_dibutuhkan = $pemindahan->jumlah;
 
-//     // Update status untuk semua stok dengan kode_input yang sama di tabel stok_barangjadi
-//     Retur_tokoslawi::where('kode_retur', $kodeInput)->update([
-//         'status' => 'unpost'
-//     ]);
-//     return back()->with('success', 'Berhasil mengubah status semua produk dan detail terkait dengan kode_input yang sama.');
-// }
+            foreach ($stok_items as $stok) {
+                if ($jumlah_yang_dibutuhkan <= 0) {
+                    break;
+                }
 
-
-// public function posting_retur($id)
-// {
-//    // Ambil data Retur_tokoslawi berdasarkan ID
-//     $pengiriman = Retur_tokoslawi::where('id', $id)->first();
-
-//     // Pastikan data ditemukan
-//     if (!$pengiriman) {
-//         return response()->json(['error' => 'Data tidak ditemukan.'], 404);
-//     }
-
-//     // Ambil kode_retur dari pengiriman yang diambil
-//     $kodePengiriman = $pengiriman->kode_retur;
-
-//     // Update status untuk semua Retur_tokoslawi dengan kode_retur yang sama
-//     Retur_tokoslawi::where('kode_retur', $kodePengiriman)->update([
-//         'status' => 'posting'
-//     ]);
-
-//     // Update status untuk semua stok_tokoslawi terkait dengan Retur_tokoslawi_id
-//     Stok_tokoslawi::where('pengiriman_barangjadi_id', $id)->update([
-//         'status' => 'posting'
-//     ]);
-
-//     return response()->json(['success' => 'Berhasil mengubah status semua produk dan detail terkait dengan kode_retur yang sama.']);
-// }
-
-public function posting_pemindahan($id)
-{
-    $pemindahan = Pemindahan_tokoslawi::findOrFail($id);
-
-    if ($pemindahan->status == 'unpost') {
-        $stok_items = Stok_tokoslawi::where('produk_id', $pemindahan->produk_id)
-            ->where('jumlah', '>', 0)
-            ->orderBy('jumlah', 'asc')
-            ->get();
-
-        $jumlah_yang_dibutuhkan = $pemindahan->jumlah;
-
-        foreach ($stok_items as $stok) {
-            if ($jumlah_yang_dibutuhkan <= 0) {
-                break;
+                if ($stok->jumlah >= $jumlah_yang_dibutuhkan) {
+                    $stok->jumlah -= $jumlah_yang_dibutuhkan;
+                    $stok->save();
+                    $jumlah_yang_dibutuhkan = 0;
+                } else {
+                    $jumlah_yang_dibutuhkan -= $stok->jumlah;
+                    $stok->jumlah = 0;
+                    $stok->save();
+                }
             }
 
-            if ($stok->jumlah >= $jumlah_yang_dibutuhkan) {
-                $stok->jumlah -= $jumlah_yang_dibutuhkan;
-                $stok->save();
-                $jumlah_yang_dibutuhkan = 0;
-            } else {
-                $jumlah_yang_dibutuhkan -= $stok->jumlah;
-                $stok->jumlah = 0;
-                $stok->save();
+            if ($jumlah_yang_dibutuhkan > 0) {
+                return redirect()->back()->with('error', 'Jumlah stok untuk produk ' . $pemindahan->produk->nama_produk . ' tidak mencukupi.');
             }
+
+            $pemindahan->update([
+                'status' => 'posting',
+                'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+            ]);
+
+            return redirect()->route('pemindahan_tokobanjaran.index')->with('success', 'Status berhasil diubah menjadi posting, stok telah diperbarui, dan tanggal terima telah disimpan.');
         }
 
-        if ($jumlah_yang_dibutuhkan > 0) {
-            return redirect()->back()->with('error', 'Jumlah stok untuk produk ' . $pemindahan->produk->nama_produk . ' tidak mencukupi.');
-        }
-
-        $pemindahan->update([
-            'status' => 'posting',
-            'tanggal_terima' => Carbon::now('Asia/Jakarta'),
-        ]);
-
-        return redirect()->route('pemindahan_tokoslawi.index')->with('success', 'Status berhasil diubah menjadi posting, stok telah diperbarui, dan tanggal terima telah disimpan.');
+        return redirect()->route('pemindahan_tokobanjaran.index')->with('error', 'Status pemindahan tidak valid untuk diubah.');
     }
-
-    return redirect()->route('pemindahan_tokoslawi.index')->with('error', 'Status pemindahan tidak valid untuk diubah.');
-}
 
 
 

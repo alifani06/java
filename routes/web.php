@@ -545,6 +545,8 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
 
     Route::resource('laporan_setorantunaibanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_setorantunaibanjaranController::class);
 
+    Route::resource('laporan_returbanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_returbanjaranController::class);
+    Route::get('printReportreturbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_returbanjaranController::class, 'printReportreturbanjaran']);
 
 });
 

@@ -146,11 +146,11 @@
                                                     data-memo-id="{{ $firstItem->id }}">Posting</a>
                                             
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_slawi/inquery_pemindahanslawi/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/toko_banjaran/inquery_pemindahanbanjaran/' . $firstItem->id ) }}">Show</a>
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_slawi/inquery_pemindahanslawi/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/toko_banjaran/inquery_pemindahanbanjaran/' . $firstItem->id ) }}">Show</a>
                                         @endif
                                        
                                     </div>
@@ -226,7 +226,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_slawi/laporan_pemindahanslawi') }}";
+            form.action = "{{ url('toko_banjaran/laporan_pemindahanbanjaran') }}";
             form.submit();
         }
 
@@ -265,7 +265,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_slawi/inquery_pemindahanslawi/unpost_pemindahan/') }}/" + memoId,
+                    url: "{{ url('toko_banjaran/inquery_pemindahanbanjaran/unpost_pemindahan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -295,7 +295,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_slawi/inquery_pemindahanslawi/posting_pemindahan/') }}/" + memoId,
+                    url: "{{ url('toko_banjaran/inquery_pemindahanbanjaran/posting_pemindahan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

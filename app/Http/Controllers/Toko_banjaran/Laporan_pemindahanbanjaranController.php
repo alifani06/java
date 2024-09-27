@@ -38,6 +38,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
+use App\Models\Pemindahan_tokobanjaran;
 use App\Models\Retur_barnagjadi;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -49,7 +50,7 @@ class Laporan_pemindahanbanjaranController extends Controller{
             $tanggal_input = $request->tanggal_input;
             $tanggal_akhir = $request->tanggal_akhir;
 
-            $query = Pemindahan_tokoslawi::with('produk.klasifikasi');
+            $query = Pemindahan_tokobanjaran::with('produk.klasifikasi');
 
             if ($status) {
                 $query->where('status', $status);
@@ -73,7 +74,7 @@ class Laporan_pemindahanbanjaranController extends Controller{
             // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
             $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pemindahan');
 
-            return view('toko_banjaran.laporan_pemindahanslawi.index', compact('stokBarangJadi'));
+            return view('toko_banjaran.laporan_pemindahanbanjaran.index', compact('stokBarangJadi'));
     }
 
 
