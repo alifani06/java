@@ -115,7 +115,7 @@ class Inquery_pengirimanpesananController extends Controller{
         $stokBarangJadi = $query
             ->orderBy('created_at', 'desc')
             ->get()
-            ->groupBy('kode_pengiriman');
+            ->groupBy('kode_pengirimanpesanan');
 
         // Ambil daftar toko untuk dropdown
         $tokos = Toko::all();

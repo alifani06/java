@@ -133,7 +133,7 @@
                             @endphp
                                 <tr class="dropdown" data-permintaan-id="{{ $firstItem->id }}">
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                <td>{{ $firstItem->kode_pengiriman }}</td>
+                                <td>{{ $firstItem->kode_pengirimanpesanan }}</td>
                                 <td>{{ $firstItem->toko->nama_toko ?? 'Toko Tidak Ditemukan' }}</td> <!-- Memanggil relasi toko -->
                                 <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_pengiriman)->format('d/m/Y H:i') }} </td>
                                 <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') }} </td>
