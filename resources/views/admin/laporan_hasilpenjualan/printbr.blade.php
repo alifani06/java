@@ -100,8 +100,9 @@
         <thead>
             <tr>
                 <th class="text-center">No</th>
-                <th>Tanggal Retur</th>
+                {{-- <th>Tanggal Retur</th> --}}
                 <th>Kode Retur</th>
+                <th>Kode Produk</th>
                 <th>Produk</th>
                 <th>Jumlah</th>
                 <th>Harga</th>
@@ -114,8 +115,9 @@
                 @foreach($returGroup as $retur)
                 <tr>
                     <td class="text-center">{{ $no++ }}</td>
-                    <td>{{ \Carbon\Carbon::parse($retur['tanggal_retur'])->format('d/m/Y H:i') }}</td>
+                    {{-- <td>{{ \Carbon\Carbon::parse($retur['tanggal_retur'])->format('d/m/Y H:i') }}</td> --}}
                     <td>{{ $retur->kode_retur }}</td>
+                    <td>{{ $retur->produk->kode_lama }}</td>
                     <td>{{ $retur->produk->nama_produk }}</td>
                     <td style="text-align: right">{{ number_format($retur->jumlah, 0, ',', '.') }}</td>
                     <td style="text-align: right">{{ number_format($retur->produk->harga, 0, ',', '.') }}</td>
