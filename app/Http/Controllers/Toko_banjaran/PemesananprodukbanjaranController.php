@@ -323,7 +323,8 @@ class PemesananprodukbanjaranController extends Controller
         $date = date('dm'); // Format bulan dan hari: MMDD
     
         // Mengambil kode retur terakhir yang dibuat pada hari yang sama
-        $lastBarang = Pemesananproduk::whereDate('tanggal_pemesanan', Carbon::today())
+        $lastBarang = Pemesananproduk::where('kode_pemesanan', 'LIKE', $prefix . '%')
+                                      ->whereDate('tanggal_pemesanan', Carbon::today())
                                       ->orderBy('kode_pemesanan', 'desc')
                                       ->first();
     

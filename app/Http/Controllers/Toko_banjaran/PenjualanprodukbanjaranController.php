@@ -679,29 +679,54 @@ class PenjualanprodukbanjaranController extends Controller
         }
     }
  
-    public function kode()
-    {
-        $prefix = 'PBNJ';
-        $year = date('y'); // Dua digit terakhir dari tahun
-        $monthDay = date('dm'); // Format bulan dan hari: MMDD
+    // public function kode()
+    // {
+    //     $prefix = 'PBNJ';
+    //     $year = date('y'); // Dua digit terakhir dari tahun
+    //     $monthDay = date('dm'); // Format bulan dan hari: MMDD
         
-        // Mengambil kode retur terakhir yang dibuat pada hari yang sama
-        $lastBarang = Penjualanproduk::whereDate('tanggal_penjualan', Carbon::today())
-                                      ->orderBy('kode_penjualan', 'desc')
-                                      ->first();
+    //     // Mengambil kode retur terakhir yang dibuat pada hari yang sama
+    //     $lastBarang = Penjualanproduk::whereDate('tanggal_penjualan', Carbon::today())
+    //                                   ->orderBy('kode_penjualan', 'desc')
+    //                                   ->first();
     
-        if (!$lastBarang) {
-            $num = 1;
-        } else {
-            $lastCode = $lastBarang->kode_penjualan;
-            $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
-            $num = $lastNum + 1;
-        }
+    //     if (!$lastBarang) {
+    //         $num = 1;
+    //     } else {
+    //         $lastCode = $lastBarang->kode_penjualan;
+    //         $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
+    //         $num = $lastNum + 1;
+    //     }
     
-        $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
-        $newCode = $prefix . $monthDay . $year . $formattedNum;
-        return $newCode;
+    //     $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
+    //     $newCode = $prefix . $monthDay . $year . $formattedNum;
+    //     return $newCode;
+    // }
+    public function kode()
+{
+    $prefix = 'PBNJ';
+    $year = date('y'); // Dua digit terakhir dari tahun
+    $monthDay = date('dm'); // Format bulan dan hari: MMDD
+
+    // Mengambil kode terakhir yang dibuat pada hari yang sama dengan prefix PBNJ
+    $lastBarang = Penjualanproduk::where('kode_penjualan', 'LIKE', $prefix . '%')
+                                  ->whereDate('tanggal_penjualan', Carbon::today())
+                                  ->orderBy('kode_penjualan', 'desc')
+                                  ->first();
+
+    if (!$lastBarang) {
+        $num = 1;
+    } else {
+        $lastCode = $lastBarang->kode_penjualan;
+        $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
+        $num = $lastNum + 1;
     }
+
+    $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
+    $newCode = $prefix . $monthDay . $year . $formattedNum;
+    return $newCode;
+}
+
     
     public function cetak($id)
     {

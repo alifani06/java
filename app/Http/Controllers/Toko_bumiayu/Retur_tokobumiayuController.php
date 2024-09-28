@@ -141,10 +141,10 @@ public function kode()
 {
     $prefix = 'RBMY';
     $year = date('y'); // Dua digit terakhir dari tahun
-    $date = date('md'); // Format bulan dan hari: MMDD
+    $date = date('dm'); // Format bulan dan hari: MMDD
 
     // Mengambil kode retur terakhir yang dibuat pada hari yang sama
-    $lastBarang = Retur_tokobanjaran::whereDate('tanggal_input', Carbon::today())
+    $lastBarang = Retur_tokobumiayu::whereDate('tanggal_input', Carbon::today())
                                   ->orderBy('kode_retur', 'desc')
                                   ->first();
 
@@ -152,12 +152,12 @@ public function kode()
         $num = 1;
     } else {
         $lastCode = $lastBarang->kode_retur;
-        $lastNum = (int) substr($lastCode, strlen($prefix . $year . $date)); // Mengambil urutan terakhir
+        $lastNum = (int) substr($lastCode, strlen($prefix . $date . $year )); // Mengambil urutan terakhir
         $num = $lastNum + 1;
     }
 
     $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
-    $newCode = $prefix . $year . $date . $formattedNum;
+    $newCode = $prefix . $date .  $year . $formattedNum;
     return $newCode;
 }
 
@@ -212,7 +212,7 @@ public function posting_retur($id)
 public function show($id)
 {
     // Ambil kode_retur dari pengiriman_barangjadi berdasarkan id
-    $detailStokBarangJadi = Retur_tokobanjaran::where('id', $id)->value('kode_retur');
+    $detailStokBarangJadi = Retur_tokobumiayu::where('id', $id)->value('kode_retur');
     
     // Jika kode_retur tidak ditemukan, tampilkan pesan error
     if (!$detailStokBarangJadi) {
@@ -220,7 +220,7 @@ public function show($id)
     }
     
     // Ambil semua data dengan kode_retur yang sama
-    $pengirimanBarangJadi = Retur_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
+    $pengirimanBarangJadi = Retur_tokobumiayu::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
     
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();

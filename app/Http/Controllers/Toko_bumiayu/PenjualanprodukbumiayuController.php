@@ -50,7 +50,7 @@ class PenjualanprodukbumiayuController extends Controller
         $today = Carbon::today();
         
         $inquery = Penjualanproduk::with('metodePembayaran')
-            ->where('toko_id', 1) 
+            ->where('toko_id', 5) 
             ->where(function ($query) use ($today) {
                 $query->whereDate('created_at', $today)
                       ->orWhere(function ($query) use ($today) {
@@ -65,198 +65,7 @@ class PenjualanprodukbumiayuController extends Controller
     }
     
 
-    //function untuk create penjualan baru
-    // public function searchProduct(Request $request)
-    // {
-    //     $kode = $request->query('kode', '');
-    
-    //     // Cari produk berdasarkan kode_produk atau kode_lama
-    //     $produks = Produk::where('kode_produk', 'like', "%$kode%")
-    //                     ->orWhere('kode_lama', 'like', "%$kode%")
-    //                     ->with('tokobanjaran')
-    //                     ->paginate(10);
-    
-    //     // Pastikan format JSON
-    //     return response()->json($produks);
-    // }
-    
-    //     public function create()
-    // {
-    //     $barangs = Barang::all();
-    //     $pelanggans = Pelanggan::all();
-    //     $details = Detailbarangjadi::all();
-    //     $tokoslawis = Tokoslawi::all();
-    //     $tokos = Toko::all();
-    //     $dppemesanans = Dppemesanan::all();
-    //     $pemesananproduks = Pemesananproduk::all();
-    //     $metodes = Metodepembayaran::all();
-    
-    //     // Ambil semua data produk untuk pencarian
-    //     $allProduks = Produk::with('tokobanjaran')->get();
-        
-    //     // Gunakan paginasi untuk menampilkan produk di tabel
-    //     $produks = Produk::with('tokobanjaran')->paginate(10);
-    
-    //     $kategoriPelanggan = 'member';
-        
-    //     return view('toko_bumiayu.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks', 'metodes', 'allProduks'));
-    // }
-    
- 
-    // public function store(Request $request)
-    // {
-    //     // Validasi pelanggan
-    //     $validasi_pelanggan = Validator::make(
-    //         $request->all(),
-    //         [
-    //             'nama_pelanggan' => 'nullable|string',
-    //             'telp' => 'nullable|string',
-    //             'alamat' => 'nullable|string',
-    //             'kategori' => 'nullable|string',
-    //             'metode_id' => 'nullable|exists:metodepembayarans,id',
-    //             'total_fee' => 'nullable|string',
-    //             'keterangan' => 'nullable|string'
-    //         ],
-    //         [
-    //             'nama_pelanggan.nullable' => 'Masukkan nama pelanggan',
-    //             'telp.nullable' => 'Masukkan telepon',
-    //             'alamat.nullable' => 'Masukkan alamat',
-    //             'kategori.nullable' => 'Pilih kategori pelanggan',
-    //             'metode_id.nullable' => 'Pilih metode pembayaran',
-    //             'total_fee.string' => 'Total fee harus berupa angka',
-    //             'keterangan.string' => 'Keterangan harus berupa string',
-    //         ]
-    //     );
-    
-    //     // Handling errors for pelanggan
-    //     $error_pelanggans = [];
-    //     if ($validasi_pelanggan->fails()) {
-    //         $error_pelanggans = $validasi_pelanggan->errors()->all();
-    //     }
-    
-    //     // Handling errors for pesanans
-    //     $error_pesanans = [];
-    //     $data_pembelians = collect();
-    
-    //     if ($request->has('produk_id')) {
-    //         for ($i = 0; $i < count($request->produk_id); $i++) {
-    //             // Validasi data produk
-    //             $validasi_produk = Validator::make($request->all(), [
-    //                 'kode_produk.' . $i => 'required',
-    //                 'kode_lama.' . $i => 'required',
-    //                 'produk_id.' . $i => 'required|integer', // Tambahkan validasi integer
-    //                 'nama_produk.' . $i => 'required',
-    //                 'harga.' . $i => 'required|numeric',
-    //                 'total.' . $i => 'required|numeric',
-    //                 'totalasli.' . $i => 'required|numeric',
-    //                 'jumlah.' . $i => 'required|numeric',
-    //             ]);
-    
-    //             if ($validasi_produk->fails()) {
-    //                 $error_pesanans[] = "Barang no " . ($i + 1) . " belum dilengkapi!";
-    //                 continue; // Lewati iterasi jika validasi gagal
-    //             }
-    
-    //             $jumlah = $request->input('jumlah.' . $i, 0); // Default ke 0 jika tidak ada
-    //             $produk_id = $request->input('produk_id.' . $i);
-    
-    //             // Pastikan produk_id adalah integer yang valid
-    //             if (!is_numeric($produk_id) || intval($produk_id) <= 0) {
-    //                 $error_pesanans[] = "Produk ID no " . ($i + 1) . " tidak valid!";
-    //                 continue;
-    //             }
-    
-    //             $data_pembelians->push([
-    //                 'produk_id' => intval($produk_id), // Pastikan produk_id adalah integer
-    //                 'kode_produk' => $request->input('kode_produk.' . $i),
-    //                 'kode_lama' => $request->input('kode_lama.' . $i),
-    //                 'nama_produk' => $request->input('nama_produk.' . $i),
-    //                 'harga' => $request->input('harga.' . $i),
-    //                 'diskon' => $request->input('diskon.' . $i),
-    //                 'jumlah' => $jumlah,
-    //                 'total' => $request->input('total.' . $i),
-    //                 'totalasli' => $request->input('totalasli.' . $i),
-    //             ]);
-    //         }
-    //     }
-    
-    //     // Periksa jika ada kesalahan dan kembalikan respon error
-    //     if (!empty($error_pelanggans) || !empty($error_pesanans)) {
-    //         return response()->json([
-    //             'errors' => [
-    //                 'pelanggan' => $error_pelanggans,
-    //                 'pesanans' => $error_pesanans,
-    //             ]
-    //         ], 400);
-    //     }
-    
-    //     // Buat pemesanan baru
-    //     $kode = $this->kode();
-    //     $cetakpdf = Penjualanproduk::create([
-    //         'nama_pelanggan' => $request->nama_pelanggan ?? null,
-    //         'kode_pelanggan' => $request->kode_pelanggan ?? null,
-    //         'telp' => $request->telp ?? null,
-    //         'alamat' => $request->alamat ?? null,
-    //         'kategori' => $request->kategori,
-    //         'sub_total' => $request->sub_total,
-    //         'sub_totalasli' => $request->sub_totalasli,
-    //         'bayar' => $request->bayar,
-    //         'kembali' => $request->kembali,
-    //         'catatan' => $request->catatan,
-    //         'metode_id' => $request->metode_id,
-    //         'total_fee' => $request->total_fee,
-    //         'keterangan' => $request->keterangan,
-    //         'toko_id' => 1,
-    //         'kasir' => ucfirst(auth()->user()->karyawan->nama_lengkap),
-    //         'kode_penjualan' => $kode,
-    //         'qrcode_penjualan' => 'https://javabakery.id/penjualan/' . $kode,
-    //         'tanggal_penjualan' => Carbon::now('Asia/Jakarta'),
-    //         'status' => 'posting',
-    //     ]);
-    
-    //     // Dapatkan ID transaksi baru
-    //     $transaksi_id = $cetakpdf->id;
-    
-    //     // Simpan detail pemesanan dan kurangi stok
-    //     foreach ($data_pembelians as $data_pesanan) {
-    //         Detailpenjualanproduk::create([
-    //             'penjualanproduk_id' => $cetakpdf->id,
-    //             'produk_id' => $data_pesanan['produk_id'],
-    //             'kode_produk' => $data_pesanan['kode_produk'],
-    //             'kode_lama' => $data_pesanan['kode_lama'],
-    //             'nama_produk' => $data_pesanan['nama_produk'],
-    //             'jumlah' => $data_pesanan['jumlah'],
-    //             'diskon' => $data_pesanan['diskon'],
-    //             'harga' => $data_pesanan['harga'],
-    //             'total' => $data_pesanan['total'],
-    //             'totalasli' => $data_pesanan['totalasli'],
-    //         ]);
-    
-    //         // Kurangi stok di tabel stok_tokobanjaran
-    //         $stok = Stok_tokobanjaran::where('produk_id', $data_pesanan['produk_id'])->first();
-    //         if ($stok) {
-    //             if ($stok->jumlah == 0) {
-    //                 $stok->jumlah = -$data_pesanan['jumlah'];
-    //             } else {
-    //                 $stok->jumlah -= $data_pesanan['jumlah'];
-    //             }
-    //             $stok->save();
-    //         }
-    //     }
-    
-    //     // Ambil detail pemesanan untuk ditampilkan di halaman cetak
-    //     $details = Detailpenjualanproduk::where('penjualanproduk_id', $cetakpdf->id)->get();
-    
-    //     // Kirimkan URL untuk tab baru
-    //     $pdfUrl = route('toko_bumiayu.penjualan_produk.cetak-pdf', ['id' => $cetakpdf->id]);
-    
-    //     // Return response dengan URL PDF
-    //     return response()->json([
-    //         'success' => 'Transaksi Berhasil',
-    //         'pdfUrl' => $pdfUrl,
-    //     ]);
-    // }
-    
+
     public function getProductByKode(Request $request)
     {
         $kode = $request->get('kode');
@@ -707,29 +516,54 @@ class PenjualanprodukbumiayuController extends Controller
         }
     }
  
-    public function kode()
-    {
-        $prefix = 'PBMY';
-        $year = date('y'); // Dua digit terakhir dari tahun
-        $monthDay = date('dm'); // Format bulan dan hari: MMDD
+    // public function kode()
+    // {
+    //     $prefix = 'PBMY';
+    //     $year = date('y'); // Dua digit terakhir dari tahun
+    //     $monthDay = date('dm'); // Format bulan dan hari: MMDD
         
-        // Mengambil kode retur terakhir yang dibuat pada hari yang sama
-        $lastBarang = Penjualanproduk::whereDate('tanggal_penjualan', Carbon::today())
-                                      ->orderBy('kode_penjualan', 'desc')
-                                      ->first();
+    //     // Mengambil kode retur terakhir yang dibuat pada hari yang sama
+    //     $lastBarang = Penjualanproduk::whereDate('tanggal_penjualan', Carbon::today())
+    //                                   ->orderBy('kode_penjualan', 'desc')
+    //                                   ->first();
     
-        if (!$lastBarang) {
-            $num = 1;
-        } else {
-            $lastCode = $lastBarang->kode_penjualan;
-            $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
-            $num = $lastNum + 1;
-        }
+    //     if (!$lastBarang) {
+    //         $num = 1;
+    //     } else {
+    //         $lastCode = $lastBarang->kode_penjualan;
+    //         $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
+    //         $num = $lastNum + 1;
+    //     }
     
-        $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
-        $newCode = $prefix . $monthDay . $year . $formattedNum;
-        return $newCode;
+    //     $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
+    //     $newCode = $prefix . $monthDay . $year . $formattedNum;
+    //     return $newCode;
+    // }
+    public function kode()
+{
+    $prefix = 'PBMY';
+    $year = date('y'); // Dua digit terakhir dari tahun
+    $monthDay = date('dm'); // Format bulan dan hari: MMDD
+
+    // Mengambil kode terakhir yang dibuat pada hari yang sama dengan prefix PBMY
+    $lastBarang = Penjualanproduk::where('kode_penjualan', 'LIKE', $prefix . '%')
+                                  ->whereDate('tanggal_penjualan', Carbon::today())
+                                  ->orderBy('kode_penjualan', 'desc')
+                                  ->first();
+
+    if (!$lastBarang) {
+        $num = 1;
+    } else {
+        $lastCode = $lastBarang->kode_penjualan;
+        $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
+        $num = $lastNum + 1;
     }
+
+    $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
+    $newCode = $prefix . $monthDay . $year . $formattedNum;
+    return $newCode;
+}
+
     
     public function cetak($id)
     {

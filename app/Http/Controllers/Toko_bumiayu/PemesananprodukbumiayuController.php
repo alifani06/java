@@ -41,8 +41,8 @@ class PemesananprodukbumiayuController extends Controller
     {
         $today = Carbon::today();
     
-        $inquery = Pemesananproduk::with('dppemesanan') // Memuat relasi dppemesanan
-            ->where('toko_id', 1) // Hanya tampilkan data dengan toko_id = 1
+        $inquery = Pemesananproduk::with('dppemesanan')
+            ->where('toko_id', 5) 
             ->where(function ($query) use ($today) {
                 $query->whereDate('created_at', $today)
                       ->orWhere(function ($query) use ($today) {
@@ -299,22 +299,7 @@ class PemesananprodukbumiayuController extends Controller
         return $pdf->stream('pemesanan.pdf');
     }
 
-    // public function kode()
-    // {
-    //     $lastPemesanan = Pemesananproduk::latest()->first();
-    //     if (!$lastPemesanan) {
-    //         $num = 1;
-    //     } else {
-    //         $lastCode = $lastPemesanan->kode_pemesanan;
-    //         $num = (int) substr($lastCode, 3) + 1; // Mengambil angka setelah prefix 'SPP'
-    //     }
-        
-    //     $formattedNum = sprintf("%06s", $num); // Mengformat nomor urut menjadi 6 digit
-    //     $prefix = 'SPP';
-    //     $newCode = $prefix . $formattedNum; // Gabungkan prefix dengan nomor urut yang diformat
     
-    //     return $newCode;
-    // }
 
     public function kode()
     {
@@ -323,7 +308,8 @@ class PemesananprodukbumiayuController extends Controller
         $date = date('dm'); // Format bulan dan hari: MMDD
     
         // Mengambil kode retur terakhir yang dibuat pada hari yang sama
-        $lastBarang = Pemesananproduk::whereDate('tanggal_pemesanan', Carbon::today())
+        $lastBarang = Pemesananproduk::where('kode_pemesanan', 'LIKE', $prefix . '%')
+                                      ->whereDate('tanggal_pemesanan', Carbon::today())
                                       ->orderBy('kode_pemesanan', 'desc')
                                       ->first();
     
