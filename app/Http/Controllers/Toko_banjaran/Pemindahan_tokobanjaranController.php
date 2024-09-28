@@ -158,7 +158,7 @@ public function store(Request $request)
 
 public function kode()
 {
-    $prefix = 'PBNJ';
+    $prefix = 'OBNJ';
     $year = date('y'); // Dua digit terakhir dari tahun
     $date = date('md'); // Format bulan dan hari: MMDD
 

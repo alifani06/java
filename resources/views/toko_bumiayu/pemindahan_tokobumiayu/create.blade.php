@@ -73,7 +73,7 @@
                 <div class="card-body">
                     
 
-                    <form action="{{ url('toko_banjaran/pemindahan_tokobanjaran') }}" method="POST">
+                    <form action="{{ url('toko_bumiayu/pemindahan_tokobumiayu') }}" method="POST">
                         @csrf
                         <input type="hidden" name="toko_id" > <!-- Assuming $toko is passed from the controller -->
                         <div class="row">
@@ -112,7 +112,11 @@
                                         </div>
                                     </div>
                                 </table>
+                                <div class="form-group text-right">
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                </div>
                             </div>
+                           
                         </div>
 
                         <div class="modal fade" id="tableProduk" data-backdrop="static">
@@ -141,7 +145,7 @@
                                                 @foreach ($produks as $item)
                                                     <tr class="pilih-btn" data-id="{{ $item->id }}" data-kode="{{ $item->kode_produk }}" data-nama="{{ $item->nama_produk }}">
                                                         <td class="text-center">{{ $loop->iteration }}</td>
-                                                        <td>{{ $item->kode_produk }}</td>
+                                                        <td>{{ $item->kode_lama }}</td>
                                                         <td>{{ $item->nama_produk }}</td>
                                                         <td class="text-center">
                                                             <button type="button" class="btn btn-primary btn-sm pilih-btn" data-id="{{ $item->id }}" data-kode="{{ $item->kode_produk }}" data-nama="{{ $item->nama_produk }}">
@@ -157,9 +161,7 @@
                             </div>
                         </div>
                         
-                        <div class="form-group text-right">
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                        </div>
+                       
                     </form>
                     
              

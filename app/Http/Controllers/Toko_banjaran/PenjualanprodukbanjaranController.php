@@ -329,6 +329,7 @@ class PenjualanprodukbanjaranController extends Controller
     }
     
 
+
     // public function SimpanPelunasan(Request $request)
     // {
     //     // Validasi input
@@ -425,26 +426,44 @@ class PenjualanprodukbanjaranController extends Controller
     //         $detail->total = $validated['total'][$index];
     //         $detail->save();
 
-    //         // Kurangi stok di tabel stok_tokobanjaran
-    //         $stok = Stokpesanan_tokobanjaran::where('produk_id', $detail->produk_id)->first();
-    //         if ($stok) {
-    //             // Kurangi stok tanpa memeriksa apakah stok mencukupi
-    //             $stok->jumlah -= $detail->jumlah;
-    //             $stok->save();
-    //         } else {
-    //             // Jika stok tidak ditemukan, buat stok baru dengan nilai negatif
-    //             Stokpesanan_tokobanjaran::create([
-    //                 'produk_id' => $detail->produk_id,
-    //                 'jumlah' => -$detail->jumlah,
-    //             ]);
+    //         // Ambil klasifikasi produk
+    //         $produk = Produk::find($detail->produk_id);
+
+    //         // Kurangi stok berdasarkan klasifikasi_id
+    //         if ($produk) {
+    //             if (in_array($produk->klasifikasi_id, [15, 16]))  {
+
+    //                 $stok = Stok_tokobanjaran::where('produk_id', $detail->produk_id)->first();
+    //             } else {
+    //                 // Jika tidak, kurangi stok dari stokpesanan_tokobanjaran
+    //                 $stok = Stokpesanan_tokobanjaran::where('produk_id', $detail->produk_id)->first();
+    //             }
+
+    //             if ($stok) {
+    //                 // Kurangi stok tanpa memeriksa apakah stok mencukupi
+    //                 $stok->jumlah -= $detail->jumlah;
+    //                 $stok->save();
+    //             } else {
+    //                 // Jika stok tidak ditemukan, buat stok baru dengan nilai negatif
+    //                 if (in_array($produk->klasifikasi_id, [15, 16])) {
+    //                     Stok_tokobanjaran::create([
+    //                         'produk_id' => $detail->produk_id,
+    //                         'jumlah' => -$detail->jumlah,
+    //                     ]);
+    //                 } else {
+    //                     Stokpesanan_tokobanjaran::create([
+    //                         'produk_id' => $detail->produk_id,
+    //                         'jumlah' => -$detail->jumlah,
+    //                     ]);
+    //                 }
+    //             }
     //         }
     //     }
-
 
     //     // Ambil detail pelunasan untuk ditampilkan di halaman cetak
     //     $details = DetailPenjualanProduk::where('penjualanproduk_id', $penjualan->id)->get();
 
-    //         // Kirimkan URL untuk tab baru
+    //     // Kirimkan URL untuk tab baru
     //     $pdfUrl = route('toko_banjaran.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id]);
 
     //     // Return response dengan URL PDF
@@ -455,9 +474,7 @@ class PenjualanprodukbanjaranController extends Controller
     //         'details' => $details,
     //         'pdfUrl' => $pdfUrl,
     //     ]);
-
     // }
-
     public function SimpanPelunasan(Request $request)
     {
         // Validasi input
@@ -484,23 +501,23 @@ class PenjualanprodukbanjaranController extends Controller
             'produk_id.*' => 'nullable|numeric',
             'kembali' => 'nullable|numeric',
         ]);
-
+    
         // Jika nilai pelunasan kosong atau 0, set default ke 1
         $validated['pelunasan'] = $validated['pelunasan'] > 0 ? $validated['pelunasan'] : 1;
-
+    
         // Update kolom pelunasan di tabel dppemesanans
         $dppemesanans = Dppemesanan::find($validated['dppemesanan_id']);
         if (!$dppemesanans) {
             return redirect()->back()->withErrors(['error' => 'Data pesanan tidak ditemukan']);
         }
-
+    
         // Update pelunasan di tabel dppemesanans
         $dppemesanans->pelunasan += $validated['pelunasan'];
         $dppemesanans->save();
         
         // Generate kode untuk penjualan
         $kode_penjualan = $this->kode();
-
+    
         // Simpan data ke tabel penjualan_produk
         $penjualan = new PenjualanProduk();
         $penjualan->dppemesanan_id = $validated['dppemesanan_id'];
@@ -523,7 +540,7 @@ class PenjualanprodukbanjaranController extends Controller
         $penjualan->tanggal_penjualan = Carbon::now('Asia/Jakarta');
         $penjualan->qrcode_penjualan = 'https://javabakery.id/penjualan/' . $kode_penjualan;
         $penjualan->save();
-
+    
         // Simpan data ke tabel pelunasan
         $pelunasan = new Pelunasan();
         $pelunasan->dppemesanan_id = $validated['dppemesanan_id'];
@@ -539,7 +556,7 @@ class PenjualanprodukbanjaranController extends Controller
         $pelunasan->toko_id = '1'; 
         $pelunasan->kode_penjualan = $penjualan->kode_penjualan; // Menggunakan kode_penjualan dari penjualan
         $pelunasan->save();
-
+    
         // Simpan data ke tabel detailpenjualanproduk dan kurangi stok
         foreach ($validated['kode_produk'] as $index => $kode_produk) {
             $detail = new DetailPenjualanProduk();
@@ -553,27 +570,27 @@ class PenjualanprodukbanjaranController extends Controller
             $detail->diskon = $validated['diskon'][$index];
             $detail->total = $validated['total'][$index];
             $detail->save();
-
+    
             // Ambil klasifikasi produk
             $produk = Produk::find($detail->produk_id);
-
-            // Kurangi stok berdasarkan klasifikasi_id
+    
+            // Kurangi stok berdasarkan klasifikasi_id atau kode_lama
             if ($produk) {
-                if (in_array($produk->klasifikasi_id, [15, 16])) {
-                    // Jika klasifikasi_id = 15 atau 16, kurangi stok dari stok_tokobanjaran
+                if (in_array($produk->klasifikasi_id, [15, 16]) || ($produk->klasifikasi_id == 13 && $detail->kode_lama == 'KU001')) {
+
                     $stok = Stok_tokobanjaran::where('produk_id', $detail->produk_id)->first();
                 } else {
                     // Jika tidak, kurangi stok dari stokpesanan_tokobanjaran
                     $stok = Stokpesanan_tokobanjaran::where('produk_id', $detail->produk_id)->first();
                 }
-
+    
                 if ($stok) {
                     // Kurangi stok tanpa memeriksa apakah stok mencukupi
                     $stok->jumlah -= $detail->jumlah;
                     $stok->save();
                 } else {
                     // Jika stok tidak ditemukan, buat stok baru dengan nilai negatif
-                    if (in_array($produk->klasifikasi_id, [15, 16])) {
+                    if (in_array($produk->klasifikasi_id, [15, 16]) || ($produk->klasifikasi_id == 13 && $detail->kode_lama == 'KU001')) {
                         Stok_tokobanjaran::create([
                             'produk_id' => $detail->produk_id,
                             'jumlah' => -$detail->jumlah,
@@ -587,13 +604,13 @@ class PenjualanprodukbanjaranController extends Controller
                 }
             }
         }
-
+    
         // Ambil detail pelunasan untuk ditampilkan di halaman cetak
         $details = DetailPenjualanProduk::where('penjualanproduk_id', $penjualan->id)->get();
-
+    
         // Kirimkan URL untuk tab baru
         $pdfUrl = route('toko_banjaran.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id]);
-
+    
         // Return response dengan URL PDF
         return response()->json([
             'success' => 'Transaksi Berhasil',
@@ -603,7 +620,7 @@ class PenjualanprodukbanjaranController extends Controller
             'pdfUrl' => $pdfUrl,
         ]);
     }
-
+    
 
     public function getCustomerByKode($kode)
     {

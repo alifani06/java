@@ -43,6 +43,8 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Pemindahan_tokobanjaran;
+use App\Models\Pemindahan_tokobumiayu;
+use App\Models\Pemindahan_tokobumiayumasuk;
 use App\Models\Retur_barnagjadi;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -50,13 +52,12 @@ class Pemindahan_tokobumiayuController extends Controller{
 
     public function index()
     {
-        // Ambil data retur_tokoslawi beserta relasi produk dan urutkan berdasarkan created_at terbaru
-        $pemindahan_tokobanjaran = Pemindahan_tokobanjaran::with('produk')
+        $pemindahan_tokobumiayu = Pemindahan_tokobumiayu::with('produk')
                             ->where('status', 'posting')
                             ->orderBy('created_at', 'desc')
                             ->get();
     
-        return view('toko_bumiayu.pemindahan_tokobanjaran.index', compact('pemindahan_tokobanjaran'));
+        return view('toko_bumiayu.pemindahan_tokobumiayu.index', compact('pemindahan_tokobumiayu'));
     }
       
 
@@ -66,7 +67,7 @@ public function create()
     $produks = Produk::all();
     $tokos = Toko::all();
 
-    return view('toko_bumiayu.pemindahan_tokobanjaran.create', compact('produks', 'tokos'));
+    return view('toko_bumiayu.pemindahan_tokobumiayu.create', compact('produks', 'tokos'));
 }
 
 
@@ -88,10 +89,10 @@ public function store(Request $request)
 
     foreach ($produk_ids as $index => $produk_id) {
         // Simpan ke tabel pemindahan_tokoslawi
-        Pemindahan_tokobanjaran::create([
+        Pemindahan_tokobumiayu::create([
             'kode_pemindahan' => $kode,
             'produk_id' => $produk_id,
-            'toko_id' => '1',  // Ganti sesuai dengan toko tujuan
+            'toko_id' => '5',  // Ganti sesuai dengan toko tujuan
             'status' => 'unpost',
             'jumlah' => $jumlahs[$index],
             'keterangan' => $keterangans[$index],
@@ -102,7 +103,7 @@ public function store(Request $request)
         Pemindahan_barangjadi::create([
             'kode_pemindahan' => $kode,
             'produk_id' => $produk_id,
-            'toko_id' => '1',  // Ganti sesuai dengan toko tujuan
+            'toko_id' => '5',  // Ganti sesuai dengan toko tujuan
             'status' => 'unpost',
             'jumlah' => $jumlahs[$index],
             'keterangan' => $keterangans[$index],
@@ -144,6 +145,17 @@ public function store(Request $request)
                         'tanggal_input' => Carbon::now('Asia/Jakarta'),
                     ]);
                     break;
+                case 'BUMIAYU':
+                    Pemindahan_tokobumiayumasuk::create([
+                        'kode_pemindahan' => $kode,
+                        'produk_id' => $produk_id,
+                        'toko_id' => '5',  // Ganti sesuai dengan ID toko TEGAL
+                        'status' => 'unpost',
+                        'jumlah' => $jumlahs[$index],
+                        'keterangan' => $keterangans[$index],
+                        'tanggal_input' => Carbon::now('Asia/Jakarta'),
+                    ]);
+                    break;
             // Tambahkan kasus lain jika ada toko lain yang perlu ditangani
             default:
                 // Tidak melakukan apa-apa jika keterangan tidak cocok
@@ -151,19 +163,19 @@ public function store(Request $request)
         }
     }
 
-    return redirect()->route('pemindahan_tokobanjaran.index')->with('success', 'Data pemindahan barang berhasil disimpan.');
+    return redirect()->route('pemindahan_tokobumiayu.index')->with('success', 'Data pemindahan barang berhasil disimpan.');
 }
 
 
 
 public function kode()
 {
-    $prefix = 'PBNJ';
+    $prefix = 'OBMY';
     $year = date('y'); // Dua digit terakhir dari tahun
-    $date = date('md'); // Format bulan dan hari: MMDD
+    $date = date('dm'); // Format bulan dan hari: MMDD
 
     // Mengambil kode retur terakhir yang dibuat pada hari yang sama
-    $lastBarang = Pemindahan_tokobanjaran::whereDate('tanggal_input', Carbon::today())
+    $lastBarang = Pemindahan_tokobumiayu::whereDate('tanggal_input', Carbon::today())
                                   ->orderBy('kode_pemindahan', 'desc')
                                   ->first();
 
@@ -171,12 +183,12 @@ public function kode()
         $num = 1;
     } else {
         $lastCode = $lastBarang->kode_pemindahan;
-        $lastNum = (int) substr($lastCode, strlen($prefix . $year . $date)); // Mengambil urutan terakhir
+        $lastNum = (int) substr($lastCode, strlen($prefix . $date . $year )); // Mengambil urutan terakhir
         $num = $lastNum + 1;
     }
 
     $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
-    $newCode = $prefix . $year . $date . $formattedNum;
+    $newCode = $prefix . $date . $year . $formattedNum;
     return $newCode;
 }
 

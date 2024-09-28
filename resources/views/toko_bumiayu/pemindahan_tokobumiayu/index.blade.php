@@ -8,11 +8,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Pemindahan Produk Toko Banjaran</h1>
+                    <h1 class="m-0">Pemindahan Produk Toko Bumiayu</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Pemindahan Produk Toko Banjaran</li>
+                        <li class="breadcrumb-item active">Pemindahan Produk Toko Bumiayu</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -38,9 +38,9 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Pemindahan Produk Toko Banjaran</h3>
+                    <h3 class="card-title">Pemindahan Produk Toko Bumiayu</h3>
                     <div class="float-right">
-                        <a href="{{ url('toko_banjaran/pemindahan_tokobanjaran/create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url('toko_bumiayu/pemindahan_tokobumiayu/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> 
                         </a>
                     </div>
@@ -58,7 +58,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($pemindahan_tokobanjaran as $stok)
+                            @foreach ($pemindahan_tokobumiayu as $stok)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $stok->kode_pemindahan }}</td>
