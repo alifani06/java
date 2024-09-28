@@ -40,7 +40,7 @@
                 {{ session('error') }}
             </div>
         @endif
-        <form action="{{ route('setoran_pelunasan.update_status') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('setoran_pelunasan.update_status') }}" method="POST" enctype="multipart/form-data" id="myForm">
             @csrf
                     <div class="card">
                         <div class="card-header">
@@ -65,14 +65,15 @@
                                 <div class="col-sm-3">
                                     <input type="text" class="form-control" id="penjualan_kotor" name="penjualan_kotor" placeholder="">
                                 </div>
-                               
+                                               
                                 <div class="col-sm-1">
                                     <button type="button" class="btn btn-success d-none" id="btn_penjualan_kotor">
                                         ✓
                                     </button>
                                 </div>
                             </div>
-                            <!-- Diskon Penjualan -->
+                
+                            <!-- Tempat untuk menampilkan Diskon Penjualan -->
                             <div class="form-group row mb-3">
                                 <label for="diskon_penjualan" class="col-sm-3 col-form-label">
                                     <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Diskon Penjualan</a>
@@ -81,7 +82,7 @@
                                     <input type="checkbox" class="form-check-input custom-checkbox" id="check_diskon_penjualan" onchange="toggleGreenCheck('diskon_penjualan')">
                                 </div>                            
                                 <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="diskon_penjualan" name="diskon_penjualan" >
+                                    <input type="text" class="form-control" id="diskon_penjualan" name="diskon_penjualan">
                                 </div>
                                 <div class="col-sm-1">
                                     <button type="button" class="btn btn-success d-none" id="btn_diskon_penjualan">
@@ -272,6 +273,26 @@
                                     </button>
                                 </div>
                             </div>
+
+                            {{-- @if(!is_null($setoranPenjualans->nominal_setoran2))
+                            <div class="form-group row mb-3">
+                                <label for="nominal_setoran2" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Nominal Setoran 2</a>
+                                </label>
+                                <div>
+                                    <input type="checkbox" class="form-check-input custom-checkbox" id="check_nominal_setoran2" onchange="toggleGreenCheck('nominal_setoran2')">
+                                </div>                            
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="nominal_setoran2" name="nominal_setoran2" >
+                                </div>
+                                <div class="col-sm-1">
+                                    <button type="button" class="btn btn-success d-none" id="btn_nominal_setoran2">
+                                        ✓
+                                    </button>
+                                </div>
+                            </div>
+                            @endif --}}
+
                             <div class="form-group row mb-3">
                                 <label for="plusminus" class="col-sm-3 col-form-label">
                                     <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">+/-</a>
@@ -287,101 +308,67 @@
                                         ✓
                                     </button>
                                 </div>
-                            </div>
-
-                            {{-- <div class="col-sm-3 offset-sm-3">
-                                <hr style="border: 1px solid #000;"> <!-- Ubah nilai 2px sesuai ketebalan yang diinginkan -->
-                            </div>
-                            <!-- Checkbox untuk memunculkan 2 input tambahan -->
-                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="tambahInputCheckbox">
-                                <label class="form-check-label" for="tambahInputCheckbox">2 X</label>
-                            </div>
-                            <div class="form-group row mb-3" id="row1">
-                                <div class="col-sm-3">
-                                    <input class="form-control" id="tanggal_setoran" name="tanggal_setoran[]" type="date" value="{{ Request::get('tanggal_setoran') }}" />
-                                </div>  
-                                <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="nominal_setoran" name="nominal_setoran[]" oninput="formatNumber(this); updatePlusMinus();">
-                                </div>
-                            </div>
-                
-                            <!-- Tempat tambahan input ketika checkbox di centang -->
-                            <div id="extraRows"></div>
-                
-                            <div class="form-group row mb-3">
-                                <label for="plusminus" class="col-sm-3 col-form-label">
-                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">+/-</a>
-                                </label>                             
-                                <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="plusminus" name="plusminus" > 
-                                </div>
-                            </div>   --}}
+                            </div> 
                         </div>       
-                        </div>   
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                </form>
+                    </div>   
+            <button type="submit" class="btn btn-primary">Simpan</button>
+        </form>
 
-                {{-- <form action="{{ url('admin/setoran_pelunasan') }}" method="GET" enctype="multipart/form-data" autocomplete="off">
-                    @csrf
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
-                                       value="{{ Request::get('tanggal_penjualan') }}" onchange="updateLink()" />
-                            </div>                    
-                        </div>
-                
-                        <div class="card-body">
-                            <input type="text" id="setoran_id" name="id" class="form-control" hidden />
-                
-                            <!-- Section for displaying sales information -->
-                            @foreach([
-                                'penjualan_kotor' => 'Penjualan Kotor',
-                                'diskon_penjualan' => 'Diskon Penjualan',
-                                'penjualan_bersih' => 'Penjualan Bersih',
-                                'deposit_keluar' => 'Deposit Keluar',
-                                'deposit_masuk' => 'Deposit Masuk',
-                                'total_penjualan' => 'Total Penjualan',
-                                'mesin_edc' => 'Mesin EDC',
-                                'qris' => 'QRIS',
-                                'gobiz' => 'Gobiz',
-                                'transfer' => 'Transfer',
-                                'total_setoran' => 'Total Setoran',
-                                'nominal_setoran' => 'Nominal Setoran',
-                                'plusminus' => '+/-'
-                            ] as $field => $label)
-                                <div class="form-group row mb-3">
-                                    <label for="{{ $field }}" class="col-sm-3 col-form-label">
-                                        <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">{{ $label }}</a>
-                                    </label>
-                                    <div>
-                                        <input type="checkbox" class="form-check-input custom-checkbox" id="check_{{ $field }}" onchange="toggleGreenCheck('{{ $field }}')">
-                                    </div>                            
-                                    <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="{{ $field }}" name="{{ $field }}" placeholder="">
-                                    </div>
-                                    <div class="col-sm-1">
-                                        <button type="button" class="btn btn-success d-none" id="btn_{{ $field }}">
-                                            ✓
-                                        </button>
-                                    </div>
-                                </div>
-                                @if (!$loop->last) <!-- Add a separator if not the last item -->
-                                    <div class="col-sm-3 offset-sm-3">
-                                        <hr style="border: 1px solid #000;">
-                                    </div>
-                                @endif
-                            @endforeach
-                
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-
-                </form> --}}
         </div>
         
     </section>
+
+    <script>
+        document.getElementById('myForm').addEventListener('submit', function(event) {
+            // Cek apakah checkbox penjualan kotor dicentang
+            const checkPenjualanKotor = document.getElementById('check_penjualan_kotor');
+            const checkDiskonPenjualan = document.getElementById('check_diskon_penjualan');
+            const checkPenjualanBersih = document.getElementById('check_penjualan_bersih');
+            const checkDepositKeluar = document.getElementById('check_deposit_keluar');
+            const checkDepositMasuk = document.getElementById('check_deposit_masuk');
+            const checkTotalPenjualan = document.getElementById('check_total_penjualan');
+            const checkMesinEdc = document.getElementById('check_mesin_edc');
+            const checkQris = document.getElementById('check_qris');
+            const checkGobiz = document.getElementById('check_gobiz');
+            const checkTransfer = document.getElementById('check_transfer');
+            const checkTotalSetoran = document.getElementById('check_total_setoran');
+            const checkNominalSetoran = document.getElementById('check_nominal_setoran');
+            const checkPlusMinus = document.getElementById('check_plusminus');
+    
+            // Jika checkbox belum dicentang, mencegah submit dan tampilkan SweetAlert
+            if (!checkPenjualanKotor.checked) {
+                event.preventDefault(); // Mencegah form disubmit
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Anda harus mencentang checkbox Penjualan Kotor terlebih dahulu.',
+                });
+                return false;
+            }
+    
+            // Cek apakah checkbox diskon penjualan dicentang
+            if (!checkDiskonPenjualan.checked) {
+                event.preventDefault(); // Mencegah form disubmit
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Anda harus mencentang checkbox Diskon Penjualan terlebih dahulu.',
+                });
+                return false;
+            }
+        });
+    
+        function toggleGreenCheck(id) {
+            const checkbox = document.getElementById('check_' + id);
+            const button = document.getElementById('btn_' + id);
+    
+            if (checkbox.checked) {
+                button.classList.remove('d-none');
+            } else {
+                button.classList.add('d-none');
+            }
+        }
+    </script>
 
     <script>
         function updateLink() {
@@ -400,26 +387,9 @@
             document.getElementById('penjualan_kotor_link').href = url.toString();
         }
     </script>
+
+
     {{-- <script>
-        function updateLink() {
-        var tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
-
-        if (tanggalPenjualan) {
-            // Fetch setoran_id berdasarkan tanggal_penjualan
-            fetch(`/api/get-setoran-id?tanggal_penjualan=${tanggalPenjualan}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('setoran_id').value = data.id;
-                })
-                .catch(error => {
-                    console.error('Error fetching setoran id:', error);
-                });
-        }
-        }
-    </script> --}}
-    
-
-    <script>
         function toggleGreenCheck(inputId) {
             // Mendapatkan checkbox, input, dan tombol centang hijau berdasarkan ID input
             var checkbox = document.getElementById('check_' + inputId);
@@ -432,7 +402,7 @@
                 button.classList.add('d-none');
             }
         }
-    </script>
+    </script> --}}
     
     <script>
         document.getElementById('tambahInputCheckbox').addEventListener('change', function() {
@@ -556,6 +526,7 @@
             });
         });
     </script> --}}
+
     <script>
         $(document).ready(function () {
             $('#tanggal_penjualan').on('change', function () {
@@ -584,6 +555,7 @@
                             $('#total_penjualan').val(response.total_penjualan);
                             $('#total_setoran').val(response.total_setoran);
                             $('#nominal_setoran').val(response.nominal_setoran);
+                            $('#nominal_setoran2').val(response.nominal_setoran2);
                             $('#plusminus').val(response.plusminus);
                         },
                         error: function (xhr) {

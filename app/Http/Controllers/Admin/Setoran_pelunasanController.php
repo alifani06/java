@@ -52,12 +52,13 @@ class Setoran_pelunasanController extends Controller
 
     public function create(Request $request)
     {
-        // Ambil semua data setoran penjualan
-        $setoranPenjualans = Setoran_penjualan::orderBy('id', 'DESC')->get();
+        // Ambil satu record terbaru dari Setoran_penjualan
+        $setoranPenjualans = Setoran_penjualan::orderBy('id', 'DESC')->first();
     
         // Kirim data ke view
         return view('admin.setoran_pelunasan.create', compact('setoranPenjualans'));
     }
+    
     
     
 
@@ -258,6 +259,7 @@ class Setoran_pelunasanController extends Controller
                 'total_penjualan' => 0,
                 'total_setoran' => 0,
                 'nominal_setoran' => 0,
+                'nominal_setoran2' => 0,
                 'plusminus' => 0,
             ]);
         }
@@ -277,6 +279,7 @@ class Setoran_pelunasanController extends Controller
             'total_penjualan' => $setoranPenjualan->total_penjualan,
             'total_setoran' => $setoranPenjualan->total_setoran,
             'nominal_setoran' => $setoranPenjualan->nominal_setoran,
+            'nominal_setoran2' => $setoranPenjualan->nominal_setoran2,
             'plusminus' => $setoranPenjualan->plusminus,
         ]);
     }

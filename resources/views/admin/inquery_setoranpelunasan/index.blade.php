@@ -97,12 +97,9 @@
                             </div>
                         </div>
                     </form>
-                    
 
-                   
                     <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
                         <thead>
-                            @foreach ($setoranPenjualans as $index => $item)
 
                             <tr>
                                 <th class="text-center">No</th>
@@ -119,10 +116,12 @@
                                 <th>Qris</th>
                                 <th>Total Setoran</th>
                                 <th>Noiminal Setoran</th>
-
-                                @if($item->nominal_setoran2 !== null) <!-- Kondisi untuk memeriksa nilai nominal_setoran2 -->
-                                <th>Noiminal Setoran 2</th>
-                                @endif
+                                
+                                @foreach ($setoranPenjualans as $index => $item)
+                                    @if($item->nominal_setoran2 !== null) <!-- Kondisi untuk memeriksa nilai nominal_setoran2 -->
+                                    <th>Noiminal Setoran 2</th>
+                                    @endif
+                                @endforeach
 
                                 <th>Plus Minus</th>
                                 <th class="text-center" width="20">Opsi</th>
@@ -130,6 +129,8 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($setoranPenjualans as $index => $item)
+
                             <tr class="dropdown"{{ $item->id }}>
                                 <td class="text-center">{{ $index + 1 }}</td>
                                 <td>{{ $item->tanggal_setoran ? \Carbon\Carbon::parse($item->tanggal_setoran)->format('d-m-Y') : '-' }}</td> <!-- Menampilkan Tanggal item -->

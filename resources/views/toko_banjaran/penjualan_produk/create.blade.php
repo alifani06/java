@@ -145,47 +145,6 @@
                         </div>
                     </div>
                 </div>
-       
-                 {{-- <div class="modal fade" id="tableDeposit" data-backdrop="static">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Data Deposit</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <table id="datatables6" class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">No</th>
-                                            <th>Kode Deposit</th>
-                                            <th>Kode Pemesanan</th>
-                                            <th>Alamat</th>
-                                            <th>Opsi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($dppemesanans as $item)
-                                            <tr onclick="getSelectedDataDeposit('{{ $item->kode_dppemesanan }}', '{{ $item->dp_pemesanan }}', '{{ $item->kekurangan_pemesanan }}')">
-                                                <td class="text-center">{{ $loop->iteration }}</td>
-                                                <td>{{ $item->kode_dppemesanan }}</td>
-                                                <td>{{ $item->dp_pemesanan }}</td>
-                                                <td>{{ $item->kekurangan_pemesanan }}</td>
-                                                <td class="text-center">
-                                                    <button type="button" class="btn btn-primary btn-sm" >
-                                                        <i class="fas fa-plus"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        @endforeach 
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
 
                 <div class="modal fade" id="tableMarketing" data-backdrop="static">
                     <div class="modal-dialog modal-lg">
@@ -196,6 +155,7 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
+                            
                             <div class="modal-body">
                                 <table id="datatables4" class="table table-bordered table-striped">
                                     <thead>
@@ -232,6 +192,40 @@
                     </div>
                 </div>
 
+                {{-- <div class="modal-body">
+                    <table id="datatables4" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center">No</th>
+                                <th>Kode Pelanggan</th>
+                                <th>Kode Lama</th>
+                                <th>Nama Pelanggan</th>
+                                <th>No Telpon</th>
+                                <th>Alamat</th>
+                                <th>Opsi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($pelanggans as $item)
+                                <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}', '{{ $item->kode_lama }}')">
+                                    <td class="text-center">{{ $loop->iteration }}</td>
+                                    <td>{{ $item->kode_pelanggan }}</td>
+                                    <td>{{ $item->kode_lama }}</td>
+                                    <td>{{ $item->nama_pelanggan }}</td>
+                                    <td>{{ $item->telp }}</td>
+                                    <td>{{ $item->alamat }}</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-primary btn-sm" >
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach 
+                        </tbody>
+                    </table>
+                    {{ $pelanggans->links() }} <!-- Pagination links -->
+                </div> --}}
+                
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title"><span></span></h3>
