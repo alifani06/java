@@ -49,6 +49,14 @@
                 <div class="card-body">
                     <form method="GET" id="form-action">
                         <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="filter_tanggal" name="filter_tanggal">
+                                    <option value="">- Pilih Filter Tanggal -</option>
+                                    <option value="tanggal_pemesanan" {{ Request::get('filter_tanggal') == 'tanggal_pemesanan' ? 'selected' : '' }}>Tanggal Pemesanan</option>
+                                    <option value="tanggal_kirim" {{ Request::get('filter_tanggal') == 'tanggal_kirim' ? 'selected' : '' }}>Tanggal Ambil</option>
+                                </select>
+                                <label for="filter_tanggal">(Filter Tanggal)</label>
+                            </div>
                         <div class="col-md-3 mb-3">
                             <select class="custom-select form-control" id="status_pelunasan" name="status_pelunasan">
                                 <option value="">- Semua Pelunasan -</option>
@@ -57,15 +65,7 @@
                             </select>
                             <label for="status_pelunasan">(Status Pelunasan)</label>
                         </div>
-                        <div class="col-md-3 mb-3">
-                            <select class="custom-select form-control" id="toko" name="toko_id">
-                                <option value="">- Semua Toko -</option>
-                                @foreach ($tokos as $toko)
-                                    <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
-                                @endforeach
-                            </select>
-                            <label for="toko">(Pilih Toko)</label>
-                        </div>
+                        
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_kirim" name="tanggal_kirim" type="date"
                                     value="{{ Request::get('tanggal_kirim') }}" />
@@ -149,7 +149,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('admin/indexrinci') }}";
+            form.action = "{{ url('toko_banjaran/indexrinci') }}";
             form.submit();
         }
 
@@ -172,7 +172,7 @@
 <script>
     function printReport() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printReportdepositrinci') }}";
+    form.action = "{{ url('toko_banjaran/printReportdepositrinci') }}";
     form.target = "_blank";
     form.submit();
 }

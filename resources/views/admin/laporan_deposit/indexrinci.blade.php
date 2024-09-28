@@ -49,6 +49,14 @@
                 <div class="card-body">
                     <form method="GET" id="form-action">
                         <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="filter_tanggal" name="filter_tanggal">
+                                    <option value="">- Pilih Filter Tanggal -</option>
+                                    <option value="tanggal_pemesanan" {{ Request::get('filter_tanggal') == 'tanggal_pemesanan' ? 'selected' : '' }}>Tanggal Pemesanan</option>
+                                    <option value="tanggal_kirim" {{ Request::get('filter_tanggal') == 'tanggal_kirim' ? 'selected' : '' }}>Tanggal Ambil</option>
+                                </select>
+                                <label for="filter_tanggal">(Filter Tanggal)</label>
+                            </div>
                         <div class="col-md-3 mb-3">
                             <select class="custom-select form-control" id="status_pelunasan" name="status_pelunasan">
                                 <option value="">- Semua Pelunasan -</option>
