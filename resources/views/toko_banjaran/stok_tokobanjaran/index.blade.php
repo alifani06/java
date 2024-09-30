@@ -43,7 +43,16 @@
                             <i class="fas fa-plus"></i> 
                         </a>
                     </div>
+                    <form hidden action="{{ route('stok_tokobanjaran.deleteAll') }}" method="POST" style="display: inline-block;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus seluruh data stok?')">
+                            <i class="fas fa-trash"></i> Hapus Semua
+                        </button>
+                    </form>
                 </div>
+
+               
                 <!-- /.card-header -->
                 <div class="card-body">
                     <form method="GET" id="form-action">

@@ -36,14 +36,16 @@ class ProdukController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search'); // Ambil input pencarian
-        
+        $klasifikasis = Klasifikasi::all();
+        $subklasifikasis = Subklasifikasi::all();
+
         $produks = Produk::when($search, function ($query, $search) {
             return $query->where('nama_produk', 'like', '%' . $search . '%')
                          ->orWhere('kode_lama', 'like', '%' . $search . '%');
         })
         ->paginate(10); // Menampilkan 10 data per halaman
     
-        return view('admin.produk.index', compact('produks', 'search'));
+        return view('admin.produk.index', compact('produks', 'search', 'klasifikasis','subklasifikasis'));
     }
     
     
@@ -66,12 +68,18 @@ class ProdukController extends Controller
     {
         $produks = Produk::all();
         $klasifikasis = Klasifikasi::all();
-        $subs = Subklasifikasi::all();
-        $subs1 = Subsub::all();
-        return view('admin/produk.create', compact('produks', 'klasifikasis', 'subs', 'subs1'));
+        $subklasifikasis = Subklasifikasi::all();
+
+        return view('admin/produk.create', compact('produks', 'klasifikasis', 'subklasifikasis'));
+    }
+    
+    public function fetch(Request $request)
+    {
+        $subklasifikasis = Subklasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get();
+        return response()->json($subklasifikasis);
     }
 
- 
+
     public function store(Request $request)
     {
         $validator = Validator::make(
@@ -80,6 +88,7 @@ class ProdukController extends Controller
                 'nama_produk' => 'required',
                 'klasifikasi_id' => 'required',
                 'subklasifikasi_id' => 'required',
+                'kode_lama' => 'required',
                 'satuan' => 'required',
                 'harga' => 'required|numeric',
                 'gambar' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
@@ -88,6 +97,7 @@ class ProdukController extends Controller
                 'nama_produk.required' => 'Masukan nama produk',
                 'klasifikasi_id.required' => 'Masukkan klasifikasi produk',
                 'subklasifikasi_id.required' => 'Masukkan subklasifikasi produk',
+                'kode_lama.required' => 'Masukkan Kode',
                 'satuan.required' => 'Masukkan satuan',
                 'harga.required' => 'Masukkan harga',
                 'gambar.image' => 'Gambar yang dimasukan salah!',

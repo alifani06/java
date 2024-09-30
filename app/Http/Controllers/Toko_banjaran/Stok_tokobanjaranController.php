@@ -35,6 +35,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
+use App\Imports\StokBanjaranImport;
 use App\Models\Stok_tokobanjaran;
 use App\Models\Subklasifikasi;
 use Maatwebsite\Excel\Facades\Excel;
@@ -167,8 +168,25 @@ public function create()
         return redirect()->route('stok_tokobanjaran.index')->with('success', 'Data stok barang berhasil disimpan.');
     }
 
+    public function deleteAll()
+    {
+        // Menghapus seluruh data pada kolom jumlah (stok) di tabel stok_tokobanjarans
+        Stok_tokobanjaran::query()->update(['jumlah' => 0]);
+
+        return redirect()->back()->with('success', 'Semua data stok berhasil dihapus.');
+    }
 
 
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|file|mimes:xlsx',
+        ]);
+    
+        Excel::import(new StokBanjaranImport, $request->file('file_excel'));
+    
+        return redirect('toko_banjaran/stok_tokobanjaran')->with('success', 'Berhasil mengimpor produk dari Excel');
+    }
 
 }
 

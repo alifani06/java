@@ -178,31 +178,25 @@ class Inquery_stokbarangjadiController extends Controller{
             return back()->with('success', 'Berhasil mengubah status semua produk dan detail terkait dengan kode_input yang sama.');
         }
         
+    public function posting_stokbarangjadi($id)
+    {
+        $stok = Stok_barangjadi::where('id', $id)->first();
 
-public function posting_stokbarangjadi($id)
-{
-    // Ambil data stok barang berdasarkan ID
-    $stok = Stok_barangjadi::where('id', $id)->first();
+        if (!$stok) {
+            return back()->with('error', 'Data tidak ditemukan.');
+        }
 
-    // Pastikan data ditemukan
-    if (!$stok) {
-        return back()->with('error', 'Data tidak ditemukan.');
+        $kodeInput = $stok->kode_input;
+
+        Stok_barangjadi::where('kode_input', $kodeInput)->update([
+            'status' => 'posting'
+        ]);
+        Detail_stokbarangjadi::where('kode_input', $kodeInput)->update([
+            'status' => 'posting'
+        ]);
+
+        return back()->with('success', 'Berhasil mengubah status semua produk dan detail terkait dengan kode_input yang sama.');
     }
-
-    // Ambil kode_input dari stok yang diambil
-    $kodeInput = $stok->kode_input;
-
-    // Update status untuk semua stok dengan kode_input yang sama di tabel stok_barangjadi
-    Stok_barangjadi::where('kode_input', $kodeInput)->update([
-        'status' => 'posting'
-    ]);
-    Detail_stokbarangjadi::where('kode_input', $kodeInput)->update([
-        'status' => 'posting'
-    ]);
-
-    // Redirect kembali dengan pesan sukses
-    return back()->with('success', 'Berhasil mengubah status semua produk dan detail terkait dengan kode_input yang sama.');
-}
 
     
     public function kode()
@@ -219,8 +213,6 @@ public function posting_stokbarangjadi($id)
         $newCode = $prefix . $formattedNum;
         return $newCode;
     }
-
-
 
     public function print($id)
     {
@@ -273,42 +265,47 @@ public function posting_stokbarangjadi($id)
 
     // public function update(Request $request, $id)
     // {
-    //     // Find the Stok_Barangjadi record by ID
+    //     // Temukan record Stok_Barangjadi berdasarkan ID
     //     $stokBarangjadi = Stok_Barangjadi::findOrFail($id);
-        
-    //     // Loop through the produk input and update or delete records accordingly
+    
+    //     // Loop melalui input produk dan perbarui atau hapus record sesuai kebutuhan
     //     foreach ($request->input('produk', []) as $produkId => $detail) {
     //         $stok = $detail['stok'];
-        
-    //         // Find the existing record for the given produk_id
-    //         $existingStok = $stokBarangjadi->where('produk_id', $produkId)->first();
-        
+            
+    //         // Temukan record existing untuk produk_id yang diberikan pada tabel detail_stokbarangjadi
+    //         $existingDetail = Detail_StokBarangjadi::where('stokbarangjadi_id', $stokBarangjadi->id)
+    //             ->where('produk_id', $produkId)
+    //             ->first();
+            
     //         if ($stok == 0) {
-    //             // If stock is 0, delete the record if it exists
-    //             if ($existingStok) {
-    //                 $existingStok->delete();
+    //             // Jika stok 0, hapus record dari Detail_StokBarangjadi jika ada
+    //             if ($existingDetail) {
+    //                 $existingDetail->delete();
     //             }
     //         } else {
-    //             // If stock is greater than 0
-    //             if ($existingStok) {
-    //                 // Update the existing record
-    //                 $existingStok->update(['stok' => $stok]);
+    //             // Jika stok lebih besar dari 0
+    //             if ($existingDetail) {
+    //                 // Perbarui stok pada record Detail_StokBarangjadi yang ada
+    //                 $existingDetail->update(['stok' => $stok]);
     //             } else {
-    //                 // Create a new record if it does not exist
-    //                 Stok_Barangjadi::create([
-    //                     'id' => $stokBarangjadi->id, // Assuming you have a foreign key reference to `stok_barangjadi`
+    //                 // Jika tidak ada record yang ditemukan untuk produk ini, buat record baru
+    //                 Detail_StokBarangjadi::create([
+    //                     'stokbarangjadi_id' => $stokBarangjadi->id,
     //                     'produk_id' => $produkId,
     //                     'stok' => $stok,
-    //                     'klasifikasi_id' => $request->input('klasifikasi_id'),
-    //                     'kode_input' => $stokBarangjadi->kode_input, 
-    //                     'tanggal_input' => $stokBarangjadi->tanggal_input, 
-    //                     'status' => 'unpost', 
     //                 ]);
     //             }
     //         }
     //     }
-        
-    //     // Redirect back with a success message
+    
+    //     // Update stok total di Stok_Barangjadi jika diperlukan
+    //     // Misalnya, jika stok total adalah jumlah dari Detail_StokBarangjadi
+    //     $totalStok = Detail_StokBarangjadi::where('stokbarangjadi_id', $stokBarangjadi->id)
+    //         ->sum('stok');
+            
+    //     $stokBarangjadi->update(['stok' => $totalStok]);
+    
+    //     // Redirect kembali dengan pesan sukses
     //     return redirect()->route('inquery_stokbarangjadi.index')->with('success', 'Permintaan produk berhasil diperbarui.');
     // }
 
@@ -316,16 +313,16 @@ public function posting_stokbarangjadi($id)
     {
         // Temukan record Stok_Barangjadi berdasarkan ID
         $stokBarangjadi = Stok_Barangjadi::findOrFail($id);
-    
+
         // Loop melalui input produk dan perbarui atau hapus record sesuai kebutuhan
         foreach ($request->input('produk', []) as $produkId => $detail) {
             $stok = $detail['stok'];
-            
+
             // Temukan record existing untuk produk_id yang diberikan pada tabel detail_stokbarangjadi
             $existingDetail = Detail_StokBarangjadi::where('stokbarangjadi_id', $stokBarangjadi->id)
                 ->where('produk_id', $produkId)
                 ->first();
-            
+
             if ($stok == 0) {
                 // Jika stok 0, hapus record dari Detail_StokBarangjadi jika ada
                 if ($existingDetail) {
@@ -335,7 +332,8 @@ public function posting_stokbarangjadi($id)
                 // Jika stok lebih besar dari 0
                 if ($existingDetail) {
                     // Perbarui stok pada record Detail_StokBarangjadi yang ada
-                    $existingDetail->update(['stok' => $stok]);
+                    $existingDetail->stok = $stok; // Set stok baru
+                    $existingDetail->save(); // Simpan perubahan
                 } else {
                     // Jika tidak ada record yang ditemukan untuk produk ini, buat record baru
                     Detail_StokBarangjadi::create([
@@ -346,17 +344,18 @@ public function posting_stokbarangjadi($id)
                 }
             }
         }
-    
+
         // Update stok total di Stok_Barangjadi jika diperlukan
         // Misalnya, jika stok total adalah jumlah dari Detail_StokBarangjadi
         $totalStok = Detail_StokBarangjadi::where('stokbarangjadi_id', $stokBarangjadi->id)
             ->sum('stok');
-            
+
         $stokBarangjadi->update(['stok' => $totalStok]);
-    
+
         // Redirect kembali dengan pesan sukses
         return redirect()->route('inquery_stokbarangjadi.index')->with('success', 'Permintaan produk berhasil diperbarui.');
     }
+
     
 
 

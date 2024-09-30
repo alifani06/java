@@ -404,7 +404,8 @@
  
             <div class="catatan">
                 <label>Catatan:</label>
-                <p style="margin-top: 2px;">{{$pemesanan->catatan ?? '-'}}</p>
+                <p style="margin-top: 2px;">{!! nl2br(e($pemesanan->catatan)) ?? '-' !!}</p>
+                {{-- {!! nl2br(e($catatan)) !!} --}}
             </div>
             @if(preg_replace('/[^0-9]/', '', $pemesanan->sub_total) < preg_replace('/[^0-9]/', '', $pemesanan->sub_totalasli))
             <div class="hemat">

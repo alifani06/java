@@ -35,51 +35,40 @@
                 </div>
             @endif
             <div class="card">
-
+                <div class="card-body">
+                    <form action="{{ route('produk.import') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="form-group">
+                            <label for="file_excel">Unggah File Excel</label>
+                            <input type="file" class="form-control-file" id="file_excel" name="file_excel" accept=".xlsx">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Import</button>
+                    </form>
+                    
+                </div>
+      
                 <!-- /.card-header -->
                 <form action="{{ url('admin/produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                     @csrf
                     <div class="card-body">
-                        
-                        <div class="col-md-3 mb-3">
-                            <label for="klasifikasi">(Pilih Divisi)</label>
-                            <select class="custom-select form-control" id="klasifikasi" name="klasifikasi_id">
-                                <option value="">- Semua Divisi -</option>
-                                @foreach ($klasifikasis as $klasifikasi)
-                                    <option value="{{ $klasifikasi->id }}">{{ $klasifikasi->nama }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        
-                        <div class="col-md-3 mb-3">
-                            <label for="subklasifikasi">(Pilih Kategori)</label>
-                            <select class="custom-select form-control" id="subklasifikasi" name="subklasifikasi_id">
-                                <option value="">- Semua Kategori -</option>
-                                @foreach ($subklasifikasis as $subklasifikasi)
-                                <option value="{{ $subklasifikasi->id }}">{{ $subklasifikasi->nama }}</option>
-                            @endforeach
-                            </select>
-                        </div>
-                        
                         <div class="row mb-3 align-items-center">
                             <div class="col-auto mt-2">
                                 <label for="nama">Nama Produk</label>
                                 <div class="d-flex align-items-center">
                                     <input type="text" class="form-control" id="nama_produk" name="nama_produk"
                                         placeholder="Masukan nama produk" value="{{ old('nama_produk') }}">
-                                
-                                </div>
-                            </div>
-                            <div class="col-auto mt-2">
-                                <label for="nama">Kode Produk</label>
-                                <div class="d-flex align-items-center">
-                                    <input type="text" class="form-control" id="kode_lama" name="kode_lama"
-                                        placeholder="Masukan kode produk" value="{{ old('kode_lama') }}">
-                                
+                                    <button class="btn btn-primary ml-2" type="button" onclick="showCategoryModalmarketing()">
+                                        <i class="fas fa-search"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Tambahkan input field tersembunyi untuk menyimpan subsub_id dan subklasifikasi_id -->
+                        <input type="hidden" id="subsub_id" name="subsub_id">
+                        <input type="hidden" id="subklasifikasi_id" name="subklasifikasi_id"> 
+                        <input type="hidden" id="klasifikasi_id" name="klasifikasi_id"> 
+                        <input type="hidden" id="nama_input" name="nama_input">
 
                         <div class="row">
                             <div class="col mb-3">
@@ -120,7 +109,7 @@
                     </div>
                 </form>
 
-                {{-- <div class="modal fade" id="tableMarketing" data-backdrop="static">
+                <div class="modal fade" id="tableMarketing" data-backdrop="static">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -203,37 +192,10 @@
                             </div>
                         </div>
                     </div>
-                </div>    --}}
+                </div>   
             </div>
         </div>
     </section>
-    
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-       $(document).ready(function() {
-    $('#klasifikasi').change(function() {
-        var klasifikasi_id = $(this).val();
-        console.log(klasifikasi_id); // Pastikan ID klasifikasi terisi
-        $.ajax({
-            url: "{{ route('subklasifikasi.fetch') }}",
-            method: "GET",
-            data: { klasifikasi_id: klasifikasi_id },
-            success: function(data) {
-                console.log(data); // Log data yang diterima
-                $('#subklasifikasi').empty(); 
-                $('#subklasifikasi').append('<option value="">- Semua Kategori -</option>');
-                $.each(data, function(key, value) {
-                    $('#subklasifikasi').append('<option value="' + value.id + '">' + value.nama + '</option>');
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error(error); // Log jika ada error
-            }
-        });
-    });
-});
-
-    </script>
 
     <script>
         $(document).ready(function() {
@@ -246,6 +208,31 @@
 
                 // Lakukan pengiriman formulir
                 $('form').submit();
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#klasifikasi_id').on('change', function() {
+                var klasifikasiID = $(this).val();
+                if (klasifikasiID) {
+                    $.ajax({
+                        url: "{{ url('admin/klasifikasi/get_subklasifikasi') }}" + '/' + klasifikasiID,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            $('#subklasifikasi_id').empty();
+                            $('#subklasifikasi_id').append('<option value="">- Pilih -</option>');
+                            $.each(data, function(key, value) {
+                                $('#subklasifikasi_id').append('<option value="' + value.id + '">' + value.nama + '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('#subklasifikasi_id').empty();
+                    $('#subklasifikasi_id').append('<option value="">- Pilih -</option>');
+                }
             });
         });
     </script>
@@ -269,5 +256,4 @@
             $('#tableMarketing').modal('hide');
         }
     </script>
-
 @endsection
