@@ -60,7 +60,7 @@
                             <div class="row">
                                 <div class="col-md-3 mb-3">
                                     <select class="form-control" id="toko" name="toko">
-                                        <option value="tokobenjaran" @if(request()->input('toko') == 'tokobenjaran') selected @endif>Toko Benjaran</option>
+                                        <option value="tokobanjaran" @if(request()->input('toko') == 'tokobanjaran') selected @endif>Toko Benjaran</option>
                                         <option value="tokotegal" @if(request()->input('toko') == 'tokotegal') selected @endif>Toko Tegal</option>
                                         <option value="tokoslawi" @if(request()->input('toko', 'tokoslawi') == 'tokoslawi') selected @endif>Toko Slawi</option>
                                         <option value="tokopemalang" @if(request()->input('toko') == 'tokopemalang') selected @endif>Toko Pemalang</option>

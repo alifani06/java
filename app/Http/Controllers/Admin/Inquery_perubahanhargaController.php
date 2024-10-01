@@ -11,7 +11,7 @@ use App\Models\Subsub;
 use App\Models\Pelanggan;
 use App\Models\Hargajual;
 use App\Models\Tokoslawi;
-use App\Models\Tokobenjaran;
+use App\Models\Tokobanjaran;
 use App\Models\Tokotegal;
 use App\Models\Tokopemalang;
 use App\Models\Tokobumiayu;
@@ -53,13 +53,13 @@ class Inquery_perubahanhargaController extends Controller
                 });
             })
             ->orWhere(function ($query) use ($today) {
-                $query->whereHas('tokobenjaran', function ($query) use ($today) {
+                $query->whereHas('tokobanjaran', function ($query) use ($today) {
                     $query->whereDate('updated_at', $today)
                           ->where(function ($query) {
-                              $query->whereRaw('tokobenjarans.member_harga_bnjr != tokobenjarans.harga_awal')
-                                    ->orWhereRaw('tokobenjarans.non_harga_bnjr != tokobenjarans.harga_awal')
-                                    ->orWhereRaw('tokobenjarans.member_diskon_bnjr != 0')
-                                    ->orWhereRaw('tokobenjarans.non_diskon_bnjr != 0');
+                              $query->whereRaw('tokobanjarans.member_harga_bnjr != tokobanjarans.harga_awal')
+                                    ->orWhereRaw('tokobanjarans.non_harga_bnjr != tokobanjarans.harga_awal')
+                                    ->orWhereRaw('tokobanjarans.member_diskon_bnjr != 0')
+                                    ->orWhereRaw('tokobanjarans.non_diskon_bnjr != 0');
                           });
                 });
             })
