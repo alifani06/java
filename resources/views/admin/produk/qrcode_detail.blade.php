@@ -158,8 +158,9 @@
                                             <strong>Harga</strong>
                                         </div>
                                         <div class="col-md-4">
-                                            {{ $produk->harga }}
+                                            Rp. {{ number_format($produk->harga, 0, ',', '.') }}
                                         </div>
+                                        
                                     </div>
                                     
             
