@@ -223,6 +223,7 @@
                             $subTotal += $totalForDetail;
                             $totalDiskon += $diskonAmount;
                             $grandTotal += $totalAfterDiskon;
+                          
                         @endphp
                         <tr>
                             <td class="text-center">{{ $globalCounter++ }}</td>
@@ -247,7 +248,7 @@
             </tbody>
         </table>
 
-        <table style="width: 40%; margin-left: auto; margin-right: 0; margin-top: 0px;">
+        {{-- <table style="width: 40%; margin-left: auto; margin-right: 0; margin-top: 0px;">
             <tbody>
                 <tr>
                     <td style="text-align: left ; width: 60%;"><strong>Sub Total</strong></td>
@@ -267,7 +268,43 @@
                     <td style="text-align: right ; width: 40%;">{{ number_format($item->dp_pemesanan, 0, ',', '.') }}</td>
                 </tr>
             </tbody>
+        </table> --}}
+
+        <table style="width: 40%; margin-left: auto; margin-right: 0; margin-top: 0px; margin-bottom: 2px;">
+            <tbody>
+                <tr>
+                    <td style="text-align: left; width: 60%;"><strong>Sub Total</strong></td>
+                    <td style="text-align: right; width: 40%;">{{ number_format($subTotal, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; width: 60%;"><strong>Diskon</strong></td>
+                    <td style="text-align: right; width: 40%;">{{ number_format($totalDiskon, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; width: 60%;"><strong>Total Pesanan</strong></td>
+                    <td style="text-align: right; width: 40%;">{{ number_format($grandTotal, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; width: 60%;"><strong>DP (Min.50%)</strong></td>
+                    <td style="text-align: right; width: 40%;">{{ number_format($item->dp_pemesanan, 0, ',', '.') }}</td>
+                </tr>
+            </tbody>
         </table>
+        
+        @if (!is_null($firstItem->pemesananproduk->catatan))
+        <table style="width: 40%; margin-left: auto; margin-right: 0;">
+            <tbody>
+                <tr>
+                    <td style="text-align: left; width: 100%;"><strong>Catatan</strong></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; width: 40%;">{!! nl2br(e($firstItem->pemesananproduk->catatan)) ?? '-' !!}
+                        
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        @endif
         
         <div class="divider1"></div>
    
