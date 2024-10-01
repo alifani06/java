@@ -192,40 +192,7 @@
                     </div>
                 </div>
 
-                {{-- <div class="modal-body">
-                    <table id="datatables4" class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th class="text-center">No</th>
-                                <th>Kode Pelanggan</th>
-                                <th>Kode Lama</th>
-                                <th>Nama Pelanggan</th>
-                                <th>No Telpon</th>
-                                <th>Alamat</th>
-                                <th>Opsi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($pelanggans as $item)
-                                <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}', '{{ $item->kode_lama }}')">
-                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $item->kode_pelanggan }}</td>
-                                    <td>{{ $item->kode_lama }}</td>
-                                    <td>{{ $item->nama_pelanggan }}</td>
-                                    <td>{{ $item->telp }}</td>
-                                    <td>{{ $item->alamat }}</td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-primary btn-sm" >
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            @endforeach 
-                        </tbody>
-                    </table>
-                    {{ $pelanggans->links() }} <!-- Pagination links -->
-                </div> --}}
-                
+            
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title"><span></span></h3>
@@ -425,28 +392,30 @@
                         </div> 
                     </div>
                 </div>
-            </div>
-                <div class="card">
-                    <div class="card-header">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="catatan">Catatan</label>
-                                <textarea placeholder="" type="text" class="form-control" id="catatan" name="catatan">{{ old('catatan') }}</textarea>
-                            </div>
-                            <div class="col-md-5 mb-3">
-                                <label for="kasir">Bagian Input :</label>
-                                <input type="text" class="form-control" readonly name="kasir" value="{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}">
-                            </div> 
-                        </div>     
-                    </div>
+
                 </div>
-                <div class="card-footer text-right mt-3">
-                    <button type="reset" class="btn btn-secondary" id="btnReset">Reset</button>
-                    <button type="" class="btn btn-primary" id="simpanButton">Simpan</button>
-                    <div id="loading" style="display: none;">
-                        <i class="fas fa-spinner fa-spin"></i> Sedang Menyimpan...
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="catatan">Catatan</label>
+                                    <textarea placeholder="" type="text" class="form-control" id="catatan" name="catatan">{{ old('catatan') }}</textarea>
+                                </div>
+                                <div class="col-md-5 mb-3">
+                                    <label for="kasir">Bagian Input :</label>
+                                    <input type="text" class="form-control" readonly name="kasir" value="{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}">
+                                </div> 
+                            </div>     
+                        </div>
                     </div>
-                </div>
+
+                    <div class="card-footer text-right mt-3">
+                        <button type="reset" class="btn btn-secondary" id="btnReset">Reset</button>
+                        <button type="" class="btn btn-primary" id="simpanButton">Simpan</button>
+                        <div id="loading" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i> Sedang Menyimpan...
+                        </div>
+                    </div>
             </form>
         </div>
     </section>

@@ -60,6 +60,7 @@ use App\Http\Controllers\Toko_bumiayu\Pengiriman_tokobumiayuController;
 use App\Http\Controllers\Toko_bumiayu\PenjualanprodukbumiayuController;
 use App\Http\Controllers\Toko_bumiayu\PermintaanprodukbumiayuController;
 use App\Http\Controllers\Toko_slawi\Inquery_pemindahanslawiController;
+use App\Http\Controllers\Toko_slawi\Inquery_penjualanprodukController as Toko_slawiInquery_penjualanprodukController;
 use App\Http\Controllers\Toko_slawi\Inquery_returslawiController;
 use App\Http\Controllers\Toko_slawi\Laporan_pemindahanslawiController;
 use App\Http\Controllers\Toko_slawi\Pengiriman_tokoslawiController as Toko_slawiPengiriman_tokoslawiController;
@@ -193,6 +194,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/inquery_penjualanproduk/{id}/edit', [Inquery_penjualanprodukController::class, 'edit'])->name('inquery_penjualanproduk.edit');
     Route::post('/inquery_penjualanproduk/{id}/update', [Inquery_penjualanprodukController::class, 'update'])->name('inquery_penjualanproduk.update');
     Route::post('/hapus-produk', [Inquery_penjualanprodukController::class, 'hapusProduk'])->name('hapus.produk');
+    Route::get('/metodepembayaran/{id}', [Inquery_penjualanprodukController::class, 'getMetodePembayaran']);
+    Route::get('metodebayar/metode/{id}', [\App\Http\Controllers\Admin\Inquery_penjualanprodukController::class, 'metode']);
 
     Route::resource('laporan_penjualanproduk', \App\Http\Controllers\Admin\Laporan_penjualanprodukController::class);
     Route::get('printReportpenjualan', [\App\Http\Controllers\Admin\Laporan_penjualanprodukController::class, 'printReportpenjualan']);

@@ -167,7 +167,7 @@
         <div class="table-container">
             @php
                 $firstItem = $items->first();
-                $formattedDate = \Carbon\Carbon::parse($firstItem->pemesananproduk->first()->tanggal_pemesanan)->format('d/m/Y');
+                $formattedDate = \Carbon\Carbon::parse($firstItem->pemesananproduk->tanggal_pemesanan)->format('d/m/Y');
                 $formatambil = \Carbon\Carbon::parse($firstItem->pemesananproduk->tanggal_kirim)->format('d/m/Y');
             @endphp
 

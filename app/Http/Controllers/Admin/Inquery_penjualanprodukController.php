@@ -87,73 +87,56 @@ public function posting_penjualanproduk($id)
 }
 
 
+
+
+// public function unpost_penjualanproduk($id)
+// {
+//     // Cari item penjualanproduk berdasarkan id
+//     $item = Penjualanproduk::where('id', $id)->first();
+
+//     if ($item) {
+//         // Hapus data dari tabel detail_penjualanproduk yang memiliki penjualanproduk_id yang sesuai
+//         DetailPenjualanproduk::where('penjualanproduk_id', $item->id)->delete();
+
+//         // Update status penjualanproduk menjadi 'unpost'
+//         $item->update([
+//             'status' => 'unpost'
+//         ]);
+
+//         return back()->with('success', 'Berhasil unpost dan menghapus detail penjualan produk.');
+//     }
+
+//     return back()->with('error', 'Gagal, data tidak ditemukan.');
+// }
+
 public function unpost_penjualanproduk($id)
 {
     $item = Penjualanproduk::where('id', $id)->first();
 
-    
-        // Update status deposit_driver menjadi 'posting'
+    if ($item) {
+        $detailPenjualanProduk = DetailPenjualanproduk::where('penjualanproduk_id', $item->id)->get();
+
+        foreach ($detailPenjualanProduk as $detail) {
+            $stok = Stok_tokobanjaran::where('produk_id', $detail->produk_id)->first();
+
+            if ($stok) {
+                $stok->update([
+                    'jumlah' => $stok->jumlah + $detail->jumlah
+                ]);
+            }
+        }
+
+        DetailPenjualanproduk::where('penjualanproduk_id', $item->id)->delete();
+
         $item->update([
             'status' => 'unpost'
         ]);
-    return back()->with('success', 'Berhasil');
+
+        return back()->with('success', 'Berhasil unpost dan mengembalikan stok serta menghapus detail penjualan produk.');
+    }
+
+    return back()->with('error', 'Gagal, data tidak ditemukan.');
 }
-
-// public function unpost_penjualanproduk($id)
-// {
-//     // Temukan data penjualan berdasarkan ID
-//     $item = Penjualanproduk::where('id', $id)->first();
-
-//     // Pastikan data penjualan ditemukan
-//     if ($item) {
-//         // Ambil detail penjualan terkait
-//         $details = Detailpenjualanproduk::where('penjualanproduk_id', $item->id)->get();
-        
-//         // Loop melalui setiap detail penjualan untuk mengembalikan stok
-//         foreach ($details as $detail) {
-//             // Ambil produk_id dan jumlah dari detail penjualan
-//             $produkId = $detail->produk_id;
-//             $jumlah = $detail->jumlah;
-            
-//             // Periksa toko_id dan kembalikan stok ke tabel yang sesuai
-//             switch ($item->toko_id) {
-//                 case 1:
-//                     // Kembalikan stok ke stok_tokobanjaran
-//                     $stok = Stok_tokobanjaran::where('produk_id', $produkId)->first();
-//                     if ($stok) {
-//                         $stok->increment('jumlah', $jumlah);
-//                     }
-//                     break;
-//                 case 2:
-//                     // Kembalikan stok ke stok_tokoslawi
-//                     $stok = Stok_tokoslawi::where('produk_id', $produkId)->first();
-//                     if ($stok) {
-//                         $stok->increment('jumlah', $jumlah);
-//                     }
-//                     break;
-
-//                 // Tambahkan case lain untuk toko lain jika ada
-//                 // case 3: Kembalikan stok ke stok_toko lainnya...
-
-//                 default:
-//                     // Jika toko_id tidak diketahui, bisa ditangani di sini
-//                     break;
-//             }
-//         }
-
-//         // Hapus data dari tabel detailpenjualanproduk berdasarkan penjualanproduk_id
-//         Detailpenjualanproduk::where('penjualanproduk_id', $item->id)->delete();
-
-//         // Update status menjadi 'unpost'
-//         $item->update(['status' => 'unpost']);
-        
-//         return back()->with('success', 'Berhasil di-unpost, stok dikembalikan, dan detail penjualan dihapus.');
-//     }
-
-//     return back()->with('error', 'Data tidak ditemukan.');
-// }
-
-
 
 
 
@@ -179,19 +162,6 @@ public function unpost_penjualanproduk($id)
     }
 
 
-        
-    // public function edit($id)
-    // {
-    //     $penjualan = Penjualanproduk::find($id);
-        
-    //     // Pastikan data penjualan ditemukan
-    //     if ($penjualan) {
-    //         return view('admin.inquery_penjualanproduk.update', compact('penjualan'));
-    //     } else {
-    //         return redirect()->back()->with('error', 'Data penjualan tidak ditemukan.');
-    //     }
-    // }
-
     public function edit($id)
     {
         $produks = Produk::with(['tokobanjaran', 'stok_tokobanjaran'])->get();
@@ -202,92 +172,230 @@ public function unpost_penjualanproduk($id)
         return view('admin.inquery_penjualanproduk.update', compact('penjualan','produks','metodes'));
     }
     
+
+    // public function update(Request $request, $id)
+    // {
+    //     // Validasi data input jika diperlukan
+    //     $request->validate([
+    //         'nama_pelanggan' => 'nullable|string',
+    //         'kategori' => 'nullable|string',
+    //         'telp' => 'nullable|string',
+    //         'alamat' => 'nullable|string',
+    //         'jumlah' => 'nullable|array', // Pastikan jumlah produk dikirim sebagai array
+    //         'harga' => 'nullable|array',
+    //         'diskon' => 'nullable|array',
+    //         'kode_produk' => 'nullable|array', // Tambahkan validasi untuk kode_produk
+    //         'kode_lama' => 'nullable|array',   // Tambahkan validasi untuk kode_lama
+    //         'produk_id' => 'nullable|array',   // Tambahkan validasi untuk produk_id
+    //         'nama_produk' => 'nullable|array',  // Tambahkan validasi untuk nama_produk
+    //     ]);
     
-
-
+    //     // Cari data penjualan berdasarkan ID
+    //     $penjualan = PenjualanProduk::findOrFail($id);
+    
+    //     // Update data pelanggan
+    //     $penjualan->nama_pelanggan = $request->input('nama_pelanggan');
+    //     $penjualan->kategori = $request->input('kategori');
+    //     $penjualan->telp = $request->input('telp');
+    //     $penjualan->alamat = $request->input('alamat');
+    //     $penjualan->sub_total = $request->input('sub_total');
+    //     $penjualan->sub_totalasli = $request->input('sub_totalasli');
+    //     $penjualan->bayar = $request->input('bayar');
+    //     $penjualan->kembali = $request->input('kembali');
+    //     $penjualan->save();
+    
+    //     // Menghitung jumlah detail yang ada
+    //     $existingDetailCount = count($penjualan->detailPenjualanProduk);
+    
+    //     // Loop untuk update atau tambah detail penjualan
+    //     foreach ($request->input('jumlah') as $key => $jumlah) {
+    //         if ($key < $existingDetailCount) {
+    //             // Update detail yang ada
+    //             $detailPenjualan = $penjualan->detailPenjualanProduk[$key]; // Ambil item detail yang relevan
+    //             $detailPenjualan->jumlah = $jumlah;
+    //             $detailPenjualan->harga = $request->input('harga')[$key] ?? $detailPenjualan->harga;
+    //             $detailPenjualan->diskon = $request->input('diskon')[$key] ?? $detailPenjualan->diskon;
+    //             $detailPenjualan->kode_produk = $request->input('kode_produk')[$key] ?? $detailPenjualan->kode_produk; // Menyimpan kode_produk
+    //             $detailPenjualan->kode_lama = $request->input('kode_lama')[$key] ?? $detailPenjualan->kode_lama;    
+    //             $detailPenjualan->produk_id = $request->input('produk_id')[$key] ?? $detailPenjualan->produk_id;     
+    //             $detailPenjualan->nama_produk = $request->input('nama_produk')[$key] ?? $detailPenjualan->nama_produk;   
+    
+    //             // Perhitungan total menggunakan rumus dari Script 2
+    //             $nominalDiskon = ($detailPenjualan->harga * ($detailPenjualan->diskon / 100)) * $jumlah; // Hitung nominal diskon
+    //             $hargaSetelahDiskon = $detailPenjualan->harga - ($detailPenjualan->harga * ($detailPenjualan->diskon / 100));
+    //             $total = $hargaSetelahDiskon * $jumlah;
+    //             $totalasli = $detailPenjualan->harga * $jumlah;
+    
+    //             // Simpan total
+    //             $detailPenjualan->total = $total;
+    //             $detailPenjualan->totalasli = $totalasli; // Tambahkan kolom total asli jika diperlukan
+    //             $detailPenjualan->save(); 
+    //         } else {
+    //             // Tambah detail baru jika key lebih besar dari jumlah detail yang ada
+    //             $detailPenjualan = new DetailPenjualanProduk();
+    //             $detailPenjualan->penjualanproduk_id = $penjualan->id; // Asosiasi dengan penjualan yang benar
+    //             $detailPenjualan->jumlah = $jumlah;
+    //             $detailPenjualan->harga = $request->input('harga')[$key] ?? 0; // Pastikan harga tidak null
+    //             $detailPenjualan->diskon = $request->input('diskon')[$key] ?? 0; // Pastikan diskon tidak null
+    //             $detailPenjualan->kode_produk = $request->input('kode_produk')[$key] ?? ''; // Menyimpan kode_produk, kosong jika null
+    //             $detailPenjualan->kode_lama = $request->input('kode_lama')[$key] ?? '';     // Menyimpan kode_lama, kosong jika null
+    //             $detailPenjualan->produk_id = $request->input('produk_id')[$key] ?? null;   // Menyimpan produk_id
+    //             $detailPenjualan->nama_produk = $request->input('nama_produk')[$key] ?? ''; // Menyimpan nama_produk, kosong jika null
+    
+    //             // Perhitungan total menggunakan rumus dari Script 2
+    //             $nominalDiskon = ($detailPenjualan->harga * ($detailPenjualan->diskon / 100)) * $jumlah; // Hitung nominal diskon
+    //             $hargaSetelahDiskon = $detailPenjualan->harga - ($detailPenjualan->harga * ($detailPenjualan->diskon / 100));
+    //             $total = $hargaSetelahDiskon * $jumlah;
+    //             $totalasli = $detailPenjualan->harga * $jumlah;
+    
+    //             // Simpan total
+    //             $detailPenjualan->total = $total; // Simpan total yang sudah dihitung
+    //             $detailPenjualan->totalasli = $totalasli; // Tambahkan kolom total asli jika diperlukan
+    //             $detailPenjualan->save(); // Simpan detail baru
+    //         }
+    //     }
+    
+    //     // Redirect kembali dengan pesan sukses
+    //     return redirect()->route('inquery_penjualanproduk.index')->with('success', 'Data penjualan berhasil diperbarui.');
+    // }
+    
     public function update(Request $request, $id)
     {
-        // Validasi data input jika diperlukan
-        $request->validate([
-            'nama_pelanggan' => 'nullable|string',
-            'kategori' => 'nullable|string',
-            'telp' => 'nullable|string',
-            'alamat' => 'nullable|string',
-            'jumlah' => 'nullable|array', // Pastikan jumlah produk dikirim sebagai array
-            'harga' => 'nullable|array',
-            'diskon' => 'nullable|array',
-            'kode_produk' => 'nullable|array', // Tambahkan validasi untuk kode_produk
-            'kode_lama' => 'nullable|array',   // Tambahkan validasi untuk kode_lama
-            'produk_id' => 'nullable|array',   // Tambahkan validasi untuk produk_id
-            'nama_produk' => 'nullable|array',  // Tambahkan validasi untuk nama_produk
-        ]);
+        // Validasi pelanggan
+        $validasi_pelanggan = Validator::make(
+            $request->all(),
+            [
+                'nama_pelanggan' => 'nullable|string',
+                'telp' => 'nullable|string',
+                'alamat' => 'nullable|string',
+                'kategori' => 'nullable|string',
+                'metode_id' => 'nullable|exists:metodepembayarans,id',
+                'total_fee' => 'nullable|numeric',
+                'keterangan' => 'nullable|string'
+            ],
+            [
+                'nama_pelanggan.nullable' => 'Masukkan nama pelanggan',
+                'telp.nullable' => 'Masukkan telepon',
+                'alamat.nullable' => 'Masukkan alamat',
+                'kategori.nullable' => 'Pilih kategori pelanggan',
+                'metode_id.nullable' => 'Pilih metode pembayaran',
+                'total_fee.numeric' => 'Total fee harus berupa angka',
+                'keterangan.string' => 'Keterangan harus berupa string',
+            ]
+        );
     
-        // Cari data penjualan berdasarkan ID
-        $penjualan = PenjualanProduk::findOrFail($id);
+        // Handling errors for pelanggan
+        $error_pelanggans = [];
+        if ($validasi_pelanggan->fails()) {
+            $error_pelanggans = $validasi_pelanggan->errors()->all();
+        }
     
-        // Update data pelanggan
-        $penjualan->nama_pelanggan = $request->input('nama_pelanggan');
-        $penjualan->kategori = $request->input('kategori');
-        $penjualan->telp = $request->input('telp');
-        $penjualan->alamat = $request->input('alamat');
-        $penjualan->sub_total = $request->input('sub_total');
-        $penjualan->sub_totalasli = $request->input('sub_totalasli');
-        $penjualan->bayar = $request->input('bayar');
-        $penjualan->kembali = $request->input('kembali');
-        $penjualan->save();
+        // Handling errors for pesanans
+        $error_pesanans = [];
+        $data_pembelians = collect();
     
-        // Menghitung jumlah detail yang ada
-        $existingDetailCount = count($penjualan->detailPenjualanProduk);
+        if ($request->has('produk_id')) {
+            for ($i = 0; $i < count($request->produk_id); $i++) {
+                $validasi_produk = Validator::make($request->all(), [
+                    'kode_produk.' . $i => 'required',
+                    'produk_id.' . $i => 'required',
+                    'nama_produk.' . $i => 'required',
+                    'harga.' . $i => 'required|numeric',
+                    'total.' . $i => 'required|numeric',
+                    'totalasli.' . $i => 'required|numeric',
+                ]);
     
-        // Loop untuk update atau tambah detail penjualan
-        foreach ($request->input('jumlah') as $key => $jumlah) {
-            if ($key < $existingDetailCount) {
-                // Update detail yang ada
-                $detailPenjualan = $penjualan->detailPenjualanProduk[$key]; // Ambil item detail yang relevan
-                $detailPenjualan->jumlah = $jumlah;
-                $detailPenjualan->harga = $request->input('harga')[$key] ?? $detailPenjualan->harga;
-                $detailPenjualan->diskon = $request->input('diskon')[$key] ?? $detailPenjualan->diskon;
-                $detailPenjualan->kode_produk = $request->input('kode_produk')[$key] ?? $detailPenjualan->kode_produk; // Menyimpan kode_produk
-                $detailPenjualan->kode_lama = $request->input('kode_lama')[$key] ?? $detailPenjualan->kode_lama;    
-                $detailPenjualan->produk_id = $request->input('produk_id')[$key] ?? $detailPenjualan->produk_id;     
-                $detailPenjualan->nama_produk = $request->input('nama_produk')[$key] ?? $detailPenjualan->nama_produk;   
+                if ($validasi_produk->fails()) {
+                    $error_pesanans[] = "Barang no " . ($i + 1) . " belum dilengkapi!";
+                }
     
-                // Perhitungan total menggunakan rumus dari Script 2
-                $nominalDiskon = ($detailPenjualan->harga * ($detailPenjualan->diskon / 100)) * $jumlah; // Hitung nominal diskon
-                $hargaSetelahDiskon = $detailPenjualan->harga - ($detailPenjualan->harga * ($detailPenjualan->diskon / 100));
-                $total = $hargaSetelahDiskon * $jumlah;
-                $totalasli = $detailPenjualan->harga * $jumlah;
+                $produk_id = $request->input('produk_id.' . $i, '');
+                $kode_produk = $request->input('kode_produk.' . $i, '');
+                $kode_lama = $request->input('kode_lama.' . $i, '');
+                $nama_produk = $request->input('nama_produk.' . $i, '');
+                $jumlah = $request->input('jumlah.' . $i, '');
+                $diskon = $request->input('diskon.' . $i, '');
+                $harga = $request->input('harga.' . $i, '');
+                $total = $request->input('total.' . $i, '');
+                $totalasli = $request->input('totalasli.' . $i, '');
     
-                // Simpan total
-                $detailPenjualan->total = $total;
-                $detailPenjualan->totalasli = $totalasli; // Tambahkan kolom total asli jika diperlukan
-                $detailPenjualan->save(); 
-            } else {
-                // Tambah detail baru jika key lebih besar dari jumlah detail yang ada
-                $detailPenjualan = new DetailPenjualanProduk();
-                $detailPenjualan->penjualanproduk_id = $penjualan->id; // Asosiasi dengan penjualan yang benar
-                $detailPenjualan->jumlah = $jumlah;
-                $detailPenjualan->harga = $request->input('harga')[$key] ?? 0; // Pastikan harga tidak null
-                $detailPenjualan->diskon = $request->input('diskon')[$key] ?? 0; // Pastikan diskon tidak null
-                $detailPenjualan->kode_produk = $request->input('kode_produk')[$key] ?? ''; // Menyimpan kode_produk, kosong jika null
-                $detailPenjualan->kode_lama = $request->input('kode_lama')[$key] ?? '';     // Menyimpan kode_lama, kosong jika null
-                $detailPenjualan->produk_id = $request->input('produk_id')[$key] ?? null;   // Menyimpan produk_id
-                $detailPenjualan->nama_produk = $request->input('nama_produk')[$key] ?? ''; // Menyimpan nama_produk, kosong jika null
+                $nominal_diskon = ($harga * ($diskon / 100)) * $jumlah;
     
-                // Perhitungan total menggunakan rumus dari Script 2
-                $nominalDiskon = ($detailPenjualan->harga * ($detailPenjualan->diskon / 100)) * $jumlah; // Hitung nominal diskon
-                $hargaSetelahDiskon = $detailPenjualan->harga - ($detailPenjualan->harga * ($detailPenjualan->diskon / 100));
-                $total = $hargaSetelahDiskon * $jumlah;
-                $totalasli = $detailPenjualan->harga * $jumlah;
-    
-                // Simpan total
-                $detailPenjualan->total = $total; // Simpan total yang sudah dihitung
-                $detailPenjualan->totalasli = $totalasli; // Tambahkan kolom total asli jika diperlukan
-                $detailPenjualan->save(); // Simpan detail baru
+                $data_pembelians->push([
+                    'kode_produk' => $kode_produk,
+                    'kode_lama' => $kode_lama,
+                    'produk_id' => $produk_id,
+                    'nama_produk' => $nama_produk,
+                    'jumlah' => $jumlah,
+                    'diskon' => $diskon,
+                    'harga' => $harga,
+                    'total' => $total,
+                    'totalasli' => $totalasli,
+                ]);
             }
         }
     
-        // Redirect kembali dengan pesan sukses
+        // Cari data penjualan yang ada berdasarkan ID
+        $penjualanproduk = Penjualanproduk::find($id);
+    
+        if (!$penjualanproduk) {
+            return redirect()->back()->with('error', 'Data penjualan tidak ditemukan.');
+        }
+    
+        // Update data penjualan
+        $penjualanproduk->update([
+            'nama_pelanggan' => $request->nama_pelanggan ?? null,
+            'kode_pelanggan' => $request->kode_pelanggan ?? null,
+            'kode_lama' => $request->kode_lama1 ?? null,
+            'telp' => $request->telp ?? null,
+            'alamat' => $request->alamat ?? null,
+            'kategori' => $request->kategori,
+            'sub_total' => $request->sub_total,
+            'sub_totalasli' => $request->sub_totalasli,
+            'bayar' => $request->bayar,
+            'kembali' => $request->kembali,
+            'catatan' => $request->catatan,
+            'metode_id' => $request->metode_id, 
+            'total_fee' => $request->total_fee, 
+            'keterangan' => $request->keterangan, 
+            'toko_id' => $request->toko_id,
+            'kasir' => ucfirst(auth()->user()->karyawan->nama_lengkap),
+            'tanggal_penjualan' => Carbon::now('Asia/Jakarta'),
+            'status' => 'posting',
+            'nominal_diskon' => $nominal_diskon, // Simpan total nominal diskon
+        ]);
+    
+        // Hapus detail penjualan lama
+        Detailpenjualanproduk::where('penjualanproduk_id', $penjualanproduk->id)->delete();
+    
+        // Simpan detail pemesanan baru dan kurangi stok
+        foreach ($data_pembelians as $data_pesanan) {
+            Detailpenjualanproduk::create([
+                'penjualanproduk_id' => $penjualanproduk->id,
+                'produk_id' => $data_pesanan['produk_id'],
+                'kode_produk' => $data_pesanan['kode_produk'],
+                'kode_lama' => $data_pesanan['kode_lama'],
+                'nama_produk' => $data_pesanan['nama_produk'],
+                'jumlah' => $data_pesanan['jumlah'],
+                'diskon' => $data_pesanan['diskon'],
+                'harga' => $data_pesanan['harga'],
+                'total' => $data_pesanan['total'],
+                'totalasli' => $data_pesanan['totalasli'],
+            ]);
+    
+            // Kurangi stok di tabel stok_tokobanjaran
+            $stok = Stok_tokobanjaran::where('produk_id', $data_pesanan['produk_id'])->first();
+            if ($stok) {
+                // Jika jumlah stok 0, maka kurangi dengan nilai jumlah dari inputan dan buat stok jadi minus
+                if ($stok->jumlah == 0) {
+                    $stok->jumlah = -$data_pesanan['jumlah'];
+                } else {
+                    $stok->jumlah -= $data_pesanan['jumlah'];
+                }
+                $stok->save();
+            }
+        }
+    
         return redirect()->route('inquery_penjualanproduk.index')->with('success', 'Data penjualan berhasil diperbarui.');
     }
     
@@ -308,6 +416,41 @@ public function unpost_penjualanproduk($id)
         return response()->json(['success' => false]);
     }
     
+
+
+    public function getProductByKode(Request $request)
+    {
+        $kode = $request->get('kode');
+        $product = Produk::where('kode_produk', $kode)->first();
+    
+        if ($product) {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $product->id,
+                    'nama_produk' => $product->nama_produk,
+                    'harga' => $product->harga,
+                    'diskon' => $product->diskon,
+                ],
+            ]);
+        } else {
+            return response()->json(['success' => false]);
+        }
+    }
+
+    public function pelanggan($id)
+    {
+        $user = Pelanggan::where('id', $id)->first();
+
+        return json_decode($user);
+    }
+
+    public function metode($id)
+    {
+        $metode = Metodepembayaran::where('id', $id)->first();
+
+        return json_decode($metode);
+    }
     
         
     
