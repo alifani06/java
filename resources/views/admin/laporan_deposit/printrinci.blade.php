@@ -6,6 +6,8 @@
         body {
             font-family: Arial, sans-serif;
             font-size: 12px;
+            margin: 0; 
+            padding: 0;
         }
         table {
             width: 100%;
@@ -66,7 +68,7 @@
             font-size: 12px;
         }
         .table-container {
-            margin-bottom: 30px;
+            margin-bottom: 15px;
         }
 
         table.no-border {
