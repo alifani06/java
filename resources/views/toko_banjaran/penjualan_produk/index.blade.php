@@ -147,8 +147,8 @@
                                                       
                                             @endif
                                             @if ($item->status == 'posting')
-                                                    <a class="dropdown-item unpost-btn"
-                                                        data-memo-id="{{ $item->id }}">Unpost</a>
+                                                    {{-- <a class="dropdown-item unpost-btn"
+                                                        data-memo-id="{{ $item->id }}">Unpost</a> --}}
                                                     <a class="dropdown-item"
                                                         href="{{ url('/toko_banjaran/penjualan_produk/' . $item->id ) }}">Show</a>
                                             @endif

@@ -872,7 +872,7 @@
             <td hidden>${productData.kode}</td>
             <td>${productData.kodel}</td>
             <td style="width: 30%;">${productData.nama}</td>
-            <td><input type="number" class="form-control jumlah-input" value="${jumlahInput}" min="1"></td>
+            <td style="width: 20%;"><input type="number" class="form-control jumlah-input" value="${jumlahInput}" min="1"></td>
             <td>${diskon}%</td>
             <td>${harga}</td>
             <td class="total-amount">${calculateTotal(harga, diskon, jumlahInput)}</td>

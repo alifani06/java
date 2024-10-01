@@ -51,7 +51,7 @@
  <script src="{{ asset('js/pusher.js') }}"></script>
 </head>
 
-<body class="hold-transition sidebar-mini @if (request()->is('toko_banjaran/penjualan_produka*') ||
+<body class="hold-transition sidebar-mini @if (request()->is('toko_banjaran/penjualan_produks*') ||
         // request()->is('admin/ban*') ||
         request()->is('admin/perhitungan_gaji*') ||
         request()->is('admin/tagihan_ekspedisi*') ||
