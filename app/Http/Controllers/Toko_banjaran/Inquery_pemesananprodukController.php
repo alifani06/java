@@ -65,7 +65,7 @@ class Inquery_pemesananprodukController extends Controller
     $inquery->orderBy('id', 'DESC');
     $inquery = $inquery->get();
 
-    return view('toko_slawi.inquery_pemesananproduk.index', compact('inquery'));
+    return view('toko_banjaran.inquery_pemesananproduk.index', compact('inquery'));
 }
 
 public function unpost_pemesananproduk($id)
