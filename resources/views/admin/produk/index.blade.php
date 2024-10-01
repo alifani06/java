@@ -97,6 +97,10 @@
                                             <i class="fas fa-print"></i>
                                         </a>
                                         
+                                        <a href="{{ url('admin/produk/' . $produk->id ) }}" class="btn btn-success btn-sm">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        
                                         <a href="{{ url('admin/produk/' . $produk->id . '/edit') }}" class="btn btn-warning btn-sm">
                                             <i class="fas fa-edit"></i>
                                         </a>

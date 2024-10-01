@@ -31,11 +31,6 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ProdukController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index(Request $request)
     {
         $search = $request->input('search'); // Ambil input pencarian
@@ -208,6 +203,14 @@ class ProdukController extends Controller
         return redirect('admin/produk')->with('success', 'Berhasil menambahkan produk');
     }
     
+
+    public function show($id)
+    {
+
+        $produk = Produk::where('id', $id)->first();
+        return view('admin/produk.show', compact('produk'));
+    }
+
     public function edit($id)
     {
 
