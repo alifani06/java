@@ -80,13 +80,13 @@
                                     <td>{{ $produk->nama_produk }}</td>
                                     <td>{{ 'Rp. ' . number_format($produk->harga, 0, ',', '.') }}</td> <!-- Format harga -->
                                     <td>{{ $produk->satuan }}</td>
-                                    {{-- <td>
+                                    <td>
                                         @if ($produk->gambar)
                                             <img src="{{ asset('storage/uploads/' . $produk->gambar) }}" alt="{{ $produk->nama_produk }}" style="width: 100px; height: auto;">
                                         @else
                                             <img src="{{ asset('adminlte/dist/img/img-placeholder.jpg') }}" alt="{{ $produk->nama_produk }}" style="width: 100px; height: auto;">
                                         @endif
-                                    </td> --}}
+                                    </td>
                                     <td data-toggle="modal" data-target="#modal-qrcode-{{ $produk->id }}" style="text-align: center;">
                                         <div style="display: inline-block;">
                                             {!! DNS2D::getBarcodeHTML("$produk->qrcode_produk", 'QRCODE', 2, 2) !!}

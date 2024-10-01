@@ -97,14 +97,7 @@
                         <div class="col-sm-6">
                             <h1 class="m-0">Produk</h1>
                         </div><!-- /.col -->
-                        <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item">
-                                    <a href="#">Produk</a>
-                                </li>
-                                <li class="breadcrumb-item active">Lihat</li>
-                            </ol>
-                        </div><!-- /.col -->
+                        
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
             </div>
@@ -131,6 +124,18 @@
                                                 {!! DNS2D::getBarcodeHTML("$produk->qrcode_produk", 'QRCODE', 3, 3) !!}
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <strong>Foto</strong>
+                                        </div>
+                                        
+                                            @if ($produk->gambar)
+                                                <img src="{{ asset('storage/uploads/' . $produk->gambar) }}" alt="{{ $produk->nama_produk }}" style="width: 100px; height: auto;">
+                                            @else
+                                                <img src="{{ asset('adminlte/dist/img/img-placeholder.jpg') }}" alt="{{ $produk->nama_produk }}" style="width: 100px; height: auto;">
+                                            @endif
+                                    
                                     </div>
                                     <div class="row mb-3">
                                         <div class="col-md-4">

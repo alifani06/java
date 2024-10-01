@@ -47,6 +47,18 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-4">
+                                <strong>Foto</strong>
+                            </div>
+                            
+                                @if ($produk->gambar)
+                                    <img src="{{ asset('storage/uploads/' . $produk->gambar) }}" alt="{{ $produk->nama_produk }}" style="width: 100px; height: auto;">
+                                @else
+                                    <img src="{{ asset('adminlte/dist/img/img-placeholder.jpg') }}" alt="{{ $produk->nama_produk }}" style="width: 100px; height: auto;">
+                                @endif
+                        
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
                                 <strong>Produk</strong>
                             </div>
                             <div class="col-md-4">
