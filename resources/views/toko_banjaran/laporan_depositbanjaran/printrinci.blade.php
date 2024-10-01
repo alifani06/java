@@ -6,6 +6,8 @@
         body {
             font-family: Arial, sans-serif;
             font-size: 12px;
+            margin: 0; 
+            padding: 0;
         }
         table {
             width: 100%;
@@ -66,7 +68,7 @@
             font-size: 12px;
         }
         .table-container {
-            margin-bottom: 30px;
+            margin-bottom: 15px;
         }
 
         table.no-border {
@@ -106,11 +108,11 @@
         .no-border {
         border: none;
     }
+   
     .logo img {
             width: 100px;
             height: 60px;
         }
-   
     /* .no-border-row td {
         border: none !important;
     } */
@@ -126,7 +128,7 @@
             <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
         </div>
         <h1 class="title">PT JAVA BAKERY FACTORY</h1>
-        <p class="title1">Cabang: {{ strtoupper($branchName) }}</p>
+        <p class="title1">BANJARAN</p>
         <div class="divider"></div>
     
         @if ($status_pelunasan == 'diambil')
@@ -167,20 +169,20 @@
         <div class="table-container">
             @php
                 $firstItem = $items->first();
-                $formattedDate = \Carbon\Carbon::parse($firstItem->pemesananproduk->first()->tanggal_pemesanan)->format('d/m/Y');
+                $formattedDate = \Carbon\Carbon::parse($firstItem->pemesananproduk->tanggal_pemesanan)->format('d/m/Y');
                 $formatambil = \Carbon\Carbon::parse($firstItem->pemesananproduk->tanggal_kirim)->format('d/m/Y');
             @endphp
 
         <table class="no-border mb-1">
                     <tr>
-                        <td class="text-left"><strong>Nama Pelanggan</strong></td>
+                        <td class="text-left"><strong>Pelanggan</strong></td>
                         <td>: {{ $firstItem->pemesananproduk->nama_pelanggan }}</td>
                         <td class="text-right" style="color: white"><strong>Alamat</strong></td>
                         <td class="text-right"><strong>Alamat</strong></td>
                         <td>: {{ $firstItem->pemesananproduk->alamat }}</td>
                     </tr>
                     <tr>
-                        <td class="text-left"><strong>No Telepon</strong></td>
+                        <td class="text-left"><strong>Telepon</strong></td>
                         <td>: 0{{ $firstItem->pemesananproduk->telp }}</td>
                         <td class="text-right" style="color: white"><strong>ID Pelanggan</strong></td>
                         <td class="text-right"><strong>ID Pelanggan</strong></td>
@@ -223,6 +225,7 @@
                             $subTotal += $totalForDetail;
                             $totalDiskon += $diskonAmount;
                             $grandTotal += $totalAfterDiskon;
+                          
                         @endphp
                         <tr>
                             <td class="text-center">{{ $globalCounter++ }}</td>
@@ -247,7 +250,7 @@
             </tbody>
         </table>
 
-        <table style="width: 40%; margin-left: auto; margin-right: 0; margin-top: 0px;">
+        {{-- <table style="width: 40%; margin-left: auto; margin-right: 0; margin-top: 0px;">
             <tbody>
                 <tr>
                     <td style="text-align: left ; width: 60%;"><strong>Sub Total</strong></td>
@@ -267,7 +270,43 @@
                     <td style="text-align: right ; width: 40%;">{{ number_format($item->dp_pemesanan, 0, ',', '.') }}</td>
                 </tr>
             </tbody>
+        </table> --}}
+
+        <table style="width: 40%; margin-left: auto; margin-right: 0; margin-top: 0px; margin-bottom: 2px;">
+            <tbody>
+                <tr>
+                    <td style="text-align: left; width: 60%;"><strong>Sub Total</strong></td>
+                    <td style="text-align: right; width: 40%;">{{ number_format($subTotal, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; width: 60%;"><strong>Diskon</strong></td>
+                    <td style="text-align: right; width: 40%;">{{ number_format($totalDiskon, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; width: 60%;"><strong>Total Pesanan</strong></td>
+                    <td style="text-align: right; width: 40%;">{{ number_format($grandTotal, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; width: 60%;"><strong>DP (Min.50%)</strong></td>
+                    <td style="text-align: right; width: 40%;">{{ number_format($item->dp_pemesanan, 0, ',', '.') }}</td>
+                </tr>
+            </tbody>
         </table>
+        
+        @if (!is_null($firstItem->pemesananproduk->catatan))
+        <table style="width: 40%; margin-left: auto; margin-right: 0;">
+            <tbody>
+                <tr>
+                    <td style="text-align: left; width: 100%;"><strong>Catatan</strong></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; width: 40%;">{!! nl2br(e($firstItem->pemesananproduk->catatan)) ?? '-' !!}
+                        
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        @endif
         
         <div class="divider1"></div>
    
