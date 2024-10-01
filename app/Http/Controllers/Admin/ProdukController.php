@@ -23,6 +23,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use App\Imports\ProdukImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 
 
 
@@ -205,24 +208,6 @@ class ProdukController extends Controller
         return redirect('admin/produk')->with('success', 'Berhasil menambahkan produk');
     }
     
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
 
@@ -230,13 +215,6 @@ class ProdukController extends Controller
         return view('admin/produk.update', compact('produk'));  
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $validator = Validator::make(
@@ -280,13 +258,6 @@ class ProdukController extends Controller
         return redirect('admin/produk')->with('success', 'Berhasil mengubah produk');
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $produk = Produk::find($id);
@@ -310,15 +281,12 @@ class ProdukController extends Controller
         return $newCode;
     }
 
-
-
     public function formProduk()
     {
         $klasifikasis = Klasifikasi::with('produks')->get();
         $importedData = session('imported_data', []);
         return view('admin.permintaan_produk.form', compact('klasifikasis', 'importedData'));
     }
-
 
     public function import(Request $request)
     {
@@ -330,6 +298,44 @@ class ProdukController extends Controller
     
         return redirect('admin/produk')->with('success', 'Berhasil mengimpor produk dari Excel');
     }
+
+    public function cetak_barcode($id)
+    {
+        // Mengambil produk berdasarkan ID
+        $produk = Produk::findOrFail($id); // Menggunakan findOrFail untuk memastikan produk ada
+    
+        // Mengambil semua klasifikasi dan subklasifikasi jika perlu
+        $klasifikasis = Klasifikasi::all();
+        $subklasifikasis = Subklasifikasi::all();
+    
+        $pdf = FacadePdf::loadView('admin.produk.cetak_barcode', compact('produk', 'klasifikasis', 'subklasifikasis'));
+        $pdf->setPaper('a4', 'portrait');
+    
+        return $pdf->stream('penjualan.pdf');
+    }
+    
+    public function print($id)
+    {
+        // Mengambil produk berdasarkan ID
+        $produk = Produk::findOrFail($id); // Menggunakan findOrFail untuk memastikan produk ada
+    
+        // Mengambil semua klasifikasi dan subklasifikasi jika perlu
+        $klasifikasis = Klasifikasi::all();
+        $subklasifikasis = Subklasifikasi::all();
+    
+        // Menentukan ukuran barcode
+        $barcodeWidth = 10 * 37.7953; // Menghitung lebar dari unit ke mm (1 unit = 37.7953 mm)
+        $barcodeHeight = 10 * 37.7953; // Jika tinggi sama dengan lebar
+    
+        // Set ukuran kertas sesuai barcode
+        $customPaper = array(0, 0, $barcodeWidth, $barcodeHeight); // Lebar dan tinggi kertas sesuai barcode
+    
+        $pdf = FacadePdf::loadView('admin.produk.print', compact('produk', 'klasifikasis', 'subklasifikasis'));
+        $pdf->setPaper($customPaper, 'portrait');
+    
+        return $pdf->stream('penjualan.pdf');
+    }
+
 }
 
 

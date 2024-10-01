@@ -67,7 +67,7 @@
                                 <th>Nama produk</th>
                                 <th>Harga</th>
                                 <th>Satuan</th>
-                                <th>Gambar</th>
+                                {{-- <th>Gambar</th> --}}
                                 <th>Qrcode</th>
                                 <th>Actions</th>
                             </tr>
@@ -80,19 +80,23 @@
                                     <td>{{ $produk->nama_produk }}</td>
                                     <td>{{ 'Rp. ' . number_format($produk->harga, 0, ',', '.') }}</td> <!-- Format harga -->
                                     <td>{{ $produk->satuan }}</td>
-                                    <td>
+                                    {{-- <td>
                                         @if ($produk->gambar)
                                             <img src="{{ asset('storage/uploads/' . $produk->gambar) }}" alt="{{ $produk->nama_produk }}" style="width: 100px; height: auto;">
                                         @else
                                             <img src="{{ asset('adminlte/dist/img/img-placeholder.jpg') }}" alt="{{ $produk->nama_produk }}" style="width: 100px; height: auto;">
                                         @endif
-                                    </td>
+                                    </td> --}}
                                     <td data-toggle="modal" data-target="#modal-qrcode-{{ $produk->id }}" style="text-align: center;">
                                         <div style="display: inline-block;">
                                             {!! DNS2D::getBarcodeHTML("$produk->qrcode_produk", 'QRCODE', 2, 2) !!}
                                         </div>
                                     </td>
                                     <td class="text-center">
+                                        <a href="{{ route('produk.cetak_barcode', $produk->id) }}" class="btn btn-primary btn-sm" target="_blank">
+                                            <i class="fas fa-print"></i>
+                                        </a>
+                                        
                                         <a href="{{ url('admin/produk/' . $produk->id . '/edit') }}" class="btn btn-warning btn-sm">
                                             <i class="fas fa-edit"></i>
                                         </a>
@@ -144,8 +148,8 @@
                                                 </div>
                                                 <div class="modal-footer justify-content-between">
                                                     <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
-                                                    <a href="{{ url('admin/produk/cetak-pdf/' . $produk->id) }}" class="btn btn-primary btn-sm">
-                                                        <i class=""></i> Cetak
+                                                    <a href="{{ route('produk.print', $produk->id) }}" class="btn btn-primary btn-sm" target="_blank">
+                                                        <i class="fas fa-print"></i>
                                                     </a>
                                                 </div>
                                             </div>
