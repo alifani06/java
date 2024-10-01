@@ -51,7 +51,7 @@
     <div class="wrapper">
 
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="" src="{{ asset('storage/uploads/user/logo.png') }}" alt="javaline" height="50"
+            <img class="" src="{{ asset('storage/uploads/icon/bakery.png') }}"alt="javabakery" height="50"
                 width="100">
         </div>
 
