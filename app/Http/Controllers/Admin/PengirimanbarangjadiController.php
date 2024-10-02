@@ -114,350 +114,126 @@ public function pengiriman_pemesanan()
     return view('admin.pengiriman_barangjadi.pengiriman_pemesanan', compact('klasifikasis', 'tokos', 'uniqueStokBarangjadi'));
 }
 
-//aawal
-// public function store(Request $request)
-// {
-//     $kode = $this->kode();
-//     $produkData = $request->input('produk_id', []);
-//     $jumlahData = $request->input('jumlah', []);
-//     $tokoId = $request->input('toko_id');
+    public function store(Request $request)
+    {
+        $kode = $this->kode();
+        $produkData = $request->input('produk_id', []);
+        $jumlahData = $request->input('jumlah', []);
+        $tokoId = $request->input('toko_id');
+        $tanggalPengiriman = $request->input('tanggal_pengiriman'); // Ambil tanggal pengiriman dari input
 
-//     // Array untuk menyimpan ID pengiriman
-//     $pengirimanIds = [];
+        // Validasi tanggal pengiriman (opsional)
+        $request->validate([
+            'tanggal_pengiriman' => 'required|date', // Pastikan tanggal pengiriman diisi dan dalam format yang benar
+        ]);
 
-//     foreach ($produkData as $key => $produkId) {
-//         $jumlah = $jumlahData[$key] ?? null;
+        // Mengatur jam sesuai dengan waktu saat ini
+        $tanggalPengirimanDenganJam = Carbon::parse($tanggalPengiriman)->setTime(now()->hour, now()->minute);
 
-//         if (!is_null($jumlah) && $jumlah !== '') {
-//             // Ambil stok produk dengan stok terbesar dari detail_stokbarangjadi
-//             $stokProduk = Detail_stokbarangjadi::where('produk_id', $produkId)
-//                 ->orderBy('stok', 'desc')
-//                 ->value('stok');
+        // Array untuk menyimpan ID pengiriman
+        $pengirimanIds = [];
 
-//             // Jika stok produk ada dan mencukupi jumlah yang diminta
-//             if ($stokProduk > 0 && $stokProduk >= $jumlah) {
-//                 // Simpan pengiriman tanpa mengurangi stok
-//                 $pengiriman = Pengiriman_barangjadi::create([
-//                     'kode_pengiriman' => $kode,
-//                     'qrcode_pengiriman' => 'https://javabakery.id/pengiriman_produk/' . $kode,
-//                     'produk_id' => $produkId,
-//                     'toko_id' => $tokoId,
-//                     'jumlah' => $jumlah,
-//                     'status' => 'unpost',
-//                     'tanggal_pengiriman' => Carbon::now('Asia/Jakarta'),
-//                 ]);
+        foreach ($produkData as $key => $produkId) {
+            $jumlah = $jumlahData[$key] ?? null;
 
-//                 // Buat catatan stok di toko terkait
-//                 switch ($tokoId) {
-//                     case 1:
-//                         Pengiriman_tokobanjaran::create([
-//                             'pengiriman_barangjadi_id' => $pengiriman->id,
-//                             'kode_pengiriman' => $kode,
-//                             'produk_id' => $produkId,
-//                             'toko_id' => $tokoId,
-//                             'jumlah' => $jumlah,
-//                             'status' => 'unpost',
-//                             'tanggal_input' => Carbon::now('Asia/Jakarta'),
-//                         ]);
-//                         break;
-//                     case 2:
-//                         Stok_tokotegal::create([
-//                             'pengiriman_barangjadi_id' => $pengiriman->id,
-//                             'kode_pengiriman' => $kode,
-//                             'produk_id' => $produkId,
-//                             'jumlah' => $jumlah,
-//                             'tanggal_input' => Carbon::now('Asia/Jakarta'),
-//                         ]);
-//                         break;
-//                     case 3:
-//                         Stok_tokoslawi::create([
-//                             'pengiriman_barangjadi_id' => $pengiriman->id,
-//                             'kode_pengiriman' => $kode,
-//                             'produk_id' => $produkId,
-//                             'jumlah' => $jumlah,
-//                             'status' => 'unpost',
-//                             'tanggal_input' => Carbon::now('Asia/Jakarta'),
-//                         ]);
-//                         break;
-//                     case 4:
-//                         Stok_tokopemalang::create([
-//                             'pengiriman_barangjadi_id' => $pengiriman->id,
-//                             'kode_pengiriman' => $kode,
-//                             'produk_id' => $produkId,
-//                             'jumlah' => $jumlah,
-//                             'tanggal_input' => Carbon::now('Asia/Jakarta'),
-//                         ]);
-//                         break;
-//                     case 5:
-//                         Stok_tokobumiayu::create([
-//                             'pengiriman_barangjadi_id' => $pengiriman->id,
-//                             'kode_pengiriman' => $kode,
-//                             'produk_id' => $produkId,
-//                             'jumlah' => $jumlah,
-//                             'tanggal_input' => Carbon::now('Asia/Jakarta'),
-//                         ]);
-//                         break;
-//                     default:
-//                         return redirect()->back()->with('error', 'Toko ID tidak valid')->withInput();
-//                 }
+            if (!is_null($jumlah) && $jumlah !== '') {
+                // Ambil stok produk dari detail_stokbarangjadi berdasarkan produk_id
+                $stokDetails = Detail_stokbarangjadi::where('produk_id', $produkId)
+                    ->where('stok', '>', 0) // Hanya ambil entri dengan stok yang tersedia
+                    ->orderBy('stok', 'desc') // Urutkan dari stok terbesar
+                    ->get();
 
-//                 // Simpan ID pengiriman yang baru dibuat
-//                 $pengirimanIds[] = $pengiriman->id;
-//             } else {
-//                 // Jika stok produk tidak cukup, tampilkan pesan error
-//                 $kodeProduk = Produk::where('id', $produkId)->value('nama_produk');
-//                 return redirect()->back()->with('error', 'Stok produk ' . $kodeProduk . ' tidak cukup.')
-//                     ->withInput(); // Mengingat inputan sebelumnya
-//             }
-//         }
-//     }
+                $stokTersedia = $stokDetails->sum('stok'); // Jumlah total stok tersedia
 
-//     // Jika ada ID pengiriman yang baru dibuat, arahkan ke halaman show
-//     if (!empty($pengirimanIds)) {
-//         $firstId = $pengirimanIds[0]; // Ambil ID pengiriman yang pertama
-//         return redirect()->route('pengiriman_barangjadi.show', $firstId)
-//             ->with('success', 'Berhasil menambahkan permintaan produk');
-//     }
+                if ($stokTersedia >= $jumlah) {
+                    // Simpan pengiriman dengan tanggal dan jam yang diinputkan
+                    $pengiriman = Pengiriman_barangjadi::create([
+                        'kode_pengiriman' => $kode,
+                        'qrcode_pengiriman' => 'https://javabakery.id/pengiriman_produk/' . $kode,
+                        'produk_id' => $produkId,
+                        'toko_id' => $tokoId,
+                        'jumlah' => $jumlah,
+                        'status' => 'unpost',
+                        //'tanggal_pengiriman' => Carbon::now('Asia/Jakarta'),
+                        'tanggal_pengiriman' => $tanggalPengirimanDenganJam, 
+                    ]);
 
-//     return redirect()->route('pengiriman_barangjadi.index')
-//         ->with('success', 'Berhasil menambahkan permintaan produk');
-// }
+                    // Simpan catatan stok di toko terkait
+                    switch ($tokoId) {
+                        case 1:
+                            Pengiriman_tokobanjaran::create([
+                                'pengiriman_barangjadi_id' => $pengiriman->id,
+                                'kode_pengiriman' => $kode,
+                                'produk_id' => $produkId,
+                                'toko_id' => $tokoId,
+                                'jumlah' => $jumlah,
+                                'status' => 'unpost',
+                                'tanggal_input' => $tanggalPengirimanDenganJam, // Simpan tanggal dengan jam yang sama
+                            ]);
+                            break;
+                        case 2:
+                            Stok_tokotegal::create([
+                                'pengiriman_barangjadi_id' => $pengiriman->id,
+                                'kode_pengiriman' => $kode,
+                                'produk_id' => $produkId,
+                                'jumlah' => $jumlah,
+                                'tanggal_input' => $tanggalPengirimanDenganJam, // Simpan tanggal dengan jam yang sama
+                            ]);
+                            break;
+                        case 3:
+                            Stok_tokoslawi::create([
+                                'pengiriman_barangjadi_id' => $pengiriman->id,
+                                'kode_pengiriman' => $kode,
+                                'produk_id' => $produkId,
+                                'jumlah' => $jumlah,
+                                'status' => 'unpost',
+                                'tanggal_input' => $tanggalPengirimanDenganJam, // Simpan tanggal dengan jam yang sama
+                            ]);
+                            break;
+                        case 4:
+                            Stok_tokopemalang::create([
+                                'pengiriman_barangjadi_id' => $pengiriman->id,
+                                'kode_pengiriman' => $kode,
+                                'produk_id' => $produkId,
+                                'jumlah' => $jumlah,
+                                'tanggal_input' => $tanggalPengirimanDenganJam, // Simpan tanggal dengan jam yang sama
+                            ]);
+                            break;
+                        case 5:
+                            Stok_tokobumiayu::create([
+                                'pengiriman_barangjadi_id' => $pengiriman->id,
+                                'kode_pengiriman' => $kode,
+                                'produk_id' => $produkId,
+                                'jumlah' => $jumlah,
+                                'tanggal_input' => $tanggalPengirimanDenganJam, // Simpan tanggal dengan jam yang sama
+                            ]);
+                            break;
+                        default:
+                            return redirect()->back()->with('error', 'Toko ID tidak valid')->withInput();
+                    }
 
-// public function store(Request $request)
-// {
-//     $kode = $this->kode();
-//     $produkData = $request->input('produk_id', []);
-//     $jumlahData = $request->input('jumlah', []);
-//     $tokoId = $request->input('toko_id');
-
-//     // Array untuk menyimpan ID pengiriman
-//     $pengirimanIds = [];
-
-//     foreach ($produkData as $key => $produkId) {
-//         $jumlah = $jumlahData[$key] ?? null;
-
-//         if (!is_null($jumlah) && $jumlah !== '') {
-//             // Ambil stok produk dari detail_stokbarangjadi berdasarkan produk_id
-//             $stokDetails = Detail_stokbarangjadi::where('produk_id', $produkId)
-//                 ->where('stok', '>', 0) // Hanya ambil entri dengan stok yang tersedia
-//                 ->orderBy('stok', 'desc') // Urutkan dari stok terbesar
-//                 ->get();
-
-//             $stokTerpakai = 0; // Jumlah stok yang sudah terpakai
-//             $stokTersedia = $stokDetails->sum('stok'); // Jumlah total stok tersedia
-
-//             if ($stokTersedia >= $jumlah) {
-//                 // Simpan pengiriman
-//                 $pengiriman = Pengiriman_barangjadi::create([
-//                     'kode_pengiriman' => $kode,
-//                     'qrcode_pengiriman' => 'https://javabakery.id/pengiriman_produk/' . $kode,
-//                     'produk_id' => $produkId,
-//                     'toko_id' => $tokoId,
-//                     'jumlah' => $jumlah,
-//                     'status' => 'unpost',
-//                     'tanggal_pengiriman' => Carbon::now('Asia/Jakarta'),
-//                 ]);
-
-//                 foreach ($stokDetails as $stokDetail) {
-//                     if ($stokTerpakai >= $jumlah) {
-//                         break;
-//                     }
-
-//                     $stokYangDibutuhkan = $jumlah - $stokTerpakai;
-//                     $stokDiEntriIni = min($stokDetail->stok, $stokYangDibutuhkan); // Ambil stok sebanyak yang dibutuhkan
-
-//                     // Update stok di detail_stokbarangjadi
-//                     $stokDetail->stok -= $stokDiEntriIni;
-//                     $stokDetail->save();
-
-//                     // Tambahkan ke stok terpakai
-//                     $stokTerpakai += $stokDiEntriIni;
-//                 }
-
-//                 // Simpan catatan stok di toko terkait
-//                 switch ($tokoId) {
-//                     case 1:
-//                         Pengiriman_tokobanjaran::create([
-//                             'pengiriman_barangjadi_id' => $pengiriman->id,
-//                             'kode_pengiriman' => $kode,
-//                             'produk_id' => $produkId,
-//                             'toko_id' => $tokoId,
-//                             'jumlah' => $jumlah,
-//                             'status' => 'unpost',
-//                             'tanggal_input' => Carbon::now('Asia/Jakarta'),
-//                         ]);
-//                         break;
-//                     case 2:
-//                         Stok_tokotegal::create([
-//                             'pengiriman_barangjadi_id' => $pengiriman->id,
-//                             'kode_pengiriman' => $kode,
-//                             'produk_id' => $produkId,
-//                             'jumlah' => $jumlah,
-//                             'tanggal_input' => Carbon::now('Asia/Jakarta'),
-//                         ]);
-//                         break;
-//                     case 3:
-//                         Stok_tokoslawi::create([
-//                             'pengiriman_barangjadi_id' => $pengiriman->id,
-//                             'kode_pengiriman' => $kode,
-//                             'produk_id' => $produkId,
-//                             'jumlah' => $jumlah,
-//                             'status' => 'unpost',
-//                             'tanggal_input' => Carbon::now('Asia/Jakarta'),
-//                         ]);
-//                         break;
-//                     case 4:
-//                         Stok_tokopemalang::create([
-//                             'pengiriman_barangjadi_id' => $pengiriman->id,
-//                             'kode_pengiriman' => $kode,
-//                             'produk_id' => $produkId,
-//                             'jumlah' => $jumlah,
-//                             'tanggal_input' => Carbon::now('Asia/Jakarta'),
-//                         ]);
-//                         break;
-//                     case 5:
-//                         Stok_tokobumiayu::create([
-//                             'pengiriman_barangjadi_id' => $pengiriman->id,
-//                             'kode_pengiriman' => $kode,
-//                             'produk_id' => $produkId,
-//                             'jumlah' => $jumlah,
-//                             'tanggal_input' => Carbon::now('Asia/Jakarta'),
-//                         ]);
-//                         break;
-//                     default:
-//                         return redirect()->back()->with('error', 'Toko ID tidak valid')->withInput();
-//                 }
-
-//                 // Simpan ID pengiriman yang baru dibuat
-//                 $pengirimanIds[] = $pengiriman->id;
-//             } else {
-//                 // Jika stok produk tidak cukup, tampilkan pesan error
-//                 $kodeProduk = Produk::where('id', $produkId)->value('nama_produk');
-//                 return redirect()->back()->with('error', 'Stok produk ' . $kodeProduk . ' tidak cukup.')
-//                     ->withInput(); // Mengingat inputan sebelumnya
-//             }
-//         }
-//     }
-
-//     // Jika ada ID pengiriman yang baru dibuat, arahkan ke halaman show
-//     if (!empty($pengirimanIds)) {
-//         $firstId = $pengirimanIds[0]; // Ambil ID pengiriman yang pertama
-//         return redirect()->route('pengiriman_barangjadi.show', $firstId)
-//             ->with('success', 'Berhasil menambahkan permintaan produk');
-//     }
-
-//     return redirect()->route('pengiriman_barangjadi.index')
-//         ->with('success', 'Berhasil menambahkan permintaan produk');
-// }
-public function store(Request $request)
-{
-    $kode = $this->kode();
-    $produkData = $request->input('produk_id', []);
-    $jumlahData = $request->input('jumlah', []);
-    $tokoId = $request->input('toko_id');
-
-    // Array untuk menyimpan ID pengiriman
-    $pengirimanIds = [];
-
-    foreach ($produkData as $key => $produkId) {
-        $jumlah = $jumlahData[$key] ?? null;
-
-        if (!is_null($jumlah) && $jumlah !== '') {
-            // Ambil stok produk dari detail_stokbarangjadi berdasarkan produk_id
-            $stokDetails = Detail_stokbarangjadi::where('produk_id', $produkId)
-                ->where('stok', '>', 0) // Hanya ambil entri dengan stok yang tersedia
-                ->orderBy('stok', 'desc') // Urutkan dari stok terbesar
-                ->get();
-
-            $stokTersedia = $stokDetails->sum('stok'); // Jumlah total stok tersedia
-
-            if ($stokTersedia >= $jumlah) {
-                // Simpan pengiriman
-                $pengiriman = Pengiriman_barangjadi::create([
-                    'kode_pengiriman' => $kode,
-                    'qrcode_pengiriman' => 'https://javabakery.id/pengiriman_produk/' . $kode,
-                    'produk_id' => $produkId,
-                    'toko_id' => $tokoId,
-                    'jumlah' => $jumlah,
-                    'status' => 'unpost',
-                    'tanggal_pengiriman' => Carbon::now('Asia/Jakarta'),
-                ]);
-
-                // Simpan catatan stok di toko terkait
-                switch ($tokoId) {
-                    case 1:
-                        Pengiriman_tokobanjaran::create([
-                            'pengiriman_barangjadi_id' => $pengiriman->id,
-                            'kode_pengiriman' => $kode,
-                            'produk_id' => $produkId,
-                            'toko_id' => $tokoId,
-                            'jumlah' => $jumlah,
-                            'status' => 'unpost',
-                            'tanggal_input' => Carbon::now('Asia/Jakarta'),
-                        ]);
-                        break;
-                    case 2:
-                        Stok_tokotegal::create([
-                            'pengiriman_barangjadi_id' => $pengiriman->id,
-                            'kode_pengiriman' => $kode,
-                            'produk_id' => $produkId,
-                            'jumlah' => $jumlah,
-                            'tanggal_input' => Carbon::now('Asia/Jakarta'),
-                        ]);
-                        break;
-                    case 3:
-                        Stok_tokoslawi::create([
-                            'pengiriman_barangjadi_id' => $pengiriman->id,
-                            'kode_pengiriman' => $kode,
-                            'produk_id' => $produkId,
-                            'jumlah' => $jumlah,
-                            'status' => 'unpost',
-                            'tanggal_input' => Carbon::now('Asia/Jakarta'),
-                        ]);
-                        break;
-                    case 4:
-                        Stok_tokopemalang::create([
-                            'pengiriman_barangjadi_id' => $pengiriman->id,
-                            'kode_pengiriman' => $kode,
-                            'produk_id' => $produkId,
-                            'jumlah' => $jumlah,
-                            'tanggal_input' => Carbon::now('Asia/Jakarta'),
-                        ]);
-                        break;
-                    case 5:
-                        Stok_tokobumiayu::create([
-                            'pengiriman_barangjadi_id' => $pengiriman->id,
-                            'kode_pengiriman' => $kode,
-                            'produk_id' => $produkId,
-                            'jumlah' => $jumlah,
-                            'tanggal_input' => Carbon::now('Asia/Jakarta'),
-                        ]);
-                        break;
-                    default:
-                        return redirect()->back()->with('error', 'Toko ID tidak valid')->withInput();
+                    // Simpan ID pengiriman yang baru dibuat
+                    $pengirimanIds[] = $pengiriman->id;
+                } else {
+                    // Jika stok produk tidak cukup, tampilkan pesan error
+                    $kodeProduk = Produk::where('id', $produkId)->value('nama_produk');
+                    return redirect()->back()->with('error', 'Stok produk ' . $kodeProduk . ' tidak cukup.')
+                        ->withInput(); // Mengingat inputan sebelumnya
                 }
-
-                // Simpan ID pengiriman yang baru dibuat
-                $pengirimanIds[] = $pengiriman->id;
-            } else {
-                // Jika stok produk tidak cukup, tampilkan pesan error
-                $kodeProduk = Produk::where('id', $produkId)->value('nama_produk');
-                return redirect()->back()->with('error', 'Stok produk ' . $kodeProduk . ' tidak cukup.')
-                    ->withInput(); // Mengingat inputan sebelumnya
             }
         }
-    }
 
-    // Jika ada ID pengiriman yang baru dibuat, arahkan ke halaman show
-    if (!empty($pengirimanIds)) {
-        $firstId = $pengirimanIds[0]; // Ambil ID pengiriman yang pertama
-        return redirect()->route('pengiriman_barangjadi.show', $firstId)
+        // Jika ada ID pengiriman yang baru dibuat, arahkan ke halaman show
+        if (!empty($pengirimanIds)) {
+            $firstId = $pengirimanIds[0]; // Ambil ID pengiriman yang pertama
+            return redirect()->route('pengiriman_barangjadi.show', $firstId)
+                ->with('success', 'Berhasil menambahkan permintaan produk');
+        }
+
+        return redirect()->route('pengiriman_barangjadi.index')
             ->with('success', 'Berhasil menambahkan permintaan produk');
     }
 
-    return redirect()->route('pengiriman_barangjadi.index')
-        ->with('success', 'Berhasil menambahkan permintaan produk');
-}
 
 
 

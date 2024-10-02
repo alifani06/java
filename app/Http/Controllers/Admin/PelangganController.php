@@ -108,7 +108,6 @@ class PelangganController extends Controller
                 'status' => 'null',
                 'kode_pelanggan' => $this->kode(),
                 'qrcode_pelanggan' => 'https://javabakery.id/pelanggan/' . $kode,
-                // 'qrcode_karyawan' => 'http://192.168.1.46/tigerload/karyawan/' . $kode
                 'tanggal' => Carbon::now('Asia/Jakarta'),
 
             ]

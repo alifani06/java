@@ -97,6 +97,10 @@
                                                 @endforeach
                                             </select>
                                         </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label for="tanggal_pengiriman">Tanggal Pengiriman:</label>
+                                            <input type="date" class="form-control" id="tanggal_pengiriman" name="tanggal_pengiriman" value="{{ old('tanggal_pengiriman') }}">
+                                        </div>
                                     </thead>
                                     <div class="card">
                                         <div class="card-header">
@@ -108,6 +112,7 @@
                                             </div>
                                         </div>
                                         <div class="card-body">
+                                           
                                             <div class="row">
                                                 <div class="col">
                                                     <table class="table table-bordered table-striped">

@@ -179,7 +179,7 @@ class Laporan_hasilpenjualanController extends Controller
         $tanggal_akhir = $request->tanggal_akhir;
         $toko_id = $request->toko_id;
         $klasifikasi_id = $request->klasifikasi_id;
-        $produk_id = $request->produk; // Tambahkan filter produk
+        $produk_id = $request->produk; 
 
         // Query dasar untuk mengambil data penjualan produk
         $inquery = Penjualanproduk::with('detailPenjualanProduk.produk')
