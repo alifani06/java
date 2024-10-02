@@ -570,38 +570,38 @@ class PenjualanprodukbanjaranController extends Controller
     
 
             // Kurangi stok berdasarkan klasifikasi_id atau kode_lama
-if ($produk) {
-    if (in_array($produk->klasifikasi_id, [15, 16]) || 
-        ($produk->klasifikasi_id == 13 && in_array($produk->kode_lama, ['KU001', 'M0002']))
-    ) {
-        // Pengurangan stok untuk stok_tokobanjaran
-        $stok = Stok_tokobanjaran::where('produk_id', $detail->produk_id)->first();
-    } else {
-        // Jika tidak, kurangi stok dari stokpesanan_tokobanjaran
-        $stok = Stokpesanan_tokobanjaran::where('produk_id', $detail->produk_id)->first();
-    }
+        if ($produk) {
+            if (in_array($produk->klasifikasi_id, [15, 16]) || 
+                ($produk->klasifikasi_id == 13 && in_array($produk->kode_lama, ['KU001', 'M0002']))
+            ) {
+                // Pengurangan stok untuk stok_tokobanjaran
+                $stok = Stok_tokobanjaran::where('produk_id', $detail->produk_id)->first();
+            } else {
+                // Jika tidak, kurangi stok dari stokpesanan_tokobanjaran
+                $stok = Stokpesanan_tokobanjaran::where('produk_id', $detail->produk_id)->first();
+            }
 
-    if ($stok) {
-        // Kurangi stok tanpa memeriksa apakah stok mencukupi
-        $stok->jumlah -= $detail->jumlah;
-        $stok->save();
-    } else {
-        // Jika stok tidak ditemukan, buat stok baru dengan nilai negatif
-        if (in_array($produk->klasifikasi_id, [15, 16]) || 
-            ($produk->klasifikasi_id == 13 && in_array($detail->kode_lama, ['KU001', 'M0002']))
-        ) {
-            Stok_tokobanjaran::create([
-                'produk_id' => $detail->produk_id,
-                'jumlah' => -$detail->jumlah,
-            ]);
-        } else {
-            Stokpesanan_tokobanjaran::create([
-                'produk_id' => $detail->produk_id,
-                'jumlah' => -$detail->jumlah,
-            ]);
+            if ($stok) {
+                // Kurangi stok tanpa memeriksa apakah stok mencukupi
+                $stok->jumlah -= $detail->jumlah;
+                $stok->save();
+            } else {
+                // Jika stok tidak ditemukan, buat stok baru dengan nilai negatif
+                if (in_array($produk->klasifikasi_id, [15, 16]) || 
+                    ($produk->klasifikasi_id == 13 && in_array($detail->kode_lama, ['KU001', 'M0002']))
+                ) {
+                    Stok_tokobanjaran::create([
+                        'produk_id' => $detail->produk_id,
+                        'jumlah' => -$detail->jumlah,
+                    ]);
+                } else {
+                    Stokpesanan_tokobanjaran::create([
+                        'produk_id' => $detail->produk_id,
+                        'jumlah' => -$detail->jumlah,
+                    ]);
+                }
+            }
         }
-    }
-}
 
         }
     
