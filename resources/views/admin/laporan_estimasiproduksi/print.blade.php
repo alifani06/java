@@ -45,12 +45,72 @@
             font-weight: bold;
             margin-top: 10px;
         }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header .title {
+            font-weight: bold;
+            font-size: 28px;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+        .header .title1 {
+            margin-top: 5px;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .header .title2 {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .header .period {
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .divider {
+            border: 0.5px solid;
+            margin-top: 5px;
+            margin-bottom: 5px;        }
+        .right-align {
+            text-align: right;
+            font-size: 10px;
+        }
+        .logo img {
+            width: 100px;
+            height: 60px;
+        }
     </style>
 </head>
 <body>
+    <div class="header">
+        <div class="logo">
+            <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
+        </div>
+        <h1 class="title">PT JAVA BAKERY FACTORY</h1>
+        {{-- <p class="title1">Cabang: {{ strtoupper($selectedCabang) }}</p> --}}
+        <div class="divider"></div>
 
-        <h1>Laporan Estimasi Produksi</h1>
-        <h2>Dari: {{ $tanggal }} Sampai: {{ $tanggal_akhir }}</h2>
+        <h1 class="title2">LAPORAN ESTIMASI ALL</h1>
+    
+        @php
+            use Carbon\Carbon;
+            Carbon::setLocale('id');
+            $formattedStartDate = $tanggal ? Carbon::parse($tanggal)->translatedFormat('d F Y') : 'Tidak ada';
+            $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->translatedFormat('d F Y') : 'Tidak ada';
+            $currentDateTime = Carbon::now()->translatedFormat('d F Y H:i');
+  
+        @endphp
+    
+        <p class="period">
+            Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }}
+        </p>
+        <p class="period right-align" style="font-size: 10px; position: absolute; top: 0; right: 0; margin: 10px;">
+            {{ $currentDateTime }}
+        </p>
+        
+    </div>
+       
 
         <table class="table table-bordered">
             <thead>
@@ -98,8 +158,8 @@
                             <td>{{ $detail->produk->nama_produk }}</td>
             
                             <!-- Banjaran -->
-                            <td>{{ $order->stok_banjaran ?? 0 }}</td> <!-- Stok Banjaran -->
-                            <td>{{ $order->pesanan_banjaran ?? 0 }}</td> <!-- Pesanan Banjaran -->
+                            <td>{{ $order->jumlah_permintaan?? 0 }}</td> <!-- Stok Banjaran -->
+                            <td>{{ $order->jumlah_pesanan ?? 0 }}</td> <!-- Pesanan Banjaran -->
             
                             <!-- Tegal -->
                             <td>{{ $order->stok_tegal ?? 0 }}</td> <!-- Stok Tegal -->

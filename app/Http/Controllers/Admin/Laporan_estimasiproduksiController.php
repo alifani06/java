@@ -42,165 +42,7 @@ use Dompdf\Options;
 
 class Laporan_estimasiproduksiController extends Controller{
 
-// public function index(Request $request)
-// {
-//     $status = $request->status;
-//     $tanggal_kirim = $request->tanggal_kirim;
-//     $tanggal_akhir = $request->tanggal_akhir;
-//     $produk = $request->produk;
-//     $toko_id = $request->toko_id;
-//     $klasifikasi_id = $request->klasifikasi_id;
 
-//     // Query dasar untuk mengambil data pemesanan produk
-//     $query = Pemesananproduk::query();
-
-//     // Filter berdasarkan status
-//     if ($status) {
-//         $query->where('status', $status);
-//     }
-
-//     // Filter berdasarkan tanggal pemesanan
-//     if ($tanggal_kirim && $tanggal_akhir) {
-//         $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
-//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-//         $query->whereBetween('tanggal_kirim', [$tanggal_kirim, $tanggal_akhir]);
-//     } elseif ($tanggal_kirim) {
-//         $tanggal_kirim = Carbon::parse($tanggal_kirim)->startOfDay();
-//         $query->where('tanggal_kirim', '>=', $tanggal_kirim);
-//     } elseif ($tanggal_akhir) {
-//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-//         $query->where('tanggal_kirim', '<=', $tanggal_akhir);
-//     } else {
-//         // Jika tidak ada filter tanggal, tampilkan data untuk hari ini
-//         $query->whereDate('tanggal_kirim', Carbon::today());
-//     }
-
-//     // Filter berdasarkan produk
-//     if ($produk) {
-//         $query->whereHas('detailpemesananproduk', function ($query) use ($produk) {
-//             $query->where('produk_id', $produk);
-//         });
-//     }
-
-//     // Filter berdasarkan toko
-//     if ($toko_id) {
-//         $query->where('toko_id', $toko_id);
-//     }
-
-//     // Filter berdasarkan klasifikasi
-//     if ($klasifikasi_id) {
-//         $query->whereHas('detailpemesananproduk.produk.klasifikasi', function ($query) use ($klasifikasi_id) {
-//             $query->where('id', $klasifikasi_id);
-//         });
-//     }
-
-//     // Urutkan data berdasarkan ID secara descending 
-//     // $query->orderBy('id', 'DESC');
-
-//     // Ambil data pemesanan produk
-//     $inquery = $query->with(['toko', 'detailpemesananproduk.produk.klasifikasi'])->get();
-
-//     // Ambil semua data produk untuk dropdown
-//     $produks = Produk::all();
-
-//     // Ambil semua data toko untuk dropdown
-//     $tokos = Toko::all();
-
-//     // Ambil semua klasifikasi untuk dropdown
-//     $klasifikasis = Klasifikasi::all();
-
-//     // Kembalikan view dengan data pemesanan produk, produk, toko, dan klasifikasi
-//     return view('admin.laporan_estimasiproduksi.index', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
-// }
-
-// public function index(Request $request)
-// {
-//     $tanggal_kirim = $request->tanggal_kirim;
-//     $tanggal_akhir = $request->tanggal_akhir;
-//     $produk = $request->produk;
-//     $toko_id = $request->toko_id;
-//     $klasifikasi_id = $request->klasifikasi_id;
-
-//     // Query untuk pemesanan produk
-//     $queryPemesanan = Pemesananproduk::with(['toko', 'detailpemesananproduk.produk.klasifikasi']);
-    
-//     // Filter pemesanan berdasarkan tanggal_kirim
-//     if ($tanggal_kirim && $tanggal_akhir) {
-//         $queryPemesanan->whereBetween('tanggal_kirim', [Carbon::parse($tanggal_kirim)->startOfDay(), Carbon::parse($tanggal_akhir)->endOfDay()]);
-//     } elseif ($tanggal_kirim) {
-//         $queryPemesanan->where('tanggal_kirim', '>=', Carbon::parse($tanggal_kirim)->startOfDay());
-//     } elseif ($tanggal_akhir) {
-//         $queryPemesanan->where('tanggal_kirim', '<=', Carbon::parse($tanggal_akhir)->endOfDay());
-//     }
-
-//     // Filter berdasarkan toko
-//     if ($toko_id) {
-//         $queryPemesanan->where('toko_id', $toko_id);
-//     }
-
-//     // Filter berdasarkan klasifikasi
-//     if ($klasifikasi_id) {
-//         $queryPemesanan->whereHas('detailpemesananproduk.produk', function($query) use ($klasifikasi_id) {
-//             $query->where('klasifikasi_id', $klasifikasi_id);
-//         });
-//     }
-
-//     // Filter berdasarkan produk
-//     if ($produk) {
-//         $queryPemesanan->whereHas('detailpemesananproduk', function($query) use ($produk) {
-//             $query->where('produk_id', $produk);
-//         });
-//     }
-
-//     // Query untuk permintaan produk
-//     $queryPermintaan = PermintaanProduk::with(['detailpermintaanproduks.produk.klasifikasi', 'detailpermintaanproduks.toko']);
-
-//     // Filter permintaan berdasarkan tanggal_permintaan
-//     if ($tanggal_kirim && $tanggal_akhir) {
-//         $queryPermintaan->whereHas('detailpermintaanproduks', function ($query) use ($tanggal_kirim, $tanggal_akhir) {
-//             $query->whereBetween('tanggal_permintaan', [Carbon::parse($tanggal_kirim)->startOfDay(), Carbon::parse($tanggal_akhir)->endOfDay()]);
-//         });
-//     } elseif ($tanggal_kirim) {
-//         $queryPermintaan->whereHas('detailpermintaanproduks', function ($query) use ($tanggal_kirim) {
-//             $query->where('tanggal_permintaan', '>=', Carbon::parse($tanggal_kirim)->startOfDay());
-//         });
-//     } elseif ($tanggal_akhir) {
-//         $queryPermintaan->whereHas('detailpermintaanproduks', function ($query) use ($tanggal_akhir) {
-//             $query->where('tanggal_permintaan', '<=', Carbon::parse($tanggal_akhir)->endOfDay());
-//         });
-//     }
-
-//     // Filter berdasarkan toko
-//     if ($toko_id) {
-//         $queryPermintaan->whereHas('detailpermintaanproduks.toko', function($query) use ($toko_id) {
-//             $query->where('id', $toko_id);
-//         });
-//     }
-
-//     // Filter berdasarkan klasifikasi
-//     if ($klasifikasi_id) {
-//         $queryPermintaan->whereHas('detailpermintaanproduks.produk', function($query) use ($klasifikasi_id) {
-//             $query->where('klasifikasi_id', $klasifikasi_id);
-//         });
-//     }
-
-//     // Filter berdasarkan produk
-//     if ($produk) {
-//         $queryPermintaan->whereHas('detailpermintaanproduks', function($query) use ($produk) {
-//             $query->where('produk_id', $produk);
-//         });
-//     }
-
-//     // Ambil hasil query
-//     $pemesanan = $queryPemesanan->get();
-//     $permintaan = $queryPermintaan->get();
-
-//     $produks = Produk::all();
-//     $tokos = Toko::all();
-//     $klasifikasis = Klasifikasi::all();
-
-//     return view('admin.laporan_estimasiproduksi.index', compact('pemesanan', 'permintaan', 'produks', 'tokos', 'klasifikasis'));
-// }
 public function index(Request $request)
 {
     $tanggal = $request->tanggal;
@@ -984,96 +826,6 @@ public function printReportPemesanantoko(Request $request)
     return $pdf->stream('Laporan_Pemesanan_Produk.pdf');
 }
 
-
-
-// public function printReportAll(Request $request)
-// {
-//     $tanggal = $request->tanggal;
-//     $tanggal_akhir = $request->tanggal_akhir;
-//     $produk = $request->produk;
-//     $toko_id = $request->toko_id;
-//     $klasifikasi_id = $request->klasifikasi_id;
-
-//     // Query untuk pemesanan produk
-//     $queryPemesanan = Pemesananproduk::with(['toko', 'detailpemesananproduk.produk.klasifikasi']);
-
-//     // Filter pemesanan berdasarkan tanggal_kirim
-//     if ($tanggal && $tanggal_akhir) {
-//         $queryPemesanan->whereBetween('tanggal_kirim', [Carbon::parse($tanggal)->startOfDay(), Carbon::parse($tanggal_akhir)->endOfDay()]);
-//     } elseif ($tanggal) {
-//         $queryPemesanan->where('tanggal_kirim', '>=', Carbon::parse($tanggal)->startOfDay());
-//     } elseif ($tanggal_akhir) {
-//         $queryPemesanan->where('tanggal_kirim', '<=', Carbon::parse($tanggal_akhir)->endOfDay());
-//     }
-
-//     // Filter berdasarkan toko
-//     if ($toko_id) {
-//         $queryPemesanan->where('toko_id', $toko_id);
-//     }
-
-//     // Filter berdasarkan klasifikasi
-//     if ($klasifikasi_id) {
-//         $queryPemesanan->whereHas('detailpemesananproduk.produk', function($query) use ($klasifikasi_id) {
-//             $query->where('klasifikasi_id', $klasifikasi_id);
-//         });
-//     }
-
-//     // Filter berdasarkan produk
-//     if ($produk) {
-//         $queryPemesanan->whereHas('detailpemesananproduk', function($query) use ($produk) {
-//             $query->where('produk_id', $produk);
-//         });
-//     }
-
-//     // Query untuk permintaan produk
-//     $queryPermintaan = PermintaanProduk::with(['detailpermintaanproduks.produk.klasifikasi', 'detailpermintaanproduks.toko']);
-
-//     // Filter permintaan berdasarkan tanggal_permintaan
-//     if ($tanggal && $tanggal_akhir) {
-//         $queryPermintaan->whereHas('detailpermintaanproduks', function ($query) use ($tanggal, $tanggal_akhir) {
-//             $query->whereBetween('tanggal_permintaan', [Carbon::parse($tanggal)->startOfDay(), Carbon::parse($tanggal_akhir)->endOfDay()]);
-//         });
-//     } elseif ($tanggal) {
-//         $queryPermintaan->whereHas('detailpermintaanproduks', function ($query) use ($tanggal) {
-//             $query->where('tanggal_permintaan', '>=', Carbon::parse($tanggal)->startOfDay());
-//         });
-//     } elseif ($tanggal_akhir) {
-//         $queryPermintaan->whereHas('detailpermintaanproduks', function ($query) use ($tanggal_akhir) {
-//             $query->where('tanggal_permintaan', '<=', Carbon::parse($tanggal_akhir)->endOfDay());
-//         });
-//     }
-
-//     // Filter berdasarkan toko
-//     if ($toko_id) {
-//         $queryPermintaan->whereHas('detailpermintaanproduks.toko', function($query) use ($toko_id) {
-//             $query->where('id', $toko_id);
-//         });
-//     }
-
-//     // Filter berdasarkan klasifikasi
-//     if ($klasifikasi_id) {
-//         $queryPermintaan->whereHas('detailpermintaanproduks.produk', function($query) use ($klasifikasi_id) {
-//             $query->where('klasifikasi_id', $klasifikasi_id);
-//         });
-//     }
-
-//     // Filter berdasarkan produk
-//     if ($produk) {
-//         $queryPermintaan->whereHas('detailpermintaanproduks', function($query) use ($produk) {
-//             $query->where('produk_id', $produk);
-//         });
-//     }
-
-//     // Ambil hasil query
-//     $pemesanan = $queryPemesanan->get();
-//     $permintaan = $queryPermintaan->get();
-
-//     // Generate PDF
-//     $pdf = FacadePdf::loadView('admin.laporan_estimasiproduksi.print', compact('pemesanan', 'permintaan', 'tanggal', 'tanggal_akhir'));
-
-//     return $pdf->stream('report.pdf'); // Atau Anda bisa menggunakan ->download('report.pdf') untuk mengunduh
-// }
-
 public function printReportAll(Request $request)
 {
     $tanggal = $request->tanggal;
@@ -1183,6 +935,24 @@ $pemesanan = $pemesanan->map(function($pesanan) use ($permintaan) {
 
     // Generate PDF
     $pdf = FacadePdf::loadView('admin.laporan_estimasiproduksi.print', compact('pemesanan', 'tanggal', 'tanggal_akhir'));
+    $pdf->output();
+    $dompdf = $pdf->getDomPDF();
+    $canvas = $dompdf->getCanvas();
+    $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+        $text = "Page $pageNumber of $pageCount";
+        $font = $fontMetrics->getFont('Arial', 'normal');
+        $size = 8;
+
+        // Menghitung lebar teks
+        $width = $fontMetrics->getTextWidth($text, $font, $size);
+
+        // Mengatur koordinat X dan Y
+        $x = $canvas->get_width() - $width - 10;
+        $y = $canvas->get_height() - 15;
+
+        // Menambahkan teks ke posisi yang ditentukan
+        $canvas->text($x, $y, $text, $font, $size);
+    });
 
     return $pdf->stream('report.pdf');
 }
