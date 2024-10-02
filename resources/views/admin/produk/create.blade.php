@@ -51,7 +51,7 @@
                             </select>
 
                             <label style="margin-top:7px" for="status">Kategori</label>
-                             <select class="custom-select form-control" id="subklasifikasi" name="subklasifikasi">
+                             <select class="custom-select form-control" id="subklasifikasi" name="subklasifikasi_id">
                                 <option value="">- Semua Kategori -</option>
                                 @foreach ($subklasifikasis as $subklasifkasi)
                                     <option value="{{ $subklasifkasi->id }}" data-klasifikasi="{{ $subklasifkasi->klasifikasi_id }}" {{ Request::get('subklasifkasi') == $subklasifkasi->id ? 'selected' : '' }}>{{ $subklasifkasi->nama }}</option>

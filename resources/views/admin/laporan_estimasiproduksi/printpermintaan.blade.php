@@ -76,7 +76,7 @@
         <p class="title1">Cabang: {{ strtoupper($branchName) }}</p>
         <div class="divider"></div>
     
-        <h1 class="title2">LAPORAN PERMINTAAN PRODUK</h1>
+        <h1 class="title2">LAPORAN PERMINTAAN assasPRODUK</h1>
     
         @php
             \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
@@ -163,7 +163,7 @@
     </tbody>
     <tfoot>
         <tr>
-            <th colspan="3" class="text-center">Total</th>
+            <th colspan="4" class="text-center">Total</th>
             @foreach ($tokoData as $toko)
                 <th class="text-center">{{ $totalPerToko[$toko->id] ?? 0 }}</th>
             @endforeach
