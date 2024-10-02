@@ -97,26 +97,6 @@
         </p>
     </div>
 
-{{-- <div class="date-range">
-    @if($tanggal_retur && $tanggal_akhir)
-        <p>Periode Tanggal: {{ \Carbon\Carbon::parse($tanggal_retur)->format('d F Y') }} s/d {{ \Carbon\Carbon::parse($tanggal_akhir)->format('d F Y') }}</p>
-    @elseif($tanggal_retur)
-        <p>Periode Tanggal: Mulai {{ \Carbon\Carbon::parse($tanggal_retur)->format('d F Y') }}</p>
-    @elseif($tanggal_akhir)
-        <p>Periode Tanggal: Sampai {{ \Carbon\Carbon::parse($tanggal_akhir)->format('d F Y') }}</p>
-    @else
-        <p>Periode Tanggal: Hari Ini</p>
-    @endif
-
-    @php
-        \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
-        $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
-    @endphp
-</div> --}}
-{{-- <p>
-    <span style="float: right; font-style: italic">{{ $currentDateTime }}</span>
-</p> --}}
-
 <table class="table">
     <thead>
         <tr>
