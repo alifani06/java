@@ -11,51 +11,93 @@
             margin: 0;
             padding: 0;
         }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-        .header p {
-            margin: 0;
-            font-size: 14px;
-        }
-        .date-range {
-            text-align: left;
-            margin-bottom: 20px;
-        }
-        .table {
+        table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-            font-size: 10px;
         }
-        .table th, .table td {
-            border: 1px solid #000;
-            padding: 4px;
-            text-align: left;
+        th, td {
+            border: 1px solid black;
+            padding: 6px;
         }
-        .table th {
+        th {
             background-color: white;
         }
-        .table tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
+        .text-center {
+            text-align: center;
         }
-        .tfoot {
+        .header {
+            text-align: center;
+            margin-top: 3px;
+        }
+        .header span {
+            display: block;
+        }
+        .header .title {
             font-weight: bold;
+            font-size: 28px;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+        .header .title1 {
+            margin-top: 5px;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .header .title2 {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .header .period {
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .header .address, .header .contact {
+            font-size: 12px;
+        }
+        .divider {
+            border: 0.5px solid;
+            margin-top: 3px;
+            margin-bottom: 1px;
+        }
+        .logo img {
+            width: 100px;
+            height: 60px;
         }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>LAPORAN PEMUSNAHAN BARANG JADI</h1>
-</div>
+    <div class="header">
+        <div class="logo">
+            <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
+        </div>
+        <h1 class="title">PT JAVA BAKERY FACTORY</h1>
+        {{-- <p class="title1">Cabang: {{ strtoupper($branchName) }}</p> --}}
+        <div class="divider"></div>
 
-<div class="date-range">
+        <h1 class="title2">LAPORAN PEMMUSNAHAN BARANG JADI</h1>
+
+        @php
+            \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
+            $formattedStartDate = $startDate ? \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y') : 'Tidak ada';
+            $formattedEndDate = $endDate ? \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y') : 'Tidak ada';
+            $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
+        @endphp
+
+        <p class="period">
+            @if ($startDate && $endDate)
+                Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }}
+            @else
+                Periode: Tidak ada tanggal awal dan akhir yang diteruskan.
+            @endif
+        </p>
+
+        <p class="period right-align" style="font-size: 10px; position: absolute; top: 0; right: 0; margin: 10px;">
+            {{ $currentDateTime }}
+        </p>
+    </div>
+
+{{-- <div class="date-range">
     @if($tanggal_retur && $tanggal_akhir)
         <p>Periode Tanggal: {{ \Carbon\Carbon::parse($tanggal_retur)->format('d F Y') }} s/d {{ \Carbon\Carbon::parse($tanggal_akhir)->format('d F Y') }}</p>
     @elseif($tanggal_retur)
@@ -70,10 +112,10 @@
         \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
         $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
     @endphp
-</div>
-<p>
+</div> --}}
+{{-- <p>
     <span style="float: right; font-style: italic">{{ $currentDateTime }}</span>
-</p>
+</p> --}}
 
 <table class="table">
     <thead>
@@ -102,7 +144,7 @@
                 <tr>
                     <td>{{ $loop->parent->iteration }}</td>
                     <td>{{ $retur->produk->klasifikasi->nama }}</td>
-                    <td>{{ $retur->produk->kode_produk }}</td>
+                    <td>{{ $retur->produk->kode_lama }}</td>
                     <td>{{ $retur->produk->nama_produk }}</td>
                     <td style="text-align: right">{{ $retur->jumlah }}</td>
                     <td style="text-align: right">{{ number_format($retur->produk->harga, 0, ',', '.') }}</td>

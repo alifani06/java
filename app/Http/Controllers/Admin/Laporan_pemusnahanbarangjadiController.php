@@ -127,31 +127,18 @@ class Laporan_pemusnahanbarangjadiController extends Controller
         $formattedStartDate = $tanggal_retur ? Carbon::parse($tanggal_retur)->format('d-m-Y') : 'N/A';
         $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : 'N/A';
     
-        // Inisialisasi DOMPDF
-        $options = new Options();
-        $options->set('isHtml5ParserEnabled', true);
-        $options->set('isRemoteEnabled', true); // Jika menggunakan URL eksternal untuk gambar atau CSS
-    
-        $dompdf = new Dompdf($options);
-    
-        // Memuat konten HTML dari view
-        $html = view('admin.laporan_pemusnahanbarangjadi.print', [
+        // Buat PDF menggunakan Facade PDF
+        $pdf = FacadePdf::loadView('admin.laporan_pemusnahanbarangjadi.print', [
             'stokBarangJadi' => $stokBarangJadi,
             'tanggal_retur' => $tanggal_retur,
             'tanggal_akhir' => $tanggal_akhir,
             'startDate' => $formattedStartDate,
             'endDate' => $formattedEndDate,
-        ])->render();
-    
-        $dompdf->loadHtml($html);
-    
-        // Set ukuran kertas dan orientasi
-        $dompdf->setPaper('A4', 'portrait');
-    
-        // Render PDF
-        $dompdf->render();
+        ]);
     
         // Menambahkan nomor halaman di kanan bawah
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF();
         $canvas = $dompdf->getCanvas();
         $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
             $text = "Page $pageNumber of $pageCount";
@@ -170,7 +157,8 @@ class Laporan_pemusnahanbarangjadiController extends Controller
         });
     
         // Output PDF ke browser
-        return $dompdf->stream('Laporan_Pemusnahan_BarangJadi.pdf', ['Attachment' => false]);
+        return $pdf->stream('Laporan_Pemusnahan_BarangJadi.pdf');
     }
+    
     
 }
