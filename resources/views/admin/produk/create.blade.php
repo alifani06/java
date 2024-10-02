@@ -42,22 +42,20 @@
                     <div class="card-body">
                         
                         <div class="col-md-3 mb-3">
-                            <label for="klasifikasi">(Pilih Divisi)</label>
-                            <select class="custom-select form-control" id="klasifikasi" name="klasifikasi_id">
+                            <label for="status">Divisi</label>
+                            <select class="custom-select form-control" id="klasifikasi" name="klasifikasi_id" onchange="filterProduk()">
                                 <option value="">- Semua Divisi -</option>
                                 @foreach ($klasifikasis as $klasifikasi)
-                                    <option value="{{ $klasifikasi->id }}">{{ $klasifikasi->nama }}</option>
+                                    <option value="{{ $klasifikasi->id }}" {{ Request::get('klasifikasi_id') == $klasifikasi->id ? 'selected' : '' }}>{{ $klasifikasi->nama }}</option>
                                 @endforeach
                             </select>
-                        </div>
-                        
-                        <div class="col-md-3 mb-3">
-                            <label for="subklasifikasi">(Pilih Kategori)</label>
-                            <select class="custom-select form-control" id="subklasifikasi" name="subklasifikasi_id">
+
+                            <label style="margin-top:7px" for="status">Kategori</label>
+                             <select class="custom-select form-control" id="subklasifikasi" name="subklasifikasi">
                                 <option value="">- Semua Kategori -</option>
-                                @foreach ($subklasifikasis as $subklasifikasi)
-                                <option value="{{ $subklasifikasi->id }}">{{ $subklasifikasi->nama }}</option>
-                            @endforeach
+                                @foreach ($subklasifikasis as $subklasifkasi)
+                                    <option value="{{ $subklasifkasi->id }}" data-klasifikasi="{{ $subklasifkasi->klasifikasi_id }}" {{ Request::get('subklasifkasi') == $subklasifkasi->id ? 'selected' : '' }}>{{ $subklasifkasi->nama }}</option>
+                                @endforeach
                             </select>
                         </div>
                         
@@ -209,7 +207,7 @@
     </section>
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
+    {{-- <script>
        $(document).ready(function() {
     $('#klasifikasi').change(function() {
         var klasifikasi_id = $(this).val();
@@ -232,6 +230,27 @@
         });
     });
 });
+
+    </script> --}}
+
+    <script>
+        function filterProduk() {
+            var klasifikasiId = document.getElementById('klasifikasi').value;
+            var produkSelect = document.getElementById('subklasifikasi');
+            var produkOptions = produkSelect.options;
+
+            for (var i = 0; i < produkOptions.length; i++) {
+                var option = produkOptions[i];
+                if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
+                    option.style.display = "block";
+                } else {
+                    option.style.display = "none";
+                }
+            }
+
+            // Reset the selected value of the product select box
+            produkSelect.selectedIndex = 0;
+        }
 
     </script>
 

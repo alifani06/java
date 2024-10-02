@@ -98,25 +98,19 @@
 
                             <div class="col-md-3 mb-3">
                                 <label for="status">Divisi</label>
-                                <select class="select2bs4 select2-hidden-accessible" name="klasifikasi_id"
-                                    data-placeholder="Pilih Divisi.." style="width: 100%;" data-select2-id="23"
-                                    tabindex="-1" aria-hidden="true" id="klasifikasi" onchange="filterProduk()">
-                                    <option value="">- Pilih -</option>
-                                        @foreach ($klasifikasis as $klasifikasi)
-                                            <option value="{{ $klasifikasi->id }}" {{ Request::get('klasifikasi_id') == $klasifikasi->id ? 'selected' : '' }}>{{ $klasifikasi->nama }}</option>
-                                        @endforeach
-                                    </select>
+                                <select class="custom-select form-control" id="klasifikasi" name="klasifikasi_id" onchange="filterProduk()">
+                                    <option value="">- Semua Divisi -</option>
+                                    @foreach ($klasifikasis as $klasifikasi)
+                                        <option value="{{ $klasifikasi->id }}" {{ Request::get('klasifikasi_id') == $klasifikasi->id ? 'selected' : '' }}>{{ $klasifikasi->nama }}</option>
+                                    @endforeach
                                 </select>
+
                                 <label style="margin-top:7px" for="status">Produk</label>
-                                <select class="select2bs4 select2-hidden-accessible" name="produk"
-                                    data-placeholder="Pilih Produk" style="width: 100%;" data-select2-id="23"
-                                    tabindex="-1" aria-hidden="true" id="produk">
-                                    <option value="">- Pilih -</option>
-                                        @foreach ($produks as $produk)
-                                            <option value="{{ $produk->id }}" data-klasifikasi="{{ $produk->klasifikasi_id }}" {{ Request::get('produk') == $produk->id ? 'selected' : '' }}>{{ $produk->nama_produk }}</option>
-                                        @endforeach
-                                    </select>
-                                 
+                                 <select class="custom-select form-control" id="produk" name="produk">
+                                    <option value="">- Semua Produk -</option>
+                                    @foreach ($produks as $produk)
+                                        <option value="{{ $produk->id }}" data-klasifikasi="{{ $produk->klasifikasi_id }}" {{ Request::get('produk') == $produk->id ? 'selected' : '' }}>{{ $produk->nama_produk }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="col-md-3 mb-3">
