@@ -25,6 +25,8 @@ use App\Imports\ProdukImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Writer;
 
 
 
@@ -302,35 +304,67 @@ class ProdukController extends Controller
         return redirect('admin/produk')->with('success', 'Berhasil mengimpor produk dari Excel');
     }
 
+    // public function cetak_barcode($id)
+    // {
+    //     // Mengambil produk berdasarkan ID
+    //     $produk = Produk::findOrFail($id); // Menggunakan findOrFail untuk memastikan produk ada
+    
+    //     // Mengambil semua klasifikasi dan subklasifikasi jika perlu
+    //     $klasifikasis = Klasifikasi::all();
+    //     $subklasifikasis = Subklasifikasi::all();
+    
+    //     $pdf = FacadePdf::loadView('admin.produk.cetak_barcode', compact('produk', 'klasifikasis', 'subklasifikasis'));
+    //     $pdf->setPaper('a4', 'portrait');
+    
+    //     return $pdf->stream('penjualan.pdf');
+ 
+    // }
     public function cetak_barcode($id)
     {
         // Mengambil produk berdasarkan ID
         $produk = Produk::findOrFail($id); // Menggunakan findOrFail untuk memastikan produk ada
-    
+
         // Mengambil semua klasifikasi dan subklasifikasi jika perlu
         $klasifikasis = Klasifikasi::all();
         $subklasifikasis = Subklasifikasi::all();
-    
+
+        // Menghasilkan QR code untuk produk
+        $qrcode = new Writer(new ImageRenderer(new \BaconQrCode\Renderer\RendererStyle\RendererStyle(50), new \BaconQrCode\Renderer\Image\SvgImageBackEnd()));
+        $qrcodeData = $qrcode->writeString($produk->qrcode_produk);
+        $produk->qrcode_image = 'data:image/png;base64,' . base64_encode($qrcodeData); // Simpan gambar QR code sebagai string base64
+
+        // Mengirim data ke view
         $pdf = FacadePdf::loadView('admin.produk.cetak_barcode', compact('produk', 'klasifikasis', 'subklasifikasis'));
         $pdf->setPaper('a4', 'portrait');
-    
+
         return $pdf->stream('penjualan.pdf');
     }
+
+//     public function cetak_barcode($id)
+// {
+//     $produk = Produk::findOrFail($id); 
+
+//     $klasifikasis = Klasifikasi::all();
+//     $subklasifikasis = Subklasifikasi::all();
+
+//     $pdf = FacadePdf::loadView('admin.produk.cetak_barcode', compact('produk', 'klasifikasis', 'subklasifikasis'));
+
+//     $pdf->setPaper([0, 0, 33, 15], 'potrait'); 
+    
+//     return $pdf->stream('barcode_produk.pdf');
+// }
+
     
     public function print($id)
     {
-        // Mengambil produk berdasarkan ID
-        $produk = Produk::findOrFail($id); // Menggunakan findOrFail untuk memastikan produk ada
+        $produk = Produk::findOrFail($id); 
     
-        // Mengambil semua klasifikasi dan subklasifikasi jika perlu
         $klasifikasis = Klasifikasi::all();
         $subklasifikasis = Subklasifikasi::all();
     
-        // Menentukan ukuran barcode
         $barcodeWidth = 10 * 37.7953; // Menghitung lebar dari unit ke mm (1 unit = 37.7953 mm)
         $barcodeHeight = 10 * 37.7953; // Jika tinggi sama dengan lebar
     
-        // Set ukuran kertas sesuai barcode
         $customPaper = array(0, 0, $barcodeWidth, $barcodeHeight); // Lebar dan tinggi kertas sesuai barcode
     
         $pdf = FacadePdf::loadView('admin.produk.print', compact('produk', 'klasifikasis', 'subklasifikasis'));

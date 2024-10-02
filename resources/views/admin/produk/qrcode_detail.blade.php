@@ -52,7 +52,7 @@
 
         <div class="preloader flex-column justify-content-center align-items-center">
             <img class="" src="{{ asset('storage/uploads/icon/bakery.png') }}"alt="javabakery" height="50"
-                width="100">
+                width="120">
         </div>
 
         <!-- Navbar -->
