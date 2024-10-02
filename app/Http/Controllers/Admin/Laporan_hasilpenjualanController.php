@@ -1118,4 +1118,11 @@ class Laporan_hasilpenjualanController extends Controller
         return Excel::download(new StokBarangExportBR($request), 'BR.xlsx');
     }
     
+
+    public function getByKlasifikasi($id)
+    {
+        $produks = Produk::where('klasifikasi_id', $id)->get(['id', 'nama_produk']);
+        return response()->json($produks);
+    }
+    
 }

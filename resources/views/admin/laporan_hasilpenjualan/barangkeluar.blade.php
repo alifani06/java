@@ -74,51 +74,42 @@
                     <form method="GET" id="form-action">
                         <div class="row">
                             <div class="col-md-3 mb-3">
-
-                                <label  for="created_at">Jenis Laporan</label>
+                                <label for="created_at">Jenis Laporan</label>
                                 <select class="custom-select form-control" id="kategori2" name="kategori">
-                                    
                                     <option value="">- Pilih -</option>
                                     <option value="bk" {{ old('kategori2') == 'bk' ? 'selected' : '' }}>Laporan Barang Keluar Rinci</option>
                                     <option value="bkglobal" {{ old('kategori2') == 'bkglobal' ? 'selected' : '' }}>Laporan Barang Keluar Global</option>
                                 </select>
-
-                                <label style="margin-top:7px"  for="status">Pilih Toko</label>
+                    
+                                <label style="margin-top:7px" for="status">Pilih Toko</label>
                                 <select class="select2bs4 select2-hidden-accessible" name="toko_id"
                                     data-placeholder="Pilih Toko" style="width: 100%;" data-select2-id="23"
                                     tabindex="-1" aria-hidden="true" id="toko_id">
                                     <option value="">- Pilih -</option>
-                                        @foreach($tokos as $toko)
-                                            <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
-                                        @endforeach
+                                    @foreach($tokos as $toko)
+                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
+                                    @endforeach
                                 </select>
-
-                                
                             </div>
-
+                    
                             <div class="col-md-3 mb-3">
                                 <label for="status">Divisi</label>
-                                <select class="select2bs4 select2-hidden-accessible" name="klasifikasi_id"
-                                    data-placeholder="Pilih Divisi.." style="width: 100%;" data-select2-id="23"
-                                    tabindex="-1" aria-hidden="true" id="klasifikasi" onchange="filterProduk()">
-                                    <option value="">- Pilih -</option>
-                                        @foreach ($klasifikasis as $klasifikasi)
-                                            <option value="{{ $klasifikasi->id }}" {{ Request::get('klasifikasi_id') == $klasifikasi->id ? 'selected' : '' }}>{{ $klasifikasi->nama }}</option>
-                                        @endforeach
-                                    </select>
+                                <select class="custom-select form-control" id="klasifikasi" name="klasifikasi_id" onchange="filterProduk()">
+                                    <option value="">- Semua Divisi -</option>
+                                    @foreach ($klasifikasis as $klasifikasi)
+                                        <option value="{{ $klasifikasi->id }}" {{ Request::get('klasifikasi_id') == $klasifikasi->id ? 'selected' : '' }}>{{ $klasifikasi->nama }}</option>
+                                    @endforeach
                                 </select>
+
                                 <label style="margin-top:7px" for="status">Produk</label>
-                                <select class="select2bs4 select2-hidden-accessible" name="produk"
-                                    data-placeholder="Pilih Produk" style="width: 100%;" data-select2-id="23"
-                                    tabindex="-1" aria-hidden="true" id="produk">
-                                    <option value="">- Pilih -</option>
-                                        @foreach ($produks as $produk)
-                                            <option value="{{ $produk->id }}" data-klasifikasi="{{ $produk->klasifikasi_id }}" {{ Request::get('produk') == $produk->id ? 'selected' : '' }}>{{ $produk->nama_produk }}</option>
-                                        @endforeach
-                                    </select>
-                                 
+                                 <select class="custom-select form-control" id="produk" name="produk">
+                                    <option value="">- Semua Produk -</option>
+                                    @foreach ($produks as $produk)
+                                        <option value="{{ $produk->id }}" data-klasifikasi="{{ $produk->klasifikasi_id }}" {{ Request::get('produk') == $produk->id ? 'selected' : '' }}>{{ $produk->nama_produk }}</option>
+                                    @endforeach
                                 </select>
                             </div>
+                    
                             <div class="col-md-3 mb-3">
                                 <label for="tanggal_penjualan">Tanggal Awal</label>
                                 <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
@@ -126,11 +117,10 @@
                                 <label style="margin-top:7px" for="tanggal_akhir">Tanggal Akhir</label>
                                 <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
                                     value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
-
                             </div>
+                    
                             <div class="col-md-3 mb-3">
                                 <label style="color: white" for="tanggal_akhir">.</label>
-
                                 <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
@@ -141,7 +131,6 @@
                                     <i class="fas fa-file-excel"></i> Export Excel
                                 </button>
                             </div>
-
                         </div>
                     </form>
                     <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
@@ -222,20 +211,23 @@
             var klasifikasiId = document.getElementById('klasifikasi').value;
             var produkSelect = document.getElementById('produk');
             var produkOptions = produkSelect.options;
-
+    
+            // Reset produk display first
+            for (var i = 0; i < produkOptions.length; i++) {
+                produkOptions[i].style.display = "none"; // Hide all options
+            }
+    
+            // Show options based on klasifikasiId
             for (var i = 0; i < produkOptions.length; i++) {
                 var option = produkOptions[i];
                 if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
-                    option.style.display = "block";
-                } else {
-                    option.style.display = "none";
+                    option.style.display = "block"; // Show relevant options
                 }
             }
-
+    
             // Reset the selected value of the product select box
             produkSelect.selectedIndex = 0;
         }
-
     </script>
 
     <!-- /.card -->
