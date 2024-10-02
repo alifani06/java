@@ -112,90 +112,66 @@
     </div>
        
 
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Klasifikasi</th>
-                    <th>Kode Produk</th>
-                    <th>Nama Produk</th>
-                    <th colspan="2">Banjaran</th>
-                    <th colspan="2">Tegal</th>
-                    <th colspan="2">Slawi</th>
-                    <th colspan="2">Bumiayu</th>
-                    <th colspan="2">Pemalang</th>
-                    <th colspan="2">Cilacap</th>
-                    <th>Total Pesanan</th>
-                    <th>Total Permintaan</th>
-                    <th>Total Semua</th>
-                </tr>
-                <tr>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th>Stok</th>
-                    <th>Pes</th>
-                    <th>Stok</th>
-                    <th>Pes</th>
-                    <th>Stok</th>
-                    <th>Pes</th>
-                    <th>Stok</th>
-                    <th>Pes</th>
-                    <th>Stok</th>
-                    <th>Pes</th>
-                    <th>Stok</th>
-                    <th>Pes</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($pemesanan as $order)
-                    @foreach ($order->detailpemesananproduk as $detail)
-                        <tr>
-                            <td>{{ $detail->produk->klasifikasi->nama }}</td>
-                            <td>{{ $detail->produk->kode_lama }}</td>
-                            <td>{{ $detail->produk->nama_produk }}</td>
-            
-                            <!-- Banjaran -->
-                            <td>{{ $order->jumlah_permintaan?? 0 }}</td> <!-- Stok Banjaran -->
-                            <td>{{ $order->jumlah_pesanan ?? 0 }}</td> <!-- Pesanan Banjaran -->
-            
-                            <!-- Tegal -->
-                            <td>{{ $order->stok_tegal ?? 0 }}</td> <!-- Stok Tegal -->
-                            <td>{{ $order->pesanan_tegal ?? 0 }}</td> <!-- Pesanan Tegal -->
-            
-                            <!-- Slawi -->
-                            <td>{{ $order->stok_slawi ?? 0 }}</td> <!-- Stok Slawi -->
-                            <td>{{ $order->pesanan_slawi ?? 0 }}</td> <!-- Pesanan Slawi -->
-            
-                            <!-- Bumiayu -->
-                            <td>{{ $order->stok_bumiayu ?? 0 }}</td> <!-- Stok Bumiayu -->
-                            <td>{{ $order->pesanan_bumiayu ?? 0 }}</td> <!-- Pesanan Bumiayu -->
-            
-                            <!-- Pemalang -->
-                            <td>{{ $order->stok_pemalang ?? 0 }}</td> <!-- Stok Pemalang -->
-                            <td>{{ $order->pesanan_pemalang ?? 0 }}</td> <!-- Pesanan Pemalang -->
-            
-                            <!-- Cilacap -->
-                            <td>{{ $order->stok_cilacap ?? 0 }}</td> <!-- Stok Cilacap -->
-                            <td>{{ $order->pesanan_cilacap ?? 0 }}</td> <!-- Pesanan Cilacap -->
-            
-                            <!-- Total Pesanan -->
-                            <td>{{ $order->jumlah_pesanan }}</td>
-            
-                            <!-- Total Permintaan -->
-                            <td>{{ $order->jumlah_permintaan }}</td>
-            
-                            <!-- Total Semua -->
-                            <td>{{ $order->jumlah_pesanan + $order->jumlah_permintaan }}</td>
-                        </tr>
-                    @endforeach
+    <table>
+        <thead>
+            <tr>
+                <th>Klasifikasi</th>
+                <th>Kode Produk</th>
+                <th>Nama Produk</th>
+                <th colspan="2">Banjaran</th>
+                <th colspan="2">Tegal</th>
+                <th colspan="2">Slawi</th>
+                <th colspan="2">Bumiayu</th>
+                <th colspan="2">Pemalang</th>
+                <th colspan="2">Cilacap</th>
+                <th>Total Pesanan</th>
+                <th>Total Permintaan</th>
+                <th>Total Semua</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>Stok</th>
+                <th>Pes</th>
+                <th>Stok</th>
+                <th>Pes</th>
+                <th>Stok</th>
+                <th>Pes</th>
+                <th>Stok</th>
+                <th>Pes</th>
+                <th>Stok</th>
+                <th>Pes</th>
+                <th>Stok</th>
+                <th>Pes</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($groupedData as $klasifikasi => $products)
+                @foreach($products as $product)
+                    <tr>
+                        <td>{{ $product['klasifikasi'] }}</td>
+                        <td>{{ $product['kode_lama'] }}</td>
+                        <td>{{ $product['nama_produk'] }}</td>
+    
+                        <!-- Loop toko untuk stok (permintaan) dan pes (pemesanan) -->
+                        @foreach($tokoList as $tokoId => $tokoName)
+                            <td>{{ $product['stok'][$tokoId] ?? 0 }}</td>
+                            <td>{{ $product['pes'][$tokoId] ?? 0 }}</td>
+                        @endforeach
+    
+                        <td>{{ $product['total_pemesanan'] }}</td>
+                        <td>{{ $product['total_permintaan'] }}</td>
+                        <td>{{ $product['total_semua'] }}</td>
+                    </tr>
                 @endforeach
-            </tbody>
-            
-            
-        </table>
+            @endforeach
+        </tbody>
+    </table>
+    
 
 </body>
 </html>
