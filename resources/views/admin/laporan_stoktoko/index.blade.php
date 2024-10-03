@@ -179,40 +179,26 @@
 }
 </script>
 
-    <script>
+<script>
         function filterSubKlasifikasi() {
-            var klasifikasiId = document.getElementById('klasifikasi').value;
-            var subKlasifikasiSelect = document.getElementById('subklasifikasi');
-            var subKlasifikasiOptions = subKlasifikasiSelect.options;
-    
-            // Show all options initially
-            for (var i = 0; i < subKlasifikasiOptions.length; i++) {
-                var option = subKlasifikasiOptions[i];
-                if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
-                    option.style.display = "block";
-                } else {
-                    option.style.display = "none";
-                }
-            }
-    
-            // Automatically select the first valid option if any
-            var foundValidOption = false;
-            for (var i = 1; i < subKlasifikasiOptions.length; i++) { // Skip the first option (default)
-                var option = subKlasifikasiOptions[i];
-                if (option.style.display === "block") {
-                    subKlasifikasiSelect.selectedIndex = i;
-                    foundValidOption = true;
-                    break;
-                }
-            }
-            if (!foundValidOption) {
-                subKlasifikasiSelect.selectedIndex = 0; // Select default if no valid option found
-            }
+    var klasifikasiId = document.getElementById('klasifikasi').value;
+    var subKlasifikasiSelect = document.getElementById('subklasifikasi');
+    var subKlasifikasiOptions = subKlasifikasiSelect.options;
+
+    // Show all options initially
+    for (var i = 0; i < subKlasifikasiOptions.length; i++) {
+        var option = subKlasifikasiOptions[i];
+        if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
+            option.style.display = "block";
+        } else {
+            option.style.display = "none";
         }
+    }
     
-        // Initialize the filter on page load to show the correct subklasifikasi options
-        document.addEventListener('DOMContentLoaded', function() {
-            filterSubKlasifikasi();
-        });
-    </script>
+    // Don't automatically select sub classification, let the user decide
+    subKlasifikasiSelect.selectedIndex = 0;
+    }
+
+</script>
+
 @endsection
