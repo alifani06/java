@@ -37,6 +37,7 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Pengiriman_barangjadi;
+use App\Models\Subklasifikasi;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -87,8 +88,6 @@ class Inquery_pengirimanbarangjadiController extends Controller{
 
         return view('admin.inquery_pengirimanbarangjadi.index', compact('stokBarangJadi', 'tokos'));
     }
-
-
     
     public function show($id)
     {
@@ -182,11 +181,8 @@ class Inquery_pengirimanbarangjadiController extends Controller{
         return redirect()->route('admin.pengiriman_barangjadi.index')->with('success', 'Data berhasil diperbarui');
     }
 
-    
-
-
-        public function unpost_pengirimanbarangjadi($id)
-        {
+    public function unpost_pengirimanbarangjadi($id)
+    {
             // Ambil data stok barang berdasarkan ID
             $stok = Pengiriman_barangjadi::where('id', $id)->first();
         
@@ -203,11 +199,10 @@ class Inquery_pengirimanbarangjadiController extends Controller{
                 'status' => 'unpost'
             ]);
             return back()->with('success', 'Berhasil mengubah status semua produk dan detail terkait dengan kode_input yang sama.');
-        }
+    }
         
-
-        public function posting_pengirimanbarangjadi($id)
-        {
+    public function posting_pengirimanbarangjadi($id)
+    {
            // Ambil data pengiriman_barangjadi berdasarkan ID
             $pengiriman = Pengiriman_barangjadi::where('id', $id)->first();
         
@@ -230,12 +225,10 @@ class Inquery_pengirimanbarangjadiController extends Controller{
             ]);
         
             return response()->json(['success' => 'Berhasil mengubah status semua produk dan detail terkait dengan kode_pengiriman yang sama.']);
-        }
+    }
 
-       
-
-        public function print($id)
-        {
+    public function print($id)
+    {
             // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
             $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_pengiriman');
                 
@@ -281,7 +274,7 @@ class Inquery_pengirimanbarangjadiController extends Controller{
     
             // Output PDF ke browser
             return $pdf->stream('surat_permintaan_produk.pdf');
-        }
+    }
 
     public function unpost(Request $request, $id)
     {
@@ -297,8 +290,8 @@ class Inquery_pengirimanbarangjadiController extends Controller{
         return response()->json(['success' => false], 404);
     }
     
-        public function destroy($id)
-        {
+    public function destroy($id)
+    {
             DB::transaction(function () use ($id) {
                 $pemesanan = Pemesananproduk::findOrFail($id);
         
@@ -310,10 +303,10 @@ class Inquery_pengirimanbarangjadiController extends Controller{
             });
         
             return redirect('admin/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
-        }
+    }
         
-        public function import(Request $request)
-        {
+    public function import(Request $request)
+    {
             $request->validate([
                 'file' => 'required|mimes:xlsx,xls',
             ]);
@@ -322,12 +315,27 @@ class Inquery_pengirimanbarangjadiController extends Controller{
     
             // Redirect to the form with success message
             return redirect()->route('form.produk')->with('success', 'Data produk berhasil diimpor.');
-        }
+    }
     
-        public function formProduk()
-        {
+    public function formProduk()
+    {
             $klasifikasis = Klasifikasi::with('produks')->get();
             $importedData = session('imported_data', []);
             return view('admin.permintaan_produk.form', compact('klasifikasis', 'importedData'));
-        }
+    }
+
+    public function cetak_barcode($id)
+    {
+        $produk = Produk::findOrFail($id); 
+    
+        $klasifikasis = Klasifikasi::all();
+        $subklasifikasis = Subklasifikasi::all();
+    
+        $pdf = FacadePdf::loadView('admin.inquery_pengirimanbarangjadi.cetak_barcode', compact('produk', 'klasifikasis', 'subklasifikasis'));
+        
+        $pdf->setPaper([0, 0, 612, 400], 'portrait'); 
+        return $pdf->stream('penjualan.pdf');
+    }
+
+    
 }

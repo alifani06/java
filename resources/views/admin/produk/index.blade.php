@@ -92,12 +92,6 @@
                                             {!! DNS2D::getBarcodeHTML("$produk->qrcode_produk", 'QRCODE', 2, 2) !!}
                                         </div>
                                     </td>
-                                    {{-- <td data-toggle="modal" data-target="#modal-qrcode-{{ $produk->id }}" style="text-align: center;">
-                                        <div style="display: inline-block;">
-                                            {!! DNS1D::getBarcodeHTML($produk->kode_lama, 'C128', 1, 50) !!}
-                                        </div>
-                                    </td> --}}
-                                    
                                     <td class="text-center">
                                         <a href="{{ route('produk.cetak_barcode', $produk->id) }}" class="btn btn-primary btn-sm" target="_blank">
                                             <i class="fas fa-print"></i>

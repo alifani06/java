@@ -153,11 +153,8 @@
                                  
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         @if ($firstItem->status == 'unpost')
-                                           
-{{--                                 
-                                                    <a class="dropdown-item"
-                                                    href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a> --}}
-                                            
+                                                <a class="dropdown-item"
+                                                href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
                                                 <a class="dropdown-item"
                                                 href="{{ url('/admin/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
                                                 @endif
@@ -181,6 +178,7 @@
                                                 <th>Kode Produk</th>
                                                 <th>Produk</th>
                                                 <th>Jumlah</th>
+                                                <th>Cetak</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -189,8 +187,17 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $detail->produk->klasifikasi->nama }}</td>
                                                 <td>{{ $detail->produk->kode_lama }}</td>
-                                                <td>{{ $detail->produk->nama_produk }}</td>
+                                                <td>
+                                                    {{ $detail->produk->nama_produk }}
+                                                 
+                                                </td>
+                                               
                                                 <td>{{ $detail->jumlah }}</td>
+                                                <td>
+                                                    <a href="{{ route('inquery_pengirimanbarangjadi.cetak_barcode', $detail->produk->id) }}" class="btn btn-primary btn-sm" target="_blank" onclick="openPrintDialog(event)">
+                                                        <i class="fas fa-print"></i>
+                                                    </a>
+                                                </td>
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -200,9 +207,7 @@
                      
                         @endforeach
                         </tbody>
-                    </table> 
-               
-                    
+                    </table>              
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
                         aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">
@@ -220,7 +225,20 @@
             </div>
         </div>
     </section>
-
+    <script>
+        function openPrintDialog(event) {
+            event.preventDefault(); // Menghentikan aksi default
+            const url = event.currentTarget.href; // Mendapatkan URL dari link
+    
+            const win = window.open(url, '_blank'); // Membuka URL di tab baru
+    
+            // Setelah tab terbuka, tunggu beberapa saat agar PDF dimuat dan kemudian cetak
+            win.onload = function() {
+                win.print(); // Memicu dialog print
+            };
+        }
+    </script>
+   
     <script>
         var tanggalAwal = document.getElementById('tanggal_pengiriman');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
@@ -246,8 +264,6 @@
         }
 
     </script>
-
-
 
     {{-- unpost stok  --}}
     <script>

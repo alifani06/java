@@ -35,7 +35,7 @@ class ProdukController extends Controller
 
     public function detail($kode)
     {
-        // return "hello world";
+  
         $produk = Produk::where('kode_produk', $kode)->first();
         return view('admin/produk.qrcode_detail', compact('produk'));
     
