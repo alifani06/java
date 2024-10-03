@@ -321,24 +321,19 @@ class ProdukController extends Controller
     // }
     public function cetak_barcode($id)
     {
-        // Mengambil produk berdasarkan ID
-        $produk = Produk::findOrFail($id); // Menggunakan findOrFail untuk memastikan produk ada
-
-        // Mengambil semua klasifikasi dan subklasifikasi jika perlu
+        $produk = Produk::findOrFail($id); 
+    
         $klasifikasis = Klasifikasi::all();
         $subklasifikasis = Subklasifikasi::all();
-
-        // Menghasilkan QR code untuk produk
-        $qrcode = new Writer(new ImageRenderer(new \BaconQrCode\Renderer\RendererStyle\RendererStyle(50), new \BaconQrCode\Renderer\Image\SvgImageBackEnd()));
-        $qrcodeData = $qrcode->writeString($produk->qrcode_produk);
-        $produk->qrcode_image = 'data:image/png;base64,' . base64_encode($qrcodeData); // Simpan gambar QR code sebagai string base64
-
-        // Mengirim data ke view
+    
         $pdf = FacadePdf::loadView('admin.produk.cetak_barcode', compact('produk', 'klasifikasis', 'subklasifikasis'));
-        $pdf->setPaper('a4', 'portrait');
-
+        
+        $pdf->setPaper([0, 0, 612, 400], 'portrait'); 
         return $pdf->stream('penjualan.pdf');
     }
+    
+
+    
 
 //     public function cetak_barcode($id)
 // {

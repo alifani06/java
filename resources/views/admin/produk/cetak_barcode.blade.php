@@ -1,175 +1,210 @@
 {{-- <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cetak Produk</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}"> <!-- Sesuaikan dengan gaya CSS Anda -->
-    <style>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Invoice</title>
+
+    <style type="text/css">
+        /* Reset all margins and padding */
         * {
             margin: 0;
             padding: 0;
         }
-        .container {
-            display: flex;
-            padding-left: 5%;
-            align-items: center; 
+
+        .box1 {
+            margin-left: 0px;
+            margin-top: 0px;
         }
-        .product-name {
-            margin-right: 20px; 
-        }
-        .text-container {
-            position: relative;
-            /* margin-right: 760px; */
-            margin-left: 57px;
-      
-        }
+
+        body {
+    width: 100%; /* Pastikan menggunakan lebar maksimum */
+    height: auto; /* Sesuaikan tinggi otomatis */
+}
+
+.text-container {
+    width: 100%; /* Atur lebar container */
+    height: auto; /* Sesuaikan tinggi otomatis */
+}
+
 
         .text {
             font-size: 10px;
-            margin-top: -45px;
+            margin-left: 2px;
 
+        }
+
+        .bold-text {
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="text-container">
+        <table>
+            <td>
+                <div class="box1">
+                    <table>
+                        <td>
+                            <div style="display: inline-block;">
+                                {!! DNS2D::getBarcodeHTML("$produk->qrcode_produk", 'QRCODE', 1, 1) !!}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="text">
+                                <p class="bold-text">{{ $produk->kode_lama }}</p>
+                                <p class="bold-text">{{ $produk->nama_produk }}</p>
+                            </div>
+                        </td>
+                    </table>
+                </div>
+            </td>
+           
+        </table>
+    </div>
+</body>
+</html> --}}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {{-- <link rel="stylesheet" href="{{ asset('falcon/style.css') }}"> --}}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Produk</title>
+
+    <style type="text/css">
+        /* Reset all margins and padding */
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .box {
+            margin-left: 0px;
+            margin-top: 0px;
+        }
+        .text-container {
+            position: relative;
+            margin-right: 760px;
+            margin-left: 2px;
+            margin-top: 10px;
+            transform: rotate(90deg);   
+        }
+        .box1 {
+            margin-left: 0px;
+            margin-top: 40px;
+        }
+        .text-container1 {
+            position: relative;
+            margin-right: 760px;
+            margin-left: 2px;
+            margin-top: 10px;
+            transform: rotate(90deg);   
+        }
+        .box2 {
+            margin-left: 0px;
+            margin-top: 35px;
+        }
+        .text-container2 {
+            position: relative;
+            margin-right: 760px;
+            margin-left: 2px;
+            margin-top: 10px;
+            transform: rotate(90deg);   
+        }
+
+        .text {
+            font-size: 7px
         }
 
         .bold-text {
             font-weight: bold;
             font-family: Arial, Helvetica, sans-serif
         }
-        .box{
-            margin-left: 10px;
-            margin-top: 5px;
-        }
-        .box1 {
-            margin-left: 10px;
-            margin-top: 5px;
-        }
-        .box2 {
-            margin-left: 10px;
-            margin-top: 5px;
+        .truncate {
+            width: 70px; /* Atur lebar sesuai kebutuhan */
+            overflow: hidden; /* Menyembunyikan teks yang melimpah */
+            white-space: nowrap; /* Mencegah teks untuk terbungkus */
+            text-overflow: ellipsis; /* Menampilkan elipsis jika teks terpotong */
         }
 
     </style>
+
 </head>
+
 <body>
-
-
-    <div class="box1">
-        <?php
-        use BaconQrCode\Renderer\ImageRenderer;
-        use BaconQrCode\Writer;
-        
-        // Ubah tautan menjadi QR code
-        $qrcode = new Writer(new ImageRenderer(new \BaconQrCode\Renderer\RendererStyle\RendererStyle(50), new \BaconQrCode\Renderer\Image\SvgImageBackEnd()));
-        $qrcodeData = $qrcode->writeString($produk->qrcode_produk);
-        
-        // Tampilkan gambar QR code
-        echo '<img src="data:image/png;base64,' . base64_encode($qrcodeData) . '" />';
-        ?>
-    </div>
-    <div class="text-container">
-        <div class="text">
-            <p class="product-name">{{ $produk->nama_produk }}</p>
+    <div>
+        <div class="box">
+            <?php
+            use BaconQrCode\Renderer\ImageRenderer;
+            use BaconQrCode\Writer;
+            
+            // Ubah tautan menjadi QR code
+            $qrcode = new Writer(new ImageRenderer(new \BaconQrCode\Renderer\RendererStyle\RendererStyle(50), new \BaconQrCode\Renderer\Image\SvgImageBackEnd()));
+            $qrcodeData = $qrcode->writeString($produk->qrcode_produk);
+            
+            // Tampilkan gambar QR code
+            echo '<img src="data:image/png;base64,' . base64_encode($qrcodeData) . '" />';
+            ?>
         </div>
-    </div>
+        <div class="text-container">
+            <div class="text">
+                <p class="bold-text">{{ $produk->kode_lama }}</p>
+                <p class="bold-text truncate">{{ $produk->nama_produk }}</p>
+                <p style="font-size: 9px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
+                <p class="bold-text">A1</p>
+            </div>
+        </div>
 
-    <div class="box">
-        <?php
+        <div class="box1">
+            <?php
+            // Ubah tautan menjadi QR code
+            $qrcode = new Writer(new ImageRenderer(new \BaconQrCode\Renderer\RendererStyle\RendererStyle(50), new \BaconQrCode\Renderer\Image\SvgImageBackEnd()));
+            $qrcodeData = $qrcode->writeString($produk->qrcode_produk);
+            
+            // Tampilkan gambar QR code
+            echo '<img src="data:image/png;base64,' . base64_encode($qrcodeData) . '" />';
+            ?>
+        </div>
+        <div class="text-container1">
+            <div class="text">
+                <p class="bold-text">{{ $produk->kode_lama }}</p>
+                <p class="bold-text truncate">{{ $produk->nama_produk }}</p>
+                <p style="font-size: 9px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
+                <p class="bold-text">A1</p>
+            </div>
+        </div>
+
+        <div class="box2">
+            <?php
+            // Ubah tautan menjadi QR code
+            $qrcode = new Writer(new ImageRenderer(new \BaconQrCode\Renderer\RendererStyle\RendererStyle(50), new \BaconQrCode\Renderer\Image\SvgImageBackEnd()));
+            $qrcodeData = $qrcode->writeString($produk->qrcode_produk);
+            
+            // Tampilkan gambar QR code
+            echo '<img src="data:image/png;base64,' . base64_encode($qrcodeData) . '" />';
+            ?>
+        </div>
+        <div class="text-container2">
+            <div class="text">
+                <p class="bold-text">{{ $produk->kode_lama }}</p>
+                <p class="bold-text truncate">{{ $produk->nama_produk }}</p>
+                <p style="font-size: 9px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
+                <p class="bold-text">A1</p>
+            </div>
+        </div>
+
       
-        // Ubah tautan menjadi QR code
-        $qrcode = new Writer(new ImageRenderer(new \BaconQrCode\Renderer\RendererStyle\RendererStyle(50), new \BaconQrCode\Renderer\Image\SvgImageBackEnd()));
-        $qrcodeData = $qrcode->writeString($produk->qrcode_produk);
         
-        // Tampilkan gambar QR code
-        echo '<img src="data:image/png;base64,' . base64_encode($qrcodeData) . '" />';
-        ?>
     </div>
-    <div class="text-container">
-        <div class="text">
-            <p class="product-name">{{ $produk->nama_produk }}</p>
-        </div>
-    </div>
-
-    <div class="box2">
-        <?php
-      
-        // Ubah tautan menjadi QR code
-        $qrcode = new Writer(new ImageRenderer(new \BaconQrCode\Renderer\RendererStyle\RendererStyle(50), new \BaconQrCode\Renderer\Image\SvgImageBackEnd()));
-        $qrcodeData = $qrcode->writeString($produk->qrcode_produk);
-        
-        // Tampilkan gambar QR code
-        echo '<img src="data:image/png;base64,' . base64_encode($qrcodeData) . '" />';
-        ?>
-    </div>
-    <div class="text-container">
-        <div class="text">
-            <p class="product-name">{{ $produk->nama_produk }}</p>
-        </div>
-    </div>
-
-    
 </body>
-</html> --}}
 
-
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cetak Barcode</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}"> <!-- Sesuaikan dengan gaya CSS Anda -->
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        td {
-            width: 33%;
-            text-align: center;
-            padding: 10px;
-            vertical-align: top;
-        }
-        .text {
-            font-size: 10px;
-            margin-top: 5px;
-        }
-        .product-name {
-            font-weight: bold;
-            font-size: 5px;
-        }
-        img {
-            margin-bottom: 5px; /* Menambahkan jarak di bawah gambar */
-        }
-    </style>
-</head>
-<body>
-
-    <table>
-        <tr>
-            <td>
-                <img src="{{ $produk->qrcode_image }}" />
-                <p class="product-name">{{ $produk->nama_produk }}</p>
-            </td>
-            <td>
-                <img src="{{ $produk->qrcode_image }}" />
-                <p class="product-name">{{ $produk->nama_produk }}</p>
-            </td>
-            <td>
-                <img src="{{ $produk->qrcode_image }}" />
-                <p class="product-name">{{ $produk->nama_produk }}</p>
-            </td>
-        </tr>
-    </table>
-
-</body>
 </html>
-
-
-

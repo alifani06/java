@@ -159,8 +159,8 @@
     
                         <!-- Loop toko untuk stok (permintaan) dan pes (pemesanan) -->
                         @foreach($tokoList as $tokoId => $tokoName)
-                            <td>{{ $product['stok'][$tokoId] ?? 0 }}</td>
-                            <td>{{ $product['pes'][$tokoId] ?? 0 }}</td>
+                            <td>{{ $product['stok'][$tokoId] ?? '-' }}</td>
+                            <td>{{ $product['pes'][$tokoId] ?? '-' }}</td>
                         @endforeach
     
                         <td>{{ $product['total_pemesanan'] }}</td>
