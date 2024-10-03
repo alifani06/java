@@ -140,7 +140,7 @@
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($permintaan->status == 'unpost')
                                                     <a class="dropdown-item posting-btn"data-memo-id="{{ $permintaan->id }}">Posting</a>
-                                                    <a class="dropdown-item" href="{{ url('admin/permintaan_produk/' . $permintaan->id . '/edit') }}">Update</a>
+                                                    {{-- <a class="dropdown-item" href="{{ url('admin/permintaan_produk/' . $permintaan->id . '/edit') }}">Update</a> --}}
                                                     <a class="dropdown-item" href="{{ url('admin/permintaan_produk/' . $permintaan->id) }}">Show</a>
                                                     <form action="{{ url('admin/permintaan_produk/' . $permintaan->id) }}" method="POST" style="display: inline;">
                                                         @csrf
@@ -172,7 +172,7 @@
                                                 <tr >
                                                     <td>{{ $loop->iteration }}</td>
                                                         <td>{{ $detail->produk->klasifikasi->nama }}</td>
-                                                        <td>{{ $detail->produk->kode_produk }}</td>
+                                                        <td>{{ $detail->produk->kode_lama }}</td>
                                                         <td>{{ $detail->produk->nama_produk }}</td>
                                                         <td>{{ $detail->jumlah }}</td>
                                                         

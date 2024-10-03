@@ -171,7 +171,7 @@
                                                     <tr>
                                                         <td>{{ $loop->iteration }}</td>
                                                         <td>{{ $detail->produk->klasifikasi->nama }}</td>
-                                                        <td>{{ $detail->produk->kode_produk }}</td>
+                                                        <td>{{ $detail->produk->kode_lama }}</td>
                                                         <td>{{ $detail->produk->nama_produk }}</td>
                                                         <td>{{ $detail->jumlah }}</td>
                                                     </tr>

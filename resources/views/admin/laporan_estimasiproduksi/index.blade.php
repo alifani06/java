@@ -144,8 +144,13 @@
                                     <td>{{ $pesanan->kode_pemesanan }}</td>
                                     <td>{{ \Carbon\Carbon::parse($pesanan->tanggal_kirim)->format('d/m/Y H:i') }}</td>
                                     <td>
-                                        {{ $pesanan->detailpemesananproduk->pluck('produk.nama_produk')->implode(', ') }}
+                                        <ul>
+                                            @foreach($pesanan->detailpemesananproduk as $detail)
+                                                <li>{{ $detail->produk->nama_produk }} ({{ $detail->jumlah }})</li>
+                                            @endforeach
+                                        </ul>
                                     </td>
+                                    
                                     <td>Pemesanan</td>
                                 </tr>
                             @endforeach
@@ -159,8 +164,14 @@
                                     <td>{{ $permintaanItem->kode_permintaan }}</td>
                                     <td>{{ \Carbon\Carbon::parse($permintaanItem->created_at)->format('d/m/Y H:i') }}</td>
                                     <td>
-                                        {{ $permintaanItem->detailpermintaanproduks->pluck('produk.nama_produk')->implode(', ') }}
+                                        <ul>
+                                            @foreach($permintaanItem->detailpermintaanproduks as $detail)
+                                                <li>{{ $detail->produk->nama_produk }} ({{ $detail->jumlah }})</li>
+                                            @endforeach
+                                        </ul>
                                     </td>
+                                    
+                                    
                                     <td>Permintaan</td>
                                 </tr>
                             @endforeach

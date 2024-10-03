@@ -55,13 +55,22 @@ public function index(Request $request)
     $queryPemesanan = Pemesananproduk::with(['toko', 'detailpemesananproduk.produk.klasifikasi']);
 
     // Filter pemesanan berdasarkan tanggal_kirim
+    // if ($tanggal && $tanggal_akhir) {
+    //     $queryPemesanan->whereBetween('tanggal_kirim', [Carbon::parse($tanggal)->startOfDay(), Carbon::parse($tanggal_akhir)->endOfDay()]);
+    // } elseif ($tanggal) {
+    //     $queryPemesanan->where('tanggal_kirim', '>=', Carbon::parse($tanggal)->startOfDay());
+    // } elseif ($tanggal_akhir) {
+    //     $queryPemesanan->where('tanggal_kirim', '<=', Carbon::parse($tanggal_akhir)->endOfDay());
+    // }
+    // Filter pemesanan berdasarkan tanggal_kirim (1 hari setelah tanggal yang dipilih)
     if ($tanggal && $tanggal_akhir) {
-        $queryPemesanan->whereBetween('tanggal_kirim', [Carbon::parse($tanggal)->startOfDay(), Carbon::parse($tanggal_akhir)->endOfDay()]);
+        $queryPemesanan->whereBetween('tanggal_kirim', [Carbon::parse($tanggal)->addDay()->startOfDay(), Carbon::parse($tanggal_akhir)->addDay()->endOfDay()]);
     } elseif ($tanggal) {
-        $queryPemesanan->where('tanggal_kirim', '>=', Carbon::parse($tanggal)->startOfDay());
+        $queryPemesanan->where('tanggal_kirim', '>=', Carbon::parse($tanggal)->addDay()->startOfDay());
     } elseif ($tanggal_akhir) {
-        $queryPemesanan->where('tanggal_kirim', '<=', Carbon::parse($tanggal_akhir)->endOfDay());
+        $queryPemesanan->where('tanggal_kirim', '<=', Carbon::parse($tanggal_akhir)->addDay()->endOfDay());
     }
+
 
     // Filter berdasarkan toko
     if ($toko_id) {
@@ -340,7 +349,7 @@ public function printReportPermintaan(Request $request)
     $branchName = $toko_id ? Toko::find($toko_id)->nama_toko : 'Semua Toko';
 
     // Buat PDF menggunakan Facade Pdf
-    $pdf = FacadePdf::loadView('admin.laporan_permintaanproduk.print', [
+    $pdf = FacadePdf::loadView('admin.laporan_estimasiproduksi.printpermintaan', [
         'permintaanProduk' => $permintaanProduk,
         'tokoData' => $tokoData,
         'klasifikasi_id' => $klasifikasi_id,
@@ -786,265 +795,6 @@ public function printReportPemesanantoko(Request $request)
     return $pdf->stream('Laporan_Pemesanan_Produk.pdf');
 }
 
-// public function printReportAll(Request $request)
-// {
-//     $tanggal = $request->tanggal;
-//     $tanggal_akhir = $request->tanggal_akhir;
-//     $produk = $request->produk;
-//     $toko_id = $request->toko_id;
-//     $klasifikasi_id = $request->klasifikasi_id;
-
-//     // Query untuk pemesanan produk
-//     $queryPemesanan = Pemesananproduk::with(['toko', 'detailpemesananproduk.produk.klasifikasi']);
-
-//     // Filter pemesanan berdasarkan tanggal_kirim
-//     if ($tanggal && $tanggal_akhir) {
-//         $queryPemesanan->whereBetween('tanggal_kirim', [Carbon::parse($tanggal)->startOfDay(), Carbon::parse($tanggal_akhir)->endOfDay()]);
-//     } elseif ($tanggal) {
-//         $queryPemesanan->where('tanggal_kirim', '>=', Carbon::parse($tanggal)->startOfDay());
-//     } elseif ($tanggal_akhir) {
-//         $queryPemesanan->where('tanggal_kirim', '<=', Carbon::parse($tanggal_akhir)->endOfDay());
-//     }
-
-//     // Filter berdasarkan toko
-//     if ($toko_id) {
-//         $queryPemesanan->where('toko_id', $toko_id);
-//     }
-
-//     // Filter berdasarkan klasifikasi
-//     if ($klasifikasi_id) {
-//         $queryPemesanan->whereHas('detailpemesananproduk.produk', function($query) use ($klasifikasi_id) {
-//             $query->where('klasifikasi_id', $klasifikasi_id);
-//         });
-//     }
-
-//     // Filter berdasarkan produk
-//     if ($produk) {
-//         $queryPemesanan->whereHas('detailpemesananproduk', function($query) use ($produk) {
-//             $query->where('produk_id', $produk);
-//         });
-//     }
-
-//     // Query untuk permintaan produk
-//     $queryPermintaan = PermintaanProduk::with(['detailpermintaanproduks.produk.klasifikasi', 'detailpermintaanproduks.toko']);
-
-//     // Filter permintaan berdasarkan tanggal_permintaan
-//     if ($tanggal && $tanggal_akhir) {
-//         $queryPermintaan->whereHas('detailpermintaanproduks', function ($query) use ($tanggal, $tanggal_akhir) {
-//             $query->whereBetween('tanggal_permintaan', [Carbon::parse($tanggal)->startOfDay(), Carbon::parse($tanggal_akhir)->endOfDay()]);
-//         });
-//     } elseif ($tanggal) {
-//         $queryPermintaan->whereHas('detailpermintaanproduks', function ($query) use ($tanggal) {
-//             $query->where('tanggal_permintaan', '>=', Carbon::parse($tanggal)->startOfDay());
-//         });
-//     } elseif ($tanggal_akhir) {
-//         $queryPermintaan->whereHas('detailpermintaanproduks', function ($query) use ($tanggal_akhir) {
-//             $query->where('tanggal_permintaan', '<=', Carbon::parse($tanggal_akhir)->endOfDay());
-//         });
-//     }
-
-//     // Filter berdasarkan toko
-//     if ($toko_id) {
-//         $queryPermintaan->whereHas('detailpermintaanproduks.toko', function($query) use ($toko_id) {
-//             $query->where('id', $toko_id);
-//         });
-//     }
-
-//     // Filter berdasarkan klasifikasi
-//     if ($klasifikasi_id) {
-//         $queryPermintaan->whereHas('detailpermintaanproduks.produk', function($query) use ($klasifikasi_id) {
-//             $query->where('klasifikasi_id', $klasifikasi_id);
-//         });
-//     }
-
-//     // Filter berdasarkan produk
-//     if ($produk) {
-//         $queryPermintaan->whereHas('detailpermintaanproduks', function($query) use ($produk) {
-//             $query->where('produk_id', $produk);
-//         });
-//     }
-
-//     // Ambil hasil query
-//     $pemesanan = $queryPemesanan->get();
-//     $permintaan = $queryPermintaan->get();
-//     // Gabungkan hasil permintaan ke dalam pemesanan berdasarkan produk_id
-//     $pemesanan = $pemesanan->map(function($pesanan) use ($permintaan) {
-//     $produk_id = $pesanan->detailpemesananproduk->first()->produk_id;
-
-//     // Inisialisasi nilai stok dan pesanan dari tiap kota
-//     $pesanan->pesanan_banjaran = $pesanan->detailpemesananproduk->where('toko.nama', 'Banjaran')->sum('jumlah');
-//     $pesanan->stok_banjaran = $permintaan->where('detailpermintaanproduks.produk_id', $produk_id)
-//         ->where('detailpermintaanproduks.toko.nama', 'Banjaran')
-//         ->sum('detailpermintaanproduks.jumlah');
-    
-//     $pesanan->stok_tegal = $pesanan->detailpemesananproduk->where('toko.nama', 'Tegal')->sum('jumlah');
-//     $pesanan->pesanan_tegal = $permintaan->where('detailpermintaanproduks.produk_id', $produk_id)
-//         ->where('detailpermintaanproduks.toko.nama', 'Tegal')
-//         ->sum('detailpermintaanproduks.jumlah');
-
-//     // Lanjutkan untuk kota lainnya...
-//     // Slawi, Bumiayu, Pemalang, Cilacap
-
-//     // Hitung total pesanan dan total permintaan
-//     $pesanan->jumlah_pesanan = $pesanan->detailpemesananproduk->sum('jumlah');
-//     $pesanan->jumlah_permintaan = $permintaan->where('detailpermintaanproduks.produk_id', $produk_id)->sum('detailpermintaanproduks.jumlah');
-    
-//     return $pesanan;
-//     });
-
-
-//     // Generate PDF
-//     $pdf = FacadePdf::loadView('admin.laporan_estimasiproduksi.print', compact('pemesanan', 'tanggal', 'tanggal_akhir'));
-//     $pdf->output();
-//     $dompdf = $pdf->getDomPDF();
-//     $canvas = $dompdf->getCanvas();
-//     $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
-//         $text = "Page $pageNumber of $pageCount";
-//         $font = $fontMetrics->getFont('Arial', 'normal');
-//         $size = 8;
-
-//         // Menghitung lebar teks
-//         $width = $fontMetrics->getTextWidth($text, $font, $size);
-
-//         // Mengatur koordinat X dan Y
-//         $x = $canvas->get_width() - $width - 10;
-//         $y = $canvas->get_height() - 15;
-
-//         // Menambahkan teks ke posisi yang ditentukan
-//         $canvas->text($x, $y, $text, $font, $size);
-//     });
-
-//     return $pdf->stream('report.pdf');
-// }
-
-
-// public function printReportAll(Request $request)
-// {
-//     $klasifikasi_id = $request->get('klasifikasi_id');
-//     $toko_id = $request->get('toko_id');
-//     $tanggal_permintaan = $request->get('tanggal_permintaan');
-//     $tanggal_akhir = $request->get('tanggal_akhir');
-//     $status = $request->get('status');
-
-//     // Definisikan daftar toko
-//     $tokoList = [
-//         1 => 'Banjaran',
-//         2 => 'Tegal',
-//         3 => 'Slawi',
-//         4 => 'Bumiayu',
-//         5 => 'Pemalang',
-//         6 => 'Cilacap',
-//     ];
-
-//     // Query untuk permintaan produk
-//     $permintaanProdukQuery = PermintaanProduk::with([
-//         'detailpermintaanproduks.produk.klasifikasi.subklasifikasi',
-//         'detailpermintaanproduks.toko'
-//     ])->when($klasifikasi_id, function ($query) use ($klasifikasi_id) {
-//         $query->whereHas('detailpermintaanproduks.produk.klasifikasi', function ($query) use ($klasifikasi_id) {
-//             $query->where('id', $klasifikasi_id);
-//         });
-//     })->when($tanggal_permintaan && $tanggal_akhir, function ($query) use ($tanggal_permintaan, $tanggal_akhir) {
-//         $tanggal_permintaan = Carbon::parse($tanggal_permintaan)->startOfDay();
-//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-//         $query->whereHas('detailpermintaanproduks', function ($query) use ($tanggal_permintaan, $tanggal_akhir) {
-//             $query->whereBetween('tanggal_permintaan', [$tanggal_permintaan, $tanggal_akhir]);
-//         });
-//     })->get();
-
-//     // Query untuk pemesanan produk
-//     $pemesananProdukQuery = Pemesananproduk::with(['toko', 'detailpemesananproduk.produk.klasifikasi'])
-//         ->when($status, function ($query, $status) {
-//             return $query->where('status', $status);
-//         })
-//         ->when($tanggal_permintaan && $tanggal_akhir, function ($query) use ($tanggal_permintaan, $tanggal_akhir) {
-//             $tanggal_permintaan = Carbon::parse($tanggal_permintaan)->startOfDay();
-//             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-//             return $query->whereBetween('tanggal_kirim', [$tanggal_permintaan, $tanggal_akhir]);
-//         })
-//         ->get();
-
-//     // Pengelompokan data permintaan dan pemesanan
-//     $groupedData = [];
-
-//     foreach ($permintaanProdukQuery as $item) {
-//         foreach ($item->detailpermintaanproduks as $detail) {
-//             $klasifikasi = $detail->produk->klasifikasi->nama ?? 'Tidak ada';
-//             $key = $detail->produk->kode_produk ?? 'no-kode';
-
-//             if (!isset($groupedData[$klasifikasi][$key])) {
-//                 $groupedData[$klasifikasi][$key] = [
-//                     'klasifikasi' => $klasifikasi,
-//                     'kode_lama' => $detail->produk->kode_lama ?? 'Tidak ada',
-//                     'nama_produk' => $detail->produk->nama_produk ?? 'Tidak ada',
-//                     'stok' => [],
-//                     'pes' => [],
-//                     'total_permintaan' => 0,
-//                     'total_pemesanan' => 0,
-//                 ];
-//             }
-
-//             $groupedData[$klasifikasi][$key]['stok'][$detail->toko_id] = ($groupedData[$klasifikasi][$key]['stok'][$detail->toko_id] ?? 0) + (int) $detail->jumlah;
-//             $groupedData[$klasifikasi][$key]['total_permintaan'] += (int) $detail->jumlah;
-//         }
-//     }
-
-//     foreach ($pemesananProdukQuery as $item) {
-//         foreach ($item->detailpemesananproduk as $detail) {
-//             $klasifikasi = $detail->produk->klasifikasi->nama ?? 'Tidak ada';
-//             $key = $detail->produk->kode_produk ?? 'no-kode';
-
-//             if (!isset($groupedData[$klasifikasi][$key])) {
-//                 $groupedData[$klasifikasi][$key] = [
-//                     'klasifikasi' => $klasifikasi,
-//                     'kode_lama' => $detail->produk->kode_lama ?? 'Tidak ada',
-//                     'nama_produk' => $detail->produk->nama_produk ?? 'Tidak ada',
-//                     'stok' => [],
-//                     'pes' => [],
-//                     'total_permintaan' => 0,
-//                     'total_pemesanan' => 0,
-//                 ];
-//             }
-
-//             $groupedData[$klasifikasi][$key]['pes'][$item->toko_id] = ($groupedData[$klasifikasi][$key]['pes'][$item->toko_id] ?? 0) + (int) $detail->jumlah;
-//             $groupedData[$klasifikasi][$key]['total_pemesanan'] += (int) $detail->jumlah;
-//         }
-//     }
-
-//     // Hitung total keseluruhan
-//     foreach ($groupedData as &$klasifikasiData) {
-//         foreach ($klasifikasiData as &$produkData) {
-//             $produkData['total_semua'] = $produkData['total_permintaan'] + $produkData['total_pemesanan'];
-//         }
-//     }
-
-//     // Buat PDF menggunakan Facade PDF
-//     $pdf = FacadePdf::loadView('admin.laporan_estimasiproduksi.print', [
-//         'groupedData' => $groupedData,
-//         'tokoList' => $tokoList,
-//         'tanggal' => $tanggal_permintaan,   // Tambahkan variabel ini
-//         'tanggal_akhir' => $tanggal_akhir,  // Tambahkan variabel ini
-//     ]);
-
-//     // Menambahkan nomor halaman di kanan bawah
-//     $pdf->output();
-//     $dompdf = $pdf->getDomPDF();
-//     $canvas = $dompdf->getCanvas();
-//     $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
-//         $text = "Page $pageNumber of $pageCount";
-//         $font = $fontMetrics->getFont('Arial', 'normal');
-//         $size = 8;
-//         $width = $fontMetrics->getTextWidth($text, $font, $size);
-//         $x = $canvas->get_width() - $width - 10;
-//         $y = $canvas->get_height() - 15;
-//         $canvas->text($x, $y, $text, $font, $size);
-//     });
-
-//     // Output PDF ke browser
-//     return $pdf->stream('Laporan_Gabungan.pdf');
-// }
-
-
 public function printReportAll(Request $request)
 {
     $klasifikasi_id = $request->get('klasifikasi_id');
@@ -1084,15 +834,16 @@ public function printReportAll(Request $request)
 
     // Query untuk pemesanan produk (tanggal_kirim digunakan di sini)
     $pemesananProdukQuery = Pemesananproduk::with(['toko', 'detailpemesananproduk.produk.klasifikasi'])
-        ->when($status, function ($query, $status) {
-            return $query->where('status', $status);
-        })
-        ->when($tanggal && $tanggal_akhir, function ($query) use ($tanggal, $tanggal_akhir) {
-            $tanggal_awal = Carbon::parse($tanggal)->startOfDay();
-            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-            return $query->whereBetween('tanggal_kirim', [$tanggal_awal, $tanggal_akhir]);
-        })
-        ->get();
+    ->when($status, function ($query, $status) {
+        return $query->where('status', $status);
+    })
+    ->when($tanggal && $tanggal_akhir, function ($query) use ($tanggal, $tanggal_akhir) {
+        $tanggal_awal = Carbon::parse($tanggal)->addDay()->startOfDay();
+        $tanggal_akhir = Carbon::parse($tanggal_akhir)->addDay()->endOfDay();
+        return $query->whereBetween('tanggal_kirim', [$tanggal_awal, $tanggal_akhir]);
+    })
+    ->get();
+
 
     // Pengelompokan data permintaan dan pemesanan
     $groupedData = [];
