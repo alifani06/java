@@ -142,8 +142,9 @@
                 <strong>Kode Pengiriman:</strong> {{ $firstItem->kode_pengiriman }}
             </p>
             <p style="margin-bottom: 2px;">
-                <strong>Tanggal Kirim:</strong> {{ \Carbon\Carbon::now()->format('d-m-Y H:m') }}
+                <strong>Tanggal Kirim:</strong> {{ \Carbon\Carbon::parse($firstItem->tanggal_pengiriman)->format('d-m-Y H:i') }}
             </p>
+            
         </div>
 
         <!-- Detail Produk -->
