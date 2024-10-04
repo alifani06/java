@@ -16,7 +16,7 @@
             /* padding: 0; */
             padding-right: 450px;
             font-size: 10px;
-            background-color: #f2f2f2;
+            background-color: white;
         }
             .container {
             width: 70mm; /* Adjusted width */
@@ -75,29 +75,6 @@
             border: 1px solid #ccc;
             padding: 5px;
             font-size: 8px;
-        }
-        .signatures {
-            margin-top: 15px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .signature1 {
-            text-align: left;
-            font-size: 7px;
-        }
-        .signature2 {
-            text-align: center;
-            font-size: 7px;
-            margin-top: -65px;
-        }
-        .signature3 {
-            text-align: right;
-            font-size: 6px;
-            margin-top: -65px;
-        }
-        .signature p {
-            margin-top: 10px;
-            line-height: 1.2;
         }
         .float-right {
             text-align: right;
@@ -211,22 +188,6 @@
         border: 1px solid #ccc;
         padding: 5px;
         font-size: 8px;
-    }
-    .signatures {
-        display: flex;
-        justify-content: space-between;
-    }
-    .signature1, .signature2 {
-        font-size: 7px;
-        text-align: left;
-    }
-    .signature2 {
-        margin-top: -65px; /* Atur posisi jika perlu */
-    }
-    
-    .signature p {
-        margin-top: 10px;
-        line-height: 1.2;
     }
     .detail-info p strong {
         min-width: 130px; /* Sesuaikan dengan kebutuhan */

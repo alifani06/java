@@ -777,8 +777,10 @@ class PenjualanprodukbanjaranController extends Controller
         $pelanggans = Pelanggan::all();
         $tokos = $penjualan->toko;
     
-        $pdf = FacadePdf::loadView('toko_banjaran.penjualan_produk.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans'));
-        $pdf->setPaper('a4', 'portrait');
+        // Set DPI dengan setOptions
+        $pdf = FacadePdf::loadView('toko_banjaran.penjualan_produk.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans'))
+                        ->setPaper('a4', 'portrait')
+                        ->setOptions(['dpi' => 300, 'defaultFont' => 'sans-serif']); // Menambahkan DPI
     
         return $pdf->stream('penjualan.pdf');
     }
