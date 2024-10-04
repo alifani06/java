@@ -130,6 +130,9 @@ public function pengiriman_pemesanan()
         // Mengatur jam sesuai dengan waktu saat ini
         $tanggalPengirimanDenganJam = Carbon::parse($tanggalPengiriman)->setTime(now()->hour, now()->minute);
 
+        $kodeProduksi = implode('', $request->input('kode_produksi', [])); // Menggabungkan tanpa koma
+
+
         // Array untuk menyimpan ID pengiriman
         $pengirimanIds = [];
 
@@ -156,6 +159,8 @@ public function pengiriman_pemesanan()
                         'status' => 'unpost',
                         //'tanggal_pengiriman' => Carbon::now('Asia/Jakarta'),
                         'tanggal_pengiriman' => $tanggalPengirimanDenganJam, 
+                        'kode_produksi' => $kodeProduksi, // Simpan kode produksi tanpa koma
+
                     ]);
 
                     // Simpan catatan stok di toko terkait
@@ -168,7 +173,8 @@ public function pengiriman_pemesanan()
                                 'toko_id' => $tokoId,
                                 'jumlah' => $jumlah,
                                 'status' => 'unpost',
-                                'tanggal_input' => $tanggalPengirimanDenganJam, // Simpan tanggal dengan jam yang sama
+                                'tanggal_input' => $tanggalPengirimanDenganJam, 
+                                'kode_produksi' => $kodeProduksi,
                             ]);
                             break;
                         case 2:
@@ -177,7 +183,9 @@ public function pengiriman_pemesanan()
                                 'kode_pengiriman' => $kode,
                                 'produk_id' => $produkId,
                                 'jumlah' => $jumlah,
-                                'tanggal_input' => $tanggalPengirimanDenganJam, // Simpan tanggal dengan jam yang sama
+                                'tanggal_input' => $tanggalPengirimanDenganJam, 
+                                'kode_produksi' => $kodeProduksi, 
+
                             ]);
                             break;
                         case 3:

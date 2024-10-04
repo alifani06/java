@@ -237,7 +237,6 @@ public function posting_retur($id)
         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
     ]);
 
-    // Kurangi stok di stok_tokoslawi untuk setiap item retur hanya jika status sudah posting
     foreach ($returBarangjadiItems as $item) {
         $stokItem = Stok_tokobanjaran::where('produk_id', $item->produk_id)
             ->orderBy('jumlah', 'asc')

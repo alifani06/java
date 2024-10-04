@@ -27,6 +27,7 @@ class Pengiriman_barangjadi extends Model
         'produk_id',
         'status',
         'tanggal_terima',
+        'kode_produksi',
       
      
     ];

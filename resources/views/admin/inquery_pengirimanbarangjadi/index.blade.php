@@ -225,19 +225,21 @@
             </div>
         </div>
     </section>
+    
     <script>
         function openPrintDialog(event) {
-            event.preventDefault(); // Menghentikan aksi default
-            const url = event.currentTarget.href; // Mendapatkan URL dari link
+
+            event.preventDefault(); 
+            const url = event.currentTarget.href; 
     
-            const win = window.open(url, '_blank'); // Membuka URL di tab baru
-    
-            // Setelah tab terbuka, tunggu beberapa saat agar PDF dimuat dan kemudian cetak
+            const win = window.open(url, '_blank'); 
+
             win.onload = function() {
-                win.print(); // Memicu dialog print
+                win.print(); 
             };
         }
     </script>
+
    
     <script>
         var tanggalAwal = document.getElementById('tanggal_pengiriman');

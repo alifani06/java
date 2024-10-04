@@ -220,6 +220,7 @@
             // Show options based on klasifikasiId
             for (var i = 0; i < produkOptions.length; i++) {
                 var option = produkOptions[i];
+                // Tampilkan semua produk jika klasifikasiId tidak dipilih
                 if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
                     option.style.display = "block"; // Show relevant options
                 }
@@ -229,6 +230,7 @@
             produkSelect.selectedIndex = 0;
         }
     </script>
+    
 
     <!-- /.card -->
     <script>

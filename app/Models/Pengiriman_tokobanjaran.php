@@ -25,6 +25,7 @@ class Pengiriman_tokobanjaran extends Model
         'status',
         'kode_pengiriman',
         'kode_terima',
+        'kode_produksi',
      
     ];
 
