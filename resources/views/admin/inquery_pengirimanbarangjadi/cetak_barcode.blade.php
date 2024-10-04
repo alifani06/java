@@ -2,14 +2,12 @@
 <html lang="en">
 
 <head>
-    {{-- <link rel="stylesheet" href="{{ asset('falcon/style.css') }}"> --}}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Produk</title>
 
     <style type="text/css">
-        /* Reset all margins and padding */
         * {
             margin: 0;
             padding: 0;
@@ -75,11 +73,9 @@
             use BaconQrCode\Renderer\ImageRenderer;
             use BaconQrCode\Writer;
             
-            // Ubah tautan menjadi QR code
             $qrcode = new Writer(new ImageRenderer(new \BaconQrCode\Renderer\RendererStyle\RendererStyle(50), new \BaconQrCode\Renderer\Image\SvgImageBackEnd()));
             $qrcodeData = $qrcode->writeString($produk->qrcode_produk);
             
-            // Tampilkan gambar QR code
             echo '<img src="data:image/png;base64,' . base64_encode($qrcodeData) . '" />';
             ?>
         </div>
@@ -94,11 +90,9 @@
 
         <div class="box1">
             <?php
-            // Ubah tautan menjadi QR code
             $qrcode = new Writer(new ImageRenderer(new \BaconQrCode\Renderer\RendererStyle\RendererStyle(50), new \BaconQrCode\Renderer\Image\SvgImageBackEnd()));
             $qrcodeData = $qrcode->writeString($produk->qrcode_produk);
             
-            // Tampilkan gambar QR code
             echo '<img src="data:image/png;base64,' . base64_encode($qrcodeData) . '" />';
             ?>
         </div>
@@ -113,11 +107,9 @@
 
         <div class="box2">
             <?php
-            // Ubah tautan menjadi QR code
             $qrcode = new Writer(new ImageRenderer(new \BaconQrCode\Renderer\RendererStyle\RendererStyle(50), new \BaconQrCode\Renderer\Image\SvgImageBackEnd()));
             $qrcodeData = $qrcode->writeString($produk->qrcode_produk);
             
-            // Tampilkan gambar QR code
             echo '<img src="data:image/png;base64,' . base64_encode($qrcodeData) . '" />';
             ?>
         </div>

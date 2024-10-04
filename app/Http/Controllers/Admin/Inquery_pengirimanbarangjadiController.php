@@ -324,18 +324,36 @@ class Inquery_pengirimanbarangjadiController extends Controller{
             return view('admin.permintaan_produk.form', compact('klasifikasis', 'importedData'));
     }
 
+    // public function cetak_barcode($id)
+    // {
+    //     $produk = Produk::findOrFail($id); 
+    
+    //     $klasifikasis = Klasifikasi::all();
+    //     $subklasifikasis = Subklasifikasi::all();
+    
+    //     $pdf = FacadePdf::loadView('admin.inquery_pengirimanbarangjadi.cetak_barcode', compact('produk', 'klasifikasis', 'subklasifikasis'));
+        
+    //     $pdf->setPaper([0, 0, 612, 400], 'portrait'); 
+    //     return $pdf->stream('penjualan.pdf');
+    // }
+
     public function cetak_barcode($id)
     {
         $produk = Produk::findOrFail($id); 
-    
+
         $klasifikasis = Klasifikasi::all();
         $subklasifikasis = Subklasifikasi::all();
-    
-        $pdf = FacadePdf::loadView('admin.inquery_pengirimanbarangjadi.cetak_barcode', compact('produk', 'klasifikasis', 'subklasifikasis'));
-        
+
+        // Cari data pengiriman_barangjadi berdasarkan produk_id dan ambil jumlah
+        $pengirimanBarangJadi = Pengiriman_barangjadi::where('produk_id', $id)->first(); // Misalkan hanya ambil satu yang pertama
+        $jumlahCetak = $pengirimanBarangJadi->jumlah;
+
+        $pdf = FacadePdf::loadView('admin.inquery_pengirimanbarangjadi.cetak_barcode', compact('produk', 'klasifikasis', 'subklasifikasis', 'jumlahCetak'));
+
         $pdf->setPaper([0, 0, 612, 400], 'portrait'); 
         return $pdf->stream('penjualan.pdf');
     }
+
 
     
 }
