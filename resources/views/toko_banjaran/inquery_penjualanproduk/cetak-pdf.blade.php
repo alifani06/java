@@ -11,7 +11,8 @@
             font-family: Arial, sans-serif;
             line-height: 1.6;
             /* margin: 0; */
-            margin-left: -5;
+            /* margin-left: -5; */
+            margin-left: 2;
             margin-top: 0;
             /* padding: 0; */
             padding-right: 450px;
@@ -21,7 +22,7 @@
             .container {
             width: 70mm; /* Adjusted width */
             margin: 0 auto;
-            border: 1px solid #ddd;
+            border: 1px solid white;
             padding: 20px;
             background-color: #fff;
             box-shadow: 0px 0px 5px rgba(0,0,0,0.1);
@@ -282,13 +283,13 @@
             <div class="detail-info">
                 <div class="penjualan">
                     <p>
-                        <span style="min-width: 100px; display: inline-flex; align-items: center;">No penjualan</span>
+                        <span style="min-width: 10px; display: inline-flex; align-items: center;">No penjualan</span>
                         <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $penjualan->kode_penjualan }}</span>
                     </p>
                 </div>
                 <div class="kasir">
                     <p>
-                        <span style="min-width: 100px; display: inline-flex; align-items: center;">Kasir</span>
+                        <span style="min-width: 47px; display: inline-flex; align-items: center;">Kasir</span>
                         <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</span>
                     </p>
                 </div>
@@ -314,7 +315,7 @@
                     <table style="font-size: 12px; width: 100%;">
                         <thead>
                             <tr>
-                                <th style="font-size: 8px;">Kode Produk</th>
+                                <th style="font-size: 8px;">Kode</th>
                                 <th style="font-size: 8px;">Produk</th>
                                 <th style="font-size: 8px;">Jumlah</th>
                                 <th style="font-size: 8px;">Harga</th>

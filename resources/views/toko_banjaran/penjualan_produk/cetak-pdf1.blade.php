@@ -62,7 +62,7 @@
             border-bottom: 1px solid #ccc;
             padding-bottom: 5px;
             text-align: center;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
             font-size: 12px;
             text-transform: uppercase;
         }
@@ -72,9 +72,10 @@
             margin-top: 5px;
         }
         .section table th, .section table td {
-            border: 1px solid #353232;
-            padding: 5px;
+            border: 1px solid #0c0c0c;
+            padding: 2px 3px;
             font-size: 8px;
+            
         }
         
         .float-right {
