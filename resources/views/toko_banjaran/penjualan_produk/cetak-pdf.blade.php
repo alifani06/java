@@ -52,7 +52,7 @@
 
         .header .text p {
             margin: 2px ;
-            font-size: 8px;
+            font-size: 9px;
             margin-bottom: 2px;
         }
         .section {
@@ -347,7 +347,7 @@
                                    -
                                @endif
                            </td>
-                           <td style="font-size: 8px; text-align: right;">{{ number_format($detail->total, 0, ',', '.') }}</td>
+                           <td style="font-size: 9px; text-align: right;">{{ number_format($detail->total, 0, ',', '.') }}</td>
                        </tr>
                        
                        @php
