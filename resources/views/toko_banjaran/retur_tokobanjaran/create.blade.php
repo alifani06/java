@@ -139,19 +139,29 @@
                                                     <th class="text-center">No</th>
                                                     <th>Kode Produk</th>
                                                     <th>Nama Produk</th>
+                                                    <th>Jumlah Stok</th> <!-- Kolom Jumlah Stok -->
                                                     <th>Opsi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach ($produks as $item)
-                                                    <tr class="pilih-btn" data-id="{{ $item->id }}" data-kode="{{ $item->kode_produk }}" data-nama="{{ $item->nama_produk }}">
+                                                    {{-- <tr class="pilih-btn" data-id="{{ $item->id }}" data-kode="{{ $item->kode_produk }}" data-nama="{{ $item->nama_produk }}"> --}}
+                                                        <tr>
                                                         <td class="text-center">{{ $loop->iteration }}</td>
                                                         <td>{{ $item->kode_lama }}</td>
                                                         <td>{{ $item->nama_produk }}</td>
+                                                        <td>{{ $stokProduk[$item->id] ?? '0' }}</td> <!-- Tampilkan jumlah stok -->
                                                         <td class="text-center">
-                                                            <button type="button" class="btn btn-primary btn-sm pilih-btn" data-id="{{ $item->id }}" data-kode="{{ $item->kode_produk }}" data-nama="{{ $item->nama_produk }}">
-                                                                <i class="fas fa-plus"></i>
-                                                            </button>
+                                                            <!-- Tombol hanya bisa diklik jika stok lebih dari 0 -->
+                                                            @if (isset($stokProduk[$item->id]) && $stokProduk[$item->id] > 0)
+                                                                <button type="button" class="btn btn-primary btn-sm pilih-btn" data-id="{{ $item->id }}" data-kode="{{ $item->kode_produk }}" data-nama="{{ $item->nama_produk }}">
+                                                                    <i class="fas fa-plus"></i>
+                                                                </button>
+                                                            @else
+                                                                <button type="button" class="btn btn-secondary btn-sm" disabled>
+                                                                    <i class="fas fa-plus"></i>
+                                                                </button>
+                                                            @endif
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -161,6 +171,7 @@
                                 </div>
                             </div>
                         </div>
+                        
                         
                        
                     </form>
