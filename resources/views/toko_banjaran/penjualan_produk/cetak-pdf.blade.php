@@ -9,9 +9,9 @@
         html,
             body {
             font-family: Arial, sans-serif;
-            line-height: 1.4;
+            line-height: 1.6;
             /* margin: 0; */
-            margin-left: 2;
+            margin-left: -5;
             margin-top: 0;
             /* padding: 0; */
             padding-right: 450px;
@@ -21,8 +21,8 @@
             .container {
             width: 70mm; /* Adjusted width */
             margin: 0 auto;
-            border: 1px solid white;
-            padding: 5px;
+            border: 1px solid #ddd;
+            padding: 20px;
             background-color: #fff;
             box-shadow: 0px 0px 5px rgba(0,0,0,0.1);
         }
@@ -62,7 +62,7 @@
             border-bottom: 1px solid #ccc;
             padding-bottom: 5px;
             text-align: center;
-            margin-bottom: 3px;
+            margin-bottom: 5px;
             font-size: 12px;
             text-transform: uppercase;
         }
@@ -72,10 +72,9 @@
             margin-top: 5px;
         }
         .section table th, .section table td {
-            border: 1px solid #0c0c0c;
-            padding: 2px 3px;
+            border: 1px solid #ccc;
+            padding: 5px;
             font-size: 8px;
-            
         }
         
         .float-right {
@@ -283,13 +282,13 @@
             <div class="detail-info">
                 <div class="penjualan">
                     <p>
-                        <span style="min-width: 10px; display: inline-flex; align-items: center;">No penjualan</span>
+                        <span style="min-width: 100px; display: inline-flex; align-items: center;">No penjualan</span>
                         <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $penjualan->kode_penjualan }}</span>
                     </p>
                 </div>
                 <div class="kasir">
                     <p>
-                        <span style="min-width: 47px; display: inline-flex; align-items: center;">Kasir</span>
+                        <span style="min-width: 100px; display: inline-flex; align-items: center;">Kasir</span>
                         <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</span>
                     </p>
                 </div>
@@ -315,7 +314,7 @@
                     <table style="font-size: 12px; width: 100%;">
                         <thead>
                             <tr>
-                                <th style="font-size: 8px;">Kode </th>
+                                <th style="font-size: 8px;">Kode Produk</th>
                                 <th style="font-size: 8px;">Produk</th>
                                 <th style="font-size: 8px;">Jumlah</th>
                                 <th style="font-size: 8px;">Harga</th>
