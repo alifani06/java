@@ -1,75 +1,3 @@
-{{-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Invoice</title>
-
-    <style type="text/css">
-        /* Reset all margins and padding */
-        * {
-            margin: 0;
-            padding: 0;
-        }
-
-        .box1 {
-            margin-left: 0px;
-            margin-top: 0px;
-        }
-
-        body {
-    width: 100%; /* Pastikan menggunakan lebar maksimum */
-    height: auto; /* Sesuaikan tinggi otomatis */
-}
-
-.text-container {
-    width: 100%; /* Atur lebar container */
-    height: auto; /* Sesuaikan tinggi otomatis */
-}
-
-
-        .text {
-            font-size: 10px;
-            margin-left: 2px;
-
-        }
-
-        .bold-text {
-            font-weight: bold;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-    </style>
-
-</head>
-
-<body>
-    <div class="text-container">
-        <table>
-            <td>
-                <div class="box1">
-                    <table>
-                        <td>
-                            <div style="display: inline-block;">
-                                {!! DNS2D::getBarcodeHTML("$produk->qrcode_produk", 'QRCODE', 1, 1) !!}
-                            </div>
-                        </td>
-                        <td>
-                            <div class="text">
-                                <p class="bold-text">{{ $produk->kode_lama }}</p>
-                                <p class="bold-text">{{ $produk->nama_produk }}</p>
-                            </div>
-                        </td>
-                    </table>
-                </div>
-            </td>
-           
-        </table>
-    </div>
-</body>
-</html> --}}
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -160,7 +88,7 @@
                 <p class="bold-text">{{ $produk->kode_lama }}</p>
                 <p class="bold-text truncate">{{ $produk->nama_produk }}</p>
                 <p style="font-size: 9px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
-                <p class="bold-text">A1</p>
+                <p class="bold-text" style="color: white">A1</p>
             </div>
         </div>
 
@@ -179,7 +107,7 @@
                 <p class="bold-text">{{ $produk->kode_lama }}</p>
                 <p class="bold-text truncate">{{ $produk->nama_produk }}</p>
                 <p style="font-size: 9px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
-                <p class="bold-text">A1</p>
+                <p class="bold-text" style="color: white">A1</p>
             </div>
         </div>
 
@@ -198,7 +126,7 @@
                 <p class="bold-text">{{ $produk->kode_lama }}</p>
                 <p class="bold-text truncate">{{ $produk->nama_produk }}</p>
                 <p style="font-size: 9px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
-                <p class="bold-text">A1</p>
+                <p class="bold-text" style="color: white">A1</p>
             </div>
         </div>
 

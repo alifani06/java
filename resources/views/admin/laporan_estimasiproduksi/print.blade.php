@@ -124,8 +124,8 @@
                 <th colspan="2">Bumiayu</th>
                 <th colspan="2">Pemalang</th>
                 <th colspan="2">Cilacap</th>
-                <th>Total Pesanan</th>
                 <th>Total Permintaan</th>
+                <th>Total Pesanan</th>
                 <th>Total Semua</th>
             </tr>
             <tr>
@@ -163,8 +163,8 @@
                             <td>{{ $product['pes'][$tokoId] ?? '-' }}</td>
                         @endforeach
     
-                        <td>{{ $product['total_pemesanan'] }}</td>
                         <td>{{ $product['total_permintaan'] }}</td>
+                        <td>{{ $product['total_pemesanan'] }}</td>
                         <td>{{ $product['total_semua'] }}</td>
                     </tr>
                 @endforeach
