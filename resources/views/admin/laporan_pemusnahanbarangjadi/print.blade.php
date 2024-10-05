@@ -75,7 +75,7 @@
         {{-- <p class="title1">Cabang: {{ strtoupper($branchName) }}</p> --}}
         <div class="divider"></div>
 
-        <h1 class="title2">LAPORAN PEMMUSNAHAN BARANG JADI</h1>
+        <h1 class="title2">LAPORAN PEMUSNAHAN BARANG JADI</h1>
 
         @php
             \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
