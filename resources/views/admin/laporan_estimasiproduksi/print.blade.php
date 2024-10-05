@@ -162,9 +162,8 @@
                             <td>{{ $product['stok'][$tokoId] ?? '-' }}</td>
                             <td>{{ $product['pes'][$tokoId] ?? '-' }}</td>
                         @endforeach
-    
-                        <td>{{ $product['total_permintaan'] }}</td>
-                        <td>{{ $product['total_pemesanan'] }}</td>
+                        <td>{{ $product['total_pemesanan'] == 0 ? '-' : $product['total_pemesanan'] }}</td>
+                        <td>{{ $product['total_permintaan'] == 0 ? '-' : $product['total_permintaan'] }}</td>                        
                         <td>{{ $product['total_semua'] }}</td>
                     </tr>
                 @endforeach
