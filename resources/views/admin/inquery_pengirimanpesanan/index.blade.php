@@ -180,6 +180,7 @@
                                                 <th>Kode Produk</th>
                                                 <th>Produk</th>
                                                 <th>Jumlah</th>
+                                                <th>Cetak</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -190,6 +191,11 @@
                                                 <td>{{ $detail->produk->kode_lama }}</td>
                                                 <td>{{ $detail->produk->nama_produk }}</td>
                                                 <td>{{ $detail->jumlah }}</td>
+                                                <td>
+                                                    <a href="{{ route('inquery_pengirimanpesanan.cetak_barcodepesanan', $detail->produk->id) }}" class="btn btn-primary btn-sm" target="_blank" onclick="openPrintDialog(event)">
+                                                        <i class="fas fa-print"></i>
+                                                    </a>
+                                                </td>
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -220,6 +226,19 @@
         </div>
     </section>
 
+    <script>
+        function openPrintDialog(event) {
+
+            event.preventDefault(); 
+            const url = event.currentTarget.href; 
+    
+            const win = window.open(url, '_blank'); 
+
+            win.onload = function() {
+                win.print(); 
+            };
+        }
+    </script>
     <script>
         var tanggalAwal = document.getElementById('tanggal_pengiriman');
         var tanggalAkhir = document.getElementById('tanggal_akhir');

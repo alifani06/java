@@ -283,6 +283,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::resource('inquery_pengirimanpesanan', \App\Http\Controllers\Admin\Inquery_pengirimanpesananController::class);
     Route::get('/inquery_pengirimanpesanan/{id}/print', [Inquery_pengirimanpesananController::class, 'print'])->name('inquery_pengirimanpesanan.print');
+    Route::get('admin/inquery_pengirimanpesanan/{id}/cetak_barcodepesanan', [Inquery_pengirimanpesananController::class, 'cetak_barcodepesanan'])->name('inquery_pengirimanpesanan.cetak_barcodepesanan');
 
     Route::resource('laporan_pengirimanbarangjadi', \App\Http\Controllers\Admin\Laporan_pengirimanbarangjadiController::class);
     Route::get('print', [\App\Http\Controllers\Admin\Laporan_pengirimanbarangjadiController::class, 'printReport']);

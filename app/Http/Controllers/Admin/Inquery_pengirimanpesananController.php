@@ -38,6 +38,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Pengiriman_barangjadi;
 use App\Models\Pengiriman_barangjadipesanan;
+use App\Models\Subklasifikasi;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -327,5 +328,45 @@ class Inquery_pengirimanpesananController extends Controller{
             $klasifikasis = Klasifikasi::with('produks')->get();
             $importedData = session('imported_data', []);
             return view('admin.permintaan_produk.form', compact('klasifikasis', 'importedData'));
+        }
+
+
+        // public function cetak_barcodepesanan($id)
+        // {
+        //     $produk = Produk::findOrFail($id); 
+    
+        //     $klasifikasis = Klasifikasi::all();
+        //     $subklasifikasis = Subklasifikasi::all();
+            
+    
+        //     $pdf = FacadePdf::loadView('admin.inquery_pengirimanpesanan.cetak_barcodepesanan', compact('produk', 'klasifikasis', 'subklasifikasis'));
+    
+        //     $pdf->setPaper([0, 0, 612, 400], 'portrait'); 
+        //     return $pdf->stream('penjualan.pdf');
+        // }
+
+        public function cetak_barcodepesanan($id)
+        {
+            // Ambil produk berdasarkan id
+            $produk = Produk::findOrFail($id); 
+        
+            // Query untuk mengambil kode_produksi dari tabel pengiriman_barangjadi berdasarkan produk_id
+            $pengiriman = Pengiriman_barangjadipesanan::where('produk_id', $id)->first();
+        
+            // Jika data pengiriman ditemukan, ambil kode_produksinya
+            $kodeProduksi = $pengiriman ? $pengiriman->kode_produksi : null;
+        
+            // Ambil data klasifikasi dan subklasifikasi
+            $klasifikasis = Klasifikasi::all();
+            $subklasifikasis = Subklasifikasi::all();
+        
+            // Load view dengan data yang dibutuhkan, termasuk kode produksi
+            $pdf = FacadePdf::loadView('admin.inquery_pengirimanpesanan.cetak_barcodepesanan', compact('produk', 'klasifikasis', 'subklasifikasis', 'kodeProduksi'));
+        
+            // Set ukuran kertas dan orientasi
+            $pdf->setPaper([0, 0, 612, 400], 'portrait'); 
+        
+            // Stream PDF hasil cetak
+            return $pdf->stream('penjualan.pdf');
         }
 }
