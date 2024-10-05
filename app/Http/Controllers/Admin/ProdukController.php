@@ -38,6 +38,7 @@ class ProdukController extends Controller
         $search = $request->input('search'); // Ambil input pencarian
         $klasifikasis = Klasifikasi::all();
         $subklasifikasis = Subklasifikasi::all();
+        
 
         $produks = Produk::when($search, function ($query, $search) {
             return $query->where('nama_produk', 'like', '%' . $search . '%')
@@ -48,7 +49,7 @@ class ProdukController extends Controller
         return view('admin.produk.index', compact('produks', 'search', 'klasifikasis','subklasifikasis'));
     }
     
-    
+
 
     public function getkategori($id)
     {

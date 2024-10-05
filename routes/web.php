@@ -138,7 +138,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/subklasifikasi/fetch', [ProdukController::class, 'fetch'])->name('subklasifikasi.fetch');
     Route::get('admin/produk/{id}/print', [ProdukController::class, 'print'])->name('produk.print');
     Route::get('admin/produk/{id}/cetak_barcode', [ProdukController::class, 'cetak_barcode'])->name('produk.cetak_barcode');
-    
+
 
 
 

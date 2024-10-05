@@ -78,6 +78,7 @@ return array(
     'App\\Http\\Controllers\\AuthController' => $baseDir . '/app/Http/Controllers/AuthController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\HomeController' => $baseDir . '/app/Http/Controllers/HomeController.php',
+    'App\\Http\\Controllers\\ProdukController' => $baseDir . '/app/Http/Controllers/ProdukController.php',
     'App\\Http\\Controllers\\Toko_banjaran\\AddpelangganController' => $baseDir . '/app/Http/Controllers/Toko_banjaran/AddpelangganController.php',
     'App\\Http\\Controllers\\Toko_banjaran\\DashboardController' => $baseDir . '/app/Http/Controllers/Toko_banjaran/DashboardController.php',
     'App\\Http\\Controllers\\Toko_banjaran\\Inquery_depositbanjaranController' => $baseDir . '/app/Http/Controllers/Toko_banjaran/Inquery_depositbanjaranController.php',

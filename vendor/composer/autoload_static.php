@@ -692,6 +692,7 @@ class ComposerStaticInit2697a419730d9d2fae8074c103581f60
         'App\\Http\\Controllers\\AuthController' => __DIR__ . '/../..' . '/app/Http/Controllers/AuthController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
+        'App\\Http\\Controllers\\ProdukController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProdukController.php',
         'App\\Http\\Controllers\\Toko_banjaran\\AddpelangganController' => __DIR__ . '/../..' . '/app/Http/Controllers/Toko_banjaran/AddpelangganController.php',
         'App\\Http\\Controllers\\Toko_banjaran\\DashboardController' => __DIR__ . '/../..' . '/app/Http/Controllers/Toko_banjaran/DashboardController.php',
         'App\\Http\\Controllers\\Toko_banjaran\\Inquery_depositbanjaranController' => __DIR__ . '/../..' . '/app/Http/Controllers/Toko_banjaran/Inquery_depositbanjaranController.php',
