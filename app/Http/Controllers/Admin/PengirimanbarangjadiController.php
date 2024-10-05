@@ -85,34 +85,34 @@ class PengirimanbarangjadiController extends Controller{
     
     
 
-public function pengiriman_pemesanan()
-{
-    // Ambil data detail stok barang jadi dengan produk yang terkait
-    $detailStokBarangjadi = Detail_stokbarangjadi::with('produk')
-        ->get();
+// public function pengiriman_pemesanan()
+// {
+//     // Ambil data detail stok barang jadi dengan produk yang terkait
+//     $detailStokBarangjadi = Detail_stokbarangjadi::with('produk')
+//         ->get();
     
-    // Akumulasi stok berdasarkan produk_id
-    $uniqueStokBarangjadi = $detailStokBarangjadi->groupBy('produk_id')->map(function ($items) {
-        $firstItem = $items->first(); // Ambil entri pertama
-        $firstItem->stok = $items->sum('stok'); // Akumulasi stok
-        return $firstItem;
-    })->values();
+//     // Akumulasi stok berdasarkan produk_id
+//     $uniqueStokBarangjadi = $detailStokBarangjadi->groupBy('produk_id')->map(function ($items) {
+//         $firstItem = $items->first(); // Ambil entri pertama
+//         $firstItem->stok = $items->sum('stok'); // Akumulasi stok
+//         return $firstItem;
+//     })->values();
     
-    // Ambil klasifikasi yang terkait dengan produk yang ada
-    $produkIds = $uniqueStokBarangjadi->pluck('produk_id')->toArray();
-    $klasifikasiIds = $uniqueStokBarangjadi->pluck('klasifikasi_id')->toArray();
+//     // Ambil klasifikasi yang terkait dengan produk yang ada
+//     $produkIds = $uniqueStokBarangjadi->pluck('produk_id')->toArray();
+//     $klasifikasiIds = $uniqueStokBarangjadi->pluck('klasifikasi_id')->toArray();
     
-    $klasifikasis = Klasifikasi::whereIn('id', $klasifikasiIds)
-        ->with(['produks' => function ($query) use ($produkIds) {
-            $query->whereIn('id', $produkIds);
-        }])
-        ->get();
+//     $klasifikasis = Klasifikasi::whereIn('id', $klasifikasiIds)
+//         ->with(['produks' => function ($query) use ($produkIds) {
+//             $query->whereIn('id', $produkIds);
+//         }])
+//         ->get();
     
-    // Ambil semua toko
-    $tokos = Toko::all();
+//     // Ambil semua toko
+//     $tokos = Toko::all();
     
-    return view('admin.pengiriman_barangjadi.pengiriman_pemesanan', compact('klasifikasis', 'tokos', 'uniqueStokBarangjadi'));
-}
+//     return view('admin.pengiriman_barangjadi.pengiriman_pemesanan', compact('klasifikasis', 'tokos', 'uniqueStokBarangjadi'));
+// }
 
     public function store(Request $request)
     {

@@ -96,6 +96,25 @@
                                                 @endforeach
                                             </select>
                                         </div>
+
+                                        <div class="col-md-3 mb-3">
+                                            <label for="tanggal_pengiriman">Tanggal Pengiriman:</label>
+                                            <input type="date" class="form-control" id="tanggal_pengiriman" name="tanggal_pengiriman" value="{{ old('tanggal_pengiriman') }}">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="kode_produksi">Kode Produksi:</label>
+                                            <div>
+                                                @foreach (['A', 'B', 'C', 'D', 'E'] as $huruf)
+                                                    <input type="checkbox" name="kode_produksi[]" value="{{ $huruf }}"> {{ $huruf }}
+                                                @endforeach
+                                            </div>
+                                            <div>
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    <input type="checkbox" name="kode_produksi[]" value="{{ $i }}"> {{ $i }}
+                                                @endfor
+                                            </div>
+                                        </div>
                                     </thead>
                                     <div class="card">
                                         <div class="card-header">

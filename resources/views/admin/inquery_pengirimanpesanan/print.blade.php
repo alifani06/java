@@ -175,7 +175,7 @@
     <div>
         <p style="margin-bottom: 2px;">
             <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Pengiriman</strong></span>
-            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $firstItem->kode_pengiriman }}</span>
+            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $firstItem->kode_pengirimanpesanan }}</span>
         </p>
         <p style="margin-bottom: 2px;">
             <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal Kirim</strong> </span>

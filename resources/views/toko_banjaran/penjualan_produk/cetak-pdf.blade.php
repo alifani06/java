@@ -295,7 +295,7 @@
                 @if(!is_null($penjualan->nama_pelanggan))
                     <div class="pelanggan">
                         <p>
-                            <span style="min-width: 100px; display: inline-flex; align-items: center;">Pelanggan</span>
+                            <span style="min-width: 47px; display: inline-flex; align-items: center;">Pelanggan</span>
                             <span style="min-width: 50px; display: inline-flex; align-items: center;">
                                 : 
                                 @if ($penjualan->kode_pelanggan && $penjualan->nama_pelanggan)

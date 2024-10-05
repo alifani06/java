@@ -45,41 +45,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class Inquery_pengirimanpesananController extends Controller{
 
-    // public function index(Request $request)
-    // {
-    //         $status = $request->status;
-    //         $tanggal_pengiriman = $request->tanggal_pengiriman;
-    //         $tanggal_akhir = $request->tanggal_akhir;
 
-    //         $query = Pengiriman_barangjadipesanan::with('produk.klasifikasi');
-
-    //         if ($status) {
-    //             $query->where('status', $status);
-    //         }
-
-    //         if ($tanggal_pengiriman && $tanggal_akhir) {
-    //             $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
-    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //             $query->whereBetween('tanggal_pengiriman', [$tanggal_pengiriman, $tanggal_akhir]);
-    //         } elseif ($tanggal_pengiriman) {
-    //             $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
-    //             $query->where('tanggal_pengiriman', '>=', $tanggal_pengiriman);
-    //         } elseif ($tanggal_akhir) {
-    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //             $query->where('tanggal_pengiriman', '<=', $tanggal_akhir);
-    //         } else {
-    //             // Jika tidak ada filter tanggal, tampilkan data hari ini
-    //             $query->whereDate('tanggal_pengiriman', Carbon::today());
-    //         }
-
-    //         // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
-    //         $stokBarangJadi = $query
-    //         ->orderBy('created_at', 'desc')
-    //         ->get()
-    //         ->groupBy('kode_pengiriman');
-
-    //         return view('admin.inquery_pengirimanpesanan.index', compact('stokBarangJadi'));
-    // }
     public function index(Request $request)
     {
         $status = $request->status;
@@ -126,18 +92,18 @@ class Inquery_pengirimanpesananController extends Controller{
     public function show($id)
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-        $detailStokBarangJadi = Pengiriman_barangjadipesanan::where('id', $id)->value('kode_pengiriman');
+        $detailStokBarangJadi = Pengiriman_barangjadipesanan::where('id', $id)->value('kode_pengirimanpesanan');
         
-        // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
+        // Jika kode_pengirimanpesanan tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
             return redirect()->back()->with('error', 'Data tidak ditemukan.');
         }
         
-        // Ambil semua data dengan kode_pengiriman yang sama, termasuk relasi ke klasifikasi
+        // Ambil semua data dengan kode_pengirimanpesanan yang sama, termasuk relasi ke klasifikasi
         $pengirimanBarangJadi = Pengiriman_barangjadipesanan::with([
             'produk.subklasifikasi.klasifikasi', 
             'toko'
-        ])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+        ])->where('kode_pengirimanpesanan', $detailStokBarangJadi)->get();
     
         // Kelompokkan data berdasarkan klasifikasi
         $groupedByKlasifikasi = $pengirimanBarangJadi->groupBy(function($item) {
@@ -266,45 +232,21 @@ class Inquery_pengirimanpesananController extends Controller{
         }
 
        
-
-    // public function print($id)
-    // {
-    //     // $permintaanProduk = PermintaanProduk::where('id', $id)->firstOrFail();
-        
-    //     // $detailPermintaanProduks = $permintaanProduk->detailpermintaanproduks;
-    //     $permintaanProduk = PermintaanProduk::find($id);
-    //     $detailPermintaanProduks = DetailPermintaanProduk::where('permintaanproduk_id', $id)->get();
-    
-    //     // Mengelompokkan produk berdasarkan divisi
-    //     $produkByDivisi = $detailPermintaanProduks->groupBy(function($item) {
-    //         return $item->produk->klasifikasi->nama; // Ganti dengan nama divisi jika diperlukan
-    //     });
-    
-    //     // Menghitung total jumlah per divisi
-    //     $totalPerDivisi = $produkByDivisi->map(function($produks) {
-    //         return $produks->sum('jumlah');
-    //     });
-    //     $toko = $detailPermintaanProduks->first()->toko;
-
-    //     $pdf = FacadePdf::loadView('admin.permintaan_produk.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi','toko'));
-
-    //     return $pdf->stream('surat_permintaan_produk.pdf');
-    // }
     public function print($id)
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-        $detailStokBarangJadi = Pengiriman_barangjadipesanan::where('id', $id)->value('kode_pengiriman');
+        $detailStokBarangJadi = Pengiriman_barangjadipesanan::where('id', $id)->value('kode_pengirimanpesanan');
             
-        // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
+        // Jika kode_pengirimanpesanan tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
             return redirect()->back()->with('error', 'Data tidak ditemukan.');
         }
         
-        // Ambil semua data dengan kode_pengiriman yang sama, termasuk relasi ke klasifikasi
+        // Ambil semua data dengan kode_pengirimanpesanan yang sama, termasuk relasi ke klasifikasi
         $pengirimanBarangJadi = Pengiriman_barangjadipesanan::with([
             'produk.subklasifikasi.klasifikasi', 
             'toko'
-        ])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+        ])->where('kode_pengirimanpesanan', $detailStokBarangJadi)->get();
 
         // Kelompokkan data berdasarkan klasifikasi
         $groupedByKlasifikasi = $pengirimanBarangJadi->groupBy(function($item) {

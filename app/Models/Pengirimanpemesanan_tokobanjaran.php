@@ -25,6 +25,7 @@ class Pengirimanpemesanan_tokobanjaran extends Model
         'toko_id',
         'kode_pengirimanpesanan',
         'kode_terima',
+        'kode_produksi',
      
     ];
 
