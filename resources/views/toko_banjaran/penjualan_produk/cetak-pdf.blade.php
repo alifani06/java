@@ -415,7 +415,7 @@
             <div class="terimakasihd" style="text-align: center; margin-top: -35px">
                 <p>Terimakasih atas kunjungannya</p><br> 
             </div>
-            <div class="qr" style="display: flex; justify-content: center; align-items: center; margin-top: -10px; margin-left: 120px">
+            <div class="qr" style="display: flex; justify-content: center; align-items: center; margin-top: -10px; margin-left: 100px">
                 <div style="text-align: center;">
                     {!! DNS2D::getBarcodeHTML($penjualan->qrcode_penjualan, 'QRCODE', 1.5, 1.5) !!}
                 </div>
