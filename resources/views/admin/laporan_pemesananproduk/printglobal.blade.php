@@ -94,7 +94,7 @@
 
     {{-- <div class="divider"></div> --}}
 
-   <table>
+   {{-- <table>
     <thead>
         <tr>
             <th>No</th>
@@ -145,9 +145,9 @@
             </tr>
         </tfoot>
     @endif
-</table>
+</table> --}}
 
-{{-- @foreach ($groupedData as $klasifikasi => $items)
+@foreach ($groupedData as $klasifikasi => $items)
     <h3>{{ $klasifikasi }}</h3> <!-- Judul tabel untuk setiap klasifikasi -->
     <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;"> <!-- Atur lebar tabel dan jarak antar tabel -->
         <thead>
@@ -201,7 +201,7 @@
             </tr>
         </tfoot>
     </table>
-@endforeach --}}
+@endforeach
 
 </body>
 </html>
