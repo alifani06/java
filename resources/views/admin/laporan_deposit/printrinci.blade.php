@@ -199,14 +199,13 @@
             </tr>
             <thead>
                 <tr>
-                    <th class="text-center">No</th>
-                    {{-- <th>Divisi</th> --}}
-                    <th>Kode Produk</th>
-                    <th>Produk</th>
-                    <th>Qty</th>
-                    <th>Harga</th>
-                    <th>Diskon</th>
-                    <th>Total</th>
+                    <th style="width: 5%;" class="text-center">No</th>
+                    <th style="width: 10%;">Kode Produk</th>
+                    <th style="width: 40%;">Produk</th>
+                    <th style="width: 10%; text-align: right;">Jumlah</th>
+                    <th style="width: 10%; text-align: right;">Harga</th>
+                    <th style="width: 10%; text-align: right;">Diskon</th>
+                    <th style="width: 10%; text-align: right;">Total</th>
                 </tr>
             </thead>
             <tbody>
@@ -225,73 +224,71 @@
                             $subTotal += $totalForDetail;
                             $totalDiskon += $diskonAmount;
                             $grandTotal += $totalAfterDiskon;
-                          
                         @endphp
                         <tr>
                             <td class="text-center">{{ $globalCounter++ }}</td>
-                            {{-- <td>
-                                @if ($item->detailpemesananproduk->isNotEmpty())
-                                    {{ $item->detailpemesananproduk->pluck('produk.klasifikasi.nama')->implode(', ') }}
-                                @else
-                                    tidak ada
-                                @endif
-                            </td> --}}
                             <td>{{ $detail->kode_lama }}</td>
                             <td>{{ $detail->nama_produk }}</td>
                             <td style="text-align: right">{{ $detail->jumlah }}</td>
                             <td style="text-align: right">{{ number_format($detail->harga, 0, ',', '.') }}</td>
                             <td style="text-align: right">{{ $detail->diskon }}%</td>
                             <td style="text-align: right">{{ number_format($totalForDetail, 0, ',', '.') }}</td>
-                            
                         </tr>
                     @endforeach
-                @endforeach
-   
-            </tbody>
-        </table>
-
-        {{-- <table style="width: 40%; margin-left: auto; margin-right: 0; margin-top: 0px;">
-            <tbody>
-                <tr>
-                    <td style="text-align: left ; width: 60%;"><strong>Sub Total</strong></td>
-                    <td style="text-align: right ; width: 40%;">{{ number_format($subTotal, 0, ',', '.') }}</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left ; width: 60%;"><strong>Diskon</strong></td>
-                    <td style="text-align: right ; width: 40%;">{{ number_format($totalDiskon, 0, ',', '.') }}</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left ; width: 60%;"><strong>Total Pesanan</strong></td>
-                    <td style="text-align: right ; width: 40%;">{{ number_format($grandTotal, 0, ',', '.') }}</td>
-                </tr>
                 
-                <tr>
-                    <td style="text-align: left ; width: 60%;"><strong>DP (Min.50%)</strong></td>
-                    <td style="text-align: right ; width: 40%;">{{ number_format($item->dp_pemesanan, 0, ',', '.') }}</td>
-                </tr>
-            </tbody>
-        </table> --}}
-
-        <table style="width: 40%; margin-left: auto; margin-right: 0; margin-top: 0px; margin-bottom: 2px;">
-            <tbody>
-                <tr>
-                    <td style="text-align: left; width: 60%;"><strong>Sub Total</strong></td>
-                    <td style="text-align: right; width: 40%;">{{ number_format($subTotal, 0, ',', '.') }}</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left; width: 60%;"><strong>Diskon</strong></td>
-                    <td style="text-align: right; width: 40%;">{{ number_format($totalDiskon, 0, ',', '.') }}</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left; width: 60%;"><strong>Total Pesanan</strong></td>
-                    <td style="text-align: right; width: 40%;">{{ number_format($grandTotal, 0, ',', '.') }}</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left; width: 60%;"><strong>DP (Min.50%)</strong></td>
-                    <td style="text-align: right; width: 40%;">{{ number_format($item->dp_pemesanan, 0, ',', '.') }}</td>
-                </tr>
             </tbody>
         </table>
+        <div style="display: inline-block; width: 40%; margin: 0 1%; vertical-align: top;">
+            <table style="width: 100%; border: none;">
+                <tbody>
+                    <tr>
+                        <td style="text-align: left; border: none;">
+                            <span style="text-decoration: underline;">
+                                @if($item->pelunasan)
+                                    <strong>Diambil</strong>
+                                @else
+                                    <strong>Belum Diambil</strong>
+                                @endif
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+        </div>
+        @endforeach
+        
+        
+        <div style="display: inline-block; width: 40%; margin: 0 1%; vertical-align: top;">
+            <table style="width: 100%; border: none;">
+                <tbody>
+                    <tr>
+                        <td style="text-align: right; border: none;"><strong>Sub Total</strong></td>
+                        <td style="text-align: right; border: none;">{{ number_format($subTotal, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; border: none;"><strong>Diskon</strong></td>
+                        <td style="text-align: right; border: none;">{{ number_format($totalDiskon, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border: none; text-align: center;">
+                            <hr style="border: 1px solid #000; margin: 0;"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; border: none;"><strong>Total Pesanan</strong></td>
+                        <td style="text-align: right; border: none;">{{ number_format($grandTotal, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; border: none;"><strong>DP (Min.50%)</strong></td>
+                        <td style="text-align: right; border: none;">{{ number_format($item->dp_pemesanan, 0, ',', '.') }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        
+        
         
         @if (!is_null($firstItem->pemesananproduk->catatan))
         <table style="width: 40%; margin-left: auto; margin-right: 0;">
