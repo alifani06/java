@@ -127,7 +127,7 @@
                 <thead>
                     <tr>
                         <th style="width: 5%;" class="text-center">No</th>
-                        <th style="width: 20%;">Kode Pemesanan</th>
+                        <th style="width: 20%;">No Pemesanan</th>
                         <th style="width: 20%;">Pemesan</th>
                         <th style="width: 50%;">Catatan</th>
                         <th style="width: 10%;">Jumlah</th>
