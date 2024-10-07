@@ -192,7 +192,8 @@
                         <h3 class="card-title">Detail Pengambilan</h3>
                     </div>
                     <div class="card-body">
-                        <div class="col-md-4 mb-3">
+                        <div class="row mb-3 align-items-center">
+                        <div class="col-md-6">
                             <label for="tanggal_kirim">Tanggal Pengambilan:</label>
                             <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
                                 <input type="text" id="tanggal_kirim" name="tanggal_kirim"
@@ -205,7 +206,19 @@
                                 </div>
                             </div>
                         </div>
+                        </div>
                         
+                        {{-- <div class="row mb-3 align-items-center">
+                            <div class="col-md-6 -auto" id="" >
+                                <label class="form-label" for="toko_pengambilan">Toko Pengambilan</label>
+                                <select class="custom-select form-control" id="toko" name="toko_id">
+                                    <option value="">- Pilih Toko -</option>
+                                    @foreach ($tokos as $toko)
+                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div> --}}
                         <div class="row mb-3 align-items-center">
                             <div class="col-md-6 -auto" id="" >
                                 <label for="nama_penerima">Nama Penerima </label> <span style="font-size: 10px;">(kosongkan jika sama dengan nama pelanggan)</span>
@@ -287,7 +300,6 @@
                                             <th>Diskon Member</th>
                                             <th>Harga Non Member</th>
                                             <th>Diskon Non Member</th>
-                                            <th>Stok</th>
                                             <th>Opsi</th>
                                         </tr>
                                     </thead>
@@ -313,20 +325,18 @@
                                                 <td>{{ $item->kode_lama }}</td>
                                                 <td>{{ $item->nama_produk }}</td>
                                                 <td>
-                                                    <span class="member_harga_slw">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}</span>
+                                                    <span class="member_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="member_diskon_slw">{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}</span>
+                                                    <span class="member_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="non_harga_slw">{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}</span>
+                                                    <span class="non_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="non_diskon_slw">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}</span>
+                                                    <span class="non_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}</span>
                                                 </td>
-                                                <td class="text-center">
-                                                    {{ $stokpesanan_tokobanjaran }} <!-- Tampilkan stok produk -->
-                                                </td>
+                                            
                                                 <td class="text-center">
                                                     <button type="button" class="btn btn-primary btn-sm pilih-btn"
                                                         data-id="{{ $item->id }}"

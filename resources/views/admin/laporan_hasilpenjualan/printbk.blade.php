@@ -81,7 +81,7 @@
         <p class="title1">Cabang: {{ strtoupper($branchName) }}</p>
         <div class="divider"></div>
     
-        <h1 class="title2">LAPORAN BARANG KELUAR</h1>
+        <h1 class="title2">LAPORAN PENJUALAN BARANG</h1>
     
         @php
             \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
@@ -104,17 +104,17 @@
     </div>
 
     <table>
-        <thead>
+        <thead >
             <tr>
                 <th>No</th>
                 {{-- <th>Tanggal Penjualan</th> --}}
-                <th>Kode</th>
-                <th>Nama Produk</th>
-                <th>Jumlah</th>
-                <th>Harga</th>
-                <th>Penjualan Kotor</th>
-                <th>Diskon</th>
-                <th>Penjualan Bersih</th>
+                <th style="text-align: center">Kode</th>
+                <th style="text-align: center">Nama Produk</th>
+                <th style="text-align: center">Jumlah</th>
+                <th style="text-align: center">Harga</th>
+                <th style="text-align: center">Penjualan Kotor</th>
+                <th style="text-align: center">Diskon</th>
+                <th style="text-align: center">Penjualan Bersih</th>
             </tr>
         </thead>
         <tbody>

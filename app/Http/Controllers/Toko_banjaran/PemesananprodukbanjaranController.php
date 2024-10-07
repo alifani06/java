@@ -69,10 +69,6 @@ class PemesananprodukbanjaranController extends Controller
         $search = $request->input('search'); // Ambil input pencarian
         $barangs = Barang::all();
         $pelanggans = Pelanggan::all();
-        // $pelanggans = Pelanggan::when($search, function ($query, $search) {
-        //     return $query->where('nama_pelanggan', 'like', '%' . $search . '%')
-        //                  ->orWhere('kode_lama', 'like', '%' . $search . '%');
-        // }) ->paginate(10);
         $details = Detailbarangjadi::all();
         $tokoslawis = Tokoslawi::all();
         $tokobanjaran = Tokobanjaran::all();
@@ -214,7 +210,8 @@ class PemesananprodukbanjaranController extends Controller
             'telp_penerima' => $request->telp_penerima,
             'alamat_penerima' => $request->alamat_penerima,
             'tanggal_kirim' => $tanggal_kirim,
-            'toko_id' => '1',
+            // 'toko_id' => '1',
+            'toko_id' =>$request->toko_id,
             'kasir' => ucfirst(auth()->user()->karyawan->nama_lengkap),
             'metode_id' => $request->metode_id, 
             'sub_totalasli' => $request->sub_totalasli,
@@ -299,23 +296,6 @@ class PemesananprodukbanjaranController extends Controller
         return $pdf->stream('pemesanan.pdf');
     }
 
-    // public function kode()
-    // {
-    //     $lastPemesanan = Pemesananproduk::latest()->first();
-    //     if (!$lastPemesanan) {
-    //         $num = 1;
-    //     } else {
-    //         $lastCode = $lastPemesanan->kode_pemesanan;
-    //         $num = (int) substr($lastCode, 3) + 1; // Mengambil angka setelah prefix 'SPP'
-    //     }
-        
-    //     $formattedNum = sprintf("%06s", $num); // Mengformat nomor urut menjadi 6 digit
-    //     $prefix = 'SPP';
-    //     $newCode = $prefix . $formattedNum; // Gabungkan prefix dengan nomor urut yang diformat
-    
-    //     return $newCode;
-    // }
-
     public function kode()
     {
         $prefix = 'QBNJ';
@@ -379,30 +359,29 @@ class PemesananprodukbanjaranController extends Controller
         return view('toko_banjaran.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans', 'tokos', 'dp'));
     }
 
-        public function edit($id)
-        {
-            // Mengambil semua data yang diperlukan
-            $pelanggans = Pelanggan::all();
-            $tokoslawis = Tokoslawi::all();
-            $tokos = Toko::all();
-            $produks = Produk::with('tokoslawi')->get();
+    public function edit($id)
+    {
+        // Mengambil semua data yang diperlukan
+        $pelanggans = Pelanggan::all();
+        $tokoslawis = Tokoslawi::all();
+        $tokos = Toko::all();
+        $produks = Produk::with('tokoslawi')->get();
             
-            // Mengambil data pemesananproduk dengan detailpemesananproduk dan dppemesanans yang terkait
-            $inquery = Pemesananproduk::with(['detailpemesananproduk', 'dppemesanans'])->findOrFail($id);
+        // Mengambil data pemesananproduk dengan detailpemesananproduk dan dppemesanans yang terkait
+        $inquery = Pemesananproduk::with(['detailpemesananproduk', 'dppemesanans'])->findOrFail($id);
             
             
-            // ID toko yang dipilih
-            $selectedTokoId = $inquery->toko_id;
+        // ID toko yang dipilih
+        $selectedTokoId = $inquery->toko_id;
         
-            $metodes = Metodepembayaran::all();
+        $metodes = Metodepembayaran::all();
         
-            // Mengembalikan view dengan data yang diperlukan
-            return view('toko_banjaran.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks', 'selectedTokoId', 'metodes'));
-        }
+        // Mengembalikan view dengan data yang diperlukan
+        return view('toko_banjaran.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks', 'selectedTokoId', 'metodes'));
+    }
         
-
-        public function update(Request $request, $id)
-        {
+    public function update(Request $request, $id)
+    {
             // Validasi pelanggan
             $validasi_pelanggan = Validator::make(
                 $request->all(),
@@ -528,11 +507,10 @@ class PemesananprodukbanjaranController extends Controller
             // Redirect ke halaman indeks pemesananproduk
             return redirect('toko_banjaran/pemesanan_produk');
 
-        }
-        
+    }   
 
-        public function destroy($id)
-        {
+    public function destroy($id)
+    {
             DB::transaction(function () use ($id) {
                 $pemesanan = Pemesananproduk::findOrFail($id);
         
@@ -544,7 +522,7 @@ class PemesananprodukbanjaranController extends Controller
             });
         
             return redirect('toko_banjaran/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
-        }
+    }
         
 
 }

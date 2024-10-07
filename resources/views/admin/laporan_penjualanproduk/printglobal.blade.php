@@ -106,10 +106,10 @@
         <thead>
             <tr>
                 <th class="text-center">No</th>
-                <th>Kode penjualan</th>
+                <th>No Penjualan</th>
                 <th>Kasir</th>
                 <th>Pelanggan</th>
-                <th>Kode Deposit</th>
+                <th>No Deposit</th>
                 <th>Nominal</th>
                 <th>Metode Pembayaran</th>
                 <th>Fee Penjualan</th>
