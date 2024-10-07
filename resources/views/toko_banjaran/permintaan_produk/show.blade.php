@@ -135,7 +135,7 @@
         <!-- Informasi Permintaan -->
         <div>
             <p>
-                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Permintaan</strong></span>
+                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>No Permintaan</strong></span>
                 <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->kode_permintaan }}</span>
             </p>
             <p>

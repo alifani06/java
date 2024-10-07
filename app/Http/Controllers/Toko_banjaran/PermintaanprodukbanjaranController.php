@@ -74,6 +74,7 @@ class PermintaanprodukbanjaranController extends Controller{
     $permintaanProduk = PermintaanProduk::create([
         'kode_permintaan' => $kode,
         'status' => 'unpost',
+        'tanggal_permintaan' => Carbon::now('Asia/Jakarta'),
         'qrcode_permintaan' => 'https://javabakery.id/permintaan_produk/' . $kode,
     ]);
 
@@ -97,19 +98,28 @@ class PermintaanprodukbanjaranController extends Controller{
     return redirect()->route('permintaan_produk.show', $permintaanProduk->id)->with('success', 'Berhasil menambahkan permintaan produk');
 }
 
-    
     public function kode()
     {
-        $lastBarang = PermintaanProduk::latest()->first();
+        $prefix = 'JPA';
+        $year = date('y'); // Dua digit terakhir dari tahun
+        $monthDay = date('dm'); // Format bulan dan hari: MMDD
+    
+        // Mengambil kode terakhir yang dibuat pada hari yang sama dengan prefix PBNJ
+        $lastBarang = Permintaanproduk::where('kode_permintaan', 'LIKE', $prefix . '%')
+                                      ->whereDate('tanggal_permintaan', Carbon::today())
+                                      ->orderBy('kode_permintaan', 'desc')
+                                      ->first();
+    
         if (!$lastBarang) {
             $num = 1;
         } else {
             $lastCode = $lastBarang->kode_permintaan;
-            $num = (int) substr($lastCode, strlen('PB')) + 1; // Updated the prefix
+            $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
+            $num = $lastNum + 1;
         }
-        $formattedNum = sprintf("%06s", $num);
-        $prefix = 'PB';
-        $newCode = $prefix . $formattedNum;
+    
+        $formattedNum = sprintf("%02d", $num); 
+        $newCode = $prefix . $monthDay . $year . $formattedNum;
         return $newCode;
     }
 

@@ -125,7 +125,7 @@
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $firstItem->kode_pengiriman }}</td>
                                 <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_input)->format('d/m/Y H:i') }} </td>
-                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') }} </td>
+                                <td>{{ $firstItem->tanggal_terima ? \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') : '-' }} </td>
                                   
                                 <td class="text-center">
                                     @if ($firstItem->status == 'posting')

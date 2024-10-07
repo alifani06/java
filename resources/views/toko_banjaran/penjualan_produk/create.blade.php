@@ -419,15 +419,17 @@
             </form>
         </div>
     </section>
-  
-  {{-- //pdf tab baru   --}}
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
             $('#penjualanForm').submit(function(event) {
                 event.preventDefault(); // Mencegah pengiriman form default
+    
+                var simpanButton = $('#simpanButton');
+                var loading = $('#loading');
+    
+                // Disable tombol simpan dan tampilkan loading
+                simpanButton.prop('disabled', true);
+                loading.show();
     
                 $.ajax({
                     url: $(this).attr('action'),
@@ -452,10 +454,16 @@
                                 }
                             });
                         }
+                        // Aktifkan kembali tombol setelah sukses (jika dibutuhkan)
+                        simpanButton.prop('disabled', false);
+                        loading.hide();
                     },
                     error: function(xhr) {
                         // Tangani error jika diperlukan
                         console.log(xhr.responseText);
+                        // Aktifkan kembali tombol jika ada error
+                        simpanButton.prop('disabled', false);
+                        loading.hide();
                     }
                 });
             });
@@ -466,6 +474,12 @@
             });
         });
     </script>
+
+  {{-- //pdf tab baru   --}}
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     
     <script>
         function getData1() {

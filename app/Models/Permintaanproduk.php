@@ -22,6 +22,7 @@ class Permintaanproduk extends Model
         'status',
         'kode_permintaan',
         'qrcode_permintaan',
+        'tanggal_permintaan',
     ];
 
     use SoftDeletes;
