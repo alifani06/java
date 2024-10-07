@@ -94,7 +94,7 @@
 
     {{-- <div class="divider"></div> --}}
 
-   <table>
+   {{-- <table>
     <thead>
         <tr>
             <th>No</th>
@@ -145,58 +145,63 @@
             </tr>
         </tfoot>
     @endif
-</table>
-{{-- <table>
-    <thead>
-        <tr>
-            <th>No</th>
-            <th>Divisi</th>
-            <th>Kode Produk</th>
-            <th>Nama Produk</th>
-            @foreach ($tokoFieldMap as $tokoField)
-                <th>{{ ucfirst($tokoField) }}</th>
-            @endforeach
-            @if ($toko_id == '0')
-                <th>Subtotal</th>
-            @endif
-        </tr>
-    </thead>
-    <tbody>
-        @php 
-            $no = 1; 
-            $totalPerToko = array_fill_keys(array_keys($tokoFieldMap), 0);
-        @endphp
-        @foreach ($groupedData as $klasifikasi => $items)
+</table> --}}
+
+@foreach ($groupedData as $klasifikasi => $items)
+    <h3>{{ $klasifikasi }}</h3> <!-- Judul tabel untuk setiap klasifikasi -->
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;"> <!-- Atur lebar tabel dan jarak antar tabel -->
+        <thead>
+            <tr>
+                <th style="width: 5%; text-align: left;">No</th>
+                <th style="width: 15%; text-align: left;">Kode Produk</th>
+                <th style="width: 30%; text-align: left;">Nama Produk</th>
+                @foreach ($tokoFieldMap as $tokoField)
+                    <th style="width: 10%; text-align: right;">{{ ucfirst($tokoField) }}</th>
+                @endforeach
+                @if ($toko_id == '0') <!-- Menampilkan kolom Subtotal hanya jika semua toko dipilih -->
+                    <th style="width: 10%; text-align: right;">Subtotal</th>
+                @endif
+            </tr>
+        </thead>
+        <tbody>
+            @php 
+                $no = 1; 
+                $totalPerToko = array_fill_keys($tokoFieldMap, 0); 
+                $subtotalKlasifikasi = 0;  // Variabel untuk subtotal per klasifikasi
+            @endphp
             @foreach ($items as $data)
                 <tr>
-                    <td>{{ $no++ }}</td>
-                    <td>{{ $data['klasifikasi'] }}</td>
-                    <td>{{ $data['kode_lama'] }}</td>
-                    <td>{{ $data['nama_produk'] }}</td>
+                    <td style="text-align: left;">{{ $no++ }}</td>
+                    <td style="text-align: left;">{{ $data['kode_lama'] }}</td>
+                    <td style="text-align: left;">{{ $data['nama_produk'] }}</td>
                     @foreach ($tokoFieldMap as $tokoField)
-                        <td style="text-align: right">{{ $data[$tokoField] }}</td>
+                        <td style="text-align: right;">{{ $data[$tokoField] }}</td>
                         @php
                             $totalPerToko[$tokoField] += $data[$tokoField];
                         @endphp
                     @endforeach
-                    @if ($toko_id == '0')
-                        <td style="text-align: right">{{ $data['subtotal'] }}</td>
+                    @if ($toko_id == '0') <!-- Menampilkan subtotal jika semua toko dipilih -->
+                        <td style="text-align: right;">{{ $data['subtotal'] }}</td>
+                        @php
+                            $subtotalKlasifikasi += $data['subtotal']; // Tambahkan ke subtotal per klasifikasi
+                        @endphp
                     @endif
                 </tr>
             @endforeach
-        @endforeach
-    </tbody>
-    <tfoot>
-        <tr>
-            <th colspan="4">Total</th>
-            @foreach ($tokoFieldMap as $tokoField)
-                <th style="text-align: right">{{ $totalPerToko[$tokoField] }}</th>
-            @endforeach
-            @if ($toko_id == '0')
-                <th style="text-align: right">{{ $totalSubtotal }}</th>
-            @endif
-        </tr>
-    </tfoot>
-</table> --}}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" style="text-align: right;"><strong>Total {{ $klasifikasi }}:</strong></td>
+                @foreach ($tokoFieldMap as $tokoField)
+                    <td style="text-align: right;"><strong>{{ $totalPerToko[$tokoField] }}</strong></td>
+                @endforeach
+                @if ($toko_id == '0') <!-- Menampilkan subtotal jika semua toko dipilih -->
+                    <td style="text-align: right;"><strong>{{ $subtotalKlasifikasi }}</strong></td>
+                @endif
+            </tr>
+        </tfoot>
+    </table>
+@endforeach
+
 </body>
 </html>

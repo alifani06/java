@@ -146,7 +146,8 @@
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $item->kode_pemesanan }}</td>
                                     <td>{{ \Carbon\Carbon::parse($item->tanggal_kirim)->format('d/m/Y H:i') }}</td>
-                                    <td>{{ $item->toko->nama_toko }}</td>
+                                    <td>{{ $item->toko ? $item->toko->nama_toko : 'Toko tidak tersedia' }}</td>
+
                                     <td>
                                         @if ($item->detailpemesananproduk->isNotEmpty())
                                             {{ $item->detailpemesananproduk->pluck('produk.klasifikasi.nama')->implode(', ') }}
