@@ -6,8 +6,8 @@
           body {
             font-family: Arial, sans-serif;
             font-size: 12px;
-            margin: 0;
-            padding: 0;
+            margin: -10;
+            padding: -10;
             padding-bottom: 100px; /* Increased padding-bottom for signatures */
         }
         table {
@@ -87,7 +87,7 @@
                 <th>No</th>
                 <th>Kode Produk</th>
                 <th>Nama Produk</th>
-                <th>Stok</th>
+                <th>Jumlah</th>
                 <th>Harga Jual</th>
                 <th>Sub Total</th>
             </tr>

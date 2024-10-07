@@ -8,6 +8,8 @@
         body {
             font-family: Arial, sans-serif;
             font-size: 12px;
+            margin: -10;
+            padding: -10;
         }
         .text {
             text-align: center;
@@ -53,6 +55,12 @@
         .header .title2 {
             font-weight: bold;
             font-size: 18px;
+            margin-bottom: 2px;
+        }
+        .header .title3 {
+        margin-top: 2px;
+        font-size: 14px;
+        margin-bottom: 5px;
         }
         .header .period {
             font-size: 12px;
@@ -79,9 +87,11 @@
         </div>
         <h1 class="title">PT JAVA BAKERY FACTORY</h1>
         <p class="title1">Cabang: {{ strtoupper($branchName) }}</p>
+       
         <div class="divider"></div>
     
         <h1 class="title2">LAPORAN PENJUALAN BARANG</h1>
+        <p class="title3">Divisi: {{ strtoupper($klasifikasiName) }}</p>
     
         @php
             \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
@@ -108,7 +118,7 @@
             <tr>
                 <th>No</th>
                 {{-- <th>Tanggal Penjualan</th> --}}
-                <th style="text-align: center">Kode</th>
+                <th style="text-align: center">Kode Produk</th>
                 <th style="text-align: center">Nama Produk</th>
                 <th style="text-align: center">Jumlah</th>
                 <th style="text-align: center">Harga</th>

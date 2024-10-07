@@ -1096,6 +1096,11 @@ class Laporan_hasilpenjualanController extends Controller
         $toko = Toko::find($toko_id);
         $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
     }
+    $klasifikasiName = 'Semua Divisi';
+    if ($klasifikasi_id) {
+        $klasifikasi = Klasifikasi::find($klasifikasi_id);
+        $klasifikasiName = $klasifikasi ? $klasifikasi->nama : 'Semua Klasifikasi';
+    }
 
     // Pass raw dates ke view
     $startDate = $tanggal_penjualan;
@@ -1107,6 +1112,7 @@ class Laporan_hasilpenjualanController extends Controller
         'startDate' => $startDate,
         'endDate' => $endDate,
         'branchName' => $branchName,
+        'klasifikasiName' => $klasifikasiName,
         'tokos' => $tokos,
         'produks' => $produks, // Tambahkan data produk
         'klasifikasis' => $klasifikasis,
