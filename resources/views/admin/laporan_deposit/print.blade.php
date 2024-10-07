@@ -128,7 +128,7 @@
                 <th>Nama Kasir</th>
                 <th>Metode Bayar</th>
                 <th>Fee Deposit</th>
-                <th>Nominal</th>
+                <th>Nominal Deposit</th>
                 <th>Status</th>
             </tr>
         </thead>

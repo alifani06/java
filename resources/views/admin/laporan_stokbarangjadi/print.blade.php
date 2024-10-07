@@ -169,7 +169,7 @@
         @endphp
         
         <!-- Section title and klasifikasi displayed together -->
-        <div class="section-title" style="margin-top: 2px;">Kode Input: {{ $currentKodeInput }}</div>
+        <div class="section-title" style="margin-top: 2px;">No Input: {{ $currentKodeInput }}</div>
         <div class="klasifikasi" style="font-size: 12px; margin-bottom: 10px;">
         {{ $item->produk->klasifikasi->nama }}
         </div>

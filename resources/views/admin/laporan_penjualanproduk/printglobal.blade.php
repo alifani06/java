@@ -106,14 +106,14 @@
         <thead>
             <tr>
                 <th class="text-center">No</th>
-                <th>No Penjualan</th>
-                <th>Nama Kasir</th>
-                <th>Nama Pelanggan</th>
-                <th>No Deposit</th>
-                <th>Nominal Deposit</th>
-                <th>Metode Pembayaran</th>
-                <th>Fee Penjualan</th>
-                <th>Total Penjualan</th>
+                <th style="text-align: center">No Penjualan</th>
+                <th style="text-align: center">Nama Kasir</th>
+                <th style="text-align: center">Nama Pelanggan</th>
+                <th style="text-align: center">No Deposit</th>
+                <th style="text-align: center">Nominal Deposit</th>
+                <th style="text-align: center">Metode Pembayaran</th>
+                <th style="text-align: center">Fee Penjualan</th>
+                <th style="text-align: center">Total Penjualan</th>
             </tr>
         </thead>
         <tbody style="font-size: 10px;">

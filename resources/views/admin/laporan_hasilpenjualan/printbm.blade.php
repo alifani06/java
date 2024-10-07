@@ -101,18 +101,18 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 5%; text-align: left">No</th>
-                <th style="width: 13%; text-align: left">Kode Produk</th>
-                <th style="width: 47%; text-align: left">Nama Produk</th>
-                <th style="width: 15%; text-align: right">Jumlah</th>
-                <th style="width: 15%; text-align: right">Total</th>
+                <th style="width: 5%; text-align: center">No</th>
+                <th style="width: 13%; text-align: center">Kode Produk</th>
+                <th style="width: 47%; text-align: center">Nama Produk</th>
+                <th style="width: 15%; text-align: center">Jumlah</th>
+                <th style="width: 15%; text-align: center">Total</th>
             </tr>
         </thead>
         <tbody>
             @php $no = 1; @endphp
             @foreach ($groupedData as $data)
                 <tr>
-                    <td>{{ $no++ }}</td>
+                    <td style="text-align: center">{{ $no++ }}</td>
                     <td>{{ $data['produk']->kode_lama }}</td>
                     <td>{{ $data['produk']->nama_produk }}</td>
                     <td style="text-align: right">{{ number_format($data['jumlah'], 0, ',', '.') }}</td>

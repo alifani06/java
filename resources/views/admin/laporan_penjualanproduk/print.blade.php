@@ -145,7 +145,7 @@
 
 <table>
     <tr>
-        <td colspan="2" class="text-left"><strong>No Penjualan : {{ $kodePenjualan }}</strong></td>
+        <td colspan="2" class="text-left"><strong>Kode Penjualan : {{ $kodePenjualan }}</strong></td>
         <td colspan="3" class="text-right"><strong>Tanggal : {{ $formattedDate}}</strong></td>
         <td colspan="2" class="text-right"><strong>{{ $items->first()->toko->nama_toko }}</strong></td>
     </tr>              
