@@ -74,7 +74,7 @@
         .section table th, .section table td {
             border: 1px solid #141414;
             padding: 5px;
-            font-size: 9px;
+            font-size: 8px;
         }
         .float-right {
             text-align: right;
@@ -256,9 +256,9 @@
         <hr class="divider">
         <hr class="divider">
         <div class="section">
-            <h2>Struk Pemesanan Produk</h2>
+            <h2>Struk Pemesanan</h2>
             <p style="text-align: right; font-size: 9px;">
-                {{ \Carbon\Carbon::parse($pemesanan->tanggal_pemesanan)->locale('id')->translatedFormat('l, d F Y H:i') }}
+                {{ \Carbon\Carbon::parse($pemesanan->tanggal_pemesanan)->locale('id')->translatedFormat('d F Y H:i') }}
             </p><br>
             <div class="detail-info">
                 <div class="pemesanan">
@@ -296,12 +296,12 @@
                 <table style="font-size: 12px; width: 100%;">
                     <thead>
                         <tr>
-                            <th style="font-size: 9px;">Kode Produk</th>
-                            <th style="font-size: 9px;">Nama Produk</th>
-                            <th style="font-size: 9px;">Jumlah</th>
-                            <th style="font-size: 9px;">Harga</th>
-                            <th style="font-size: 9px;">Diskon</th>
-                            <th style="font-size: 9px;">Total</th>
+                            <th style="font-size: 9px; width: 10%;">Kode Produk</th>
+                            <th style="font-size: 9px; width: 40%;">Nama Produk</th>
+                            <th style="font-size: 9px; width: 10%;">Jumlah</th>
+                            <th style="font-size: 9px; width: 15%;">Harga</th>
+                            <th style="font-size: 9px; width: 10%;">Diskon</th>
+                            <th style="font-size: 9px; width: 15%;">Total</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -309,9 +309,13 @@
                             $subtotal = 0;
                         @endphp
                         @foreach($pemesanan->detailpemesananproduk as $detail)
+                        @php
+                           // Membagi nama produk menjadi array dengan panjang maksimum 7 karakter
+                           $nama_produk = wordwrap($detail->nama_produk, 7, "\n", true);
+                       @endphp
                             <tr>
                                 <td style="font-size: 9px;">{{ $detail->kode_lama }}</td>
-                                <td style="font-size: 9px;">{{ $detail->nama_produk }}</td>
+                                <td style="font-size: 9px; word-wrap: break-word; white-space: pre-line;">{{ $nama_produk }}</td>
                                 <td style="font-size: 9px;">{{ $detail->jumlah }}</td>
                                 <td style="font-size: 9px;">{{number_format($detail->harga, 0, ',', '.') }}</td>
                                 <td style="font-size: 9px;">

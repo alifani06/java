@@ -277,7 +277,7 @@
         <div class="section">
             <h2>Struk penjualan</h2>
             <p style="text-align: right; font-size: 9px; margin-bottom: 10px;">
-                {{ \Carbon\Carbon::parse($penjualan->tanggal_penjualan)->locale('id')->translatedFormat('l, d F Y H:i') }}
+                {{ \Carbon\Carbon::parse($penjualan->tanggal_penjualan)->locale('id')->translatedFormat('d F Y H:i') }}
             </p><br>
             <div class="detail-info">
                 <div class="penjualan">
@@ -315,7 +315,7 @@
                     <thead>
                         <tr>
                             <th style="font-size: 9px; width: 10%;">Kode</th>
-                            <th style="font-size: 9px; width: 40%;">Produk</th>
+                            <th style="font-size: 9px; width: 40%;">Nama Produk</th>
                             <th style="font-size: 9px; width: 10%;">Jumlah</th>
                             <th style="font-size: 9px; width: 15%;">Harga</th>
                             <th style="font-size: 9px; width: 10%;">Diskon</th>
