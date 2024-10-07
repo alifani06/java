@@ -54,15 +54,6 @@ public function index(Request $request)
     // Query untuk pemesanan produk
     $queryPemesanan = Pemesananproduk::with(['toko', 'detailpemesananproduk.produk.klasifikasi']);
 
-    // Filter pemesanan berdasarkan tanggal_kirim
-    // if ($tanggal && $tanggal_akhir) {
-    //     $queryPemesanan->whereBetween('tanggal_kirim', [Carbon::parse($tanggal)->startOfDay(), Carbon::parse($tanggal_akhir)->endOfDay()]);
-    // } elseif ($tanggal) {
-    //     $queryPemesanan->where('tanggal_kirim', '>=', Carbon::parse($tanggal)->startOfDay());
-    // } elseif ($tanggal_akhir) {
-    //     $queryPemesanan->where('tanggal_kirim', '<=', Carbon::parse($tanggal_akhir)->endOfDay());
-    // }
-    // Filter pemesanan berdasarkan tanggal_kirim (1 hari setelah tanggal yang dipilih)
     if ($tanggal && $tanggal_akhir) {
         $queryPemesanan->whereBetween('tanggal_kirim', [Carbon::parse($tanggal)->addDay()->startOfDay(), Carbon::parse($tanggal_akhir)->addDay()->endOfDay()]);
     } elseif ($tanggal) {

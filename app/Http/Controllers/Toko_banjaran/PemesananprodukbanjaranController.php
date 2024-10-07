@@ -323,7 +323,7 @@ class PemesananprodukbanjaranController extends Controller
 
     public function kodedp()
     {
-        $prefix = 'DPBNJ';
+        $prefix = 'DPC';
         $year = date('y'); // Dua digit terakhir dari tahun
         $date = date('dm'); // Format bulan dan hari: MMDD
     

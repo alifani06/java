@@ -8,7 +8,7 @@
             font-size: 12px;
             margin: -10;
             padding: -10;
-            padding-bottom: 100px; /* Increased padding-bottom for signatures */
+            padding-bottom: 20px; /* Increased padding-bottom for signatures */
         }
         table {
             width: 100%;
@@ -66,7 +66,7 @@
         <p class="title1">Cabang: {{ $tokoCabang }}</p> <!-- Menampilkan nama cabang -->
         <div class="divider"></div>
     
-        <h1 class="title2">LAPORAN STOK TOKO</h1>
+        <h1 class="title2">LAPORAN DAFTAR BARANG TOKO</h1>
         @php
         \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesi
         $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');

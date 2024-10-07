@@ -160,8 +160,14 @@
                                 @foreach ($permintaan as $permintaanItem)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration + $pemesanan->count() }}</td>
-                                    <td>{{ optional($permintaanItem->detailpermintaanproduks->first()->toko)->nama_toko ?? 'Toko tidak ditemukan' }}</td>
-                                    <td>{{ $permintaanItem->kode_permintaan }}</td>
+                                    <td>
+                                        @if ($permintaanItem->detailpermintaanproduks->isNotEmpty())
+                                            {{ optional($permintaanItem->detailpermintaanproduks->first()->toko)->nama_toko ?? 'Toko tidak ditemukan' }}
+                                        @else
+                                            'Tidak ada detail permintaan'
+                                        @endif
+                                    </td>
+                                                                        <td>{{ $permintaanItem->kode_permintaan }}</td>
                                     <td>{{ \Carbon\Carbon::parse($permintaanItem->created_at)->format('d/m/Y H:i') }}</td>
                                     <td>
                                         <ul>

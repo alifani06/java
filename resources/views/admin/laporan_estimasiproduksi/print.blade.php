@@ -124,9 +124,9 @@
                 <th colspan="2">Bumiayu</th>
                 <th colspan="2">Pemalang</th>
                 <th colspan="2">Cilacap</th>
-                <th>Total Permintaan</th>
+                <th>Total Stok</th>
                 <th>Total Pesanan</th>
-                <th>Total Semua</th>
+                <th>Total </th>
             </tr>
             <tr>
                 <th></th>
