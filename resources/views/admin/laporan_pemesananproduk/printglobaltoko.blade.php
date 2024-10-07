@@ -83,7 +83,7 @@
         <p class="title1">Cabang: {{ strtoupper($selectedCabang) }}</p>
         <div class="divider"></div>
 
-        <h1 class="title2">LAPORAN PEMESANAN PRODUK GLOBAL</h1>
+        <h1 class="title2">LAPORAN PEMESANAN PRODUK</h1>
     
         @php
             use Carbon\Carbon;
