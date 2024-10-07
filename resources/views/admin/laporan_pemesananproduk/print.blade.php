@@ -100,7 +100,7 @@
         <h1 class="title">PT JAVA BAKERY FACTORY</h1>
         <p class="title1">Cabang: {{ $selectedCabang }}</p> 
         <div class="divider"></div>
-        <h1 class="title2">LAPORAN PEMESANAN PRODUK RINCI</h1>
+        <h1 class="title2">LAPORAN PESANAN PRODUK RINCI</h1>
 
         @php
             use Carbon\Carbon;

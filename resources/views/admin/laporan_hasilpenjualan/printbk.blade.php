@@ -121,7 +121,7 @@
                 <th style="text-align: center">Kode Produk</th>
                 <th style="text-align: center">Nama Produk</th>
                 <th style="text-align: center">Jumlah</th>
-                <th style="text-align: center">Harga</th>
+                <th style="text-align: center">Harga Satuan</th>
                 <th style="text-align: center">Penjualan Kotor</th>
                 <th style="text-align: center">Diskon</th>
                 <th style="text-align: center">Penjualan Bersih</th>
