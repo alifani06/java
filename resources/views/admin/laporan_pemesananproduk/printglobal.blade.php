@@ -152,14 +152,14 @@
     <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;"> <!-- Atur lebar tabel dan jarak antar tabel -->
         <thead>
             <tr>
-                <th style="width: 5%; text-align: left;">No</th>
-                <th style="width: 15%; text-align: left;">Kode Produk</th>
-                <th style="width: 30%; text-align: left;">Nama Produk</th>
+                <th style="width: 5%; text-align: center;">No</th>
+                <th style="width: 15%; text-align: center;">Kode Produk</th>
+                <th style="width: 30%; text-align: center;">Nama Produk</th>
                 @foreach ($tokoFieldMap as $tokoField)
-                    <th style="width: 10%; text-align: right;">{{ ucfirst($tokoField) }}</th>
+                    <th style="width: 10%; text-align: center;">{{ ucfirst($tokoField) }}</th>
                 @endforeach
                 @if ($toko_id == '0') <!-- Menampilkan kolom Subtotal hanya jika semua toko dipilih -->
-                    <th style="width: 10%; text-align: right;">Subtotal</th>
+                    <th style="width: 10%; text-align: center;">Subtotal</th>
                 @endif
             </tr>
         </thead>
