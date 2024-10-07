@@ -223,9 +223,9 @@
         <table class="signature-table">
             <tr>
                 <td>
-                    <div class="signature-title">Pengirim</div>
+                    <div class="signature-title">Admin Gudang</div>
                     <div class="signature-line"></div>
-                    <div class="signature-name">Nama Pengirim</div>
+                    <div class="signature-name">Admin Gudang</div>
                 </td>
                 <td>
                     <div class="signature-title">Sopir</div>
@@ -233,9 +233,9 @@
                     <div class="signature-name">Nama Sopir</div>
                 </td>
                 <td>
-                    <div class="signature-title">Penerima</div>
+                    <div class="signature-title">Admin Toko</div>
                     <div class="signature-line"></div>
-                    <div class="signature-name">Nama Penerima</div>
+                    <div class="signature-name">Admin Toko</div>
                 </td>
             </tr>
         </table>
