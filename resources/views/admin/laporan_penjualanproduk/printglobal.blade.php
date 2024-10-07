@@ -108,7 +108,7 @@
                 <th class="text-center">No</th>
                 <th>No Penjualan</th>
                 <th>Nama Kasir</th>
-                <th>Pelanggan</th>
+                <th>Nama Pelanggan</th>
                 <th>No Deposit</th>
                 <th>Nominal Deposit</th>
                 <th>Metode Pembayaran</th>
