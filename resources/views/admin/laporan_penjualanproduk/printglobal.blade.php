@@ -107,13 +107,13 @@
             <tr>
                 <th class="text-center">No</th>
                 <th>No Penjualan</th>
-                <th>Kasir</th>
+                <th>Nama Kasir</th>
                 <th>Pelanggan</th>
                 <th>No Deposit</th>
-                <th>Nominal</th>
+                <th>Nominal Deposit</th>
                 <th>Metode Pembayaran</th>
                 <th>Fee Penjualan</th>
-                <th>Total</th>
+                <th>Total Penjualan</th>
             </tr>
         </thead>
         <tbody style="font-size: 10px;">
@@ -183,12 +183,13 @@
             </tr>
             <tr>
                 <td style="text-align: right; border: none;">Pengambilan Deposit :</td>
-                <td style="text-align: right; font-weight: bold; border: none;">{{ number_format($totalDeposit, 0, ',', '.') }}</td>
+                <td style="text-align: right; font-weight: bold; border: none; border-bottom: 1px solid black;">{{ number_format($totalDeposit, 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <td style="text-align: right;">Total</td>
-                <td style="text-align: right; font-weight: bold;">{{ 'Rp. ' . number_format($grandTotal - $grandTotalFee - $totalDeposit, 0, ',', '.') }}</td>
+                <td style="text-align: right; border: none;">Total :</td>
+                <td style="text-align: right; font-weight: bold; border: none;" >{{ 'Rp. ' . number_format($grandTotal - $grandTotalFee - $totalDeposit, 0, ',', '.') }}</td>
             </tr>
+            
         </tbody>
     </table>
     

@@ -8,6 +8,9 @@
         body {
             font-family: Arial, sans-serif;
             font-size: 12px;
+            margin: -20; /* Menghilangkan margin */
+    padding: -20; /* Menghilangkan padding */
+
         }
         table {
             width: 100%;
@@ -83,12 +86,13 @@
         <h1 class="title">PT JAVA BAKERY FACTORY</h1>
         <p class="title1">Cabang: {{ strtoupper($branchName) }}</p>
         <div class="divider"></div>
-    
-        @if ($status_pelunasan == 'diambil')
+        <h1 class="title2">LAPORAN DEPOSIT</h1>
+
+        {{-- @if ($status_pelunasan == 'diambil')
             <h1 class="title2">LAPORAN PENGAMBILAN DEPOSIT</h1>
         @else
             <h1 class="title2">LAPORAN DEPOSIT</h1>
-        @endif
+        @endif --}}
 
         @php
             \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
@@ -115,11 +119,13 @@
             <tr>
                 <th class="text-center">No</th>
                 {{-- <th>Cabang</th> --}}
-                <th>Kode Deposit</th>
-                @if ($status_pelunasan == 'diambil')
+                <th>No Deposit</th>
+                {{-- @if ($status_pelunasan == 'diambil')
                 <th>Tanggal Diambil</th>
-                @endif
+                @endif --}}
+                <th>Tanggal Deposit</th>
                 <th>Nama Pelanggan</th>
+                <th>Nama Kasir</th>
                 <th>Metode Bayar</th>
                 <th>Fee Deposit</th>
                 <th>Nominal</th>
@@ -133,22 +139,25 @@
                     <td class="text-center">{{ $loop->iteration }}</td>
                     {{-- <td>{{ $deposit->pemesananproduk->toko->nama_toko ?? 'Tidak Ada Toko' }}</td> --}}
                     <td>{{ $deposit->kode_dppemesanan }}</td>
-                    @if ($status_pelunasan == 'diambil')
+                    {{-- @if ($status_pelunasan == 'diambil')
                     <td>{{ $deposit->created_at ? $deposit->created_at->format('d-m-Y') : '-' }}</td>
-                    @endif
+                    @endif --}}
+                    <td>{{ \Carbon\Carbon::parse($deposit->pemesananproduk->tanggal_pemesanan)->translatedFormat('d M Y') }}</td>
+
                     <td>{{ $deposit->pemesananproduk->nama_pelanggan ?? 'Tidak Ada Nama' }}</td>
+                    <td>{{ $deposit->pemesananproduk->kasir ?? 'Tidak Ada Nama' }}</td>
                     <td>
                         @if($deposit->pemesananproduk->metodePembayaran)
                             {{ $deposit->pemesananproduk->metodePembayaran->nama_metode }}
                         @else
-                            -
+                            CASH
                         @endif
                     </td>
-                    <td>
-                        {{ is_numeric($deposit->pemesananproduk->total_fee) ? number_format((float)$deposit->pemesananproduk->total_fee, 0, ',', '.') : '-' }}
+                    <td style="text-align: right">
+                        {{ is_numeric($deposit->pemesananproduk->total_fee) ? number_format((float)$deposit->pemesananproduk->total_fee, 0, ',', '.') : '0' }}
                     </td>
                     <td style="text-align: right">
-                        {{ is_numeric($deposit->dp_pemesanan) ? number_format((float)$deposit->dp_pemesanan, 0, ',', '.') : '-' }}
+                        {{ is_numeric($deposit->dp_pemesanan) ? number_format((float)$deposit->dp_pemesanan, 0, ',', '.') : '0' }}
                     </td>
                     <td>
                         @if($deposit->pelunasan)
@@ -163,10 +172,10 @@
         
     </table>
    <!-- Tampilkan Total Deposit, Fee Deposit, dan Sub Total dengan format yang benar -->
-   <table style="width: 60%; margin-left: auto; margin-right: 0; background-color: rgb(248, 248, 6);" border="0">
+   <table style="width: 40%; margin-left: auto; margin-right: 0; background-color: rgb(248, 248, 6);" border="0">
        <tbody>
            <tr style="border: none;">
-               <td style="text-align: right; border: none;">Total Deposit :</td>
+               <td style="text-align: right; border: none;">Deposit :</td>
                <td style="text-align: right">{{ number_format($totalDeposit, 0, ',', '.') }}</td>
            </tr>
            <tr style="border: none;">
@@ -174,7 +183,7 @@
                <td style="text-align: right">{{ number_format($totalFee, 0, ',', '.') }}</td>
            </tr>
            <tr style="border-top: 2px solid black;">
-               <td style="text-align: right; border: none;">Sub Total :</td>
+               <td style="text-align: right; border: none;"></td>
                <td style="text-align: right">{{ 'Rp ' . number_format($subTotal, 0, ',', '.') }}</td>
            </tr>
        </tbody>
