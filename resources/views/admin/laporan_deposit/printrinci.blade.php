@@ -252,8 +252,24 @@
                             </span>
                         </td>
                     </tr>
+
+                    @if (!is_null($firstItem->pemesananproduk->catatan))
+
+
+                            <tr>
+                                <td style="text-align: left; width: 100%;"><strong>Catatan</strong></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; width: 40%;">{!! nl2br(e($firstItem->pemesananproduk->catatan)) ?? '-' !!}
+                                    
+                                </td>
+                            </tr>
+
+                    @endif
                 </tbody>
             </table>
+                
+
             
         </div>
         @endforeach
@@ -289,21 +305,7 @@
         
         
         
-        
-        @if (!is_null($firstItem->pemesananproduk->catatan))
-        <table style="width: 40%; margin-left: auto; margin-right: 0;">
-            <tbody>
-                <tr>
-                    <td style="text-align: left; width: 100%;"><strong>Catatan</strong></td>
-                </tr>
-                <tr>
-                    <td style="text-align: left; width: 40%;">{!! nl2br(e($firstItem->pemesananproduk->catatan)) ?? '-' !!}
-                        
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        @endif
+    
         
         <div class="divider1"></div>
    
