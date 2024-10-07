@@ -136,7 +136,7 @@
         @endphp
     <div class="info-group" style="display: flex; flex-direction: column; gap: 2px;">
         <div style="display: flex; align-items: center;">
-                <span class="info-label" style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Pengiriman</strong></span>
+                <span class="info-label" style="min-width: 100px; display: inline-flex; align-items: center;"><strong>No Pengiriman</strong></span>
                 <span class="info-value" style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $kode_pengiriman }}</span>
         </div>
         <div style="display: flex; align-items: center;">

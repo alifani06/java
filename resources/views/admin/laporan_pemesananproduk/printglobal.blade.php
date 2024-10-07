@@ -171,7 +171,7 @@
             @endphp
             @foreach ($items as $data)
                 <tr>
-                    <td style="text-align: left;">{{ $no++ }}</td>
+                    <td style="text-align: center;">{{ $no++ }}</td>
                     <td style="text-align: left;">{{ $data['kode_lama'] }}</td>
                     <td style="text-align: left;">{{ $data['nama_produk'] }}</td>
                     @foreach ($tokoFieldMap as $tokoField)
