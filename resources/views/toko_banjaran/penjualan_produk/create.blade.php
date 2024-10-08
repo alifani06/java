@@ -823,95 +823,95 @@
         }
         
         function addProductToCard(productData) {
-        const tbody = document.getElementById('selected-products-body');
-        let harga = 0;
-        let diskon = 0;
+    const tbody = document.getElementById('selected-products-body');
+    let harga = 0;
+    let diskon = 0;
 
-        // Cek tipe pelanggan untuk menentukan harga dan diskon
-        if (kategoriPelanggan === 'member') {
-            harga = parseFloat(productData.member) || 0;
-            diskon = parseFloat(productData.diskonmember) || 0;
-        } else if (kategoriPelanggan === 'nonmember') {
-            harga = parseFloat(productData.nonmember) || 0;
-            diskon = parseFloat(productData.diskonnonmember) || 0;
-        } else {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Tipe Pelanggan Belum Dipilih',
-                text: 'Silakan pilih tipe pelanggan terlebih dahulu.',
-                confirmButtonText: 'OK'
-            });
-            return;
-        }
+    // Cek tipe pelanggan untuk menentukan harga dan diskon
+    if (kategoriPelanggan === 'member') {
+        harga = parseFloat(productData.member) || 0;
+        diskon = parseFloat(productData.diskonmember) || 0;
+    } else if (kategoriPelanggan === 'nonmember') {
+        harga = parseFloat(productData.nonmember) || 0;
+        diskon = parseFloat(productData.diskonnonmember) || 0;
+    } else {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Tipe Pelanggan Belum Dipilih',
+            text: 'Silakan pilih tipe pelanggan terlebih dahulu.',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
 
-        // Cek apakah produk dengan kode yang sama sudah ada di tabel
-        const existingRow = Array.from(tbody.querySelectorAll('tr')).find(row => {
-            const kode = row.querySelector('td:nth-child(1)').innerText;
-            return kode === productData.kode;
+    // Cek apakah produk dengan kode yang sama sudah ada di tabel
+    const existingRow = Array.from(tbody.querySelectorAll('tr')).find(row => {
+        const kode = row.querySelector('td:nth-child(1)').innerText;
+        return kode === productData.kode;
+    });
+
+    if (existingRow) {
+        // Jika produk sudah ada, tambahkan jumlahnya
+        const jumlahInput = existingRow.querySelector('.jumlah-input');
+        let jumlah = parseInt(jumlahInput.value, 10) || 0;
+        jumlah += 1; // Tambah jumlah 1 (atau sesuaikan logika jika ingin menambah default jumlah input)
+        jumlahInput.value = jumlah; // Set jumlah baru
+
+        // Hitung total harga berdasarkan jumlah baru
+        const total = calculateTotal(harga, diskon, jumlah);
+        existingRow.querySelector('.total-amount').innerText = total;
+        existingRow.querySelector('input[name="total[]"]').value = total; // Update hidden input total
+
+        existingRow.querySelector('input[name="jumlah[]"]').value = jumlah; // Update jumlah terbaru
+
+    } else {
+        // Jika produk belum ada, tambahkan produk baru ke tabel
+        const row = document.createElement('tr');
+        const jumlahInput = 1; // Default value for new product
+        row.innerHTML = `
+        <td hidden>${productData.id}</td> <!-- Tambahkan produk_id -->
+        <td>${productData.kodel}</td>
+        <td style="width: 30%;">${productData.nama}</td>
+        <td style="width: 20%;"><input type="number" class="form-control jumlah-input" value="${jumlahInput}" min="1"></td>
+        <td>${diskon}%</td>
+        <td>${harga}</td>
+        <td class="total-amount">${calculateTotal(harga, diskon, jumlahInput)}</td>
+        <td>
+            <button class="btn btn-danger delete-btn btn-sm"><i class="fas fa-trash"></i></button>
+        </td>
+        <input type="hidden" name="produk_id[]" value="${productData.id}" /> <!-- Produk_id dimasukkan ke hidden input -->
+        <input type="hidden" name="kode_produk[]" value="${productData.kode}" />
+        <input type="hidden" name="kode_lama[]" value="${productData.kodel}" />
+        <input type="hidden" name="nama_produk[]" value="${productData.nama}" />
+        <input type="hidden" name="harga[]" value="${harga}" />
+        <input type="hidden" name="diskon[]" value="${diskon}" />
+        <input type="hidden" name="total[]" value="${calculateTotal(harga, diskon, jumlahInput)}" />
+        <input type="hidden" name="totalasli[]" value="${harga}" />
+        <input type="hidden" name="jumlah[]" value="${jumlahInput}" />
+        `;
+        tbody.appendChild(row);
+
+        // Tambahkan event listener ke input jumlah
+        row.querySelector('.jumlah-input').addEventListener('input', function() {
+            const jumlah = parseInt(this.value, 10) || 0;
+            const total = calculateTotal(harga, diskon, jumlah);
+            row.querySelector('.total-amount').innerText = total;
+            row.querySelector('input[name="total[]"]').value = total;
+            row.querySelector('input[name="jumlah[]"]').value = jumlah; // Update jumlah sesuai input
+            calculateSubTotal();
         });
 
-        if (existingRow) {
-            // Jika produk sudah ada, tambahkan jumlahnya
-            const jumlahInput = existingRow.querySelector('.jumlah-input');
-            let jumlah = parseInt(jumlahInput.value, 10) || 0;
-            jumlah += 1; // Tambah jumlah 1 (atau sesuaikan logika jika ingin menambah default jumlah input)
-            jumlahInput.value = jumlah; // Set jumlah baru
+        // Event listener untuk tombol hapus
+        row.querySelector('.delete-btn').addEventListener('click', function() {
+            row.remove(); // Menghapus row dari tabel
+            calculateSubTotal(); // Update subtotal setelah menghapus
+        });
+    }
 
-            // Hitung total harga berdasarkan jumlah baru
-            const total = calculateTotal(harga, diskon, jumlah);
-            existingRow.querySelector('.total-amount').innerText = total;
-            existingRow.querySelector('input[name="total[]"]').value = total; // Update hidden input total
+    document.getElementById('selected-products-card').style.display = 'block';
+    calculateSubTotal();
+}
 
-            existingRow.querySelector('input[name="jumlah[]"]').value = jumlah; // Update jumlah terbaru
-
-        } else {
-            // Jika produk belum ada, tambahkan produk baru ke tabel
-            const row = document.createElement('tr');
-            const jumlahInput = 1; // Default value for new product
-            row.innerHTML = `
-            <td hidden>${productData.kode}</td>
-            <td>${productData.kodel}</td>
-            <td style="width: 30%;">${productData.nama}</td>
-            <td style="width: 20%;"><input type="number" class="form-control jumlah-input" value="${jumlahInput}" min="1"></td>
-            <td>${diskon}%</td>
-            <td>${harga}</td>
-            <td class="total-amount">${calculateTotal(harga, diskon, jumlahInput)}</td>
-            <td>
-                <button class="btn btn-danger delete-btn btn-sm"><i class="fas fa-trash"></i></button>
-            </td>
-            <input type="hidden" name="produk_id[]" value="${productData.id}" />
-            <input type="hidden" name="kode_produk[]" value="${productData.kode}" />
-            <input type="hidden" name="kode_lama[]" value="${productData.kodel}" />
-            <input type="hidden" name="nama_produk[]" value="${productData.nama}" />
-            <input type="hidden" name="harga[]" value="${harga}" />
-            <input type="hidden" name="diskon[]" value="${diskon}" />
-            <input type="hidden" name="total[]" value="${calculateTotal(harga, diskon, jumlahInput)}" />
-            <input type="hidden" name="totalasli[]" value="${harga}" />
-            <input type="hidden" name="jumlah[]" value="${jumlahInput}" />
-            `;
-            tbody.appendChild(row);
-
-            // Tambahkan event listener ke input jumlah
-            row.querySelector('.jumlah-input').addEventListener('input', function() {
-                const jumlah = parseInt(this.value, 10) || 0;
-                const total = calculateTotal(harga, diskon, jumlah);
-                row.querySelector('.total-amount').innerText = total;
-                row.querySelector('input[name="total[]"]').value = total;
-                row.querySelector('input[name="jumlah[]"]').value = jumlah; // Update jumlah sesuai input
-                calculateSubTotal();
-            });
-
-            
-              // Event listener untuk tombol hapus
-            row.querySelector('.delete-btn').addEventListener('click', function() {
-                row.remove(); // Menghapus row dari tabel
-                calculateSubTotal(); // Update subtotal setelah menghapus
-            });
-            }
-
-            document.getElementById('selected-products-card').style.display = 'block';
-            calculateSubTotal();
-            }
 
 
         function calculateTotal(harga, diskon, jumlah) {
@@ -965,6 +965,8 @@
             button.addEventListener('click', function() {
                             // Ambil data produk berdasarkan tipe pelanggan
                 const productData = {
+                    id: this.dataset.id,  // Mengambil produk_id dari data-id
+
                     kode: this.dataset.kode,
                     kodel: this.dataset.kodel,
                     nama: this.dataset.nama,
