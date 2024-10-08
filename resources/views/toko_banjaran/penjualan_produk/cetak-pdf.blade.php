@@ -359,7 +359,7 @@
                     
                         <tr>
                             @if($penjualan->metode_id !== null)
-                                <td colspan="5" style="text-align: right; font-size: 9px;">
+                                <td colspan="4" style="text-align: right; font-size: 9px;">
                                     <strong>Fee {{$penjualan->metodepembayaran->nama_metode}}</strong>
                                     @if($penjualan->total_fee != 0)
                                         {{$penjualan->metodepembayaran->fee}}%

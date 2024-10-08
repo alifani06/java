@@ -336,7 +336,7 @@
 
                         <tr>
                             @if($pemesanan->metode_id !== null)
-                                <td colspan="5" style="text-align: right; font-size: 9px;"><strong> Fee {{$pemesanan->metodepembayaran->nama_metode}} {{$pemesanan->metodepembayaran->fee}}%</strong></td>
+                                <td colspan="4" style="text-align: right; font-size: 9px;"><strong> Fee {{$pemesanan->metodepembayaran->nama_metode}} {{$pemesanan->metodepembayaran->fee}}%</strong></td>
                                 <td style="font-size: 9px; text-align: right;">
                                     @php
                                         // Menghapus semua karakter kecuali angka
@@ -350,7 +350,7 @@
                         </tr>
                         @if($pemesanan->metode_id !== NULL)
                         <tr>
-                            <td colspan="5" style="text-align: right; font-size: 9px;"><strong>No. </strong></td>
+                            <td colspan="4" style="text-align: right; font-size: 9px;"><strong>No. </strong></td>
                             <td style="font-size: 9px;">{{$pemesanan->keterangan}}</td>
                         </tr>
                         @endif
