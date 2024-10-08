@@ -385,7 +385,7 @@
             </div>
             @endif
             <div class="terimakasih">
-                <p>Untuk pemesanan, kritik dan saran Hubungi.082136638003</p>
+                <p>Untuk pemesanan, kritik dan saran Hubungi.082136638004</p>
             </div>
            
             <div class="note" style="text-align: left; margin-top: -15px ; font-size:9px; font-style: italic" >
