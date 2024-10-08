@@ -175,22 +175,21 @@
 
         <table class="no-border mb-1">
                     <tr>
+                        <td class="text-right"><strong>ID Pelanggan</strong></td>
+                        <td>: {{ $firstItem->pemesananproduk->kode_pelanggan }}</td>
+                        <td class="text-right" style="color: white"><strong>Alamat</strong></td>
+                        <td class="text-left"><strong>No Telepon</strong></td>
+                        <td>: 0{{ $firstItem->pemesananproduk->telp }}</td>
+                    </tr>
+                    <tr>
                         <td class="text-left"><strong>Nama Pelanggan</strong></td>
                         <td>: {{ $firstItem->pemesananproduk->nama_pelanggan }}</td>
-                        <td class="text-right" style="color: white"><strong>Alamat</strong></td>
+                        <td class="text-right" style="color: white"><strong>ID Pelanggan</strong></td>
                         <td class="text-right"><strong>Alamat</strong></td>
                         <td>: {{ $firstItem->pemesananproduk->alamat }}</td>
                     </tr>
-                    <tr>
-                        <td class="text-left"><strong>No Telepon</strong></td>
-                        <td>: 0{{ $firstItem->pemesananproduk->telp }}</td>
-                        <td class="text-right" style="color: white"><strong>ID Pelanggan</strong></td>
-                        <td class="text-right"><strong>ID Pelanggan</strong></td>
-                        <td>: {{ $firstItem->pemesananproduk->kode_pelanggan }}</td>
-                    </tr>
-        
-        </table>
 
+        </table>
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 0;">
             <tr>
                 <td colspan="3" class="text-left"><strong>No Deposit : {{ $kodeDppemesanan }}</strong></td>
@@ -254,28 +253,19 @@
                     </tr>
 
                     @if (!is_null($firstItem->pemesananproduk->catatan))
-
-
                             <tr>
                                 <td style="text-align: left; width: 100%;"><strong>Catatan</strong></td>
                             </tr>
                             <tr>
-                                <td style="text-align: left; width: 40%;">{!! nl2br(e($firstItem->pemesananproduk->catatan)) ?? '-' !!}
-                                    
+                                <td style="text-align: left; width: 40%;">{!! nl2br(e($firstItem->pemesananproduk->catatan)) ?? '-' !!}                                    
                                 </td>
                             </tr>
-
                     @endif
                 </tbody>
-            </table>
-                
-
-            
+            </table> 
         </div>
         @endforeach
-        
-        
-        <div style="display: inline-block; width: 40%; margin: 0 1%; vertical-align: top;">
+        <div style="display: inline-block; width: 40%; margin-left: 17.5%; vertical-align: top;">
             <table style="width: 100%; border: none;">
                 <tbody>
                     <tr>
@@ -302,11 +292,6 @@
                 </tbody>
             </table>
         </div>
-        
-        
-        
-    
-        
         <div class="divider1"></div>
    
         </div>

@@ -342,7 +342,7 @@ class PengirimanbarangjadipesananController extends Controller{
             $num = $lastNum + 1;
         }
     
-        $formattedNum = sprintf("%02d", $num); 
+        $formattedNum = sprintf("%03d", $num); 
         $newCode = $prefix . $monthDay . $year . $formattedNum;
         return $newCode;
     }
