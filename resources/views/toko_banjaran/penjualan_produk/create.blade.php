@@ -844,10 +844,10 @@
         return;
     }
 
-    // Cek apakah produk dengan kode yang sama sudah ada di tabel
+    // Cek apakah produk dengan produk_id yang sama sudah ada di tabel
     const existingRow = Array.from(tbody.querySelectorAll('tr')).find(row => {
-        const kode = row.querySelector('td:nth-child(1)').innerText;
-        return kode === productData.kode;
+        const produkId = row.querySelector('input[name="produk_id[]"]').value;
+        return produkId === productData.id;
     });
 
     if (existingRow) {
@@ -869,7 +869,7 @@
         const row = document.createElement('tr');
         const jumlahInput = 1; // Default value for new product
         row.innerHTML = `
-        <td hidden>${productData.id}</td> <!-- Tambahkan produk_id -->
+        <td hidden>${productData.kode}</td>
         <td>${productData.kodel}</td>
         <td style="width: 30%;">${productData.nama}</td>
         <td style="width: 20%;"><input type="number" class="form-control jumlah-input" value="${jumlahInput}" min="1"></td>
@@ -879,7 +879,7 @@
         <td>
             <button class="btn btn-danger delete-btn btn-sm"><i class="fas fa-trash"></i></button>
         </td>
-        <input type="hidden" name="produk_id[]" value="${productData.id}" /> <!-- Produk_id dimasukkan ke hidden input -->
+        <input type="hidden" name="produk_id[]" value="${productData.id}" />
         <input type="hidden" name="kode_produk[]" value="${productData.kode}" />
         <input type="hidden" name="kode_lama[]" value="${productData.kodel}" />
         <input type="hidden" name="nama_produk[]" value="${productData.nama}" />
@@ -911,6 +911,7 @@
     document.getElementById('selected-products-card').style.display = 'block';
     calculateSubTotal();
 }
+
 
 
 
