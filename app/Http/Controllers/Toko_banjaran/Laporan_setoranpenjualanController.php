@@ -487,9 +487,7 @@ class Laporan_setoranpenjualanController extends Controller
             }
         })->sum('dp_pemesanan');
 
-        // Hitung total dari berbagai metode pembayaran
         $metodePembayaran = function($metode_id, $tanggal_penjualan = null, $tanggal_akhir = null) use ($kasir) {
-            // Query untuk Penjualanproduk
             $queryPenjualan = Penjualanproduk::where('metode_id', $metode_id);
 
             if ($kasir) {
@@ -504,9 +502,18 @@ class Laporan_setoranpenjualanController extends Controller
                 $queryPenjualan->where('tanggal_penjualan', '<=', $tanggal_akhir);
             }
 
-            $totalPenjualan = $queryPenjualan
-                ->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
-                ->value('total');
+            // Kondisi khusus untuk metode pembayaran mesin EDC (ID metode 1)
+            if ($metode_id == 1) {
+                // Penjualanproduk untuk mesin EDC, sub_totalasli dikurangi nominal_diskon
+                $totalPenjualan = $queryPenjualan
+                    ->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED) - CAST(REPLACE(REPLACE(nominal_diskon, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
+                    ->value('total');
+            } else {
+                // Penjualanproduk untuk metode lainnya, hanya ambil dari sub_total
+                $totalPenjualan = $queryPenjualan
+                    ->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
+                    ->value('total');
+            }
 
             // Query untuk Pemesananproduk
             $queryPemesanan = Pemesananproduk::where('metode_id', $metode_id);
@@ -523,23 +530,30 @@ class Laporan_setoranpenjualanController extends Controller
                 $queryPemesanan->where('tanggal_pemesanan', '<=', $tanggal_akhir);
             }
 
-            $totalPemesanan = $queryPemesanan
-                ->select(Pemesananproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
+
+
+            if($metode_id == 1){
+                $totalPemesanan = $queryPemesanan
+                ->select(Pemesananproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED) - CAST(REPLACE(REPLACE(nominal_diskon, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
                 ->value('total');
+            }else{
+
+                $totalPemesanan = $queryPemesanan
+                    ->select(Pemesananproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
+                    ->value('total');
+            }
 
             // Jumlahkan total dari Penjualanproduk dan Pemesananproduk
             return $totalPenjualan + $totalPemesanan;
         };
 
-        // Panggil metodePembayaran dengan filter tanggal_penjualan dan tanggal_akhir
         $mesin_edc = $metodePembayaran(1, $tanggal_penjualan, $tanggal_akhir);
         $qris = $metodePembayaran(17, $tanggal_penjualan, $tanggal_akhir);
-        $gobiz = $metodePembayaran(2, $tanggal_penjualan, $tanggal_akhir);
-        $transfer = $metodePembayaran(3, $tanggal_penjualan, $tanggal_akhir);
+        $gobiz = $metodePembayaran(2, $tanggal_penjualan, $tanggal_akhir); 
+        $transfer = $metodePembayaran(3, $tanggal_penjualan, $tanggal_akhir); 
 
         $total_penjualan = $penjualan_bersih - ($deposit_keluar - $deposit_masuk);
 
-        // Ambil semua data produk, toko, kasir, klasifikasi untuk dropdown
         $produks = Produk::all();
         $tokos = Toko::all();
         $klasifikasis = Klasifikasi::all();
