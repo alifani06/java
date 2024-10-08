@@ -314,8 +314,8 @@
                 <table style="font-size: 12px; width: 100%;">
                     <thead>
                         <tr>
-                            <th style="font-size: 9px; width: 10%;">Kode</th>
-                            <th style="font-size: 9px; width: 40%;">Nama Produk</th>
+                            {{-- <th style="font-size: 9px; width: 10%;">Kode</th> --}}
+                            <th style="font-size: 9px; width: 50%;">Nama Produk</th>
                             <th style="font-size: 9px; width: 10%;">Jumlah</th>
                             <th style="font-size: 9px; width: 15%;">Harga</th>
                             <th style="font-size: 9px; width: 10%;">Diskon</th>
@@ -329,18 +329,18 @@
                        @foreach($penjualan->detailpenjualanproduk as $detail)
                        @php
                            // Membagi nama produk menjadi array dengan panjang maksimum 7 karakter
-                           $nama_produk = wordwrap($detail->nama_produk, 7, "\n", true);
+                           $nama_produk = wordwrap($detail->nama_produk, 15, "\n", true);
                        @endphp
                        <tr>
-                           <td style="font-size: 9px;">{{ $detail->kode_lama }}</td>
+                           {{-- <td style="font-size: 9px;">{{ $detail->kode_lama }}</td> --}}
                            
                            {{-- Tampilkan nama produk dengan pemotongan karakter --}}
                            <td style="font-size: 9px; word-wrap: break-word; white-space: pre-line;">{{ $nama_produk }}</td>
                            
                            {{-- Kolom lainnya --}}
-                           <td style="font-size: 9px;">{{ $detail->jumlah }}</td>
+                           <td style="font-size: 9px; text-align: right">{{ $detail->jumlah }}</td>
                            <td style="font-size: 9px;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
-                           <td style="font-size: 9px;">
+                           <td style="font-size: 9px; text-align: right">
                                @if ($detail->diskon > 0)
                                    {{ $detail->diskon }} %
                                @else
@@ -377,17 +377,17 @@
                             @endif
                         </tr>
                         <tr>
-                            <td colspan="5" style="text-align: right; font-size: 9px;"><strong>Total</strong></td>
+                            <td colspan="4" style="text-align: right; font-size: 9px;"><strong>Total</strong></td>
                             <td style="font-size: 9px; text-align: right;">{{ number_format($penjualan->sub_total, 0, ',', '.') }}</td>
                         </tr>
                         @if($penjualan->metode_id == Null)
                             <tr>
-                                <td colspan="5" style="text-align: right; font-size: 9px;"><strong>Bayar</strong></td>
+                                <td colspan="4" style="text-align: right; font-size: 9px;"><strong>Bayar</strong></td>
                                 <td style="font-size: 9px;">{{ number_format($penjualan->bayar, 0, ',', '.') }}</td>
                             </tr>
                             <tr>
-                                <td colspan="5" style="text-align: right; font-size: 9px;"><strong>Kembali</strong></td>
-                                <td style="font-size: 9px;">{{ number_format($penjualan->kembali, 0, ',', '.') }}</td>
+                                <td colspan="4" style="text-align: right; font-size: 9px;"><strong>Kembali</strong></td>
+                                <td style="font-size: 9px; text-align: right">{{ number_format($penjualan->kembali, 0, ',', '.') }}</td>
                             </tr>
                         @elseif($penjualan->metode_bayar == 'mesinedc' || $penjualan->metode_bayar == 'gobiz')
                             <!-- Logic tambahan jika diperlukan -->
