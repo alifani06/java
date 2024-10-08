@@ -295,31 +295,56 @@ class PengirimanbarangjadipesananController extends Controller{
     }
 
 
+    // public function kode1()
+    // {
+    //     // Gunakan database transaction untuk menghindari race conditions
+    //     return DB::transaction(function () {
+    //         // Ambil kode pengiriman terakhir
+    //         $lastBarang = Pengiriman_barangjadipesanan::latest('kode_pengirimanpesanan')->lockForUpdate()->first();
+            
+    //         if (!$lastBarang) {
+    //             // Jika tidak ada data, mulai dari 1
+    //             $num = 1;
+    //         } else {
+    //             // Ambil kode terakhir dan pecah untuk mengambil angka
+    //             $lastCode = $lastBarang->kode_pengirimanpesanan;
+    //             $num = (int) substr($lastCode, strlen('JXp')) + 1;
+    //         }
+    
+    //         // Format angka menjadi 6 digit
+    //         $formattedNum = sprintf("%06s", $num);
+    
+    //         // Buat prefix baru
+    //         $prefix = 'JXp';
+    //         $newCode = $prefix . $formattedNum;
+    
+    //         return $newCode;
+    //     });
+    // }
+
     public function kode()
     {
-        // Gunakan database transaction untuk menghindari race conditions
-        return DB::transaction(function () {
-            // Ambil kode pengiriman terakhir
-            $lastBarang = Pengiriman_barangjadipesanan::latest('kode_pengirimanpesanan')->lockForUpdate()->first();
-            
-            if (!$lastBarang) {
-                // Jika tidak ada data, mulai dari 1
-                $num = 1;
-            } else {
-                // Ambil kode terakhir dan pecah untuk mengambil angka
-                $lastCode = $lastBarang->kode_pengirimanpesanan;
-                $num = (int) substr($lastCode, strlen('JXp')) + 1;
-            }
+        $prefix = 'JKp';
+        $year = date('y'); // Dua digit terakhir dari tahun
+        $monthDay = date('dm'); // Format bulan dan hari: MMDD
     
-            // Format angka menjadi 6 digit
-            $formattedNum = sprintf("%06s", $num);
+        // Mengambil kode terakhir yang dibuat pada hari yang sama dengan prefix PBNJ
+        $lastBarang = Pengiriman_barangjadipesanan::where('kode_pengirimanpesanan', 'LIKE', $prefix . '%')
+                                      ->whereDate('tanggal_pengiriman', Carbon::today())
+                                      ->orderBy('kode_pengirimanpesanan', 'desc')
+                                      ->first();
     
-            // Buat prefix baru
-            $prefix = 'JXp';
-            $newCode = $prefix . $formattedNum;
+        if (!$lastBarang) {
+            $num = 1;
+        } else {
+            $lastCode = $lastBarang->kode_pengirimanpesanan;
+            $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
+            $num = $lastNum + 1;
+        }
     
-            return $newCode;
-        });
+        $formattedNum = sprintf("%02d", $num); 
+        $newCode = $prefix . $monthDay . $year . $formattedNum;
+        return $newCode;
     }
     
    

@@ -298,7 +298,7 @@ class PemesananprodukbanjaranController extends Controller
 
     public function kode()
     {
-        $prefix = 'QBNJ';
+        $prefix = 'PC';
         $year = date('y'); // Dua digit terakhir dari tahun
         $date = date('dm'); // Format bulan dan hari: MMDD
     

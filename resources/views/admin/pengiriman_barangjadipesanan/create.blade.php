@@ -110,7 +110,7 @@
                                                 @endforeach
                                             </div>
                                             <div>
-                                                @for ($i = 1; $i <= 5; $i++)
+                                                @for ($i = 1; $i <= 7; $i++)
                                                     <input type="checkbox" name="kode_produksi[]" value="{{ $i }}"> {{ $i }}
                                                 @endfor
                                             </div>

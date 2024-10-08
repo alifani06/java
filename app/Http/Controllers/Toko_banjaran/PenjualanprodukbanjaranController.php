@@ -99,42 +99,42 @@ class PenjualanprodukbanjaranController extends Controller
     }
 
     //create lama
-    public function create()
-    {
-        $barangs = Barang::all();
-        $pelanggans = Pelanggan::all();
-        $details = Detailbarangjadi::all();
-        $tokos = Toko::all();
-        $dppemesanans = Dppemesanan::all();
-        $pemesananproduks = Pemesananproduk::all();
-        $metodes = Metodepembayaran::all();
-        
-        // Pastikan kita memanggil relasi stokbanjaran
-        $produks = Produk::with(['tokobanjaran', 'stok_tokobanjaran'])->get();
-
-        $kategoriPelanggan = 'member';
-        
-        return view('toko_banjaran.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
-    }
-    
-    // public function create(Request $request)
+    // public function create()
     // {
     //     $barangs = Barang::all();
-    //     $search = $request->input('search'); 
-    //     $pelanggans = Pelanggan::select('id', 'kode_pelanggan', 'kode_lama','nama_pelanggan', 'alamat', 'telp')->get(); 
+    //     $pelanggans = Pelanggan::all();
     //     $details = Detailbarangjadi::all();
-    //     $tokoslawis = Tokoslawi::all();
     //     $tokos = Toko::all();
     //     $dppemesanans = Dppemesanan::all();
     //     $pemesananproduks = Pemesananproduk::all();
     //     $metodes = Metodepembayaran::all();
         
+    //     // Pastikan kita memanggil relasi stokbanjaran
     //     $produks = Produk::with(['tokobanjaran', 'stok_tokobanjaran'])->get();
 
     //     $kategoriPelanggan = 'member';
         
-    //     return view('toko_banjaran.penjualan_produk.create', compact('search','barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
+    //     return view('toko_banjaran.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
     // }
+    
+    public function create(Request $request)
+    {
+        $barangs = Barang::all();
+        $search = $request->input('search'); 
+        $pelanggans = Pelanggan::select('id', 'kode_pelanggan', 'kode_lama','nama_pelanggan', 'alamat', 'telp')->get(); 
+        $details = Detailbarangjadi::all();
+        $tokoslawis = Tokoslawi::all();
+        $tokos = Toko::all();
+        $dppemesanans = Dppemesanan::all();
+        $pemesananproduks = Pemesananproduk::all();
+        $metodes = Metodepembayaran::all();
+        
+        $produks = Produk::with(['tokobanjaran', 'stok_tokobanjaran'])->get();
+
+        $kategoriPelanggan = 'member';
+        
+        return view('toko_banjaran.penjualan_produk.create', compact('search','barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
+    }
 
         //store lama
     public function store(Request $request)

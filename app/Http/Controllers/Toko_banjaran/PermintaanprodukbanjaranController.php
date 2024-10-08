@@ -100,7 +100,7 @@ class PermintaanprodukbanjaranController extends Controller{
 
     public function kode()
     {
-        $prefix = 'JPA';
+        $prefix = 'JL';
         $year = date('y'); // Dua digit terakhir dari tahun
         $monthDay = date('dm'); // Format bulan dan hari: MMDD
     

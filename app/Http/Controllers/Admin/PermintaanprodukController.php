@@ -92,7 +92,7 @@ class PermintaanprodukController extends Controller{
 }
 
     
-    public function kode()
+    public function kode1()
     {
         $lastBarang = PermintaanProduk::latest()->first();
         if (!$lastBarang) {
@@ -104,6 +104,31 @@ class PermintaanprodukController extends Controller{
         $formattedNum = sprintf("%06s", $num);
         $prefix = 'PB';
         $newCode = $prefix . $formattedNum;
+        return $newCode;
+    }
+
+    public function kode()
+    {
+        $prefix = 'JKp';
+        $year = date('y'); // Dua digit terakhir dari tahun
+        $monthDay = date('dm'); // Format bulan dan hari: MMDD
+    
+        // Mengambil kode terakhir yang dibuat pada hari yang sama dengan prefix PBNJ
+        $lastBarang = PermintaanProduk::where('kode_permintaan', 'LIKE', $prefix . '%')
+                                      ->whereDate('tanggal_permintaan', Carbon::today())
+                                      ->orderBy('kode_permintaan', 'desc')
+                                      ->first();
+    
+        if (!$lastBarang) {
+            $num = 1;
+        } else {
+            $lastCode = $lastBarang->kode_permintaan;
+            $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
+            $num = $lastNum + 1;
+        }
+    
+        $formattedNum = sprintf("%02d", $num); 
+        $newCode = $prefix . $monthDay . $year . $formattedNum;
         return $newCode;
     }
 

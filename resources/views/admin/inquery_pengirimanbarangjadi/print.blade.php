@@ -242,10 +242,12 @@
     </div>
 
    <!-- Tanggal Cetak -->
-<div class="print-date" style="position: fixed; bottom: 0; right: 0; text-align: right; margin-top: 20px; width: 100%;">
-    <p style="margin: 0; font-size: 10px;">
-        {{ now()->locale('id')->translatedFormat('d F Y H:i') }}
+   <div class="print-date" style="position: fixed; bottom: 0; right: 0; text-align: right; margin-top: 20px; width: 100%;">
+    <p style="margin: 0; font-size: 10px; font-style: italic;">
+        Reprint :{{ now()->locale('id')->translatedFormat('d F Y H:i') }}
     </p>
+ </div>
+
 </div>
 
 </body>

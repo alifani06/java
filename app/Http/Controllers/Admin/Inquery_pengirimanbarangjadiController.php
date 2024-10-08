@@ -116,31 +116,64 @@ class Inquery_pengirimanbarangjadiController extends Controller{
         return view('admin.inquery_pengirimanbarangjadi.show', compact('groupedByKlasifikasi', 'firstItem'));
     }
 
+    // public function edit($id)
+    // {
+    //     // Ambil data detail stok barang jadi yang terkait dengan ID
+    //     $detailStokBarangjadi = Detail_stokbarangjadi::with('produk')
+    //         ->where('id', $id)
+    //         ->firstOrFail();
+        
+    //     // Ambil data produk yang terkait dengan ID
+    //     $uniqueStokBarangjadi = collect([$detailStokBarangjadi]);
+        
+    //     // Ambil klasifikasi yang terkait dengan produk yang ada
+    //     $produkIds = $uniqueStokBarangjadi->pluck('produk_id')->toArray();
+    //     $klasifikasiIds = $uniqueStokBarangjadi->pluck('klasifikasi_id')->toArray();
+        
+    //     $klasifikasis = Klasifikasi::whereIn('id', $klasifikasiIds)
+    //         ->with(['produks' => function ($query) use ($produkIds) {
+    //             $query->whereIn('id', $produkIds);
+    //         }])
+    //         ->get();
+        
+    //     // Ambil semua toko
+    //     $tokos = Toko::all();
+        
+    //     return view('admin.inquery_pengirimanbarangjadi.edit', compact('klasifikasis', 'tokos', 'uniqueStokBarangjadi'));
+    // }
+
     public function edit($id)
     {
-        // Ambil data detail stok barang jadi yang terkait dengan ID
-        $detailStokBarangjadi = Detail_stokbarangjadi::with('produk')
-            ->where('id', $id)
-            ->firstOrFail();
-        
-        // Ambil data produk yang terkait dengan ID
-        $uniqueStokBarangjadi = collect([$detailStokBarangjadi]);
-        
-        // Ambil klasifikasi yang terkait dengan produk yang ada
+        // Ambil data pengiriman berdasarkan ID
+        $pengiriman = Pengiriman_barangjadi::with('produk', 'toko')->findOrFail($id);
+
+        // Ambil stok barang jadi yang terkait
+        $detailStokBarangjadi = Detail_stokbarangjadi::with('produk')->get();
+
+        // Akumulasi stok berdasarkan produk_id
+        $uniqueStokBarangjadi = $detailStokBarangjadi->groupBy('produk_id')->map(function ($items) {
+            $firstItem = $items->first(); // Ambil entri pertama
+            $firstItem->stok = $items->sum('stok'); // Akumulasi stok
+            return $firstItem;
+        })->values();
+
+        // Ambil produk_id dan klasifikasi_id yang terkait
         $produkIds = $uniqueStokBarangjadi->pluck('produk_id')->toArray();
         $klasifikasiIds = $uniqueStokBarangjadi->pluck('klasifikasi_id')->toArray();
-        
+
+        // Ambil klasifikasi yang terkait dengan produk yang ada
         $klasifikasis = Klasifikasi::whereIn('id', $klasifikasiIds)
             ->with(['produks' => function ($query) use ($produkIds) {
                 $query->whereIn('id', $produkIds);
             }])
             ->get();
-        
+
         // Ambil semua toko
         $tokos = Toko::all();
-        
-        return view('admin.inquery_pengirimanbarangjadi.edit', compact('klasifikasis', 'tokos', 'uniqueStokBarangjadi'));
+
+        return view('admin.inquery_pengirimanbarangjadi.edit', compact('pengiriman', 'klasifikasis', 'tokos', 'uniqueStokBarangjadi'));
     }
+
 
     public function update(Request $request, $id)
     {

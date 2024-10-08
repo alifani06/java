@@ -240,7 +240,7 @@ class Retur_tokobanjaranController extends Controller{
 
 public function kode()
 {
-    $prefix = 'RBNJ';
+    $prefix = 'FRC';
     $year = date('y'); // Dua digit terakhir dari tahun
     $date = date('dm'); // Format bulan dan hari: MMDD
 

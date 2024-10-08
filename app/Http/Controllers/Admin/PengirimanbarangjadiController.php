@@ -243,25 +243,25 @@ class PengirimanbarangjadiController extends Controller{
     }
 
 
-    public function kode1()
-    {
-        $lastBarang = Pengiriman_barangjadi::latest()->first();
-        if (!$lastBarang) {
-            $num = 1;
-        } else {
-            $lastCode = $lastBarang->kode_pengiriman;
-            $num = (int) substr($lastCode, strlen('SB')) + 1; 
-        }
-        $formattedNum = sprintf("%06s", $num);
-        $prefix = 'JX';
-        $newCode = $prefix . $formattedNum;
-        return $newCode;
-    }
+    // public function kode1()
+    // {
+    //     $lastBarang = Pengiriman_barangjadi::latest()->first();
+    //     if (!$lastBarang) {
+    //         $num = 1;
+    //     } else {
+    //         $lastCode = $lastBarang->kode_pengiriman;
+    //         $num = (int) substr($lastCode, strlen('SB')) + 1; 
+    //     }
+    //     $formattedNum = sprintf("%06s", $num);
+    //     $prefix = 'JX';
+    //     $newCode = $prefix . $formattedNum;
+    //     return $newCode;
+    // }
    
 
     public function kode()
     {
-        $prefix = 'JKA';
+        $prefix = 'JK';
         $year = date('y'); // Dua digit terakhir dari tahun
         $monthDay = date('dm'); // Format bulan dan hari: MMDD
     
@@ -339,35 +339,6 @@ class PengirimanbarangjadiController extends Controller{
         return view('admin.pengiriman_barangjadi.showpesanan', compact('groupedByKlasifikasi', 'firstItem'));
     }
     
-
-
-    
-    // public function print($id)
-    // {
-    //     // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-    //     $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_pengiriman');
-                
-    //     // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
-    //     if (!$detailStokBarangJadi) {
-    //         return redirect()->back()->with('error', 'Data tidak ditemukan.');
-    //     }
-        
-    //     // Ambil semua data dengan kode_pengiriman yang sama, termasuk relasi ke klasifikasi
-    //     $pengirimanBarangJadi = Pengiriman_barangjadi::with([
-    //         'produk.subklasifikasi.klasifikasi', 
-    //         'toko'
-    //     ])->where('kode_pengiriman', $detailStokBarangJadi)->get();
-
-    //     // Kelompokkan data berdasarkan klasifikasi
-    //     $groupedByKlasifikasi = $pengirimanBarangJadi->groupBy(function($item) {
-    //         return $item->produk->subklasifikasi->klasifikasi->nama;
-    //     });
-    //             // Ambil item pertama untuk informasi toko
-    //             $firstItem = $pengirimanBarangJadi->first();
-    //             $pdf = FacadePdf::loadView('admin.pengiriman_barangjadi.print', compact('groupedByKlasifikasi', 'firstItem'));
-
-    //             return $pdf->stream('surat_permintaan_produk.pdf');
-    // }
     public function print($id)
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
