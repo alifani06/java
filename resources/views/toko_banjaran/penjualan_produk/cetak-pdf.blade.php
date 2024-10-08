@@ -339,7 +339,7 @@
                            
                            {{-- Kolom lainnya --}}
                            <td style="font-size: 9px; text-align: right">{{ $detail->jumlah }}</td>
-                           <td style="font-size: 9px;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
+                           <td style="font-size: 9px; text-align: right">{{ number_format($detail->harga, 0, ',', '.') }}</td>
                            <td style="font-size: 9px; text-align: right">
                                @if ($detail->diskon > 0)
                                    {{ $detail->diskon }} %

@@ -317,7 +317,7 @@
                                 {{-- <td style="font-size: 9px;">{{ $detail->kode_lama }}</td> --}}
                                 <td style="font-size: 9px; word-wrap: break-word; white-space: pre-line;">{{ $nama_produk }}</td>
                                 <td style="font-size: 9px; text-align: right">{{ $detail->jumlah }}</td>
-                                <td style="font-size: 9px;">{{number_format($detail->harga, 0, ',', '.') }}</td>
+                                <td style="font-size: 9px; text-align: right">{{number_format($detail->harga, 0, ',', '.') }}</td>
                                 <td style="font-size: 9px; text-align: right">
                                     @if ($detail->diskon > 0)
                                         {{ $detail->diskon }} %
