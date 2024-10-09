@@ -45,6 +45,7 @@
     request()->is('admin/input*')||
     request()->is('admin/data_deposit*')||
     request()->is('admin/data_stokbarangjadi*')||
+    request()->is('admin/grafik_penjualan*')||
     request()->is('admin/data_stokretur*')
   
         ? 'menu-open'
@@ -64,6 +65,7 @@
         request()->is('admin/input*')||
         request()->is('admin/data_deposit*')||
         request()->is('admin/data_stokbarangjadi*')||
+        request()->is('admin/grafik_penjualan*')||
         request()->is('admin/data_stokretur*')
       
             ? 'active'
@@ -190,6 +192,15 @@
                 class="nav-link {{ request()->is('admin/data_stokretur*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Data Stok Retur</p>
+            </a>
+        </li>
+        {{-- @endif --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['data stokretur']) --}}
+        <li class="nav-item">
+            <a href="{{ url('admin/grafik_penjualan') }}"
+                class="nav-link {{ request()->is('admin/grafik_penjualan*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Grafik Penjualan</p>
             </a>
         </li>
         {{-- @endif --}}

@@ -384,6 +384,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/inquery_setoranpelunasan/edit/{id}', [Inquery_setoranpelunasanController::class, 'edit'])->name('setoranpelunasan.edit');
     Route::post('/inquery_setoranpelunasan/update-status', [Inquery_setoranpelunasanController::class, 'updateStatus'])->name('inquery_setoranpelunasan.update_status');
 
+    Route::resource('grafik_penjualan', \App\Http\Controllers\Admin\Grafik_penjualanController::class);
+
 
     //TOKO SLAWI
     Route::resource('stok_tokoslawi', \App\Http\Controllers\Admin\Stok_tokoslawiController::class);
