@@ -154,8 +154,8 @@
                                         @if ($firstItem->status == 'unpost')
                                            
                                                
-                                                    {{-- <a class="dropdown-item"
-                                                    href="{{ url('admin/inquery_pengirimanpesanan/' . $firstItem->id . '/edit') }}">Update</a> --}}
+                                                    <a class="dropdown-item"
+                                                    href="{{ url('admin/inquery_pengirimanpesanan/' . $firstItem->id . '/edit') }}">Update</a>
                                             
                                                 <a class="dropdown-item"
                                                 href="{{ url('/admin/inquery_pengirimanpesanan/' . $firstItem->id ) }}">Show</a>
@@ -277,7 +277,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('admin/inquery_pengirimanbarangjadipesanan/unpost_pengirimanbarangjadipesanan/') }}/" + memoId,
+                    url: "{{ url('admin/inquery_pengirimanpesanan/unpost_pengirimanpesanan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -307,7 +307,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('admin/inquery_pengirimanbarangjadipesanan/posting_pengirimanbarangjadipesanan/') }}/" + memoId,
+                    url: "{{ url('admin/inquery_pengirimanpesanan/posting_pengirimanpesanan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

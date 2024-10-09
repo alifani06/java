@@ -286,7 +286,9 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('inquery_pengirimanpesanan', \App\Http\Controllers\Admin\Inquery_pengirimanpesananController::class);
     Route::get('/inquery_pengirimanpesanan/{id}/print', [Inquery_pengirimanpesananController::class, 'print'])->name('inquery_pengirimanpesanan.print');
     Route::get('admin/inquery_pengirimanpesanan/{id}/cetak_barcodepesanan', [Inquery_pengirimanpesananController::class, 'cetak_barcodepesanan'])->name('inquery_pengirimanpesanan.cetak_barcodepesanan');
-
+    Route::get('admin/inquery_pengirimanpesanan', [Inquery_pengirimanpesananController::class, 'index'])->name('admin.inquery_pengirimanpesanan.index');
+    Route::get('inquery_pengirimanpesanan/unpost_pengirimanpesanan/{id}', [\App\Http\Controllers\Admin\Inquery_pengirimanpesananController::class, 'unpost_pengirimanpesanan']);
+    Route::get('inquery_pengirimanpesanan/posting_pengirimanpesanan/{id}', [\App\Http\Controllers\Admin\Inquery_pengirimanpesananController::class, 'posting_pengirimanpesanan']);
     Route::resource('laporan_pengirimanbarangjadi', \App\Http\Controllers\Admin\Laporan_pengirimanbarangjadiController::class);
     Route::get('print', [\App\Http\Controllers\Admin\Laporan_pengirimanbarangjadiController::class, 'printReport']);
 

@@ -292,6 +292,79 @@ class Pengiriman_tokobanjaranController extends Controller{
         return response()->json(['success' => 'Berhasil mengubah status dan memperbarui stok.']);
     }
 
+    public function unpost_pengiriman($id)
+    {
+        // Ambil data stok_tokobanjaran berdasarkan ID
+        $stok = Pengiriman_tokobanjaran::where('id', $id)->first();
+
+        // Pastikan data ditemukan
+        if (!$stok) {
+            return response()->json(['error' => 'Data tidak ditemukan.'], 404);
+        }
+
+        // Ambil kode_pengiriman dan pengiriman_barangjadi_id dari stok yang diambil
+        $kodePengiriman = $stok->kode_pengiriman;
+        $pengirimanId = $stok->pengiriman_barangjadi_id;
+
+        // Ambil pengiriman terkait dari tabel pengiriman_barangjadi
+        $pengiriman = Pengiriman_barangjadi::find($pengirimanId);
+
+        // Pastikan data pengiriman ditemukan
+        if (!$pengiriman) {
+            return response()->json(['error' => 'Data pengiriman tidak ditemukan.'], 404);
+        }
+
+        // Ambil semua produk terkait dengan pengiriman
+        $productsInPengiriman = Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->get();
+
+        foreach ($productsInPengiriman as $pengirimanItem) {
+            // Ambil stok yang ada di stok_tokobanjaran untuk produk ini
+            $stokToko = Stok_tokobanjaran::where('produk_id', $pengirimanItem->produk_id)->first();
+            
+            if ($stokToko) {
+                // Mengurangi jumlah pada stok_tokobanjaran sesuai jumlah pengiriman
+                $stokToko->jumlah -= $pengirimanItem->jumlah;
+
+                // Jika jumlah stok menjadi negatif, kembalikan error
+                if ($stokToko->jumlah < 0) {
+                    return response()->json(['error' => 'Stok tidak cukup untuk mengurangi jumlah produk dengan ID: ' . $pengirimanItem->produk_id], 400);
+                }
+
+                $stokToko->save();
+            }
+
+            // Ambil semua detail stok barang jadi untuk produk ini, urutkan dari yang paling baru
+            $detailStoks = Detail_stokbarangjadi::where('produk_id', $pengirimanItem->produk_id)
+                            ->orderBy('created_at', 'desc') // Menggunakan stok yang paling baru dahulu (LIFO)
+                            ->get();
+
+            $remaining = $pengirimanItem->jumlah;
+
+            foreach ($detailStoks as $detailStok) {
+                if ($remaining > 0) {
+                    $detailStok->stok += $remaining; // Mengembalikan jumlah ke detail_stokbarangjadi
+                    $detailStok->save();
+                    $remaining = 0; // Pengembalian selesai
+                } else {
+                    break; // Jika tidak ada sisa pengembalian, keluar dari loop
+                }
+            }
+        }
+
+        // Update status untuk semua stok_tokobanjaran dengan kode_pengiriman yang sama
+        Pengiriman_tokobanjaran::where('kode_pengiriman', $kodePengiriman)->update([
+            'status' => 'unpost',
+            'tanggal_terima' => null, // Reset tanggal terima
+        ]);
+
+        // Update status untuk pengiriman_barangjadi
+        Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->update([
+            'status' => 'unpost',
+            'tanggal_terima' => null, // Reset tanggal terima
+        ]);
+
+        return response()->json(['success' => 'Berhasil mengubah status menjadi unpost dan memperbarui stok.']);
+    }
 
     public function posting_pengirimanpemesanan($id)
     {
@@ -370,10 +443,11 @@ class Pengiriman_tokobanjaranController extends Controller{
         return response()->json(['success' => 'Berhasil mengubah status dan memperbarui stok.']);
     }
     
-    public function unpost_pengiriman($id)
+
+    public function unpost_pengirimanpemesanan($id)
     {
         // Ambil data stok_tokobanjaran berdasarkan ID
-        $stok = Pengiriman_tokobanjaran::where('id', $id)->first();
+        $stok = Pengirimanpemesanan_tokobanjaran::where('id', $id)->first();
 
         // Pastikan data ditemukan
         if (!$stok) {
@@ -381,11 +455,11 @@ class Pengiriman_tokobanjaranController extends Controller{
         }
 
         // Ambil kode_pengiriman dan pengiriman_barangjadi_id dari stok yang diambil
-        $kodePengiriman = $stok->kode_pengiriman;
+        $kodePengiriman = $stok->kode_pengirimanpesanan;
         $pengirimanId = $stok->pengiriman_barangjadi_id;
 
         // Ambil pengiriman terkait dari tabel pengiriman_barangjadi
-        $pengiriman = Pengiriman_barangjadi::find($pengirimanId);
+        $pengiriman = Pengiriman_barangjadipesanan::find($pengirimanId);
 
         // Pastikan data pengiriman ditemukan
         if (!$pengiriman) {
@@ -393,11 +467,11 @@ class Pengiriman_tokobanjaranController extends Controller{
         }
 
         // Ambil semua produk terkait dengan pengiriman
-        $productsInPengiriman = Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->get();
+        $productsInPengiriman = Pengiriman_barangjadipesanan::where('kode_pengirimanpesanan', $kodePengiriman)->get();
 
         foreach ($productsInPengiriman as $pengirimanItem) {
             // Ambil stok yang ada di stok_tokobanjaran untuk produk ini
-            $stokToko = Stok_tokobanjaran::where('produk_id', $pengirimanItem->produk_id)->first();
+            $stokToko = Stokpesanan_tokobanjaran::where('produk_id', $pengirimanItem->produk_id)->first();
             
             if ($stokToko) {
                 // Mengurangi jumlah pada stok_tokobanjaran sesuai jumlah pengiriman
@@ -430,13 +504,13 @@ class Pengiriman_tokobanjaranController extends Controller{
         }
 
         // Update status untuk semua stok_tokobanjaran dengan kode_pengiriman yang sama
-        Pengiriman_tokobanjaran::where('kode_pengiriman', $kodePengiriman)->update([
+        Pengirimanpemesanan_tokobanjaran::where('kode_pengirimanpesanan', $kodePengiriman)->update([
             'status' => 'unpost',
             'tanggal_terima' => null, // Reset tanggal terima
         ]);
 
         // Update status untuk pengiriman_barangjadi
-        Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->update([
+        Pengiriman_barangjadipesanan::where('kode_pengirimanpesanan', $kodePengiriman)->update([
             'status' => 'unpost',
             'tanggal_terima' => null, // Reset tanggal terima
         ]);
@@ -444,28 +518,8 @@ class Pengiriman_tokobanjaranController extends Controller{
         return response()->json(['success' => 'Berhasil mengubah status menjadi unpost dan memperbarui stok.']);
     }
 
-    
 
 
-
-
-
-   
-
-    public function unpost(Request $request, $id)
-    {
-        $permintaan = Detailpermintaanproduk::find($id);
-    
-        if ($permintaan) {
-            $permintaan->status = 'posting';
-            $permintaan->save();
-    
-            return response()->json(['success' => true]);
-        }
-    
-        return response()->json(['success' => false], 404);
-    }
-    
     
 
     public function edit($id)
