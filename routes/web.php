@@ -281,6 +281,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Admin\Inquery_pengirimanbarangjadiController::class, 'posting_pengirimanbarangjadi']);
     Route::get('admin/inquery_pengirimanbarangjadi/{id}/cetak_barcode', [Inquery_pengirimanbarangjadiController::class, 'cetak_barcode'])->name('inquery_pengirimanbarangjadi.cetak_barcode');
     Route::get('admin/inquery_pengirimanbarangjadi', [Inquery_pengirimanbarangjadiController::class, 'index'])->name('admin.inquery_pengirimanbarangjadi.index');
+    Route::delete('inquery_pengirimanbarangjadi/deleteprodukpengiriman/{id}', [\App\Http\Controllers\Admin\Inquery_pengirimanbarangjadiController::class, 'deleteprodukpengiriman']);
 
     Route::resource('inquery_pengirimanpesanan', \App\Http\Controllers\Admin\Inquery_pengirimanpesananController::class);
     Route::get('/inquery_pengirimanpesanan/{id}/print', [Inquery_pengirimanpesananController::class, 'print'])->name('inquery_pengirimanpesanan.print');

@@ -296,7 +296,7 @@
             row.remove();
     
             $.ajax({
-                url: "{{ url('admin/inquery_returnekspedisi/deletedetailsurat/') }}/" + detailId,
+                url: "{{ url('admin/inquery_pengirimanbarangjadi/deleteprodukpengiriman/') }}/" + detailId,
                 type: "POST",
                 data: {
                     _method: 'DELETE',
