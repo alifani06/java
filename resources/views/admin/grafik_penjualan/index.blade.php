@@ -84,7 +84,7 @@
                                 </button>
                             </div>
                         </div>
-                    </form>               
+                    </form>              
                 </div>
                 <div class="card-body">
                 <div class="content">
@@ -92,21 +92,16 @@
                         <div class="row justify-content-center"> <!-- Tambahkan justify-content-center untuk memusatkan grafik -->
                             <div class="col-lg-8"> <!-- Kurangi lebar col-lg dari 12 ke 8 -->
                                 <div class="card">
-                                    <div class="card-header border-0">
-                                        <div class="d-flex justify-content-between">
-                                            <h3 class="card-title">Penjualan</h3>
-                                            {{-- <a href="javascript:void(0);">View Report</a> --}}
-                                        </div>
-                                    </div>
+                                    
                                     <div class="card-body">
                                         <div class="position-relative mb-4" style="max-width: 600px; margin: auto;"> <!-- Batasi lebar dengan max-width -->
                                             <canvas id="sales-chart" height="200"></canvas>
                                         </div>
             
                                         <div class="d-flex flex-row justify-content-end">
-                                            <span class="mr-2">
+                                            {{-- <span class="mr-2">
                                                 <i class="fas fa-square text-primary"></i> Penjualan Bersih
-                                            </span>
+                                            </span> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -123,6 +118,7 @@
             <!-- Tambahkan ini sebelum akhir tag body -->
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <script>
+                // Data dari server (pastikan ini diambil dari controller dan diberikan ke view)
                 var salesData = @json($finalResults);
             
                 // Proses data penjualan bersih untuk setiap hari
@@ -133,7 +129,14 @@
                 for (var key in salesData) {
                     if (salesData.hasOwnProperty(key)) {
                         var penjualan = salesData[key];
-                        labels.push(penjualan.tanggal_penjualan); // Tambahkan tanggal penjualan sebagai label
+            
+                        // Ubah format tanggal ke d-m-Y
+                        var formattedDate = new Date(penjualan.tanggal_penjualan);
+                        var day = ('0' + formattedDate.getDate()).slice(-2); // Mengambil dan format hari
+                        var month = ('0' + (formattedDate.getMonth() + 1)).slice(-2); // Mengambil dan format bulan
+                        var year = formattedDate.getFullYear(); // Mengambil tahun
+            
+                        labels.push(day + '-' + month + '-' + year); // Tambahkan tanggal dalam format d-m-Y sebagai label
                         dataPenjualanBersih.push(penjualan.penjualan_bersih); // Tambahkan penjualan bersih sebagai data
                     }
                 }
@@ -159,7 +162,6 @@
                             }
                         },
                         responsive: true,
-                        maintainAspectRatio: false,
                         plugins: {
                             legend: {
                                 position: 'top',
@@ -172,6 +174,7 @@
                     }
                 });
             </script>
+            
             
             
     </section>
