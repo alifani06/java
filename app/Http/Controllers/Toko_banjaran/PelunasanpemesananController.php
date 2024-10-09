@@ -85,61 +85,7 @@ class PelunasanpemesananController extends Controller
         return view('toko_banjaran.pelunasan_pemesanan.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
     }
 
-    // public function pelunasan()
-    // {
-    //     $barangs = Barang::all();
-    //     $pelanggans = Pelanggan::all();
-    //     $details = Detailbarangjadi::all();
-    //     $tokoslawis = Tokoslawi::all();
-    //     $tokobanjarans = Tokobanjaran::all();
-    //     $tokos = Toko::all();
-    //     $metodes = Metodepembayaran::all();
-    //     $dppemesanans = Dppemesanan::all();
-    //     $pemesananproduks = Pemesananproduk::all();
-    //     $produks = Produk::with('tokobanjaran')->get();
-    //     $kategoriPelanggan = 'member';
- 
-    //     return view('toko_banjaran.penjualan_produk.pelunasan', compact('barangs','metodes', 'tokos', 'produks', 'details', 'tokoslawis', 'tokobanjarans', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks'));
-    // }
-    
-    // public function SimpanPelunasan(Request $request)
-    // {
-    //     // Validasi input
-    //     $validated = $request->validate([
-    //         'dppemesanan_id' => 'required|string',
-    //         // 'kode_pemesanan' => 'required|string',
-    //         'pelunasan' => 'required|numeric',
-    //         'metode_id' => 'required|integer',
-    //         'total_fee' => 'nullable|numeric',
-    //         'keterangan' => 'nullable|string', // Ubah dari numeric ke string jika 'keterangan' adalah teks
-    //     ]);
-    
-    //     // Simpan data ke database
-    //     $pelunasan = new Pelunasan();
-    //     $pelunasan->dppemesanan_id = $validated['dppemesanan_id'];
-    //     // $pelunasan->kode_pemesanan = $validated['kode_pemesanan'];
-    //     $pelunasan->pelunasan = $validated['pelunasan'];
-    //     $pelunasan->metode_id = $validated['metode_id'];
-    //     $pelunasan->total_fee = $validated['total_fee'];
-    //     $pelunasan->keterangan = $validated['keterangan'];
-    //     $pelunasan->tanggal_pelunasan = Carbon::now('Asia/Jakarta'); 
-    //     $pelunasan->toko_id = '1'; 
-    //     $pelunasan->status = 'posting'; 
-    
-    //     $pelunasan->save();
-    
-    //     // Update kolom pelunasan di tabel dppemesanans
-    //     $dppemesanans = Dppemesanan::find($validated['dppemesanan_id']);
-    //     if ($dppemesanans) {
-    //         // Misalkan kita ingin menambahkan jumlah pelunasan
-    //         $dppemesanans->pelunasan += $validated['pelunasan']; 
-    //         $dppemesanans->save();
-    //     }
-    
-    //     // Redirect atau response sesuai kebutuhan
-    //     return redirect()->back()->with('success', 'Data berhasil disimpan.');
-    // }
-
+   
     public function getCustomerByKode($kode)
     {
         $customer = Pelanggan::where('kode_pelanggan', $kode)->first();
@@ -208,28 +154,30 @@ class PelunasanpemesananController extends Controller
     }
  
     public function kode()
-    {
-        $prefix = 'PBNJ';
-        $year = date('y'); // Dua digit terakhir dari tahun
-        $monthDay = date('dm'); // Format bulan dan hari: MMDD
-        
-        // Mengambil kode retur terakhir yang dibuat pada hari yang sama
-        $lastBarang = Penjualanproduk::whereDate('tanggal_penjualan', Carbon::today())
-                                      ->orderBy('kode_penjualan', 'desc')
-                                      ->first();
-    
-        if (!$lastBarang) {
-            $num = 1;
-        } else {
-            $lastCode = $lastBarang->kode_penjualan;
-            $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
-            $num = $lastNum + 1;
-        }
-    
-        $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
-        $newCode = $prefix . $monthDay . $year . $formattedNum;
-        return $newCode;
+{
+    $prefix = 'FPC';
+    $year = date('y'); // Dua digit terakhir dari tahun
+    $monthDay = date('dm'); // Format bulan dan hari: MMDD
+
+    // Mengambil kode terakhir yang dibuat pada hari yang sama dengan prefix PBNJ
+    $lastBarang = Penjualanproduk::where('kode_penjualan', 'LIKE', $prefix . '%')
+                                  ->whereDate('tanggal_penjualan', Carbon::today())
+                                  ->orderBy('kode_penjualan', 'desc')
+                                  ->first();
+
+    if (!$lastBarang) {
+        $num = 1;
+    } else {
+        $lastCode = $lastBarang->kode_penjualan;
+        $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
+        $num = $lastNum + 1;
     }
+
+    $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
+    $newCode = $prefix . $monthDay . $year . $formattedNum;
+    return $newCode;
+}
+
     
     // public function store(Request $request)
     // {
