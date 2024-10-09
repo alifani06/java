@@ -97,12 +97,6 @@
                                         <div class="position-relative mb-4" style="max-width: 600px; margin: auto;"> <!-- Batasi lebar dengan max-width -->
                                             <canvas id="sales-chart" height="200"></canvas>
                                         </div>
-            
-                                        <div class="d-flex flex-row justify-content-end">
-                                            {{-- <span class="mr-2">
-                                                <i class="fas fa-square text-primary"></i> Penjualan Bersih
-                                            </span> --}}
-                                        </div>
                                     </div>
                                 </div>
                                 <!-- /.card -->
@@ -111,37 +105,53 @@
                         <!-- /.row -->
                     </div>
                     <!-- /.container-fluid -->
-                </div>
+                </div> 
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Grafik Produk yang Sering Dibeli</h3>
+                    </div>
+                    <div class="content">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                      
+                                                <div class="position-relative mb-4" style="max-width: 600px; margin: auto;"> <!-- Batasi lebar dengan max-width -->
+                                                    <canvas id="product-chart" height="200"></canvas>
+                                                </div>
+                                        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>                         
             </div>
             </div>
             
-            <!-- Tambahkan ini sebelum akhir tag body -->
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <script>
-                // Data dari server (pastikan ini diambil dari controller dan diberikan ke view)
                 var salesData = @json($finalResults);
             
-                // Proses data penjualan bersih untuk setiap hari
                 var labels = [];
                 var dataPenjualanBersih = [];
             
-                // Loop melalui data dan format untuk Chart.js
                 for (var key in salesData) {
                     if (salesData.hasOwnProperty(key)) {
                         var penjualan = salesData[key];
             
-                        // Ubah format tanggal ke d-m-Y
                         var formattedDate = new Date(penjualan.tanggal_penjualan);
-                        var day = ('0' + formattedDate.getDate()).slice(-2); // Mengambil dan format hari
-                        var month = ('0' + (formattedDate.getMonth() + 1)).slice(-2); // Mengambil dan format bulan
-                        var year = formattedDate.getFullYear(); // Mengambil tahun
+                        var day = ('0' + formattedDate.getDate()).slice(-2); 
+                        var month = ('0' + (formattedDate.getMonth() + 1)).slice(-2); 
+                        var year = formattedDate.getFullYear(); 
             
-                        labels.push(day + '-' + month + '-' + year); // Tambahkan tanggal dalam format d-m-Y sebagai label
-                        dataPenjualanBersih.push(penjualan.penjualan_bersih); // Tambahkan penjualan bersih sebagai data
+                        labels.push(day + '-' + month + '-' + year); 
+                        dataPenjualanBersih.push(penjualan.penjualan_bersih); 
                     }
                 }
             
-                // Konfigurasi untuk bar chart
                 var ctx = document.getElementById('sales-chart').getContext('2d');
                 var myChart = new Chart(ctx, {
                     type: 'bar',
@@ -172,6 +182,40 @@
                             }
                         }
                     }
+                });
+            </script>
+            
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const ctx = document.getElementById('product-chart').getContext('2d');
+                    
+                    // Data dari controller
+                    const productLabels = @json($produkNames); // Nama produk
+                    const productData = @json($produkData); // Jumlah produk terjual
+            
+                    // Membuat grafik
+                    const myChart = new Chart(ctx, {
+                        type: 'bar', // Jenis grafik (bar chart)
+                        data: {
+                            labels: productLabels, // Label dari nama produk
+                            datasets: [{
+                                label: 'Jumlah Terjual', // Label dataset
+                                data: productData, // Data jumlah terjual
+                                backgroundColor: 'rgba(54, 162, 235, 0.6)', // Warna latar belakang
+                                borderColor: 'rgba(54, 162, 235, 1)', // Warna border
+                                borderWidth: 1 // Ketebalan border
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true // Memulai sumbu Y dari 0
+                                }
+                            }
+                        }
+                    });
                 });
             </script>
             
