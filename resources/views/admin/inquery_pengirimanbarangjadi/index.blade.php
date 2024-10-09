@@ -155,6 +155,7 @@
                                         @if ($firstItem->status == 'unpost')
                                                 <a class="dropdown-item"
                                                 href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
+                                               
                                                 <a class="dropdown-item"
                                                 href="{{ url('/admin/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
                                                 @endif
