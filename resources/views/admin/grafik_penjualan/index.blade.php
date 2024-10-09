@@ -116,11 +116,9 @@
                                 <div class="col-lg-12">
                                     <div class="card">
                                         <div class="card-body">
-                                      
-                                                <div class="position-relative mb-4" style="max-width: 600px; margin: auto;"> <!-- Batasi lebar dengan max-width -->
-                                                    <canvas id="product-chart" height="200"></canvas>
-                                                </div>
-                                        
+                                            <div class="position-relative mb-4">
+                                                <canvas id="product-chart" height="200"></canvas>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -184,42 +182,7 @@
                     }
                 });
             </script>
-            
-
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    const ctx = document.getElementById('product-chart').getContext('2d');
-                    
-                    // Data dari controller
-                    const productLabels = @json($produkNames); // Nama produk
-                    const productData = @json($produkData); // Jumlah produk terjual
-            
-                    // Membuat grafik
-                    const myChart = new Chart(ctx, {
-                        type: 'bar', // Jenis grafik (bar chart)
-                        data: {
-                            labels: productLabels, // Label dari nama produk
-                            datasets: [{
-                                label: 'Jumlah Terjual', // Label dataset
-                                data: productData, // Data jumlah terjual
-                                backgroundColor: 'rgba(54, 162, 235, 0.6)', // Warna latar belakang
-                                borderColor: 'rgba(54, 162, 235, 1)', // Warna border
-                                borderWidth: 1 // Ketebalan border
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            scales: {
-                                y: {
-                                    beginAtZero: true // Memulai sumbu Y dari 0
-                                }
-                            }
-                        }
-                    });
-                });
-            </script>
-            
-            
+                        
             
     </section>
 
