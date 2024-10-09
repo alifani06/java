@@ -106,26 +106,7 @@
                     </div>
                     <!-- /.container-fluid -->
                 </div> 
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Grafik Produk yang Sering Dibeli</h3>
-                    </div>
-                    <div class="content">
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="position-relative mb-4">
-                                                <canvas id="product-chart" height="200"></canvas>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>                         
+                                
             </div>
             </div>
             
