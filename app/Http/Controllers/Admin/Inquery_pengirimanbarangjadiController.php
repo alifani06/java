@@ -37,6 +37,8 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Pengiriman_barangjadi;
+use App\Models\Pengiriman_tokobanjaran;
+use App\Models\Stok_tokobanjaran;
 use App\Models\Subklasifikasi;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -116,129 +118,345 @@ class Inquery_pengirimanbarangjadiController extends Controller{
         return view('admin.inquery_pengirimanbarangjadi.show', compact('groupedByKlasifikasi', 'firstItem'));
     }
 
-    public function edit($id)
-    {
-        // Ambil data pengiriman berdasarkan ID
-        $pengiriman = Pengiriman_barangjadi::findOrFail($id);
-    
-        // Ambil semua data pengiriman dengan kode_pengiriman yang sama
-        $stokBarangJadi = Pengiriman_barangjadi::with(['produk', 'toko']) // Pastikan produk dan toko diload
-            ->where('kode_pengiriman', $pengiriman->kode_pengiriman) // Filter berdasarkan kode_pengiriman yang sama
-            ->get();
-    
-        // Ambil semua data detail stok barang jadi yang terhubung dengan produk
-        // Tanpa filter berdasarkan produk_id dari stokBarangJadi
-        $detailStokBarangjadi = Detail_stokbarangjadi::with('produk')->get(); // Ambil semua detail stok barang jadi
-    
-        // Mengakumulasi stok barang jadi jika diperlukan (opsional)
-        $uniqueStokBarangjadi = $detailStokBarangjadi->groupBy('produk_id')->map(function ($items) {
-            $firstItem = $items->first(); // Ambil entri pertama
-            $firstItem->stok = $items->sum('stok'); // Akumulasi stok
-            return $firstItem;
-        })->values();
-    
-        // Ambil semua toko
-        $tokos = Toko::all();
-    
-        return view('admin.inquery_pengirimanbarangjadi.edit', compact('stokBarangJadi', 'tokos', 'pengiriman', 'detailStokBarangjadi', 'uniqueStokBarangjadi'));
-    }
-    
-
-
-
-    
-
     // public function edit($id)
     // {
-    //     // Ambil data pengiriman berdasarkan ID
-    //     $pengiriman = Pengiriman_barangjadi::with('produk', 'toko')->findOrFail($id);
+    //     $pengiriman = Pengiriman_barangjadi::findOrFail($id);
+    
+    //     $stokBarangJadi = Pengiriman_barangjadi::with(['produk', 'toko']) 
+    //         ->where('kode_pengiriman', $pengiriman->kode_pengiriman) 
+    //         ->get();
+    
+    //     $detailStokBarangjadi = Detail_stokbarangjadi::with('produk')->get(); 
 
-    //     // Ambil stok barang jadi yang terkait
-    //     $detailStokBarangjadi = Detail_stokbarangjadi::with('produk')->get();
-
-    //     // Akumulasi stok berdasarkan produk_id
     //     $uniqueStokBarangjadi = $detailStokBarangjadi->groupBy('produk_id')->map(function ($items) {
     //         $firstItem = $items->first(); // Ambil entri pertama
     //         $firstItem->stok = $items->sum('stok'); // Akumulasi stok
     //         return $firstItem;
     //     })->values();
-
-    //     // Ambil produk_id dan klasifikasi_id yang terkait
-    //     $produkIds = $uniqueStokBarangjadi->pluck('produk_id')->toArray();
-    //     $klasifikasiIds = $uniqueStokBarangjadi->pluck('klasifikasi_id')->toArray();
-
-    //     // Ambil klasifikasi yang terkait dengan produk yang ada
-    //     $klasifikasis = Klasifikasi::whereIn('id', $klasifikasiIds)
-    //         ->with(['produks' => function ($query) use ($produkIds) {
-    //             $query->whereIn('id', $produkIds);
-    //         }])
-    //         ->get();
-
+    
     //     // Ambil semua toko
     //     $tokos = Toko::all();
-
-    //     return view('admin.inquery_pengirimanbarangjadi.edit', compact('pengiriman', 'klasifikasis', 'tokos', 'uniqueStokBarangjadi'));
+    
+    //     return view('admin.inquery_pengirimanbarangjadi.edit', compact('stokBarangJadi', 'tokos', 'pengiriman', 'detailStokBarangjadi', 'uniqueStokBarangjadi'));
     // }
+    public function edit($id)
+{
+    // Ambil pengiriman berdasarkan ID
+    $pengiriman = Pengiriman_barangjadi::findOrFail($id);
 
+    // Ambil stok barang yang sesuai dengan kode pengiriman
+    $stokBarangJadi = Pengiriman_barangjadi::with(['produk', 'toko'])
+        ->where('kode_pengiriman', $pengiriman->kode_pengiriman)
+        ->get();
+
+    // Ambil detail stok barang jadi
+    $detailStokBarangjadi = Detail_stokbarangjadi::with('produk')->get();
+
+    // Mengakumulasi stok barang jadi
+    $uniqueStokBarangjadi = $detailStokBarangjadi->groupBy('produk_id')->map(function ($items) {
+        $firstItem = $items->first(); // Ambil entri pertama
+        $firstItem->stok = $items->sum('stok'); // Akumulasi stok
+        return $firstItem;
+    })->values();
+
+    // Ambil semua toko
+    $tokos = Toko::all();
+
+    // Ambil salah satu qrcode_pengiriman dan kode_produksi dari pengiriman dengan kode_pengiriman yang sama
+    $qrcodePengiriman = Pengiriman_barangjadi::where('kode_pengiriman', $pengiriman->kode_pengiriman)
+        ->pluck('qrcode_pengiriman')
+        ->first(); // Ambil entri pertama
+
+    $kodeProduksi = Pengiriman_barangjadi::where('kode_pengiriman', $pengiriman->kode_pengiriman)
+        ->pluck('kode_produksi')
+        ->first(); // Ambil entri pertama
+
+    // Kirim data ke view
+    return view('admin.inquery_pengirimanbarangjadi.edit', compact(
+        'stokBarangJadi',
+        'tokos',
+        'pengiriman',
+        'detailStokBarangjadi',
+        'uniqueStokBarangjadi',
+        'qrcodePengiriman', // Tambahkan qrcode_pengiriman ke view
+        'kodeProduksi' // Tambahkan kode_produksi ke view
+    ));
+}
+
+    // public function update(Request $request, $id)
+    // {
+    //     // Validasi input
+    //     $request->validate([
+    //         'kode_pengiriman' => 'required|string',
+    //         'produk_id' => 'required|array',
+    //         'produk_id.*' => 'required|integer',
+    //         'jumlah' => 'required|array',
+    //         'jumlah.*' => 'required|integer|min:1',
+    //         'qrcode_pengiriman' => 'required|string', 
+    //         'kode_produksi' => 'required|string', 
+    //     ]);
+
+    //     // Ambil data pengiriman berdasarkan ID
+    //     $pengiriman = Pengiriman_barangjadi::findOrFail($id);
+
+    //     $pengiriman->kode_pengiriman = $request->kode_pengiriman;
+    //     $pengiriman->tanggal_pengiriman = now(); 
+    //     $pengiriman->qrcode_pengiriman = $request->qrcode_pengiriman; 
+    //     $pengiriman->kode_produksi = $request->kode_produksi; 
+    //     $pengiriman->save();
+
+    //     $existingDetails = Pengiriman_barangjadi::where('kode_pengiriman', $pengiriman->kode_pengiriman)
+    //         ->get()
+    //         ->keyBy('produk_id'); 
+
+    //     foreach ($request->produk_id as $index => $produkId) {
+    //         $jumlahBaru = $request->jumlah[$index];
+
+    //         // Update atau buat detail pengiriman
+    //         if (isset($existingDetails[$produkId])) {
+    //             $pengirimanDetail = $existingDetails[$produkId];
+    //             if ($pengirimanDetail->jumlah != $jumlahBaru) {
+    //                 $pengirimanDetail->jumlah = $jumlahBaru;
+    //                 $pengirimanDetail->save(); 
+    //             }
+    //         } else {
+    //             // Buat detail baru hanya jika produk_id baru
+    //             $pengirimanDetail = new Pengiriman_barangjadi();
+    //             $pengirimanDetail->kode_pengiriman = $pengiriman->kode_pengiriman;
+    //             $pengirimanDetail->produk_id = $produkId;
+    //             $pengirimanDetail->jumlah = $jumlahBaru;
+    //             $pengirimanDetail->toko_id = $pengiriman->toko_id; 
+    //             $pengirimanDetail->tanggal_pengiriman = now(); 
+    //             $pengirimanDetail->qrcode_pengiriman = $request->qrcode_pengiriman; 
+    //             $pengirimanDetail->kode_produksi = $request->kode_produksi; 
+    //             $pengirimanDetail->status = 'unpost'; 
+    //             $pengirimanDetail->save(); 
+    //         }
+    //     }
+
+    //     // Jika toko_id adalah 1, update atau simpan di pengiriman_tokobanjaran
+    //     if ($pengiriman->toko_id == 1) {
+    //         foreach ($request->produk_id as $index => $produkId) {
+    //             $jumlahBaru = $request->jumlah[$index];
+
+    //             // Cek apakah ada pengiriman yang sudah ada di pengiriman_tokobanjaran
+    //             $pengirimanTokobanjaran = Pengiriman_tokobanjaran::where('kode_pengiriman', $pengiriman->kode_pengiriman)
+    //                 ->where('produk_id', $produkId)
+    //                 ->first();
+
+    //             if ($pengirimanTokobanjaran) {
+    //                 // Update data yang ada
+    //                 $pengirimanTokobanjaran->jumlah = $jumlahBaru;
+    //                 $pengirimanTokobanjaran->kode_produksi = $request->kode_produksi;
+    //                 $pengirimanTokobanjaran->status = 'unpost'; 
+    //                 $pengirimanTokobanjaran->tanggal_input = now();
+    //                 $pengirimanTokobanjaran->save(); 
+    //             } else {
+    //                 // Jika tidak ada, kita buat entri baru
+    //                 $pengirimanTokobanjaran = new Pengiriman_tokobanjaran();
+    //                 $pengirimanTokobanjaran->produk_id = $produkId;
+    //                 $pengirimanTokobanjaran->toko_id = $pengiriman->toko_id; 
+    //                 $pengirimanTokobanjaran->kode_pengiriman = $pengiriman->kode_pengiriman;
+    //                 $pengirimanTokobanjaran->jumlah = $jumlahBaru;
+    //                 $pengirimanTokobanjaran->status = 'unpost'; 
+    //                 $pengirimanTokobanjaran->tanggal_input = now();
+    //                 $pengirimanTokobanjaran->kode_produksi = $request->kode_produksi;
+    //                 $pengirimanTokobanjaran->pengiriman_barangjadi_id = $pengiriman->id; 
+    //                 $pengirimanTokobanjaran->save(); 
+    //             }
+    //         }
+    //     }
+
+    //     // Redirect atau kembalikan dengan pesan sukses
+    //     return redirect()->route('admin.inquery_pengirimanbarangjadi.index')
+    //         ->with('success', 'Data pengiriman barang jadi berhasil diperbarui.');
+    // }
 
     public function update(Request $request, $id)
     {
         // Validasi input
         $request->validate([
-            'toko_id' => 'required|exists:tokos,id',
-            'produk_id.*' => 'required|exists:produks,id',
-            'jumlah.*' => 'required|numeric|min:0'
+            'kode_pengiriman' => 'required|string',
+            'produk_id' => 'required|array',
+            'produk_id.*' => 'required|integer',
+            'jumlah' => 'required|array',
+            'jumlah.*' => 'required|integer|min:1',
+            'qrcode_pengiriman' => 'required|string', 
+            'kode_produksi' => 'required|string', 
         ]);
-        
-        // Ambil data detail stok barang jadi yang terkait dengan ID
-        $detailStokBarangjadi = Detail_stokbarangjadi::findOrFail($id);
-        
-        // Update data detail stok barang jadi
-        $detailStokBarangjadi->toko_id = $request->toko_id;
-        $detailStokBarangjadi->save();
-        
-        // Loop untuk update produk
-        foreach ($request->produk_id as $index => $produk_id) {
-            $detail = Detail_stokbarangjadi::where('id', $id)
-                ->where('produk_id', $produk_id)
-                ->first();
-            
-            if ($detail) {
-                $detail->jumlah = $request->jumlah[$index];
-                $detail->save();
+    
+        // Ambil data pengiriman berdasarkan ID
+        $pengiriman = Pengiriman_barangjadi::findOrFail($id);
+    
+        $pengiriman->kode_pengiriman = $request->kode_pengiriman;
+        $pengiriman->tanggal_pengiriman = now(); 
+        $pengiriman->qrcode_pengiriman = $request->qrcode_pengiriman; 
+        $pengiriman->kode_produksi = $request->kode_produksi; 
+        $pengiriman->save();
+    
+        // Mengambil detail pengiriman yang sudah ada berdasarkan kode_pengiriman
+        $existingDetails = Pengiriman_barangjadi::where('kode_pengiriman', $pengiriman->kode_pengiriman)
+            ->get()
+            ->keyBy('produk_id'); 
+    
+        foreach ($request->produk_id as $index => $produkId) {
+            $jumlahBaru = $request->jumlah[$index];
+    
+            // Update atau buat detail pengiriman
+            if (isset($existingDetails[$produkId])) {
+                $pengirimanDetail = $existingDetails[$produkId];
+                if ($pengirimanDetail->jumlah != $jumlahBaru) {
+                    $pengirimanDetail->jumlah = $jumlahBaru;
+                    $pengirimanDetail->save(); 
+                }
             } else {
-                // Jika data produk tidak ditemukan, tambahkan data baru
-                Detail_stokbarangjadi::create([
-                    'id' => $id,
-                    'produk_id' => $produk_id,
-                    'jumlah' => $request->jumlah[$index],
-                    'toko_id' => $request->toko_id
-                ]);
+                // Buat detail baru hanya jika produk_id baru
+                $pengirimanDetail = new Pengiriman_barangjadi();
+                $pengirimanDetail->kode_pengiriman = $pengiriman->kode_pengiriman;
+                $pengirimanDetail->produk_id = $produkId;
+                $pengirimanDetail->jumlah = $jumlahBaru;
+                $pengirimanDetail->toko_id = $pengiriman->toko_id; 
+                $pengirimanDetail->tanggal_pengiriman = now(); 
+                $pengirimanDetail->qrcode_pengiriman = $request->qrcode_pengiriman; 
+                $pengirimanDetail->kode_produksi = $request->kode_produksi; 
+                $pengirimanDetail->status = 'unpost'; 
+                $pengirimanDetail->save(); 
             }
         }
-        
-        return redirect()->route('admin.pengiriman_barangjadi.index')->with('success', 'Data berhasil diperbarui');
+    
+        // Jika toko_id adalah 1, update atau simpan di pengiriman_tokobanjaran
+        if ($pengiriman->toko_id == 1) {
+            foreach ($request->produk_id as $index => $produkId) {
+                $jumlahBaru = $request->jumlah[$index];
+    
+                // Cek apakah ada pengiriman yang sudah ada di pengiriman_tokobanjaran
+                $pengirimanTokobanjaran = Pengiriman_tokobanjaran::where('kode_pengiriman', $pengiriman->kode_pengiriman)
+                    ->where('produk_id', $produkId)
+                    ->first();
+    
+                if ($pengirimanTokobanjaran) {
+                    // Update data yang ada
+                    $pengirimanTokobanjaran->jumlah = $jumlahBaru;
+                    $pengirimanTokobanjaran->kode_produksi = $request->kode_produksi;
+                    $pengirimanTokobanjaran->status = 'unpost'; 
+                    $pengirimanTokobanjaran->tanggal_input = now();
+                    $pengirimanTokobanjaran->save(); 
+                } else {
+                    $pengirimanTokobanjaran = new Pengiriman_tokobanjaran();
+                    $pengirimanTokobanjaran->produk_id = $produkId;
+                    $pengirimanTokobanjaran->toko_id = $pengiriman->toko_id; 
+                    $pengirimanTokobanjaran->kode_pengiriman = $pengiriman->kode_pengiriman;
+                    $pengirimanTokobanjaran->jumlah = $jumlahBaru;
+                    $pengirimanTokobanjaran->status = 'unpost'; 
+                    $pengirimanTokobanjaran->tanggal_input = now();
+                    $pengirimanTokobanjaran->kode_produksi = $request->kode_produksi;
+                    $pengirimanTokobanjaran->pengiriman_barangjadi_id = $pengiriman->id; 
+                    $pengirimanTokobanjaran->save(); 
+                }
+            }
+        }
+    
+        // Redirect atau kembalikan dengan pesan sukses
+        return redirect()->route('admin.inquery_pengirimanbarangjadi.index')
+            ->with('success', 'Data pengiriman barang jadi berhasil diperbarui.');
     }
+    
+
+
+    // public function unpost_pengirimanbarangjadi($id)
+    // {
+    //         // Ambil data stok barang berdasarkan ID
+    //         $stok = Pengiriman_barangjadi::where('id', $id)->first();
+        
+    //         // Pastikan data ditemukan
+    //         if (!$stok) {
+    //             return back()->with('error', 'Data tidak ditemukan.');
+    //         }
+        
+    //         // Ambil kode_input dari stok yang diambil
+    //         $kodeInput = $stok->kode_pengiriman;
+        
+    //         // Update status untuk semua stok dengan kode_input yang sama di tabel stok_barangjadi
+    //         Pengiriman_barangjadi::where('kode_pengiriman', $kodeInput)->update([
+    //             'status' => 'unpost'
+    //         ]);
+    //         return back()->with('success', 'Berhasil mengubah status semua produk dan detail terkait dengan kode_input yang sama.');
+    // }
 
     public function unpost_pengirimanbarangjadi($id)
     {
-            // Ambil data stok barang berdasarkan ID
-            $stok = Pengiriman_barangjadi::where('id', $id)->first();
-        
-            // Pastikan data ditemukan
-            if (!$stok) {
-                return back()->with('error', 'Data tidak ditemukan.');
+        // Ambil data stok_tokobanjaran berdasarkan ID
+        $stok = Pengiriman_tokobanjaran::where('id', $id)->first();
+
+        // Pastikan data ditemukan
+        if (!$stok) {
+            return response()->json(['error' => 'Data tidak ditemukan.'], 404);
+        }
+
+        // Ambil kode_pengiriman dan pengiriman_barangjadi_id dari stok yang diambil
+        $kodePengiriman = $stok->kode_pengiriman;
+        $pengirimanId = $stok->pengiriman_barangjadi_id;
+
+        // Ambil pengiriman terkait dari tabel pengiriman_barangjadi
+        $pengiriman = Pengiriman_barangjadi::find($pengirimanId);
+
+        // Pastikan data pengiriman ditemukan
+        if (!$pengiriman) {
+            return response()->json(['error' => 'Data pengiriman tidak ditemukan.'], 404);
+        }
+
+        // Ambil semua produk terkait dengan pengiriman
+        $productsInPengiriman = Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->get();
+
+        foreach ($productsInPengiriman as $pengirimanItem) {
+            // Ambil stok yang ada di stok_tokobanjaran untuk produk ini
+            $stokToko = Stok_tokobanjaran::where('produk_id', $pengirimanItem->produk_id)->first();
+            
+            if ($stokToko) {
+                // Mengurangi jumlah pada stok_tokobanjaran sesuai jumlah pengiriman
+                $stokToko->jumlah -= $pengirimanItem->jumlah;
+
+                // Jika jumlah stok menjadi negatif, kembalikan error
+                if ($stokToko->jumlah < 0) {
+                    return response()->json(['error' => 'Stok tidak cukup untuk mengurangi jumlah produk dengan ID: ' . $pengirimanItem->produk_id], 400);
+                }
+
+                $stokToko->save();
             }
-        
-            // Ambil kode_input dari stok yang diambil
-            $kodeInput = $stok->kode_pengiriman;
-        
-            // Update status untuk semua stok dengan kode_input yang sama di tabel stok_barangjadi
-            Pengiriman_barangjadi::where('kode_pengiriman', $kodeInput)->update([
-                'status' => 'unpost'
-            ]);
-            return back()->with('success', 'Berhasil mengubah status semua produk dan detail terkait dengan kode_input yang sama.');
+
+            // Ambil semua detail stok barang jadi untuk produk ini, urutkan dari yang paling baru
+            $detailStoks = Detail_stokbarangjadi::where('produk_id', $pengirimanItem->produk_id)
+                            ->orderBy('created_at', 'desc') // Menggunakan stok yang paling baru dahulu (LIFO)
+                            ->get();
+
+            $remaining = $pengirimanItem->jumlah;
+
+            foreach ($detailStoks as $detailStok) {
+                if ($remaining > 0) {
+                    $detailStok->stok += $remaining; // Mengembalikan jumlah ke detail_stokbarangjadi
+                    $detailStok->save();
+                    $remaining = 0; // Pengembalian selesai
+                } else {
+                    break; // Jika tidak ada sisa pengembalian, keluar dari loop
+                }
+            }
+        }
+
+        // Update status untuk semua stok_tokobanjaran dengan kode_pengiriman yang sama
+        Pengiriman_tokobanjaran::where('kode_pengiriman', $kodePengiriman)->update([
+            'status' => 'unpost',
+            'tanggal_terima' => null, // Reset tanggal terima
+        ]);
+
+        // Update status untuk pengiriman_barangjadi
+        Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->update([
+            'status' => 'unpost',
+            'tanggal_terima' => null, // Reset tanggal terima
+        ]);
+
+        return response()->json(['success' => 'Berhasil mengubah status menjadi unpost dan memperbarui stok.']);
     }
+
         
     public function posting_pengirimanbarangjadi($id)
     {

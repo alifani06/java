@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Inquery Penerimaan Return')
+@section('title', 'Inquery Pengiman Barang')
 
 @section('content')
     <!-- Content Header (Page header) -->
@@ -82,8 +82,17 @@
                                 <label for="nama">Nomor Pengiriman</label>
                                 <input type="text" class="form-control" id="kode_pengiriman" name="kode_pengiriman"
                                     value="{{ old('kode_pengiriman', $pengiriman->kode_pengiriman) }}">
+
+                                <input hidden type="text" class="form-control" id="toko_id" name="toko_id"
+                                    value="{{ old('toko_id', $pengiriman->toko_id) }}">
+                                <input hidden type="text" class="form-control" id="qrcode_pengiriman" name="qrcode_pengiriman"
+                                    value="{{ old('qrcode_pengiriman', $qrcodePengiriman) }}">
+                                <input hidden type="text" class="form-control" id="kode_produksi" name="kode_produksi"
+                                    value="{{ old('kode_produksi', $kodeProduksi) }}">
+
                             </div>
                         </div>
+
                     </div>
             
                     <div class="card">
@@ -112,7 +121,7 @@
                                             <td class="text-center" id="urutan">{{ $loop->index + 1 }}</td>
                                             <td hidden>
                                                 <div class="form-group" hidden>
-                                                    <input type="text" class="form-control" id="nomor_seri-{{ $loop->index }}" name="detail_ids[]" value="{{ $detail->id }}">
+                                                    <input type="text" class="form-control" id="nomor_seri-{{ $loop->index }}" name="id[]" value="{{ $detail->id }}">
                                                 </div>
                                                 <div class="form-group">
                                                     <input type="text" class="form-control" id="produk_id-{{ $loop->index }}" name="produk_id[]" value="{{ $detail->produk_id }}">
@@ -186,12 +195,14 @@
                                 <tbody>
                                     @foreach ($uniqueStokBarangjadi as $barang)
                                         <tr data-id="{{ $barang->id }}" 
-                                            data-kode_lama="{{ $barang->kode_lama }}"
-                                            data-nama_produk="{{ $barang->nama_produk }}">
+                                            data-kode_lama="{{ $barang->produk->kode_lama  }}"
+                                            data-nama_produk="{{ $barang->produk->nama_produk }}">
+
                                             <td class="text-center">{{ $loop->iteration }}</td>
                                             <td>{{ $barang->produk ? $barang->produk->kode_lama : 'N/A' }}</td>
                                             <td>{{ $barang->produk ? $barang->produk->nama_produk : 'N/A' }}</td>
                                             <td>{{ $barang['stok'] }}</td>
+
                                             <td class="text-center">
                                                 <button type="button" id="btnTambah" class="btn btn-primary btn-sm"
                                                 onclick="getBarang({{ $loop->index }})">
@@ -239,7 +250,174 @@
 
     
 
-    {{-- <script>
+
+    <script>
+        var data_pembelian = @json(session('data_pembelians'));
+        var jumlah_ban = 1;
+    
+        if (data_pembelian != null) {
+            jumlah_ban = data_pembelian.length;
+            $('#tabel-pembelian').empty();
+            var urutan = 0;
+            $.each(data_pembelian, function(key, value) {
+                urutan = urutan + 1;
+                itemPembelian(urutan, key, value);
+            });
+        }
+    
+        function updateUrutan() {
+            var urutan = document.querySelectorAll('#urutan');
+            for (let i = 0; i < urutan.length; i++) {
+                urutan[i].innerText = i + 1;
+            }
+        }
+    
+        var counter = 0;
+    
+        function addPesanan() {
+            counter++;
+            jumlah_ban = jumlah_ban + 1;
+    
+            if (jumlah_ban === 1) {
+                $('#tabel-pembelian').empty();
+            } else {
+                var lastRow = $('#tabel-pembelian tr:last');
+                var lastRowIndex = lastRow.find('#urutan').text();
+                jumlah_ban = parseInt(lastRowIndex) + 1;
+            }
+    
+            console.log('Current jumlah_ban:', jumlah_ban);
+            itemPembelian(jumlah_ban, jumlah_ban - 1);
+            updateUrutan();
+        }
+    
+        function removeBan(identifier, detailId) {
+            var row = document.getElementById('pembelian-' + identifier);
+            row.remove();
+    
+            $.ajax({
+                url: "{{ url('admin/inquery_returnekspedisi/deletedetailsurat/') }}/" + detailId,
+                type: "POST",
+                data: {
+                    _method: 'DELETE',
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    console.log('Data deleted successfully');
+                },
+                error: function(error) {
+                    console.error('Failed to delete data:', error);
+                }
+            });
+    
+            updateUrutan();
+        }
+    
+        function itemPembelian(identifier, key, value = null) {
+            var produk_id = '';
+            var kode_lama = '';
+            var nama_produk = '';
+            var jumlah = '';
+    
+            if (value !== null) {
+                produk_id = value.produk_id;
+                kode_lama = value.kode_lama;
+                nama_produk = value.nama_produk;
+                jumlah = value.jumlah;
+            }
+    
+            var item_pembelian = '<tr id="pembelian-' + key + '">';
+            item_pembelian += '<td class="text-center" style=" font-size:14px" id="urutan">' + key + '</td>';
+    
+            // produk_id
+            item_pembelian += '<td hidden>';
+            item_pembelian += '<div class="form-group">';
+            item_pembelian += '<input type="text" class="form-control" id="produk_id-' + key +
+                '" name="produk_id[]" value="' + produk_id + '" />';
+            item_pembelian += '</div>';
+            item_pembelian += '</td>';
+    
+            // kode_lama
+            item_pembelian += '<td>';
+            item_pembelian += '<div class="form-group">';
+            item_pembelian += '<input type="text" class="form-control" style="font-size:14px" readonly id="kode_lama-' +
+                key + '" name="kode_lama[]" value="' + kode_lama + '" />';
+            item_pembelian += '</div>';
+            item_pembelian += '</td>';
+    
+            // nama_produk
+            item_pembelian += '<td>';
+            item_pembelian += '<div class="form-group">';
+            item_pembelian += '<input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' +
+                key + '" name="nama_produk[]" value="' + nama_produk + '" />';
+            item_pembelian += '</div>';
+            item_pembelian += '</td>';
+    
+            // jumlah
+            item_pembelian += '<td>';
+            item_pembelian += '<div class="form-group">';
+            item_pembelian +=
+                '<input type="text" class="form-control jumlah" style="font-size:14px"  id="jumlah-' +
+                key + '" name="jumlah[]" value="' + jumlah + '" />';
+            item_pembelian += '</div>';
+            item_pembelian += '</td>';
+    
+            // Action buttons
+            item_pembelian += '<td style="width: 100px">';
+            item_pembelian += '<button type="button" class="btn btn-primary btn-sm" onclick="Barangs(' + key + ')">';
+            item_pembelian += '<i class="fas fa-plus"></i>';
+            item_pembelian += '</button>';
+            item_pembelian += '<button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' +
+                key + ')">';
+            item_pembelian += '<i class="fas fa-trash"></i>';
+            item_pembelian += '</button>';
+            item_pembelian += '</td>';
+            item_pembelian += '</tr>';
+    
+            $('#tabel-pembelian').append(item_pembelian);
+        }
+    
+        var activeSpecificationIndex = 0;
+
+        function Barangs(param) {
+            activeSpecificationIndex = param;
+            // Tampilkan modal untuk memilih produk
+            $('#tableBarang').modal('show');
+        }
+
+        function getBarang(rowIndex) {
+            // Ambil baris yang dipilih berdasarkan indeks
+            var selectedRow = $('#tablefaktur tbody tr:eq(' + rowIndex + ')');
+
+            // Ambil data dari atribut 'data-' pada baris yang dipilih
+            var produk_id = selectedRow.data('id');
+            var kode_lama = selectedRow.data('kode_lama');
+            var nama_produk = selectedRow.data('nama_produk');
+
+            // Debug untuk memastikan data sudah diambil dengan benar
+            console.log('Selected row:', selectedRow);
+            console.log('Produk ID:', produk_id);
+            console.log('Kode Lama:', kode_lama);
+            console.log('Nama Produk:', nama_produk);
+
+            // Jika data ada, masukkan ke dalam tabel pembelian
+            if (produk_id && kode_lama && nama_produk) {
+                $('#produk_id-' + activeSpecificationIndex).val(produk_id);
+                $('#kode_lama-' + activeSpecificationIndex).val(kode_lama);
+                $('#nama_produk-' + activeSpecificationIndex).val(nama_produk);
+            } else {
+                console.error('Failed to retrieve product data. Please check the selected row.');
+            }
+
+            // Tutup modal setelah memilih produk
+            $('#tableBarang').modal('hide');
+        }
+
+    </script>
+    
+  
+    
+        {{-- <script>
         var data_pembelian = @json(session('data_pembelians'));
         var jumlah_ban = 1;
 
@@ -399,170 +577,5 @@
         }
     </script> --}}
 
-    <script>
-        var data_pembelian = @json(session('data_pembelians'));
-        var jumlah_ban = 1;
-    
-        if (data_pembelian != null) {
-            jumlah_ban = data_pembelian.length;
-            $('#tabel-pembelian').empty();
-            var urutan = 0;
-            $.each(data_pembelian, function(key, value) {
-                urutan = urutan + 1;
-                itemPembelian(urutan, key, value);
-            });
-        }
-    
-        function updateUrutan() {
-            var urutan = document.querySelectorAll('#urutan');
-            for (let i = 0; i < urutan.length; i++) {
-                urutan[i].innerText = i + 1;
-            }
-        }
-    
-        var counter = 0;
-    
-        function addPesanan() {
-            counter++;
-            jumlah_ban = jumlah_ban + 1;
-    
-            if (jumlah_ban === 1) {
-                $('#tabel-pembelian').empty();
-            } else {
-                var lastRow = $('#tabel-pembelian tr:last');
-                var lastRowIndex = lastRow.find('#urutan').text();
-                jumlah_ban = parseInt(lastRowIndex) + 1;
-            }
-    
-            console.log('Current jumlah_ban:', jumlah_ban);
-            itemPembelian(jumlah_ban, jumlah_ban - 1);
-            updateUrutan();
-        }
-    
-        function removeBan(identifier, detailId) {
-            var row = document.getElementById('pembelian-' + identifier);
-            row.remove();
-    
-            $.ajax({
-                url: "{{ url('admin/inquery_returnekspedisi/deletedetailsurat/') }}/" + detailId,
-                type: "POST",
-                data: {
-                    _method: 'DELETE',
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    console.log('Data deleted successfully');
-                },
-                error: function(error) {
-                    console.error('Failed to delete data:', error);
-                }
-            });
-    
-            updateUrutan();
-        }
-    
-        function itemPembelian(identifier, key, value = null) {
-            var produk_id = '';
-            var kode_lama = '';
-            var nama_produk = '';
-            var jumlah = '';
-    
-            if (value !== null) {
-                produk_id = value.produk_id;
-                kode_lama = value.kode_lama;
-                nama_produk = value.nama_produk;
-                jumlah = value.jumlah;
-            }
-    
-            var item_pembelian = '<tr id="pembelian-' + key + '">';
-            item_pembelian += '<td class="text-center" style=" font-size:14px" id="urutan">' + key + '</td>';
-    
-            // produk_id
-            item_pembelian += '<td hidden>';
-            item_pembelian += '<div class="form-group">';
-            item_pembelian += '<input type="text" class="form-control" id="produk_id-' + key +
-                '" name="produk_id[]" value="' + produk_id + '" />';
-            item_pembelian += '</div>';
-            item_pembelian += '</td>';
-    
-            // kode_lama
-            item_pembelian += '<td>';
-            item_pembelian += '<div class="form-group">';
-            item_pembelian += '<input type="text" class="form-control" style="font-size:14px" readonly id="kode_lama-' +
-                key + '" name="kode_lama[]" value="' + kode_lama + '" />';
-            item_pembelian += '</div>';
-            item_pembelian += '</td>';
-    
-            // nama_produk
-            item_pembelian += '<td>';
-            item_pembelian += '<div class="form-group">';
-            item_pembelian += '<input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' +
-                key + '" name="nama_produk[]" value="' + nama_produk + '" />';
-            item_pembelian += '</div>';
-            item_pembelian += '</td>';
-    
-            // jumlah
-            item_pembelian += '<td>';
-            item_pembelian += '<div class="form-group">';
-            item_pembelian +=
-                '<input type="text" class="form-control jumlah" style="font-size:14px"  id="jumlah-' +
-                key + '" name="jumlah[]" value="' + jumlah + '" />';
-            item_pembelian += '</div>';
-            item_pembelian += '</td>';
-    
-            // Action buttons
-            item_pembelian += '<td style="width: 100px">';
-            item_pembelian += '<button type="button" class="btn btn-primary btn-sm" onclick="Barangs(' + key + ')">';
-            item_pembelian += '<i class="fas fa-plus"></i>';
-            item_pembelian += '</button>';
-            item_pembelian += '<button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' +
-                key + ')">';
-            item_pembelian += '<i class="fas fa-trash"></i>';
-            item_pembelian += '</button>';
-            item_pembelian += '</td>';
-            item_pembelian += '</tr>';
-    
-            $('#tabel-pembelian').append(item_pembelian);
-        }
-    
-        var activeSpecificationIndex = 0;
-
-function Barangs(param) {
-    activeSpecificationIndex = param;
-    // Tampilkan modal untuk memilih produk
-    $('#tableBarang').modal('show');
-}
-
-function getBarang(rowIndex) {
-    // Ambil baris yang dipilih berdasarkan indeks
-    var selectedRow = $('#tablefaktur tbody tr').eq(rowIndex);
-
-    // Ambil data dari atribut 'data-' pada baris yang dipilih
-    var produk_id = selectedRow.data('id');
-    var kode_lama = selectedRow.data('kode_lama');
-    var nama_produk = selectedRow.data('nama_produk');
-
-    // Debug untuk memastikan data sudah diambil dengan benar
-    console.log('Selected row:', selectedRow);
-    console.log('Produk ID:', produk_id);
-    console.log('Kode Lama:', kode_lama);
-    console.log('Nama Produk:', nama_produk);
-
-    // Jika data ada, masukkan ke dalam tabel pembelian
-    if (produk_id && kode_lama && nama_produk) {
-        $('#produk_id-' + activeSpecificationIndex).val(produk_id);
-        $('#kode_lama-' + activeSpecificationIndex).val(kode_lama);
-        $('#nama_produk-' + activeSpecificationIndex).val(nama_produk);
-    } else {
-        console.error('Failed to retrieve product data. Please check the selected row.');
-    }
-
-    // Tutup modal setelah memilih produk
-    $('#tableBarang').modal('hide');
-}
-
-    </script>
-    
-    
 
 @endsection
