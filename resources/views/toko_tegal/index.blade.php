@@ -27,7 +27,7 @@
 
                     <div class="card-body text-center p-5">
                         <h3><strong>JAVA BAKERY</strong></h3>
-                        <h6>CABANG BANJARAN</h6>
+                        <h6>CABANG TEGAL</h6>
                     </div>
                 </div>
                 <!-- Main row -->

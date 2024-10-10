@@ -31,7 +31,7 @@
     request()->is('toko_tegal/klasifikasi*')||
     request()->is('toko_tegal/metode_pembayaran*')||
     request()->is('toko_tegal/input*')||
-    request()->is('toko_tegal/stokpesanan_tokobanjaran*')||
+    request()->is('toko_tegal/stokpesanan_tokotegal*')||
     request()->is('toko_tegal/data_stokbarangjadi*')
   
         ? 'menu-open'
@@ -46,7 +46,7 @@
         request()->is('toko_tegal/klasifikasi*')||
         request()->is('toko_tegal/metode_pembayaran*')||
         request()->is('toko_tegal/input*')||
-        request()->is('toko_tegal/stokpesanan_tokobanjaran*')||
+        request()->is('toko_tegal/stokpesanan_tokotegal*')||
         request()->is('toko_tegal/data_stokbarangjadi*')
       
             ? 'active'
@@ -59,7 +59,7 @@
         </p>
     </a>
     <ul class="nav nav-treeview">
-        @if (auth()->check() && auth()->user()->menu['pelanggan'])
+        {{-- @if (auth()->check() && auth()->user()->menu['pelanggan']) --}}
         <li class="nav-item">
             <a href="{{ url('toko_tegal/pelanggan') }}"
                 class="nav-link {{ request()->is('toko_tegal/pelanggan*') ? 'active' : '' }}">
@@ -67,9 +67,9 @@
                 <p style="font-size: 14px;">Data Pelanggan</p>
             </a>
         </li>
-        @endif
+        {{-- @endif --}}
 
-        @if (auth()->check() && auth()->user()->menu['produk'])
+        {{-- @if (auth()->check() && auth()->user()->menu['produk']) --}}
         <li class="nav-item">
             <a href="{{ url('toko_tegal/produk') }}"
                 class="nav-link {{ request()->is('toko_tegal/produk*') ? 'active' : '' }}">
@@ -77,21 +77,22 @@
                 <p style="font-size: 14px;">Data Produk</p>
             </a>
         </li>
-        @endif
+        {{-- @endif --}}
 
-          @if (auth()->check() && auth()->user()->menu['stok tokobanjaran'])
+          {{-- @if (auth()->check() && auth()->user()->menu['stok tokobanjaran']) --}}
           <li class="nav-item">
-            <a href="{{ url('toko_tegal/stok_tokobanjaran') }}"
-                class="nav-link {{ request()->is('toko_tegal/stok_tokobanjaran*') ? 'active' : '' }}">
+            <a href="{{ url('toko_tegal/stok_tokotegal') }}"
+                class="nav-link {{ request()->is('toko_tegal/stok_tokotegal*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Data Stok Produk</p>
             </a>
             </li>
-            @endif
+            {{-- @endif --}}
+
           {{-- @if (auth()->check() && auth()->user()->menu['stok tokobanjaran']) --}}
           <li class="nav-item">
-            <a href="{{ url('toko_tegal/stokpesanan_tokobanjaran') }}"
-                class="nav-link {{ request()->is('toko_tegal/stokpesanan_tokobanjaran*') ? 'active' : '' }}">
+            <a href="{{ url('toko_tegal/stokpesanan_tokotegal') }}"
+                class="nav-link {{ request()->is('toko_tegal/stokpesanan_tokotegal*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Data Stok Pesanan</p>
             </a>
@@ -112,7 +113,7 @@
     request()->is('toko_tegal/return_barangjadi*')|| 
     request()->is('toko_tegal/pelunasan_pemesanan*')|| 
     request()->is('toko_tegal/setoran_tokobanajran*')|| 
-    request()->is('toko_tegal/pemindahan_tokobanjaran*') 
+    request()->is('toko_tegal/pemindahan_tokotegal*') 
     // request()->is('toko_tegal/input*')
   
         ? 'menu-open'
@@ -127,7 +128,7 @@
         request()->is('toko_tegal/retur_barangjadi*')||  
         request()->is('toko_tegal/pelunasan_pemesanan*')||  
         request()->is('toko_tegal/setoran_tokobanajran*')||  
-        request()->is('toko_tegal/pemindahan_tokobanjaran*')  
+        request()->is('toko_tegal/pemindahan_tokotegal*')  
         // request()->is('toko_tegal/input*')
       
             ? 'active'
@@ -140,7 +141,7 @@
         </p>
     </a>
     <ul class="nav nav-treeview">
-        @if (auth()->check() && auth()->user()->menu['pemesanan banjaran'])
+        {{-- @if (auth()->check() && auth()->user()->menu['pemesanan banjaran']) --}}
         <li class="nav-item">
             <a href="{{ url('toko_tegal/pemesanan_produk') }}"
                 class="nav-link {{ request()->is('toko_tegal/pemesanan_produk*') ? 'active' : '' }}">
@@ -148,9 +149,9 @@
                 <p style="font-size: 14px;">Pemesanan Produk</p>
             </a>
         </li>
-        @endif
+        {{-- @endif --}}
 
-        @if (auth()->check() && auth()->user()->menu['penjualan banjaran'])
+        {{-- @if (auth()->check() && auth()->user()->menu['penjualan banjaran']) --}}
         <li class="nav-item">
             <a href="{{ url('toko_tegal/penjualan_produk') }}"
                 class="nav-link {{ request()->is('toko_tegal/penjualan_produk*') ? 'active' : '' }}">
@@ -158,9 +159,9 @@
                 <p style="font-size: 14px;">Penjualan Produk</p>
             </a>
         </li>
-        @endif
+        {{-- @endif --}}
 
-        @if (auth()->check() && auth()->user()->menu['pelunasan banjaran'])
+        {{-- @if (auth()->check() && auth()->user()->menu['pelunasan banjaran']) --}}
         <li class="nav-item">
             <a href="{{ url('toko_tegal/pelunasan_pemesanan') }}"
                 class="nav-link {{ request()->is('toko_tegal/pelunasan_pemesanan*') ? 'active' : '' }}">
@@ -168,7 +169,7 @@
                 <p style="font-size: 14px;">Pelunasan Pemesanan</p>
             </a>
         </li>
-        @endif
+        {{-- @endif --}}
    
 
           {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
@@ -183,8 +184,8 @@
 
          {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
          <li class="nav-item">
-            <a href="{{ url('toko_tegal/stok_tokobanjaran') }}"
-                class="nav-link {{ request()->is('toko_tegal/stok_tokobanjaran*') ? 'active' : '' }}">
+            <a href="{{ url('toko_tegal/stok_tokotegal') }}"
+                class="nav-link {{ request()->is('toko_tegal/stok_tokotegal*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Stok Produk</p>
             </a>
@@ -193,18 +194,18 @@
 
             {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
             <li class="nav-item">
-                <a href="{{ url('toko_tegal/retur_tokobanjaran') }}"
-                    class="nav-link {{ request()->is('toko_tegal/retur_tokobanjaran*') ? 'active' : '' }}">
+                <a href="{{ url('toko_tegal/retur_tokotegal') }}"
+                    class="nav-link {{ request()->is('toko_tegal/retur_tokotegal*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                    <p style="font-size: 14px;">Retur Toko Banjaran</p>
+                    <p style="font-size: 14px;">Retur Toko Tegal</p>
                 </a>
             </li>
             {{-- @endif --}}
         
         {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
         <li class="nav-item">
-            <a href="{{ url('toko_tegal/pemindahan_tokobanjaran') }}"
-                class="nav-link {{ request()->is('toko_tegal/pemindahan_tokobanjaran*') ? 'active' : '' }}">
+            <a href="{{ url('toko_tegal/pemindahan_tokotegal') }}"
+                class="nav-link {{ request()->is('toko_tegal/pemindahan_tokotegal*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Pemindahan Produk</p>
             </a>
@@ -212,8 +213,8 @@
         {{-- @endif --}}
         {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
         <li class="nav-item">
-            <a href="{{ url('toko_tegal/setoran_tokobanjaran') }}"
-                class="nav-link {{ request()->is('toko_tegal/setoran_tokobanjaran*') ? 'active' : '' }}">
+            <a href="{{ url('toko_tegal/setoran_tokotegal') }}"
+                class="nav-link {{ request()->is('toko_tegal/setoran_tokotegal*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Setoran Tunai Penjualan</p>
             </a>
@@ -224,13 +225,13 @@
 
 <li
     class="nav-item {{ request()->is('toko_tegal/inquery_pemesananproduk*') ||
-    request()->is('toko_tegal/inquery_penjualanprodukbanjaran*')|| 
+    request()->is('toko_tegal/inquery_penjualanproduktegal*')|| 
     request()->is('toko_tegal/inquery_perubahanharga*')|| 
     request()->is('toko_tegal/inquery_permintaanproduk*')|| 
     request()->is('toko_tegal/inquery_stokbarangjadi*')|| 
-    request()->is('toko_tegal/pengiriman_tokobanjaran*')|| 
-    request()->is('toko_tegal/inquery_pemindahanbanjaran*')|| 
-    request()->is('toko_tegal/inquery_depositbanjaran*')|| 
+    request()->is('toko_tegal/pengiriman_tokotegal*')|| 
+    request()->is('toko_tegal/inquery_pemindahantegal*')|| 
+    request()->is('toko_tegal/inquery_deposittegal*')|| 
     request()->is('toko_tegal/inquery_setorantunaibanjaran*')|| 
     request()->is('toko_tegal/inquery_pengirimanbarangjadi*') 
     // request()->is('toko_tegal/input*')
@@ -239,13 +240,13 @@
         : '' }}">
     <a href="#"
         class="nav-link {{ request()->is('toko_tegal/inquery_pemesananproduk*') ||
-        request()->is('toko_tegal/inquery_penjualanprodukbanjaran*')||
+        request()->is('toko_tegal/inquery_penjualanproduktegal*')||
         request()->is('toko_tegal/inquery_perubahanharga*')||
         request()->is('toko_tegal/inquery_permintaanproduk*')||
         request()->is('toko_tegal/inquery_stokbarangjadi*')||
-        request()->is('toko_tegal/pengiriman_tokobanjaran*')||
-        request()->is('toko_tegal/inquery_pemindahanbanjaran*')||
-        request()->is('toko_tegal/inquery_depositbanjaran*')||
+        request()->is('toko_tegal/pengiriman_tokotegal*')||
+        request()->is('toko_tegal/inquery_pemindahantegal*')||
+        request()->is('toko_tegal/inquery_deposittegal*')||
         request()->is('toko_tegal/inquery_setorantunaibanjaran*')||
         request()->is('toko_tegal/inquerypengirimanbarangjadi*')
         // request()->is('toko_tegal/input*')
@@ -272,8 +273,8 @@
 
         {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
         <li class="nav-item">
-            <a href="{{ url('toko_tegal/inquery_penjualanprodukbanjaran') }}"
-                class="nav-link {{ request()->is('toko_tegal/inquery_penjualanprodukbanjaran*') ? 'active' : '' }}">
+            <a href="{{ url('toko_tegal/inquery_penjualanproduktegal') }}"
+                class="nav-link {{ request()->is('toko_tegal/inquery_penjualanproduktegal*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Inquery Penjualan Produk</p>
             </a>
@@ -292,10 +293,10 @@
 
         {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
         <li class="nav-item">
-            <a href="{{ url('toko_tegal/pengiriman_tokobanjaran') }}"
-                class="nav-link {{ request()->is('toko_tegal/pengiriman_tokobanjaran*') ? 'active' : '' }}">
+            <a href="{{ url('toko_tegal/pengiriman_tokotegal') }}"
+                class="nav-link {{ request()->is('toko_tegal/pengiriman_tokotegal*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 13px;">Inquery Pengiriman Banjaran</p>
+                <p style="font-size: 13px;">Inquery Pengiriman Tegal</p>
             </a>
         </li>
         {{-- @endif --}}
@@ -312,8 +313,8 @@
 
           {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
           <li class="nav-item">
-            <a href="{{ url('toko_tegal/inquery_pemindahanbanjaran') }}"
-                class="nav-link {{ request()->is('toko_tegal/inquery_pemindahanbanjaran*') ? 'active' : '' }}">
+            <a href="{{ url('toko_tegal/inquery_pemindahantegal') }}"
+                class="nav-link {{ request()->is('toko_tegal/inquery_pemindahantegal*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Inquery Pemindahan Produk</p>
             </a>
@@ -321,8 +322,8 @@
         {{-- @endif --}}
           {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
           <li class="nav-item">
-            <a href="{{ url('toko_tegal/inquery_depositbanjaran') }}"
-                class="nav-link {{ request()->is('toko_tegal/inquery_depositbanjaran*') ? 'active' : '' }}">
+            <a href="{{ url('toko_tegal/inquery_deposittegal') }}"
+                class="nav-link {{ request()->is('toko_tegal/inquery_deposittegal*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Inquery Deposit</p>
             </a>

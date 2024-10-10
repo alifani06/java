@@ -70,72 +70,8 @@
                     @endforeach
                 </div>
             @endif
-            <form id="penjualanForm" action="{{ url('toko_banjaran/penjualan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form id="penjualanForm" action="{{ url('toko_tegal/penjualan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
-                {{-- detail pelanggan --}}
-                {{-- <div class="card">
-                    <div class="card-header">
-                        <div class="float-right">
-                            <select class="form-control" id="kategori1" name="kategori">
-                                <option value="">- Pilih -</option>
-                                <option value="penjualan" {{ old('kategori1') == 'penjualan' ? 'selected' : '' }}>Penjualan Produk</option>
-                                <option value="pelunasan" {{ old('kategori1') == 'pelunasan' ? 'selected' : '' }}>Pelunasan Pemesanan Produk</option>
-                            </select>
-                        </div>
-
-                    </div>
-                    <div class="card-body">
-                        <div class="row mb-3 align-items-center">
-                            <div class="col-md-2 mt-2">
-                                <label class="form-label" for="kategori">Tipe Pelanggan</label>
-                                <select class="form-control" id="kategori" name="kategori">
-                                    <option value="">- Pilih -</option>
-                                    <option value="member" {{ old('kategori') == 'member' ? 'selected' : null }}>Member</option>
-                                    <option value="nonmember" {{ old('kategori') == 'nonmember' ? 'selected' : null }}>Non Member</option>
-                                </select>
-                            </div>
-                           
-                       
-                            <div class="col-md-3 mt-2" id="kodePelangganRow" hidden>
-                                <label for="qrcode_pelanggan">Scan Kode Pelanggan</label>
-                                <input type="text" class="form-control" id="qrcode_pelanggan" name="qrcode_pelanggan" placeholder="scan kode Pelanggan" onchange="getData(this.value)">
-                            </div>
-
-                        </div>
-                    
-                        <div class="row mb-3 align-items-center" id="namaPelangganRow" style="display: none;">
-                            <div class="col-md">
-                                <button class="btn btn-outline-primary mb-3 btn-sm" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
-                                    <i class="fas fa-search" style=""></i>Cari pelanggan
-                                </button> 
-                            </div>      
-                            <div class="col-md-6 mb-3 "> 
-                                <input hidden type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('kode_pelanggan') }}" onclick="showCategoryModalpemesanan()">
-                                <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" onclick="showCategoryModalpemesanan()">
-                            </div>     
-                        </div>
-
-                        <div class="row  align-items-center" id="telpRow" hidden>
-                            <div class="col-md-6 mb-3">
-                                <label for="telp">No. Telepon</label>
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">+62</span>
-                                    </div>
-                                    <input type="number" id="telp" name="telp" class="form-control" placeholder="Masukan nomor telepon" value="{{ old('telp') }}">
-                                </div>
-                            </div>
-                        </div>
-                    
-                        <div class="row mb-3 align-items-center" id="alamatRow" hidden>
-                            <div class="col-md-6 mb-3" hidden>
-                                <label for="catatan">Alamat</label>
-                                <textarea placeholder="" type="text" class="form-control" id="alamat" name="alamat">{{ old('alamat') }}</textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
-       
                 <div class="card mb-3">
                     <div class="card-header">
                         <div class="float-right">
@@ -204,85 +140,6 @@
                         </div>
                     </div>
                 </div>
-
-                
-                    {{-- <div class="row">
-                        <div class="col-md-6">
-                            <div class="card" id="customerInfoCard" hidden>
-                                <div class="card-body">
-                                   
-                                    <table id="datatables4" class="table table-bordered table-striped" style="font-size: 13px;">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center">No</th>
-                                                <th>Kode Lama</th>
-                                                <th>Nama Pelanggan</th>
-                                                <th>No Telpon</th>
-                                                <th>Alamat</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($pelanggans as $item)
-                                                <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}')">
-                                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                                    <td>{{ $item->kode_lama }}</td>
-                                                    <td>{{ $item->nama_pelanggan }}</td>
-                                                    <td>{{ $item->telp }}</td>
-                                                    <td>{{ $item->alamat }}</td>
-                                                </tr>
-                                            @endforeach 
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                
-                        <!-- Card Form Input Pelanggan -->
-                        <div class="col-md-6">
-                            <div class="card" id="customerInputCard" hidden>
-                                <div class="card-body">
-                                    <div class="row mb-3 align-items-center" id="kodePelangganRow" hidden>
-                                        <label for="qrcode_pelanggan">Scan Kode Pelanggan</label>
-                                        <input type="text" class="form-control" id="qrcode_pelanggan" name="qrcode_pelanggan" placeholder="Scan kode Pelanggan" onchange="getData(this.value)">
-                                    </div>
-                
-                                    <div class="row mb-3 align-items-center" id="namaPelangganRow" style="display: none;">
-                                        <div class="col-md-12">
-                                            <button class="btn btn-outline-primary mb-3 btn-sm" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
-                                                <i class="fas fa-search"></i> Cari pelanggan
-                                            </button>
-                                        </div>
-                                        <div class="col-md-12 mb-3">
-                                            <input hidden type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('kode_pelanggan') }}" onclick="showCategoryModalpemesanan()">
-                                            <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" onclick="showCategoryModalpemesanan()">
-                                        </div>
-                                    </div>
-                
-                                    <div class="row align-items-center" id="telpRow" hidden>
-                                        <div class="col-md-12 mb-3">
-                                            <label for="telp">No. Telepon</label>
-                                            <div class="input-group mb-3">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text">+62</span>
-                                                </div>
-                                                <input type="number" id="telp" name="telp" class="form-control" placeholder="Masukan nomor telepon" value="{{ old('telp') }}">
-                                            </div>
-                                        </div>
-                                    </div>
-                
-                                    <div class="row mb-3 align-items-center" id="alamatRow" hidden>
-                                        <div class="col-md-12 mb-3">
-                                            <label for="catatan">Alamat</label>
-                                            <textarea placeholder="" type="text" class="form-control" id="alamat" name="alamat">{{ old('alamat') }}</textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
-            
-                
-
 
                  <div class="modal fade" id="tableDeposit" data-backdrop="static">
                     <div class="modal-dialog modal-lg">
@@ -373,110 +230,6 @@
                         </div>
                     </div>
                 </div>
-
-                {{-- //scriptlama --}}
-                {{-- <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col">
-                                <!-- Input Pencarian -->
-                                <div class="mb-3">
-                                    <input type="text" id="searchInput" class="form-control" placeholder="Cari Produk...">
-                                </div>
-                
-                                <!-- Tabel Data -->
-                                <table id="data" class="table table-bordered table-striped" style="font-size: 12px;">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">No</th>
-                                            <th hidden>Kode Produk</th>
-                                            <th>Kode Produk</th>
-                                            <th>Nama Produk</th>
-                                            <th>Harga Member</th>
-                                            <th>Diskon Member</th>
-                                            <th>Harga Non Member</th>
-                                            <th>Diskon Non Member</th>
-                                            <th hidden>QR</th>
-                                            <th>Opsi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="data-body">
-                                        @foreach ($produks as $item)
-                                            @php
-                                                $tokobanjaran = $item->tokobanjaran->first();
-                                            @endphp
-                                            <tr class="pilih-btn"
-                                                data-id="{{ $item->id }}"
-                                                data-kode="{{ $item->kode_produk }}"
-                                                data-kodel="{{ $item->kode_lama }}"
-                                                data-catatan="{{ $item->catatanproduk }}"
-                                                data-nama="{{ $item->nama_produk }}"
-                                                data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
-                                                data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
-                                                data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
-                                                data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
-                                                <td class="text-center">{{ $loop->iteration + ($produks->currentPage() - 1) * $produks->perPage() }}</td>
-                                                <td hidden>{{ $item->kode_produk }}</td>
-                                                <td>{{ $item->kode_lama }}</td>
-                                                <td>{{ $item->nama_produk }}</td>
-                                                <td>
-                                                    <span class="member_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="member_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="non_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="non_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}</span>
-                                                </td>
-
-                                                <td hidden>{{ $item->qrcode_produk }}</td>
-
-                                                <td class="text-center">
-                                                    <button type="button" class="btn btn-primary btn-sm pilih-btn"
-                                                        data-id="{{ $item->id }}"
-                                                        data-kode="{{ $item->kode_produk }}"
-                                                        data-kodel="{{ $item->kode_lama }}"
-                                                        data-catatan="{{ $item->catatanproduk }}"
-                                                        data-nama="{{ $item->nama_produk }}"
-                                                        data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
-                                                        data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
-                                                        data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
-                                                        data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
-                                                        <i class="fas fa-plus"></i> 
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            
-                <div class="card mt-3" id="selected-products-card" style="display: none;">
-                    <div class="card-body">
-                        <table class="table table-bordered table-striped" style="font-size: 12px;">
-                            <thead>
-                                <tr>
-                                    <th>Kode Produk</th>
-                                    <th>Kode Lama</th>
-                                    <th>Nama Produk</th>
-                                    <th>Jumlah</th>
-                                    <th>Diskon</th>
-                                    <th>Harga</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody id="selected-products-body">
-                                <!-- Data produk yang dipilih akan ditambahkan di sini -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div> --}}
 
                 <div class="row">
                     <div class="col-md-6"> 
@@ -1019,7 +772,7 @@
                 changeRow.style.display = 'block';
             } else if (metodeId) {
                 $.ajax({
-                    url: "{{ url('toko_banjaran/metodebayar/metode') }}" + "/" + metodeId,
+                    url: "{{ url('toko_tegal/metodebayar/metode') }}" + "/" + metodeId,
                     type: "GET",
                     dataType: "json",
                     success: function(response) {
@@ -1214,9 +967,9 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'penjualan') {
-            window.location.href = "{{ route('toko_banjaran.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
+            window.location.href = "{{ route('toko_tegal.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
         } else if (selectedValue === 'pelunasan') {
-            window.location.href = "{{ route('toko_banjaran.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
+            window.location.href = "{{ route('toko_tegal.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
         }
     });
 </script>

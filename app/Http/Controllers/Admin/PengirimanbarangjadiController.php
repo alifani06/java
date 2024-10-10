@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
+use App\Models\Pengiriman_tokotegal;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -83,36 +84,6 @@ class PengirimanbarangjadiController extends Controller{
         return view('admin.pengiriman_barangjadi.create', compact('klasifikasis', 'tokos', 'uniqueStokBarangjadi','toko_id'));
     }
     
-    
-
-// public function pengiriman_pemesanan()
-// {
-//     // Ambil data detail stok barang jadi dengan produk yang terkait
-//     $detailStokBarangjadi = Detail_stokbarangjadi::with('produk')
-//         ->get();
-    
-//     // Akumulasi stok berdasarkan produk_id
-//     $uniqueStokBarangjadi = $detailStokBarangjadi->groupBy('produk_id')->map(function ($items) {
-//         $firstItem = $items->first(); // Ambil entri pertama
-//         $firstItem->stok = $items->sum('stok'); // Akumulasi stok
-//         return $firstItem;
-//     })->values();
-    
-//     // Ambil klasifikasi yang terkait dengan produk yang ada
-//     $produkIds = $uniqueStokBarangjadi->pluck('produk_id')->toArray();
-//     $klasifikasiIds = $uniqueStokBarangjadi->pluck('klasifikasi_id')->toArray();
-    
-//     $klasifikasis = Klasifikasi::whereIn('id', $klasifikasiIds)
-//         ->with(['produks' => function ($query) use ($produkIds) {
-//             $query->whereIn('id', $produkIds);
-//         }])
-//         ->get();
-    
-//     // Ambil semua toko
-//     $tokos = Toko::all();
-    
-//     return view('admin.pengiriman_barangjadi.pengiriman_pemesanan', compact('klasifikasis', 'tokos', 'uniqueStokBarangjadi'));
-// }
 
     public function store(Request $request)
     {
@@ -178,11 +149,13 @@ class PengirimanbarangjadiController extends Controller{
                             ]);
                             break;
                         case 2:
-                            Stok_tokotegal::create([
+                            Pengiriman_tokotegal::create([
                                 'pengiriman_barangjadi_id' => $pengiriman->id,
                                 'kode_pengiriman' => $kode,
                                 'produk_id' => $produkId,
+                                'toko_id' => $tokoId,
                                 'jumlah' => $jumlah,
+                                'status' => 'unpost',
                                 'tanggal_input' => $tanggalPengirimanDenganJam, 
                                 'kode_produksi' => $kodeProduksi, 
 

@@ -13,7 +13,7 @@
             font-family: Arial, sans-serif;
             line-height: 1.6;
             /* margin: 0; */
-            margin-left: -5;
+            margin-left: -5;    
             margin-top: 0;
             /* padding: 0; */
             padding-right: 450px;
@@ -315,12 +315,12 @@
             
             <div class="d-flex justify-content-between">
                 <div>
-                    <a href="{{ url('toko_banjaran/pelunasan_pemesanan') }}" class="btn btn-primary btn-sm">
+                    <a href="{{ url('toko_tegal/pelunasan_pemesanan') }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i> Kembali
                     </a>
                 </div>
                 <div>
-                    <a href="{{ route('toko_banjaran.pelunasan_pemesanan.cetak-pdf', $inquery->id) }}"  id="printButton" target="_blank" class="btn btn-primary btn-sm">
+                    <a href="{{ route('toko_tegal.pelunasan_pemesanan.cetak-pdf', $inquery->id) }}"  id="printButton" target="_blank" class="btn btn-primary btn-sm">
                         <i class="fas fa-print"></i> Cetak PDF
                     </a>
                 </div>

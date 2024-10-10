@@ -106,34 +106,6 @@ public function kode()
 }
 
 
-// public function unpost_retur($id)
-// {
-//     // Ambil data stok barang berdasarkan ID
-//     $stok = Retur_barangjadi::where('id', $id)->first();
-
-//     // Pastikan data ditemukan
-//     if (!$stok) {
-//         return back()->with('error', 'Data tidak ditemukan.');
-//     }
-
-//     // Ambil kode_input dari stok yang diambil
-//     $kodeInput = $stok->kode_retur;
-
-//     // Update status untuk semua stok dengan kode_input yang sama di tabel stok_barangjadi
-//     Retur_barangjadi::where('kode_retur', $kodeInput)->update([
-//         'status' => 'unpost',
-//     ]);
-    
-//     // Update status untuk semua retur_tokoslawi dengan kode_retur yang sama
-//     Retur_tokoslawi::where('kode_retur', $kodeInput)->update([
-//         'status' => 'unpost'
-//     ]);
-
-//     return back()->with('success', 'Berhasil mengubah status semua produk dan detail terkait dengan kode_input yang sama.');
-// }
-
-
-
     public function posting_retur($id)
     {
         $kode = $this->kode();
@@ -196,108 +168,26 @@ public function kode()
         return response()->json(['success' => 'Berhasil mengubah status semua produk dan detail terkait dengan kode_retur yang sama serta menyimpan data pemusnahan_barangjadis.']);
     }
 
-//posting mengurangi stok
-// public function posting_retur($id)
-// {
-//     $kode = $this->kode();
-
-//     // Ambil data Retur_barangjadi berdasarkan ID
-//     $pengiriman = Retur_barangjadi::where('id', $id)->first();
-
-//     // Pastikan data ditemukan
-//     if (!$pengiriman) {
-//         return response()->json(['error' => 'Data tidak ditemukan.'], 404);
-//     }
-
-//     // Ambil kode_retur dari pengiriman yang diambil
-//     $kodePengiriman = $pengiriman->kode_retur;
-
-//     // Ambil data produk terkait dengan kode_retur
-//     $returBarangjadiItems = Retur_barangjadi::where('kode_retur', $kodePengiriman)->get();
-
-//     // Update status untuk semua Retur_barangjadi dan retur_tokoslawi dengan kode_retur yang sama
-//     Retur_barangjadi::where('kode_retur', $kodePengiriman)->update([
-//         'status' => 'posting',
-//         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
-//     ]);
-
-//     Retur_tokobanjaran::where('kode_retur', $kodePengiriman)->update([
-//         'status' => 'posting',
-//         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
-//     ]);
-
-//     foreach ($returBarangjadiItems as $item) {
-//         $stokItem = Stok_tokobanjaran::where('produk_id', $item->produk_id)
-//             ->orderBy('jumlah', 'asc')
-//             ->first();
-
-//         if ($stokItem) {
-//             // Pastikan stok mencukupi sebelum mengurangi
-//             if ($stokItem->jumlah >= $item->jumlah) {
-//                 $stokItem->jumlah -= $item->jumlah;
-//                 $stokItem->save();
-//             } else {
-//                 return response()->json(['error' => 'Stok tidak mencukupi untuk produk ' . $item->nama_produk], 400);
-//             }
-//         }
-//     }
-
-//     // Simpan data ke tabel pemusnahan_barangjadis untuk setiap item
-//     foreach ($returBarangjadiItems as $item) {
-//         Pemusnahan_barangjadi::create([
-//             'kode_pemusnahan' => $kode,
-//             'kode_retur' => $item->kode_retur,
-//             'produk_id' => $item->produk_id,
-//             'toko_id' => $item->toko_id,
-//             'nama_produk' => $item->nama_produk,
-//             'status' => 'unpost',
-//             'jumlah' => $item->jumlah,
-//             'keterangan' => $item->keterangan,
-//             'tanggal_retur' => Carbon::now('Asia/Jakarta'),
-//         ]);
-//     }
-
-//     // Simpan data ke tabel stok_retur untuk setiap item
-//     foreach ($returBarangjadiItems as $item) {
-//         Stok_retur::create([
-//             'kode_retur' => $item->kode_retur,
-//             'produk_id' => $item->produk_id,
-//             'nama_produk' => $item->nama_produk,
-//             'toko_id' => $item->toko_id,
-//             'status' => 'posting',
-//             'jumlah' => $item->jumlah,
-//             'keterangan' => $item->keterangan,
-//             'tanggal_retur' => Carbon::now('Asia/Jakarta'),
-//         ]);
-//     }
-
-//     return response()->json(['success' => 'Berhasil mengubah status semua produk dan detail terkait dengan kode_retur yang sama serta mengurangi stok di stok_tokoslawi dan menyimpan data pemusnahan_barangjadis.']);
-// }
-
-
-
-
-
-public function show($id)
-{
-    // Ambil kode_retur dari pengiriman_barangjadi berdasarkan id
-    $detailStokBarangJadi = Retur_barangjadi::where('id', $id)->value('kode_retur');
-    
-    // Jika kode_retur tidak ditemukan, tampilkan pesan error
-    if (!$detailStokBarangJadi) {
-        return redirect()->back()->with('error', 'Data tidak ditemukan.');
+    public function show($id)
+    {
+        // Ambil kode_retur dari pengiriman_barangjadi berdasarkan id
+        $detailStokBarangJadi = Retur_barangjadi::where('id', $id)->value('kode_retur');
+        
+        // Jika kode_retur tidak ditemukan, tampilkan pesan error
+        if (!$detailStokBarangJadi) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        }
+        
+        // Ambil semua data dengan kode_retur yang sama
+        $pengirimanBarangJadi = Retur_barangjadi::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
+        
+        // Ambil item pertama untuk informasi toko
+        $firstItem = $pengirimanBarangJadi->first();
+        
+        return view('admin.inquery_returbarangjadi.show', compact('pengirimanBarangJadi', 'firstItem'));
     }
-    
-    // Ambil semua data dengan kode_retur yang sama
-    $pengirimanBarangJadi = Retur_barangjadi::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
-    
-    // Ambil item pertama untuk informasi toko
-    $firstItem = $pengirimanBarangJadi->first();
-    
-    return view('admin.inquery_returbarangjadi.show', compact('pengirimanBarangJadi', 'firstItem'));
-}
 
-public function print($id)
+    public function print($id)
     {
         $detailStokBarangJadi = Retur_barangjadi::where('id', $id)->value('kode_retur');
     

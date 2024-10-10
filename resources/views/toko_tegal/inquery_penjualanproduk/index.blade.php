@@ -157,10 +157,10 @@
                                                         data-memo-id="{{ $item->id }}">Posting</a>
                                              
                                                     {{-- <a class="dropdown-item"
-                                                        href="{{ url('toko_banjaran/inquery_penjualanproduk/' . $item->id . '/edit') }}">Update</a> --}}
+                                                        href="{{ url('toko_tegal/inquery_penjualanproduk/' . $item->id . '/edit') }}">Update</a> --}}
                                                 
                                                     <a class="dropdown-item"
-                                                    href="{{ url('/toko_banjaran/inquery_penjualanprodukbanjaran/' . $item->id ) }}">Show</a>
+                                                    href="{{ url('/toko_tegal/inquery_penjualanproduktegal/' . $item->id ) }}">Show</a>
                                                     <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
                                                         @csrf
                                                         @method('DELETE')
@@ -171,7 +171,7 @@
                                                     {{-- <a class="dropdown-item unpost-btn"
                                                         data-memo-id="{{ $item->id }}">Unpost</a> --}}
                                                     <a class="dropdown-item"
-                                                    href="{{ url('/toko_banjaran/inquery_penjualanprodukbanjaran/' . $item->id ) }}">Show</a>
+                                                    href="{{ url('/toko_tegal/inquery_penjualanproduktegal/' . $item->id ) }}">Show</a>
                                             @endif
                                            
                                         </div>
@@ -198,33 +198,6 @@
         </div>
     </section>
 
-
-    <!-- /.card -->
-    {{-- <script>
-        var tanggalAwal = document.getElementById('tanggal_penjualan');
-        var tanggalAkhir = document.getElementById('tanggal_akhir');
-        if (tanggalAwal.value == "") {
-            tanggalAkhir.readOnly = true;
-        }
-        tanggalAwal.addEventListener('change', function() {
-            if (this.value == "") {
-                tanggalAkhir.readOnly = true;
-            } else {
-                tanggalAkhir.readOnly = false;
-            };
-            tanggalAkhir.value = "";
-            var today = new Date().toISOString().split('T')[0];
-            tanggalAkhir.value = today;
-            tanggalAkhir.setAttribute('min', this.value);
-        });
-        var form = document.getElementById('form-action')
-
-        function cari() {
-            form.action = "{{ url('toko_banjaran/inquery_penjualanprodukbanjaran') }}";
-            form.submit();
-        }
-
-    </script> --}}
     <script>
         var tanggalAwal = document.getElementById('tanggal_penjualan');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
@@ -252,7 +225,7 @@
         // Fungsi untuk mengirim form
         function cari() {
             var form = document.getElementById('form-action');
-            form.action = "{{ url('toko_banjaran/inquery_penjualanprodukbanjaran') }}";
+            form.action = "{{ url('toko_tegal/inquery_penjualanproduktegal') }}";
             form.submit();
         }
     </script>
@@ -270,7 +243,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan unpost
                 $.ajax({
-                    url: "{{ url('toko_banjaran/inquery_penjualanprodukbanjaran/unpost_penjualanproduk/') }}/" + memoId,
+                    url: "{{ url('toko_tegal/inquery_penjualanproduktegal/unpost_penjualanproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -311,7 +284,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan posting
                 $.ajax({
-                    url: "{{ url('toko_banjaran/inquery_penjualanprodukbanjaran/posting_penjualanproduk/') }}/" + memoId,
+                    url: "{{ url('toko_tegal/inquery_penjualanproduktegal/posting_penjualanproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

@@ -351,35 +351,11 @@
         </div>
 
     </section>
-{{-- 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Tangkap form
-            const form = document.querySelector('form'); // Pastikan ini adalah form yang benar
-    
-            // Tangkap event keydown pada form
-            form.addEventListener('keydown', function(event) {
-                // Jika tombol yang ditekan adalah 'Enter'
-                if (event.key === "Enter") {
-                    // Cegah default action (submit form)
-                    event.preventDefault();
-                    return false; // Mencegah tindakan bawaan browser
-                }
-            });
-    
-            // Tangkap tombol Simpan
-            const btnSimpan = document.getElementById('btnSimpan');
-    
-            // Tangkap event click pada tombol Simpan
-            btnSimpan.addEventListener('click', function() {
-                form.submit(); // Hanya submit form ketika tombol Simpan diklik
-            });
-        });
-    </script> --}}
-    
+
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     $(document).ready(function() {
         $('#pelunasanForm').submit(function(event) {
@@ -427,7 +403,7 @@
     var itemCounter = 0;
     function fetchDataByKode(kode) {
         $.ajax({
-            url: '{{ route("toko_banjaran.penjualan_produk.fetchData") }}', // Adjust the route accordingly
+            url: '{{ route("toko_tegal.penjualan_produk.fetchData") }}', // Adjust the route accordingly
             method: 'GET',
             data: { kode_pemesanan: kode },
             success: function(response) {
@@ -589,7 +565,7 @@ function reIndexRows() {
     function fetchProductData(rowId) {
         var kodeLama = document.getElementById('kode_lama_' + rowId).value;
         $.ajax({
-            url: '{{ route("toko_banjaran.penjualan_produk.fetchProductData") }}', // Sesuaikan dengan rute Anda
+            url: '{{ route("toko_tegal.penjualan_produk.fetchProductData") }}', // Sesuaikan dengan rute Anda
             method: 'GET',
             data: { kode_lama: kodeLama },
             success: function(response) {
@@ -792,9 +768,9 @@ function updateGrandTotal() {
             var selectedValue = this.value;
 
             if (selectedValue === 'penjualan') {
-                window.location.href = "{{ route('toko_banjaran.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
+                window.location.href = "{{ route('toko_tegal.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
             } else if (selectedValue === 'pelunasan') {
-                window.location.href = "{{ route('toko_banjaran.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
+                window.location.href = "{{ route('toko_tegal.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
             }
         });
     </script>
