@@ -171,6 +171,9 @@
                         @if (auth()->user()->isTokobumiayu())
                             @include('layouts.menu.toko_bumiayu')
                         @endif
+                        @if (auth()->user()->isTokotegal())
+                            @include('layouts.menu.toko_tegal')
+                        @endif
 
                     </ul>
                 </nav>

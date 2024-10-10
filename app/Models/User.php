@@ -99,6 +99,13 @@ class User extends Authenticatable
         }
         return false;
     }
+    public function isTokotegal()
+    {
+        if ($this->level == 'toko_tegal') {
+            return true;
+        }
+        return false;
+    }
 
     public function karyawan()
     {
