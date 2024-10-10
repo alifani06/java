@@ -219,57 +219,6 @@
             });
         });
     </script>
-
-    {{-- <script>
-        // Fungsi untuk menghapus format angka
-        function unformatNumber(number) {
-            return parseFloat(number.replace(/\./g, '').replace(',', '.')) || 0;
-        }
-    
-        // Fungsi untuk memformat angka dengan pemisah ribuan
-        function formatNumber(input) {
-            let value = input.value.replace(/\./g, ''); // Hapus titik sebelumnya
-            if (!isNaN(value) && value !== "") {
-                input.value = new Intl.NumberFormat('id-ID').format(value);
-            }
-        }
-    
-        // Fungsi untuk menghitung nilai plus/minus
-        function updatePlusMinus() {
-            const nominalSetoran = unformatNumber(document.getElementById('nominal_setoran').value);
-            const totalSetoran = unformatNumber(document.getElementById('total_setoran').value);
-            const plusMinus = nominalSetoran - totalSetoran;
-    
-            document.getElementById('plusminus').value = new Intl.NumberFormat('id-ID').format(plusMinus);
-        }
-    </script> --}}
-    
-
-    {{-- <script>
-        document.getElementById('tambahInputCheckbox').addEventListener('change', function() {
-            const extraRowsContainer = document.getElementById('extraRows');
-            
-            if (this.checked) {
-                // Buat elemen input tambahan (dua set input untuk tanggal_setoran dan nominal_setoran)
-                const newRow1 = document.createElement('div');
-                newRow1.className = 'form-group row mb-3';
-                newRow1.innerHTML = `
-                    <div class="col-sm-3">
-                        <input class="form-control" name="tanggal_setoran2" type="date">
-                    </div>
-                    <div class="col-sm-3">
-                        <input type="text" class="form-control" name="nominal_setoran2" oninput="formatNumber(this);">
-                    </div>
-                `;
-
-                // Tambahkan kedua row ke container
-                extraRowsContainer.appendChild(newRow1);
-            } else {
-                // Hapus semua input tambahan jika checkbox di-uncheck
-                extraRowsContainer.innerHTML = '';
-            }
-        });
-    </script> --}}
     
     <script>
         document.getElementById('tambahInputCheckbox').addEventListener('change', function() {
@@ -298,7 +247,16 @@
     
         // Fungsi untuk menghapus format angka
         function unformatNumber(number) {
-            return parseFloat(number.replace(/\./g, '').replace(',', '.')) || 0;
+            // Hapus semua titik dan ganti koma dengan titik
+            number = number.replace(/\./g, '').replace(',', '.');
+            
+            // Cek jika ada lebih dari satu titik setelah dihapus
+            const parts = number.split('.');
+            if (parts.length > 2) {
+                return 0; // Mengembalikan 0 jika terdapat lebih dari satu titik
+            }
+    
+            return parseFloat(number) || 0;
         }
     
         // Fungsi untuk memformat angka dengan pemisah ribuan
@@ -328,8 +286,10 @@
         }
     </script>
     
+    
 <!-- Tambahkan script JQuery untuk Ajax -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 <script>
     $(document).ready(function () {

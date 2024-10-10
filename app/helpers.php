@@ -37,3 +37,11 @@ if (!function_exists('formatRupiah')) {
         return 'Rp ' . number_format($number, 0, ',', '.');
     }
 }
+
+if (!function_exists('unformatNumber')) {
+    function unformatNumber($number)
+    {
+        // Hapus titik dan mengubah koma menjadi titik desimal
+        return (float) str_replace('.', '', $number); 
+    }
+}

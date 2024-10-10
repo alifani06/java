@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Produk;
 use App\Models\Klasifikasi;
-use Illuminate\Support\Facades\DB;
 use App\Models\Subklasifikasi;
 use App\Models\Subsub;
 use App\Models\Pelanggan;
@@ -52,6 +51,9 @@ class Setoran_tokobanjaranController extends Controller
         return view('toko_banjaran.setoran_tokobanjaran.index', compact('setoranPenjualans'));
     }
     
+    
+
+
     public function create(Request $request)
     {
         $status = $request->status;
@@ -246,7 +248,6 @@ class Setoran_tokobanjaranController extends Controller
         ]);
     }
 
-
     public function store(Request $request)
     {
         // Validasi input dengan custom error messages
@@ -318,11 +319,8 @@ class Setoran_tokobanjaranController extends Controller
             'url' => route('inquery_setorantunai.print', $setoranPenjualan->id)
         ]);
     }
-    
-    
 
     
-
     public function print($id)
     {
         // Ambil data setoran penjualan berdasarkan id yang dipilih
