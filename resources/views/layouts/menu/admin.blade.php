@@ -361,10 +361,6 @@
 </li>
 
 
-@php
-    // Anggap $unpostedCount dikirim dari kontroler
-    $unpostedCount = $unpostedCount ?? 0; // Pastikan default jika null
-@endphp
 <li
     class="nav-item {{ request()->is('admin/inquery_pemesananproduk*') ||
     request()->is('admin/inquery_penjualanproduk*')|| 
@@ -440,12 +436,15 @@
         
         {{-- @if (auth()->check() && auth()->user()->menu['inquery permintaanproduk']) --}}
         <li class="nav-item">
-            <a href="{{ url('admin/inquery_permintaanproduk') }}"
+            <a href="{{ url('admin/inquery_permintaanproduk') }}" 
                 class="nav-link {{ request()->is('admin/inquery_permintaanproduk*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Inquery Permintaan Produk
-              
+                <p style="font-size: 14px; display: inline-block;">
+                    Inquery Permintaan Produk
                 </p>
+                @if($unpostCountPermintaanProduk > 0)
+                    <span class="badge badge-warning" style="margin-left: 5px;">{{ $unpostCountPermintaanProduk }}</span>
+                @endif
             </a>
         </li>
         {{-- @endif --}}
@@ -462,10 +461,15 @@
 
           {{-- @if (auth()->check() && auth()->user()->menu['inquery pengirimanbarangjadi']) --}}
           <li class="nav-item">
-            <a href="{{ url('admin/inquery_pengirimanbarangjadi') }}"
+            <a href="{{ url('admin/inquery_pengirimanbarangjadi') }}" 
                 class="nav-link {{ request()->is('admin/inquery_pengirimanbarangjadi*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Inquery Pengiriman Barang</p>
+                <p style="font-size: 14px; display: inline-block;">
+                    Inquery Pengiriman Barang
+                </p>
+                @if($unpostCountPengirimanBarangJadi > 0)
+                    <span class="badge badge-warning" style="margin-left: 5px;">{{ $unpostCountPengirimanBarangJadi }}</span>
+                @endif
             </a>
         </li>
         {{-- @endif --}}
