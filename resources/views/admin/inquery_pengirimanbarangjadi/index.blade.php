@@ -210,7 +210,7 @@
                                     </td>
                                 </tr>
                             
-                                <button type="button" class="btn btn-primary" id="cetak-terpilih">Cetak Terpilih</button>
+                                {{-- <button type="button" class="btn btn-primary" id="cetak-terpilih">Cetak Terpilih</button> --}}
                             </form>
                             
                      
