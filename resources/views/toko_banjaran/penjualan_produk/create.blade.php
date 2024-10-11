@@ -120,7 +120,7 @@
                             </div>      
                             <div class="col-md-6 mb-3 "> 
                                 <input hidden type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('kode_pelanggan') }}" onclick="showCategoryModalpemesanan()">
-                                <input hidden type="text" class="form-control" id="kode_lama1" name="kode_lama1" value="{{ old('kode_lama1') }}" onclick="showCategoryModalpemesanan()">
+                                <input  type="text" class="form-control" id="kode_pelangganlama" name="kode_pelangganlama" value="{{ old('kode_pelangganlama') }}" onclick="showCategoryModalpemesanan()">
                                 <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" onclick="showCategoryModalpemesanan()">
                             </div>     
                         </div>
@@ -171,10 +171,10 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($pelanggans as $item)
-                                            <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}', '{{ $item->kode_lama }}')">
+                                            <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}', '{{ $item->kode_pelangganlama }}')">
                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td>{{ $item->kode_pelanggan }}</td>
-                                                <td>{{ $item->kode_lama }}</td>
+                                                <td>{{ $item->kode_pelangganlama }}</td>
                                                 <td>{{ $item->nama_pelanggan }}</td>
                                                 <td>{{ $item->telp }}</td>
                                                 <td>{{ $item->alamat }}</td>
@@ -686,10 +686,10 @@
                 $('#tableMarketing').modal('show');
             }
         
-            function getSelectedDataPemesanan(nama_pelanggan,  telp, alamat, kode_pelanggan, kode_lama1) {
+            function getSelectedDataPemesanan(nama_pelanggan,  telp, alamat, kode_pelanggan, kode_pelangganlama) {
                 document.getElementById('nama_pelanggan').value = nama_pelanggan;
                 document.getElementById('kode_pelanggan').value = kode_pelanggan;
-                document.getElementById('kode_lama1').value = kode_lama1;
+                document.getElementById('kode_pelangganlama').value = kode_pelangganlama;
                 document.getElementById('telp').value = telp;
                 document.getElementById('alamat').value = alamat;
                 $('#tableMarketing').modal('hide');
