@@ -298,8 +298,8 @@
                             <span style="min-width: 60px; display: inline-flex; align-items: center;">Pelanggan</span>
                             <span style="min-width: 50px; display: inline-flex; align-items: center;">
                                 : 
-                                @if ($penjualan->kode_pelanggan && $penjualan->nama_pelanggan)
-                                    {{ $penjualan->kode_pelanggan }} / {{ $penjualan->nama_pelanggan }}
+                                @if ($penjualan->kode_pelangganlama && $penjualan->nama_pelanggan)
+                                    {{ $penjualan->kode_pelangganlama }} / {{ $penjualan->nama_pelanggan }}
                                 @else
                                     non member
                                 @endif

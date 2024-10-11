@@ -121,7 +121,7 @@ class PenjualanprodukbanjaranController extends Controller
     {
         $barangs = Barang::all();
         $search = $request->input('search'); 
-        $pelanggans = Pelanggan::select('id', 'kode_pelanggan', 'kode_lama','nama_pelanggan', 'alamat', 'telp')->get(); 
+        $pelanggans = Pelanggan::select('id', 'kode_pelanggan', 'kode_pelangganlama','nama_pelanggan', 'alamat', 'telp')->get(); 
         $details = Detailbarangjadi::all();
         $tokoslawis = Tokoslawi::all();
         $tokos = Toko::all();
@@ -227,7 +227,7 @@ class PenjualanprodukbanjaranController extends Controller
         $cetakpdf = Penjualanproduk::create([
             'nama_pelanggan' => $request->nama_pelanggan ?? null,
             'kode_pelanggan' => $request->kode_pelanggan ?? null,
-            'kode_lama' => $request->kode_lama1 ?? null,
+            'kode_pelangganlama' => $request->kode_pelangganlama ?? null,
             'telp' => $request->telp ?? null,
             'alamat' => $request->alamat ?? null,
             'kategori' => $request->kategori,
