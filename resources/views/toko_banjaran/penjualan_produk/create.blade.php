@@ -184,7 +184,7 @@
                         <div class="row align-items-center" id="telpRow" hidden>
                             <div class="col-md-6 mb-3">
                                 <input hidden type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('kode_pelanggan') }}" onclick="showCategoryModalpemesanan()">
-                                <input type="text" class="form-control" id="kode_pelangganlama" name="kode_pelangganlama" value="{{ old('kode_pelangganlama') }}" onclick="showCategoryModalpemesanan()">
+                                <input hidden type="text" class="form-control" id="kode_pelangganlama" name="kode_pelangganlama" value="{{ old('kode_pelangganlama') }}" onclick="showCategoryModalpemesanan()">
                                 <input readonly  type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" onclick="showCategoryModalpemesanan()">
                             </div>
                             <div class="col-md-6 mb-3">
@@ -205,85 +205,6 @@
                         </div>
                     </div>
                 </div>
-
-                
-                    {{-- <div class="row">
-                        <div class="col-md-6">
-                            <div class="card" id="customerInfoCard" hidden>
-                                <div class="card-body">
-                                   
-                                    <table id="datatables4" class="table table-bordered table-striped" style="font-size: 13px;">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center">No</th>
-                                                <th>Kode Lama</th>
-                                                <th>Nama Pelanggan</th>
-                                                <th>No Telpon</th>
-                                                <th>Alamat</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($pelanggans as $item)
-                                                <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}')">
-                                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                                    <td>{{ $item->kode_lama }}</td>
-                                                    <td>{{ $item->nama_pelanggan }}</td>
-                                                    <td>{{ $item->telp }}</td>
-                                                    <td>{{ $item->alamat }}</td>
-                                                </tr>
-                                            @endforeach 
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                
-                        <!-- Card Form Input Pelanggan -->
-                        <div class="col-md-6">
-                            <div class="card" id="customerInputCard" hidden>
-                                <div class="card-body">
-                                    <div class="row mb-3 align-items-center" id="kodePelangganRow" hidden>
-                                        <label for="qrcode_pelanggan">Scan Kode Pelanggan</label>
-                                        <input type="text" class="form-control" id="qrcode_pelanggan" name="qrcode_pelanggan" placeholder="Scan kode Pelanggan" onchange="getData(this.value)">
-                                    </div>
-                
-                                    <div class="row mb-3 align-items-center" id="namaPelangganRow" style="display: none;">
-                                        <div class="col-md-12">
-                                            <button class="btn btn-outline-primary mb-3 btn-sm" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
-                                                <i class="fas fa-search"></i> Cari pelanggan
-                                            </button>
-                                        </div>
-                                        <div class="col-md-12 mb-3">
-                                            <input hidden type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('kode_pelanggan') }}" onclick="showCategoryModalpemesanan()">
-                                            <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" onclick="showCategoryModalpemesanan()">
-                                        </div>
-                                    </div>
-                
-                                    <div class="row align-items-center" id="telpRow" hidden>
-                                        <div class="col-md-12 mb-3">
-                                            <label for="telp">No. Telepon</label>
-                                            <div class="input-group mb-3">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text">+62</span>
-                                                </div>
-                                                <input type="number" id="telp" name="telp" class="form-control" placeholder="Masukan nomor telepon" value="{{ old('telp') }}">
-                                            </div>
-                                        </div>
-                                    </div>
-                
-                                    <div class="row mb-3 align-items-center" id="alamatRow" hidden>
-                                        <div class="col-md-12 mb-3">
-                                            <label for="catatan">Alamat</label>
-                                            <textarea placeholder="" type="text" class="form-control" id="alamat" name="alamat">{{ old('alamat') }}</textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
-            
-                
-
 
                  <div class="modal fade" id="tableDeposit" data-backdrop="static">
                     <div class="modal-dialog modal-lg">
@@ -325,8 +246,6 @@
                         </div>
                     </div>
                 </div>
-
-
 
                 <div class="modal fade" id="tableMarketing" data-backdrop="static">
                    
