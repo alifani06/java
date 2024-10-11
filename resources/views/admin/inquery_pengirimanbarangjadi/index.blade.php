@@ -158,6 +158,10 @@
                                                
                                                 <a class="dropdown-item"
                                                 href="{{ url('/admin/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
+
+                                                <a class="dropdown-item"
+                                                href="{{ route('inquery_pengirimanbarangjadi.print_qr', $firstItem->id) }}">Print QR</a>
+
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 <a class="dropdown-item unpost-btn"

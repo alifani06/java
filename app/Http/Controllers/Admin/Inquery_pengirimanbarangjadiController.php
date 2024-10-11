@@ -134,7 +134,24 @@ class Inquery_pengirimanbarangjadiController extends Controller{
     return view('admin.inquery_pengirimanbarangjadi.index', compact('stokBarangJadi', 'tokos', 'unpostCount'));
 }
 
+public function showPrintQr($id)
+{
+
+
+    $query = Pengiriman_barangjadi::with(['produk.klasifikasi', 'toko']);
+
+
+    // Hitung jumlah pengiriman dengan status 'unpost'
+    $unpostCount = Pengiriman_barangjadi::where('status', 'unpost')->count();
+
+    $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pengiriman');
+    $tokos = Toko::all();
+
+    return view('admin.inquery_pengirimanbarangjadi.print_qr', compact('stokBarangJadi', 'tokos', 'unpostCount'));
+}
     
+
+
     public function show($id)
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
