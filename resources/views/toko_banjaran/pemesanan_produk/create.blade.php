@@ -208,17 +208,6 @@
                         </div>
                         </div>
                         
-                        {{-- <div class="row mb-3 align-items-center">
-                            <div class="col-md-6 -auto" id="" >
-                                <label class="form-label" for="toko_pengambilan">Toko Pengambilan</label>
-                                <select class="custom-select form-control" id="toko" name="toko_id">
-                                    <option value="">- Pilih Toko -</option>
-                                    @foreach ($tokos as $toko)
-                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div> --}}
                         <div class="row mb-3 align-items-center">
                             <div class="col-md-6 -auto" id="" >
                                 <label for="nama_penerima">Nama Penerima </label> <span style="font-size: 10px;">(kosongkan jika sama dengan nama pelanggan)</span>

@@ -122,13 +122,13 @@ class PemesananprodukbanjaranController extends Controller
             $request->all(),
             [
                 'nama_pelanggan' => 'required',
-                'telp' => 'required',
+                'telp' => 'nullable',
                 'alamat' => 'nullable',
                 'kategori' => 'required',
             ],
             [
                 'nama_pelanggan.required' => 'Masukkan nama pelanggan',
-                'telp.required' => 'Masukkan telepon',
+                'telp.nullable' => 'Masukkan telepon',
                 'alamat.required' => 'Masukkan alamat',
                 'kategori.required' => 'Pilih kategori pelanggan',
             ]
