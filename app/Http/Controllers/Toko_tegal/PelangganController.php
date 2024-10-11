@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_tegal;
 
 use Carbon\Carbon;
 use Dompdf\Dompdf;
@@ -33,7 +33,7 @@ class PelangganController extends Controller
                      ->orWhere('kode_lama', 'like', '%' . $search . '%');
     }) ->paginate(10);
 
-      return view('toko_banjaran.pelanggan.index', compact('pelanggans', 'search'));
+      return view('toko_tegal.pelanggan.index', compact('pelanggans', 'search'));
         
     
     }
@@ -42,7 +42,7 @@ class PelangganController extends Controller
     public function create()
     {
         $pelanggans = Pelanggan::all();
-        return view('toko_banjaran/pelanggan.create', compact('pelanggans'));
+        return view('toko_tegal/pelanggan.create', compact('pelanggans'));
         // tidak memiliki akses
     }
    
@@ -108,13 +108,12 @@ class PelangganController extends Controller
                 'status' => 'null',
                 'kode_pelanggan' => $this->kode(),
                 'qrcode_pelanggan' => 'https://javabakery.id/pelanggan/' . $kode,
-                // 'qrcode_karyawan' => 'http://192.168.1.46/tigerload/karyawan/' . $kode
                 'tanggal' => Carbon::now('Asia/Jakarta'),
 
             ]
         ));
 
-        return redirect('toko_banjaran/pelanggan')->with('success', 'Berhasil menambahkan karyawan');
+        return redirect('toko_tegal/pelanggan')->with('success', 'Berhasil menambahkan karyawan');
     }
 
 
@@ -142,7 +141,7 @@ class PelangganController extends Controller
         $pelangganfirst = Pelanggan::where('id', $id)->first();
 
         $pelanggans = Pelanggan::where('kode_pelanggan', null)->get();
-        return view('toko_banjaran/pelanggan.update', compact('pelanggans', 'pelangganfirst'));
+        return view('toko_tegal/pelanggan.update', compact('pelanggans', 'pelangganfirst'));
     }
 
     public function update(Request $request, $id)
@@ -247,7 +246,7 @@ class PelangganController extends Controller
             'alamat' => $request->alamat,
         ]);
 
-        return redirect('toko_banjaran/pelanggan')->with('success', 'Berhasil memperbarui Pelanggan');
+        return redirect('toko_tegal/pelanggan')->with('success', 'Berhasil memperbarui Pelanggan');
     }
 
 
@@ -255,7 +254,7 @@ class PelangganController extends Controller
     {
         $pelanggans = Pelanggan::find($id);
         $pdf = app('dompdf.wrapper');
-        $pdf->loadView('toko_banjaran.pelanggan.cetak_pdf', compact('pelanggans'));
+        $pdf->loadView('toko_tegal.pelanggan.cetak_pdf', compact('pelanggans'));
         $pdf->setPaper('letter', 'portrait');
         return $pdf->stream('QrCodePelanggan.pdf');
     }
@@ -263,7 +262,7 @@ class PelangganController extends Controller
     public function show($id)
     {
         $pelanggan = Pelanggan::where('id', $id)->first();
-        return view('toko_banjaran/pelanggan.show', compact('pelanggan'));
+        return view('toko_tegal/pelanggan.show', compact('pelanggan'));
     }
 
     public function getpelanggan($id)
@@ -278,14 +277,14 @@ class PelangganController extends Controller
         $pelanggan = Pelanggan::find($id);
         $pelanggan->delete();
 
-        return redirect('toko_banjaran/pelanggan')->with('success', 'Berhasil menghapus data pelanggan');
+        return redirect('toko_tegal/pelanggan')->with('success', 'Berhasil menghapus data pelanggan');
     }
     
     // public function cetak_pdf($id)
     // {
     //     $pelanggan = Pelanggan::findOrFail($id);
 
-    //     $pdf = FacadePdf::loadView('toko_banjaran.pelanggan.cetak_pdf', compact('pelanggan'));
+    //     $pdf = FacadePdf::loadView('toko_tegal.pelanggan.cetak_pdf', compact('pelanggan'));
     //     return $pdf->download('kartu_member.pdf');
     // }
     public function cetak_pdf($id)
@@ -293,7 +292,7 @@ class PelangganController extends Controller
         $pelanggan = Pelanggan::findOrFail($id);
 
         // Membuat PDF dan menetapkan ukuran kertas kustom
-        $pdf = FacadePdf::loadView('toko_banjaran.pelanggan.cetak_pdf', compact('pelanggan'))
+        $pdf = FacadePdf::loadView('toko_tegal.pelanggan.cetak_pdf', compact('pelanggan'))
                         ->setPaper([0, 0, 500, 270]); // [left, top, width, height]
 
         // Mengirimkan view PDF sebagai respons

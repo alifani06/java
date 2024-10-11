@@ -8,21 +8,21 @@
     <style>
         html,
             body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
+                font-family: Arial, sans-serif;
+            line-height: 1.4;
             /* margin: 0; */
-            margin-left: -5;
+            margin-left: 0;
             margin-top: 0;
             /* padding: 0; */
             padding-right: 450px;
-            font-size: 10px;
+            font-size: 12px;
             background-color: #fff;
         }
             .container {
-            width: 72mm; /* Adjusted width */
+                width: 70mm; /* Adjusted width */
             margin: 0 auto;
-            border: 1px solid #ddd;
-            padding: 20px;
+            border: 1px solid white;
+            padding: 5px;
             background-color: #fff;
             box-shadow: 0px 0px 5px rgba(0,0,0,0.1);
         }
@@ -52,7 +52,7 @@
 
         .header .text p {
             margin: 2px ;
-            font-size: 8px;
+            font-size: 9px;
             margin-bottom: 2px;
         }
         .section {
@@ -72,33 +72,11 @@
             margin-top: 5px;
         }
         .section table th, .section table td {
-            border: 1px solid #ccc;
+            border: 1px solid #141414;
             padding: 5px;
             font-size: 8px;
         }
-        .signatures {
-            margin-top: 15px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .signature1 {
-            text-align: left;
-            font-size: 7px;
-        }
-        .signature2 {
-            text-align: center;
-            font-size: 7px;
-            margin-top: -65px;
-        }
-        .signature3 {
-            text-align: right;
-            font-size: 6px;
-            margin-top: -65px;
-        }
-        .signature p {
-            margin-top: 10px;
-            line-height: 1.2;
-        }
+       
         .float-right {
             text-align: right;
             margin-top: 10px;
@@ -296,13 +274,15 @@
         <hr class="divider">
         <div class="section">
             <h2>Struk Pelunasan Pemesanan</h2>
-            <p style="text-align: right; font-size: 8px;">
-                {{ \Carbon\Carbon::parse($inquery->tanggal_pemesanan)->locale('id')->translatedFormat('l, d F Y H:i') }}
+            <p style="text-align: right; font-size: 9px; margin-bottom: 10px;">
+                {{ \Carbon\Carbon::parse($inquery->tanggal_pemesanan)->locale('id')->translatedFormat('d F Y H:i') }}
             </p><br>
             <div class="detail-info">
                 <div class="pemesanan">
-                    <p><span style="min-width: 100px; display: inline-flex; align-items: center;">No Penjualan</span>
-                       <span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $inquery->kode_penjualan }}</span></p>
+                    <p>
+                        <span style="min-width: 10px; display: inline-flex; align-items: center;">No penjualan</span>
+                        <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $inquery->kode_penjualan }}</span>
+                    </p>
                 </div>
                 {{-- <div class="deposit">
                     <p><span style="min-width: 100px; display: inline-flex; align-items: center;">No Deposit</span>
@@ -310,10 +290,29 @@
                 </div> --}}
                 
                 <div class="kasir">
-                    <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Kasir</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</span></p>
+                    <p>
+                        <span style="min-width: 47px; display: inline-flex; align-items: center;">Kasir</span>
+                        <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</span>
+                    </p>
                 </div>
                 <div class="pelanggan">
-                    <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Pelanggan</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $inquery->dppemesanan->pemesananproduk->nama_pelanggan }}</span></p>
+                    <p>
+                        @if(!is_null($inquery->dppemesanan->pemesananproduk->nama_pelanggan))
+                        <div class="pelanggan">
+                            <p>
+                                <span style="min-width: 47px; display: inline-flex; align-items: center;">Pelanggan</span>
+                                <span style="min-width: 50px; display: inline-flex; align-items: center;">
+                                    : 
+                                    @if ($inquery->dppemesanan->pemesananproduk->kode_pelanggan && $inquery->dppemesanan->pemesananproduk->nama_pelanggan)
+                                        {{ $inquery->dppemesanan->pemesananproduk->kode_pelanggan }} / {{ $inquery->dppemesanan->pemesananproduk->nama_pelanggan }}
+                                    @else
+                                        non member
+                                    @endif
+                                </span>
+                            </p>
+                        </div>
+                    @endif
+                    </p>
                 </div>
 
     
@@ -321,7 +320,7 @@
                 <table style="font-size: 12px; width: 100%;">
                     <thead>
                         <tr>
-                            <th style="font-size: 8px;">Kode Produk</th>
+                            {{-- <th style="font-size: 8px;">Kode Produk</th> --}}
                             <th style="font-size: 8px;">Nama Produk</th>
                             <th style="font-size: 8px;">Jumlah</th>
                             <th style="font-size: 8px;">Harga</th>
@@ -336,18 +335,25 @@
                         @foreach($inquery->penjualanproduk->detailpenjualanproduk as $detail)
                             @if($detail->kode_produk) <!-- Pengecekan jika kode_produk tidak null -->
                                 <tr>
-                                    <td style="font-size: 8px; text-transform: uppercase">{{ $detail->kode_lama }}</td>
-                                    <td style="font-size: 8px;">{{ $detail->nama_produk }}</td>
-                                    <td style="font-size: 8px;">{{ $detail->jumlah }}</td>
-                                    <td style="font-size: 8px;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
-                                    <td style="font-size: 8px;">
+                                    @php
+                                    // Membagi nama produk menjadi array dengan panjang maksimum 7 karakter
+                                    $nama_produk = wordwrap($detail->nama_produk, 15, "\n", true);
+                                @endphp
+                                <tr>
+                                    {{-- <td style="font-size: 9px;">{{ $detail->kode_lama }}</td> --}}
+                                    
+                                    {{-- Tampilkan nama produk dengan pemotongan karakter --}}
+                                    <td style="font-size: 9px; word-wrap: break-word; white-space: pre-line;">{{ $nama_produk }}</td>
+                                    <td style="font-size: 9px; text-align: right">{{ $detail->jumlah }}</td>
+                                    <td style="font-size: 9px; text-align: right">{{ number_format($detail->harga, 0, ',', '.') }}</td>
+                                    <td style="font-size: 9px; text-align: right">
                                         @if ($detail->diskon > 0)
                                             {{ $detail->diskon }} %
                                         @else
                                             -
                                         @endif
                                     </td>
-                                    <td style="font-size: 8px;">{{ number_format($detail->total, 0, ',', '.') }}</td>
+                                    <td style="font-size: 8px; text-align: right;">{{ number_format($detail->total, 0, ',', '.') }}</td>
                                 </tr>
                                 @php
                                     // Validasi dan konversi data menjadi numerik
@@ -358,23 +364,23 @@
                         @endforeach
                 
                         <tr>
-                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total</strong></td>
-                            <td style="font-size: 8px;">{{ number_format($subtotal, 0, ',', '.') }}</td>
+                            <td colspan="4" style="text-align: right; font-size: 8px;"><strong>Total</strong></td>
+                            <td style="font-size: 8px; text-align: right;">{{ number_format($subtotal, 0, ',', '.') }}</td>
                         </tr>  
                         <tr>
-                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong>DP</strong></td>
-                            <td style="font-size: 8px;">{{ number_format($inquery->dppemesanan->dp_pemesanan, 0, ',', '.') }}</td>
+                            <td colspan="4" style="text-align: right; font-size: 8px;"><strong>DP</strong></td>
+                            <td style="font-size: 8px; text-align: right;">{{ number_format($inquery->dppemesanan->dp_pemesanan, 0, ',', '.') }}</td>
                         </tr>  
                         <tr>
-                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kekurangan</strong></td>
-                            <td style="font-size: 8px;">
+                            <td colspan="4" style="text-align: right; font-size: 8px;"><strong>Kekurangan</strong></td>
+                            <td style="font-size: 8px; text-align: right;">
                                 {{ in_array($inquery->dppemesanan->kekurangan_pemesanan, [null, 0, 1]) ? '-' : number_format($inquery->dppemesanan->kekurangan_pemesanan, 0, ',', '.') }}
                             </td>
                         </tr> 
                         
                         @if($inquery->metode_id !== null)
                             <tr>
-                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Fee {{ $inquery->metodepembayaran->nama_metode }} {{ $inquery->metodepembayaran->fee }}%</strong></td>
+                                <td colspan="4" style="text-align: right; font-size: 8px;"><strong>Fee {{ $inquery->metodepembayaran->nama_metode }} {{ $inquery->metodepembayaran->fee }}%</strong></td>
                                 <td style="font-size: 8px; text-align: right;">
                                     @php
                                         // Menghapus semua karakter kecuali angka
@@ -387,14 +393,14 @@
                             </tr>
                         @endif
                         <tr>
-                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Bayar</strong></td>
-                            <td style="font-size: 8px;">
+                            <td colspan="4" style="text-align: right; font-size: 8px;"><strong>Bayar</strong></td>
+                            <td style="font-size: 8px; text-align: right;">
                                 {{ in_array($inquery->pelunasan, [null, 0, 1]) ? '-' : number_format($inquery->pelunasan, 0, ',', '.') }}
                             </td>
                         </tr> 
                         <tr>
-                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kembali</strong></td>
-                            <td style="font-size: 8px;">
+                            <td colspan="4" style="text-align: right; font-size: 8px;"><strong>Kembali</strong></td>
+                            <td style="font-size: 8px; text-align: right;">
                                 {{ in_array($inquery->kembali, [null, 0, 1]) ? '-' : number_format($inquery->kembali, 0, ',', '.') }}
                             </td>
                         </tr> 
@@ -403,7 +409,7 @@
             </div>
         
             <div class="terimakasih">
-                <p>Untuk pemesanan, kritik dan saran Hubungi.082136638003</p>
+                <p>Untuk pemesanan, kritik dan saran Hubungi.082136638004</p>
             </div>
             <div class="terimakasihd" style="text-align: left; margin-top: -15px ; font-size: 10px; font-style: italic" >
                 <p>Barang yang sudah dibeli tidak bisa dikembalikan atau ditukar.</p><br> 

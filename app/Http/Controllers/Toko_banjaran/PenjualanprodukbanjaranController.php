@@ -136,6 +136,15 @@ class PenjualanprodukbanjaranController extends Controller
         return view('toko_banjaran.penjualan_produk.create', compact('search','barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
     }
 
+    public function getProduks(Request $request)
+{
+    // Ambil semua data produk dengan relasi yang diperlukan
+    $produks = Produk::with(['tokobanjaran', 'stok_tokobanjaran'])->get();
+
+    return response()->json($produks);
+}
+
+
         //store lama
     public function store(Request $request)
     {
@@ -284,7 +293,6 @@ class PenjualanprodukbanjaranController extends Controller
         ]);
     }
 
-
     public function pelunasan()
     {
         $barangs = Barang::all();
@@ -302,24 +310,64 @@ class PenjualanprodukbanjaranController extends Controller
         return view('toko_banjaran.penjualan_produk.pelunasan', compact('barangs','metodes', 'tokos', 'produks', 'details', 'tokoslawis', 'tokobanjarans', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks'));
     }
     
+    // public function fetchProductData(Request $request)
+    // {
+    //     $kodeLama = $request->input('kode_lama');
+        
+    //     // Mencari produk berdasarkan kode_lama
+    //     $produk = Produk::where('kode_lama', $kodeLama)->first();
+    
+    //     if ($produk) {
+    //         return response()->json([
+    //             'produk_id' => $produk->id, 
+    //             'kode_produk' => $produk->kode_produk, 
+    //             'nama_produk' => $produk->nama_produk,
+    //             'harga' => $produk->harga, 
+    //         ]);
+    //     } else {
+    //         return response()->json(null, 404);
+    //     }
+    // }
+
     public function fetchProductData(Request $request)
     {
         $kodeLama = $request->input('kode_lama');
-        
-        // Mencari produk berdasarkan kode_lama
-        $produk = Produk::where('kode_lama', $kodeLama)->first();
+        $namaProduk = $request->input('nama_produk');
+    
+        // Cari produk berdasarkan kode_lama jika diisi, jika tidak gunakan nama_produk
+        if ($kodeLama) {
+            $produk = Produk::where('kode_lama', $kodeLama)->first();
+        } elseif ($namaProduk) {
+            $produk = Produk::where('nama_produk', 'LIKE', "%{$namaProduk}%")->first();
+        } else {
+            return response()->json(null, 404);
+        }
     
         if ($produk) {
             return response()->json([
-                'produk_id' => $produk->id, 
-                'kode_produk' => $produk->kode_produk, 
+                'produk_id'   => $produk->id,
+                'kode_produk' => $produk->kode_produk,
                 'nama_produk' => $produk->nama_produk,
-                'harga' => $produk->harga, 
+                'kode_lama'   => $produk->kode_lama,  // Pastikan kode_lama dikirim kembali
+                'harga'       => $produk->harga,
             ]);
         } else {
             return response()->json(null, 404);
         }
     }
+    
+    public function cariProduk(Request $request)
+    {
+        $query = $request->query('query');
+        $produks = Produk::where('nama_produk', 'LIKE', '%' . $query . '%')
+                        ->orWhere('kode_lama', 'LIKE', '%' . $query . '%')
+                        ->orWhere('qrcode_produk', 'LIKE', '%' . $query . '%')
+                        ->with('tokobanjaran', 'stok_tokobanjaran')
+                        ->get();
+    
+        return response()->json(['produks' => $produks]);
+    }
+    
     
 
 
@@ -1002,6 +1050,18 @@ class PenjualanprodukbanjaranController extends Controller
             return redirect('toko_banjaran/penjualan_produk')->with('success', 'Berhasil menghapus data penjualan');
         }
 
+        public function getProduk(Request $request)
+{
+    $search = $request->input('search', '');
+
+    // Ambil data berdasarkan pencarian
+    $produks = Produk::with('tokobanjaran') // Gunakan eager loading jika perlu
+        ->where('nama_produk', 'LIKE', '%' . $search . '%')
+        ->orWhere('kode_lama', 'LIKE', '%' . $search . '%')
+        ->get();
+
+    return response()->json($produks);
+}
         
 
 }

@@ -290,6 +290,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('admin/inquery_pengirimanbarangjadi/{id}/cetak_barcode', [Inquery_pengirimanbarangjadiController::class, 'cetak_barcode'])->name('inquery_pengirimanbarangjadi.cetak_barcode');
     Route::get('admin/inquery_pengirimanbarangjadi', [Inquery_pengirimanbarangjadiController::class, 'index'])->name('admin.inquery_pengirimanbarangjadi.index');
     Route::delete('inquery_pengirimanbarangjadi/deleteprodukpengiriman/{id}', [\App\Http\Controllers\Admin\Inquery_pengirimanbarangjadiController::class, 'deleteprodukpengiriman']);
+    Route::post('/inquery_pengirimanbarangjadi/cetak_banyak_barcode', [Inquery_pengirimanbarangjadiController::class, 'cetak_banyak_barcode'])->name('inquery_pengirimanbarangjadi.cetak_banyak_barcode');
 
     Route::resource('inquery_pengirimanpesanan', \App\Http\Controllers\Admin\Inquery_pengirimanpesananController::class);
     Route::get('/inquery_pengirimanpesanan/{id}/print', [Inquery_pengirimanpesananController::class, 'print'])->name('inquery_pengirimanpesanan.print');
@@ -454,7 +455,7 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('/toko_banjaran/penjualan_produk/cetak-pdf{id}', [PenjualanprodukbanjaranController::class, 'cetakPdf'])->name('toko_banjaran.penjualan_produk.cetak-pdf');
     Route::get('/toko_banjaran/penjualan_produk/pelunasan', [PenjualanprodukbanjaranController::class, 'pelunasan'])->name('toko_banjaran.penjualan_produk.pelunasan');
     Route::get('toko_banjaran/penjualan_produk/create', [PenjualanprodukbanjaranController::class, 'create'])->name('toko_banjaran.penjualan_produk.create');
-    Route::get('/toko_banjaran/penjualan_produk/pelunasan', [PenjualanprodukbanjaranController::class, 'pelunasan'])->name('toko_banjaran.penjualan_produk.pelunasan');
+    // Route::get('/toko_banjaran/penjualan_produk/pelunasan', [PenjualanprodukbanjaranController::class, 'pelunasan'])->name('toko_banjaran.penjualan_produk.pelunasan');
     Route::get('/products/{tokoId}', [PenjualanprodukbanjaranController::class, 'getProductsByToko'])->name('products.byToko');
     Route::get('/fetch-data-by-kode', [PenjualanprodukbanjaranController::class, 'fetchDataByKode'])->name('toko_banjaran.penjualan_produk.fetchData');
     Route::get('/metodepembayaran/{id}', [PenjualanprodukbanjaranController::class, 'getMetodePembayaran']);
@@ -462,7 +463,9 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::post('toko_banjaran/penjualan_produk/pelunasan', [PenjualanprodukbanjaranController::class, 'SimpanPelunasan'])->name('penjualan_produk.pelunasan.simpan');
     Route::get('/get-product', [PenjualanprodukbanjaranController::class, 'getProductByKode']);
     Route::get('/penjualan-produk/fetch-product-data', [PenjualanprodukbanjaranController::class, 'fetchProductData'])->name('toko_banjaran.penjualan_produk.fetchProductData');
-    Route::get('/search-product', [PenjualanprodukbanjaranController::class, 'searchProduct']);
+    Route::get('/search-product', [PenjualanprodukbanjaranController::class, 'getProduk']);
+    Route::get('/get-produks', [PenjualanprodukbanjaranController::class, 'getProduks']);
+
 
 
 
@@ -628,8 +631,6 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::get('/get-product', [PenjualanproduktegalController::class, 'getProductByKode']);
     Route::get('/penjualan-produk/fetch-product-data', [PenjualanproduktegalController::class, 'fetchProductData'])->name('toko_tegal.penjualan_produk.fetchProductData');
     Route::get('/search-product', [PenjualanproduktegalController::class, 'searchProduct']);
-
-
 
 
     Route::resource('pelunasan_pemesanan', \App\Http\Controllers\Toko_tegal\PelunasanpemesananController::class);

@@ -357,29 +357,30 @@
                 type: 'POST',
                 data: $(this).serialize(),
                 success: function(response) {
-                    if (response.pdfUrl) {
-                        // Membuka URL di tab baru
-                        window.open(response.pdfUrl, '_blank');
-                    }
-                    if (response.success) {
-                        // Tampilkan pesan sukses menggunakan SweetAlert2
-                        Swal.fire({
-                            title: 'Sukses!',
-                            text: response.success,
-                            icon: 'success',
-                            confirmButtonText: 'OK',
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                // Lakukan refresh halaman setelah menekan OK
-                                location.reload(); // Ini akan merefresh seluruh halaman
-                            }
-                        });
-                    }
-                },
-                error: function(xhr) {
-                    // Tangani error jika diperlukan
-                    console.log(xhr.responseText);
-                }
+    console.log(response); // Tambahkan ini untuk debug respons
+    if (response.pdfUrl) {
+        window.open(response.pdfUrl, '_blank');
+    }
+    if (response.success) {
+        Swal.fire({
+            title: 'Sukses!',
+            text: response.success,
+            icon: 'success',
+            confirmButtonText: 'OK',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#pelunasanForm')[0].reset();
+                $('#pelunasanForm').find('input[type="text"], input[type="number"], textarea, select').each(function() {
+                    $(this).val($(this).data('default-value'));
+                });
+            }
+        });
+    }
+},
+error: function(xhr) {
+    console.log("Error:", xhr.responseText); // Tambahkan ini untuk debug error
+}
+
             });
         });
 
@@ -389,6 +390,7 @@
         });
     });
 </script>
+
 
 <script>
     var itemCounter = 0;
@@ -492,7 +494,18 @@
         });
     }
 
-    function addRow() {
+    $(document).ready(function() {
+    // Event listener untuk menangkap tombol Enter
+    $(document).on('keydown', function(e) {
+        if (e.key === "Enter") {
+            // Cegah submit form jika tombol Enter ditekan
+            e.preventDefault();
+            addRow();
+        }
+    });
+});
+
+function addRow() {
     itemCounter++;
     var isFirstRow = itemCounter === 1;
     var newRow = '<tr id="row-' + (itemCounter + 1) + '"' + (isFirstRow ? ' style="display: none;"' : '') + '>' +
@@ -513,7 +526,7 @@
         '</td>' +
         '<td>' +
         '   <div class="form-group">' +
-        '       <input style="font-size:14px" type="text" class="form-control nama_produk" name="nama_produk[]" id="nama_produk_' + itemCounter + '" value="" readonly>' +
+        '       <input style="font-size:14px" type="text" class="form-control nama_produk" name="nama_produk[]" id="nama_produk_' + itemCounter + '" value="" onblur="fetchProductData(' + itemCounter + ')" >' +
         '   </div>' +
         '</td>' +
         '<td>' +
@@ -546,23 +559,53 @@
 }
 
 function reIndexRows() {
+    // Fungsi ini untuk memastikan nomor urut di tabel tetap benar setelah menambah atau menghapus row
+    $('.urutan').each(function(index, element) {
+        $(element).text(index + 1);
+    });
+}
+
+
+function reIndexRows() {
     $('.urutan').each(function(index) {
         $(this).text(index + 1);
     });
 }
 
 
-
     function fetchProductData(rowId) {
         var kodeLama = document.getElementById('kode_lama_' + rowId).value;
+        var namaProduk = document.getElementById('nama_produk_' + rowId).value;
+
+        // Tentukan data yang akan dikirim, prioritas untuk kode_lama
+        var requestData = {};
+
+        if (kodeLama) {
+            requestData = { kode_lama: kodeLama };
+        } else if (namaProduk) {
+            requestData = { nama_produk: namaProduk };
+        } else {
+            alert('Silakan isi kode lama atau nama produk.');
+            return;
+        }
+
+        // Kosongkan input sebelum pencarian baru
+        document.getElementById('produk_id_' + rowId).value = '';
+        document.getElementById('kode_produk_' + rowId).value = '';
+        document.getElementById('nama_produk_' + rowId).value = '';
+        document.getElementById('harga_' + rowId).value = '';
+        document.getElementById('kode_lama_' + rowId).value = '';
+
         $.ajax({
             url: '{{ route("toko_banjaran.penjualan_produk.fetchProductData") }}', // Sesuaikan dengan rute Anda
             method: 'GET',
-            data: { kode_lama: kodeLama },
+            data: requestData,
             success: function(response) {
+                // Update semua kolom dengan data yang diterima dari server
                 document.getElementById('produk_id_' + rowId).value = response.produk_id;
                 document.getElementById('kode_produk_' + rowId).value = response.kode_produk;
                 document.getElementById('nama_produk_' + rowId).value = response.nama_produk;
+                document.getElementById('kode_lama_' + rowId).value = response.kode_lama; // Tambahkan ini untuk mengisi kode_lama
                 document.getElementById('harga_' + rowId).value = response.harga;
                 updateTotal(rowId);
             },
@@ -605,8 +648,6 @@ function updateGrandTotal() {
         });
     }
 </script>
-
-
 
 
     <script>

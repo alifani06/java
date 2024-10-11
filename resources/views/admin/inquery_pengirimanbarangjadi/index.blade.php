@@ -169,42 +169,50 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr class="permintaan-details" id="details-{{ $firstItem->id }}" style="display: none;">
-                                <td colspan="5">
-                                    <table class="table table-bordered" style="font-size: 13px;">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Divisi</th>
-                                                <th>Kode Produk</th>
-                                                <th>Produk</th>
-                                                <th>Jumlah</th>
-                                                <th>Cetak</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($stokBarangJadiItems as $detail)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $detail->produk->klasifikasi->nama }}</td>
-                                                <td>{{ $detail->produk->kode_lama }}</td>
-                                                <td>
-                                                    {{ $detail->produk->nama_produk }}
-                                                 
-                                                </td>
-                                               
-                                                <td>{{ $detail->jumlah }}</td>
-                                                <td>
-                                                    <a href="{{ route('inquery_pengirimanbarangjadi.cetak_barcode', $detail->produk->id) }}" class="btn btn-primary btn-sm" target="_blank" onclick="openPrintDialog(event)">
-                                                        <i class="fas fa-print"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
+                            <form id="form-cetak-banyak" method="POST" action="{{ route('inquery_pengirimanbarangjadi.cetak_banyak_barcode') }}" target="_blank">
+                                @csrf
+                                <tr class="permintaan-details" id="details-{{ $firstItem->id }}" style="display: none;">
+                                    <td colspan="5">
+                                        <table class="table table-bordered" style="font-size: 13px;">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        No
+                                                        <input type="checkbox" id="select-all"> <!-- Checkbox untuk menandai semua row -->
+                                                    </th>
+                                                    <th>Divisi</th>
+                                                    <th>Kode Produk</th>
+                                                    <th>Produk</th>
+                                                    <th>Jumlah</th>
+                                                    <th>Cetak</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($stokBarangJadiItems as $detail)
+                                                <tr>
+                                                    <td>
+                                                        {{ $loop->iteration }}
+                                                        <input type="checkbox" name="selected_items[]" value="{{ $detail->produk->id }}" class="row-checkbox">
+                                                    </td>
+                                                    <td>{{ $detail->produk->klasifikasi->nama }}</td>
+                                                    <td>{{ $detail->produk->kode_lama }}</td>
+                                                    <td>{{ $detail->produk->nama_produk }}</td>
+                                                    <td>{{ $detail->jumlah }}</td>
+                                                    <td>
+                                                        <a href="{{ route('inquery_pengirimanbarangjadi.cetak_barcode', $detail->produk->id) }}" class="btn btn-primary btn-sm" target="_blank" onclick="openPrintDialog(event)">
+                                                            <i class="fas fa-print"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            
+                                <button type="button" class="btn btn-primary" id="cetak-terpilih">Cetak Terpilih</button>
+                            </form>
+                            
                      
                         @endforeach
                         </tbody>
@@ -228,13 +236,28 @@
     </section>
     
     <script>
+        document.getElementById('select-all').addEventListener('click', function(event) {
+            const checkboxes = document.querySelectorAll('.row-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = event.target.checked;
+            });
+        });
+    
+        document.getElementById('cetak-terpilih').addEventListener('click', function() {
+            const selectedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
+            if (selectedCheckboxes.length > 0) {
+                // Submit the form to trigger the batch print
+                document.getElementById('form-cetak-banyak').submit();
+            } else {
+                alert('Pilih setidaknya satu produk untuk dicetak.');
+            }
+        });
+    
         function openPrintDialog(event) {
-
             event.preventDefault(); 
             const url = event.currentTarget.href; 
-    
             const win = window.open(url, '_blank'); 
-
+    
             win.onload = function() {
                 win.print(); 
             };
@@ -327,81 +350,83 @@
             });
         });
     </script>
- <script>
-    $(document).ready(function() {
-    $('tbody tr.dropdown').click(function(e) {
-        // Memeriksa apakah yang diklik adalah checkbox
-        if ($(e.target).is('input[type="checkbox"]')) {
-            return; // Jika ya, hentikan eksekusi
-        }
 
-        // Menyembunyikan detail untuk baris yang tidak dipilih
-        $('tbody tr.dropdown').not(this).removeClass('selected').css('background-color', '');
-        $('.permintaan-details').not('#details-' + $(this).data('permintaan-id')).hide();
+    <script>
+        $(document).ready(function() {
+        $('tbody tr.dropdown').click(function(e) {
+            // Memeriksa apakah yang diklik adalah checkbox
+            if ($(e.target).is('input[type="checkbox"]')) {
+                return; // Jika ya, hentikan eksekusi
+            }
 
-        // Toggle visibility untuk detail baris yang dipilih
-        var detailRowId = $(this).data('permintaan-id');
-        var detailRow = $('#details-' + detailRowId);
-        var isActive = detailRow.is(':visible');
+            // Menyembunyikan detail untuk baris yang tidak dipilih
+            $('tbody tr.dropdown').not(this).removeClass('selected').css('background-color', '');
+            $('.permintaan-details').not('#details-' + $(this).data('permintaan-id')).hide();
 
-        // Menghapus kelas 'selected' dan mengembalikan warna latar belakang ke warna default dari semua baris
-        $('tr.dropdown').removeClass('selected').css('background-color', '');
-        
-        if (isActive) {
-            detailRow.hide(); // Menyembunyikan detail jika sudah ditampilkan
-        } else {
-            $(this).addClass('selected').css('background-color', '#b0b0b0'); // Menambahkan kelas 'selected' dan mengubah warna latar belakangnya
-            detailRow.show(); // Menampilkan detail jika belum ditampilkan
-        }
+            // Toggle visibility untuk detail baris yang dipilih
+            var detailRowId = $(this).data('permintaan-id');
+            var detailRow = $('#details-' + detailRowId);
+            var isActive = detailRow.is(':visible');
 
-        // Menyembunyikan dropdown pada baris lain yang tidak dipilih
-        $('tbody tr.dropdown').not(this).find('.dropdown-menu').hide();
+            // Menghapus kelas 'selected' dan mengembalikan warna latar belakang ke warna default dari semua baris
+            $('tr.dropdown').removeClass('selected').css('background-color', '');
+            
+            if (isActive) {
+                detailRow.hide(); // Menyembunyikan detail jika sudah ditampilkan
+            } else {
+                $(this).addClass('selected').css('background-color', '#b0b0b0'); // Menambahkan kelas 'selected' dan mengubah warna latar belakangnya
+                detailRow.show(); // Menampilkan detail jika belum ditampilkan
+            }
 
-        // Mencegah event klik menyebar ke atas (misalnya, saat mengklik dropdown)
-        e.stopPropagation();
-    });
+            // Menyembunyikan dropdown pada baris lain yang tidak dipilih
+            $('tbody tr.dropdown').not(this).find('.dropdown-menu').hide();
 
-    $('tbody tr.dropdown').contextmenu(function(e) {
-        // Memeriksa apakah baris ini memiliki kelas 'selected'
-        if ($(this).hasClass('selected')) {
-            // Menampilkan dropdown saat klik kanan
-            var dropdownMenu = $(this).find('.dropdown-menu');
-            dropdownMenu.show();
-
-            // Mendapatkan posisi td yang diklik
-            var clickedTd = $(e.target).closest('td');
-            var tdPosition = clickedTd.position();
-
-            // Menyusun posisi dropdown relatif terhadap td yang di klik
-            dropdownMenu.css({
-                'position': 'absolute',
-                'top': tdPosition.top + clickedTd.height(), // Menempatkan dropdown sedikit di bawah td yang di klik
-                'left': tdPosition.left // Menempatkan dropdown di sebelah kiri td yang di klik
-            });
-
-            // Mencegah event klik kanan menyebar ke atas (misalnya, saat mengklik dropdown)
+            // Mencegah event klik menyebar ke atas (misalnya, saat mengklik dropdown)
             e.stopPropagation();
-            e.preventDefault(); // Mencegah munculnya konteks menu bawaan browser
-        }
-    });
+        });
 
-    // Menyembunyikan dropdown saat klik di tempat lain
-    $(document).click(function() {
-        $('.dropdown-menu').hide();
-        $('tr.dropdown').removeClass('selected').css('background-color', ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
-    });
-});
-</script>
+        $('tbody tr.dropdown').contextmenu(function(e) {
+            // Memeriksa apakah baris ini memiliki kelas 'selected'
+            if ($(this).hasClass('selected')) {
+                // Menampilkan dropdown saat klik kanan
+                var dropdownMenu = $(this).find('.dropdown-menu');
+                dropdownMenu.show();
 
-<script>
-    document.getElementById('kategori1').addEventListener('change', function() {
-        var selectedValue = this.value;
+                // Mendapatkan posisi td yang diklik
+                var clickedTd = $(e.target).closest('td');
+                var tdPosition = clickedTd.position();
 
-        if (selectedValue === 'permintaan') {
-            window.location.href = "{{ url('admin/inquery_pengirimanbarangjadi') }}"; 
-        } else if (selectedValue === 'pemesanan') {
-            window.location.href = "{{ url('admin/inquery_pengirimanpesanan') }}"; 
-        }
+                // Menyusun posisi dropdown relatif terhadap td yang di klik
+                dropdownMenu.css({
+                    'position': 'absolute',
+                    'top': tdPosition.top + clickedTd.height(), // Menempatkan dropdown sedikit di bawah td yang di klik
+                    'left': tdPosition.left // Menempatkan dropdown di sebelah kiri td yang di klik
+                });
+
+                // Mencegah event klik kanan menyebar ke atas (misalnya, saat mengklik dropdown)
+                e.stopPropagation();
+                e.preventDefault(); // Mencegah munculnya konteks menu bawaan browser
+            }
+        });
+
+        // Menyembunyikan dropdown saat klik di tempat lain
+        $(document).click(function() {
+            $('.dropdown-menu').hide();
+            $('tr.dropdown').removeClass('selected').css('background-color', ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
+        });
     });
-</script>
+    </script>
+
+    <script>
+        document.getElementById('kategori1').addEventListener('change', function() {
+            var selectedValue = this.value;
+
+            if (selectedValue === 'permintaan') {
+                window.location.href = "{{ url('admin/inquery_pengirimanbarangjadi') }}"; 
+            } else if (selectedValue === 'pemesanan') {
+                window.location.href = "{{ url('admin/inquery_pengirimanpesanan') }}"; 
+            }
+        });
+    </script>
+
 @endsection
