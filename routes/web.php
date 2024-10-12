@@ -8,6 +8,7 @@ use App\Http\Controllers\SlawiController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\KlasifikasiController;
 use App\Http\Controllers\Admin\AddpelangganController;
+use App\Http\Controllers\Admin\EstimasiproduksiController;
 use App\Http\Controllers\Admin\HargajualController;
 use App\Http\Controllers\Admin\Inquery_hasilpenjualanController;
 use App\Http\Controllers\Admin\Inquery_pemesananprodukController;
@@ -326,6 +327,11 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/inquery_pemusnahanbarangjadi/{id}/print', [Inquery_pemusnahanbarangjadiController::class, 'print'])->name('inquery_pemusnahanbarangjadi.print');
 
     Route::resource('estimasi_produksi', \App\Http\Controllers\Admin\EstimasiproduksiController::class);
+    Route::get('/getDetailPermintaanProduk', [EstimasiproduksiController::class, 'getDetailPermintaanProduk'])
+    ->name('getDetailPermintaanProduk');
+    Route::post('/updateDetailPermintaanProduk', [EstimasiproduksiController::class, 'updateDetailPermintaanProduk'])
+    ->name('updateDetailPermintaanProduk');
+    // Route::get('/permintaan-produk/{id}', [EstimasiproduksiController::class, 'show'])->name('permintaan-produk.show');
 
     Route::resource('inquery_estimasiproduksi', \App\Http\Controllers\Admin\Inquery_estimasiproduksiController::class);
 

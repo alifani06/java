@@ -41,107 +41,138 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class EstimasiproduksiController extends Controller{
 
-// public function index()
+public function index()
+{
+    // Mengambil data dengan relasi menggunakan with
+    $permintaanProduks = PermintaanProduk::with(['detailpermintaanproduks.toko']) // Memanggil relasi dari tabel terkait
+        ->get();
+
+    // Mengirim data ke view
+    return view('admin.estimasi_produksi.index', compact('permintaanProduks'));
+}
+
+public function getDetailPermintaanProduk(Request $request)
+{
+    $kodePermintaan = $request->kode_permintaan;
+
+    // Ambil data permintaan produk berdasarkan kode_permintaan
+    $detailPermintaanProduks = DetailPermintaanProduk::whereHas('permintaanProduk', function ($query) use ($kodePermintaan) {
+        $query->where('kode_permintaan', $kodePermintaan);
+    })->with('produk')->get();
+
+    // Kembalikan data dalam bentuk JSON
+    return response()->json($detailPermintaanProduks);
+}
+
+
+// public function updateDetailPermintaanProduk(Request $request)
 // {
-//     $today = \Carbon\Carbon::today();
-//     $tomorrow = $today->copy()->addDay();  // Mendapatkan tanggal besok
+//     // Ambil data yang dikirim dari AJAX
+//     $updateData = $request->updateData;
 
-//     // Query pemesanan produk dengan relasi ke toko dan produk
-//     $pemesananProduk = DetailPemesananProduk::with(['pemesananProduk.toko', 'produk'])
-//         ->whereHas('pemesananProduk', function($query) use ($tomorrow) {
-//             $query->whereDate('tanggal_kirim', $tomorrow);
-//         })
-//         ->get()
-//         ->groupBy('produk_id') // Kelompokkan berdasarkan produk_id
-//         ->map(function ($groupedDetails) {
-//             // Kelompokkan berdasarkan toko_id di dalam produk_id
-//             return $groupedDetails->groupBy('toko_id')->map(function ($details) {
-//                 return [
-//                     'jumlah' => $details->sum('jumlah'),
-//                     'toko' => $details->first()->pemesananProduk->toko,
-//                     'produk' => $details->first()->produk,
-//                     'kode_pemesanan' => $details->pluck('pemesananProduk.kode_pemesanan')->unique()->values(),
-//                     'detail' => $details
-//                 ];
-//             });
-//         });
-   
+//     // Loop melalui setiap produk dan update jumlah berdasarkan produk_id dan permintaanproduk_id
+//     foreach ($updateData as $data) {
+//         // Cari detail permintaan produk berdasarkan produk_id dan permintaanproduk_id
+//         $detailPermintaanProduk = DetailPermintaanProduk::where('produk_id', $data['produk_id'])
+//             ->where('permintaanproduk_id', $data['permintaanproduk_id']) // Tambahkan kriteria permintaanproduk_id
+//             ->first();
 
-//     // Query permintaan produk dengan relasi ke toko, produk, dan detail permintaan produk
-//     $permintaanProduks = PermintaanProduk::with(['detailPermintaanProduks.toko', 'detailPermintaanProduks.produk'])
-//         ->where('status', 'posting')
-//         ->whereDate('created_at', $today)
-//         ->orderBy('created_at', 'desc')
-//         ->get()
-//         ->flatMap(function ($permintaan) {
-//             return $permintaan->detailPermintaanProduks;
-//         })
-//         ->groupBy('produk_id')
-//         ->map(function ($groupedDetails) {
-//             return $groupedDetails->groupBy('toko_id')->map(function ($details) {
-//                 return [
-//                     'jumlah' => $details->sum('jumlah'),
-//                     'toko' => $details->first()->toko,
-//                     'produk' => $details->first()->produk,
-//                     'tanggal_permintaan' => $details->first()->tanggal_permintaan,  // Ambil tanggal_permintaan
-//                 ];
-//             });
-//         });
+//         if ($detailPermintaanProduk) {
+//             // Update jumlah
+//             $detailPermintaanProduk->jumlah = $data['jumlah'];
+//             $detailPermintaanProduk->save();
+//         }
+//     }
 
-//     return view('admin.estimasi_produksi.index', compact('permintaanProduks', 'pemesananProduk'));
+//     // Kembalikan respon sukses
+//     return response()->json(['success' => true]);
 // }
 
 
-public function index()
+// public function updateDetailPermintaanProduk(Request $request)
+// {
+//     // Ambil data yang dikirim dari form
+//     $updateData = $request->updateData;
+
+//     // Loop melalui setiap produk dan update jumlah berdasarkan produk_id dan permintaanproduk_id
+//     foreach ($updateData as $data) {
+//         // Cari detail permintaan produk berdasarkan produk_id dan permintaanproduk_id
+//         $detailPermintaanProduk = DetailPermintaanProduk::where('produk_id', $data['produk_id'])
+//             ->where('permintaanproduk_id', $data['permintaanproduk_id'])
+//             ->first();
+
+//         if ($detailPermintaanProduk) {
+//             // Update jumlah
+//             $detailPermintaanProduk->jumlah = $data['jumlah'];
+//             $detailPermintaanProduk->save();
+//         }
+//     }
+
+//     // Alihkan ke halaman show
+//     return redirect()->route('estimasi_produksi.show', ['id' => $request->permintaanproduk_id])->with('success', 'Detail permintaan produk berhasil diperbarui.');
+// }
+
+public function updateDetailPermintaanProduk(Request $request)
 {
-    $today = \Carbon\Carbon::today();
-    $tomorrow = $today->copy()->addDay();  // Mendapatkan tanggal besok
+    // Ambil data yang dikirim dari form
+    $updateData = $request->updateData;
 
-    // Query pemesanan produk dengan relasi ke toko dan produk
-    $pemesananProduk = DetailPemesananProduk::with(['pemesananProduk.toko', 'produk'])
-        ->whereHas('pemesananProduk', function($query) use ($tomorrow) {
-            $query->whereDate('tanggal_kirim', $tomorrow);
-        })
-        ->get()
-        ->groupBy('produk_id') // Kelompokkan berdasarkan produk_id
-        ->map(function ($groupedDetails) {
-            // Kelompokkan berdasarkan toko_id di dalam produk_id
-            return $groupedDetails->groupBy('toko_id')->map(function ($details) {
-                return [
-                    'jumlah' => $details->sum('jumlah'),
-                    'toko' => $details->first()->pemesananProduk->toko,
-                    'produk' => $details->first()->produk,
-                    'kode_pemesanan' => $details->pluck('pemesananProduk.kode_pemesanan')->unique()->values(),
-                    'detail' => $details
-                ];
-            });
-        });
-   
-    // Query permintaan produk dengan relasi ke toko, produk, dan detail permintaan produk
-    $permintaanProduks = PermintaanProduk::with(['detailPermintaanProduks.toko', 'detailPermintaanProduks.produk'])
-        ->where('status', 'posting')
-        ->whereHas('detailPermintaanProduks', function($query) use ($today) {
-            $query->whereDate('tanggal_permintaan', $today);
-        })
-        ->orderBy('created_at', 'desc')
-        ->get()
-        ->flatMap(function ($permintaan) {
-            return $permintaan->detailPermintaanProduks;
-        })
-        ->groupBy('produk_id')
-        ->map(function ($groupedDetails) {
-            return $groupedDetails->groupBy('toko_id')->map(function ($details) {
-                return [
-                    'jumlah' => $details->sum('jumlah'),
-                    'toko' => $details->first()->toko,
-                    'produk' => $details->first()->produk,
-                    'tanggal_permintaan' => $details->first()->tanggal_permintaan,  // Ambil tanggal_permintaan
-                ];
-            });
-        });
+    // Loop melalui setiap produk dan update jumlah berdasarkan produk_id dan permintaanproduk_id
+    foreach ($updateData as $data) {
+        // Cari detail permintaan produk berdasarkan produk_id dan permintaanproduk_id
+        $detailPermintaanProduk = DetailPermintaanProduk::where('produk_id', $data['produk_id'])
+            ->where('permintaanproduk_id', $data['permintaanproduk_id'])
+            ->first();
 
-    return view('admin.estimasi_produksi.index', compact('permintaanProduks', 'pemesananProduk'));
+        if ($detailPermintaanProduk) {
+            // Update jumlah
+            $detailPermintaanProduk->jumlah = $data['jumlah'];
+            $detailPermintaanProduk->save();
+        }
+    }
+
+    // Alihkan ke halaman show dengan URL
+    return response()->json([
+        'success' => true,
+        'redirectUrl' => route('estimasi_produksi.show', ['estimasi_produksi' => $request->permintaanproduk_id]) // Gunakan permintaanproduk_id yang diterima dari request
+    ]);
 }
+
+
+
+
+
+public function show($id)
+{
+    $permintaanProduk = PermintaanProduk::find($id);
+    $detailPermintaanProduks = DetailPermintaanProduk::with('toko')->where('permintaanproduk_id', $id)->get();
+
+    // Mengelompokkan produk berdasarkan klasifikasi
+    $produkByDivisi = $detailPermintaanProduks->groupBy(function($item) {
+        return $item->produk->klasifikasi->nama;
+    });
+
+    // Menghitung total jumlah per klasifikasi
+    $totalPerDivisi = $produkByDivisi->map(function($produks) {
+        return $produks->sum('jumlah');
+    });
+
+    // Ambil data Subklasifikasi berdasarkan Klasifikasi
+    $subklasifikasiByDivisi = $produkByDivisi->map(function($produks) {
+        return $produks->groupBy(function($item) {
+            return $item->produk->subklasifikasi->nama;
+        });
+    });
+
+    // Mengambil nama toko dari salah satu detail permintaan produk
+    $toko = $detailPermintaanProduks->first()->toko;
+
+    return view('admin.estimasi_produksi.show', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi', 'subklasifikasiByDivisi', 'toko'));
+}
+
+
+
+
 
 
 

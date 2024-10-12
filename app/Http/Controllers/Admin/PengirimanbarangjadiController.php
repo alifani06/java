@@ -284,11 +284,59 @@ class PengirimanbarangjadiController extends Controller{
                     'tanggal_pengiriman' => $tanggalPengirimanDenganJam,
                     'kode_produksi' => $kodeProduksi,
                 ]);
-
-                // Simpan catatan stok di toko terkait
-                // Logika penyimpanan di setiap toko (kode tetap sama)
-                // ...
-                
+ // Simpan catatan stok di toko terkait
+ switch ($tokoId) {
+    case 1:
+        Pengiriman_tokobanjaran::create([
+            'pengiriman_barangjadi_id' => $pengiriman->id,
+            'kode_pengiriman' => $kode,
+            'produk_id' => $produkId,
+            'toko_id' => $tokoId,
+            'jumlah' => $jumlah,
+            'status' => 'unpost',
+            'tanggal_input' => $tanggalPengirimanDenganJam, // Simpan tanggal dengan jam yang sama
+        ]);
+        break;
+    case 2:
+        Stok_tokotegal::create([
+            'pengiriman_barangjadi_id' => $pengiriman->id,
+            'kode_pengiriman' => $kode,
+            'produk_id' => $produkId,
+            'jumlah' => $jumlah,
+            'tanggal_input' => $tanggalPengirimanDenganJam, // Simpan tanggal dengan jam yang sama
+        ]);
+        break;
+    case 3:
+        Stok_tokoslawi::create([
+            'pengiriman_barangjadi_id' => $pengiriman->id,
+            'kode_pengiriman' => $kode,
+            'produk_id' => $produkId,
+            'jumlah' => $jumlah,
+            'status' => 'unpost',
+            'tanggal_input' => $tanggalPengirimanDenganJam, // Simpan tanggal dengan jam yang sama
+        ]);
+        break;
+    case 4:
+        Stok_tokopemalang::create([
+            'pengiriman_barangjadi_id' => $pengiriman->id,
+            'kode_pengiriman' => $kode,
+            'produk_id' => $produkId,
+            'jumlah' => $jumlah,
+            'tanggal_input' => $tanggalPengirimanDenganJam, // Simpan tanggal dengan jam yang sama
+        ]);
+        break;
+    case 5:
+        Stok_tokobumiayu::create([
+            'pengiriman_barangjadi_id' => $pengiriman->id,
+            'kode_pengiriman' => $kode,
+            'produk_id' => $produkId,
+            'jumlah' => $jumlah,
+            'tanggal_input' => $tanggalPengirimanDenganJam, // Simpan tanggal dengan jam yang sama
+        ]);
+        break;
+    default:
+        return redirect()->back()->with('error', 'Toko ID tidak valid')->withInput();
+}
                 // Simpan ID pengiriman yang baru dibuat
                 $pengirimanIds[] = $pengiriman->id;
             } else {
