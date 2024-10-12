@@ -43,74 +43,29 @@ class EstimasiproduksiController extends Controller{
 
 public function index()
 {
+    $produk = Produk::all();
     // Mengambil data dengan relasi menggunakan with
     $permintaanProduks = PermintaanProduk::with(['detailpermintaanproduks.toko']) // Memanggil relasi dari tabel terkait
         ->get();
 
     // Mengirim data ke view
-    return view('admin.estimasi_produksi.index', compact('permintaanProduks'));
+    return view('admin.estimasi_produksi.index', compact('permintaanProduks', 'produk'));
 }
 
 public function getDetailPermintaanProduk(Request $request)
 {
-    $kodePermintaan = $request->kode_permintaan;
+    $kodePermintaan = $request->id;
 
-    // Ambil data permintaan produk berdasarkan kode_permintaan
+    // Ambil data permintaan produk berdasarkan id
     $detailPermintaanProduks = DetailPermintaanProduk::whereHas('permintaanProduk', function ($query) use ($kodePermintaan) {
-        $query->where('kode_permintaan', $kodePermintaan);
-    })->with('produk')->get();
+        $query->where('id', $kodePermintaan);
+    })->with('produk', 'permintaanProduk')->get();
 
     // Kembalikan data dalam bentuk JSON
     return response()->json($detailPermintaanProduks);
 }
 
 
-// public function updateDetailPermintaanProduk(Request $request)
-// {
-//     // Ambil data yang dikirim dari AJAX
-//     $updateData = $request->updateData;
-
-//     // Loop melalui setiap produk dan update jumlah berdasarkan produk_id dan permintaanproduk_id
-//     foreach ($updateData as $data) {
-//         // Cari detail permintaan produk berdasarkan produk_id dan permintaanproduk_id
-//         $detailPermintaanProduk = DetailPermintaanProduk::where('produk_id', $data['produk_id'])
-//             ->where('permintaanproduk_id', $data['permintaanproduk_id']) // Tambahkan kriteria permintaanproduk_id
-//             ->first();
-
-//         if ($detailPermintaanProduk) {
-//             // Update jumlah
-//             $detailPermintaanProduk->jumlah = $data['jumlah'];
-//             $detailPermintaanProduk->save();
-//         }
-//     }
-
-//     // Kembalikan respon sukses
-//     return response()->json(['success' => true]);
-// }
-
-
-// public function updateDetailPermintaanProduk(Request $request)
-// {
-//     // Ambil data yang dikirim dari form
-//     $updateData = $request->updateData;
-
-//     // Loop melalui setiap produk dan update jumlah berdasarkan produk_id dan permintaanproduk_id
-//     foreach ($updateData as $data) {
-//         // Cari detail permintaan produk berdasarkan produk_id dan permintaanproduk_id
-//         $detailPermintaanProduk = DetailPermintaanProduk::where('produk_id', $data['produk_id'])
-//             ->where('permintaanproduk_id', $data['permintaanproduk_id'])
-//             ->first();
-
-//         if ($detailPermintaanProduk) {
-//             // Update jumlah
-//             $detailPermintaanProduk->jumlah = $data['jumlah'];
-//             $detailPermintaanProduk->save();
-//         }
-//     }
-
-//     // Alihkan ke halaman show
-//     return redirect()->route('estimasi_produksi.show', ['id' => $request->permintaanproduk_id])->with('success', 'Detail permintaan produk berhasil diperbarui.');
-// }
 
 public function updateDetailPermintaanProduk(Request $request)
 {
@@ -119,7 +74,6 @@ public function updateDetailPermintaanProduk(Request $request)
 
     // Loop melalui setiap produk dan update jumlah berdasarkan produk_id dan permintaanproduk_id
     foreach ($updateData as $data) {
-        // Cari detail permintaan produk berdasarkan produk_id dan permintaanproduk_id
         $detailPermintaanProduk = DetailPermintaanProduk::where('produk_id', $data['produk_id'])
             ->where('permintaanproduk_id', $data['permintaanproduk_id'])
             ->first();
@@ -131,10 +85,12 @@ public function updateDetailPermintaanProduk(Request $request)
         }
     }
 
-    // Alihkan ke halaman show dengan URL
+    // Ambil estimasi_produksi_id yang benar, misalnya dari permintaanproduk_id
+    $estimasiProduksiId = $request->permintaanproduk_id; // Pastikan ini adalah ID yang tepat
+
     return response()->json([
         'success' => true,
-        'redirectUrl' => route('estimasi_produksi.show', ['estimasi_produksi' => $request->permintaanproduk_id]) // Gunakan permintaanproduk_id yang diterima dari request
+        'redirectUrl' => route('estimasi_produksi.show', ['estimasi_produksi' => $estimasiProduksiId])
     ]);
 }
 

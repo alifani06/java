@@ -331,6 +331,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     ->name('getDetailPermintaanProduk');
     Route::post('/updateDetailPermintaanProduk', [EstimasiproduksiController::class, 'updateDetailPermintaanProduk'])
     ->name('updateDetailPermintaanProduk');
+    Route::get('admin/estimasi_produksi/{estimasi_produksi}', [EstimasiProduksiController::class, 'show'])->name('estimasi_produksi.show');
+
     // Route::get('/permintaan-produk/{id}', [EstimasiproduksiController::class, 'show'])->name('permintaan-produk.show');
 
     Route::resource('inquery_estimasiproduksi', \App\Http\Controllers\Admin\Inquery_estimasiproduksiController::class);
