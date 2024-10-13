@@ -244,7 +244,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('admin/laporan_hasilpenjualan') }}";
+            form.action = "{{ route('barangMasuksemua') }}";
             form.submit();
         }
 
