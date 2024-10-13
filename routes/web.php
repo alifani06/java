@@ -332,6 +332,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('admin/estimasi_produksi/{id}/edit', [EstimasiProduksiController::class, 'edit'])->name('estimasi_produksi.edit');
     Route::get('/estimasi_produksi/{id}/print', [EstimasiproduksiController::class, 'print'])->name('estimasi_produksi.print');
     Route::delete('estimasi_produksi/deletedetailpermintaan/{id}', [\App\Http\Controllers\Admin\EstimasiproduksiController::class, 'deletedetailpermintaan']);
+    Route::post('admin/estimasi_produksi', [EstimasiproduksiController::class, 'store'])->name('estimasi_produksi.store');
 
 
     Route::resource('inquery_estimasiproduksi', \App\Http\Controllers\Admin\Inquery_estimasiproduksiController::class);

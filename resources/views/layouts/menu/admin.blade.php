@@ -348,6 +348,17 @@
             </a>
         </li>
         {{-- @endif --}}
+
+        {{-- @if (auth()->check() && auth()->user()->menu['estimasi produksi']) --}}
+        <li class="nav-item">
+            <a href="{{ url('admin/surat_perintahproduksi') }}"
+                class="nav-link {{ request()->is('admin/surat_perintahproduksi*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Surat Perintah Produksi</p>
+            </a>
+        </li>
+        {{-- @endif --}}
+
         {{-- @if (auth()->check() && auth()->user()->menu['estimasi produksi']) --}}
         <li class="nav-item">
             <a href="{{ url('admin/setoran_pelunasan') }}"

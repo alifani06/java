@@ -74,14 +74,15 @@
                 <div class="card-body">
                     <form method="GET" id="form-action">
                         <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <select class="custom-select form-control" id="status" name="status">
-                                <option value="">- Semua Status -</option>
-                                <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
-                                <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
-                            </select>
-                            <label for="status">(Pilih Status)</label>
-                        </div>
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="toko" name="toko_id">
+                                    <option value="">- Semua Toko -</option>
+                                    @foreach ($tokos as $toko)
+                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
+                                    @endforeach
+                                </select>
+                                <label for="toko">(Pilih Toko)</label>
+                            </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_permintaan" name="tanggal_permintaan" type="date"
                                     value="{{ Request::get('tanggal_permintaan') }}" max="{{ date('Y-m-d') }}" />
@@ -102,98 +103,203 @@
                     </form>
                    
                     
-                    <table id="datatables66" class="table table-bordered " style="font-size: 13px">
-                        <thead>
-                            <tr>
-                                <th class="text-center">No</th>
-                                <th>Kode Permintaan</th>
-                                <th>Cabang</th>
-                                <th>Tanggal Permintaan</th>
-                                <th>Jumlah Produk</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($permintaanProduks as $permintaan)
-                                <tr class="dropdown" data-permintaan-id="{{ $permintaan->id }}">
-                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $permintaan->kode_permintaan }}</td>
-                                    <td>
-                                        @php
-                                            $tokoNames = $permintaan->detailpermintaanproduks->pluck('toko.nama_toko')->unique()->implode(', ');
-                                        @endphp
-                                        {{ $tokoNames ?: '-' }}
-                                    </td>
-                                    <td>{{ $permintaan->detailpermintaanproduks->first()->tanggal_permintaan ?? 'N/A' }}</td>
-                                    <td>{{ $permintaan->detailpermintaanproduks->count() }}</td>
-                                    <td class="text-center">
-                                        @if ($permintaan->status == 'posting')
-                                            <button type="button" class="btn btn-success btn-sm">
-                                                <i class="fas fa-check"></i>
+                    @if($permintaanProduksFirst)
+                    <form action="{{ url('admin/estimasi_produksi/' . $permintaanProduksFirst->id) }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+                        @csrf
+                        @method('put')
+                        <div>
+                            <div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Produk <span></span></h3>
+                                        <div class="float-right">
+                                            <button type="button" class="btn btn-primary btn-sm" onclick="addPesanan()">
+                                                <i class="fas fa-plus"></i>
                                             </button>
-                                        @endif
-                                        @if ($permintaan->status == 'unpost')
-                                        <button type="button" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                        @endif
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            @if ($permintaan->status == 'unpost')
-                                                    <a class="dropdown-item posting-btn"data-memo-id="{{ $permintaan->id }}">Posting</a>
-                                                    <a class="dropdown-item" href="{{ url('admin/estimasi_produksi/' . $permintaan->id . '/edit') }}">Update</a>
-                                                    <a class="dropdown-item" href="{{ url('admin/estimasi_produksi/' . $permintaan->id) }}">Show</a>
-                                                    <form action="{{ url('admin/estimasi_produksi/' . $permintaan->id) }}" method="POST" style="display: inline;">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="dropdown-item" onclick="return confirm('Apakah Anda yakin ingin menghapus permintaan produk ini?')">Delete</button>
-                                                    </form>
-                                                    @endif
-                                            @if ($permintaan->status == 'posting')
-                                                    <a class="dropdown-item unpost-btn" data-memo-id="{{ $permintaan->id }}">Unpost</a>
-                                                    <a class="dropdown-item" href="{{ url('admin/estimasi_produksi/' . $permintaan->id) }}">Show</a>
-                                            @endif
                                         </div>
-                                    </td>
-                                </tr>
-                                <tr class="permintaan-details" id="details-{{ $permintaan->id }}" style="display: none;">
-                                    <td colspan="5">
-                                        <table class="table table-bordered" style="font-size: 13px;">
+                                    </div>
+                                    <!-- /.card-header -->
+                                    <div class="card-body">
+                                        <table class="table table-bordered table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th>No</th>
-                                                    <th>Divisi</th>
-                                                    <th>Kode Produk</th>
-                                                    <th>Produk</th>
-                                                    <th>Jumlah</th>
+                                                    <th style="font-size:14px" class="text-center">No</th>
+                                                    <th style="font-size:14px">Kode Barang</th>
+                                                    <th style="font-size:14px">Nama Barang</th>
+                                                    <th style="font-size:14px">Jumlah</th>
+                                                    <th style="font-size:14px; text-align:center">Opsi</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                @foreach ($permintaan->detailpermintaanproduks as $detail)
-                                                <tr >
-                                                    <td>{{ $loop->iteration }}</td>
-                                                        <td>{{ $detail->produk->klasifikasi->nama }}</td>
-                                                        <td>{{ $detail->produk->kode_lama }}</td>
-                                                        <td>{{ $detail->produk->nama_produk }}</td>
-                                                        <td>{{ $detail->jumlah }}</td>
-                                                        
+                                            
+                                            <tbody id="tabel-pembelian">
+                                                @foreach ($permintaanProduksFirst->detailpermintaanproduks as $detail)
+                                                    <tr id="pembelian-{{ $loop->index }}">
+                                                        <td class="text-center" id="urutan">{{ $loop->index + 1 }}</td>
+                                                        <td hidden>
+                                                            <div class="form-group">
+                                                                <input type="text" class="form-control" id="nomor_seri-{{ $loop->index }}" name="detail_ids[]"
+                                                                    value="{{ $detail['id'] }}">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input type="text" class="form-control" id="produk_id-{{ $loop->index }}" name="produk_id[]"
+                                                                    value="{{ $detail['produk_id'] }}">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <input style="font-size:14px" readonly type="text" class="form-control"
+                                                                    id="kode_lama-{{ $loop->index }}" name="kode_lama[]"
+                                                                    value="{{ $detail->produk['kode_lama'] }}">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <input style="font-size:14px" readonly type="text" class="form-control"
+                                                                    id="nama_produk-{{ $loop->index }}" name="nama_produk[]"
+                                                                    value="{{ $detail->produk['nama_produk'] }}">
+                                                            </div>
+                                                        </td>
+
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <input style="font-size:14px" type="number" class="form-control jumlah"
+                                                                    id="jumlah-{{ $loop->index }}" name="jumlah[]"
+                                                                    value="{{ $detail['jumlah'] }}">
+                                                            </div>
+                                                        </td>
+                                                        <td style="width: 100px">
+                                                            <button type="button" class="btn btn-primary btn-sm"
+                                                                onclick="Barangs({{ $loop->index }})">
+                                                                <i class="fas fa-plus"></i>
+                                                            </button>
+                                                            <button style="margin-left:5px" type="button" class="btn btn-danger btn-sm"
+                                                                onclick="removeBan({{ $loop->index }}, {{ $detail['id'] }})">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
-                                    </td>
-        
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    <!-- Modal Loading -->
-                    <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
-                        aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                    </div>
+                                    
+                                    <div class="card-footer text-right">
+                                        <button type="reset" class="btn btn-secondary">Reset</button>
+                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    @endif
+
+                    @if($pemesananProduksFirst)
+                        <div>
+                            <div>
+                                    <div class="card-body">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th style="font-size:14px" class="text-center">No</th>
+                                                    <th style="font-size:14px">Kode Produk</th>
+                                                    <th style="font-size:14px">Nama Produk</th>
+                                                    <th style="font-size:14px">Jumlah</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tabel-pembelian">
+                                                @foreach ($pemesananProduksFirst->detailpemesananproduk as $detail)
+                                                    <tr id="pembelian-{{ $loop->index }}">
+                                                        <td class="text-center" id="urutan">{{ $loop->index + 1 }}</td>
+                                                        <td hidden>
+                                                            <div class="form-group">
+                                                                <input type="text" class="form-control" id="nomor_seri-{{ $loop->index }}" name="detail_ids[]"
+                                                                    value="{{ $detail['id'] }}">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input type="text" class="form-control" id="produk_id-{{ $loop->index }}" name="produk_id[]"
+                                                                    value="{{ $detail['produk_id'] }}">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <input style="font-size:14px" readonly type="text" class="form-control"
+                                                                    id="kode_lama-{{ $loop->index }}" name="kode_lama[]"
+                                                                    value="{{ $detail->produk['kode_lama'] }}">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <input style="font-size:14px" readonly type="text" class="form-control"
+                                                                    id="nama_produk-{{ $loop->index }}" name="nama_produk[]"
+                                                                    value="{{ $detail->produk['nama_produk'] }}">
+                                                            </div>
+                                                        </td>
+
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <input readonly style="font-size:14px" type="number" class="form-control jumlah"
+                                                                    id="jumlah-{{ $loop->index }}" name="jumlah[]"
+                                                                    value="{{ $detail['jumlah'] }}">
+                                                            </div>
+                                                        </td>
+                                                      
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    <div class="modal fade" id="tableBarang" data-backdrop="static">
+                        <div class="modal-dialog modal-lg">
                             <div class="modal-content">
-                                <div class="modal-body text-center">
-                                    <i class="fas fa-spinner fa-spin fa-3x text-primary"></i>
-                                    <h4 class="mt-2">Sedang Menyimpan...</h4>
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Data Produk</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="float-right ml-3 mt-3">
+                                    <button type="button" data-toggle="modal" data-target="#modal-barang"
+                                        class="btn btn-primary btn-sm">
+                                        Tambah
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="m-2">
+                                        <input type="text" id="searchInputrutes" class="form-control"
+                                            placeholder="Search...">
+                                    </div>
+                                    <table id="tablefaktur" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">No</th>
+                                                <th>Kode Barang</th>
+                                                <th>Nama Barang</th>
+                                                <th>Opsi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($produks as $barang)
+                                                <tr data-id="{{ $barang->id }}" data-kode_lama="{{ $barang->kode_lama }}"
+                                                    data-nama_produk="{{ $barang->nama_produk }}"
+                                                    data-param="{{ $loop->index }}">
+                                                    <td class="text-center">{{ $loop->iteration }}</td>
+                                                    <td>{{ $barang->kode_lama }}</td>
+                                                    <td>{{ $barang->nama_produk }}</td>
+                                                    <td class="text-center">
+                                                        <button type="button" id="btnTambah" class="btn btn-primary btn-sm"
+                                                            onclick="getBarang({{ $loop->index }})">
+                                                            <i class="fas fa-plus"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -232,129 +338,199 @@
 
     </script>
    
+
+
    <script>
-    $(document).ready(function() {
-    $('tbody tr.dropdown').click(function(e) {
-        // Memeriksa apakah yang diklik adalah checkbox
-        if ($(e.target).is('input[type="checkbox"]')) {
-            return; // Jika ya, hentikan eksekusi
-        }
+    function filterTablefaktur() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("searchInputrutes");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("tablefaktur");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            var displayRow = false;
 
-        // Menyembunyikan detail untuk baris yang tidak dipilih
-        $('tbody tr.dropdown').not(this).removeClass('selected').css('background-color', '');
-        $('.permintaan-details').not('#details-' + $(this).data('permintaan-id')).hide();
-
-        // Toggle visibility untuk detail baris yang dipilih
-        var detailRowId = $(this).data('permintaan-id');
-        var detailRow = $('#details-' + detailRowId);
-        var isActive = detailRow.is(':visible');
-
-        // Menghapus kelas 'selected' dan mengembalikan warna latar belakang ke warna default dari semua baris
-        $('tr.dropdown').removeClass('selected').css('background-color', '');
-        
-        if (isActive) {
-            detailRow.hide(); // Menyembunyikan detail jika sudah ditampilkan
-        } else {
-            $(this).addClass('selected').css('background-color', '#b0b0b0'); // Menambahkan kelas 'selected' dan mengubah warna latar belakangnya
-            detailRow.show(); // Menampilkan detail jika belum ditampilkan
-        }
-
-        // Menyembunyikan dropdown pada baris lain yang tidak dipilih
-        $('tbody tr.dropdown').not(this).find('.dropdown-menu').hide();
-
-        // Mencegah event klik menyebar ke atas (misalnya, saat mengklik dropdown)
-        e.stopPropagation();
-    });
-
-    $('tbody tr.dropdown').contextmenu(function(e) {
-        // Memeriksa apakah baris ini memiliki kelas 'selected'
-        if ($(this).hasClass('selected')) {
-            // Menampilkan dropdown saat klik kanan
-            var dropdownMenu = $(this).find('.dropdown-menu');
-            dropdownMenu.show();
-
-            // Mendapatkan posisi td yang diklik
-            var clickedTd = $(e.target).closest('td');
-            var tdPosition = clickedTd.position();
-
-            // Menyusun posisi dropdown relatif terhadap td yang di klik
-            dropdownMenu.css({
-                'position': 'absolute',
-                'top': tdPosition.top + clickedTd.height(), // Menempatkan dropdown sedikit di bawah td yang di klik
-                'left': tdPosition.left // Menempatkan dropdown di sebelah kiri td yang di klik
-            });
-
-            // Mencegah event klik kanan menyebar ke atas (misalnya, saat mengklik dropdown)
-            e.stopPropagation();
-            e.preventDefault(); // Mencegah munculnya konteks menu bawaan browser
-        }
-    });
-
-    // Menyembunyikan dropdown saat klik di tempat lain
-    $(document).click(function() {
-        $('.dropdown-menu').hide();
-        $('tr.dropdown').removeClass('selected').css('background-color', ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
-    });
-});
-</script>
-
-  {{-- unpost stok  --}}
-  <script>
-    $(document).ready(function() {
-        $('.unpost-btn').click(function() {
-            var memoId = $(this).data('memo-id');
-            $(this).addClass('disabled');
-
-            $('#modal-loading').modal('show');
-
-            $.ajax({
-                url: "{{ url('admin/estimasi_produksi/unpost_permintaanproduk/') }}/" + memoId,
-                type: 'GET',
-                data: {
-                    id: memoId
-                },
-                success: function(response) {
-                    $('#modal-loading').modal('hide');
-                    console.log(response);
-                    $('#modal-posting-' + memoId).modal('hide');
-                    location.reload();
-                },
-                error: function(error) {
-                    $('#modal-loading').modal('hide');
-                    console.log(error);
+            // Loop through columns (td 1, 2, and 3)
+            for (j = 1; j <= 4; j++) {
+                td = tr[i].getElementsByTagName("td")[j];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        displayRow = true;
+                        break; // Break the loop if a match is found in any column
+                    }
                 }
-            });
-        });
-    });
+            }
+
+            // Set the display style based on whether a match is found in any column
+            tr[i].style.display = displayRow ? "" : "none";
+        }
+    }
+    document.getElementById("searchInputrutes").addEventListener("input", filterTablefaktur);
 </script>
 
-{{-- posting stok --}}
+
+
 <script>
-    $(document).ready(function() {
-        $('.posting-btn').click(function() {
-            var memoId = $(this).data('memo-id');
-            $(this).addClass('disabled');
+    var data_pembelian = @json(session('data_pembelians'));
+    var jumlah_ban = 1;
 
-            $('#modal-loading').modal('show');
-
-            $.ajax({
-                url: "{{ url('admin/estimasi_produksi/posting_permintaanproduk/') }}/" + memoId,
-                type: 'GET',
-                data: {
-                    id: memoId
-                },
-                success: function(response) {
-                    $('#modal-loading').modal('hide');
-                    console.log(response);
-                    $('#modal-posting-' + memoId).modal('hide');
-                    location.reload();
-                },
-                error: function(error) {
-                    $('#modal-loading').modal('hide');
-                    console.log(error);
-                }
-            });
+    if (data_pembelian != null) {
+        jumlah_ban = data_pembelian.length;
+        $('#tabel-pembelian').empty();
+        var urutan = 0;
+        $.each(data_pembelian, function(key, value) {
+            urutan = urutan + 1;
+            itemPembelian(urutan, key, value);
         });
-    });
+    }
+
+    function updateUrutan() {
+        var urutan = document.querySelectorAll('#urutan');
+        for (let i = 0; i < urutan.length; i++) {
+            urutan[i].innerText = i + 1;
+        }
+    }
+
+
+    var counter = 0;
+
+    function addPesanan() {
+        counter++;
+        jumlah_ban = jumlah_ban + 1;
+
+        if (jumlah_ban === 1) {
+            $('#tabel-pembelian').empty();
+        } else {
+            // Find the last row and get its index to continue the numbering
+            var lastRow = $('#tabel-pembelian tr:last');
+            var lastRowIndex = lastRow.find('#urutan').text();
+            jumlah_ban = parseInt(lastRowIndex) + 1;
+        }
+
+        console.log('Current jumlah_ban:', jumlah_ban);
+        itemPembelian(jumlah_ban, jumlah_ban - 1);
+        updateUrutan();
+    }
+
+    function removeBan(identifier, detailId) {
+        var row = document.getElementById('pembelian-' + identifier);
+        row.remove();
+
+        $.ajax({
+            url: "{{ url('admin/estimasi_produksi/deletedetailpermintaan/') }}/" + detailId,
+            type: "POST",
+            data: {
+                _method: 'DELETE',
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                console.log('Data deleted successfully');
+            },
+            error: function(error) {
+                console.error('Failed to delete data:', error);
+            }
+        });
+
+        updateUrutan();
+    }
+
+    function itemPembelian(identifier, key, value = null) {
+        var produk_id = '';
+        var kode_lama = '';
+        var nama_produk = '';
+
+        var jumlah = '';
+
+        if (value !== null) {
+            produk_id = value.produk_id;
+            kode_lama = value.kode_lama;
+            nama_produk = value.nama_produk;
+
+            jumlah = value.jumlah;
+        }
+
+        // urutan 
+        var item_pembelian = '<tr id="pembelian-' + key + '">';
+        item_pembelian += '<td class="text-center" style=" font-size:14px" id="urutan">' + key + '</td>';
+
+
+        // produk_id 
+        item_pembelian += '<td hidden>';
+        item_pembelian += '<div class="form-group">'
+        item_pembelian += '<input type="text" class="form-control" id="produk_id-' + key +
+            '" name="produk_id[]" value="' + produk_id + '" ';
+        item_pembelian += '</div>';
+        item_pembelian += '</td>';
+
+        // kode_lama 
+        item_pembelian += '<td>';
+        item_pembelian += '<div class="form-group">'
+        item_pembelian += '<input type="text" class="form-control" style="font-size:14px" readonly id="kode_lama-' +
+            key +
+            '" name="kode_lama[]" value="' + kode_lama + '" ';
+        item_pembelian += '</div>';
+        item_pembelian += '</td>';
+
+        // nama_produk 
+        item_pembelian += '<td>';
+        item_pembelian += '<div class="form-group">'
+        item_pembelian += '<input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' +
+            key +
+            '" name="nama_produk[]" value="' + nama_produk + '" ';
+        item_pembelian += '</div>';
+        item_pembelian += '</td>';
+
+
+        // jumlah 
+        item_pembelian += '<td>';
+        item_pembelian += '<div class="form-group">'
+        item_pembelian +=
+            '<input type="text" class="form-control jumlah" style="font-size:14px"  id="jumlah-' +
+            key +
+            '" name="jumlah[]" value="' + jumlah + '" ';
+        item_pembelian += '</div>';
+        item_pembelian += '</td>';
+
+        item_pembelian += '<td style="width: 100px">';
+        item_pembelian += '<button type="button" class="btn btn-primary btn-sm" onclick="Barangs(' + key +
+            ')">';
+        item_pembelian += '<i class="fas fa-plus"></i>';
+        item_pembelian += '</button>';
+        item_pembelian +=
+            '<button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' +
+            key + ')">';
+        item_pembelian += '<i class="fas fa-trash"></i>';
+        item_pembelian += '</button>';
+        item_pembelian += '</td>';
+        item_pembelian += '</tr>';
+
+        $('#tabel-pembelian').append(item_pembelian);
+    }
 </script>
+
+<script>
+    var activeSpecificationIndex = 0;
+
+    function Barangs(param) {
+        activeSpecificationIndex = param;
+        // Show the modal and filter rows if necessary
+        $('#tableBarang').modal('show');
+    }
+
+    function getBarang(rowIndex) {
+        var selectedRow = $('#tablefaktur tbody tr:eq(' + rowIndex + ')');
+        var produk_id = selectedRow.data('id');
+        var kode_lama = selectedRow.data('kode_lama');
+        var nama_produk = selectedRow.data('nama_produk');
+
+        // Update the form fields for the active specification
+        $('#produk_id-' + activeSpecificationIndex).val(produk_id);
+        $('#kode_lama-' + activeSpecificationIndex).val(kode_lama);
+        $('#nama_produk-' + activeSpecificationIndex).val(nama_produk);
+
+        $('#tableBarang').modal('hide');
+    }
+</script>
+
 @endsection
