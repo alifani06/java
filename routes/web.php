@@ -378,6 +378,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/print-report', [Laporan_hasilpenjualanController::class, 'printReport'])->name('print.report');
     Route::get('printLaporanBm', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'printLaporanBm']);
     Route::get('printLaporanBmpesanan', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'printLaporanBmpesanan']);
+    Route::get('printLaporanBmsemua', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'printLaporanBmsemua']);
     Route::get('printLaporanBK', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'printLaporanBK']);
     Route::get('printLaporanBKrinci', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'printLaporanBKrinci']);
     Route::get('printLaporanBR', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'printLaporanBR']);

@@ -298,7 +298,7 @@
         }
 
         const form = document.getElementById('form-action');
-        form.action = "{{ url('admin/printLaporanBm') }}";
+        form.action = "{{ url('admin/printLaporanBmsemua') }}";
         form.target = "_blank";
         form.submit();
     }
