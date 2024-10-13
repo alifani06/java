@@ -27,7 +27,6 @@
             }, 10); // Adjust the delay time as needed
         });
     </script>
-
     <!-- Content Header (Page header) -->
     <div class="content-header" style="display: none;" id="mainContent">
         <div class="container-fluid">
@@ -37,6 +36,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item active">Estimasi Produksi</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -48,17 +48,13 @@
     <section class="content" style="display: none;" id="mainContentSection">
         <div class="container-fluid">
             @if (session('success'))
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: '{{ session('success') }}',
-                        timer: 1000,
-                        showConfirmButton: false
-                    });
-                });
-            </script>
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <h5>
+                        <i class="icon fas fa-check"></i> Success!
+                    </h5>
+                    {{ session('success') }}
+                </div>
             @endif
             @if (session('error'))
                 <div class="alert alert-danger alert-dismissible">
@@ -70,127 +66,129 @@
                 </div>
             @endif
             <div class="card">
-                <div class="card-body">
-                    <div class="row mb-3 align-items-center">
-                        <div class="col-md">
-                            <button class="btn btn-outline-primary mb-3 btn-sm" type="button" id="searchButton" onclick="showCategoryModalpermintaan()">
-                                <i class="fas fa-search" style=""></i>Cari 
-                            </button> 
-                        </div>      
-                        <div class="col-md-6 mb-3 "> 
-                            <input hidden placeholder="Kode Permintaan" type="text" class="form-control" id="id" name="id" value="{{ old('id') }}">
-                        </div>   
-                
-                        
-                    </div>
-                    <div class="float-right">
-                        <button class="btn btn-primary btn-sm mb-3" type="button" id="addRowButton" onclick="addRow()">
-                        <i class="fas fa-plus"></i> Tambah
-                    </button>
+                <div class="card-header">
+                    <h3 class="card-title">Estimasi Produksi</h3>
                 </div>
-                        <table id="datatables67" class="table table-bordered" style="font-size: 13px">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Produk</th>
-                                    <th>Kode Produk</th>
-                                    <th>Total</th>
-                                    <th>Opsi</th>
-                                </tr>
-                            </thead>
-                        <tbody>
-
-                        </tbody>
-                        </table>
+                <!-- /.card-header -->
+                 
+                <div class="card-body">
+                    <form method="GET" id="form-action">
+                        <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <select class="custom-select form-control" id="status" name="status">
+                                <option value="">- Semua Status -</option>
+                                <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
+                                <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
+                            </select>
+                            <label for="status">(Pilih Status)</label>
+                        </div>
+                            <div class="col-md-3 mb-3">
+                                <input class="form-control" id="tanggal_permintaan" name="tanggal_permintaan" type="date"
+                                    value="{{ Request::get('tanggal_permintaan') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_permintaan">(Dari Tanggal)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
+                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_akhir">(Sampai Tanggal)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
+                                    <i class="fas fa-search"></i> Cari
+                                </button>
+                                
+                            </div>
+                        </div>
+                    </form>
+                   
                     
-                        <div class="modal fade" id="tablePermintaan" data-backdrop="static">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title">Data Permintaan</h4>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
+                    <table id="datatables66" class="table table-bordered " style="font-size: 13px">
+                        <thead>
+                            <tr>
+                                <th class="text-center">No</th>
+                                <th>Kode Permintaan</th>
+                                <th>Cabang</th>
+                                <th>Tanggal Permintaan</th>
+                                <th>Jumlah Produk</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($permintaanProduks as $permintaan)
+                                <tr class="dropdown" data-permintaan-id="{{ $permintaan->id }}">
+                                    <td class="text-center">{{ $loop->iteration }}</td>
+                                    <td>{{ $permintaan->kode_permintaan }}</td>
+                                    <td>
+                                        @php
+                                            $tokoNames = $permintaan->detailpermintaanproduks->pluck('toko.nama_toko')->unique()->implode(', ');
+                                        @endphp
+                                        {{ $tokoNames ?: '-' }}
+                                    </td>
+                                    <td>{{ $permintaan->detailpermintaanproduks->first()->tanggal_permintaan ?? 'N/A' }}</td>
+                                    <td>{{ $permintaan->detailpermintaanproduks->count() }}</td>
+                                    <td class="text-center">
+                                        @if ($permintaan->status == 'posting')
+                                            <button type="button" class="btn btn-success btn-sm">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        @endif
+                                        @if ($permintaan->status == 'unpost')
+                                        <button type="button" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-times"></i>
                                         </button>
-                                    </div>
-                                    
-                                    <div class="modal-body">
-                                        <table id="datatables4" class="table table-bordered table-striped">
+                                        @endif
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            @if ($permintaan->status == 'unpost')
+                                                    <a class="dropdown-item posting-btn"data-memo-id="{{ $permintaan->id }}">Posting</a>
+                                                    <a class="dropdown-item" href="{{ url('admin/estimasi_produksi/' . $permintaan->id . '/edit') }}">Update</a>
+                                                    <a class="dropdown-item" href="{{ url('admin/estimasi_produksi/' . $permintaan->id) }}">Show</a>
+                                                    <form action="{{ url('admin/estimasi_produksi/' . $permintaan->id) }}" method="POST" style="display: inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="dropdown-item" onclick="return confirm('Apakah Anda yakin ingin menghapus permintaan produk ini?')">Delete</button>
+                                                    </form>
+                                                    @endif
+                                            @if ($permintaan->status == 'posting')
+                                                    <a class="dropdown-item unpost-btn" data-memo-id="{{ $permintaan->id }}">Unpost</a>
+                                                    <a class="dropdown-item" href="{{ url('admin/estimasi_produksi/' . $permintaan->id) }}">Show</a>
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="permintaan-details" id="details-{{ $permintaan->id }}" style="display: none;">
+                                    <td colspan="5">
+                                        <table class="table table-bordered" style="font-size: 13px;">
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center">No</th>
-                                                    <th>Kode Permintaan</th>
-                                                    <th>Toko</th>
-                                                    <th>Tanggal Permintaan</th>
-                                                    <th>Opsi</th>
+                                                    <th>No</th>
+                                                    <th>Divisi</th>
+                                                    <th>Kode Produk</th>
+                                                    <th>Produk</th>
+                                                    <th>Jumlah</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($permintaanProduks as $item)
-                                                <tr onclick="getSelectedDataPermintaan('{{ $item->id }}')">
-                                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                                        <td>{{ $item->kode_permintaan }}</td>
-                                                        <td>{{ optional($item->detailPermintaanProduks->first()->toko)->nama_toko }}</td>
-                                                        <td>{{ $item->tanggal_permintaan }}</td>
-                                                        <td class="text-center">
-                                                            <button type="button" class="btn btn-primary btn-sm">
-                                                                <i class="fas fa-plus"></i>
-                                                            </button>
-                                                        </td>
+                                                @foreach ($permintaan->detailpermintaanproduks as $detail)
+                                                <tr >
+                                                    <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $detail->produk->klasifikasi->nama }}</td>
+                                                        <td>{{ $detail->produk->kode_lama }}</td>
+                                                        <td>{{ $detail->produk->nama_produk }}</td>
+                                                        <td>{{ $detail->jumlah }}</td>
+                                                        
                                                     </tr>
-                                                @endforeach 
+                                                @endforeach
                                             </tbody>
-                                            
-                                            
                                         </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div><br>
-                        <button class="btn btn-success btn-sm" type="button" id="updateButton" onclick="updateData()">
-                            <i class="fas fa-save"></i> Update
-                        </button>
-                        
-                        <div class="modal fade" id="tableProduk" data-backdrop="static">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Data Produk</h4>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                
-                                <div class="modal-body">
-                                    <table id="datatables5" class="table table-bordered table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center">No</th>
-                                                <th>Kode Produk</th>
-                                                <th>Nama Produk</th>
-                                                <th>Opsi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($produk as $item)
-                                                <tr onclick="getSelectedDataProduk('{{ $item->kode_lama }}', '{{ $item->nama_produk }}', '{{ $item->id }}')">
-                                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                                    <td>{{ $item->kode_lama }}</td>
-                                                    <td>{{ $item->nama_produk }}</td>
-                                                    <td class="text-center">
-                                                        <button type="button" class="btn btn-primary btn-sm">
-                                                            <i class="fas fa-plus"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            @endforeach 
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                    </td>
+        
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                     <!-- Modal Loading -->
-                    <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog" aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">
+                    <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
+                        aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-body text-center">
@@ -202,229 +200,161 @@
                     </div>
                 </div>
                 <!-- /.card-body -->
-                
-            <!-- /.card-body -->
-            
             </div>
-            </div>
-            
+        </div>
     </section>
 
-<script>
-    function showCategoryModalpermintaan() {
-        $('#tablePermintaan').modal('show');
-            }
-   
 
-    function getSelectedDataPermintaan(id, id) {
-    // Pastikan Anda memiliki elemen input dengan ID 'id' dan 'id_permintaan'
-    document.getElementById('id').value = id;
-    document.getElementById('id_permintaan').value = id; // Menambahkan baris ini untuk mengisi ID
-    
-    // Sembunyikan modal
-    $('#tablePermintaan').modal('hide');
-
-    // Panggil Ajax untuk mendapatkan data detail permintaan produk
-    $.ajax({
-        url: '{{ route("getDetailPermintaanProduk") }}', // Gunakan fungsi route() di sini
-        type: 'GET',
-        data: { id: id },
-        success: function(response) {
-            console.log(response); // Debug untuk memastikan response
-            
-            // Kosongkan tabel sebelum mengisi data baru
-            $('#datatables67 tbody').empty();
-
-            // Iterasi melalui response untuk menampilkan data di tabel
-            $.each(response, function(index, item) {
-                $('#datatables67 tbody').append(
-                    `<tr data-produk-id="${item.produk.id}" data-permintaanproduk-id="${item.permintaanproduk_id}">
-                        <td>${index + 1}</td>
-                        <td>${item.produk.nama_produk}</td>
-                        <td>${item.produk.kode_lama}</td>
-                        <td>
-                            <input type="number" class="form-control form-control-sm" name="jumlah[${index}]" value="${item.jumlah}" min="1" id="jumlah_${index}" style="width: 80px;">
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">
-                                <i class="fas fa-trash"></i> 
-                            </button>
-                            <button type="button" class="btn btn-primary btn-sm">
-                                <i class="fas fa-plus"></i> 
-                            </button>
-                        </td>
-                    </tr>`
-                );
-            });
-        },
-        error: function(xhr) {
-            console.log('Error:', xhr.responseText);
+    <!-- /.card -->
+    <script>
+        var tanggalAwal = document.getElementById('tanggal_permintaan');
+        var tanggalAkhir = document.getElementById('tanggal_akhir');
+        if (tanggalAwal.value == "") {
+            tanggalAkhir.readOnly = true;
         }
-    });
-}
-
-</script>
-
-<script>
-    let activeRow = null; // Variabel untuk menyimpan baris yang sedang aktif
-
-    // Fungsi untuk menampilkan modal
-    function showCategoryModalproduk() {
-        $('#tableProduk').modal('show');
-    }
-
-    // Fungsi untuk mengambil data dari modal dan mengisi ke baris yang aktif
-    function getSelectedDataProduk(kode_lama, nama_produk) {
-        // Jika tidak ada baris yang aktif, tambahkan baris baru
-        if (!activeRow) {
-            addRow(); // Panggil addRow jika tidak ada baris yang dipilih
-            activeRow = $('#datatables67 tbody tr').last(); // Tetapkan baris terakhir sebagai aktif
-        }
-
-        // Isi data produk di baris aktif
-        activeRow.find('input[name^="nama_produk"]').val(nama_produk);
-        activeRow.find('input[name^="kode_lama"]').val(kode_lama);
-
-        // Reset activeRow setelah data diisi
-        activeRow = null;
-
-        // Tutup modal setelah memilih produk
-        $('#tableProduk').modal('hide');
-    }
-
-    // Fungsi untuk menambah baris baru
-    function addRow() {
-        const rowCount = $('#datatables67 tbody tr').length; // Hitung jumlah baris yang ada
-        $('#datatables67 tbody').append(
-            `<tr onclick="setActiveRow(this)">
-                <td>${rowCount + 1}</td>
-                <td>
-                    <input type="text" class="form-control form-control-sm" placeholder="Nama Produk" name="nama_produk[${rowCount}]" readonly required>
-                </td>
-                
-                <td>
-                    <input type="text" class="form-control form-control-sm" placeholder="Kode Produk" name="kode_lama[${rowCount}]" readonly required>
-                </td>
-                <td>
-                    <input type="number" class="form-control form-control-sm" name="jumlah[${rowCount}]" min="1"  style="width: 80px;" required>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">
-                        <i class="fas fa-trash"></i> 
-                    </button>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModalproduk()">
-                        <i class="fas fa-plus"></i> 
-                    </button>
-                </td>
-            </tr>`
-        );
-    }
-
-    // Fungsi untuk menghapus baris
-    function removeRow(button) {
-        $(button).closest('tr').remove(); // Menghapus baris terdekat
-        // Update nomor urut setelah penghapusan
-        $('#datatables67 tbody tr').each(function(index) {
-            $(this).find('td:first').text(index + 1); // Memperbarui nomor urut
-        });
-    }
-
-    // Fungsi untuk menetapkan baris aktif
-    function setActiveRow(row) {
-        activeRow = $(row); // Tetapkan baris yang diklik sebagai aktif
-    }
-</script>
-
-
-<script>
-    function getSelectedDataPermintaan(id) {
-        document.getElementById('id').value = id;
-        $('#tablePermintaan').modal('hide');
-
-        // Panggil Ajax untuk mendapatkan data detail permintaan produk
-        $.ajax({
-            url: '{{ route("getDetailPermintaanProduk") }}', // Gunakan fungsi route() di sini
-            type: 'GET',
-            data: { id: id },
-            success: function(response) {
-                console.log(response); // Tambahkan ini untuk debug
-                
-                // Kosongkan tabel sebelum mengisi data baru
-                $('#datatables67 tbody').empty();
-
-                // Iterasi melalui response untuk menampilkan data di tabel
-                $.each(response, function(index, item) {
-                    $('#datatables67 tbody').append(
-                        `<tr data-produk-id="${item.produk.id}" data-permintaanproduk-id="${item.permintaanproduk_id}">
-                            <td>${index + 1}</td>
-                            <td>${item.produk.nama_produk}</td>
-                            <td>${item.produk.kode_lama}</td>
-                            <td>
-                                <input type="number" class="form-control form-control-sm" name="jumlah[${index}]" value="${item.jumlah}" min="1" id="jumlah_${index}" style="width: 80px;">
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">
-                                    <i class="fas fa-trash"></i> 
-                                </button>
-                                <button type="button" class="btn btn-primary btn-sm">
-                                    <i class="fas fa-plus"></i> 
-                                </button>
-                            </td>
-                        </tr>`
-                    );
-                });
-            },
-            error: function(xhr) {
-                console.log('Error:', xhr.responseText);
-            }
-        });
-    }
-</script>
-
-<script>
-   function updateData() {
-    // Buat array untuk menyimpan data yang akan diupdate
-    let updateData = [];
-    let permintaanProdukId; // Deklarasikan variabel untuk menyimpan permintaanproduk_id
-
-    // Iterasi melalui setiap row untuk mendapatkan data yang diinputkan
-    $('#datatables67 tbody tr').each(function(index, row) {
-        let produkId = $(row).data('produk-id'); // Ambil produk_id
-        permintaanProdukId = $(row).data('permintaanproduk-id'); // Ambil permintaanproduk_id dari baris
-
-        let jumlahBaru = $(row).find('input[name^="jumlah"]').val(); // Ambil jumlah baru
-
-        updateData.push({
-            produk_id: produkId, // Kirim produk_id
-            permintaanproduk_id: permintaanProdukId, // Kirim permintaanproduk_id
-            jumlah: jumlahBaru
-        });
-    });
-
-    // Kirim data ke backend melalui AJAX
-    $.ajax({
-        url: '{{ route("updateDetailPermintaanProduk") }}', // Gunakan fungsi route() di sini
-        type: 'POST',
-        data: {
-            _token: '{{ csrf_token() }}', // Token CSRF untuk keamanan
-            updateData: updateData,
-            permintaanproduk_id: permintaanProdukId // Kirim permintaanproduk_id ke server (bisa dari baris pertama)
-        },
-        success: function(response) {
-            if (response.success) {
-                alert('Data berhasil diperbarui!');
-                // Alihkan ke halaman show setelah berhasil
-                window.location.href = response.redirectUrl; // Arahkan ke URL yang diterima dari response
+        tanggalAwal.addEventListener('change', function() {
+            if (this.value == "") {
+                tanggalAkhir.readOnly = true;
             } else {
-                alert('Gagal memperbarui data.');
-            }
-        },
-        error: function(xhr) {
-            console.log('Error:', xhr.responseText);
+                tanggalAkhir.readOnly = false;
+            };
+            tanggalAkhir.value = "";
+            var today = new Date().toISOString().split('T')[0];
+            tanggalAkhir.value = today;
+            tanggalAkhir.setAttribute('min', this.value);
+        });
+        var form = document.getElementById('form-action')
+
+        function cari() {
+            form.action = "{{ url('admin/estimasi_produksi') }}";
+            form.submit();
+        }
+
+    </script>
+   
+   <script>
+    $(document).ready(function() {
+    $('tbody tr.dropdown').click(function(e) {
+        // Memeriksa apakah yang diklik adalah checkbox
+        if ($(e.target).is('input[type="checkbox"]')) {
+            return; // Jika ya, hentikan eksekusi
+        }
+
+        // Menyembunyikan detail untuk baris yang tidak dipilih
+        $('tbody tr.dropdown').not(this).removeClass('selected').css('background-color', '');
+        $('.permintaan-details').not('#details-' + $(this).data('permintaan-id')).hide();
+
+        // Toggle visibility untuk detail baris yang dipilih
+        var detailRowId = $(this).data('permintaan-id');
+        var detailRow = $('#details-' + detailRowId);
+        var isActive = detailRow.is(':visible');
+
+        // Menghapus kelas 'selected' dan mengembalikan warna latar belakang ke warna default dari semua baris
+        $('tr.dropdown').removeClass('selected').css('background-color', '');
+        
+        if (isActive) {
+            detailRow.hide(); // Menyembunyikan detail jika sudah ditampilkan
+        } else {
+            $(this).addClass('selected').css('background-color', '#b0b0b0'); // Menambahkan kelas 'selected' dan mengubah warna latar belakangnya
+            detailRow.show(); // Menampilkan detail jika belum ditampilkan
+        }
+
+        // Menyembunyikan dropdown pada baris lain yang tidak dipilih
+        $('tbody tr.dropdown').not(this).find('.dropdown-menu').hide();
+
+        // Mencegah event klik menyebar ke atas (misalnya, saat mengklik dropdown)
+        e.stopPropagation();
+    });
+
+    $('tbody tr.dropdown').contextmenu(function(e) {
+        // Memeriksa apakah baris ini memiliki kelas 'selected'
+        if ($(this).hasClass('selected')) {
+            // Menampilkan dropdown saat klik kanan
+            var dropdownMenu = $(this).find('.dropdown-menu');
+            dropdownMenu.show();
+
+            // Mendapatkan posisi td yang diklik
+            var clickedTd = $(e.target).closest('td');
+            var tdPosition = clickedTd.position();
+
+            // Menyusun posisi dropdown relatif terhadap td yang di klik
+            dropdownMenu.css({
+                'position': 'absolute',
+                'top': tdPosition.top + clickedTd.height(), // Menempatkan dropdown sedikit di bawah td yang di klik
+                'left': tdPosition.left // Menempatkan dropdown di sebelah kiri td yang di klik
+            });
+
+            // Mencegah event klik kanan menyebar ke atas (misalnya, saat mengklik dropdown)
+            e.stopPropagation();
+            e.preventDefault(); // Mencegah munculnya konteks menu bawaan browser
         }
     });
-}
 
+    // Menyembunyikan dropdown saat klik di tempat lain
+    $(document).click(function() {
+        $('.dropdown-menu').hide();
+        $('tr.dropdown').removeClass('selected').css('background-color', ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
+    });
+});
+</script>
+
+  {{-- unpost stok  --}}
+  <script>
+    $(document).ready(function() {
+        $('.unpost-btn').click(function() {
+            var memoId = $(this).data('memo-id');
+            $(this).addClass('disabled');
+
+            $('#modal-loading').modal('show');
+
+            $.ajax({
+                url: "{{ url('admin/estimasi_produksi/unpost_permintaanproduk/') }}/" + memoId,
+                type: 'GET',
+                data: {
+                    id: memoId
+                },
+                success: function(response) {
+                    $('#modal-loading').modal('hide');
+                    console.log(response);
+                    $('#modal-posting-' + memoId).modal('hide');
+                    location.reload();
+                },
+                error: function(error) {
+                    $('#modal-loading').modal('hide');
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
+
+{{-- posting stok --}}
+<script>
+    $(document).ready(function() {
+        $('.posting-btn').click(function() {
+            var memoId = $(this).data('memo-id');
+            $(this).addClass('disabled');
+
+            $('#modal-loading').modal('show');
+
+            $.ajax({
+                url: "{{ url('admin/estimasi_produksi/posting_permintaanproduk/') }}/" + memoId,
+                type: 'GET',
+                data: {
+                    id: memoId
+                },
+                success: function(response) {
+                    $('#modal-loading').modal('hide');
+                    console.log(response);
+                    $('#modal-posting-' + memoId).modal('hide');
+                    location.reload();
+                },
+                error: function(error) {
+                    $('#modal-loading').modal('hide');
+                    console.log(error);
+                }
+            });
+        });
+    });
 </script>
 @endsection
-

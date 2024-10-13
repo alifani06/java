@@ -126,6 +126,13 @@
 
         <!-- Judul Surat -->
         <div class="change-header">SURAT PERMINTAAN PRODUK</div>
+
+        <!-- Tanggal Surat -->
+        {{-- <div class="tanggal">
+            Tanggal : {{ \Carbon\Carbon::now()->format('d/m/Y H:i:s') }}
+        </div> --}}
+
+        <!-- Informasi Permintaan -->
         <div>
             <p>
                 <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>No Permintaan</strong></span>
@@ -190,15 +197,15 @@
 
         <div class="d-flex justify-content-between">
             <div>
-                <a href="{{ url('admin/estimasi_produksi') }}" class="btn btn-primary btn-sm">
+                {{-- <a href="{{ url('toko_banjaran/permintaan_produk') }}" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus"></i> Kembali
-                </a>
+                </a> --}}
             </div>
-            <div>
-                <a href="{{ route('estimasi_produksi.print', $permintaanProduk->id) }}"  id="printButton" target="_blank" class="btn btn-primary btn-sm">
+            {{-- <div>
+                <a href="{{ route('permintaan_produk.print', $permintaanProduk->id) }}"  id="printButton" target="_blank" class="btn btn-primary btn-sm">
                     <i class="fas fa-print"></i> Cetak 
                 </a>
-            </div>
+            </div> --}}
             <div>
                 {{-- <a href="{{ url('toko_banjaran/permintaan-produk/' . $permintaanProduk->id . '/print') }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
                     <i class="fas fa-print"></i> Cetak 

@@ -80,7 +80,8 @@ class Inquery_permintaanprodukController extends Controller
         
         // Menggunakan with untuk eager loading relasi detailpermintaanproduks
         $permintaanProduks = $inquery->with('detailpermintaanproduks')->get();
-        return view('toko_tegal.inquery_permintaanproduk.index', compact('permintaanProduks'));
+        return view('toko_tegal.inquery_
+        permintaanproduk.index', compact('permintaanProduks'));
     }
     
     

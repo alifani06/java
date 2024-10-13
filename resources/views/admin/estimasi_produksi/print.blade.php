@@ -7,12 +7,19 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <style>
+        @page {     
+            margin: 1cm;
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);
+            }
+        }   
+
         body {
             font-family: Arial, sans-serif;
-            font-size: 12px;
+            font-size: 10px;
             margin: 0;
             padding: 0;
-            padding-bottom: 40px;
+            padding-bottom: 80px; /* Tambahkan ruang ekstra untuk informasi admin */
         }
         .container {
             width: 80%;
@@ -24,11 +31,11 @@
         }
         .header {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 10px;
         }
         .header .title {
             font-weight: bold;
-            font-size: 28px;
+            font-size: 24px;
         }
         .header .address, .header .contact {
             font-size: 12px;
@@ -40,9 +47,10 @@
         }
         .change-header {
             text-align: center;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
-            margin-top: 40px;
+            margin-top: 4px;
+            margin-bottom: 5px;
         }
         .tanggal {
             text-align: left;
@@ -51,7 +59,7 @@
             margin-top: 20px;
         }
         .section-title {
-            margin-top: 30px;
+            margin-top: 5px;
             margin-bottom: 10px;
             font-weight: bold;
             font-size: 16px;
@@ -61,24 +69,28 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            margin-bottom: 9px;
         }
         th, td {
-            padding: 6px;
-            border: 1px solid #ccc;
+            padding: 4px;
+            border: 1px solid black;
             text-align: left;
-            width: 20%; /* Atur lebar kolom ke nilai persentase yang sesuai */
         }
         th {
-            background-color: #f2f2f2;
+            background-color: white;
+        }
+        /* Atur ukuran font di dalam tabel */
+        table td, table th {
+            font-size: 8px; /* Ukuran font tabel lebih kecil */
         }
         table th:nth-child(1),
-        table td:nth-child(1) { width: 10%; } /* Lebar untuk kolom No */
+        table td:nth-child(1) { width: 5%; } /* Lebar untuk kolom No */
 
         table th:nth-child(2),
-        table td:nth-child(2) { width: 25%; } /* Lebar untuk kolom Divisi */
+        table td:nth-child(2) { width: 25%; } /* Lebar untuk kolom Kode Produk */
 
         table th:nth-child(3),
-        table td:nth-child(3) { width: 25%; } /* Lebar untuk kolom Kode Produk */
+        table td:nth-child(3) { width: 25%; } /* Lebar untuk kolom Kategori */
 
         table th:nth-child(4),
         table td:nth-child(4) { width: 30%; } /* Lebar untuk kolom Produk */
@@ -100,49 +112,54 @@
         .row p {
             margin: 0;
         }
+        p {
+            margin: 5px 0;
+        }
         .total-row {
             font-weight: bold;
+        }
+        .admin-info {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
         <!-- Kop Surat -->
         <div class="header">
             <div class="logo">
                 <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
             </div>
             <div>
-                <span class="title">PT JAVA BAKERY</span><br>
+                <span class="title">PT JAVA BAKERY FACTORY</span><br>
                 @if($toko)
                 <span class="toko-name">Cabang: {{ $toko->nama_toko }}</span><br>
                 <span class="address">{{$toko->alamat}}</span><br>
                 @endif
-
             </div>
-            <br>
             <hr class="divider">
         </div>
 
         <!-- Judul Surat -->
         <div class="change-header">SURAT PERMINTAAN PRODUK</div>
-        <div>
+
+        <!-- Informasi Permintaan -->
+        <div style="margin-top: 2px;">
             <p>
-                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>No Permintaan</strong></span>
+                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Permintaan</strong></span>
                 <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->kode_permintaan }}</span>
             </p>
             <p>
                 <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal</strong> </span>
-                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->created_at->format('d-m-Y') }}</span>
+                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->created_at->format('d-m-Y H:i') }}</span>
             </p>
-          
         </div>
 
-       
         @foreach ($produkByDivisi as $divisi => $produks)
         <div class="section-title">{{ $divisi }}</div>
         
-        <table>
+        <table >
             <thead>
                 <tr>
                     <th>No</th>
@@ -162,21 +179,15 @@
                         @foreach ($produkList as $detail)
                             <tr>
                                 <td>{{ $no++ }}</td> 
-                                <td>{{ $detail->produk->kode_lama }}</td>
+                                <td>{{ $detail->produk->kode_produk }}</td>
                                 <td>{{ $subklasifikasi }}</td>
                                 <td>{{ $detail->produk->nama_produk }}</td>
                                 <td style="text-align: right">{{ $detail->jumlah }}</td>
                             </tr>
                         @endforeach
-                    {{-- Menampilkan total untuk subklasifikasi --}}
-                    {{-- <tr class="total-row">
-                        <td colspan="4">Total {{ $subklasifikasi }}</td>
-                        <td>{{ $produkList->sum('jumlah') }}</td>
-                    </tr> --}}
                 @endforeach
             </tbody>
 
-            {{-- Menampilkan total untuk divisi --}}
             <tfoot>
                 <tr class="total-row">
                     <td colspan="4">Total </td>
@@ -184,30 +195,15 @@
                 </tr>
             </tfoot>
         </table><br>
-    @endforeach
+        @endforeach
+
+        <!-- Informasi Admin Toko -->
+        <div class="admin-info">
+            <p><strong>Admin Toko</strong></p><br><br>
+            <p>{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</p>
     
-
-
-        <div class="d-flex justify-content-between">
-            <div>
-                <a href="{{ url('admin/estimasi_produksi') }}" class="btn btn-primary btn-sm">
-                    <i class="fas fa-plus"></i> Kembali
-                </a>
-            </div>
-            <div>
-                <a href="{{ route('estimasi_produksi.print', $permintaanProduk->id) }}"  id="printButton" target="_blank" class="btn btn-primary btn-sm">
-                    <i class="fas fa-print"></i> Cetak 
-                </a>
-            </div>
-            <div>
-                {{-- <a href="{{ url('toko_banjaran/permintaan-produk/' . $permintaanProduk->id . '/print') }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
-                    <i class="fas fa-print"></i> Cetak 
-                </a> --}}
-            </div>
-            
         </div>
     </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
 </html>
