@@ -368,6 +368,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('laporan_hasilpenjualan', \App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class);
     Route::get('barangMasukpesanan', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'barangMasukpesanan']);
     Route::get('barangMasukpesanan', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'barangMasukpesanan'])->name('barangMasukpesanan');
+    Route::get('barangMasuksemua', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'barangMasuksemua'])->name('barangMasukpesanan');
     Route::get('barangKeluar', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'barangKeluar']);
     Route::get('barangKeluarRinci', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'barangKeluarRinci']);
     Route::get('barangRetur', [\App\Http\Controllers\Admin\Laporan_hasilpenjualanController::class, 'barangRetur']);

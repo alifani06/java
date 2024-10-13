@@ -90,6 +90,7 @@
                                     <option value="">- Pilih -</option>
                                     <option value="permintaan" {{ old('kategori2') == 'permintaan' ? 'selected' : '' }}>BM STOK</option>
                                     <option value="pemesanan" {{ old('kategori2') == 'pemesanan' ? 'selected' : '' }}>BM PEMESANAN</option>
+                                    <option value="semua" {{ old('kategori2') == 'semua' ? 'selected' : '' }}>SEMUA BM</option>
                                 </select>
                             </div>
                             <div class="col-md-3 mb-3">
@@ -263,6 +264,8 @@
             window.location.href = "{{ url('admin/laporan_hasilpenjualan') }}";
         } else if (selectedValue === 'pemesanan') {
             window.location.href = "{{ url('admin/barangMasukpesanan') }}";
+        }else if (selectedValue === 'semua') {
+            window.location.href = "{{ url('admin/barangMasuksemua') }}";
         }
     });
 </script>

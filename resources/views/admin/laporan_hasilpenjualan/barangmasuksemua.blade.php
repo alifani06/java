@@ -35,7 +35,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Barang Masuk Pesanan</h1>
+                    <h1 class="m-0">Laporan Barang Masuk Permintaan</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -77,7 +77,7 @@
                             <option value="retur" {{ old('kategori1') == 'retur' ? 'selected' : '' }}>Barang Retur</option>
                         </select>
                     </div>
-                    <h3 class="card-title">Laporan Barang Masuk</h3>
+                    <h3 class="card-title">Laporan Semua Barang Masuk</h3>
                 </div>
                 
                 <div class="card-body">
@@ -91,7 +91,6 @@
                                     <option value="permintaan" {{ old('kategori2') == 'permintaan' ? 'selected' : '' }}>BM STOK</option>
                                     <option value="pemesanan" {{ old('kategori2') == 'pemesanan' ? 'selected' : '' }}>BM PEMESANAN</option>
                                     <option value="semua" {{ old('kategori2') == 'semua' ? 'selected' : '' }}>SEMUA BM</option>
-
                                 </select>
                             </div>
                             <div class="col-md-3 mb-3">
@@ -174,17 +173,23 @@
                             @endphp
                             @foreach ($stokBarangJadi as $index => $item)
                             @php
+                                // Tambahkan pengecekan untuk setiap sumber data
+                                $produk = $item->produk ?? null; // Jika relasi produk tidak ada
+                                $kodeProduk = $produk ? $produk->kode_lama : '-'; // Cek apakah produk tersedia
+                                $namaProduk = $produk ? $produk->nama_produk : 'Produk tidak ditemukan';
+                                $hargaProduk = $produk ? $produk->harga : 0;
+                    
                                 $totalJumlah += $item->jumlah;
-                                $totalHarga = $item->jumlah * $item->produk->harga;
+                                $totalHarga = $item->jumlah * $hargaProduk;
                                 $grandTotal += $totalHarga;
                             @endphp
                             <tr>
                                 <td class="text-center">{{ $index + 1 }}</td>
                                 <td>{{ \Carbon\Carbon::parse($item->tanggal_pengiriman)->format('d/m/Y H:i') }}</td>
-                                <td>{{ $item->produk->kode_lama }}</td>
-                                <td>{{ $item->produk->nama_produk }}</td>
+                                <td>{{ $kodeProduk }}</td>
+                                <td>{{ $namaProduk }}</td>
                                 <td style="text-align: right">{{ $item->jumlah }}</td>
-                                <td style="text-align: right">{{ number_format($item->produk->harga, 0, ',', '.') }}</td>
+                                <td style="text-align: right">{{ number_format($hargaProduk, 0, ',', '.') }}</td>
                                 <td style="text-align: right">{{ number_format($totalHarga, 0, ',', '.') }}</td>
                             </tr>
                             @endforeach
@@ -198,6 +203,7 @@
                             </tr>
                         </tfoot>
                     </table>
+                    
                 
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
@@ -238,7 +244,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ route('barangMasukpesanan') }}";
+            form.action = "{{ url('admin/laporan_hasilpenjualan') }}";
             form.submit();
         }
 
@@ -254,6 +260,19 @@
             window.location.href = "{{ url('admin/barangKeluar') }}";
         }else if (selectedValue === 'retur') {
             window.location.href = "{{ url('admin/barangRetur') }}";
+        }
+    });
+</script>
+<script>
+    document.getElementById('kategori2').addEventListener('change', function() {
+        var selectedValue = this.value;
+
+        if (selectedValue === 'permintaan') {
+            window.location.href = "{{ url('admin/laporan_hasilpenjualan') }}";
+        } else if (selectedValue === 'pemesanan') {
+            window.location.href = "{{ url('admin/barangMasukpesanan') }}";
+        }else if (selectedValue === 'semua') {
+            window.location.href = "{{ url('admin/barangMasuksemua') }}";
         }
     });
 </script>
@@ -279,24 +298,12 @@
         }
 
         const form = document.getElementById('form-action');
-        form.action = "{{ url('admin/printLaporanBmpesanan') }}";
+        form.action = "{{ url('admin/printLaporanBm') }}";
         form.target = "_blank";
         form.submit();
     }
 </script>
-<script>
-    document.getElementById('kategori2').addEventListener('change', function() {
-        var selectedValue = this.value;
 
-        if (selectedValue === 'permintaan') {
-            window.location.href = "{{ url('admin/laporan_hasilpenjualan') }}";
-        } else if (selectedValue === 'pemesanan') {
-            window.location.href = "{{ url('admin/barangMasukpesanan') }}";
-        }else if (selectedValue === 'semua') {
-            window.location.href = "{{ url('admin/barangMasuksemua') }}";
-        }
-    });
-</script>
 
 
 <script>
