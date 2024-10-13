@@ -367,7 +367,7 @@
         if (selectedValue === 'permintaan') {
             window.location.href = "{{ route('toko_tegal.pengiriman_tokotegal.index') }}"; 
         } else if (selectedValue === 'pemesanan') {
-            window.location.href = "{{ route('pengirimanpemesanan_tokobanjaran.index') }}"; 
+            window.location.href = "{{ route('pengirimanpemesanan_tokotegal.index') }}"; 
         }
     });
 </script>
