@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_tegal;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -18,7 +18,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class Laporan_depositbanjaranController extends Controller
+class Laporan_deposittegalController extends Controller
 {
  
 
@@ -108,7 +108,7 @@ class Laporan_depositbanjaranController extends Controller
         $inquery = $inquery->get();
         
         // Kirim data ke view
-        return view('toko_banjaran.laporan_depositbanjaran.index', compact('inquery', 'tokos'));
+        return view('toko_tegal.laporan_deposittegal.index', compact('inquery', 'tokos'));
     }
 
     public function indexrinci(Request $request)
@@ -197,7 +197,7 @@ class Laporan_depositbanjaranController extends Controller
         $inquery = $inquery->get();
         
         // Kirim data ke view
-        return view('toko_banjaran.laporan_depositbanjaran.indexrinci', compact('inquery', 'tokos'));
+        return view('toko_tegal.laporan_deposittegal.indexrinci', compact('inquery', 'tokos'));
     }
 
     public function indexsaldo(Request $request)
@@ -230,7 +230,7 @@ class Laporan_depositbanjaranController extends Controller
         }
 
         // Kirim data ke view
-        return view('toko_banjaran.laporan_depositbanjaran.indexsaldo', compact('saldoPerToko', 'tokos', 'toko_id'));
+        return view('toko_tegal.laporan_deposittegal.indexsaldo', compact('saldoPerToko', 'tokos', 'toko_id'));
     }
 
 
@@ -336,7 +336,7 @@ class Laporan_depositbanjaranController extends Controller
         $branchName = Toko::find($toko_id)->nama_toko ?? 'Toko Banjaran';
     
         // Buat PDF menggunakan Facade PDF
-        $pdf = FacadePdf::loadView('toko_banjaran.laporan_depositbanjaran.print', [
+        $pdf = FacadePdf::loadView('toko_tegal.laporan_deposittegal.print', [
             'inquery' => $inquery,
             'tokos' => $tokos,
             'status' => $status,
@@ -480,7 +480,7 @@ class Laporan_depositbanjaranController extends Controller
 
     
     //     // Buat PDF menggunakan Facade PDF
-    //     $pdf = FacadePdf::loadView('toko_banjaran.laporan_depositbanjaran.printrinci', [
+    //     $pdf = FacadePdf::loadView('toko_tegal.laporan_deposittegal.printrinci', [
     //         'inquery' => $inquery,
     //         'tokos' => $tokos,
     //         'status' => $status,
@@ -625,7 +625,7 @@ class Laporan_depositbanjaranController extends Controller
         });
 
         // Kirim data ke view cetak
-        $pdf = FacadePdf::loadView('toko_banjaran.laporan_depositbanjaran.printrinci', compact(
+        $pdf = FacadePdf::loadView('toko_tegal.laporan_deposittegal.printrinci', compact(
             'inquery', 
             'tokos', 
             'status', 
@@ -702,7 +702,7 @@ class Laporan_depositbanjaranController extends Controller
         }
 
         // Kirim data ke view cetak
-        $pdf = FacadePdf::loadView('toko_banjaran.laporan_depositbanjaran.printsaldo', compact(
+        $pdf = FacadePdf::loadView('toko_tegal.laporan_deposittegal.printsaldo', compact(
             'saldoPerToko',
             'tokos',
             'toko_id',

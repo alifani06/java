@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_tegal;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -27,7 +27,7 @@ use App\Models\Pemesananproduk;
 use App\Models\Stok_tokoslawi;
 use App\Models\Stok_tokobanjaran;
 use App\Models\Retur_tokoslawi;
-use App\Models\Retur_tokobanjaran;
+use App\Models\Retur_tokotegal;
 use App\Models\Retur_barangjadi;
 use App\Models\Toko;
 use App\Models\Dppemesanan;
@@ -41,14 +41,14 @@ use App\Imports\ProdukImport;
 use App\Models\Retur_barnagjadi;
 use Maatwebsite\Excel\Facades\Excel;
 
-class Inquery_returbanjaranController extends Controller{
+class Inquery_returtegalController extends Controller{
 
     // public function index()
     // {
     //     // Ambil data retur_tokoslawi beserta relasi produk
     //     $retur_tokoslawi = Retur_tokoslawi::with('produk')->where('status', 'posting')->get();
     
-    //     return view('toko_banjaran.retur_tokoslawi.index', compact('retur_tokoslawi'));
+    //     return view('toko_tegal.retur_tokoslawi.index', compact('retur_tokoslawi'));
     // }
     public function index(Request $request)
     {
@@ -56,7 +56,7 @@ class Inquery_returbanjaranController extends Controller{
             $tanggal_input = $request->tanggal_input;
             $tanggal_akhir = $request->tanggal_akhir;
 
-            $query = Retur_tokobanjaran::with('produk.klasifikasi');
+            $query = Retur_tokotegal::with('produk.klasifikasi');
 
             if ($status) {
                 $query->where('status', $status);
@@ -80,7 +80,7 @@ class Inquery_returbanjaranController extends Controller{
             // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
             $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_retur');
 
-            return view('toko_banjaran.inquery_returbanjaran.index', compact('stokBarangJadi'));
+            return view('toko_tegal.inquery_returtegal.index', compact('stokBarangJadi'));
     }
 
     
@@ -91,7 +91,7 @@ public function create()
     $produks = Produk::all();
     $tokos = Toko::all();
 
-    return view('toko_banjaran.retur_tokoslawi.create', compact('produks', 'tokos'));
+    return view('toko_tegal.retur_tokoslawi.create', compact('produks', 'tokos'));
 }
 
 public function show($id)
@@ -110,12 +110,12 @@ public function show($id)
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    return view('toko_banjaran.inquery_returslawi.show', compact('pengirimanBarangJadi', 'firstItem'));
+    return view('toko_tegal.inquery_returslawi.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
 public function print($id)
     {
-        $detailStokBarangJadi = Retur_tokobanjaran::where('id', $id)->value('kode_retur');
+        $detailStokBarangJadi = Retur_tokotegal::where('id', $id)->value('kode_retur');
     
         // Jika kode_retur tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -123,16 +123,16 @@ public function print($id)
         }
         
         // Ambil semua data dengan kode_retur yang sama
-        $pengirimanBarangJadi = Retur_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
+        $pengirimanBarangJadi = Retur_tokotegal::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
         
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        $pdf = FacadePdf::loadView('toko_banjaran.inquery_returbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
+        $pdf = FacadePdf::loadView('toko_tegal.inquery_returtegal.print', compact('pengirimanBarangJadi', 'firstItem'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
         
-        // return view('toko_banjaran.retur_tokoslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
+        // return view('toko_tegal.retur_tokoslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
         }
 
 }

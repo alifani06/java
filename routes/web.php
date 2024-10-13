@@ -674,10 +674,10 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::get('inquery_penjualanproduktegal/posting_penjualanproduk/{id}', [\App\Http\Controllers\Toko_tegal\Inquery_penjualanproduktegalController::class, 'posting_penjualanproduk']);
     Route::get('/toko_tegal/inquery_penjualanproduk/cetak-pdf{id}', [Inquery_penjualanproduktegalController::class, 'cetakPdf'])->name('toko_tegal.inquery_penjualanproduk.cetak-pdf');
 
-    Route::resource('laporan_penjualanproduk', \App\Http\Controllers\Toko_banjaran\Laporan_penjualanprodukController::class);
-    Route::get('printReport', [\App\Http\Controllers\Toko_banjaran\Laporan_penjualanprodukController::class, 'printReport']);
-    Route::get('printReportglobal', [\App\Http\Controllers\Toko_banjaran\Laporan_penjualanprodukController::class, 'printReportglobal']);
-    Route::get('indexglobal', [\App\Http\Controllers\Toko_banjaran\Laporan_penjualanprodukController::class, 'indexglobal']);
+    Route::resource('laporan_penjualanproduk', \App\Http\Controllers\Toko_tegal\Laporan_penjualanprodukController::class);
+    Route::get('printReport', [\App\Http\Controllers\Toko_tegal\Laporan_penjualanprodukController::class, 'printReport']);
+    Route::get('printReportglobal', [\App\Http\Controllers\Toko_tegal\Laporan_penjualanprodukController::class, 'printReportglobal']);
+    Route::get('indexglobal', [\App\Http\Controllers\Toko_tegal\Laporan_penjualanprodukController::class, 'indexglobal']);
 
     Route::resource('permintaan_produk', \App\Http\Controllers\Toko_tegal\PermintaanproduktegalController::class);
     Route::post('toko_tegal/permintaan_produk', [PermintaanproduktegalController::class, 'store']);

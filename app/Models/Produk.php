@@ -61,6 +61,10 @@ class Produk extends Model
     {
         return $this->hasOne(Stok_tokobanjaran::class, 'produk_id');
     }
+    public function stok_tokotegal()
+    {
+        return $this->hasOne(Stok_tokotegal::class, 'produk_id');
+    }
 
     //create baru
     // public function stok_tokobanjaran()
@@ -72,6 +76,10 @@ class Produk extends Model
     public function stokpesanan_tokobanjaran()
     {
         return $this->hasOne(Stokpesanan_tokobanjaran::class, 'produk_id');
+    }
+    public function stokpesanan_tokotegal()
+    {
+        return $this->hasOne(Stokpesanan_tokotegal::class, 'produk_id');
     }
     public function tokobumiayu()
     {

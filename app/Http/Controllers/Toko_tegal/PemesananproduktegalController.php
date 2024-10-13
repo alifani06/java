@@ -71,17 +71,17 @@ class PemesananproduktegalController extends Controller
         $pelanggans = Pelanggan::all();
         $details = Detailbarangjadi::all();
         $tokoslawis = Tokoslawi::all();
-        $tokobanjaran = Tokobanjaran::all();
+        $tokotegal = Tokotegal::all();
         $tokos = Toko::all();
         $metodes = Metodepembayaran::all();
 
-        $produks = Produk::with(['tokobanjaran', 'stokpesanan_tokobanjaran'])->get();
+        $produks = Produk::with(['tokotegal', 'stokpesanan_tokotegal'])->get();
 
         $kategoriPelanggan = 'member';
     
         return view('toko_tegal.pemesanan_produk.create', compact('barangs','metodes', 
         'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 
-        'kategoriPelanggan','tokobanjaran','search'));
+        'kategoriPelanggan','tokotegal','search'));
     }
     
     public function getCustomerByKode($kode)

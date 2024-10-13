@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_tegal;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -39,7 +39,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class Inquery_setorantunaibanjaranController extends Controller
+class Inquery_setorantunaitegalController extends Controller
 {
     public function index(Request $request)
     {
@@ -56,7 +56,7 @@ class Inquery_setorantunaibanjaranController extends Controller
         ->get();
     
         // Kirim data ke view
-        return view('toko_banjaran.inquery_setorantunai.index', compact('setoranPenjualans'));
+        return view('toko_tegal.inquery_setorantunai.index', compact('setoranPenjualans'));
     }
     
     
@@ -157,7 +157,7 @@ class Inquery_setorantunaibanjaranController extends Controller
         $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
         $total_setoran = $total_penjualan - $total_metode;
 
-        return view('toko_banjaran.setoran_tokobanjaran.create', compact(
+        return view('toko_tegal.setoran_tokobanjaran.create', compact(
             'produks',
             'tokos',
             'klasifikasis',
@@ -464,7 +464,7 @@ class Inquery_setorantunaibanjaranController extends Controller
 //     $total_setoran = $total_penjualan - $total_metode;
 
 //     // Return PDF dengan data yang diperlukan
-//     $pdf = FacadePdf::loadView('toko_banjaran.inquery_setorantunai.print', compact(
+//     $pdf = FacadePdf::loadView('toko_tegal.inquery_setorantunai.print', compact(
 //         'inquery',
 //         'kasirs',
 //         'penjualan_kotor',
@@ -490,7 +490,7 @@ class Inquery_setorantunaibanjaranController extends Controller
         $setoranPenjualans = Setoran_penjualan::findOrFail($id);
 
         // Load view untuk PDF dan kirimkan data
-        $pdf = FacadePdf::loadView('toko_banjaran.inquery_setorantunai.print', compact('setoranPenjualans'));
+        $pdf = FacadePdf::loadView('toko_tegal.inquery_setorantunai.print', compact('setoranPenjualans'));
 
         // Return PDF stream agar langsung bisa ditampilkan
         return $pdf->stream('setoran_penjualan.pdf');

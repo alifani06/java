@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_tegal;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -29,6 +29,7 @@ use App\Models\Permintaanproduk;
 use App\Models\Detailpermintaanproduk;
 use App\Models\Pengiriman_barangjadi;
 use App\Models\Pengiriman_tokobanjaran;
+use App\Models\Pengiriman_tokotegal;
 use Carbon\Carbon;
 use App\Models\Toko;
 use Dompdf\Dompdf;
@@ -37,7 +38,7 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
-class Laporan_pengirimantokobanjaranController extends Controller
+class Laporan_pengirimantokotegalController extends Controller
 {
 
     public function index(Request $request)
@@ -46,7 +47,7 @@ class Laporan_pengirimantokobanjaranController extends Controller
             $tanggal_input = $request->tanggal_input;
             $tanggal_akhir = $request->tanggal_akhir;
 
-            $query = Pengiriman_tokobanjaran::with('produk.klasifikasi');
+            $query = Pengiriman_tokotegal::with('produk.klasifikasi');
 
             if ($status) {
                 $query->where('status', $status);
@@ -70,7 +71,7 @@ class Laporan_pengirimantokobanjaranController extends Controller
             // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
             $stokBarangJadi = $query->get()->groupBy('kode_pengiriman');
 
-            return view('toko_banjaran.laporan_pengirimantokobanjaran.index', compact('stokBarangJadi'));
+            return view('toko_tegal.laporan_pengirimantokotegal.index', compact('stokBarangJadi'));
     }
 
 
@@ -83,7 +84,7 @@ class Laporan_pengirimantokobanjaranController extends Controller
     $status = $request->input('status');
     
     // Buat query untuk ambil data berdasarkan filter
-    $query = Pengiriman_tokobanjaran::query();
+    $query = Pengiriman_tokotegal::query();
     
     if ($tanggalPengiriman) {
         $query->whereDate('tanggal_input', '>=', $tanggalPengiriman);
@@ -116,7 +117,7 @@ class Laporan_pengirimantokobanjaranController extends Controller
     $dompdf = new \Dompdf\Dompdf($options);
     
     // Memuat konten HTML dari view
-    $html = view('toko_banjaran.laporan_pengirimantokobanjaran.print', [
+    $html = view('toko_tegal.laporan_pengirimantokotegal.print', [
     'groupedData'  => $groupedData, 
     'firstItem' => $firstItem , 
     'tanggalPengiriman', 

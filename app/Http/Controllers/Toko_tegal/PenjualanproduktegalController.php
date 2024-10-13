@@ -99,25 +99,43 @@ class PenjualanproduktegalController extends Controller
     }
 
     
-    public function create(Request $request)
-    {
-        $barangs = Barang::all();
-        $search = $request->input('search'); 
-        $pelanggans = Pelanggan::select('id', 'kode_pelanggan', 'kode_lama','nama_pelanggan', 'alamat', 'telp')->get(); 
-        $details = Detailbarangjadi::all();
-        $tokoslawis = Tokoslawi::all();
-        $tokos = Toko::all();
-        $dppemesanans = Dppemesanan::all();
-        $pemesananproduks = Pemesananproduk::all();
-        $metodes = Metodepembayaran::all();
+    // public function create(Request $request)
+    // {
+    //     $barangs = Barang::all();
+    //     $search = $request->input('search'); 
+    //     $pelanggans = Pelanggan::select('id', 'kode_pelanggan', 'kode_lama','nama_pelanggan', 'alamat', 'telp')->get(); 
+    //     $details = Detailbarangjadi::all();
+    //     $tokoslawis = Tokoslawi::all();
+    //     $tokos = Toko::all();
+    //     $dppemesanans = Dppemesanan::all();
+    //     $pemesananproduks = Pemesananproduk::all();
+    //     $metodes = Metodepembayaran::all();
         
-        $produks = Produk::with(['tokobanjaran', 'stok_tokobanjaran'])->get();
+    //     $produks = Produk::with(['tokobanjaran', 'stok_tokobanjaran'])->get();
 
-        $kategoriPelanggan = 'member';
+    //     $kategoriPelanggan = 'member';
         
-        return view('toko_tegal.penjualan_produk.create', compact('search','barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
-    }
+    //     return view('toko_tegal.penjualan_produk.create', compact('search','barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
+    // }
 
+        //create lama
+        public function create()
+        {
+            $barangs = Barang::all();
+            $pelanggans = Pelanggan::all();
+            $details = Detailbarangjadi::all();
+            $tokos = Toko::all();
+            $dppemesanans = Dppemesanan::all();
+            $pemesananproduks = Pemesananproduk::all();
+            $metodes = Metodepembayaran::all();
+            
+            // Pastikan kita memanggil relasi stokbanjaran
+            $produks = Produk::with(['tokotegal', 'stok_tokotegal'])->get();
+    
+            $kategoriPelanggan = 'member';
+            
+            return view('toko_tegal.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
+        }
         //store lama
     public function store(Request $request)
     {

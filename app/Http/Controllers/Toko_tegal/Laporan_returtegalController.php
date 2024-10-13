@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_tegal;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -38,7 +38,7 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
-class Laporan_returbanjaranController extends Controller
+class Laporan_returtegalController extends Controller
 {
 
     public function index(Request $request)
@@ -98,11 +98,11 @@ class Laporan_returbanjaranController extends Controller
         $tokos = Toko::all();
         $klasifikasis = Klasifikasi::all();
 
-        return view('toko_banjaran.laporan_returbanjaran.index', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'totalJumlah', 'grandTotal'));
+        return view('toko_tegal.laporan_returtegal.index', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'totalJumlah', 'grandTotal'));
     }
             
 
-    public function printReportreturbanjaran(Request $request)
+    public function printReportreturtegal(Request $request)
     {
         // Ambil parameter filter dari request
         $status = $request->status;
