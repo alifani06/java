@@ -37,6 +37,7 @@ use App\Http\Controllers\Admin\PengirimanbarangjadipesananController;
 use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\Admin\Setoran_pelunasanController;
 use App\Http\Controllers\Admin\Stok_barangjadiController;
+use App\Http\Controllers\Admin\SuratperintahproduksiController;
 use App\Http\Controllers\KategoriDropdownController;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\Toko_banjaran\Inquery_pemindahanbanjaranController;
@@ -334,6 +335,11 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/estimasi_produksi/{id}/print', [EstimasiproduksiController::class, 'print'])->name('estimasi_produksi.print');
     Route::delete('estimasi_produksi/deletedetailpermintaan/{id}', [\App\Http\Controllers\Admin\EstimasiproduksiController::class, 'deletedetailpermintaan']);
     Route::post('admin/estimasi_produksi', [EstimasiproduksiController::class, 'store'])->name('estimasi_produksi.store');
+
+    Route::resource('surat_perintahproduksi', \App\Http\Controllers\Admin\SuratperintahproduksiController::class);
+    // Route::get('admin/printReportestimasi', [SuratperintahproduksiController::class, 'printReportestimasi'])->name('printReportestimasi');
+    Route::get('printReportestimasi', [\App\Http\Controllers\Admin\SuratperintahproduksiController::class, 'printReportestimasi']);
+    // Route::get('/estimasi-produksi/cetak', [EstimasiProduksiController::class, 'cetak'])->name('estimasi.produksi.cetak');
 
 
     Route::resource('inquery_estimasiproduksi', \App\Http\Controllers\Admin\Inquery_estimasiproduksiController::class);

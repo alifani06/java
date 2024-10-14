@@ -78,6 +78,9 @@ class Estimasiproduksi extends Model
     {
         return $this->hasMany(Klasifikasi::class, 'produk_id');
     }
-
+    public function detailestimasiproduksi()
+    {
+        return $this->hasMany(DetailEstimasiProduksi::class, 'estimasiproduksi_id');
+    }
     
 }
