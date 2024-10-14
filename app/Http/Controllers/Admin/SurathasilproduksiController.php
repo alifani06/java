@@ -40,7 +40,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 
 
-class SuratperintahproduksiController extends Controller{
+class SurathasilproduksiController extends Controller{
 
    
     public function index(Request $request)
@@ -123,7 +123,7 @@ class SuratperintahproduksiController extends Controller{
         $tokos = Toko::all();
         $klasifikasis = Klasifikasi::all();
 
-        return view('admin.surathasilproduksi.index', compact('inquery','groupedInquery', 'produks', 'tokos', 'klasifikasis', 'klasifikasi_id'));
+        return view('admin.suratperintahproduksi.index', compact('inquery','groupedInquery', 'produks', 'tokos', 'klasifikasis', 'klasifikasi_id'));
     }
 
 //     public function index(Request $request)

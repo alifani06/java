@@ -103,33 +103,6 @@ public function create()
 }
 
 
-// public function store(Request $request)
-// {
-//     $request->validate([
-//         // 'toko_id' => 'required|exists:tokos,id',
-//         'produk_id' => 'required|array',
-//         'produk_id.*' => 'exists:produks,id',
-//         'jumlah' => 'required|array',
-//         'jumlah.*' => 'integer|min:1'
-//     ]);
-
-//     // $toko_id = $request->input('toko_id');
-//     $produk_ids = $request->input('produk_id');
-//     $jumlahs = $request->input('jumlah');
-
-//     foreach ($produk_ids as $index => $produk_id) {
-//         Stok_tokobanjaran::create([
-//             // 'toko_id' => $toko_id,
-//             'produk_id' => $produk_id,
-//             'status' => 'posting',
-//             'jumlah' => $jumlahs[$index],
-//             'tanggal_input' => Carbon::now('Asia/Jakarta'),
-//         ]);
-//     }
-
-//     return redirect()->route('stok_tokobanjaran.index')->with('success', 'Data stok barang berhasil disimpan.');
-// }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -168,12 +141,41 @@ public function create()
         return redirect()->route('stok_tokobanjaran.index')->with('success', 'Data stok barang berhasil disimpan.');
     }
 
+    public function update(Request $request, $produk_id)
+{
+    // Validasi input untuk memastikan jumlah adalah angka dan tidak kosong
+    $request->validate([
+        'jumlah' => 'required|numeric|min:0',
+    ]);
+
+    // Temukan stok berdasarkan produk_id
+    $stok = Stok_tokobanjaran::where('produk_id', $produk_id)->first();
+
+    // Jika stok tidak ditemukan, bisa memberikan respons error atau membuat entri stok baru
+    if (!$stok) {
+        return redirect()->route('stok_tokobanjaran.index')->with('error', 'Stok untuk produk ini tidak ditemukan.');
+    }
+
+    // Update jumlah stok
+    $stok->jumlah = $request->input('jumlah');
+    $stok->save(); // Simpan perubahan
+
+    // Redirect kembali ke halaman stok dengan pesan sukses
+    return redirect()->route('stok_tokobanjaran.index')->with('success', 'Stok produk berhasil diperbarui.');
+}
+
     public function deleteAll()
     {
         // Menghapus seluruh data pada kolom jumlah (stok) di tabel stok_tokobanjarans
         Stok_tokobanjaran::query()->update(['jumlah' => 0]);
 
         return redirect()->back()->with('success', 'Semua data stok berhasil dihapus.');
+    }
+
+    public function edit($id)
+    {
+        $produk = Produk::findOrFail($id); // Mengambil data produk berdasarkan id
+        return view('stok_tokobanjaran.edit', compact('produk')); // Menampilkan form edit stok
     }
 
 

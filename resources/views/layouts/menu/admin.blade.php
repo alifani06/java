@@ -219,6 +219,8 @@
     request()->is('admin/pemindahan_barangjadi*')|| 
     request()->is('admin/pemusnahan_barangjadi*')|| 
     request()->is('admin/setoran_pelunasan*')|| 
+    request()->is('admin/surat_hasilproduksi*')|| 
+    request()->is('admin/surat_perintahproduksi*')|| 
     request()->is('admin/estimasi_produksi*') 
     // request()->is('admin/input*')
   
@@ -235,6 +237,8 @@
         request()->is('admin/pemindahan_barangjadi*')||  
         request()->is('admin/pemusnahan_barangjadi*')||  
         request()->is('admin/setoran_pelunasan*')||  
+        request()->is('admin/surat_hasilproduksi*')||  
+        request()->is('admin/surat_perintahproduksi*')||  
         request()->is('admin/estimasi_produksi')  
         // request()->is('admin/input*')
       
@@ -355,6 +359,16 @@
                 class="nav-link {{ request()->is('admin/surat_perintahproduksi*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Surat Perintah Produksi</p>
+            </a>
+        </li>
+        {{-- @endif --}}
+
+        {{-- @if (auth()->check() && auth()->user()->menu['estimasi produksi']) --}}
+        <li class="nav-item">
+            <a href="{{ url('admin/surat_hasilproduksi') }}"
+                class="nav-link {{ request()->is('admin/surat_hasilproduksi*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Surat Hasil Produksi</p>
             </a>
         </li>
         {{-- @endif --}}

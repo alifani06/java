@@ -341,6 +341,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('printReportestimasi', [\App\Http\Controllers\Admin\SuratperintahproduksiController::class, 'printReportestimasi']);
     // Route::get('/estimasi-produksi/cetak', [EstimasiProduksiController::class, 'cetak'])->name('estimasi.produksi.cetak');
 
+    Route::resource('surat_hasilproduksi', \App\Http\Controllers\Admin\SuratperintahproduksiController::class);
+
 
     Route::resource('inquery_estimasiproduksi', \App\Http\Controllers\Admin\Inquery_estimasiproduksiController::class);
 
@@ -531,6 +533,11 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::resource('stok_tokobanjaran', \App\Http\Controllers\Toko_banjaran\Stok_tokobanjaranController::class);
     Route::delete('/toko_banjaran/stok_tokobanjaran/deleteAll', [Stok_tokobanjaranController::class, 'deleteAll'])->name('stok_tokobanjaran.deleteAll');
     Route::post('toko_banjaran/stok_tokobanjaran/import', [Stok_tokobanjaranController::class, 'import'])->name('stok_tokobanjaran.import');
+// Route untuk menampilkan form edit stok
+    Route::get('toko_banjaran/stok_tokobanjaran/{id}/edit', [Stok_tokobanjaranController::class, 'edit'])->name('stok_tokobanjaran.edit');
+
+// Route untuk mengupdate stok produk
+    Route::put('toko_banjaran/stok_tokobanjaran/{id}', [Stok_tokobanjaranController::class, 'update'])->name('stok_tokobanjaran.update');
 
     Route::resource('stokpesanan_tokobanjaran', \App\Http\Controllers\Toko_banjaran\Stokpesanan_tokobanjaranController::class);
 
