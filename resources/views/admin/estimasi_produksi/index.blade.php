@@ -83,16 +83,6 @@
                                 </select>
                                 <label for="toko">(Pilih Toko)</label>
                             </div>
-                            {{-- <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_permintaan" name="tanggal_permintaan" type="date"
-                                    value="{{ Request::get('tanggal_permintaan') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_permintaan">(Dari Tanggal)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
-                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_akhir">(Sampai Tanggal)</label>
-                            </div> --}}
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal" name="tanggal" type="date"
                                     value="{{ Request::get('tanggal') }}" max="{{ date('Y-m-d') }}" />
@@ -108,7 +98,7 @@
                     </form>
                    
                     
-                    @if($permintaanProduksFirst)
+                    {{-- @if($permintaanProduksFirst)
                     <form action="{{ url('admin/estimasi_produksi/' . $permintaanProduksFirst->id) }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                         @csrf
                         @method('put')
@@ -187,6 +177,7 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    
                                     @if($pemesananProduksFirst)
                                     <div>
                                         <div>
@@ -254,8 +245,158 @@
                             </div>
                         </div>
                     </form>
-                    @endif
+                    @endif --}}
 
+                    @if($permintaanProduks->isNotEmpty())
+                    <form action="{{ url('admin/estimasi_produksi/' . $permintaanProduks->first()->id) }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+                        @csrf
+                        @method('PUT')
+                        <div>
+                            <div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Produk <span></span></h3>
+                                        <div class="float-right">
+                                            <button type="button" class="btn btn-primary btn-sm" onclick="addPesanan()">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- /.card-header -->
+                                    <div class="card-body">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th style="font-size:14px" class="text-center">No</th>
+                                                    <th style="font-size:14px">Kode Barang</th>
+                                                    <th style="font-size:14px">Nama Barang</th>
+                                                    <th style="font-size:14px">Jumlah</th>
+                                                    <th style="font-size:14px; text-align:center">Opsi</th>
+                                                </tr>
+                                            </thead>
+                                            
+                                            <tbody id="tabel-pembelian">
+                                                @foreach ($permintaanProduks as $permintaan)
+                                                @foreach ($permintaan->detailpermintaanproduks as $detail)                                                    <tr id="pembelian-{{ $loop->index }}">
+                                                        <td class="text-center" id="urutan">{{ $loop->index + 1 }}</td>
+                                                        <td hidden>
+                                                            <div class="form-group">
+                                                                <input type="text" class="form-control" id="nomor_seri-{{ $loop->index }}" name="detail_ids[]"
+                                                                    value="{{ $detail['id'] }}">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input type="text" class="form-control" id="produk_id-{{ $loop->index }}" name="produk_id[]"
+                                                                    value="{{ $detail['produk_id'] }}">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <input style="font-size:14px" readonly type="text" class="form-control"
+                                                                    id="kode_lama-{{ $loop->index }}" name="kode_lama[]"
+                                                                    value="{{ $detail->produk['kode_lama'] }}">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <input style="font-size:14px" readonly type="text" class="form-control"
+                                                                    id="nama_produk-{{ $loop->index }}" name="nama_produk[]"
+                                                                    value="{{ $detail->produk['nama_produk'] }}">
+                                                            </div>
+                                                        </td>
+
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <input style="font-size:14px" type="number" class="form-control jumlah"
+                                                                    id="jumlah-{{ $loop->index }}" name="jumlah[]"
+                                                                    value="{{ $detail['jumlah'] }}">
+                                                            </div>
+                                                        </td>
+                                                        <td style="width: 100px">
+                                                            <button type="button" class="btn btn-primary btn-sm"
+                                                                onclick="Barangs({{ $loop->index }})">
+                                                                <i class="fas fa-plus"></i>
+                                                            </button>
+                                                            <button style="margin-left:5px" type="button" class="btn btn-danger btn-sm"
+                                                                onclick="removeBan({{ $loop->index }}, {{ $detail['id'] }})">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    @if($pemesananProduks->isNotEmpty())
+                                    <div>
+                                        <div>
+                                                <div class="card-body">
+                                                    <table class="table table-bordered table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="font-size:14px" class="text-center">No</th>
+                                                                <th style="font-size:14px">Kode Produk</th>
+                                                                <th style="font-size:14px">Nama Produk</th>
+                                                                <th style="font-size:14px">Jumlah</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="tabel-pembelian">
+                                                            @foreach ($pemesananProduks as $pemesanan)
+                                                            @foreach ($pemesanan->detailpemesananproduk as $detail)                                                                <tr id="pembelian-{{ $loop->index }}">
+                                                                    <td class="text-center" id="urutan">{{ $loop->index + 1 }}</td>
+                                                                    <td hidden>
+                                                                        <div class="form-group">
+                                                                            <input type="text" class="form-control" id="nomor_seri-{{ $loop->index }}" name="detail1_ids[]"
+                                                                                value="{{ $detail['id'] }}">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <input type="text" class="form-control" id="produk_id-{{ $loop->index }}" name="produk1_id[]"
+                                                                                value="{{ $detail['produk_id'] }}">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input style="font-size:14px" readonly type="text" class="form-control"
+                                                                                id="kode_lama-{{ $loop->index }}" name="kode_lama1[]"
+                                                                                value="{{ $detail->produk['kode_lama'] }}">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input style="font-size:14px" readonly type="text" class="form-control"
+                                                                                id="nama_produk-{{ $loop->index }}" name="nama_produk1[]"
+                                                                                value="{{ $detail->produk['nama_produk'] }}">
+                                                                        </div>
+                                                                    </td>
+            
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input readonly style="font-size:14px" type="number" class="form-control jumlah"
+                                                                                id="jumlah-{{ $loop->index }}" name="jumlah1[]"
+                                                                                value="{{ $detail['jumlah'] }}">
+                                                                        </div>
+                                                                    </td>
+                                                                  
+                                                                </tr>
+                                                            @endforeach
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                    <div class="card-footer text-right">
+                                        <button type="reset" class="btn btn-secondary">Reset</button>
+                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    @endif
 
 
                     <div class="modal fade" id="tableBarang" data-backdrop="static">
