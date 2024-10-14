@@ -11,13 +11,13 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class Detailestimasiproduksi extends Model
+class Detailhasilproduksi extends Model
 {
     use HasFactory;
 
     
     protected $fillable = [
-        'estimasiproduksi_id',
+        'hasilproduksi_id',
         'produk_id',
         'kode_lama',
         'nama_produk',

@@ -185,7 +185,7 @@
         }
     </script>
 
-<script>
+{{-- <script>
     function printReport() {
         const form = document.getElementById('form-action');
         
@@ -199,6 +199,18 @@
         form.target = "_blank";
         form.submit();
     }
+</script> --}}
+<script>
+    function printReport() {
+    const form = document.getElementById('form-action');
+    const klasifikasiId = document.getElementById('klasifikasi').value;
+
+    // Buat URL dengan parameter yang diperlukan
+    form.action = `{{ url('admin/printReportestimasi') }}?klasifikasi_id=${klasifikasiId}`;
+    form.target = "_blank";
+    form.submit();
+}
+
 </script>
 
 

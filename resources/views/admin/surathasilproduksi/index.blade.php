@@ -103,40 +103,60 @@
                                 <button type="submit" class="btn btn-outline-primary btn-block">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
-                                <button type="button" class="btn btn-primary btn-block" onclick="printReport()" target="_blank">
+                                {{-- <button type="button" class="btn btn-primary btn-block" onclick="printReport()" target="_blank">
                                     <i class="fas fa-print"></i> Cetak
-                                </button>
+                                </button> --}}
                             </div>
                         </div>
                     </form>
 
-                    <table id="datatables66" class="table table-bordered" style="font-size: 13px">
-                        <thead>
-                            <tr>
-                                <th class="text-center">No</th>
-                                <th>Divisi</th>
-                                <th>Kode Produk</th>
-                                <th>Nama Produk</th>
-                                <th>Jumlah</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                            $nomorUrut = 1; // Inisialisasi nomor urut
-                        @endphp
-                            @foreach ($groupedInquery as $index => $detail)
-                                @if ($klasifikasi_id == null || $detail->produk->klasifikasi_id == $klasifikasi_id)
-                                    <tr>
-                                        <td class="text-center">{{ $nomorUrut++ }}</td>
-                                        <td>{{ $detail->produk->klasifikasi->nama ?? 'N/A' }}</td>
-                                        <td>{{ $detail->kode_lama }}</td>
-                                        <td>{{ $detail->nama_produk }}</td>
-                                        <td style="text-align: right">{{ $detail->jumlah }}</td>
-                                    </tr>
-                                @endif
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <form method="POST" action="{{ route('saveRealisasi') }}"> <!-- Form untuk simpan realisasi -->
+                        @csrf
+                        <table id="data" class="table table-bordered" style="font-size: 13px">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">No</th>
+                                    <th>Divisi</th>
+                                    <th>Kode Produk</th>
+                                    <th>Nama Produk</th>
+                                    <th>Jumlah</th>
+                                    <th>Realisasi</th> 
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php $nomorUrut = 1; @endphp
+                                @foreach ($groupedInquery as $index => $detail)
+                                    @if ($klasifikasi_id == null || $detail->produk->klasifikasi_id == $klasifikasi_id)
+                                        <tr>
+                                            <td class="text-center">{{ $nomorUrut++ }}</td>
+                                            
+                                            <td>
+                                                <input type="text" name="klasifikasi[{{ $detail->produk_id }}]" class="form-control form-control-sm" style="width: 120px;" value="{{ $detail->produk->klasifikasi->nama ?? 'N/A' }}" readonly />
+                                            </td>
+                                            
+                                            <td>
+                                                <input type="text" name="kode_lama[{{ $detail->produk_id }}]" class="form-control form-control-sm" style="width: 120px;" value="{{ $detail->kode_lama }}" readonly />
+                                            </td>
+                                            
+                                            <td>
+                                                <input type="text" name="nama_produk[{{ $detail->produk_id }}]" class="form-control form-control-sm" style="width: 180px;" value="{{ $detail->nama_produk }}" readonly />
+                                            </td>
+                                            
+                                            <td>
+                                                <input type="number" name="jumlah[{{ $detail->produk_id }}]" class="form-control form-control-sm" style="width: 80px;" value="{{ $detail->jumlah }}" readonly />
+                                            </td>
+                                            
+                                            <td>
+                                                <input type="number" name="realisasi[{{ $detail->produk_id }}]" class="form-control form-control-sm" style="width: 80px;" value="{{ $detail->realisasi ?? 0 }}" />
+                                            </td>
+                                        </tr>
+                                    @endif
+                                @endforeach
+                            </tbody>
+                            
+                        </table>
+                        <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Simpan</button> <!-- Tombol Simpan -->
+                    </form>
                     
                     
                     

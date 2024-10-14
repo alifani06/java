@@ -37,6 +37,7 @@ use App\Http\Controllers\Admin\PengirimanbarangjadipesananController;
 use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\Admin\Setoran_pelunasanController;
 use App\Http\Controllers\Admin\Stok_barangjadiController;
+use App\Http\Controllers\Admin\SurathasilproduksiController;
 use App\Http\Controllers\Admin\SuratperintahproduksiController;
 use App\Http\Controllers\KategoriDropdownController;
 use App\Http\Controllers\SubcategoryController;
@@ -341,7 +342,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('printReportestimasi', [\App\Http\Controllers\Admin\SuratperintahproduksiController::class, 'printReportestimasi']);
     // Route::get('/estimasi-produksi/cetak', [EstimasiProduksiController::class, 'cetak'])->name('estimasi.produksi.cetak');
 
-    Route::resource('surat_hasilproduksi', \App\Http\Controllers\Admin\SuratperintahproduksiController::class);
+    Route::resource('surat_hasilproduksi', \App\Http\Controllers\Admin\SurathasilproduksiController::class);
+    Route::post('/save-realisasi', [SurathasilproduksiController::class, 'saveRealisasi'])->name('saveRealisasi');
 
 
     Route::resource('inquery_estimasiproduksi', \App\Http\Controllers\Admin\Inquery_estimasiproduksiController::class);
