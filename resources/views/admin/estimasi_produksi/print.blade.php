@@ -142,17 +142,17 @@
         </div>
 
         <!-- Judul Surat -->
-        <div class="change-header">SURAT PERMINTAAN PRODUK</div>
+        <div class="change-header">SURAT ESTIMASI PRODUKSI</div>
 
         <!-- Informasi Permintaan -->
         <div style="margin-top: 2px;">
             <p>
-                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Permintaan</strong></span>
-                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->kode_permintaan }}</span>
+                {{-- <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Permintaan</strong></span> --}}
+                {{-- <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->kode_estimasi }}</span> --}}
             </p>
             <p>
-                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal</strong> </span>
-                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->created_at->format('d-m-Y H:i') }}</span>
+                {{-- <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal</strong> </span> --}}
+                {{-- <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->created_at->format('d-m-Y H:i') }}</span> --}}
             </p>
         </div>
 
@@ -179,7 +179,7 @@
                         @foreach ($produkList as $detail)
                             <tr>
                                 <td>{{ $no++ }}</td> 
-                                <td>{{ $detail->produk->kode_produk }}</td>
+                                <td>{{ $detail->produk->kode_lama }}</td>
                                 <td>{{ $subklasifikasi }}</td>
                                 <td>{{ $detail->produk->nama_produk }}</td>
                                 <td style="text-align: right">{{ $detail->jumlah }}</td>

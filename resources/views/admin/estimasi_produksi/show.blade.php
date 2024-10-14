@@ -125,11 +125,11 @@
         </div>
 
         <!-- Judul Surat -->
-        <div class="change-header">SURAT PERMINTAAN PRODUK</div>
+        <div class="change-header">SURAT ESTIMASI PRODUKSI</div>
         <div>
             <p>
-                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>No Permintaan</strong></span>
-                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->kode_permintaan }}</span>
+                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>No Estimasi</strong></span>
+                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->kode_estimasi }}</span>
             </p>
             <p>
                 <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal</strong> </span>
@@ -140,53 +140,42 @@
 
        
         @foreach ($produkByDivisi as $divisi => $produks)
-        <div class="section-title">{{ $divisi }}</div>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Kode Produk</th>
-                    <th>Kategori</th>
-                    <th>Produk</th>
-                    <th>Jumlah</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php
-                $no = 1; 
-                @endphp
-                @foreach ($produks->groupBy(function($item) {
-                    return $item->produk->subklasifikasi->nama; 
-                    }) as $subklasifikasi => $produkList)
-                        @foreach ($produkList as $detail)
-                            <tr>
-                                <td>{{ $no++ }}</td> 
-                                <td>{{ $detail->produk->kode_lama }}</td>
-                                <td>{{ $subklasifikasi }}</td>
-                                <td>{{ $detail->produk->nama_produk }}</td>
-                                <td style="text-align: right">{{ $detail->jumlah }}</td>
-                            </tr>
-                        @endforeach
-                    {{-- Menampilkan total untuk subklasifikasi --}}
-                    {{-- <tr class="total-row">
-                        <td colspan="4">Total {{ $subklasifikasi }}</td>
-                        <td>{{ $produkList->sum('jumlah') }}</td>
-                    </tr> --}}
-                @endforeach
-            </tbody>
+            <div class="section-title">{{ $divisi }}</div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Divisi</th>
+                        <th>Kode Produk</th>
+                        <th>Nama Produk</th>
+                        <th>Jumlah</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php
+                    $no = 1; 
+                    @endphp
+                    @foreach ($produks as $detail)
+                        <tr>
+                            <td>{{ $no++ }}</td> 
+                            <td>{{ $detail->produk->klasifikasi->nama }}</td> <!-- Divisi dari Klasifikasi -->
+                            <td>{{ $detail->produk->kode_lama }}</td>
+                            <td>{{ $detail->produk->nama_produk }}</td>
+                            <td style="text-align: right">{{ $detail->jumlah }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
 
-            {{-- Menampilkan total untuk divisi --}}
-            <tfoot>
-                <tr class="total-row">
-                    <td colspan="4">Total </td>
-                    <td style="text-align: right">{{ $produks->sum('jumlah') }}</td>
-                </tr>
-            </tfoot>
-        </table><br>
-    @endforeach
-    
-
+                {{-- Menampilkan total untuk divisi --}}
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="4">Total </td>
+                        <td style="text-align: right">{{ $produks->sum('jumlah') }}</td>
+                    </tr>
+                </tfoot>
+            </table><br>
+        @endforeach
 
         <div class="d-flex justify-content-between">
             <div>

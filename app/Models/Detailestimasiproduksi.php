@@ -59,4 +59,9 @@ class Detailestimasiproduksi extends Model
         return $this->belongsTo(Pemesananproduk::class, 'pemesananproduk_id');
     }
     
+
+    public function toko()
+    {
+        return $this->belongsTo(Toko::class, 'toko_id');
+    }
 }
