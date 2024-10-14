@@ -236,125 +236,6 @@ class EstimasiproduksiController extends Controller{
     }
 
 
-//kode bener
-// public function update(Request $request, $id)
-// {
-//     $error_pesanans = array();
-//     $data_pembelians = collect();
-
-//     if ($request->has('produk_id')) {
-//         for ($i = 0; $i < count($request->produk_id); $i++) {
-//             $validasi_produk = Validator::make($request->all(), [
-//                 'produk_id.' . $i => 'required',
-//                 'jumlah.' . $i => 'required',
-//             ]);
-
-//             if ($validasi_produk->fails()) {
-//                 array_push($error_pesanans, "Barang nomor " . ($i + 1) . " belum dilengkapi!");
-//             }
-
-//             $produk_id = is_null($request->produk_id[$i]) ? '' : $request->produk_id[$i];
-//             $jumlah = is_null($request->jumlah[$i]) ? '' : $request->jumlah[$i];
-
-//             $data_pembelians->push([
-//                 'permintaanproduk_id' => $request->detail_ids[$i] ?? null,
-//                 'produk_id' => $produk_id,
-//                 'jumlah' => $jumlah,
-//             ]);
-//         }
-//     }
-
-//     // Ambil data permintaan produk utama
-//     $permintaanProduk = Permintaanproduk::findOrFail($id);
-
-//     // Update transaksi utama
-//     $permintaanProduk->update([
-//         'kode_permintaan' => $request->kode_permintaan,
-//     ]);
-
-//     foreach ($data_pembelians as $data_pesanan) {
-//         $detailId = $data_pesanan['permintaanproduk_id'];
-
-//         if ($detailId) {
-//             Detailpermintaanproduk::where('id', $detailId)->update([
-//                 'permintaanproduk_id' => $permintaanProduk->id,
-//                 'produk_id' => $data_pesanan['produk_id'],
-//                 'jumlah' => $data_pesanan['jumlah'],
-//             ]);
-//         } else {
-//             $existingDetail = Detailpermintaanproduk::where([
-//                 'permintaanproduk_id' => $permintaanProduk->id,
-//                 'produk_id' => $data_pesanan['produk_id'],
-//                 'jumlah' => $data_pesanan['jumlah'],
-//             ])->first();
-
-//             if (!$existingDetail) {
-//                 Detailpermintaanproduk::create([
-//                     'permintaanproduk_id' => $permintaanProduk->id,
-//                     'produk_id' => $data_pesanan['produk_id'],
-//                     'jumlah' => $data_pesanan['jumlah'],
-//                     'toko_id' => 1,
-//                     'tanggal_permintaan' => Carbon::now('Asia/Jakarta'),
-//                     'status' => 'unpost',
-//                 ]);
-//             }
-//         }
-//     }
-
-//             $kode = $this->kode();
-
-//         // Membuat data baru di estimasi_produksi
-//         $estimasiProduksi = EstimasiProduksi::create([
-//         'estimasiproduksi_id' => $permintaanProduk->id,
-//         'kode_estimasi' => $kode,   
-//         'qrcode_estimasi' => 'https://javabakery.id/estimasi_produksi/' . $kode,
-//         'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
-//         ]);
-
-//         foreach ($data_pembelians as $data_pesanan) {
-//             // Ambil produk berdasarkan produk_id
-//             $produk = Produk::find($data_pesanan['produk_id']);
-            
-//             DetailEstimasiProduksi::create([
-//                 'estimasiproduksi_id' => $estimasiProduksi->id,
-//                 'produk_id' => $data_pesanan['produk_id'],
-//                 'jumlah' => $data_pesanan['jumlah'],
-//                 'toko_id' => 1, // Pastikan ini sesuai dengan logika aplikasi Anda
-//                 'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
-//                 'status' => 'unpost',
-//                 'kode_lama' => $produk->kode_lama, // Ambil kode lama dari produk
-//                 'nama_produk' => $produk->nama_produk, // Ambil nama produk dari produk
-//             ]);
-//         }
-        
-
-//     // Ambil detail permintaan produk termasuk toko
-//     $details = Detailpermintaanproduk::with('toko', 'produk.klasifikasi')->where('permintaanproduk_id', $permintaanProduk->id)->get();
-
-//     // Pastikan variabel $toko diambil dari salah satu detail yang ada
-//     $toko = $details->isNotEmpty() ? $details->first()->toko : null;
-
-//     // Mengelompokkan produk berdasarkan klasifikasi
-//     $produkByDivisi = $details->groupBy(function($item) {
-//         return $item->produk->klasifikasi->nama;
-//     });
-
-//     // Hitung total jumlah per divisi
-//     $totalPerDivisi = $produkByDivisi->map(function($produks) {
-//         return $produks->sum('jumlah');
-//     });
-
-//     // Ambil data subklasifikasi berdasarkan klasifikasi
-//     $subklasifikasiByDivisi = $produkByDivisi->map(function($produks) {
-//         return $produks->groupBy(function($item) {
-//             return $item->produk->subklasifikasi->nama;
-//         });
-//     });
-
-//     // Arahkan ke view show dengan semua variabel yang diperlukan
-//     return view('admin.estimasi_produksi.show', compact('permintaanProduk', 'details', 'toko', 'produkByDivisi', 'totalPerDivisi', 'subklasifikasiByDivisi'));
-// }
-
 public function update(Request $request, $id)
 {
     $error_pesanans = array();
@@ -497,9 +378,159 @@ public function update(Request $request, $id)
         });
     });
 
-    // Arahkan ke view show dengan semua variabel yang diperlukan
-    return view('admin.estimasi_produksi.show', compact('permintaanProduk', 'details', 'toko', 'produkByDivisi', 'totalPerDivisi', 'subklasifikasiByDivisi'));
+    // Arahkan ke view show dengan ID dari estimasiProduksi
+    return redirect()->route('estimasi_produksi.show', $estimasiProduksi->id)->with('success', 'Data berhasil diperbarui.');
 }
+
+// public function update(Request $request, $id)
+// {
+//     $error_pesanans = array();
+//     $data_pembelians = collect();
+
+//     // Validasi dan pengolahan produk_id dan jumlah
+//     if ($request->has('produk_id')) {
+//         for ($i = 0; $i < count($request->produk_id); $i++) {
+//             $validasi_produk = Validator::make($request->all(), [
+//                 'produk_id.' . $i => 'required',
+//                 'jumlah.' . $i => 'required',
+//             ]);
+
+//             if ($validasi_produk->fails()) {
+//                 array_push($error_pesanans, "Barang nomor " . ($i + 1) . " belum dilengkapi!");
+//             }
+
+//             $produk_id = is_null($request->produk_id[$i]) ? '' : $request->produk_id[$i];
+//             $jumlah = is_null($request->jumlah[$i]) ? '' : $request->jumlah[$i];
+
+//             $data_pembelians->push([
+//                 'permintaanproduk_id' => $request->detail_ids[$i] ?? null,
+//                 'produk_id' => $produk_id,
+//                 'jumlah' => $jumlah,
+//             ]);
+//         }
+//     }
+
+//     // Ambil data permintaan produk utama
+//     $permintaanProduk = Permintaanproduk::findOrFail($id);
+
+//     // Update transaksi utama
+//     $permintaanProduk->update([
+//         'kode_permintaan' => $request->kode_permintaan,
+//     ]);
+
+//     foreach ($data_pembelians as $data_pesanan) {
+//         $detailId = $data_pesanan['permintaanproduk_id'];
+
+//         if ($detailId) {
+//             Detailpermintaanproduk::where('id', $detailId)->update([
+//                 'permintaanproduk_id' => $permintaanProduk->id,
+//                 'produk_id' => $data_pesanan['produk_id'],
+//                 'jumlah' => $data_pesanan['jumlah'],
+//             ]);
+//         } else {
+//             $existingDetail = Detailpermintaanproduk::where([
+//                 'permintaanproduk_id' => $permintaanProduk->id,
+//                 'produk_id' => $data_pesanan['produk_id'],
+//                 'jumlah' => $data_pesanan['jumlah'],
+//             ])->first();
+
+//             if (!$existingDetail) {
+//                 Detailpermintaanproduk::create([
+//                     'permintaanproduk_id' => $permintaanProduk->id,
+//                     'produk_id' => $data_pesanan['produk_id'],
+//                     'jumlah' => $data_pesanan['jumlah'],
+//                     'toko_id' => $request->input('toko_id'), // Ambil toko_id dari request
+//                     'tanggal_permintaan' => Carbon::now('Asia/Jakarta'),
+//                     'status' => 'unpost',
+//                 ]);
+//             }
+//         }
+//     }
+
+//     $kode = $this->kode();
+
+//     // Membuat data baru di estimasi_produksi
+//     $estimasiProduksi = EstimasiProduksi::create([
+//         'estimasiproduksi_id' => $permintaanProduk->id,
+//         'kode_estimasi' => $kode,   
+//         'qrcode_estimasi' => 'https://javabakery.id/estimasi_produksi/' . $kode,
+//         'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
+//     ]);
+
+//     // Ambil toko_id dari request
+//     $selectedTokoId = $request->input('toko_id'); // Tidak ada default
+
+//     // Menyimpan data dari pemesananProduksFirst
+//     if ($request->has('produk1_id')) {
+//         for ($j = 0; $j < count($request->produk1_id); $j++) {
+//             $produk1_id = is_null($request->produk1_id[$j]) ? '' : $request->produk1_id[$j];
+//             $jumlah1 = is_null($request->jumlah1[$j]) ? '' : $request->jumlah1[$j];
+
+//             // Ambil produk berdasarkan produk_id
+//             $produk1 = Produk::find($produk1_id);
+            
+//             DetailEstimasiProduksi::create([
+//                 'estimasiproduksi_id' => $estimasiProduksi->id,
+//                 'produk_id' => $produk1_id,
+//                 'jumlah' => $jumlah1,
+//                 'toko_id' => $request->input('toko_id'), // Ambil toko_id dari request
+//                 'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
+//                 'status' => 'unpost',
+//                 'kode_lama' => $produk1->kode_lama,
+//                 'nama_produk' => $produk1->nama_produk, // Ambil nama produk dari produk
+//             ]);
+//         }
+//     }
+
+//     // Menyimpan data dari permintaanProduksFirst
+//     if ($request->has('produk_id')) {
+//         for ($k = 0; $k < count($request->produk_id); $k++) {
+//             $produk_id = is_null($request->produk_id[$k]) ? '' : $request->produk_id[$k];
+//             $jumlah = is_null($request->jumlah[$k]) ? '' : $request->jumlah[$k];
+
+//             // Ambil produk berdasarkan produk_id
+//             $produk = Produk::find($produk_id);
+            
+//             DetailEstimasiProduksi::create([
+//                 'estimasiproduksi_id' => $estimasiProduksi->id,
+//                 'produk_id' => $produk_id,
+//                 'jumlah' => $jumlah,
+//                 'toko_id' => $selectedTokoId, // Gunakan toko_id dari request
+//                 'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
+//                 'status' => 'unpost',
+//                 'kode_lama' => $produk->kode_lama, // Ambil kode lama dari produk
+//                 'nama_produk' => $produk->nama_produk, // Ambil nama produk dari produk
+//             ]);
+//         }
+//     }
+
+//     // Ambil detail permintaan produk termasuk toko
+//     $details = Detailestimasiproduksi::with('toko', 'produk.klasifikasi')->where('estimasiproduksi_id', $estimasiProduksi->id)->get();
+
+//     // Pastikan variabel $toko diambil dari salah satu detail yang ada
+//     $toko = $details->isNotEmpty() ? $details->first()->toko : null;
+
+//     // Mengelompokkan produk berdasarkan klasifikasi
+//     $produkByDivisi = $details->groupBy(function($item) {
+//         return $item->produk->klasifikasi->nama;
+//     });
+
+//     // Hitung total jumlah per divisi
+//     $totalPerDivisi = $produkByDivisi->map(function($produks) {
+//         return $produks->sum('jumlah');
+//     });
+
+//     // Ambil data subklasifikasi berdasarkan klasifikasi
+//     $subklasifikasiByDivisi = $produkByDivisi->map(function($produks) {
+//         return $produks->groupBy(function($item) {
+//             return $item->produk->subklasifikasi->nama;
+//         });
+//     });
+
+//     // Arahkan ke view show dengan semua variabel yang diperlukan
+//     return view('admin.estimasi_produksi.show', compact('permintaanProduk', 'details', 'toko', 'produkByDivisi', 'totalPerDivisi', 'subklasifikasiByDivisi'));
+// }
+
 
 
 
@@ -625,52 +656,37 @@ public function show($id)
     return view('admin.estimasi_produksi.show', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi', 'toko'));
 }
 
-// public function print($id)
-// {
-
-//     $permintaanProduk = Estimasiproduksi::find($id);
-//     $detailPermintaanProduks = Detailestimasiproduksi::where('estimasiproduksi_id', $id)->get();
-
-//     // Mengelompokkan produk berdasarkan divisi
-//     $produkByDivisi = $detailPermintaanProduks->groupBy(function($item) {
-//         return $item->produk->klasifikasi->nama; // Ganti dengan nama divisi jika diperlukan
-//     });
-
-//     // Menghitung total jumlah per divisi
-//     $totalPerDivisi = $produkByDivisi->map(function($produks) {
-//         return $produks->sum('jumlah');
-//     });
-//     $toko = $detailPermintaanProduks->first()->toko;
-
-//     $pdf = FacadePdf::loadView('admin.estimasi_produksi.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi','toko'));
-
-//     return $pdf->stream('surat_permintaan_produk.pdf');
-// }
 public function print($id)
 {
     $permintaanProduk = Estimasiproduksi::find($id);
-    if (!$permintaanProduk) {
-        return redirect()->back()->with('error', 'Data tidak ditemukan.');
-    }
-    
-    $detailPermintaanProduks = Detailestimasiproduksi::with('produk.klasifikasi')->where('estimasiproduksi_id', $id)->get();
+    $detailPermintaanProduks = Detailestimasiproduksi::where('estimasiproduksi_id', $id)->get();
 
+    // Cek apakah detailPermintaanProduks tidak kosong
+    if ($detailPermintaanProduks->isEmpty()) {
+        // Tangani kasus ketika tidak ada detail permintaan produk
+        return redirect()->back()->with('error', 'Tidak ada detail permintaan produk yang ditemukan.');
+    }
+
+    // Mengelompokkan produk berdasarkan divisi
     $produkByDivisi = $detailPermintaanProduks->groupBy(function($item) {
-        return $item->produk->klasifikasi->nama; 
+        return $item->produk->klasifikasi->nama; // Ganti dengan nama divisi jika diperlukan
     });
 
+    // Menghitung total jumlah per divisi
     $totalPerDivisi = $produkByDivisi->map(function($produks) {
         return $produks->sum('jumlah');
     });
 
-    $toko = $detailPermintaanProduks->isNotEmpty() ? $detailPermintaanProduks->first()->toko : null;
+    // Ambil toko dari detail permintaan produk pertama
+    $toko = $detailPermintaanProduks->first()->toko;
 
-    // Membuat PDF
     $pdf = FacadePdf::loadView('admin.estimasi_produksi.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi', 'toko'));
 
-    // Mengunduh PDF
-    return $pdf->stream('estimasi_produksi_'.$id.'.pdf');
+    return $pdf->stream('surat_permintaan_produk.pdf');
 }
+
+
+
 
 
 public function deletedetailpermintaan($id)

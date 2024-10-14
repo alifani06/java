@@ -127,18 +127,16 @@
         <!-- Judul Surat -->
         <div class="change-header">SURAT ESTIMASI PRODUKSI</div>
         <div>
-            <p>
+            {{-- <p>
                 <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>No Estimasi</strong></span>
                 <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->kode_estimasi }}</span>
             </p>
             <p>
                 <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal</strong> </span>
                 <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->created_at->format('d-m-Y') }}</span>
-            </p>
+            </p> --}}
           
         </div>
-
-       
         @foreach ($produkByDivisi as $divisi => $produks)
             <div class="section-title">{{ $divisi }}</div>
             
@@ -184,10 +182,11 @@
                 </a>
             </div>
             <div>
-                <a href="{{ route('estimasi_produksi.print', $permintaanProduk->id) }}"  id="printButton" target="_blank" class="btn btn-primary btn-sm">
+                <a href="{{ route('estimasi_produksi.print', $permintaanProduk->id) }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
                     <i class="fas fa-print"></i> Cetak 
                 </a>
             </div>
+            
             <div>
                 {{-- <a href="{{ url('toko_banjaran/permintaan-produk/' . $permintaanProduk->id . '/print') }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
                     <i class="fas fa-print"></i> Cetak 
