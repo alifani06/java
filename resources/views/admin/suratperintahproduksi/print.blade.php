@@ -4,26 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surat Permintaan Produk</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <style>
-        @page {     
-            margin: 1cm;
-            @bottom-right {
-                content: "Page " counter(page) " of " counter(pages);
-            }
-        }   
-
         body {
             font-family: Arial, sans-serif;
-            font-size: 10px;
+            font-size: 10px; /* Ukuran font kecil agar muat dalam satu halaman */
             margin: 0;
             padding: 0;
             padding-bottom: 80px; /* Tambahkan ruang ekstra untuk informasi admin */
         }
         .container {
-            width: 80%;
+            width: 100%;
             margin: 0 auto;
+            padding: 10px;
         }
         .logo img {
             width: 150px;
@@ -36,9 +29,6 @@
         .header .title {
             font-weight: bold;
             font-size: 24px;
-        }
-        .header .address, .header .contact {
-            font-size: 12px;
         }
         .divider {
             border: 0.5px solid #000;
@@ -58,13 +48,6 @@
             font-weight: bold;
             margin-top: 20px;
         }
-        .section-title {
-            margin-top: 5px;
-            margin-bottom: 10px;
-            font-weight: bold;
-            font-size: 16px;
-            text-align: left;
-        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -72,12 +55,12 @@
             margin-bottom: 9px;
         }
         th, td {
-            padding: 4px;
+            padding: 5px;
             border: 1px solid black;
-            text-align: left;
+            text-align: center; /* Pusatkan teks dalam tabel */
         }
         th {
-            background-color: white;
+            background-color: #f2f2f2; /* Warna background header */
         }
         /* Atur ukuran font di dalam tabel */
         table td, table th {
@@ -97,24 +80,7 @@
 
         table th:nth-child(5),
         table td:nth-child(5) { width: 10%; } /* Lebar untuk kolom Jumlah */
-        .signature-container {
-            margin-top: 60px;
-            text-align: center;
-        }
-        .signature {
-            display: inline-block;
-            margin: 0 30px;
-            text-align: center;
-        }
-        .signature p {
-            margin: 0;
-        }
-        .row p {
-            margin: 0;
-        }
-        p {
-            margin: 5px 0;
-        }
+
         .total-row {
             font-weight: bold;
         }
@@ -126,79 +92,127 @@
     </style>
 </head>
 <body>
-        <!-- Kop Surat -->
-        <div class="header">
-            <div class="logo">
-                <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
-            </div>
-            <div>
-                <span class="title">PT JAVA BAKERY FACTORY</span><br>
-                {{-- @if($toko)
-                <span class="toko-name">Cabang: {{ $toko->nama_toko }}</span><br>
-                <span class="address">{{$toko->alamat}}</span><br>
-                @endif --}}
-            </div>
-            <hr class="divider">
+    
+    <div class="header">
+        <div class="logo">
+            <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
         </div>
+        <h1 class="title">PT JAVA BAKERY FACTORY</h1>
+        <p style="font-size: 12px;">Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p>
+        <div class="divider"></div>
+    
+        <h1 class="title2">SURAT PERINTAH PRODUKSI</h1>
+    
+        <p class="period">
+            Periode: {{ $formattedStartDate }} s/d {{ $formattedEndDate }}
+        </p>
+        <p class="period right-align" style="font-size: 10px; position: absolute; top: 0; right: 0; margin: 10px;">
+            {{ $currentDateTime }}
+        </p>
+    </div>
+    
 
-        <!-- Judul Surat -->
-        <div class="change-header">SURAT PERINTAH PRODUKSI</div>
-
-        <!-- Informasi Permintaan -->
-        <div style="margin-top: 2px;">
-            <p>
-                {{-- <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Permintaan</strong></span> --}}
-                {{-- <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->kode_estimasi }}</span> --}}
-            </p>
-            <p>
-                {{-- <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal</strong> </span> --}}
-                {{-- <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->created_at->format('d-m-Y H:i') }}</span> --}}
-            </p>
-        </div>
-        
+    <!-- Informasi Permintaan -->
+    <div style="margin-top: 2px;">
+        @foreach ($groupedData as $klasifikasi => $products)
+        <h3>{{ $klasifikasi }}</h3> <!-- Menampilkan nama klasifikasi di atas tabel -->
         <table>
             <thead>
                 <tr>
-                    <th>No</th>
-                    <th>Divisi</th>
-                    <th>Kode Produk</th>
-                    <th>Nama Produk</th>
-                    <th>Jumlah</th>
+                    <th style="width: 50px;">Kode Produk</th>
+                    <th style="width: 150px;">Nama Produk</th>
+                    <th colspan="2" style="width: 80px;">Banjaran</th>
+                    <th colspan="2" style="width: 80px;">Tegal</th>
+                    <th colspan="2" style="width: 80px;">Slawi</th>
+                    <th colspan="2" style="width: 80px;">Bumiayu</th>
+                    <th colspan="2" style="width: 80px;">Pemalang</th>
+                    <th colspan="2" style="width: 80px;">Cilacap</th>
+                    <th style="width: 40px;">Total Stok</th>
+                    <th style="width: 40px;">Total Pesanan</th>
+                    <th style="width: 40px;">Total</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th>Pes</th>
+                    <th>Stok</th>
+                    <th>Pes</th>
+                    <th>Stok</th>
+                    <th>Pes</th>
+                    <th>Stok</th>
+                    <th>Pes</th>
+                    <th>Stok</th>
+                    <th>Pes</th>
+                    <th>Stok</th>
+                    <th>Pes</th>
+                    <th>Stok</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
                 </tr>
             </thead>
+            
             <tbody>
                 @php
-                    $totalJumlah = 0;
-                    $nomorUrut = 1; // Inisialisasi nomor urut
+                    $totalStok = 0;
+                    $totalPesanan = 0;
+                    $grandTotal = 0; // Total keseluruhan
                 @endphp
-        
-                @foreach ($groupedInquery as $detail)
-                    @if ($klasifikasi_id == null || $detail->produk->klasifikasi_id == $klasifikasi_id)
-                        <tr>
-                            <td class="text-center">{{ $nomorUrut++ }}</td> <!-- Increment nomor urut di sini -->
-                            <td>{{ $detail->produk->klasifikasi->nama ?? 'N/A' }}</td>
-                            <td>{{ $detail->kode_lama }}</td>
-                            <td>{{ $detail->nama_produk }}</td>
-                            <td style="text-align: right">{{ $detail->jumlah }}</td>
-                        </tr>
+                @foreach ($products as $product)
+                    @php
+                        $stok = array_sum($product['stok']);
+                        $pesanan = array_sum($product['pes']);
+                        $total = $stok + $pesanan; // Total untuk setiap produk
+                    @endphp
+                    <tr>
+                        <td>{{ $product['kode_lama'] }}</td>
+                        <td>{{ $product['nama_produk'] }}</td>
+                        
+                        <!-- Banjaran (toko_id 1) -->
+                        <td style="text-align: right">{{ $product['pes'][1] }}</td>
+                        <td style="text-align: right">{{ $product['stok'][1] }}</td>
+                        
+                        <!-- Tegal (toko_id 2) -->
+                        <td style="text-align: right">{{ $product['pes'][2] }}</td>
+                        <td style="text-align: right">{{ $product['stok'][2] }}</td>
+    
+                        <td style="text-align: right">{{ $product['pes'][3] }}</td>
+                        <td style="text-align: right">{{ $product['stok'][3] }}</td>
+    
+                        <td style="text-align: right">{{ $product['pes'][4] }}</td>
+                        <td style="text-align: right">{{ $product['stok'][4] }}</td>
+    
+                        <td style="text-align: right">{{ $product['pes'][5] }}</td>
+                        <td style="text-align: right">{{ $product['stok'][5] }}</td>
+    
+                        <td style="text-align: right">{{ $product['pes'][6] }}</td>
+                        <td style="text-align: right">{{ $product['stok'][6] }}</td>
+                        
+                        <td style="text-align: right">{{ $stok }}</td>
+                        <td style="text-align: right">{{ $pesanan }}</td>
+                        <td style="text-align: right">{{ $total }}</td>
+                        
                         @php
-                            $totalJumlah += $detail->jumlah;
+                            // Menambahkan ke total keseluruhan
+                            $totalStok += $stok;
+                            $totalPesanan += $pesanan;
+                            $grandTotal += $total;
                         @endphp
-                    @endif
+                    </tr>
                 @endforeach
             </tbody>
-        
+    
             <tfoot>
                 <tr>
-                    <th colspan="4" class="text-right">Total Jumlah:</th>
-                    <th style="text-align: right">{{ $totalJumlah }}</th>
+                    <th colspan="14" style="text-align: right;">Total:</th>
+                    
+                    <th style="text-align: right;">{{ $totalStok }}</th>
+                    <th style="text-align: right;">{{ $totalPesanan }}</th>
+                    <th style="text-align: right;">{{ $grandTotal }}</th>
                 </tr>
             </tfoot>
         </table>
-        
-        
-        
-   
+        @endforeach
     </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

@@ -43,121 +43,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class EstimasiproduksiController extends Controller{
 
-    // public function index(Request $request)
-    // {
-    //     $status = $request->status;
-    //     $tanggal = $request->tanggal;
-    //     $toko_id = $request->toko_id;
-    
-    //     // Memulai query dari Permintaanproduk
-    //     $inquery = Permintaanproduk::query();
-    //     $inquery1 = Pemesananproduk::query();
-    
-    //     // Filter berdasarkan tanggal untuk Permintaanproduk
-    //     if ($tanggal) {
-    //         $tanggal = Carbon::parse($tanggal)->startOfDay();
-    //         $inquery->whereHas('detailpermintaanproduks', function($query) use ($tanggal) {
-    //             $query->whereDate('tanggal_permintaan', $tanggal);
-    //         });
-            
-    //         // Filter berdasarkan tanggal untuk Pemesananproduk (satu hari setelah tanggal yang dipilih)
-    //         $tanggalPemesanan = Carbon::parse($tanggal)->addDay(); // Menambahkan satu hari
-    //         $inquery1->whereDate('tanggal_kirim', $tanggalPemesanan);
-    //     } else {
-    //         // Jika tidak ada filter tanggal, ambil data hari ini
-    //         $inquery->whereHas('detailpermintaanproduks', function($query) {
-    //             $query->whereDate('tanggal_permintaan', Carbon::today());
-    //         });
-    //         $inquery1->whereDate('tanggal_kirim', Carbon::today());
-    //     }
-    
-    //     // Filter berdasarkan toko_id pada tabel detailpermintaanproduks
-    //     if ($toko_id) {
-    //         $inquery->whereHas('detailpermintaanproduks', function($query) use ($toko_id) {
-    //             $query->where('toko_id', $toko_id);
-    //         });
-    
-    //         // Filter berdasarkan toko_id pada pemesanan produk
-    //         $inquery1->whereHas('detailpemesananproduk', function($query) use ($toko_id) {
-    //             $query->where('toko_id', $toko_id);
-    //         });
-    //     }
-    
-    //     // Urutkan berdasarkan ID secara descending
-    //     $inquery->orderBy('id', 'DESC');
-    //     $inquery1->orderBy('id', 'DESC');
-    
-    //     // Ambil semua toko untuk dropdown filter
-    //     $tokos = Toko::all();
-    //     $produks = Produk::all();
-    
-    //     // Eager load relasi
-    //     $permintaanProduks = $inquery->with(['detailpermintaanproduks.toko', 'detailpermintaanproduks.produk', 'toko'])->get();
-    //     $pemesananProduks = $inquery1->with(['detailpemesananproduk'])->get();
-    
-    //     // Jika ada data yang sesuai dengan filter, ambil satu data untuk ditampilkan di form
-    //     $permintaanProduksFirst = $permintaanProduks->first(); 
-    //     $pemesananProduksFirst = $pemesananProduks->first(); 
-    
-    //     // Tampilkan ke view
-    //     return view('admin.estimasi_produksi.index', compact('pemesananProduks', 'pemesananProduksFirst', 'permintaanProduks', 'permintaanProduksFirst', 'tokos', 'produks'));
-    // }
-    
-    // public function index(Request $request)
-    // {
-    //     $status = $request->status;
-    //     $tanggal = $request->tanggal;
-    //     $toko_id = $request->toko_id;
-    
-    //     // Memulai query dari Permintaanproduk dan Pemesananproduk
-    //     $inquery = Permintaanproduk::query();
-    //     $inquery1 = Pemesananproduk::query();
-    
-    //     // Filter berdasarkan tanggal untuk Permintaanproduk
-    //     if ($tanggal) {
-    //         $tanggal = Carbon::parse($tanggal)->startOfDay();
-    //         $inquery->whereHas('detailpermintaanproduks', function($query) use ($tanggal) {
-    //             $query->whereDate('tanggal_permintaan', $tanggal);
-    //         });
-    
-    //         // Filter berdasarkan tanggal untuk Pemesananproduk (satu hari setelah tanggal yang dipilih)
-    //         $tanggalPemesanan = Carbon::parse($tanggal)->addDay(); // Menambahkan satu hari
-    //         $inquery1->whereDate('tanggal_kirim', $tanggalPemesanan);
-    //     } else {
-    //         // Jika tidak ada filter tanggal, ambil data hari ini
-    //         $inquery->whereHas('detailpermintaanproduks', function($query) {
-    //             $query->whereDate('tanggal_permintaan', Carbon::today());
-    //         });
-    //         $inquery1->whereDate('tanggal_kirim', Carbon::today());
-    //     }
-    
-    //     // Filter berdasarkan toko_id pada tabel detailpermintaanproduks
-    //     if ($toko_id) {
-    //         $inquery->whereHas('detailpermintaanproduks', function($query) use ($toko_id) {
-    //             $query->where('toko_id', $toko_id);
-    //         });
-    
-    //         // Filter berdasarkan toko_id pada pemesanan produk
-    //         $inquery1->whereHas('detailpemesananproduk', function($query) use ($toko_id) {
-    //             $query->where('toko_id', $toko_id);
-    //         });
-    //     }
-    
-    //     // Urutkan berdasarkan ID secara descending
-    //     $inquery->orderBy('id', 'DESC');
-    //     $inquery1->orderBy('id', 'DESC');
-    
-    //     // Ambil semua data toko dan produk untuk dropdown filter
-    //     $tokos = Toko::all();
-    //     $produks = Produk::all();
-    
-    //     // Eager load relasi dan ambil semua data
-    //     $permintaanProduks = $inquery->with(['detailpermintaanproduks.toko', 'detailpermintaanproduks.produk', 'toko'])->get();
-    //     $pemesananProduks = $inquery1->with(['detailpemesananproduk'])->get();
-    
-    //     // Tampilkan ke view tanpa menggunakan first()
-    //     return view('admin.estimasi_produksi.index', compact('pemesananProduks', 'permintaanProduks', 'tokos', 'produks'));
-    // }
 
     public function index(Request $request)
 {
@@ -292,151 +177,300 @@ class EstimasiproduksiController extends Controller{
     }
 
 
+    // public function update(Request $request, $id)
+    // {
+    //     $error_pesanans = array();
+    //     $data_pembelians = collect();
+
+    //     // Validasi dan pengolahan produk_id dan jumlah
+    //     if ($request->has('produk_id')) {
+    //         for ($i = 0; $i < count($request->produk_id); $i++) {
+    //             $validasi_produk = Validator::make($request->all(), [
+    //                 'produk_id.' . $i => 'required',
+    //                 'jumlah.' . $i => 'required',
+    //             ]);
+
+    //             if ($validasi_produk->fails()) {
+    //                 array_push($error_pesanans, "Barang nomor " . ($i + 1) . " belum dilengkapi!");
+    //             }
+
+    //             $produk_id = is_null($request->produk_id[$i]) ? '' : $request->produk_id[$i];
+    //             $jumlah = is_null($request->jumlah[$i]) ? '' : $request->jumlah[$i];
+
+    //             $data_pembelians->push([
+    //                 'permintaanproduk_id' => $request->detail_ids[$i] ?? null,
+    //                 'produk_id' => $produk_id,
+    //                 'jumlah' => $jumlah,
+    //             ]);
+    //         }
+    //     }
+
+    //     // Ambil data permintaan produk utama
+    //     $permintaanProduk = Permintaanproduk::findOrFail($id);
+
+    //     // Update transaksi utama
+    //     $permintaanProduk->update([
+    //         'kode_permintaan' => $request->kode_permintaan,
+    //     ]);
+
+    //     foreach ($data_pembelians as $data_pesanan) {
+    //         $detailId = $data_pesanan['permintaanproduk_id'];
+
+    //         if ($detailId) {
+    //             Detailpermintaanproduk::where('id', $detailId)->update([
+    //                 'permintaanproduk_id' => $permintaanProduk->id,
+    //                 'produk_id' => $data_pesanan['produk_id'],
+    //                 'jumlah' => $data_pesanan['jumlah'],
+    //             ]);
+    //         } else {
+    //             $existingDetail = Detailpermintaanproduk::where([
+    //                 'permintaanproduk_id' => $permintaanProduk->id,
+    //                 'produk_id' => $data_pesanan['produk_id'],
+    //                 'jumlah' => $data_pesanan['jumlah'],
+    //             ])->first();
+
+    //             if (!$existingDetail) {
+    //                 Detailpermintaanproduk::create([
+    //                     'permintaanproduk_id' => $permintaanProduk->id,
+    //                     'produk_id' => $data_pesanan['produk_id'],
+    //                     'jumlah' => $data_pesanan['jumlah'],
+    //                     'toko_id' => 1,
+    //                     'tanggal_permintaan' => Carbon::now('Asia/Jakarta'),
+    //                     'status' => 'unpost',
+    //                 ]);
+    //             }
+    //         }
+    //     }
+
+    //     $kode = $this->kode();
+
+    //     // Membuat data baru di estimasi_produksi
+    //     $estimasiProduksi = EstimasiProduksi::create([
+    //         'estimasiproduksi_id' => $permintaanProduk->id,
+    //         'kode_estimasi' => $kode,   
+    //         'qrcode_estimasi' => 'https://javabakery.id/estimasi_produksi/' . $kode,
+    //         'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
+    //     ]);
+
+    //     // Menyimpan data dari pemesananProduksFirst
+    //     if ($request->has('produk1_id')) {
+    //         for ($j = 0; $j < count($request->produk1_id); $j++) {
+    //             $produk1_id = is_null($request->produk1_id[$j]) ? '' : $request->produk1_id[$j];
+    //             $jumlah1 = is_null($request->jumlah1[$j]) ? '' : $request->jumlah1[$j];
+
+    //             // Ambil produk berdasarkan produk_id
+    //             $produk1 = Produk::find($produk1_id);
+                
+    //             DetailEstimasiProduksi::create([
+    //                 'estimasiproduksi_id' => $estimasiProduksi->id,
+    //                 'produk_id' => $produk1_id,
+    //                 'jumlah' => $jumlah1,
+    //                 'toko_id' => 1,
+    //                 'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
+    //                 'status' => 'unpost',
+    //                 'kode_lama' => $produk1->kode_lama, // Ambil kode lama dari produk
+    //                 'nama_produk' => $produk1->nama_produk, // Ambil nama produk dari produk
+    //             ]);
+    //         }
+    //     }
+
+    //     // Menyimpan data dari permintaanProduksFirst
+    //     if ($request->has('produk_id')) {
+    //         for ($k = 0; $k < count($request->produk_id); $k++) {
+    //             $produk_id = is_null($request->produk_id[$k]) ? '' : $request->produk_id[$k];
+    //             $jumlah = is_null($request->jumlah[$k]) ? '' : $request->jumlah[$k];
+
+    //             // Ambil produk berdasarkan produk_id
+    //             $produk = Produk::find($produk_id);
+                
+    //             DetailEstimasiProduksi::create([
+    //                 'estimasiproduksi_id' => $estimasiProduksi->id,
+    //                 'produk_id' => $produk_id,
+    //                 'jumlah' => $jumlah,
+    //                 'toko_id' => 1,
+    //                 'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
+    //                 'status' => 'unpost',
+    //                 'kode_lama' => $produk->kode_lama, // Ambil kode lama dari produk
+    //                 'nama_produk' => $produk->nama_produk, // Ambil nama produk dari produk
+    //             ]);
+    //         }
+    //     }
+
+    //     // Ambil detail permintaan produk termasuk toko
+    //     $details = Detailestimasiproduksi::with('toko', 'produk.klasifikasi')->where('estimasiproduksi_id', $estimasiProduksi->id)->get();
+
+    //     // Pastikan variabel $toko diambil dari salah satu detail yang ada
+    //     $toko = $details->isNotEmpty() ? $details->first()->toko : null;
+
+    //     // Mengelompokkan produk berdasarkan klasifikasi
+    //     $produkByDivisi = $details->groupBy(function($item) {
+    //         return $item->produk->klasifikasi->nama;
+    //     });
+
+    //     // Hitung total jumlah per divisi
+    //     $totalPerDivisi = $produkByDivisi->map(function($produks) {
+    //         return $produks->sum('jumlah');
+    //     });
+
+    //     // Ambil data subklasifikasi berdasarkan klasifikasi
+    //     $subklasifikasiByDivisi = $produkByDivisi->map(function($produks) {
+    //         return $produks->groupBy(function($item) {
+    //             return $item->produk->subklasifikasi->nama;
+    //         });
+    //     });
+
+    //     // Arahkan ke view show dengan ID dari estimasiProduksi
+    //     return redirect()->route('estimasi_produksi.show', $estimasiProduksi->id)->with('success', 'Data berhasil diperbarui.');
+    // }
+
     public function update(Request $request, $id)
-    {
-        $error_pesanans = array();
-        $data_pembelians = collect();
+{
+    $error_pesanans = array();
+    $data_pembelians = collect();
 
-        // Validasi dan pengolahan produk_id dan jumlah
-        if ($request->has('produk_id')) {
-            for ($i = 0; $i < count($request->produk_id); $i++) {
-                $validasi_produk = Validator::make($request->all(), [
-                    'produk_id.' . $i => 'required',
-                    'jumlah.' . $i => 'required',
-                ]);
+    // Validasi dan pengolahan produk_id dan jumlah
+    if ($request->has('produk_id')) {
+        for ($i = 0; $i < count($request->produk_id); $i++) {
+            $validasi_produk = Validator::make($request->all(), [
+                'produk_id.' . $i => 'required',
+                'jumlah.' . $i => 'required',
+            ]);
 
-                if ($validasi_produk->fails()) {
-                    array_push($error_pesanans, "Barang nomor " . ($i + 1) . " belum dilengkapi!");
-                }
-
-                $produk_id = is_null($request->produk_id[$i]) ? '' : $request->produk_id[$i];
-                $jumlah = is_null($request->jumlah[$i]) ? '' : $request->jumlah[$i];
-
-                $data_pembelians->push([
-                    'permintaanproduk_id' => $request->detail_ids[$i] ?? null,
-                    'produk_id' => $produk_id,
-                    'jumlah' => $jumlah,
-                ]);
+            if ($validasi_produk->fails()) {
+                array_push($error_pesanans, "Barang nomor " . ($i + 1) . " belum dilengkapi!");
             }
+
+            $produk_id = is_null($request->produk_id[$i]) ? '' : $request->produk_id[$i];
+            $jumlah = is_null($request->jumlah[$i]) ? '' : $request->jumlah[$i];
+
+            $data_pembelians->push([
+                'permintaanproduk_id' => $request->detail_ids[$i] ?? null,
+                'produk_id' => $produk_id,
+                'jumlah' => $jumlah,
+            ]);
         }
-
-        // Ambil data permintaan produk utama
-        $permintaanProduk = Permintaanproduk::findOrFail($id);
-
-        // Update transaksi utama
-        $permintaanProduk->update([
-            'kode_permintaan' => $request->kode_permintaan,
-        ]);
-
-        foreach ($data_pembelians as $data_pesanan) {
-            $detailId = $data_pesanan['permintaanproduk_id'];
-
-            if ($detailId) {
-                Detailpermintaanproduk::where('id', $detailId)->update([
-                    'permintaanproduk_id' => $permintaanProduk->id,
-                    'produk_id' => $data_pesanan['produk_id'],
-                    'jumlah' => $data_pesanan['jumlah'],
-                ]);
-            } else {
-                $existingDetail = Detailpermintaanproduk::where([
-                    'permintaanproduk_id' => $permintaanProduk->id,
-                    'produk_id' => $data_pesanan['produk_id'],
-                    'jumlah' => $data_pesanan['jumlah'],
-                ])->first();
-
-                if (!$existingDetail) {
-                    Detailpermintaanproduk::create([
-                        'permintaanproduk_id' => $permintaanProduk->id,
-                        'produk_id' => $data_pesanan['produk_id'],
-                        'jumlah' => $data_pesanan['jumlah'],
-                        'toko_id' => 1,
-                        'tanggal_permintaan' => Carbon::now('Asia/Jakarta'),
-                        'status' => 'unpost',
-                    ]);
-                }
-            }
-        }
-
-        $kode = $this->kode();
-
-        // Membuat data baru di estimasi_produksi
-        $estimasiProduksi = EstimasiProduksi::create([
-            'estimasiproduksi_id' => $permintaanProduk->id,
-            'kode_estimasi' => $kode,   
-            'qrcode_estimasi' => 'https://javabakery.id/estimasi_produksi/' . $kode,
-            'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
-        ]);
-
-        // Menyimpan data dari pemesananProduksFirst
-        if ($request->has('produk1_id')) {
-            for ($j = 0; $j < count($request->produk1_id); $j++) {
-                $produk1_id = is_null($request->produk1_id[$j]) ? '' : $request->produk1_id[$j];
-                $jumlah1 = is_null($request->jumlah1[$j]) ? '' : $request->jumlah1[$j];
-
-                // Ambil produk berdasarkan produk_id
-                $produk1 = Produk::find($produk1_id);
-                
-                DetailEstimasiProduksi::create([
-                    'estimasiproduksi_id' => $estimasiProduksi->id,
-                    'produk_id' => $produk1_id,
-                    'jumlah' => $jumlah1,
-                    'toko_id' => 1,
-                    'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
-                    'status' => 'unpost',
-                    'kode_lama' => $produk1->kode_lama, // Ambil kode lama dari produk
-                    'nama_produk' => $produk1->nama_produk, // Ambil nama produk dari produk
-                ]);
-            }
-        }
-
-        // Menyimpan data dari permintaanProduksFirst
-        if ($request->has('produk_id')) {
-            for ($k = 0; $k < count($request->produk_id); $k++) {
-                $produk_id = is_null($request->produk_id[$k]) ? '' : $request->produk_id[$k];
-                $jumlah = is_null($request->jumlah[$k]) ? '' : $request->jumlah[$k];
-
-                // Ambil produk berdasarkan produk_id
-                $produk = Produk::find($produk_id);
-                
-                DetailEstimasiProduksi::create([
-                    'estimasiproduksi_id' => $estimasiProduksi->id,
-                    'produk_id' => $produk_id,
-                    'jumlah' => $jumlah,
-                    'toko_id' => 1,
-                    'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
-                    'status' => 'unpost',
-                    'kode_lama' => $produk->kode_lama, // Ambil kode lama dari produk
-                    'nama_produk' => $produk->nama_produk, // Ambil nama produk dari produk
-                ]);
-            }
-        }
-
-        // Ambil detail permintaan produk termasuk toko
-        $details = Detailestimasiproduksi::with('toko', 'produk.klasifikasi')->where('estimasiproduksi_id', $estimasiProduksi->id)->get();
-
-        // Pastikan variabel $toko diambil dari salah satu detail yang ada
-        $toko = $details->isNotEmpty() ? $details->first()->toko : null;
-
-        // Mengelompokkan produk berdasarkan klasifikasi
-        $produkByDivisi = $details->groupBy(function($item) {
-            return $item->produk->klasifikasi->nama;
-        });
-
-        // Hitung total jumlah per divisi
-        $totalPerDivisi = $produkByDivisi->map(function($produks) {
-            return $produks->sum('jumlah');
-        });
-
-        // Ambil data subklasifikasi berdasarkan klasifikasi
-        $subklasifikasiByDivisi = $produkByDivisi->map(function($produks) {
-            return $produks->groupBy(function($item) {
-                return $item->produk->subklasifikasi->nama;
-            });
-        });
-
-        // Arahkan ke view show dengan ID dari estimasiProduksi
-        return redirect()->route('estimasi_produksi.show', $estimasiProduksi->id)->with('success', 'Data berhasil diperbarui.');
     }
+
+    // Ambil data permintaan produk utama
+    $permintaanProduk = Permintaanproduk::findOrFail($id);
+
+    // Update transaksi utama
+    $permintaanProduk->update([
+        'kode_permintaan' => $request->kode_permintaan,
+    ]);
+
+    foreach ($data_pembelians as $data_pesanan) {
+        $detailId = $data_pesanan['permintaanproduk_id'];
+
+        if ($detailId) {
+            Detailpermintaanproduk::where('id', $detailId)->update([
+                'permintaanproduk_id' => $permintaanProduk->id,
+                'produk_id' => $data_pesanan['produk_id'],
+                'jumlah' => $data_pesanan['jumlah'],
+            ]);
+        } else {
+            $existingDetail = Detailpermintaanproduk::where([
+                'permintaanproduk_id' => $permintaanProduk->id,
+                'produk_id' => $data_pesanan['produk_id'],
+                'jumlah' => $data_pesanan['jumlah'],
+            ])->first();
+
+            if (!$existingDetail) {
+                Detailpermintaanproduk::create([
+                    'permintaanproduk_id' => $permintaanProduk->id,
+                    'produk_id' => $data_pesanan['produk_id'],
+                    'jumlah' => $data_pesanan['jumlah'],
+                    'toko_id' => 1,
+                    'tanggal_permintaan' => Carbon::now('Asia/Jakarta'),
+                    'status' => 'unpost',
+                ]);
+            }
+        }
+    }
+
+    $kode = $this->kode();
+
+    // Membuat data baru di estimasi_produksi
+    $estimasiProduksi = EstimasiProduksi::create([
+        'estimasiproduksi_id' => $permintaanProduk->id,
+        'kode_estimasi' => $kode,
+        'qrcode_estimasi' => 'https://javabakery.id/estimasi_produksi/' . $kode,
+        'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
+    ]);
+
+    // Menyimpan data dari pemesananProduksFirst
+    if ($request->has('produk1_id')) {
+        for ($j = 0; $j < count($request->produk1_id); $j++) {
+            $produk1_id = is_null($request->produk1_id[$j]) ? '' : $request->produk1_id[$j];
+            $jumlah1 = is_null($request->jumlah1[$j]) ? '' : $request->jumlah1[$j];
+
+            // Ambil produk berdasarkan produk_id
+            $produk1 = Produk::find($produk1_id);
+            
+            DetailEstimasiProduksi::create([
+                'estimasiproduksi_id' => $estimasiProduksi->id,
+                'produk_id' => $produk1_id,
+                'jumlah' => $jumlah1,
+                'toko_id' => 1,
+                'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
+                'status' => 'unpost',
+                'kode_lama' => $produk1->kode_lama, // Ambil kode lama dari produk
+                'nama_produk' => $produk1->nama_produk, // Ambil nama produk dari produk
+                'kategori' => 'pesanan', // Tambahkan kategori untuk pesanan
+            ]);
+        }
+    }
+
+    // Menyimpan data dari permintaanProduksFirst
+    if ($request->has('produk_id')) {
+        for ($k = 0; $k < count($request->produk_id); $k++) {
+            $produk_id = is_null($request->produk_id[$k]) ? '' : $request->produk_id[$k];
+            $jumlah = is_null($request->jumlah[$k]) ? '' : $request->jumlah[$k];
+
+            // Ambil produk berdasarkan produk_id
+            $produk = Produk::find($produk_id);
+            
+            DetailEstimasiProduksi::create([
+                'estimasiproduksi_id' => $estimasiProduksi->id,
+                'produk_id' => $produk_id,
+                'jumlah' => $jumlah,
+                'toko_id' => 1,
+                'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
+                'status' => 'unpost',
+                'kode_lama' => $produk->kode_lama, // Ambil kode lama dari produk
+                'nama_produk' => $produk->nama_produk, // Ambil nama produk dari produk
+                'kategori' => 'permintaan', // Tambahkan kategori untuk permintaan
+            ]);
+        }
+    }
+
+    // Ambil detail permintaan produk termasuk toko
+    $details = Detailestimasiproduksi::with('toko', 'produk.klasifikasi')->where('estimasiproduksi_id', $estimasiProduksi->id)->get();
+
+    // Pastikan variabel $toko diambil dari salah satu detail yang ada
+    $toko = $details->isNotEmpty() ? $details->first()->toko : null;
+
+    // Mengelompokkan produk berdasarkan klasifikasi
+    $produkByDivisi = $details->groupBy(function($item) {
+        return $item->produk->klasifikasi->nama;
+    });
+
+    // Hitung total jumlah per divisi
+    $totalPerDivisi = $produkByDivisi->map(function($produks) {
+        return $produks->sum('jumlah');
+    });
+
+    // Ambil data subklasifikasi berdasarkan klasifikasi
+    $subklasifikasiByDivisi = $produkByDivisi->map(function($produks) {
+        return $produks->groupBy(function($item) {
+            return $item->produk->subklasifikasi->nama;
+        });
+    });
+
+    // Arahkan ke view show dengan ID dari estimasiProduksi
+    return redirect()->route('estimasi_produksi.show', $estimasiProduksi->id)->with('success', 'Data berhasil diperbarui.');
+}
+
 
 // public function update(Request $request, $id)
 // {

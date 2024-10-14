@@ -24,6 +24,7 @@ class Detailestimasiproduksi extends Model
         'jumlah',
         'toko_id',
         'status',
+        'kategori',
   
   
     ];

@@ -88,6 +88,7 @@
             <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
         </div>
         <h1 class="title">PT JAVA BAKERY FACTORY</h1>
+        
         {{-- <p class="title1">Cabang: {{ strtoupper($selectedCabang) }}</p> --}}
         <div class="divider"></div>
 
