@@ -1,4 +1,4 @@
-@extends('layouts.app')
+    @extends('layouts.app')
 
 @section('title', 'Produks')
 
@@ -202,7 +202,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_banjaran/laporan_pemesananprodukbnjr') }}";
+            form.action = "{{ url('toko_tegal/laporan_pemesananproduktgl') }}";
             form.submit();
         }
     </script>
@@ -230,7 +230,7 @@
         }
 
         const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printReportpemesananbnjr') }}";
+    form.action = "{{ url('toko_tegal/printReportpemesanantgl') }}";
     form.target = "_blank";
     form.submit();
     }
@@ -241,9 +241,9 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'global') {
-            window.location.href = "{{ url('toko_banjaran/indexpemesananglobalbnjr') }}";
+            window.location.href = "{{ url('toko_tegal/indexpemesananglobaltgl') }}";
         } else if (selectedValue === 'rinci') {
-            window.location.href = "{{ url('toko_banjaran/laporan_pemesananprodukbnjr') }}";
+            window.location.href = "{{ url('toko_tegal/laporan_pemesananproduktgl') }}";
         }
     });
 </script>

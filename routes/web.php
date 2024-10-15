@@ -70,6 +70,7 @@ use App\Http\Controllers\Toko_slawi\Laporan_pemindahanslawiController;
 use App\Http\Controllers\Toko_slawi\Pengiriman_tokoslawiController as Toko_slawiPengiriman_tokoslawiController;
 use App\Http\Controllers\Toko_slawi\Retur_tokoslawiController;
 use App\Http\Controllers\Toko_tegal\Inquery_penjualanproduktegalController;
+use App\Http\Controllers\Toko_tegal\Laporan_pemesananproduktegalController;
 use App\Http\Controllers\Toko_tegal\PemesananproduktegalController;
 use App\Http\Controllers\Toko_tegal\Pengiriman_tokotegalController;
 use App\Http\Controllers\Toko_tegal\PenjualanproduktegalController;
@@ -657,11 +658,11 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::get('inquery_pemesananproduk/unpost_pemesananproduk/{id}', [\App\Http\Controllers\Toko_banjaran\Inquery_pemesananprodukController::class, 'unpost_pemesananproduk']);
     Route::get('inquery_pemesananproduk/posting_pemesananproduk/{id}', [\App\Http\Controllers\Toko_banjaran\Inquery_pemesananprodukController::class, 'posting_pemesananproduk']);
 
-    Route::resource('laporan_pemesananprodukbnjr', \App\Http\Controllers\Toko_banjaran\Laporan_pemesananprodukbanjaranController::class);
-    Route::get('print_pemesananbnjr', [\App\Http\Controllers\Toko_banjaran\Laporan_pemesananprodukbanjaranController::class, 'print_pemesanan']);
-    Route::get('printReportpemesananbnjr', [Laporan_pemesananprodukController::class, 'printReportPemesanan'])->name('printReportPemesanan');
-    Route::get('indexpemesananglobalbnjr', [\App\Http\Controllers\Toko_banjaran\Laporan_pemesananprodukbanjaranController::class, 'indexpemesananglobal']);
-    Route::get('printReportpemesananglobalbnjr', [Laporan_pemesananprodukbanjaranController::class, 'printReportpemesananglobalbnjr'])->name('printReportpemesananglobalbnjr');
+    Route::resource('laporan_pemesananproduktgl', \App\Http\Controllers\Toko_tegal\Laporan_pemesananproduktegalController::class);
+    Route::get('print_pemesanantgl', [\App\Http\Controllers\Toko_tegal\Laporan_pemesananproduktegalController::class, 'print_pemesanan']);
+    Route::get('printReportpemesanantgl', [Laporan_pemesananproduktegalController::class, 'printReportPemesanan'])->name('printReportPemesanan');
+    Route::get('indexpemesananglobaltgl', [\App\Http\Controllers\Toko_tegal\Laporan_pemesananproduktegalController::class, 'indexpemesananglobal']);
+    Route::get('printReportpemesananglobaltgl', [Laporan_pemesananproduktegalController::class, 'printReportpemesananglobaltgl'])->name('printReportpemesananglobaltgl');
 
     Route::resource('penjualan_produk', \App\Http\Controllers\Toko_tegal\PenjualanproduktegalController::class);
     Route::get('/toko_tegal/penjualan_produk/cetak/{id}', [PenjualanproduktegalController::class, 'cetak'])->name('toko_tegal.penjualan_produk.cetak');

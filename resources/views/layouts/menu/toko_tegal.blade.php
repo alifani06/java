@@ -344,36 +344,36 @@
 </li>
 
 <li
-    class="nav-item {{ request()->is('toko_tegal/laporan_pemesananprodukbnjr*') ||
+    class="nav-item {{ request()->is('toko_tegal/laporan_pemesananproduktgl*') ||
     request()->is('toko_tegal/laporan_penjualanproduk*')  ||
     request()->is('toko_tegal/laporan_perubahanharga*')||
     request()->is('toko_tegal/laporan_permintaanproduk*')||
     request()->is('toko_tegal/laporan_pengirimanproduk*')||
-    request()->is('toko_tegal/laporan_returbanjaran*')||
-    request()->is('toko_tegal/laporan_pemindahanbanjaran*')||
+    request()->is('toko_tegal/laporan_returtegal*')||
+    request()->is('toko_tegal/laporan_pemindahantegal*')||
     request()->is('toko_tegal/laporan_stokbarangjadi*')||
-    request()->is('toko_tegal/laporan_stoktokobanjaran*')||
-    request()->is('toko_tegal/laporan_setorantokobanjaran*')||
-    request()->is('toko_tegal/laporan_setorantunaibanjaran*')||
-    request()->is('toko_tegal/laporan_depositbanjaran*')||
+    request()->is('toko_tegal/laporan_stoktokotegal*')||
+    request()->is('toko_tegal/laporan_setorantokotegal*')||
+    request()->is('toko_tegal/laporan_setorantunaitegal*')||
+    request()->is('toko_tegal/laporan_deposittegal*')||
     request()->is('toko_tegal/laporan_pengirimanbarangjadi*')
     // request()->is('toko_tegal/input*')
   
         ? 'menu-open'
         : '' }}">
     <a href="#"
-        class="nav-link {{ request()->is('toko_tegal/laporan_pemesananprodukbnjr*') ||
+        class="nav-link {{ request()->is('toko_tegal/laporan_pemesananproduktgl*') ||
         request()->is('toko_tegal/laporan_penjualanproduk*')|| 
         request()->is('toko_tegal/laporan_perubahanharga*') ||
         request()->is('toko_tegal/laporan_permintaanproduk*')|| 
         request()->is('toko_tegal/laporan_pengirimanproduk*')|| 
-        request()->is('toko_tegal/laporan_returbanjaran*')|| 
-        request()->is('toko_tegal/laporan_pemindahanbanjaran*')|| 
+        request()->is('toko_tegal/laporan_returtegal*')|| 
+        request()->is('toko_tegal/laporan_pemindahantegal*')|| 
         request()->is('toko_tegal/laporan_stokbarangjadi*')|| 
-        request()->is('toko_tegal/laporan_stoktokobanjaran*')|| 
-        request()->is('toko_tegal/laporan_setorantokobanjaran*')|| 
-        request()->is('toko_tegal/laporan_setorantunaibanjaran*')|| 
-        request()->is('toko_tegal/laporan_depositbanjaran*')|| 
+        request()->is('toko_tegal/laporan_stoktokotegal*')|| 
+        request()->is('toko_tegal/laporan_setorantokotegal*')|| 
+        request()->is('toko_tegal/laporan_setorantunaitegal*')|| 
+        request()->is('toko_tegal/laporan_deposittegal*')|| 
         request()->is('toko_tegal/laporan_spengirimanarangjadi*') 
         // request()->is('toko_tegal/input*')
       
@@ -389,8 +389,8 @@
     <ul class="nav nav-treeview">
         {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
         <li class="nav-item">
-            <a href="{{ url('toko_tegal/laporan_pemesananprodukbnjr') }}"
-                class="nav-link {{ request()->is('toko_tegal/laporan_pemesananprodukbnjr*') ? 'active' : '' }}">
+            <a href="{{ url('toko_tegal/laporan_pemesananproduktgl') }}"
+                class="nav-link {{ request()->is('toko_tegal/laporan_pemesananproduktgl*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Laporan Pemesanan Produk</p>
             </a>
@@ -429,8 +429,8 @@
 
               {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
               <li class="nav-item">
-                <a href="{{ url('toko_tegal/laporan_returbanjaran') }}"
-                    class="nav-link {{ request()->is('toko_tegal/laporan_returbanjaran*') ? 'active' : '' }}">
+                <a href="{{ url('toko_tegal/laporan_returtegal') }}"
+                    class="nav-link {{ request()->is('toko_tegal/laporan_returtegal*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                     <p style="font-size: 14px;">Laporan Retur Produk</p>
                 </a>
@@ -439,8 +439,8 @@
 
             {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
               <li class="nav-item">
-                <a href="{{ url('toko_tegal/laporan_pemindahanbanjaran') }}"
-                    class="nav-link {{ request()->is('toko_tegal/laporan_pemindahanbanjaran*') ? 'active' : '' }}">
+                <a href="{{ url('toko_tegal/laporan_pemindahantegal') }}"
+                    class="nav-link {{ request()->is('toko_tegal/laporan_pemindahantegal*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                     <p style="font-size: 13px;">Laporan Pemindahan Produk</p>
                 </a>
@@ -448,8 +448,8 @@
             {{-- @endif --}}
             {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
               <li class="nav-item">
-                <a href="{{ url('toko_tegal/laporan_stoktokobanjaran') }}"
-                    class="nav-link {{ request()->is('toko_tegal/laporan_stoktokobanjaran*') ? 'active' : '' }}">
+                <a href="{{ url('toko_tegal/laporan_stoktokotegal') }}"
+                    class="nav-link {{ request()->is('toko_tegal/laporan_stoktokotegal*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                     <p style="font-size: 13px;">Laporan Stok Toko</p>
                 </a>
@@ -458,8 +458,8 @@
 
             {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
               <li class="nav-item">
-                <a href="{{ url('toko_tegal/laporan_setorantokobanjaran') }}"
-                    class="nav-link {{ request()->is('toko_tegal/laporan_setorantokobanjaran*') ? 'active' : '' }}">
+                <a href="{{ url('toko_tegal/laporan_setorantokotegal') }}"
+                    class="nav-link {{ request()->is('toko_tegal/laporan_setorantokotegal*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                     <p style="font-size: 13px;">Laporan Setoran Kasir</p>
                 </a>
@@ -468,8 +468,8 @@
 
                         {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
                         <li class="nav-item">
-                            <a href="{{ url('toko_tegal/laporan_setorantunaibanjaran') }}"
-                                class="nav-link {{ request()->is('toko_tegal/laporan_setorantunaibanjaran*') ? 'active' : '' }}">
+                            <a href="{{ url('toko_tegal/laporan_setorantunaitegal') }}"
+                                class="nav-link {{ request()->is('toko_tegal/laporan_setorantunaitegal*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                                 <p style="font-size: 13px;">Laporan Setoran Tunai</p>
                             </a>
@@ -478,8 +478,8 @@
 
             {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
               <li class="nav-item">
-                <a href="{{ url('toko_tegal/laporan_depositbanjaran') }}"
-                    class="nav-link {{ request()->is('toko_tegal/laporan_depositbanjaran*') ? 'active' : '' }}">
+                <a href="{{ url('toko_tegal/laporan_deposittegal') }}"
+                    class="nav-link {{ request()->is('toko_tegal/laporan_deposittegal*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                     <p style="font-size: 13px;">Laporan Depsit</p>
                 </a>

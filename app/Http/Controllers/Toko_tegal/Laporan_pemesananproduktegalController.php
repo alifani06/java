@@ -45,8 +45,7 @@ class Laporan_pemesananproduktegalController extends Controller
         $produk = $request->produk;
         $klasifikasi_id = $request->klasifikasi_id;
     
-        // Set toko default ke BANJARAN (toko_id = 1)
-        $toko_id = 1;
+        $toko_id = 2;
     
         // Query dasar untuk mengambil data pemesanan produk, hanya untuk toko Banjaran
         $query = Pemesananproduk::where('toko_id', $toko_id);
@@ -115,7 +114,7 @@ class Laporan_pemesananproduktegalController extends Controller
         $klasifikasi_id = $request->klasifikasi_id;
     
         // Query dasar untuk mengambil data pemesanan produk
-        $query = Pemesananproduk::query();
+        $query = Pemesananproduk::where('toko_id', 2);
     
         // Filter berdasarkan status
         if ($status) {
@@ -143,11 +142,6 @@ class Laporan_pemesananproduktegalController extends Controller
             $query->whereHas('detailpemesananproduk', function ($query) use ($produk) {
                 $query->where('produk_id', $produk);
             });
-        }
-    
-        // Filter berdasarkan toko
-        if ($toko_id) {
-            $query->where('toko_id', $toko_id);
         }
     
         // Filter berdasarkan klasifikasi
@@ -234,7 +228,7 @@ class Laporan_pemesananproduktegalController extends Controller
         ])->get();
 
         // Menentukan cabang yang dipilih
-        $selectedCabang = $tokoId == 1 ? 'BANJARAN' : $inquery->first()->toko->nama_toko;
+        $selectedCabang = $tokoId == 2 ? 'TEGAL' : $inquery->first()->toko->nama_toko;
 
         // Kelompokkan data berdasarkan klasifikasi
         $groupedByKlasifikasi = $inquery->groupBy(function($item) {
@@ -275,159 +269,9 @@ class Laporan_pemesananproduktegalController extends Controller
     }
 
     
-    
-    // public function printReportpemesananglobalbnjr(Request $request)
-    // {
-    //     // Validasi input
-    //     $validatedData = $request->validate([
-    //         'status' => 'nullable|string',
-    //         'tanggal_pemesanan' => 'nullable|date',
-    //         'tanggal_akhir' => 'nullable|date',
-    //         'toko_id' => 'nullable|integer',
-    //     ]);
 
-    //     // Tangkap data dari request
-    //     $status = htmlspecialchars($validatedData['status'] ?? null);
-    //     $tanggalPemesanan = $validatedData['tanggal_pemesanan'] ?? null;
-    //     $tanggalAkhir = $validatedData['tanggal_akhir'] ?? null;
-    //     $tokoId = htmlspecialchars($validatedData['toko_id'] ?? '0');
 
-    //     // Definisikan daftar toko
-    //     $tokoList = [
-    //         1 => 'Banjaran',
-    //         2 => 'Tegal',
-    //         3 => 'Slawi',
-    //         4 => 'Pemalang',
-    //         5 => 'Bumiayu',
-    //         6 => 'Cilacap',
-    //     ];
-
-    //     // Tentukan toko yang akan ditampilkan berdasarkan filter
-    //     if ($tokoId && $tokoId != '0') {
-    //         // Jika toko tertentu dipilih
-    //         $tokoFieldMap = [
-    //             $tokoId => strtolower($tokoList[$tokoId] ?? 'unknown'),
-    //         ];
-    //     } else {
-    //         // Jika "Semua Toko" dipilih
-    //         $tokoFieldMap = [];
-    //         foreach ($tokoList as $id => $name) {
-    //             $tokoFieldMap[$id] = strtolower($name);
-    //         }
-    //     }
-
-    //     // Query untuk mendapatkan data pemesanan produk
-    //     $query = Pemesananproduk::with(['toko', 'detailpemesananproduk.produk.klasifikasi'])
-    //         ->when($status, function ($query, $status) {
-    //             return $query->where('status', $status);
-    //         })
-    //         ->when($tanggalPemesanan && $tanggalAkhir, function ($query) use ($tanggalPemesanan, $tanggalAkhir) {
-    //             $tanggalPemesanan = Carbon::parse($tanggalPemesanan)->startOfDay();
-    //             $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
-    //             return $query->whereBetween('tanggal_pemesanan', [$tanggalPemesanan, $tanggalAkhir]);
-    //         })
-    //         ->when($tanggalPemesanan && !$tanggalAkhir, function ($query) use ($tanggalPemesanan) {
-    //             $tanggalPemesanan = Carbon::parse($tanggalPemesanan)->startOfDay();
-    //             return $query->where('tanggal_pemesanan', '>=', $tanggalPemesanan);
-    //         })
-    //         ->when(!$tanggalPemesanan && $tanggalAkhir, function ($query) use ($tanggalAkhir) {
-    //             $tanggalAkhir = Carbon::parse($tanggalAkhir)->endOfDay();
-    //             return $query->where('tanggal_pemesanan', '<=', $tanggalAkhir);
-    //         })
-    //         ->when(!$tanggalPemesanan && !$tanggalAkhir, function ($query) {
-    //             return $query->whereDate('tanggal_pemesanan', Carbon::today());
-    //         })
-    //         ->when($tokoId && $tokoId != '0', function ($query) use ($tokoId) {
-    //             return $query->where('toko_id', $tokoId);
-    //         })
-    //         ->orderBy('id', 'DESC')
-    //         ->get();
-
-    //     // Pengelompokan data berdasarkan klasifikasi
-    //     $groupedData = [];
-    //     foreach ($query as $item) {
-    //         foreach ($item->detailpemesananproduk as $detail) {
-    //             $klasifikasi = $detail->produk->klasifikasi->nama ?? 'Tidak ada';
-    //             $key = $detail->kode_produk . '-' . ($detail->produk->klasifikasi->id ?? 'no-klasifikasi');
-
-    //             if (!isset($groupedData[$klasifikasi])) {
-    //                 $groupedData[$klasifikasi] = [];
-    //             }
-    //             if (!isset($groupedData[$klasifikasi][$key])) {
-    //                 // Inisialisasi data produk
-    //                 $dataArray = [
-    //                     'klasifikasi' => $klasifikasi,
-    //                     'kode_produk' => $detail->kode_produk ?? 'Tidak ada',
-    //                     'kode_lama' => $detail->kode_lama ?? 'Tidak ada',
-    //                     'nama_produk' => $detail->nama_produk ?? 'Tidak ada',
-    //                     'subtotal' => 0,
-    //                 ];
-    //                 // Inisialisasi field toko sesuai dengan toko yang dipilih
-    //                 foreach ($tokoFieldMap as $field) {
-    //                     $dataArray[$field] = 0;
-    //                 }
-    //                 $groupedData[$klasifikasi][$key] = $dataArray;
-    //             }
-    //             // Map toko_id ke field toko yang sesuai
-    //             $tokoField = $tokoFieldMap[$item->toko_id] ?? null;
-    //             if ($tokoField) {
-    //                 $groupedData[$klasifikasi][$key][$tokoField] += (int) $detail->jumlah;
-    //                 $groupedData[$klasifikasi][$key]['subtotal'] += (int) $detail->jumlah;
-
-    //             }
-    //         }
-    //     }
-
-    //     // Format tanggal untuk tampilan PDF
-    //     $formattedStartDate = $tanggalPemesanan ? Carbon::parse($tanggalPemesanan)->format('d-m-Y') : null;
-    //     $formattedEndDate = $tanggalAkhir ? Carbon::parse($tanggalAkhir)->format('d-m-Y') : null;
-
-    //     // Hitung total subtotal
-    //     $totalSubtotal = 0;
-    //     foreach ($groupedData as $klasifikasi => $items) {
-    //         foreach ($items as $data) {
-    //             $totalSubtotal += $data['subtotal'];
-    //         }
-    //     }
-
-    //     // Buat PDF menggunakan Facade PDF
-    //     $pdf = FacadePdf::loadView('toko_tegal.laporan_pemesananproduk.printglobal', [
-    //         'groupedData' => $groupedData,
-    //         'totalSubtotal' => $totalSubtotal,
-    //         'startDate' => $formattedStartDate,
-    //         'endDate' => $formattedEndDate,
-    //         'toko_id' => $tokoId,
-    //         'tokoFieldMap' => $tokoFieldMap,
-    //         'tokoList' => $tokoList, 
-    //         'selectedCabang' => $tokoList[$tokoId] ?? 'Semua Toko', // Tambahkan variabel ini
-    //     ]);
-        
-
-    //     // Menambahkan nomor halaman di kanan bawah
-    //     $pdf->output();
-    //     $dompdf = $pdf->getDomPDF();
-    //     $canvas = $dompdf->getCanvas();
-    //     $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
-    //         $text = "Page $pageNumber of $pageCount";
-    //         $font = $fontMetrics->getFont('Arial', 'normal');
-    //         $size = 8;
-
-    //         // Menghitung lebar teks
-    //         $width = $fontMetrics->getTextWidth($text, $font, $size);
-
-    //         // Mengatur koordinat X dan Y
-    //         $x = $canvas->get_width() - $width - 10;
-    //         $y = $canvas->get_height() - 15;
-
-    //         // Menambahkan teks ke posisi yang ditentukan
-    //         $canvas->text($x, $y, $text, $font, $size);
-    //     });
-
-    //     // Output PDF ke browser
-    //     return $pdf->stream('Laporan_Pemesanan_Produk.pdf');
-    // }
-
-    public function printReportpemesananglobalbnjr(Request $request)
+    public function printReportpemesananglobaltgl(Request $request)
     {
         // Validasi input
         $validatedData = $request->validate([
@@ -442,8 +286,8 @@ class Laporan_pemesananproduktegalController extends Controller
         $tanggalAkhir = $validatedData['tanggal_akhir'] ?? null;
     
         // Tetapkan ID toko Banjaran secara langsung
-        $tokoId = 1; // ID toko Banjaran
-        $tokoName = 'Banjaran'; // Nama toko Banjaran
+        $tokoId = 2; // ID toko Banjaran
+        $tokoName = 'Tegal'; // Nama toko Banjaran
     
         // Tentukan field toko untuk Banjaran
         $tokoFieldMap = [

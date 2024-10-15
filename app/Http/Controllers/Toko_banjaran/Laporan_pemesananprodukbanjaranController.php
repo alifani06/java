@@ -115,7 +115,7 @@ class Laporan_pemesananprodukbanjaranController extends Controller
         $klasifikasi_id = $request->klasifikasi_id;
     
         // Query dasar untuk mengambil data pemesanan produk
-        $query = Pemesananproduk::query();
+        $query = Pemesananproduk::where('toko_id', 1);
     
         // Filter berdasarkan status
         if ($status) {
