@@ -352,6 +352,7 @@ document.addEventListener('DOMContentLoaded', function() {
         item_pembelian += '<option value="MAINAN DIJUAL"' + (keterangan === 'MAINAN DIJUAL' ? ' selected' : '') + '>MAINAN DIJUAL</option>';
         item_pembelian += '<option value="MAKLON"' + (keterangan === 'MAKLON' ? ' selected' : '') + '>MAKLON</option>';
         item_pembelian += '<option value="SPECIAL PRODUK"' + (keterangan === 'SPECIAL PRODUK' ? ' selected' : '') + '>SPECIAL PRODUK</option>';
+        item_pembelian += '<option value="CAFFE"' + (keterangan === 'CAFFE' ? ' selected' : '') + '>CAFFE</option>';
 
         item_pembelian += '</select></div></td>';
  
