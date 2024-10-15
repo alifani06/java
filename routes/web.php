@@ -777,12 +777,12 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::post('toko_tegal/setoran_tokobanjaran', [Setoran_tokotegalController::class, 'store'])->name('setoran.store');
 
 
-    Route::resource('laporan_setorantokotegal', \App\Http\Controllers\Toko_tegal\laporan_setoran::class);
+    Route::resource('laporan_setorantokotegal', \App\Http\Controllers\Toko_tegal\Laporan_setoranpenjualanController::class);
     Route::get('printReportsetoran', [Laporan_setoranpenjualanController::class, 'printReportsetoran'])->name('laporan_setoranpenjualan.print');
 
     Route::resource('inquery_deposittegal', \App\Http\Controllers\Toko_tegal\Inquery_deposittegalController::class);
 
-    Route::resource('laporan_depositbanjaran', \App\Http\Controllers\Toko_tegal\Laporan_deposittegalController::class);
+    Route::resource('laporan_deposittegal', \App\Http\Controllers\Toko_tegal\Laporan_deposittegalController::class);
     Route::get('indexrinci', [\App\Http\Controllers\Toko_tegal\Laporan_deposittegalController::class, 'indexrinci']);
     Route::get('indexsaldo', [\App\Http\Controllers\Toko_tegal\Laporan_deposittegalController::class, 'indexsaldo']);
     Route::get('saldo', [\App\Http\Controllers\Toko_tegal\Laporan_deposittegalController::class, 'saldo']);

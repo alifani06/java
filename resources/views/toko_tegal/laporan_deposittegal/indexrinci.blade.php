@@ -149,7 +149,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_banjaran/indexrinci') }}";
+            form.action = "{{ url('toko_tegal/indexrinci') }}";
             form.submit();
         }
 
@@ -160,11 +160,11 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'global') {
-            window.location.href = "{{ url('toko_banjaran/laporan_depositbanjaran') }}";
+            window.location.href = "{{ url('toko_tegal/laporan_deposittegal') }}";
         } else if (selectedValue === 'rinci') {
-            window.location.href = "{{ url('toko_banjaran/indexrinci') }}";
+            window.location.href = "{{ url('toko_tegal/indexrinci') }}";
         } else if (selectedValue === 'saldo') {
-            window.location.href = "{{ url('toko_banjaran/indexsaldo') }}";
+            window.location.href = "{{ url('toko_tegal/indexsaldo') }}";
         }
     });
 </script>
@@ -172,7 +172,7 @@
 <script>
     function printReport() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printReportdepositrinci') }}";
+    form.action = "{{ url('toko_tegal/printReportdepositrinci') }}";
     form.target = "_blank";
     form.submit();
 }
