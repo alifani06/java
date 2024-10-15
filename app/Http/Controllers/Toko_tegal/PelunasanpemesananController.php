@@ -43,16 +43,28 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class PelunasanpemesananController extends Controller
 {
+    // public function index()
+    // {
+    //     $inquery = Pelunasan::with(['metodePembayaran', 'dppemesanan.pemesananproduk'])
+    //         ->whereDate('created_at', now()) 
+    //         ->orderBy('kode_penjualan', 'asc')   
+    //         ->get();
+    
+    //     return view('toko_tegal.pelunasan_pemesanan.index', compact('inquery'));
+    // }
     public function index()
-    {
-        $inquery = Pelunasan::with(['metodePembayaran', 'dppemesanan.pemesananproduk'])
-            ->whereDate('created_at', now()) 
-            ->orderBy('kode_penjualan', 'asc')   
-            ->get();
-    
-        return view('toko_tegal.pelunasan_pemesanan.index', compact('inquery'));
-    }
-    
+{
+    $inquery = Pelunasan::with(['metodePembayaran', 'dppemesanan.pemesananproduk'])
+        ->whereHas('dppemesanan.pemesananproduk', function($query) {
+            $query->where('toko_id', 2);  // Filter untuk toko_id = 2
+        })
+        ->whereDate('created_at', now()) 
+        ->orderBy('kode_penjualan', 'asc')   
+        ->get();
+
+    return view('toko_tegal.pelunasan_pemesanan.index', compact('inquery'));
+}
+
     
     public function pelanggan($id)
     {

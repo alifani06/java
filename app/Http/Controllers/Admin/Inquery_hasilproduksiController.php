@@ -57,7 +57,7 @@ class Inquery_hasilproduksiController extends Controller{
     public function index(Request $request)
 {
     $status = $request->status;
-    $tanggal_pengiriman = $request->tanggal_pengiriman;
+    $tanggal_hasilproduksi = $request->tanggal_hasilproduksi;
     $tanggal_akhir = $request->tanggal_akhir;
     $toko_id = $request->toko_id; 
 
@@ -71,24 +71,24 @@ class Inquery_hasilproduksiController extends Controller{
         $query->where('toko_id', $toko_id);
     }
 
-    if ($tanggal_pengiriman && $tanggal_akhir) {
-        $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
+    if ($tanggal_hasilproduksi && $tanggal_akhir) {
+        $tanggal_hasilproduksi = Carbon::parse($tanggal_hasilproduksi)->startOfDay();
         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-        $query->whereBetween('tanggal_pengiriman', [$tanggal_pengiriman, $tanggal_akhir]);
-    } elseif ($tanggal_pengiriman) {
-        $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
-        $query->where('tanggal_pengiriman', '>=', $tanggal_pengiriman);
+        $query->whereBetween('tanggal_hasilproduksi', [$tanggal_hasilproduksi, $tanggal_akhir]);
+    } elseif ($tanggal_hasilproduksi) {
+        $tanggal_hasilproduksi = Carbon::parse($tanggal_hasilproduksi)->startOfDay();
+        $query->where('tanggal_hasilproduksi', '>=', $tanggal_hasilproduksi);
     } elseif ($tanggal_akhir) {
         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-        $query->where('tanggal_pengiriman', '<=', $tanggal_akhir);
+        $query->where('tanggal_hasilproduksi', '<=', $tanggal_akhir);
     } else {
-        $query->whereDate('tanggal_pengiriman', Carbon::today());
+        $query->whereDate('tanggal_hasilproduksi', Carbon::today());
     }
 
     // Hitung jumlah pengiriman dengan status 'unpost'
     // $unpostCount = Pengiriman_barangjadi::where('status', 'unpost')->count();
 
-    $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pengiriman');
+    $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_hasilproduksi');
     $tokos = Toko::all();
 
     return view('admin.inquery_hasilproduksi.index', compact('stokBarangJadi', 'tokos'));
@@ -104,7 +104,7 @@ public function showPrintQr($id)
     // Hitung jumlah pengiriman dengan status 'unpost'
     $unpostCount = Pengiriman_barangjadi::where('status', 'unpost')->count();
 
-    $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pengiriman');
+    $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_hasilproduksi');
     $tokos = Toko::all();
 
     return view('admin.inquery_pengirimanbarangjadi.print_qr', compact('stokBarangJadi', 'tokos', 'unpostCount'));
@@ -114,19 +114,19 @@ public function showPrintQr($id)
 
     public function show($id)
     {
-        // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-        $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_pengiriman');
+        // Ambil kode_hasilproduksi dari pengiriman_barangjadi berdasarkan id
+        $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_hasilproduksi');
         
-        // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
+        // Jika kode_hasilproduksi tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
             return redirect()->back()->with('error', 'Data tidak ditemukan.');
         }
         
-        // Ambil semua data dengan kode_pengiriman yang sama, termasuk relasi ke klasifikasi
+        // Ambil semua data dengan kode_hasilproduksi yang sama, termasuk relasi ke klasifikasi
         $pengirimanBarangJadi = Pengiriman_barangjadi::with([
             'produk.subklasifikasi.klasifikasi', 
             'toko'
-        ])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+        ])->where('kode_hasilproduksi', $detailStokBarangJadi)->get();
     
         // Kelompokkan data berdasarkan klasifikasi
         $groupedByKlasifikasi = $pengirimanBarangJadi->groupBy(function($item) {
@@ -146,7 +146,7 @@ public function showPrintQr($id)
 
         // Ambil stok barang yang sesuai dengan kode pengiriman
         $stokBarangJadi = Pengiriman_barangjadi::with(['produk', 'toko'])
-            ->where('kode_pengiriman', $pengiriman->kode_pengiriman)
+            ->where('kode_hasilproduksi', $pengiriman->kode_hasilproduksi)
             ->get();
 
         // Ambil detail stok barang jadi
@@ -162,12 +162,12 @@ public function showPrintQr($id)
         // Ambil semua toko
         $tokos = Toko::all();
 
-        // Ambil salah satu qrcode_pengiriman dan kode_produksi dari pengiriman dengan kode_pengiriman yang sama
-        $qrcodePengiriman = Pengiriman_barangjadi::where('kode_pengiriman', $pengiriman->kode_pengiriman)
+        // Ambil salah satu qrcode_pengiriman dan kode_produksi dari pengiriman dengan kode_hasilproduksi yang sama
+        $qrcodePengiriman = Pengiriman_barangjadi::where('kode_hasilproduksi', $pengiriman->kode_hasilproduksi)
             ->pluck('qrcode_pengiriman')
             ->first(); // Ambil entri pertama
 
-        $kodeProduksi = Pengiriman_barangjadi::where('kode_pengiriman', $pengiriman->kode_pengiriman)
+        $kodeProduksi = Pengiriman_barangjadi::where('kode_hasilproduksi', $pengiriman->kode_hasilproduksi)
             ->pluck('kode_produksi')
             ->first(); // Ambil entri pertama
 
@@ -187,7 +187,7 @@ public function showPrintQr($id)
     {
         // Validasi input
         $request->validate([
-            'kode_pengiriman' => 'required|string',
+            'kode_hasilproduksi' => 'required|string',
             'produk_id' => 'required|array',
             'produk_id.*' => 'required|integer',
             'jumlah' => 'required|array',
@@ -199,14 +199,14 @@ public function showPrintQr($id)
         // Ambil data pengiriman berdasarkan ID
         $pengiriman = Pengiriman_barangjadi::findOrFail($id);
     
-        $pengiriman->kode_pengiriman = $request->kode_pengiriman;
-        $pengiriman->tanggal_pengiriman = now(); 
+        $pengiriman->kode_hasilproduksi = $request->kode_hasilproduksi;
+        $pengiriman->tanggal_hasilproduksi = now(); 
         $pengiriman->qrcode_pengiriman = $request->qrcode_pengiriman; 
         $pengiriman->kode_produksi = $request->kode_produksi; 
         $pengiriman->save();
     
-        // Mengambil detail pengiriman yang sudah ada berdasarkan kode_pengiriman
-        $existingDetails = Pengiriman_barangjadi::where('kode_pengiriman', $pengiriman->kode_pengiriman)
+        // Mengambil detail pengiriman yang sudah ada berdasarkan kode_hasilproduksi
+        $existingDetails = Pengiriman_barangjadi::where('kode_hasilproduksi', $pengiriman->kode_hasilproduksi)
             ->get()
             ->keyBy('produk_id'); 
     
@@ -223,11 +223,11 @@ public function showPrintQr($id)
             } else {
                 // Buat detail baru hanya jika produk_id baru
                 $pengirimanDetail = new Pengiriman_barangjadi();
-                $pengirimanDetail->kode_pengiriman = $pengiriman->kode_pengiriman;
+                $pengirimanDetail->kode_hasilproduksi = $pengiriman->kode_hasilproduksi;
                 $pengirimanDetail->produk_id = $produkId;
                 $pengirimanDetail->jumlah = $jumlahBaru;
                 $pengirimanDetail->toko_id = $pengiriman->toko_id; 
-                $pengirimanDetail->tanggal_pengiriman = now(); 
+                $pengirimanDetail->tanggal_hasilproduksi = now(); 
                 $pengirimanDetail->qrcode_pengiriman = $request->qrcode_pengiriman; 
                 $pengirimanDetail->kode_produksi = $request->kode_produksi; 
                 $pengirimanDetail->status = 'unpost'; 
@@ -241,7 +241,7 @@ public function showPrintQr($id)
                 $jumlahBaru = $request->jumlah[$index];
     
                 // Cek apakah ada pengiriman yang sudah ada di pengiriman_tokobanjaran
-                $pengirimanTokobanjaran = Pengiriman_tokobanjaran::where('kode_pengiriman', $pengiriman->kode_pengiriman)
+                $pengirimanTokobanjaran = Pengiriman_tokobanjaran::where('kode_hasilproduksi', $pengiriman->kode_hasilproduksi)
                     ->where('produk_id', $produkId)
                     ->first();
     
@@ -256,7 +256,7 @@ public function showPrintQr($id)
                     $pengirimanTokobanjaran = new Pengiriman_tokobanjaran();
                     $pengirimanTokobanjaran->produk_id = $produkId;
                     $pengirimanTokobanjaran->toko_id = $pengiriman->toko_id; 
-                    $pengirimanTokobanjaran->kode_pengiriman = $pengiriman->kode_pengiriman;
+                    $pengirimanTokobanjaran->kode_hasilproduksi = $pengiriman->kode_hasilproduksi;
                     $pengirimanTokobanjaran->jumlah = $jumlahBaru;
                     $pengirimanTokobanjaran->status = 'unpost'; 
                     $pengirimanTokobanjaran->tanggal_input = now();
@@ -283,8 +283,8 @@ public function showPrintQr($id)
             return response()->json(['error' => 'Data tidak ditemukan.'], 404);
         }
 
-        // Ambil kode_pengiriman dan pengiriman_barangjadi_id dari stok yang diambil
-        $kodePengiriman = $stok->kode_pengiriman;
+        // Ambil kode_hasilproduksi dan pengiriman_barangjadi_id dari stok yang diambil
+        $kodePengiriman = $stok->kode_hasilproduksi;
         $pengirimanId = $stok->pengiriman_barangjadi_id;
 
         // Ambil pengiriman terkait dari tabel pengiriman_barangjadi
@@ -296,7 +296,7 @@ public function showPrintQr($id)
         }
 
         // Ambil semua produk terkait dengan pengiriman
-        $productsInPengiriman = Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->get();
+        $productsInPengiriman = Pengiriman_barangjadi::where('kode_hasilproduksi', $kodePengiriman)->get();
 
         foreach ($productsInPengiriman as $pengirimanItem) {
             // Ambil stok yang ada di stok_tokobanjaran untuk produk ini
@@ -332,14 +332,14 @@ public function showPrintQr($id)
             }
         }
 
-        // Update status untuk semua stok_tokobanjaran dengan kode_pengiriman yang sama
-        Pengiriman_tokobanjaran::where('kode_pengiriman', $kodePengiriman)->update([
+        // Update status untuk semua stok_tokobanjaran dengan kode_hasilproduksi yang sama
+        Pengiriman_tokobanjaran::where('kode_hasilproduksi', $kodePengiriman)->update([
             'status' => 'unpost',
             'tanggal_terima' => null, // Reset tanggal terima
         ]);
 
         // Update status untuk pengiriman_barangjadi
-        Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->update([
+        Pengiriman_barangjadi::where('kode_hasilproduksi', $kodePengiriman)->update([
             'status' => 'unpost',
             'tanggal_terima' => null, // Reset tanggal terima
         ]);
@@ -358,11 +358,11 @@ public function showPrintQr($id)
                 return response()->json(['error' => 'Data tidak ditemukan.'], 404);
             }
         
-            // Ambil kode_pengiriman dari pengiriman yang diambil
-            $kodePengiriman = $pengiriman->kode_pengiriman;
+            // Ambil kode_hasilproduksi dari pengiriman yang diambil
+            $kodePengiriman = $pengiriman->kode_hasilproduksi;
         
-            // Update status untuk semua pengiriman_barangjadi dengan kode_pengiriman yang sama
-            Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->update([
+            // Update status untuk semua pengiriman_barangjadi dengan kode_hasilproduksi yang sama
+            Pengiriman_barangjadi::where('kode_hasilproduksi', $kodePengiriman)->update([
                 'status' => 'posting'
             ]);
         
@@ -371,24 +371,24 @@ public function showPrintQr($id)
                 'status' => 'posting'
             ]);
         
-            return response()->json(['success' => 'Berhasil mengubah status semua produk dan detail terkait dengan kode_pengiriman yang sama.']);
+            return response()->json(['success' => 'Berhasil mengubah status semua produk dan detail terkait dengan kode_hasilproduksi yang sama.']);
     }
 
     public function print($id)
     {
-            // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-            $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_pengiriman');
+            // Ambil kode_hasilproduksi dari pengiriman_barangjadi berdasarkan id
+            $detailStokBarangJadi = Pengiriman_barangjadi::where('id', $id)->value('kode_hasilproduksi');
                 
-            // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
+            // Jika kode_hasilproduksi tidak ditemukan, tampilkan pesan error
             if (!$detailStokBarangJadi) {
                 return redirect()->back()->with('error', 'Data tidak ditemukan.');
             }
             
-            // Ambil semua data dengan kode_pengiriman yang sama, termasuk relasi ke klasifikasi
+            // Ambil semua data dengan kode_hasilproduksi yang sama, termasuk relasi ke klasifikasi
             $pengirimanBarangJadi = Pengiriman_barangjadi::with([
                 'produk.subklasifikasi.klasifikasi', 
                 'toko'
-            ])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+            ])->where('kode_hasilproduksi', $detailStokBarangJadi)->get();
     
             // Kelompokkan data berdasarkan klasifikasi
             $groupedByKlasifikasi = $pengirimanBarangJadi->groupBy(function($item) {
@@ -594,14 +594,14 @@ public function showPrintQr($id)
             return response()->json(['message' => 'Detail Faktur tidak ditemukan'], 404);
         }
 
-        // Simpan kode_pengiriman untuk referensi
-        $kodePengiriman = $item->kode_pengiriman;
+        // Simpan kode_hasilproduksi untuk referensi
+        $kodePengiriman = $item->kode_hasilproduksi;
 
         // Hapus item dari pengiriman_barangjadi
         $item->delete();
 
-        // Hapus semua produk terkait dari pengiriman_tokobanjaran berdasarkan kode_pengiriman
-        Pengiriman_tokobanjaran::where('kode_pengiriman', $kodePengiriman)
+        // Hapus semua produk terkait dari pengiriman_tokobanjaran berdasarkan kode_hasilproduksi
+        Pengiriman_tokobanjaran::where('kode_hasilproduksi', $kodePengiriman)
             ->where('produk_id', $item->produk_id) // Hanya menghapus yang sesuai produk_id
             ->delete();
 

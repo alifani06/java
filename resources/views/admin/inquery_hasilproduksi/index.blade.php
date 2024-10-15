@@ -122,7 +122,6 @@
                                 <th>Kode Pengiriman</th>
                                 <th>Cabang</th>
                                 <th>Tanggal Pengiriman</th>
-                                <th>Tanggal Terima</th>
                                 <th>Status</th>
                               
                             </tr>
@@ -134,10 +133,9 @@
                             @endphp
                                 <tr class="dropdown" data-permintaan-id="{{ $firstItem->id }}">
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                <td>{{ $firstItem->kode_pengiriman }}</td>
+                                <td>{{ $firstItem->kode_hasilproduksi }}</td>
                                 <td>{{ $firstItem->toko->nama_toko ?? 'Toko Tidak Ditemukan' }}</td> <!-- Memanggil relasi toko -->
-                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_pengiriman)->format('d/m/Y H:i') }} </td>
-                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') }} </td>
+                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_hasilproduksi)->format('d/m/Y H:i') }} </td>
                                   
                                 <td class="text-center">
                                     @if ($firstItem->status == 'posting')
@@ -154,27 +152,26 @@
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         @if ($firstItem->status == 'unpost')
                                                 <a class="dropdown-item"
-                                                href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
+                                                href="{{ url('admin/inquery_hasilproduksi/' . $firstItem->id . '/edit') }}">Update</a>
                                                
                                                 <a class="dropdown-item"
-                                                href="{{ url('/admin/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/admin/inquery_hasilproduksi/' . $firstItem->id ) }}">Show</a>
 
                                                 <a class="dropdown-item"
-                                                href="{{ route('inquery_pengirimanbarangjadi.print_qr', $firstItem->id) }}">Print QR</a>
+                                                href="{{ route('inquery_hasilproduksi.print_qr', $firstItem->id) }}">Print QR</a>
 
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 <a class="dropdown-item unpost-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Unpost</a>
                                                 <a class="dropdown-item"
-                                                href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('admin/inquery_hasilproduksi/' . $firstItem->id ) }}">Show</a>
                                         @endif
                                        
                                     </div>
                                 </td>
                             </tr>
-                            <form id="form-cetak-banyak" method="POST" action="{{ route('inquery_pengirimanbarangjadi.cetak_banyak_barcode') }}" target="_blank">
-                                @csrf
+                       
                                 <tr class="permintaan-details" id="details-{{ $firstItem->id }}" style="display: none;">
                                     <td colspan="5">
                                         <table class="table table-bordered" style="font-size: 13px;">
@@ -192,7 +189,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($stokBarangJadiItems as $detail)
+                                                {{-- @foreach ($stokBarangJadiItems as $detail)
                                                 <tr>
                                                     <td>
                                                         {{ $loop->iteration }}
@@ -203,16 +200,16 @@
                                                     <td>{{ $detail->produk->nama_produk }}</td>
                                                     <td>{{ $detail->jumlah }}</td>
                                                     <td>
-                                                        <a href="{{ route('inquery_pengirimanbarangjadi.cetak_barcode', $detail->produk->id) }}" class="btn btn-primary btn-sm" target="_blank" onclick="openPrintDialog(event)">
+                                                        <a href="{{ route('inquery_hasilproduksi.cetak_barcode', $detail->produk->id) }}" class="btn btn-primary btn-sm" target="_blank" onclick="openPrintDialog(event)">
                                                             <i class="fas fa-print"></i>
                                                         </a>
                                                     </td>
                                                 </tr>
-                                                @endforeach
+                                                @endforeach --}}
                                             </tbody>
                                         </table>
                                     </td>
-                                </tr>
+                           
                             
                                 {{-- <button type="button" class="btn btn-primary" id="cetak-terpilih">Cetak Terpilih</button> --}}
                             </form>
@@ -289,7 +286,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('admin/inquery_pengirimanbarangjadi') }}";
+            form.action = "{{ url('admin/inquery_hasilproduksi') }}";
             form.submit();
         }
 
@@ -305,7 +302,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('admin/inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/') }}/" + memoId,
+                    url: "{{ url('admin/inquery_hasilproduksi/unpost_pengirimanbarangjadi/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -335,7 +332,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('admin/inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/') }}/" + memoId,
+                    url: "{{ url('admin/inquery_hasilproduksi/posting_pengirimanbarangjadi/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -426,7 +423,7 @@
             var selectedValue = this.value;
 
             if (selectedValue === 'permintaan') {
-                window.location.href = "{{ url('admin/inquery_pengirimanbarangjadi') }}"; 
+                window.location.href = "{{ url('admin/inquery_hasilproduksi') }}"; 
             } else if (selectedValue === 'pemesanan') {
                 window.location.href = "{{ url('admin/inquery_pengirimanpesanan') }}"; 
             }
