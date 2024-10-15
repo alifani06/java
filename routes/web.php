@@ -353,6 +353,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/surathasilproduksi/{id}', [SurathasilproduksiController::class, 'show'])->name('surathasilproduksi.show');
     Route::get('/hasilproduksi/{id}/print', [SurathasilproduksiController::class, 'print'])->name('hasilproduksi.print');
 
+    Route::resource('inquery_hasilproduksi', \App\Http\Controllers\Admin\Inquery_hasilproduksiController::class);
+
 
     Route::resource('inquery_estimasiproduksi', \App\Http\Controllers\Admin\Inquery_estimasiproduksiController::class);
 
@@ -424,17 +426,6 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::post('/inquery_setoranpelunasan/update-status', [Inquery_setoranpelunasanController::class, 'updateStatus'])->name('inquery_setoranpelunasan.update_status');
 
     Route::resource('grafik_penjualan', \App\Http\Controllers\Admin\Grafik_penjualanController::class);
-
-
-    //TOKO SLAWI
-    Route::resource('stok_tokoslawi', \App\Http\Controllers\Admin\Stok_tokoslawiController::class);
-
-    Route::resource('pengiriman_tokoslawi', \App\Http\Controllers\Admin\Pengiriman_tokoslawiController::class);
-    Route::get('pengiriman_tokoslawi/unpost_pengiriman/{id}', [\App\Http\Controllers\Admin\Pengiriman_tokoslawiController::class, 'unpost_pengiriman']);
-    Route::get('pengiriman_tokoslawi/posting_pengiriman/{id}', [\App\Http\Controllers\Admin\Pengiriman_tokoslawiController::class, 'posting_pengiriman']);
-
-    Route::resource('retur_tokoslawi', \App\Http\Controllers\Admin\Retur_tokoslawiController::class);
-
 
     Route::resource('inquery_perubahanharga', \App\Http\Controllers\Admin\Inquery_perubahanhargaController::class);
 
