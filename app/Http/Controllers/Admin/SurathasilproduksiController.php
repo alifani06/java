@@ -210,80 +210,106 @@ class SurathasilproduksiController extends Controller{
         return $pdf->stream('laporan_estimasi.pdf');
     }
 
-//     public function saveRealisasi(Request $request)
-// {
-//     $realisasiData = $request->input('realisasi');
+    // public function saveRealisasi(Request $request)
+    // {
+    //     $kode = $this->kode();
+    //     $qrcode_hasilproduksi =  'https://javabakery.id/hasil_produksi/' . $kode;
 
-//     foreach ($realisasiData as $produk_id => $realisasi) {
-//         $detail = Detailestimasiproduksi::where('produk_id', $produk_id)->first();
-//         if ($detail) {
-//             $detail->realisasi = $realisasi;
-//             $detail->save();
-//         }
-//     }
+    //     $hasilproduksi = new Hasilproduksi();
 
-//     return redirect()->back()->with('success', 'Realisasi berhasil disimpan!');
-// }
+    //     $hasilproduksi->kode_hasilproduksi = $kode;
+    //     $hasilproduksi->qrcode_hasilproduksi = $qrcode_hasilproduksi;
+    //     $hasilproduksi->toko_id = $request->toko_id;
+    //     $hasilproduksi->status = 'pending'; 
+    //     $hasilproduksi->tanggal_hasilproduksi = now();
+    //     $hasilproduksi->save(); 
+        
+    //     foreach ($request->realisasi as $produk_id => $realisasi) {
+    //         $kode_lama = $request->kode_lama[$produk_id];
+    //         $nama_produk = $request->nama_produk[$produk_id];
+    //         $jumlah = $request->jumlah[$produk_id];
 
-public function saveRealisasi(Request $request)
-{
-    $kode = $this->kode();
-    $qrcode_hasilproduksi =  'https://javabakery.id/hasil_produksi/' . $kode;
+    //         $detailHasilProduksi = new Detailhasilproduksi();
+    //         $detailHasilProduksi->hasilproduksi_id = $hasilproduksi->id; 
+    //         $detailHasilProduksi->produk_id = $produk_id;
+    //         $detailHasilProduksi->kode_lama = $kode_lama;
+    //         $detailHasilProduksi->nama_produk = $nama_produk;
+    //         $detailHasilProduksi->jumlah = $jumlah;
+    //         $detailHasilProduksi->realisasi = $realisasi;
+    //         $detailHasilProduksi->save(); 
+    //     }
 
-    $hasilproduksi = new Hasilproduksi();
+    //     return redirect()->back()->with('success', 'Data berhasil disimpan ke hasilproduksi dan detailhasilproduksi');
+    // }
+    public function saveRealisasi(Request $request)
+    {
+        $kode = $this->kode();
+        $qrcode_hasilproduksi =  'https://javabakery.id/hasil_produksi/' . $kode;
 
-    $hasilproduksi->kode_hasilproduksi = $kode;
-    $hasilproduksi->qrcode_hasilproduksi = $qrcode_hasilproduksi;
-    $hasilproduksi->toko_id = $request->toko_id;
-    $hasilproduksi->status = 'pending'; 
-    $hasilproduksi->tanggal_hasilproduksi = now();
-    $hasilproduksi->save(); 
+        $hasilproduksi = new Hasilproduksi();
+
+        $hasilproduksi->kode_hasilproduksi = $kode;
+        $hasilproduksi->qrcode_hasilproduksi = $qrcode_hasilproduksi;
+        $hasilproduksi->toko_id = $request->toko_id;
+        $hasilproduksi->status = 'pending'; 
+        $hasilproduksi->tanggal_hasilproduksi = now();
+        $hasilproduksi->save(); 
+        
+        foreach ($request->realisasi as $produk_id => $realisasi) {
+            $kode_lama = $request->kode_lama[$produk_id];
+            $nama_produk = $request->nama_produk[$produk_id];
+            $jumlah = $request->jumlah[$produk_id];
+
+            $detailHasilProduksi = new Detailhasilproduksi();
+            $detailHasilProduksi->hasilproduksi_id = $hasilproduksi->id; 
+            $detailHasilProduksi->produk_id = $produk_id;
+            $detailHasilProduksi->kode_lama = $kode_lama;
+            $detailHasilProduksi->nama_produk = $nama_produk;
+            $detailHasilProduksi->jumlah = $jumlah;
+            $detailHasilProduksi->realisasi = $realisasi;
+            $detailHasilProduksi->save(); 
+        }
+
+        // Redirect ke halaman show hasil produksi
+        return redirect()->route('surathasilproduksi.show', $hasilproduksi->id)
+                        ->with('success', 'Data berhasil disimpan ke hasilproduksi dan detailhasilproduksi');
+    }
+
+
+
+    public function kode()
+    {
+        $prefix = 'HP';
+        $year = date('y'); // Dua digit terakhir dari tahun
+        $monthDay = date('dm'); // Format bulan dan hari: MMDD
+
+        // Mengambil kode terakhir yang dibuat pada hari yang sama dengan prefix PBNJ
+        $lastBarang = Hasilproduksi::where('kode_hasilproduksi', 'LIKE', $prefix . '%')
+                                    ->whereDate('tanggal_hasilproduksi', Carbon::today())
+                                    ->orderBy('kode_hasilproduksi', 'desc')
+                                    ->first();
+
+        if (!$lastBarang) {
+            $num = 1;
+        } else {
+            $lastCode = $lastBarang->kode_hasilproduksi;
+            $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
+            $num = $lastNum + 1;
+        }
+
+        $formattedNum = sprintf("%03d", $num); 
+        $newCode = $prefix . $monthDay . $year . $formattedNum;
+        return $newCode;
+    }
+
+    public function show($id)
+    {
+        $hasilproduksi = Hasilproduksi::findOrFail($id); // Mengambil data hasil produksi berdasarkan ID
+        $detailHasilProduksi = Detailhasilproduksi::where('hasilproduksi_id', $id)->get(); // Mengambil data detail hasil produksi terkait
     
-    foreach ($request->realisasi as $produk_id => $realisasi) {
-        $kode_lama = $request->kode_lama[$produk_id];
-        $nama_produk = $request->nama_produk[$produk_id];
-        $jumlah = $request->jumlah[$produk_id];
-
-        $detailHasilProduksi = new Detailhasilproduksi();
-        $detailHasilProduksi->hasilproduksi_id = $hasilproduksi->id; 
-        $detailHasilProduksi->produk_id = $produk_id;
-        $detailHasilProduksi->kode_lama = $kode_lama;
-        $detailHasilProduksi->nama_produk = $nama_produk;
-        $detailHasilProduksi->jumlah = $jumlah;
-        $detailHasilProduksi->realisasi = $realisasi;
-        $detailHasilProduksi->save(); 
+        return view('admin.surathasilproduksi.show', compact('hasilproduksi', 'detailHasilProduksi'));
     }
-
-    return redirect()->back()->with('success', 'Data berhasil disimpan ke hasilproduksi dan detailhasilproduksi');
-}
-
-
-public function kode()
-{
-    $prefix = 'HP';
-    $year = date('y'); // Dua digit terakhir dari tahun
-    $monthDay = date('dm'); // Format bulan dan hari: MMDD
-
-    // Mengambil kode terakhir yang dibuat pada hari yang sama dengan prefix PBNJ
-    $lastBarang = Hasilproduksi::where('kode_hasilproduksi', 'LIKE', $prefix . '%')
-                                  ->whereDate('tanggal_hasilproduksi', Carbon::today())
-                                  ->orderBy('kode_hasilproduksi', 'desc')
-                                  ->first();
-
-    if (!$lastBarang) {
-        $num = 1;
-    } else {
-        $lastCode = $lastBarang->kode_hasilproduksi;
-        $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
-        $num = $lastNum + 1;
-    }
-
-    $formattedNum = sprintf("%03d", $num); 
-    $newCode = $prefix . $monthDay . $year . $formattedNum;
-    return $newCode;
-}
-
-
+    
 
 
 

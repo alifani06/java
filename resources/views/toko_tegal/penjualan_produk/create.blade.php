@@ -73,13 +73,13 @@
                 {{-- detail pelanggan --}}
                 <div class="card">
                     <div class="card-header">
-                        <div class="float-right">
+                        {{-- <div class="float-right">
                             <select class="form-control" id="kategori1" name="kategori">
                                 <option value="">- Pilih -</option>
                                 <option value="penjualan" {{ old('kategori1') == 'penjualan' ? 'selected' : '' }}>Penjualan Produk</option>
                                 <option value="pelunasan" {{ old('kategori1') == 'pelunasan' ? 'selected' : '' }}>Pelunasan Pemesanan Produk</option>
                             </select>
-                        </div>
+                        </div> --}}
                         {{-- <div class="float-right">
                             <a href="{{ route('toko_slawi.penjualan_produk.pelunasan') }}"  class="btn btn-primary btn-sm">Pelunasan Pemesanan
                             </a>
