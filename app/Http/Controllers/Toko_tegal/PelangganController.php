@@ -30,7 +30,7 @@ class PelangganController extends Controller
     // $pelanggans = Pelanggan::all();
     $pelanggans = Pelanggan::when($search, function ($query, $search) {
         return $query->where('nama_pelanggan', 'like', '%' . $search . '%')
-                     ->orWhere('kode_lama', 'like', '%' . $search . '%');
+                     ->orWhere('kode_pelangganlama', 'like', '%' . $search . '%');
     }) ->paginate(10);
 
       return view('toko_tegal.pelanggan.index', compact('pelanggans', 'search'));
@@ -57,21 +57,21 @@ class PelangganController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                // 'kode_lama' => 'required',
-                'nama_pelanggan' => 'required',
-                'alamat' => 'required',
-                'gender' => 'required',
-                'telp' => 'required',
+                'kode_pelangganlama' => 'nullable',
+                'nama_pelanggan' => 'nullable',
+                'alamat' => 'nullable',
+                'gender' => 'nullable',
+                'telp' => 'nullable',
                 'email' => 'nullable',
                 'pekerjaan' => 'nullable',
                 'tanggal_lahir' => 'nullable',
-                'tanggal_awal' => 'required',
-                'tanggal_akhir' => 'required',
+                'tanggal_awal' => 'nullable',
+                'tanggal_akhir' => 'nullable',
                 'gambar' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ],
             [
              
-                'kode_lama.required' => 'Masukkan kode lama',
+                'kode_pelangganlama.nullable' => 'Masukkan kode lama',
                 'nama_pelanggan.required' => 'Masukkan nama pelanggan',
                
                 'pekerjaan.required' => 'masukan pekerjaan',
@@ -149,15 +149,15 @@ class PelangganController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'nama_pelanggan' => 'required',
-                'gender' => 'required',
-                'tanggal_lahir' => 'required',
-                'tanggal_awal' => 'required',
-                'tanggal_akhir' => 'required',
-                'telp' => 'required',
-                'email' => 'required',
-                'pekerjaan' => 'required',
-                'alamat' => 'required',
+                'nama_pelanggan' => 'nullable',
+                'gender' => 'nullable',
+                'tanggal_lahir' => 'nullable',
+                'tanggal_awal' => 'nullable',
+                'tanggal_akhir' => 'nullable',
+                'telp' => 'nullable',
+                'email' => 'nullable',
+                'pekerjaan' => 'nullable',
+                'alamat' => 'nullable',
                 // 'gambar_ktp' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ],
             [
@@ -191,13 +191,13 @@ class PelangganController extends Controller
             $namaGambar = $pelanggans->gambar_ktp;
         }
 
-        if ($pelanggans->kode_lama == null) {
+        if ($pelanggans->kode_pelangganlama == null) {
 
             Pelanggan::where('id', $id)->update([
                 // 'gambar_ktp'=> $namaGambar,
                 'nama_pelanggan' => $request->nama_pelanggan,
                 'kode_pelanggan' => $request->kode_pelanggan,
-                'kode_lama' => $request->kode_lama,
+                'kode_pelangganlama' => $request->kode_pelangganlama,
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'tanggal_awal' => $request->tanggal_awal,
                 'tanggal_akhir' => $request->tanggal_akhir,
@@ -217,7 +217,7 @@ class PelangganController extends Controller
                 'kode_pelanggan' => $request->kode_pelanggan,
                 'qrcode_pelanggan' => 'https://javabakery.id/pelanggan/' . $pelanggans->kode_pelanggan,
 
-                'kode_lama' => $request->kode_lama,
+                'kode_pelangganlama' => $request->kode_pelangganlama,
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'tanggal_awal' => $request->tanggal_awal,
                 'tanggal_akhir' => $request->tanggal_akhir,
@@ -234,7 +234,7 @@ class PelangganController extends Controller
             // 'gambar_ktp'=> $namaGambar,
             'nama_pelanggan' => $request->nama_pelanggan,
             'kode_pelanggan' => $request->kode_pelanggan,
-            'kode_lama' => $request->kode_lama,
+            'kode_pelangganlama' => $request->kode_pelangganlama,
             // 'qrcode_pelanggan' => $request->qrcode_pelanggan,
             'tanggal_lahir' => $request->tanggal_lahir,
             'tanggal_gabung' => $request->tanggal_gabung,
