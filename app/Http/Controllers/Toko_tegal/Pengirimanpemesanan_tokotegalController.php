@@ -43,6 +43,8 @@ use App\Models\Pengiriman_barangjadipesanan;
 use App\Models\Stok_tokoslawi;
 use App\Models\Pengiriman_tokobanjaran;
 use App\Models\Pengirimanpemesanan_tokotegal;
+use App\Models\Stok_tokotegal;
+use App\Models\Stokpesanan_tokotegal;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -188,7 +190,7 @@ class Pengirimanpemesanan_tokotegalController extends Controller{
             }
     
             // Tambahkan jumlah ke stok di Stokpesanan_tokobanjaran
-            $stokToko = Stokpesanan_tokobanjaran::firstOrCreate(
+            $stokToko = Stokpesanan_tokotegal::firstOrCreate(
                 ['produk_id' => $pengirimanItem->produk_id],
                 ['jumlah' => 0]
             );
@@ -218,7 +220,7 @@ class Pengirimanpemesanan_tokotegalController extends Controller{
 public function unpost_pengiriman($id)
         {
             // Ambil data stok_tokoslawi berdasarkan ID
-    $stok = Stok_tokobanjaran::where('id', $id)->first();
+    $stok = Stok_tokotegal::where('id', $id)->first();
 
     // Pastikan data ditemukan
     if (!$stok) {
@@ -232,7 +234,7 @@ public function unpost_pengiriman($id)
     $pengirimanId = $stok->pengiriman_barangjadi_id;
 
     // Update status untuk semua stok_tokoslawi dengan kode_pengiriman yang sama
-    Stok_tokobanjaran::where('kode_pengiriman', $kodePengiriman)->update([
+    Stok_tokotegal::where('kode_pengiriman', $kodePengiriman)->update([
         'status' => 'unpost'
     ]);
 
