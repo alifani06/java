@@ -38,6 +38,8 @@ use App\Models\Detailestimasiproduksi;
 use App\Models\Detailhasilproduksi;
 use App\Models\Estimasiproduksi;
 use App\Models\Hasilproduksi;
+use App\Models\Stok_hasilproduksi;
+use App\Models\Stokhasilproduksi;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -210,6 +212,7 @@ class SurathasilproduksiController extends Controller{
         return $pdf->stream('laporan_estimasi.pdf');
     }
 
+
     // public function saveRealisasi(Request $request)
     // {
     //     $kode = $this->kode();
@@ -239,41 +242,59 @@ class SurathasilproduksiController extends Controller{
     //         $detailHasilProduksi->save(); 
     //     }
 
-    //     return redirect()->back()->with('success', 'Data berhasil disimpan ke hasilproduksi dan detailhasilproduksi');
+    //     // Redirect ke halaman show hasil produksi
+    //     return redirect()->route('surathasilproduksi.show', $hasilproduksi->id)
+    //                     ->with('success', 'Data berhasil disimpan ke hasilproduksi dan detailhasilproduksi');
     // }
     public function saveRealisasi(Request $request)
-    {
-        $kode = $this->kode();
-        $qrcode_hasilproduksi =  'https://javabakery.id/hasil_produksi/' . $kode;
+{
+    $kode = $this->kode();
+    $qrcode_hasilproduksi =  'https://javabakery.id/hasil_produksi/' . $kode;
 
-        $hasilproduksi = new Hasilproduksi();
+    $hasilproduksi = new Hasilproduksi();
+    $hasilproduksi->kode_hasilproduksi = $kode;
+    $hasilproduksi->qrcode_hasilproduksi = $qrcode_hasilproduksi;
+    $hasilproduksi->toko_id = $request->toko_id;
+    $hasilproduksi->status = 'pending'; 
+    $hasilproduksi->tanggal_hasilproduksi = now();
+    $hasilproduksi->save(); 
+    
+    foreach ($request->realisasi as $produk_id => $realisasi) {
+        $kode_lama = $request->kode_lama[$produk_id];
+        $nama_produk = $request->nama_produk[$produk_id];
+        $jumlah = $request->jumlah[$produk_id];
 
-        $hasilproduksi->kode_hasilproduksi = $kode;
-        $hasilproduksi->qrcode_hasilproduksi = $qrcode_hasilproduksi;
-        $hasilproduksi->toko_id = $request->toko_id;
-        $hasilproduksi->status = 'pending'; 
-        $hasilproduksi->tanggal_hasilproduksi = now();
-        $hasilproduksi->save(); 
+        // Simpan detail hasil produksi
+        $detailHasilProduksi = new Detailhasilproduksi();
+        $detailHasilProduksi->hasilproduksi_id = $hasilproduksi->id; 
+        $detailHasilProduksi->produk_id = $produk_id;
+        $detailHasilProduksi->kode_lama = $kode_lama;
+        $detailHasilProduksi->nama_produk = $nama_produk;
+        $detailHasilProduksi->jumlah = $jumlah;
+        $detailHasilProduksi->realisasi = $realisasi;
+        $detailHasilProduksi->save(); 
+
+        // Update stok hasil produksi
+        $stok = Stokhasilproduksi::where('produk_id', $produk_id)->first();
         
-        foreach ($request->realisasi as $produk_id => $realisasi) {
-            $kode_lama = $request->kode_lama[$produk_id];
-            $nama_produk = $request->nama_produk[$produk_id];
-            $jumlah = $request->jumlah[$produk_id];
-
-            $detailHasilProduksi = new Detailhasilproduksi();
-            $detailHasilProduksi->hasilproduksi_id = $hasilproduksi->id; 
-            $detailHasilProduksi->produk_id = $produk_id;
-            $detailHasilProduksi->kode_lama = $kode_lama;
-            $detailHasilProduksi->nama_produk = $nama_produk;
-            $detailHasilProduksi->jumlah = $jumlah;
-            $detailHasilProduksi->realisasi = $realisasi;
-            $detailHasilProduksi->save(); 
+        if ($stok) {
+            // Jika stok sudah ada, tambahkan jumlahnya
+            $stok->jumlah += $realisasi;
+            $stok->save();
+        } else {
+            // Jika stok belum ada, buat stok baru
+            $stokBaru = new Stokhasilproduksi();
+            $stokBaru->produk_id = $produk_id;
+            $stokBaru->jumlah = $realisasi;
+            $stokBaru->save();
         }
-
-        // Redirect ke halaman show hasil produksi
-        return redirect()->route('surathasilproduksi.show', $hasilproduksi->id)
-                        ->with('success', 'Data berhasil disimpan ke hasilproduksi dan detailhasilproduksi');
     }
+
+    // Redirect ke halaman show hasil produksi
+    return redirect()->route('surathasilproduksi.show', $hasilproduksi->id)
+                    ->with('success', 'Data berhasil disimpan ke hasilproduksi, detailhasilproduksi, dan stokhasilproduksi');
+}
+
 
 
 
@@ -302,15 +323,66 @@ class SurathasilproduksiController extends Controller{
         return $newCode;
     }
 
+    // public function show($id)
+    // {
+    //     $hasilproduksi = Hasilproduksi::findOrFail($id); // Mengambil data hasil produksi berdasarkan ID
+    //     $detailHasilProduksi = Detailhasilproduksi::where('hasilproduksi_id', $id)->get(); // Mengambil data detail hasil produksi terkait
+    
+    //     return view('admin.surathasilproduksi.show', compact('hasilproduksi', 'detailHasilProduksi'));
+    // }
+    
     public function show($id)
-    {
-        $hasilproduksi = Hasilproduksi::findOrFail($id); // Mengambil data hasil produksi berdasarkan ID
-        $detailHasilProduksi = Detailhasilproduksi::where('hasilproduksi_id', $id)->get(); // Mengambil data detail hasil produksi terkait
-    
-        return view('admin.surathasilproduksi.show', compact('hasilproduksi', 'detailHasilProduksi'));
-    }
-    
+{
+    $permintaanProduk = Hasilproduksi::find($id);
+    $detailPermintaanProduks = Detailhasilproduksi::with('toko')->where('hasilproduksi_id', $id)->get();
 
+    // Mengelompokkan produk berdasarkan klasifikasi
+    $produkByDivisi = $detailPermintaanProduks->groupBy(function($item) {
+        return $item->produk->klasifikasi->nama;
+    });
+
+    // Menghitung total jumlah per klasifikasi
+    $totalPerDivisi = $produkByDivisi->map(function($produks) {
+        return $produks->sum('jumlah');
+    });
+
+    // Ambil data Subklasifikasi berdasarkan Klasifikasi
+    $subklasifikasiByDivisi = $produkByDivisi->map(function($produks) {
+        return $produks->groupBy(function($item) {
+            return $item->produk->subklasifikasi->nama;
+        });
+    });
+
+    // Mengambil nama toko dari salah satu detail permintaan produk
+    $toko = $detailPermintaanProduks->first()->toko;
+
+    return view('admin.surathasilproduksi.show', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi', 'subklasifikasiByDivisi', 'toko'));
+}
+
+
+public function print($id)
+{
+    // $permintaanProduk = PermintaanProduk::where('id', $id)->firstOrFail();
+    
+    // $detailPermintaanProduks = $permintaanProduk->detailpermintaanproduks;
+    $permintaanProduk = Hasilproduksi::find($id);
+    $detailPermintaanProduks = Detailhasilproduksi::where('hasilproduksi_id', $id)->get();
+
+    // Mengelompokkan produk berdasarkan divisi
+    $produkByDivisi = $detailPermintaanProduks->groupBy(function($item) {
+        return $item->produk->klasifikasi->nama; // Ganti dengan nama divisi jika diperlukan
+    });
+
+    // Menghitung total jumlah per divisi
+    $totalPerDivisi = $produkByDivisi->map(function($produks) {
+        return $produks->sum('realisasi');
+    });
+    $toko = $detailPermintaanProduks->first()->toko;
+
+    $pdf = FacadePdf::loadView('admin.surathasilproduksi.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi','toko'));
+
+    return $pdf->stream('surat_permintaan_produk.pdf');
+}
 
 
 }

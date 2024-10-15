@@ -351,6 +351,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('surat_hasilproduksi', \App\Http\Controllers\Admin\SurathasilproduksiController::class);
     Route::post('/save-realisasi', [SurathasilproduksiController::class, 'saveRealisasi'])->name('saveRealisasi');
     Route::get('/surathasilproduksi/{id}', [SurathasilproduksiController::class, 'show'])->name('surathasilproduksi.show');
+    Route::get('/hasilproduksi/{id}/print', [SurathasilproduksiController::class, 'print'])->name('hasilproduksi.print');
 
 
     Route::resource('inquery_estimasiproduksi', \App\Http\Controllers\Admin\Inquery_estimasiproduksiController::class);

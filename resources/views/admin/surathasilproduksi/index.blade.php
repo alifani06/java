@@ -147,7 +147,7 @@
                                             </td>
                                             
                                             <td>
-                                                <input type="number" name="realisasi[{{ $detail->produk_id }}]" class="form-control form-control-sm" style="width: 80px;" value="{{ $detail->realisasi ?? 0 }}" />
+                                                <input type="number" name="realisasi[{{ $detail->produk_id }}]" class="form-control form-control-sm" style="width: 80px;"  />
                                             </td>
                                         </tr>
                                     @endif

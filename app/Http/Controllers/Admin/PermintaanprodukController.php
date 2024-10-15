@@ -61,35 +61,35 @@ class PermintaanprodukController extends Controller{
     }
 
     public function store(Request $request)
-{
-    // Generate a new kode_permintaan
-    $kode = $this->kode();
+    {
+        // Generate a new kode_permintaan
+        $kode = $this->kode();
 
-    // Create the main PermintaanProduk entry
-    $permintaanProduk = PermintaanProduk::create([
-        'kode_permintaan' => $kode,
-        'qrcode_permintaan' => 'https://javabakery.id/permintaan_produk/' . $kode,
-    ]);
+        // Create the main PermintaanProduk entry
+        $permintaanProduk = PermintaanProduk::create([
+            'kode_permintaan' => $kode,
+            'qrcode_permintaan' => 'https://javabakery.id/permintaan_produk/' . $kode,
+        ]);
 
-    $produkData = $request->input('produk', []);
+        $produkData = $request->input('produk', []);
 
-    foreach ($produkData as $produkId => $data) {
-        $jumlah = $data['jumlah'] ?? null;
+        foreach ($produkData as $produkId => $data) {
+            $jumlah = $data['jumlah'] ?? null;
 
-        if (!is_null($jumlah) && $jumlah !== '') {
-            Detailpermintaanproduk::create([
-                'permintaanproduk_id' => $permintaanProduk->id,
-                'produk_id' => $produkId,
-                'toko_id' => '1', 
-                'jumlah' => $jumlah,
-                'status' => 'posting',
-                'tanggal_permintaan' => Carbon::now('Asia/Jakarta'),
-            ]);
+            if (!is_null($jumlah) && $jumlah !== '') {
+                Detailpermintaanproduk::create([
+                    'permintaanproduk_id' => $permintaanProduk->id,
+                    'produk_id' => $produkId,
+                    'toko_id' => '1', 
+                    'jumlah' => $jumlah,
+                    'status' => 'posting',
+                    'tanggal_permintaan' => Carbon::now('Asia/Jakarta'),
+                ]);
+            }
         }
-    }
 
-    return redirect()->route('permintaan_produk.show', $permintaanProduk->id)->with('success', 'Berhasil menambahkan permintaan produk');
-}
+        return redirect()->route('permintaan_produk.show', $permintaanProduk->id)->with('success', 'Berhasil menambahkan permintaan produk');
+    }
 
     
     public function kode1()
