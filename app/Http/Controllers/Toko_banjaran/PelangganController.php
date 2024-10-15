@@ -57,16 +57,16 @@ class PelangganController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                // 'kode_lama' => 'required',
-                'nama_pelanggan' => 'required',
-                'alamat' => 'required',
-                'gender' => 'required',
-                'telp' => 'required',
+                'kode_lama' => 'nullable',
+                'nama_pelanggan' => 'nullable',
+                'alamat' => 'nullable',
+                'gender' => 'nullable',
+                'telp' => 'nullable',
                 'email' => 'nullable',
                 'pekerjaan' => 'nullable',
                 'tanggal_lahir' => 'nullable',
-                'tanggal_awal' => 'required',
-                'tanggal_akhir' => 'required',
+                'tanggal_awal' => 'nullable',
+                'tanggal_akhir' => 'nullable',
                 'gambar' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ],
             [
