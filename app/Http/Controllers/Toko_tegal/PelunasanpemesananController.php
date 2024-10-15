@@ -29,7 +29,9 @@ use App\Models\Penjualanproduk;
 use App\Models\Toko;
 use App\Models\Dppemesanan;
 use App\Models\Metodepembayaran;
+use App\Models\Stok_tokotegal;
 use App\Models\Stokpesanan_tokobanjaran;
+use App\Models\Stokpesanan_tokotegal;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
@@ -78,7 +80,7 @@ class PelunasanpemesananController extends Controller
         $pemesananproduks = Pemesananproduk::all();
         $metodes = Metodepembayaran::all();
     
-        $produks = Produk::with('tokobanjaran')->get();
+        $produks = Produk::with('tokotegal')->get();
 
         $kategoriPelanggan = 'member';
     
@@ -385,7 +387,7 @@ class PelunasanpemesananController extends Controller
         $penjualan->kembali = $validated['kembali'];
         $penjualan->bayar = $validated['pelunasan'];
         $penjualan->status = 'posting';
-        $penjualan->toko_id = 1;
+        $penjualan->toko_id = 2;
         $penjualan->kode_penjualan = $kode_penjualan;
         $penjualan->tanggal_penjualan = Carbon::now('Asia/Jakarta');
         $penjualan->qrcode_penjualan = 'https://javabakery.id/penjualan/' . $kode_penjualan;
@@ -403,7 +405,7 @@ class PelunasanpemesananController extends Controller
         $pelunasan->tanggal_pelunasan = Carbon::now('Asia/Jakarta');
         $pelunasan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
         $pelunasan->status = 'posting';
-        $pelunasan->toko_id = '1'; 
+        $pelunasan->toko_id = '2'; 
         $pelunasan->kode_penjualan = $penjualan->kode_penjualan; // Menggunakan kode_penjualan dari penjualan
         $pelunasan->save();
     
@@ -428,10 +430,10 @@ class PelunasanpemesananController extends Controller
             if ($produk) {
                 if (in_array($produk->klasifikasi_id, [15, 16]) || ($produk->klasifikasi_id == 13 && $detail->kode_lama == 'KU001')) {
 
-                    $stok = Stok_tokobanjaran::where('produk_id', $detail->produk_id)->first();
+                    $stok = Stok_tokotegal::where('produk_id', $detail->produk_id)->first();
                 } else {
                     // Jika tidak, kurangi stok dari stokpesanan_tokobanjaran
-                    $stok = Stokpesanan_tokobanjaran::where('produk_id', $detail->produk_id)->first();
+                    $stok = Stokpesanan_tokotegal::where('produk_id', $detail->produk_id)->first();
                 }
     
                 if ($stok) {
@@ -441,12 +443,12 @@ class PelunasanpemesananController extends Controller
                 } else {
                     // Jika stok tidak ditemukan, buat stok baru dengan nilai negatif
                     if (in_array($produk->klasifikasi_id, [15, 16]) || ($produk->klasifikasi_id == 13 && $detail->kode_lama == 'KU001')) {
-                        Stok_tokobanjaran::create([
+                        Stok_tokotegal::create([
                             'produk_id' => $detail->produk_id,
                             'jumlah' => -$detail->jumlah,
                         ]);
                     } else {
-                        Stokpesanan_tokobanjaran::create([
+                        Stokpesanan_tokotegal::create([
                             'produk_id' => $detail->produk_id,
                             'jumlah' => -$detail->jumlah,
                         ]);
@@ -500,23 +502,7 @@ class PelunasanpemesananController extends Controller
         return view('toko_tegal.penjualan_produk.cetakpelunasan', compact('penjualan', 'pelanggans', 'tokos'));
     }
     
-    // public function cetakPdf($id)
-    // {
-    //     // Mengambil satu item Pelunasan berdasarkan ID
-    //     $inquery = Pelunasan::with(['metodePembayaran', 'penjualanproduk.detailpenjualanproduk'])
-    //     ->findOrFail($id);
-
-    //     // Mengambil semua pelanggan
-    //     $pelanggans = Pelanggan::all();
-
-    //     // Mengakses toko dari $inquery yang sekarang menjadi instance model
-    //     $tokos = $inquery->toko;
-            
-    //     $pdf = FacadePdf::loadView('toko_tegal.pelunasan_pemesanan.cetak-pdf', compact('inquery', 'tokos', 'pelanggans'));
-    //     $pdf->setPaper('a4', 'portrait');
-        
-    //     return $pdf->stream('pelunasan.pdf');
-    // }
+    
     public function cetakPdf($id)
     {
         // Mengambil satu item Pelunasan berdasarkan ID

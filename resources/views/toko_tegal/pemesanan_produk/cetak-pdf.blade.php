@@ -72,7 +72,7 @@
             margin-top: 5px;
         }
         .section table th, .section table td {
-            border: 1px solid #141414;
+            border: 1px solid white;
             padding: 5px;
             font-size: 8px;
         }

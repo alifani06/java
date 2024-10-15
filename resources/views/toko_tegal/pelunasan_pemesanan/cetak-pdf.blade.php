@@ -72,7 +72,7 @@
             margin-top: 5px;
         }
         .section table th, .section table td {
-            border: 1px solid #ccc;
+            border: 1px solid white;
             padding: 5px;
             font-size: 8px;
         }
@@ -403,7 +403,7 @@
             </div>
         
             <div class="terimakasih">
-                <p>Untuk pemesanan, kritik dan saran Hubungi.082136638003</p>
+                <p>Untuk pemesanan, kritik dan saran Hubungi.082136638004</p>
             </div>
             <div class="terimakasihd" style="text-align: left; margin-top: -15px ; font-size: 10px; font-style: italic" >
                 <p>Barang yang sudah dibeli tidak bisa dikembalikan atau ditukar.</p><br> 
