@@ -72,8 +72,8 @@
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
-                                <th>No Member Baru</th>
-                                <th>No Member Lama</th>
+                                <th>No Member</th>
+                                {{-- <th>No Member Lama</th> --}}
                                 <th>Nama Pelanggan</th>
                                 <th>Telepon</th>
                                 <th class="text-center">Qr Code</th>
@@ -84,8 +84,8 @@
                             @foreach ($pelanggans as $pelanggan)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $pelanggan->kode_pelanggan }}</td>
-                                    <td>{{ $pelanggan->kode_lama }}</td>
+                                    {{-- <td>{{ $pelanggan->kode_pelanggan }}</td> --}}
+                                    <td>{{ $pelanggan->kode_pelangganlama }}</td>
                                     <td>{{ $pelanggan->nama_pelanggan }}</td>
                                     <td>{{ $pelanggan->telp }}</td>
                                     <td data-toggle="modal" data-target="#modal-qrcode-{{ $pelanggan->id }}"

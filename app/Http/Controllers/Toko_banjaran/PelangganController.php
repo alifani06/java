@@ -30,7 +30,7 @@ class PelangganController extends Controller
     // $pelanggans = Pelanggan::all();
     $pelanggans = Pelanggan::when($search, function ($query, $search) {
         return $query->where('nama_pelanggan', 'like', '%' . $search . '%')
-                     ->orWhere('kode_lama', 'like', '%' . $search . '%');
+                     ->orWhere('kode_pelangganlama', 'like', '%' . $search . '%');
     }) ->paginate(10);
 
       return view('toko_banjaran.pelanggan.index', compact('pelanggans', 'search'));
@@ -57,7 +57,7 @@ class PelangganController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'kode_lama' => 'nullable',
+                'kode_pelangganlama' => 'nullable',
                 'nama_pelanggan' => 'nullable',
                 'alamat' => 'nullable',
                 'gender' => 'nullable',
@@ -71,7 +71,7 @@ class PelangganController extends Controller
             ],
             [
              
-                'kode_lama.required' => 'Masukkan kode lama',
+                'kode_pelangganlama.required' => 'Masukkan kode lama',
                 'nama_pelanggan.required' => 'Masukkan nama pelanggan',
                
                 'pekerjaan.required' => 'masukan pekerjaan',
