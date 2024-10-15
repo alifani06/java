@@ -43,13 +43,13 @@
                             <i class="fas fa-plus"></i> 
                         </a>
                     </div>
-                    {{-- <form  action="{{ route('stok_tokobanjaran.deleteAll') }}" method="POST" style="display: inline-block;">
+                    <form  action="{{ route('stok_tokotegal.deleteAll') }}" method="POST" style="display: inline-block;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus seluruh data stok?')">
                             <i class="fas fa-trash"></i> Hapus Semua
                         </button>
-                    </form> --}}
+                    </form>
                 </div>
 
                

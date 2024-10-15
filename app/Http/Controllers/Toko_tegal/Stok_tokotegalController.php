@@ -144,7 +144,7 @@ public function create()
     public function deleteAll()
     {
         // Menghapus seluruh data pada kolom jumlah (stok) di tabel stok_tokobanjarans
-        Stok_tokobanjaran::query()->update(['jumlah' => 0]);
+        Stok_tokotegal::query()->update(['jumlah' => 0]);
 
         return redirect()->back()->with('success', 'Semua data stok berhasil dihapus.');
     }
