@@ -43,13 +43,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class Inquery_returtegalController extends Controller{
 
-    // public function index()
-    // {
-    //     // Ambil data retur_tokoslawi beserta relasi produk
-    //     $retur_tokoslawi = Retur_tokoslawi::with('produk')->where('status', 'posting')->get();
-    
-    //     return view('toko_tegal.retur_tokoslawi.index', compact('retur_tokoslawi'));
-    // }
     public function index(Request $request)
     {
             $status = $request->status;
@@ -91,13 +84,13 @@ public function create()
     $produks = Produk::all();
     $tokos = Toko::all();
 
-    return view('toko_tegal.retur_tokoslawi.create', compact('produks', 'tokos'));
+    return view('toko_tegal.retur_tokotegal.create', compact('produks', 'tokos'));
 }
 
 public function show($id)
 {
     // Ambil kode_retur dari pengiriman_barangjadi berdasarkan id
-    $detailStokBarangJadi = Retur_tokoslawi::where('id', $id)->value('kode_retur');
+    $detailStokBarangJadi = Retur_tokotegal::where('id', $id)->value('kode_retur');
     
     // Jika kode_retur tidak ditemukan, tampilkan pesan error
     if (!$detailStokBarangJadi) {
@@ -105,7 +98,7 @@ public function show($id)
     }
     
     // Ambil semua data dengan kode_retur yang sama
-    $pengirimanBarangJadi = Retur_tokoslawi::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
+    $pengirimanBarangJadi = Retur_tokotegal::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
     
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
@@ -130,7 +123,7 @@ public function print($id)
         
         $pdf = FacadePdf::loadView('toko_tegal.inquery_returtegal.print', compact('pengirimanBarangJadi', 'firstItem'));
 
-        return $pdf->stream('surat_permintaan_produk.pdf');
+        return $pdf->stream('surat_retur_produk.pdf');
         
         // return view('toko_tegal.retur_tokoslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
         }

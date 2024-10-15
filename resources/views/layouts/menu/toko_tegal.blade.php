@@ -302,10 +302,10 @@
         {{-- @endif --}}
         {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
         <li class="nav-item">
-            <a href="{{ url('toko_tegal/inquery_returbanjaran') }}"
-                class="nav-link {{ request()->is('toko_tegal/inquery_returbanjaran*') ? 'active' : '' }}">
+            <a href="{{ url('toko_tegal/inquery_returtegal') }}"
+                class="nav-link {{ request()->is('toko_tegal/inquery_returtegal*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Inquery Retur Banjaran</p>
+                <p style="font-size: 14px;">Inquery Retur Tegal</p>
             </a>
         </li>
         {{-- @endif --}}

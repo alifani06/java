@@ -267,7 +267,7 @@ public function show($id)
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    return view('toko_tegal.inquery_returbanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
+    return view('toko_tegal.inquery_returtegal.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
 
@@ -290,7 +290,7 @@ public function show($id)
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    $pdf = FacadePdf::loadView('toko_tegal.inquery_returbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
+    $pdf = FacadePdf::loadView('toko_tegal.inquery_returtegal.print', compact('pengirimanBarangJadi', 'firstItem'));
 
     return $pdf->stream('surat_permintaan_produk.pdf');
 }

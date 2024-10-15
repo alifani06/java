@@ -146,13 +146,13 @@
                                                     href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a> --}}
                                             
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_banjaran/retur_tokobanjaran/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/toko_tegal/retur_tokotegal/' . $firstItem->id ) }}">Show</a>
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 {{-- <a class="dropdown-item unpost-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Unpost</a> --}}
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_banjaran/retur_tokobanjaran/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/toko_tegal/retur_tokotegal/' . $firstItem->id ) }}">Show</a>
                                         @endif
                                        
                                     </div>
@@ -228,7 +228,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_banjaran/inquery_returbanjaran') }}";
+            form.action = "{{ url('toko_tegal/inquery_returbanjaran') }}";
             form.submit();
         }
 
@@ -246,7 +246,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_banjaran/retur_tokobanjaran/unpost_retur/') }}/" + memoId,
+                    url: "{{ url('toko_tegal/retur_tokotegal/unpost_retur/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -276,7 +276,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_banjaran/retur_tokobanjaran/posting_retur/') }}/" + memoId,
+                    url: "{{ url('toko_tegal/retur_tokotegal/posting_retur/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

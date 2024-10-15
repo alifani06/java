@@ -21,11 +21,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Barang Retur Banjaran</h1>
+                    <h1 class="m-0">Laporan Barang Retur Tegal</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Laporan Barang Retur Banjaran</li>
+                        <li class="breadcrumb-item active">Laporan Barang Retur Tegal</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -187,7 +187,7 @@
         });
         function cari() {
         var form = document.getElementById('form-action');
-        form.action = "{{ route('laporan_returbanjaran.index') }}";  // Menggunakan route index
+        form.action = "{{ route('laporan_returtegal.index') }}";  // Menggunakan route index
         form.submit();  
         }
 
@@ -214,7 +214,7 @@
         }
 
         const form = document.getElementById('form-action');
-        form.action = "{{ url('toko_banjaran/printReportreturbanjaran') }}";
+        form.action = "{{ url('toko_tegal/printReportreturtegal') }}";
         form.target = "_blank";
         form.submit();
     }

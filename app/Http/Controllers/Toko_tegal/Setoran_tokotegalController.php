@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_tegal;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Produk;
 use App\Models\Klasifikasi;
+use Illuminate\Support\Facades\DB;
 use App\Models\Subklasifikasi;
 use App\Models\Subsub;
 use App\Models\Pelanggan;
@@ -39,26 +40,17 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class Laporan_setorantunaibanjaranController extends Controller
+class Setoran_tokotegalController extends Controller
 {
+
     public function index(Request $request)
     {
-        // Ambil parameter tanggal dari request
-        $tanggalPenjualan = $request->input('tanggal_penjualan');
-        $tanggalAkhir = $request->input('tanggal_akhir');
-    
-        // Ambil semua data setoran penjualan dengan filter tanggal jika ada
-        $setoranPenjualans = Setoran_penjualan::when($tanggalPenjualan, function ($query) use ($tanggalPenjualan, $tanggalAkhir) {
-            return $query->whereDate('tanggal_setoran', '>=', $tanggalPenjualan)
-                         ->whereDate('tanggal_setoran', '<=', $tanggalAkhir ?? $tanggalPenjualan);
-        })
-        ->orderBy('id', 'DESC')
-        ->get();
+        // Ambil semua data setoran penjualan
+        $setoranPenjualans = Setoran_penjualan::orderBy('id', 'DESC')->get();
     
         // Kirim data ke view
-        return view('toko_banjaran.laporan_setorantunai.index', compact('setoranPenjualans'));
+        return view('toko_tegal.setoran_tokotegal.index', compact('setoranPenjualans'));
     }
-    
     
     public function create(Request $request)
     {
@@ -157,7 +149,7 @@ class Laporan_setorantunaibanjaranController extends Controller
         $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
         $total_setoran = $total_penjualan - $total_metode;
 
-        return view('toko_banjaran.setoran_tokobanjaran.create', compact(
+        return view('toko_tegal.setoran_tokotegal.create', compact(
             'produks',
             'tokos',
             'klasifikasis',
@@ -175,7 +167,6 @@ class Laporan_setorantunaibanjaranController extends Controller
             'deposit_keluar'
         ));
     }
-
 
     public function getdata(Request $request)
     {
@@ -276,6 +267,7 @@ class Laporan_setorantunaibanjaranController extends Controller
             'nominal_setoran' => 'required|numeric',
             'plusminus' => 'required|numeric',
         ], [
+            // Custom error messages
             'tanggal_penjualan.required' => 'Tanggal penjualan tidak boleh kosong.',
             'penjualan_kotor.required' => 'Penjualan kotor tidak boleh kosong.',
             'diskon_penjualan.required' => 'Diskon penjualan tidak boleh kosong.',
@@ -299,8 +291,8 @@ class Laporan_setorantunaibanjaranController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // Simpan data ke database
-        Setoran_penjualan::create([
+        // Simpan data ke database dan ambil ID dari data yang baru disimpan
+        $setoranPenjualan = Setoran_penjualan::create([
             'tanggal_penjualan' => $request->tanggal_penjualan,
             'penjualan_kotor' => $request->penjualan_kotor,
             'diskon_penjualan' => $request->diskon_penjualan,
@@ -314,17 +306,34 @@ class Laporan_setorantunaibanjaranController extends Controller
             'transfer' => $request->transfer,
             'total_setoran' => $request->total_setoran,
             'tanggal_setoran' => $request->tanggal_setoran,
+            'tanggal_setoran2' => $request->tanggal_setoran2,
             'nominal_setoran' => $request->nominal_setoran,
+            'nominal_setoran2' => $request->nominal_setoran2,
             'plusminus' => $request->plusminus,
-            'toko_id' => 1, // Menyimpan toko_id dengan nilai 1
-
+            'toko_id' => 2, // Menyimpan toko_id dengan nilai 1
+            'status' => 'unpost',
         ]);
 
-        return redirect()->back()->with('success', 'Data berhasil disimpan.');
+        return response()->json([
+            'url' => route('inquery_setorantunai.print', $setoranPenjualan->id)
+        ]);
     }
+    
+    
 
     
 
+    public function print($id)
+    {
+        // Ambil data setoran penjualan berdasarkan id yang dipilih
+        $setoranPenjualans = Setoran_penjualan::findOrFail($id);
+    
+        // Load view untuk PDF dan kirimkan data
+        $pdf = FacadePdf::loadView('toko_tegal.setoran_tokotegal.printtunai', compact('setoranPenjualans'));
+    
+        // Return PDF stream agar langsung bisa ditampilkan
+        return $pdf->stream('setoran_penjualan.pdf');
+    }
     
 
     }

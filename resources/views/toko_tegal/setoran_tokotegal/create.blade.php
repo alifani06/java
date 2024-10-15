@@ -31,7 +31,7 @@
         @endif
     
 
-            <form id="setoranForm" action="{{ url('toko_banjaran/setoran_tokobanjaran') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form id="setoranForm" action="{{ url('toko_tegal/setoran_tokotegal') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <div class="card">
                     <div class="card-header">

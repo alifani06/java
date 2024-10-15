@@ -45,8 +45,10 @@ class Inquery_deposittegalController extends Controller
         $status_pelunasan = $request->status_pelunasan;
     
         // Query dasar untuk mengambil data Dppemesanan
-        $inquery = Dppemesanan::with(['pemesananproduk.toko']) ;// Memuat relasi toko melalui pemesananproduk
-            // ->orderBy('created_at', 'desc');
+        $inquery = Dppemesanan::with(['pemesananproduk.toko'])
+        ->whereHas('pemesananproduk', function ($query) {
+            $query->where('toko_id', 2); 
+        });
     
         // Filter berdasarkan status
         if ($status) {

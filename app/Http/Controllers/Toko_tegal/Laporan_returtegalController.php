@@ -73,7 +73,7 @@ class Laporan_returtegalController extends Controller
             $query->whereDate('tanggal_retur', Carbon::today());
         }
     
-        $query->where('toko_id', 1);
+        $query->where('toko_id', 2);
 
         // Filter berdasarkan klasifikasi
         if ($klasifikasi_id) {
@@ -129,7 +129,7 @@ class Laporan_returtegalController extends Controller
             $query->where('retur_barangjadis.status', $status);
         }
 
-         $query->where('retur_barangjadis.toko_id', 1);
+         $query->where('retur_barangjadis.toko_id', 2);
 
         // Filter berdasarkan klasifikasi_id
         if ($klasifikasi_id) {
