@@ -75,6 +75,7 @@ use App\Http\Controllers\Toko_tegal\Inquery_returtegalController;
 use App\Http\Controllers\Toko_tegal\Inquery_setorantunaitegalController;
 use App\Http\Controllers\Toko_tegal\Laporan_pemesananproduktegalController;
 use App\Http\Controllers\Toko_tegal\Laporan_pemindahantegalController;
+use App\Http\Controllers\Toko_tegal\Laporan_setoranpenjualantglController;
 use App\Http\Controllers\Toko_tegal\PemesananproduktegalController;
 use App\Http\Controllers\Toko_tegal\Pengiriman_tokotegalController;
 use App\Http\Controllers\Toko_tegal\PenjualanproduktegalController;
@@ -769,8 +770,8 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::post('toko_tegal/setoran_tokobanjaran', [Setoran_tokotegalController::class, 'store'])->name('setoran.store');
 
 
-    Route::resource('laporan_setorantokotegal', \App\Http\Controllers\Toko_tegal\Laporan_setoranpenjualanController::class);
-    Route::get('printReportsetoran', [Laporan_setoranpenjualanController::class, 'printReportsetoran'])->name('laporan_setoranpenjualan.print');
+    Route::resource('laporan_setorantokotegal', \App\Http\Controllers\Toko_tegal\Laporan_setoranpenjualantglController::class);
+    Route::get('printReportsetorantgl', [Laporan_setoranpenjualantglController::class, 'printReportsetorantgl'])->name('laporan_setoranpenjualan.print');
 
     Route::resource('inquery_deposittegal', \App\Http\Controllers\Toko_tegal\Inquery_deposittegalController::class);
 

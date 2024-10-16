@@ -186,7 +186,7 @@
 <script>
     function printReport() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_tegal/printReportsetoran') }}";
+    form.action = "{{ url('toko_tegal/printReportsetorantgl') }}";
     form.target = "_blank";
     form.submit();
 }
