@@ -310,24 +310,7 @@ class PenjualanprodukbanjaranController extends Controller
         return view('toko_banjaran.penjualan_produk.pelunasan', compact('barangs','metodes', 'tokos', 'produks', 'details', 'tokoslawis', 'tokobanjarans', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks'));
     }
     
-    // public function fetchProductData(Request $request)
-    // {
-    //     $kodeLama = $request->input('kode_lama');
-        
-    //     // Mencari produk berdasarkan kode_lama
-    //     $produk = Produk::where('kode_lama', $kodeLama)->first();
-    
-    //     if ($produk) {
-    //         return response()->json([
-    //             'produk_id' => $produk->id, 
-    //             'kode_produk' => $produk->kode_produk, 
-    //             'nama_produk' => $produk->nama_produk,
-    //             'harga' => $produk->harga, 
-    //         ]);
-    //     } else {
-    //         return response()->json(null, 404);
-    //     }
-    // }
+  
 
     public function fetchProductData(Request $request)
     {

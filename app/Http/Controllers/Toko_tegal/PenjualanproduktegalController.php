@@ -30,6 +30,8 @@ use App\Models\Penjualanproduk;
 use App\Models\Toko;
 use App\Models\Dppemesanan;
 use App\Models\Metodepembayaran;
+use App\Models\Stok_tokotegal;
+use App\Models\Stokpesanan_tokotegal;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Log;
@@ -575,10 +577,10 @@ class PenjualanproduktegalController extends Controller
                 ($produk->klasifikasi_id == 13 && in_array($produk->kode_lama, ['KU001', 'M0002']))
             ) {
                 // Pengurangan stok untuk stok_tokobanjaran
-                $stok = Stok_tokobanjaran::where('produk_id', $detail->produk_id)->first();
+                $stok = Stok_tokotegal::where('produk_id', $detail->produk_id)->first();
             } else {
                 // Jika tidak, kurangi stok dari stokpesanan_tokobanjaran
-                $stok = Stokpesanan_tokobanjaran::where('produk_id', $detail->produk_id)->first();
+                $stok = Stokpesanan_tokotegal::where('produk_id', $detail->produk_id)->first();
             }
 
             if ($stok) {
@@ -590,12 +592,12 @@ class PenjualanproduktegalController extends Controller
                 if (in_array($produk->klasifikasi_id, [15, 16]) || 
                     ($produk->klasifikasi_id == 13 && in_array($detail->kode_lama, ['KU001', 'M0002']))
                 ) {
-                    Stok_tokobanjaran::create([
+                    Stok_tokotegal::create([
                         'produk_id' => $detail->produk_id,
                         'jumlah' => -$detail->jumlah,
                     ]);
                 } else {
-                    Stokpesanan_tokobanjaran::create([
+                    Stokpesanan_tokotegal::create([
                         'produk_id' => $detail->produk_id,
                         'jumlah' => -$detail->jumlah,
                     ]);
@@ -696,29 +698,7 @@ class PenjualanproduktegalController extends Controller
         }
     }
  
-    // public function kode()
-    // {
-    //     $prefix = 'PBNJ';
-    //     $year = date('y'); // Dua digit terakhir dari tahun
-    //     $monthDay = date('dm'); // Format bulan dan hari: MMDD
-        
-    //     // Mengambil kode retur terakhir yang dibuat pada hari yang sama
-    //     $lastBarang = Penjualanproduk::whereDate('tanggal_penjualan', Carbon::today())
-    //                                   ->orderBy('kode_penjualan', 'desc')
-    //                                   ->first();
-    
-    //     if (!$lastBarang) {
-    //         $num = 1;
-    //     } else {
-    //         $lastCode = $lastBarang->kode_penjualan;
-    //         $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
-    //         $num = $lastNum + 1;
-    //     }
-    
-    //     $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
-    //     $newCode = $prefix . $monthDay . $year . $formattedNum;
-    //     return $newCode;
-    // }
+
     public function kode()
 {
     $prefix = 'FPD';
@@ -953,30 +933,7 @@ class PenjualanproduktegalController extends Controller
             return response()->json($products);
         }
 
-        // public function destroy($id)
-        // {
-        //     DB::transaction(function () use ($id) {
-        //         $penjualan = Penjualanproduk::findOrFail($id);
-                
-        //         // Ambil semua detail pemesanan terkait
-        //         $detailPenjualanProduks = Detailpenjualanproduk::where('penjualanproduk_id', $id)->get();
-        
-        //         // Mengembalikan stok untuk setiap produk yang dipesan
-        //         foreach ($detailPenjualanProduks as $detail) {
-        //             DB::table('stok_tokobanjarans')
-        //                 ->where('produk_id', $detail->produk_id)
-        //                 ->increment('jumlah', $detail->jumlah);
-        //         }
-        
-        //         // Menghapus (soft delete) detail pemesanan terkait
-        //         Detailpenjualanproduk::where('penjualanproduk_id', $id)->delete();
-        
-        //         // Menghapus (soft delete) data pemesanan
-        //         $penjualan->delete();
-        //     });
-        
-        //     return redirect('toko_tegal/penjualan_produk')->with('success', 'Berhasil menghapus data penjualan');
-        // }
+       
         public function destroy($id)
         {
             DB::transaction(function () use ($id) {

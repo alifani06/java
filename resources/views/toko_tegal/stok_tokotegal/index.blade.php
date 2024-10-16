@@ -40,10 +40,10 @@
                 <div class="card-header">
                     <div class="float-right">
                         <a href="{{ url('toko_tegal/stok_tokotegal/create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus"></i> 
+                            <i class="fas fa-plus"></i>
                         </a>
                     </div>
-                    <form  action="{{ route('stok_tokotegal.deleteAll') }}" method="POST" style="display: inline-block;">
+                    <form action="{{ route('stok_tokotegal.deleteAll') }}" method="POST" style="display: inline-block;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus seluruh data stok?')">
@@ -51,8 +51,7 @@
                         </button>
                     </form>
                 </div>
-
-               
+            
                 <!-- /.card-header -->
                 <div class="card-body">
                     <form method="GET" id="form-action">
@@ -86,7 +85,7 @@
                             </div>
                         </div>
                     </form>
-                
+            
                     <table id="datatables1" class="table table-bordered" style="font-size: 13px">
                         <thead>
                             <tr>
@@ -96,18 +95,28 @@
                                 <th>Stok</th>
                                 <th>Harga</th>
                                 <th>Sub Total</th>
+                                <th>Aksi</th> 
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($produkWithStok as $produk)
-                                <tr>
+                            <tr>
+                                <form action="{{ route('stok_tokotegal.update', $produk->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $produk->kode_lama }}</td>
                                     <td>{{ $produk->nama_produk }}</td>
-                                    <td style="text-align: right">{{ $produk->jumlah }}</td>
-                                    <td style="text-align: right">{{ number_format($produk->harga, 0, ',', '.') }} </td>
-                                    <td style="text-align: right">{{ number_format($produk->subTotal, 0, ',', '.') }} </td> <!-- Sub Total -->
-                                </tr>
+                                    <td style="text-align: right">
+                                        <input type="number" name="jumlah" value="{{ $produk->jumlah }}" class="form-control" style="width: 80px; text-align: right;">
+                                    </td>
+                                    <td style="text-align: right">{{ number_format($produk->harga, 0, ',', '.') }}</td>
+                                    <td style="text-align: right">{{ number_format($produk->subTotal, 0, ',', '.') }}</td> <!-- Sub Total -->
+                                    <td>
+                                        <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-save"></i></button>
+                                    </td>
+                                </form>
+                            </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
@@ -116,14 +125,14 @@
                                 <th style="text-align: right">{{ $totalStok }}</th>
                                 <th></th>
                                 <th style="text-align: right">{{ 'Rp. ' . number_format($totalSubTotal, 0, ',', '.') }}</th>
+                                <th></th>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
-                
-                
                 <!-- /.card-body -->
             </div>
+            
         </div>
     </section>
     

@@ -141,6 +141,31 @@ public function create()
         return redirect()->route('stok_tokotegal.index')->with('success', 'Data stok barang berhasil disimpan.');
     }
 
+
+    public function update(Request $request, $produk_id)
+    {
+        // Validasi input untuk memastikan jumlah adalah angka dan tidak kosong
+        $request->validate([
+            'jumlah' => 'required|numeric|min:0',
+        ]);
+
+        // Temukan stok berdasarkan produk_id
+        $stok = Stok_tokotegal::where('produk_id', $produk_id)->first();
+
+        // Jika stok tidak ditemukan, bisa memberikan respons error atau membuat entri stok baru
+        if (!$stok) {
+            return redirect()->route('stok_tokotegal.index')->with('error', 'Stok untuk produk ini tidak ditemukan.');
+        }
+
+        // Update jumlah stok
+        $stok->jumlah = $request->input('jumlah');
+        $stok->save(); // Simpan perubahan
+
+        // Redirect kembali ke halaman stok dengan pesan sukses
+        return redirect()->route('stok_tokotegal.index')->with('success', 'Stok produk berhasil diperbarui.');
+    }
+
+
     public function deleteAll()
     {
         // Menghapus seluruh data pada kolom jumlah (stok) di tabel stok_tokobanjarans
