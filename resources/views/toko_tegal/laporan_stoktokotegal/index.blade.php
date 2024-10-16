@@ -152,7 +152,7 @@
     function printReport() {
         if (event) event.preventDefault();
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printstoktokobanjaran') }}";
+    form.action = "{{ url('toko_tegal/printstoktokotegal') }}";
     form.target = "_blank";
     form.submit();
 }
@@ -185,9 +185,9 @@ subKlasifikasiSelect.selectedIndex = 0;
         var selectedValue = this.value;
 
         if (selectedValue === 'stok') {
-            window.location.href = "{{ url('toko_banjaran/laporan_stoktokobanjaran') }}";
+            window.location.href = "{{ url('toko_tegal/laporan_stoktokobanjaran') }}";
         } else if (selectedValue === 'stokpesanan') {
-            window.location.href = "{{ url('toko_banjaran/stoktokopesananbanjaran') }}";
+            window.location.href = "{{ url('toko_tegal/stoktokopesananbanjaran') }}";
         }
     });
 </script>
