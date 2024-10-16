@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Pelunasan Pemesanan')
+@include('sweetalert::alert')
 
 @section('content')
 <style>
@@ -72,7 +73,8 @@
                     @endif
                 </div>
             @endif
-            <form id="pelunasanForm" action="{{ url('toko_tegal/pelunasan_pemesanan') }}" method="POST" enctype="multipart/form-data"
+        
+            <form  action="{{ url('toko_tegal/pelunasan_pemesanan') }}" method="POST" enctype="multipart/form-data"
                 autocomplete="off">
                 @csrf
                 <div class="card">
@@ -342,12 +344,94 @@
             </div>
         </div>
 
+        <div class="modal fade" id="tableProduk" data-backdrop="static">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Data Produk</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table id="datatables5" class="table table-bordered table-striped" style="font-size: 12px;">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">No</th>
+                                    <th>Kode Produk</th>
+                                    <th>Kode Lama</th>
+                                    <th>Nama Produk</th>
+                                    <th>Harga Member</th>
+                                    <th>Diskon Member</th>
+                                    <th>Harga Non Member</th>
+                                    <th>Diskon Non Member</th>
+                                    <th>Opsi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($produks as $item)
+                                    @php
+                                        $tokotegal = $item->tokotegal->first();
+                                        $stokpesanan_tokotegal = $item->stokpesanan_tokotegal ? $item->stokpesanan_tokotegal->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
+
+                                    @endphp
+                                    <tr class="pilih-btn"
+                                        data-id="{{ $item->id }}"
+                                        data-kode="{{ $item->kode_produk }}"
+                                        data-lama="{{ $item->kode_lama }}"
+                                        data-catatan="{{ $item->catatanproduk }}"
+                                        data-nama="{{ $item->nama_produk }}"
+                                        data-member="{{ $tokotegal ? $tokotegal->member_harga_tgl : '' }}"
+                                        data-diskonmember="{{ $tokotegal ? $tokotegal->member_diskon_tgl : '' }}"
+                                        data-nonmember="{{ $tokotegal ? $tokotegal->non_harga_tgl : '' }}"
+                                        data-diskonnonmember="{{ $tokotegal ? $tokotegal->non_diskon_tgl : '' }}">
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td>{{ $item->kode_produk }}</td>
+                                        <td>{{ $item->kode_lama }}</td>
+                                        <td>{{ $item->nama_produk }}</td>
+                                        <td>
+                                            <span class="member_harga_tgl">{{ $tokotegal ? $tokotegal->member_harga_tgl : '' }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="member_diskon_tgl">{{ $tokotegal ? $tokotegal->member_diskon_tgl : '' }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="non_harga_tgl">{{ $tokotegal ? $tokotegal->non_harga_tgl : '' }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="non_diskon_tgl">{{ $tokotegal ? $tokotegal->non_diskon_tgl : '' }}</span>
+                                        </td>
+                                    
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-primary btn-sm pilih-btn"
+                                                data-id="{{ $item->id }}"
+                                                data-kode="{{ $item->kode_produk }}"
+                                                data-lama="{{ $item->kode_lama }}"
+                                                data-catatan="{{ $item->catatanproduk }}"
+                                                data-nama="{{ $item->nama_produk }}"
+                                                data-member="{{ $tokotegal ? $tokotegal->member_harga_tgl : '' }}"
+                                                data-diskonmember="{{ $tokotegal ? $tokotegal->member_diskon_tgl : '' }}"
+                                                data-nonmember="{{ $tokotegal ? $tokotegal->non_harga_tgl : '' }}"
+                                                data-diskonnonmember="{{ $tokotegal ? $tokotegal->non_diskon_tgl : '' }}">
+                                                <i class="fas fa-plus"></i> 
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        
+                    </div>
+         
+                </div>
+            </div>
+        </div>
     </section>
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
+{{-- <script>
     $(document).ready(function() {
         $('#pelunasanForm').submit(function(event) {
             event.preventDefault(); // Mencegah pengiriman form default
@@ -388,7 +472,7 @@
             $(this).data('default-value', $(this).val());
         });
     });
-</script>
+</script> --}}
 
 <script>
     var itemCounter = 0;
@@ -715,7 +799,20 @@ function updateGrandTotal() {
             });
         });
     </script>
-    
+    <script>
+               $(document).ready(function() {
+                // Inisialisasi datatables
+                var produkTable = $('#datatables5').DataTable();
+
+        
+                $('#tableProduk').on('shown.bs.modal', function () {
+                    produkTable.columns.adjust().draw();
+                });
+            });
+        
+
+
+    </script>
     
     
     <script>

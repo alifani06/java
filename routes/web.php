@@ -76,6 +76,7 @@ use App\Http\Controllers\Toko_tegal\Inquery_setorantunaitegalController;
 use App\Http\Controllers\Toko_tegal\Laporan_pemesananproduktegalController;
 use App\Http\Controllers\Toko_tegal\Laporan_pemindahantegalController;
 use App\Http\Controllers\Toko_tegal\Laporan_setoranpenjualantglController;
+use App\Http\Controllers\Toko_tegal\PelunasanpemesananTglController;
 use App\Http\Controllers\Toko_tegal\PemesananproduktegalController;
 use App\Http\Controllers\Toko_tegal\Pengiriman_tokotegalController;
 use App\Http\Controllers\Toko_tegal\PenjualanproduktegalController;
@@ -679,9 +680,10 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::get('/search-product', [PenjualanproduktegalController::class, 'searchProduct']);
 
 
-    Route::resource('pelunasan_pemesanan', \App\Http\Controllers\Toko_tegal\PelunasanpemesananController::class);
-    Route::get('/toko_tegal/pelunasan_pemesanan/cetak-pdf{id}', [PelunasanpemesananController::class, 'cetakPdf'])->name('toko_tegal.pelunasan_pemesanan.cetak-pdf');
-    Route::get('/pelunasan-pemesanan/cetak/{id}', [PelunasanpemesananController::class, 'cetak'])->name('toko_tegal.pelunasan_pemesanan.cetak');
+    Route::resource('pelunasan_pemesanan', \App\Http\Controllers\Toko_tegal\PelunasanpemesananTglController::class);
+    Route::get('/toko_tegal/pelunasan_pemesanan/cetak-pdf{id}', [PelunasanpemesananTglController::class, 'cetakPdf'])->name('toko_tegal.pelunasan_pemesanan.cetak-pdf');
+    Route::get('/pelunasan-pemesanan/cetak/{id}', [PelunasanpemesananTglController::class, 'cetak'])->name('toko_tegal.pelunasan_pemesanan.cetak');
+    Route::get('/pelunasan_pemesanan', [PelunasanPemesananTglController::class, 'index'])->name('toko_tegal.pelunasan_pemesanan.index');
 
     Route::resource('inquery_penjualanproduktegal', \App\Http\Controllers\Toko_tegal\Inquery_penjualanproduktegalController::class);
     Route::get('/toko_tegal/inquery_penjualanproduktegal', [Inquery_penjualanprodukbanjaranController::class, 'index'])->name('toko_tegal.inquery_penjualanproduk.index');

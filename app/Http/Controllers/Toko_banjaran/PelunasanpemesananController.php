@@ -324,17 +324,9 @@ class PelunasanpemesananController extends Controller
         // Ambil detail pelunasan untuk ditampilkan di halaman cetak
         $details = DetailPenjualanProduk::where('penjualanproduk_id', $penjualan->id)->get();
     
-        // Kirimkan URL untuk tab baru
-        $pdfUrl = route('toko_banjaran.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id]);
-    
-        // Return response dengan URL PDF
-        return response()->json([
-            'success' => 'Transaksi Berhasil',
-            'pelunasan' => $pelunasan,
-            'penjualan' => $penjualan,
-            'details' => $details,
-            'pdfUrl' => $pdfUrl,
-        ]);
+
+        return redirect()->route('toko_banjaran.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id])
+        ->with('success', 'Transaksi berhasil disimpan, halaman cetak akan segera tampil.');
     }
     
     public function cetak($id)
