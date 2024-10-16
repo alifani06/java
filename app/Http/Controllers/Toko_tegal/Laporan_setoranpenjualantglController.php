@@ -201,8 +201,10 @@ class Laporan_setoranpenjualantglController extends Controller
         $produks = Produk::all();
         $tokos = Toko::all();
         $klasifikasis = Klasifikasi::all();
-        $kasirs = Penjualanproduk::select('kasir')->distinct()->get();
-    
+        $kasirs = Penjualanproduk::select('kasir')
+        ->where('toko_id', 2) 
+        ->distinct()
+        ->get();    
         // Hitung total metode dan setoran
         $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
         $total_setoran = $total_penjualan - $total_metode;
