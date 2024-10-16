@@ -137,7 +137,7 @@
         </div>
     </section>
     
-    <script>
+    {{-- <script>
         $(document).ready(function() {
             $('form').on('submit', function(e) {
                 e.preventDefault(); // Cegah form dari pengiriman standar
@@ -177,7 +177,7 @@
                 });
             });
         });
-    </script>
+    </script> --}}
     
     <script>
         function filterSubKlasifikasi() {

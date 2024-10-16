@@ -141,29 +141,7 @@ public function create()
         return redirect()->route('stok_tokobanjaran.index')->with('success', 'Data stok barang berhasil disimpan.');
     }
 
-//     public function update(Request $request, $produk_id)
-// {
-//     // Validasi input untuk memastikan jumlah adalah angka dan tidak kosong
-//     $request->validate([
-//         'jumlah' => 'required|numeric|min:0',
-//     ]);
-
-//     // Temukan stok berdasarkan produk_id
-//     $stok = Stok_tokobanjaran::where('produk_id', $produk_id)->first();
-
-//     // Jika stok tidak ditemukan, bisa memberikan respons error atau membuat entri stok baru
-//     if (!$stok) {
-//         return redirect()->route('stok_tokobanjaran.index')->with('error', 'Stok untuk produk ini tidak ditemukan.');
-//     }
-
-//     // Update jumlah stok
-//     $stok->jumlah = $request->input('jumlah');
-//     $stok->save(); // Simpan perubahan
-
-//     // Redirect kembali ke halaman stok dengan pesan sukses
-//     return redirect()->route('stok_tokobanjaran.index')->with('success', 'Stok produk berhasil diperbarui.');
-// }
-public function update(Request $request, $produk_id)
+    public function update(Request $request, $produk_id)
 {
     // Validasi input untuk memastikan jumlah adalah angka dan tidak kosong
     $request->validate([
@@ -175,16 +153,38 @@ public function update(Request $request, $produk_id)
 
     // Jika stok tidak ditemukan, bisa memberikan respons error atau membuat entri stok baru
     if (!$stok) {
-        return response()->json(['status' => 'error', 'message' => 'Stok untuk produk ini tidak ditemukan.'], 404);
+        return redirect()->route('stok_tokobanjaran.index')->with('error', 'Stok untuk produk ini tidak ditemukan.');
     }
 
     // Update jumlah stok
     $stok->jumlah = $request->input('jumlah');
     $stok->save(); // Simpan perubahan
 
-    // Kembalikan respons JSON
-    return response()->json(['status' => 'success', 'message' => 'Stok produk berhasil diperbarui.']);
+    // Redirect kembali ke halaman stok dengan pesan sukses
+    return redirect()->route('stok_tokobanjaran.index')->with('success', 'Stok produk berhasil diperbarui.');
 }
+// public function update(Request $request, $produk_id)
+// {
+//     // Validasi input untuk memastikan jumlah adalah angka dan tidak kosong
+//     $request->validate([
+//         'jumlah' => 'required|numeric|min:0',
+//     ]);
+
+//     // Temukan stok berdasarkan produk_id
+//     $stok = Stok_tokobanjaran::where('produk_id', $produk_id)->first();
+
+//     // Jika stok tidak ditemukan, bisa memberikan respons error atau membuat entri stok baru
+//     if (!$stok) {
+//         return response()->json(['status' => 'error', 'message' => 'Stok untuk produk ini tidak ditemukan.'], 404);
+//     }
+
+//     // Update jumlah stok
+//     $stok->jumlah = $request->input('jumlah');
+//     $stok->save(); // Simpan perubahan
+
+//     // Kembalikan respons JSON
+//     return response()->json(['status' => 'success', 'message' => 'Stok produk berhasil diperbarui.']);
+// }
 
 
     public function deleteAll()
