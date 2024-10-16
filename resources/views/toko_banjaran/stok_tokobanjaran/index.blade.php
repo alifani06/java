@@ -86,8 +86,8 @@
                         </div>
                     </form>
             
-                    <table id="data" class="table table-bordered" style="font-size: 13px">
-                    {{-- <table id="datatables1" class="table table-bordered" style="font-size: 13px"> --}}
+                    {{-- <table id="data" class="table table-bordered" style="font-size: 13px"> --}}
+                    <table id="datatables1" class="table table-bordered" style="font-size: 13px">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -137,7 +137,7 @@
         </div>
     </section>
     
-    <script>
+    {{-- <script>
         $(document).ready(function() {
             $('form').on('submit', function(e) {
                 e.preventDefault(); // Cegah form dari pengiriman standar
@@ -177,7 +177,7 @@
                 });
             });
         });
-    </script>
+    </script> --}}
     
     <script>
         function filterSubKlasifikasi() {
