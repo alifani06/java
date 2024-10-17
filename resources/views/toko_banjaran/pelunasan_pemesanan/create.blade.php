@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Pelunasan Pemesanan')
+@include('sweetalert::alert')
 
 @section('content')
 <style>
@@ -72,7 +73,8 @@
                     @endif
                 </div>
             @endif
-            <form id="pelunasanForm" action="{{ url('toko_banjaran/pelunasan_pemesanan') }}" method="POST" enctype="multipart/form-data"
+        
+            <form  action="{{ url('toko_banjaran/pelunasan_pemesanan') }}" method="POST" enctype="multipart/form-data"
                 autocomplete="off">
                 @csrf
                 <div class="card">
@@ -342,6 +344,88 @@
             </div>
         </div>
 
+        <div class="modal fade" id="tableProduk" data-backdrop="static">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Data Produk</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table id="datatables5" class="table table-bordered table-striped" style="font-size: 12px;">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">No</th>
+                                    <th>Kode Produk</th>
+                                    <th>Kode Lama</th>
+                                    <th>Nama Produk</th>
+                                    <th>Harga Member</th>
+                                    <th>Diskon Member</th>
+                                    <th>Harga Non Member</th>
+                                    <th>Diskon Non Member</th>
+                                    <th>Opsi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($produks as $item)
+                                    @php
+                                        $tokobanjaran = $item->tokobanjaran->first();
+                                        $stokpesanan_tokobanjaran = $item->stokpesanan_tokobanjaran ? $item->stokpesanan_tokobanjaran->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
+
+                                    @endphp
+                                    <tr class="pilih-btn"
+                                        data-id="{{ $item->id }}"
+                                        data-kode="{{ $item->kode_produk }}"
+                                        data-lama="{{ $item->kode_lama }}"
+                                        data-catatan="{{ $item->catatanproduk }}"
+                                        data-nama="{{ $item->nama_produk }}"
+                                        data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
+                                        data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
+                                        data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
+                                        data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td>{{ $item->kode_produk }}</td>
+                                        <td>{{ $item->kode_lama }}</td>
+                                        <td>{{ $item->nama_produk }}</td>
+                                        <td>
+                                            <span class="member_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="member_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="non_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="non_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}</span>
+                                        </td>
+                                    
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-primary btn-sm pilih-btn"
+                                                data-id="{{ $item->id }}"
+                                                data-kode="{{ $item->kode_produk }}"
+                                                data-lama="{{ $item->kode_lama }}"
+                                                data-catatan="{{ $item->catatanproduk }}"
+                                                data-nama="{{ $item->nama_produk }}"
+                                                data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
+                                                data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
+                                                data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
+                                                data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
+                                                <i class="fas fa-plus"></i> 
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        
+                    </div>
+         
+                </div>
+            </div>
+        </div>
     </section>
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -357,30 +441,29 @@
                 type: 'POST',
                 data: $(this).serialize(),
                 success: function(response) {
-    console.log(response); // Tambahkan ini untuk debug respons
-    if (response.pdfUrl) {
-        window.open(response.pdfUrl, '_blank');
-    }
-    if (response.success) {
-        Swal.fire({
-            title: 'Sukses!',
-            text: response.success,
-            icon: 'success',
-            confirmButtonText: 'OK',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $('#pelunasanForm')[0].reset();
-                $('#pelunasanForm').find('input[type="text"], input[type="number"], textarea, select').each(function() {
-                    $(this).val($(this).data('default-value'));
-                });
-            }
-        });
-    }
-},
-error: function(xhr) {
-    console.log("Error:", xhr.responseText); // Tambahkan ini untuk debug error
-}
-
+                    if (response.pdfUrl) {
+                        // Membuka URL di tab baru
+                        window.open(response.pdfUrl, '_blank');
+                    }
+                    if (response.success) {
+                        // Tampilkan pesan sukses menggunakan SweetAlert2
+                        Swal.fire({
+                            title: 'Sukses!',
+                            text: response.success,
+                            icon: 'success',
+                            confirmButtonText: 'OK',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Lakukan refresh halaman setelah menekan OK
+                                location.reload(); // Ini akan merefresh seluruh halaman
+                            }
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    // Tangani error jika diperlukan
+                    console.log(xhr.responseText);
+                }
             });
         });
 
@@ -390,7 +473,6 @@ error: function(xhr) {
         });
     });
 </script> --}}
-
 
 <script>
     var itemCounter = 0;
@@ -494,16 +576,7 @@ error: function(xhr) {
         });
     }
 
-    $(document).ready(function() {
-    // Event listener untuk menangkap tombol Enter
-    $(document).on('keydown', function(e) {
-        if (e.key === "Enter") {
-            // Cegah submit form jika tombol Enter ditekan
-            e.preventDefault();
-            addRow();
-        }
-    });
-});
+    var currentEditingRow = null; // Variabel global untuk melacak baris yang sedang diedit
 
 function addRow() {
     itemCounter++;
@@ -519,17 +592,17 @@ function addRow() {
         '<td hidden>' +
         '   <input hidden style="font-size:14px" type="text" class="form-control diskon" name="diskon[]" id="diskon_' + itemCounter + '" value="">' +
         '</td>' +
-        '<td>' +
+        '<td onclick="showCategoryModal(' + itemCounter + ')">' +
         '   <div class="form-group">' +
-        '       <input style="font-size:14px" type="text" class="form-control kode_lama" name="kode_lama[]" id="kode_lama_' + itemCounter + '" value="" onblur="fetchProductData(' + itemCounter + ')">' +
+        '       <input style="font-size:14px" type="text" class="form-control kode_lama" name="kode_lama[]" id="kode_lama_' + itemCounter + '" value="" readonly>' +
         '   </div>' +
         '</td>' +
-        '<td>' +
+        '<td onclick="showCategoryModal(' + itemCounter + ')">' +
         '   <div class="form-group">' +
-        '       <input style="font-size:14px" type="text" class="form-control nama_produk" name="nama_produk[]" id="nama_produk_' + itemCounter + '" value="" onblur="fetchProductData(' + itemCounter + ')" >' +
+        '       <input style="font-size:14px" type="text" class="form-control nama_produk" name="nama_produk[]" id="nama_produk_' + itemCounter + '" value="" readonly>' +
         '   </div>' +
         '</td>' +
-        '<td>' +
+        '<td onclick="showCategoryModal(' + itemCounter + ')">' +
         '   <div class="form-group">' +
         '       <input style="font-size:14px" type="text" class="form-control harga" name="harga[]" id="harga_' + itemCounter + '" value="" readonly>' +
         '   </div>' +
@@ -539,7 +612,7 @@ function addRow() {
         '       <input style="font-size:14px" type="number" class="form-control jumlah" name="jumlah[]" id="jumlah_' + itemCounter + '" value="" oninput="updateTotal(' + itemCounter + ')">' +
         '   </div>' +
         '</td>' +
-        '<td>' +
+        '<td onclick="showCategoryModal(' + itemCounter + ')">' +
         '   <div class="form-group">' +
         '       <input style="font-size:14px" type="number" class="form-control total" name="total[]" id="total_' + itemCounter + '" value="" readonly>' +
         '   </div>' +
@@ -558,12 +631,11 @@ function addRow() {
     }
 }
 
-function reIndexRows() {
-    // Fungsi ini untuk memastikan nomor urut di tabel tetap benar setelah menambah atau menghapus row
-    $('.urutan').each(function(index, element) {
-        $(element).text(index + 1);
-    });
+function showCategoryModal(rowIndex) {
+    currentEditingRow = rowIndex;  // Simpan indeks baris yang sedang diedit
+    $('#tableProduk').modal('show');
 }
+
 
 
 function reIndexRows() {
@@ -573,47 +645,25 @@ function reIndexRows() {
 }
 
 
-    function fetchProductData(rowId) {
-        var kodeLama = document.getElementById('kode_lama_' + rowId).value;
-        var namaProduk = document.getElementById('nama_produk_' + rowId).value;
 
-        // Tentukan data yang akan dikirim, prioritas untuk kode_lama
-        var requestData = {};
-
-        if (kodeLama) {
-            requestData = { kode_lama: kodeLama };
-        } else if (namaProduk) {
-            requestData = { nama_produk: namaProduk };
-        } else {
-            alert('Silakan isi kode lama atau nama produk.');
-            return;
-        }
-
-        // Kosongkan input sebelum pencarian baru
-        document.getElementById('produk_id_' + rowId).value = '';
-        document.getElementById('kode_produk_' + rowId).value = '';
-        document.getElementById('nama_produk_' + rowId).value = '';
-        document.getElementById('harga_' + rowId).value = '';
-        document.getElementById('kode_lama_' + rowId).value = '';
-
-        $.ajax({
-            url: '{{ route("toko_banjaran.penjualan_produk.fetchProductData") }}', // Sesuaikan dengan rute Anda
-            method: 'GET',
-            data: requestData,
-            success: function(response) {
-                // Update semua kolom dengan data yang diterima dari server
-                document.getElementById('produk_id_' + rowId).value = response.produk_id;
-                document.getElementById('kode_produk_' + rowId).value = response.kode_produk;
-                document.getElementById('nama_produk_' + rowId).value = response.nama_produk;
-                document.getElementById('kode_lama_' + rowId).value = response.kode_lama; // Tambahkan ini untuk mengisi kode_lama
-                document.getElementById('harga_' + rowId).value = response.harga;
-                updateTotal(rowId);
-            },
-            error: function(xhr) {
-                alert('Data tidak ditemukan.');
-            }
-        });
-    }
+    // function fetchProductData(rowId) {
+    //     var kodeLama = document.getElementById('kode_lama_' + rowId).value;
+    //     $.ajax({
+    //         url: '{{ route("toko_banjaran.penjualan_produk.fetchProductData") }}', // Sesuaikan dengan rute Anda
+    //         method: 'GET',
+    //         data: { kode_lama: kodeLama },
+    //         success: function(response) {
+    //             document.getElementById('produk_id_' + rowId).value = response.produk_id;
+    //             document.getElementById('kode_produk_' + rowId).value = response.kode_produk;
+    //             document.getElementById('nama_produk_' + rowId).value = response.nama_produk;
+    //             document.getElementById('harga_' + rowId).value = response.harga;
+    //             updateTotal(rowId);
+    //         },
+    //         error: function(xhr) {
+    //             alert('Data tidak ditemukan.');
+    //         }
+    //     });
+    // }
 
     function updateTotal(rowId) {
     var harga = parseFloat(document.getElementById('harga_' + rowId).value) || 0;
@@ -648,6 +698,33 @@ function updateGrandTotal() {
         });
     }
 </script>
+
+<script>
+     $(document).on('click', '.pilih-btn', function() {
+    // Ambil data dari atribut `data-*` di tombol yang diklik
+    var produk_id = $(this).data('id');
+    var kode_produk = $(this).data('kode');
+    var kode_lama = $(this).data('lama');
+    var nama_produk = $(this).data('nama');
+    var harga_member = $(this).data('member');
+    var diskon_member = $(this).data('diskonmember');
+
+    // Isi data tersebut ke dalam input field di baris yang sedang diisi
+    if (currentEditingRow !== null) {
+        $('#produk_id_' + currentEditingRow).val(produk_id);
+        $('#kode_produk_' + currentEditingRow).val(kode_produk);
+        $('#kode_lama_' + currentEditingRow).val(kode_lama);
+        $('#nama_produk_' + currentEditingRow).val(nama_produk);
+        $('#harga_' + currentEditingRow).val(harga_member);
+    }
+
+    // Tutup modal setelah memilih produk
+    $('#tableProduk').modal('hide');
+});
+
+
+</script>
+
 
 
     <script>
@@ -756,7 +833,20 @@ function updateGrandTotal() {
             });
         });
     </script>
-    
+    <script>
+               $(document).ready(function() {
+                // Inisialisasi datatables
+                var produkTable = $('#datatables5').DataTable();
+
+        
+                $('#tableProduk').on('shown.bs.modal', function () {
+                    produkTable.columns.adjust().draw();
+                });
+            });
+        
+
+
+    </script>
     
     
     <script>
@@ -806,6 +896,17 @@ function updateGrandTotal() {
             }
         });
     </script>
+
+<script>
+    // Cek apakah session refresh ada, lalu lakukan refresh halaman
+    @if(session('refresh'))
+        window.onload = function() {
+            setTimeout(function() {
+                location.reload();
+            }, 3000);  // Lakukan refresh setelah 3 detik
+        };
+    @endif
+</script>
 
 
 @endsection

@@ -680,10 +680,10 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::get('/search-product', [PenjualanproduktegalController::class, 'searchProduct']);
 
 
-    Route::resource('pelunasan_pemesanan', \App\Http\Controllers\Toko_tegal\PelunasanpemesananTglController::class);
-    Route::get('/toko_tegal/pelunasan_pemesanan/cetak-pdf{id}', [PelunasanpemesananTglController::class, 'cetakPdf'])->name('toko_tegal.pelunasan_pemesanan.cetak-pdf');
-    Route::get('/pelunasan-pemesanan/cetak/{id}', [PelunasanpemesananTglController::class, 'cetak'])->name('toko_tegal.pelunasan_pemesanan.cetak');
-    Route::get('/pelunasan_pemesanan', [PelunasanPemesananTglController::class, 'index'])->name('toko_tegal.pelunasan_pemesanan.index');
+    Route::resource('pelunasan_pemesananTgl', \App\Http\Controllers\Toko_tegal\PelunasanpemesananTglController::class);
+    Route::get('/toko_tegal/pelunasan_pemesananTgl/cetak-pdf{id}', [PelunasanpemesananTglController::class, 'cetakPdf'])->name('toko_tegal.pelunasan_pemesananTgl.cetak-pdf');
+    Route::get('/pelunasan-pemesananTgl/cetak/{id}', [PelunasanpemesananTglController::class, 'cetak'])->name('toko_tegal.pelunasan_pemesananTgl.cetak');
+    Route::get('/pelunasan_pemesananTgl', [PelunasanPemesananTglController::class, 'index'])->name('toko_tegal.pelunasan_pemesananTgl.index');
 
     Route::resource('inquery_penjualanproduktegal', \App\Http\Controllers\Toko_tegal\Inquery_penjualanproduktegalController::class);
     Route::get('/toko_tegal/inquery_penjualanproduktegal', [Inquery_penjualanprodukbanjaranController::class, 'index'])->name('toko_tegal.inquery_penjualanproduk.index');

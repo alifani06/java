@@ -367,7 +367,7 @@
                         </tr>  
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kekurangan</strong></td>
-                            <td style="font-size: 8px;">
+                            <td style="font-size: 8px; text-align: right;">
                                 {{ in_array($inquery->dppemesanan->kekurangan_pemesanan, [null, 0, 1]) ? '-' : number_format($inquery->dppemesanan->kekurangan_pemesanan, 0, ',', '.') }}
                             </td>
                         </tr> 
@@ -388,13 +388,13 @@
                         @endif
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Bayar</strong></td>
-                            <td style="font-size: 8px;">
+                            <td style="font-size: 8px; text-align: right;">
                                 {{ in_array($inquery->pelunasan, [null, 0, 1]) ? '-' : number_format($inquery->pelunasan, 0, ',', '.') }}
                             </td>
                         </tr> 
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kembali</strong></td>
-                            <td style="font-size: 8px;">
+                            <td style="font-size: 8px; text-align: right;">
                                 {{ in_array($inquery->kembali, [null, 0, 1]) ? '-' : number_format($inquery->kembali, 0, ',', '.') }}
                             </td>
                         </tr> 

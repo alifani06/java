@@ -50,7 +50,7 @@ class PelunasanpemesananTglController extends Controller
     //         ->orderBy('kode_penjualan', 'asc')   
     //         ->get();
     
-    //     return view('toko_tegal.pelunasan_pemesanan.index', compact('inquery'));
+    //     return view('toko_tegal.pelunasan_pemesananTgl.index', compact('inquery'));
     // }
     public function index()
 {
@@ -62,7 +62,7 @@ class PelunasanpemesananTglController extends Controller
         ->orderBy('kode_penjualan', 'asc')   
         ->get();
 
-    return view('toko_tegal.pelunasan_pemesanan.index', compact('inquery'));
+    return view('toko_tegal.pelunasan_pemesananTgl.index', compact('inquery'));
 }
 
     
@@ -82,7 +82,6 @@ class PelunasanpemesananTglController extends Controller
 
     public function create()
     {
-
         $barangs = Barang::all();
         $pelanggans = Pelanggan::all();
         $details = Detailbarangjadi::all();
@@ -91,13 +90,36 @@ class PelunasanpemesananTglController extends Controller
         $dppemesanans = Dppemesanan::all();
         $pemesananproduks = Pemesananproduk::all();
         $metodes = Metodepembayaran::all();
+        
+        // Filter produk berdasarkan nama klasifikasi
+        $produks = Produk::with(['tokotegal', 'klasifikasi'])
+                    ->whereHas('klasifikasi', function($query) {
+                        $query->whereIn('nama', ['FREE MAINAN', 'FREE PACKAGING', 'BAKERY']);
+                    })
+                    ->get();
     
-        $produks = Produk::with('tokotegal')->get();
-
         $kategoriPelanggan = 'member';
-    
-        return view('toko_tegal.pelunasan_pemesanan.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
+        
+        return view('toko_tegal.pelunasan_pemesananTgl.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
     }
+    // public function create()
+    // {
+
+    //     $barangs = Barang::all();
+    //     $pelanggans = Pelanggan::all();
+    //     $details = Detailbarangjadi::all();
+    //     $tokoslawis = Tokoslawi::all();
+    //     $tokos = Toko::all();
+    //     $dppemesanans = Dppemesanan::all();
+    //     $pemesananproduks = Pemesananproduk::all();
+    //     $metodes = Metodepembayaran::all();
+    
+    //     $produks = Produk::with('tokotegal')->get();
+
+    //     $kategoriPelanggan = 'member';
+    
+    //     return view('toko_tegal.pelunasan_pemesananTgl.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
+    // }
 
    
     public function getCustomerByKode($kode)
@@ -191,7 +213,6 @@ class PelunasanpemesananTglController extends Controller
         $newCode = $prefix . $monthDay . $year . $formattedNum;
         return $newCode;
     }
-
 
 
     // public function store(Request $request)
@@ -296,7 +317,7 @@ class PelunasanpemesananTglController extends Controller
     //         // Kurangi stok berdasarkan klasifikasi_id atau kode_lama
     //         if ($produk) {
     //             if (in_array($produk->klasifikasi_id, [15, 16]) || ($produk->klasifikasi_id == 13 && $detail->kode_lama == 'KU001')) {
-
+    
     //                 $stok = Stok_tokotegal::where('produk_id', $detail->produk_id)->first();
     //             } else {
     //                 // Jika tidak, kurangi stok dari stokpesanan_tokobanjaran
@@ -324,20 +345,9 @@ class PelunasanpemesananTglController extends Controller
     //         }
     //     }
     
-    //     // Ambil detail pelunasan untuk ditampilkan di halaman cetak
-    //     $details = DetailPenjualanProduk::where('penjualanproduk_id', $penjualan->id)->get();
-    
-    //     // Kirimkan URL untuk tab baru
-    //     $pdfUrl = route('toko_tegal.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id]);
-    
-    //     // Return response dengan URL PDF
-    //     return response()->json([
-    //         'success' => 'Transaksi Berhasil',
-    //         'pelunasan' => $pelunasan,
-    //         'penjualan' => $penjualan,
-    //         'details' => $details,
-    //         'pdfUrl' => $pdfUrl,
-    //     ]);
+    //     // Redirect ke halaman cetak PDF setelah transaksi berhasil
+    //     return redirect()->route('toko_tegal.pelunasan_pemesananTgl.cetak-pdf', ['id' => $pelunasan->id])
+    //         ->with('success', 'Transaksi berhasil disimpan, halaman cetak akan segera tampil.');
     // }
     public function store(Request $request)
     {
@@ -438,42 +448,47 @@ class PelunasanpemesananTglController extends Controller
             // Ambil klasifikasi produk
             $produk = Produk::find($detail->produk_id);
     
-            // Kurangi stok berdasarkan klasifikasi_id atau kode_lama
-            if ($produk) {
-                if (in_array($produk->klasifikasi_id, [15, 16]) || ($produk->klasifikasi_id == 13 && $detail->kode_lama == 'KU001')) {
-    
-                    $stok = Stok_tokotegal::where('produk_id', $detail->produk_id)->first();
+                 // Kurangi stok berdasarkan klasifikasi_id atau kode_lama
+        if ($produk) {
+            if (in_array($produk->klasifikasi_id, [15, 16]) || 
+                ($produk->klasifikasi_id == 13 && in_array($produk->kode_lama, ['KU001', 'M0002']))
+            ) {
+                // Pengurangan stok untuk stok_tokobanjaran
+                $stok = Stok_tokotegal::where('produk_id', $detail->produk_id)->first();
+            } else {
+                // Jika tidak, kurangi stok dari stokpesanan_tokobanjaran
+                $stok = Stokpesanan_tokotegal::where('produk_id', $detail->produk_id)->first();
+            }
+
+            if ($stok) {
+                // Kurangi stok tanpa memeriksa apakah stok mencukupi
+                $stok->jumlah -= $detail->jumlah;
+                $stok->save();
+            } else {
+                // Jika stok tidak ditemukan, buat stok baru dengan nilai negatif
+                if (in_array($produk->klasifikasi_id, [15, 16]) || 
+                    ($produk->klasifikasi_id == 13 && in_array($detail->kode_lama, ['KU001', 'M0002']))
+                ) {
+                    Stok_tokotegal::create([
+                        'produk_id' => $detail->produk_id,
+                        'jumlah' => -$detail->jumlah,
+                    ]);
                 } else {
-                    // Jika tidak, kurangi stok dari stokpesanan_tokobanjaran
-                    $stok = Stokpesanan_tokotegal::where('produk_id', $detail->produk_id)->first();
-                }
-    
-                if ($stok) {
-                    // Kurangi stok tanpa memeriksa apakah stok mencukupi
-                    $stok->jumlah -= $detail->jumlah;
-                    $stok->save();
-                } else {
-                    // Jika stok tidak ditemukan, buat stok baru dengan nilai negatif
-                    if (in_array($produk->klasifikasi_id, [15, 16]) || ($produk->klasifikasi_id == 13 && $detail->kode_lama == 'KU001')) {
-                        Stok_tokotegal::create([
-                            'produk_id' => $detail->produk_id,
-                            'jumlah' => -$detail->jumlah,
-                        ]);
-                    } else {
-                        Stokpesanan_tokotegal::create([
-                            'produk_id' => $detail->produk_id,
-                            'jumlah' => -$detail->jumlah,
-                        ]);
-                    }
+                    Stokpesanan_tokotegal::create([
+                        'produk_id' => $detail->produk_id,
+                        'jumlah' => -$detail->jumlah,
+                    ]);
                 }
             }
         }
+
+        }
+    
     
         // Redirect ke halaman cetak PDF setelah transaksi berhasil
-        return redirect()->route('toko_tegal.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id])
+        return redirect()->route('toko_tegal.pelunasan_pemesananTgl.cetak-pdf', ['id' => $pelunasan->id])
             ->with('success', 'Transaksi berhasil disimpan, halaman cetak akan segera tampil.');
     }
-    
 
     
     public function cetak($id)
@@ -489,7 +504,7 @@ class PelunasanpemesananTglController extends Controller
         $tokos = $inquery->toko;
     
         // Mengirim data ke view
-        return view('toko_tegal/pelunasan_pemesanan/cetak', compact('inquery', 'tokos', 'pelanggans'));
+        return view('toko_tegal/pelunasan_pemesananTgl/cetak', compact('inquery', 'tokos', 'pelanggans'));
     }
 
     public function cetakpelunasan($id)
@@ -521,7 +536,7 @@ class PelunasanpemesananTglController extends Controller
         // Mengakses toko dari $inquery yang sekarang menjadi instance model
         $tokos = $inquery->toko;
         
-        $pdf = FacadePdf::loadView('toko_tegal.pelunasan_pemesanan.cetak-pdf', compact('inquery', 'tokos', 'pelanggans', 'kode_dppemesanan'));
+        $pdf = FacadePdf::loadView('toko_tegal.pelunasan_pemesananTgl.cetak-pdf', compact('inquery', 'tokos', 'pelanggans', 'kode_dppemesanan'));
         $pdf->setPaper('a4', 'portrait');
         
         return $pdf->stream('pelunasan.pdf');
@@ -542,7 +557,7 @@ class PelunasanpemesananTglController extends Controller
         $tokos = $inquery->toko;
     
         // Mengirim data ke view
-        return view('toko_tegal/pelunasan_pemesanan/cetak', compact('inquery', 'tokos', 'pelanggans'));
+        return view('toko_tegal/pelunasan_pemesananTgl/cetak', compact('inquery', 'tokos', 'pelanggans'));
     }
     
     

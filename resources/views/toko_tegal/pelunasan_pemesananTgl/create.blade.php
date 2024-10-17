@@ -74,7 +74,7 @@
                 </div>
             @endif
         
-            <form  action="{{ url('toko_tegal/pelunasan_pemesanan') }}" method="POST" enctype="multipart/form-data"
+            <form  action="{{ url('toko_tegal/pelunasan_pemesananTgl') }}" method="POST" enctype="multipart/form-data"
                 autocomplete="off">
                 @csrf
                 <div class="card">
@@ -576,7 +576,9 @@
         });
     }
 
-    function addRow() {
+    var currentEditingRow = null; // Variabel global untuk melacak baris yang sedang diedit
+
+function addRow() {
     itemCounter++;
     var isFirstRow = itemCounter === 1;
     var newRow = '<tr id="row-' + (itemCounter + 1) + '"' + (isFirstRow ? ' style="display: none;"' : '') + '>' +
@@ -590,17 +592,17 @@
         '<td hidden>' +
         '   <input hidden style="font-size:14px" type="text" class="form-control diskon" name="diskon[]" id="diskon_' + itemCounter + '" value="">' +
         '</td>' +
-        '<td>' +
+        '<td onclick="showCategoryModal(' + itemCounter + ')">' +
         '   <div class="form-group">' +
-        '       <input style="font-size:14px" type="text" class="form-control kode_lama" name="kode_lama[]" id="kode_lama_' + itemCounter + '" value="" onblur="fetchProductData(' + itemCounter + ')">' +
+        '       <input style="font-size:14px" type="text" class="form-control kode_lama" name="kode_lama[]" id="kode_lama_' + itemCounter + '" value="" readonly>' +
         '   </div>' +
         '</td>' +
-        '<td>' +
+        '<td onclick="showCategoryModal(' + itemCounter + ')">' +
         '   <div class="form-group">' +
         '       <input style="font-size:14px" type="text" class="form-control nama_produk" name="nama_produk[]" id="nama_produk_' + itemCounter + '" value="" readonly>' +
         '   </div>' +
         '</td>' +
-        '<td>' +
+        '<td onclick="showCategoryModal(' + itemCounter + ')">' +
         '   <div class="form-group">' +
         '       <input style="font-size:14px" type="text" class="form-control harga" name="harga[]" id="harga_' + itemCounter + '" value="" readonly>' +
         '   </div>' +
@@ -610,7 +612,7 @@
         '       <input style="font-size:14px" type="number" class="form-control jumlah" name="jumlah[]" id="jumlah_' + itemCounter + '" value="" oninput="updateTotal(' + itemCounter + ')">' +
         '   </div>' +
         '</td>' +
-        '<td>' +
+        '<td onclick="showCategoryModal(' + itemCounter + ')">' +
         '   <div class="form-group">' +
         '       <input style="font-size:14px" type="number" class="form-control total" name="total[]" id="total_' + itemCounter + '" value="" readonly>' +
         '   </div>' +
@@ -629,6 +631,13 @@
     }
 }
 
+function showCategoryModal(rowIndex) {
+    currentEditingRow = rowIndex;  // Simpan indeks baris yang sedang diedit
+    $('#tableProduk').modal('show');
+}
+
+
+
 function reIndexRows() {
     $('.urutan').each(function(index) {
         $(this).text(index + 1);
@@ -637,24 +646,24 @@ function reIndexRows() {
 
 
 
-    function fetchProductData(rowId) {
-        var kodeLama = document.getElementById('kode_lama_' + rowId).value;
-        $.ajax({
-            url: '{{ route("toko_tegal.penjualan_produk.fetchProductData") }}', // Sesuaikan dengan rute Anda
-            method: 'GET',
-            data: { kode_lama: kodeLama },
-            success: function(response) {
-                document.getElementById('produk_id_' + rowId).value = response.produk_id;
-                document.getElementById('kode_produk_' + rowId).value = response.kode_produk;
-                document.getElementById('nama_produk_' + rowId).value = response.nama_produk;
-                document.getElementById('harga_' + rowId).value = response.harga;
-                updateTotal(rowId);
-            },
-            error: function(xhr) {
-                alert('Data tidak ditemukan.');
-            }
-        });
-    }
+    // function fetchProductData(rowId) {
+    //     var kodeLama = document.getElementById('kode_lama_' + rowId).value;
+    //     $.ajax({
+    //         url: '{{ route("toko_tegal.penjualan_produk.fetchProductData") }}', // Sesuaikan dengan rute Anda
+    //         method: 'GET',
+    //         data: { kode_lama: kodeLama },
+    //         success: function(response) {
+    //             document.getElementById('produk_id_' + rowId).value = response.produk_id;
+    //             document.getElementById('kode_produk_' + rowId).value = response.kode_produk;
+    //             document.getElementById('nama_produk_' + rowId).value = response.nama_produk;
+    //             document.getElementById('harga_' + rowId).value = response.harga;
+    //             updateTotal(rowId);
+    //         },
+    //         error: function(xhr) {
+    //             alert('Data tidak ditemukan.');
+    //         }
+    //     });
+    // }
 
     function updateTotal(rowId) {
     var harga = parseFloat(document.getElementById('harga_' + rowId).value) || 0;
@@ -690,6 +699,31 @@ function updateGrandTotal() {
     }
 </script>
 
+<script>
+     $(document).on('click', '.pilih-btn', function() {
+    // Ambil data dari atribut `data-*` di tombol yang diklik
+    var produk_id = $(this).data('id');
+    var kode_produk = $(this).data('kode');
+    var kode_lama = $(this).data('lama');
+    var nama_produk = $(this).data('nama');
+    var harga_member = $(this).data('member');
+    var diskon_member = $(this).data('diskonmember');
+
+    // Isi data tersebut ke dalam input field di baris yang sedang diisi
+    if (currentEditingRow !== null) {
+        $('#produk_id_' + currentEditingRow).val(produk_id);
+        $('#kode_produk_' + currentEditingRow).val(kode_produk);
+        $('#kode_lama_' + currentEditingRow).val(kode_lama);
+        $('#nama_produk_' + currentEditingRow).val(nama_produk);
+        $('#harga_' + currentEditingRow).val(harga_member);
+    }
+
+    // Tutup modal setelah memilih produk
+    $('#tableProduk').modal('hide');
+});
+
+
+</script>
 
 
 

@@ -90,8 +90,11 @@ class PelunasanpemesananController extends Controller
         $pemesananproduks = Pemesananproduk::all();
         $metodes = Metodepembayaran::all();
     
-        $produks = Produk::with('tokobanjaran')->get();
-
+        $produks = Produk::with(['tokobanjaran', 'klasifikasi'])
+        ->whereHas('klasifikasi', function($query) {
+            $query->whereIn('nama', ['FREE MAINAN', 'FREE PACKAGING', 'BAKERY']);
+        })
+        ->get();
         $kategoriPelanggan = 'member';
     
         return view('toko_banjaran.pelunasan_pemesanan.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
@@ -292,8 +295,10 @@ class PelunasanpemesananController extends Controller
     
             // Kurangi stok berdasarkan klasifikasi_id atau kode_lama
             if ($produk) {
-                if (in_array($produk->klasifikasi_id, [15, 16]) || ($produk->klasifikasi_id == 13 && $detail->kode_lama == 'KU001')) {
-
+                if (in_array($produk->klasifikasi_id, [15, 16]) || 
+                    ($produk->klasifikasi_id == 13 && in_array($produk->kode_lama, ['KU001', 'M0002']))
+                ) {
+                    // Pengurangan stok untuk stok_tokobanjaran
                     $stok = Stok_tokobanjaran::where('produk_id', $detail->produk_id)->first();
                 } else {
                     // Jika tidak, kurangi stok dari stokpesanan_tokobanjaran
@@ -306,7 +311,9 @@ class PelunasanpemesananController extends Controller
                     $stok->save();
                 } else {
                     // Jika stok tidak ditemukan, buat stok baru dengan nilai negatif
-                    if (in_array($produk->klasifikasi_id, [15, 16]) || ($produk->klasifikasi_id == 13 && $detail->kode_lama == 'KU001')) {
+                    if (in_array($produk->klasifikasi_id, [15, 16]) || 
+                        ($produk->klasifikasi_id == 13 && in_array($detail->kode_lama, ['KU001', 'M0002']))
+                    ) {
                         Stok_tokobanjaran::create([
                             'produk_id' => $detail->produk_id,
                             'jumlah' => -$detail->jumlah,
@@ -326,7 +333,9 @@ class PelunasanpemesananController extends Controller
     
 
         return redirect()->route('toko_banjaran.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id])
-        ->with('success', 'Transaksi berhasil disimpan, halaman cetak akan segera tampil.');
+        ->with('success', 'Transaksi berhasil disimpan, halaman cetak akan segera tampil.')
+        ->with('refresh', true);  // Menambahkan session refresh
+    
     }
     
     public function cetak($id)
