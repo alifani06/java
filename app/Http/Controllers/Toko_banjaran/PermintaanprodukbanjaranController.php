@@ -100,7 +100,7 @@ class PermintaanprodukbanjaranController extends Controller{
 
     public function kode()
     {
-        $prefix = 'JL';
+        $prefix = 'JLC';
         $year = date('y'); // Dua digit terakhir dari tahun
         $monthDay = date('dm'); // Format bulan dan hari: MMDD
     
@@ -118,7 +118,7 @@ class PermintaanprodukbanjaranController extends Controller{
             $num = $lastNum + 1;
         }
     
-        $formattedNum = sprintf("%02d", $num); 
+        $formattedNum = sprintf("%03d", $num); 
         $newCode = $prefix . $monthDay . $year . $formattedNum;
         return $newCode;
     }

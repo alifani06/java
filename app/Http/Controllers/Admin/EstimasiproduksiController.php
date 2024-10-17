@@ -102,47 +102,6 @@ class EstimasiproduksiController extends Controller{
 }
 
 
-    // public function store(Request $request)
-    // {
-    //     // Validasi input
-    //     $request->validate([
-    //         'jumlah' => 'required|array',
-    //         'produk_id' => 'required|array',
-    //         'produk_id.*' => 'exists:produk,id', // pastikan produk_id ada di tabel produk
-    //     ]);
-    
-    //     // Generate a new kode_permintaan
-    //     $kode = $this->kode();
-        
-    //     // Create the main PermintaanProduk entry
-    //     $estimasiproduksi = Estimasiproduksi::create([
-    //         'kode_estimasi' => $kode,
-    //         'qrcode_estimasi' => 'https://javabakery.id/estimasi_produksi/' . $kode,
-    //     ]);
-    
-    //     // Ambil data produk dan jumlah
-    //     $produkIds = $request->input('produk_id', []);
-    //     $jumlahs = $request->input('jumlah', []);
-    
-    //     // Simpan detail produk
-    //     foreach ($produkIds as $index => $produkId) {
-    //         $jumlah = $jumlahs[$index] ?? null; // Ambil jumlah sesuai dengan index produk
-    
-    //         if (!is_null($jumlah) && $jumlah !== '') {
-    //             Detailestimasiproduksi::create([
-    //                 'estimasiproduksi_id' => $estimasiproduksi->id,
-    //                 'produk_id' => $produkId,
-    //                 'toko_id' => '1', // ganti sesuai dengan logika bisnis
-    //                 'jumlah' => $jumlah,
-    //                 'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
-    //             ]);
-    //         }
-    //     }
-    
-    //     return redirect()->route('estimasi_produksi.index')->with('success', 'Berhasil menambahkan estimasi produksi');
-    // }
-
-
     public function kode()
     {
         $prefix = 'JE';
@@ -380,7 +339,7 @@ class EstimasiproduksiController extends Controller{
                     'permintaanproduk_id' => $permintaanProduk->id,
                     'produk_id' => $data_pesanan['produk_id'],
                     'jumlah' => $data_pesanan['jumlah'],
-                    'toko_id' => 1,
+                    'toko_id' => 2,
                     'tanggal_permintaan' => Carbon::now('Asia/Jakarta'),
                     'status' => 'unpost',
                 ]);
@@ -411,7 +370,7 @@ class EstimasiproduksiController extends Controller{
                 'estimasiproduksi_id' => $estimasiProduksi->id,
                 'produk_id' => $produk1_id,
                 'jumlah' => $jumlah1,
-                'toko_id' => 1,
+                'toko_id' => 2,
                 'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
                 'status' => 'unpost',
                 'kode_lama' => $produk1->kode_lama, // Ambil kode lama dari produk
@@ -434,7 +393,7 @@ class EstimasiproduksiController extends Controller{
                 'estimasiproduksi_id' => $estimasiProduksi->id,
                 'produk_id' => $produk_id,
                 'jumlah' => $jumlah,
-                'toko_id' => 1,
+                'toko_id' => 2,
                 'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
                 'status' => 'unpost',
                 'kode_lama' => $produk->kode_lama, // Ambil kode lama dari produk
