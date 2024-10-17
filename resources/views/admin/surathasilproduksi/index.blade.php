@@ -88,7 +88,17 @@
                                     value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
-                            
+                            {{-- <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="toko" name="toko_id" onchange="document.getElementById('form-action').submit();">
+                                    <option value="">- Semua Toko -</option>
+                                    @foreach ($tokos as $toko)
+                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>
+                                            {{ $toko->nama_toko }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <label for="toko">(Pilih Toko)</label>
+                            </div> --}}
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="klasifikasi" name="klasifikasi_id" onchange="filterProduk()">
                                     <option value="">- Semua Divisi -</option>
@@ -112,6 +122,8 @@
 
                     <form method="POST" action="{{ route('saveRealisasi') }}"> <!-- Form untuk simpan realisasi -->
                         @csrf
+                        <input type="hidden" id="toko_id" name="toko_id" value="{{ Request::get('toko_id') }}">
+
                         <table id="data" class="table table-bordered" style="font-size: 13px">
                             <thead>
                                 <tr>
@@ -147,7 +159,7 @@
                                             </td>
                                             
                                             <td>
-                                                <input type="number" name="realisasi[{{ $detail->produk_id }}]" class="form-control form-control-sm" style="width: 80px;"  />
+                                                <input type="number" name="realisasi[{{ $detail->produk_id }}]" class="form-control form-control-sm" style="width: 80px;" value="{{ $detail->jumlah }}"  />
                                             </td>
                                         </tr>
                                     @endif

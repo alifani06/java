@@ -66,25 +66,10 @@
             padding: 6px;
             border: 1px solid #ccc;
             text-align: left;
-            width: 20%; /* Atur lebar kolom ke nilai persentase yang sesuai */
         }
         th {
             background-color: #f2f2f2;
         }
-        table th:nth-child(1),
-        table td:nth-child(1) { width: 10%; } /* Lebar untuk kolom No */
-
-        table th:nth-child(2),
-        table td:nth-child(2) { width: 25%; } /* Lebar untuk kolom Divisi */
-
-        table th:nth-child(3),
-        table td:nth-child(3) { width: 25%; } /* Lebar untuk kolom Kode Produk */
-
-        table th:nth-child(4),
-        table td:nth-child(4) { width: 30%; } /* Lebar untuk kolom Produk */
-
-        table th:nth-child(5),
-        table td:nth-child(5) { width: 10%; } /* Lebar untuk kolom Jumlah */
         .signature-container {
             margin-top: 60px;
             text-align: center;
@@ -114,38 +99,30 @@
             </div>
             <div>
                 <span class="title">PT JAVA BAKERY FACTORY</span><br>
-                {{-- @if($toko)
-                <span class="toko-name">Cabang: {{ $toko->nama_toko }}</span><br>
-                <span class="address">{{$toko->alamat}}</span><br>
-                @endif --}}
-
+                <span class="address">JL. HOS COKRO AMINOTO NO 5 SLAWI TEGAL</span><br>
+                <span class="contact">Telp / Fax, Email :</span>
             </div>
             <br>
             <hr class="divider">
         </div>
 
         <!-- Judul Surat -->
-        <div class="change-header">SURAT HASIL PRODUK</div>
+        <div class="change-header">SURAT STOK BARANG JADI</div>
 
-
+        <!-- Informasi Permintaan -->
         <div>
             <p>
-                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>No.Hasil Produksi</strong></span>
-                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->kode_hasilproduksi }}</span>
+                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Permintaan</strong></span>
+                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $detailStokBarangJadi->first()->kode_input }}</span>
             </p>
             <p>
                 <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal</strong> </span>
-                <span style="min-width: 50px; display: inline-flex; align-items: center;">
-                    : {{ \Carbon\Carbon::parse($permintaanProduk->tanggal_hasilproduksi)->format('d-m-Y H:i') }}
-                </span>
+                <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ \Carbon\Carbon::now()->format('d-m-Y') }}</span>
             </p>
-          
+            
         </div>
 
-       
-        @foreach ($produkByDivisi as $divisi => $produks)
-        <div class="section-title">{{ $divisi }}</div>
-        
+        <!-- Detail Produk -->
         <table>
             <thead>
                 <tr>
@@ -154,61 +131,40 @@
                     <th>Kategori</th>
                     <th>Produk</th>
                     <th>Jumlah</th>
-                    <th>Realisasi</th>
                 </tr>
             </thead>
             <tbody>
-                @php
-                $no = 1; 
-                @endphp
-                @foreach ($produks->groupBy(function($item) {
-                    return $item->produk->subklasifikasi->nama; 
-                    }) as $subklasifikasi => $produkList)
-                        @foreach ($produkList as $detail)
-                            <tr>
-                                <td>{{ $no++ }}</td> 
-                                <td>{{ $detail->produk->kode_lama }}</td>
-                                <td>{{ $subklasifikasi }}</td>
-                                <td>{{ $detail->produk->nama_produk }}</td>
-                                <td>{{ $detail->jumlah }}</td>
-                                <td>{{ $detail->realisasi }}</td>
-                            </tr>
-                        @endforeach
-
+                @foreach($detailStokBarangJadi as $key => $detail)
+                <tr>
+                    <td>{{ $key + 1 }}</td> 
+                    <td>{{ $detail->produk->kode_produk }}</td>
+                    <td>{{ $detail->produk->subklasifikasi->nama }}</td>
+                    <td>{{ $detail->produk->nama_produk }}</td>
+                    <td>{{ $detail->stok }}</td>
+                </tr>
                 @endforeach
             </tbody>
-
             <tfoot>
-                <tr class="total-row">
-                    <td colspan="4">Total </td>
-                    <td>{{ $produks->sum('jumlah') }}</td>
-                    <td>{{ $produks->sum('realisasi') }}</td>
+                <tr>
+                    <td colspan="4" style="text-align:right;"><strong>Total</strong></td>
+                    <td><strong>{{ $detailStokBarangJadi->sum('stok') }}</strong></td>
                 </tr>
             </tfoot>
         </table><br>
-    @endforeach
-    
-
 
         <div class="d-flex justify-content-between">
             <div>
-                <a href="{{ url('admin/surat_hasilproduksi') }}" class="btn btn-primary btn-sm">
+                <a href="{{ url('admin/stok_barangjadi') }}" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus"></i> Kembali
                 </a>
             </div>
-            {{-- <div>
-                <a href="{{ route('permintaan_produk.print', $permintaanProduk->id) }}"  id="printButton" target="_blank" class="btn btn-primary btn-sm">
-                    <i class="fas fa-print"></i> Cetak 
-                </a>
-            </div> --}}
             <div>
-                <a href="{{ url('admin/hasilproduksi/' . $permintaanProduk->id . '/print') }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
+                <a href="{{ route('stok_barangjadi.print', $detailStokBarangJadi->first()->id) }}"  id="printButton" target="_blank" class="btn btn-primary btn-sm">
                     <i class="fas fa-print"></i> Cetak 
                 </a>
-            </div>
+            </div>  
         </div>
     </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
 </html>

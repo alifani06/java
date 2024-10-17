@@ -163,12 +163,13 @@
         
         <table >
             <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Kode Produk</th>
-                    <th>Kategori</th>
-                    <th>Produk</th>
-                    <th>Jumlah</th>
+                <tr style="text-align: center">
+                    <th style="text-align: center">No</th>
+                    <th style="text-align: center">Kode Produk</th>
+                    <th style="text-align: center">Kategori</th>
+                    <th style="text-align: center">Produk</th>
+                    <th style="text-align: center">Jumlah</th>
+                    <th style="text-align: center">Realisasi</th>
                 </tr>
             </thead>
             <tbody>
@@ -181,10 +182,11 @@
                         @foreach ($produkList as $detail)
                             <tr>
                                 <td>{{ $no++ }}</td> 
-                                <td>{{ $detail->produk->kode_produk }}</td>
+                                <td>{{ $detail->produk->kode_lama }}</td>
                                 <td>{{ $subklasifikasi }}</td>
                                 <td>{{ $detail->produk->nama_produk }}</td>
                                 <td style="text-align: right">{{ $detail->jumlah }}</td>
+                                <td style="text-align: right">{{ $detail->realisasi }}</td>
                             </tr>
                         @endforeach
                 @endforeach
@@ -194,6 +196,7 @@
                 <tr class="total-row">
                     <td colspan="4">Total </td>
                     <td style="text-align: right">{{ $produks->sum('jumlah') }}</td>
+                    <td style="text-align: right">{{ $produks->sum('realisasi') }}</td>
                 </tr>
             </tfoot>
         </table><br>
