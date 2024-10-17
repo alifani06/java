@@ -74,6 +74,9 @@ class Laporan_setoranpenjualantglController extends Controller
         // Filter berdasarkan kasir, hanya jika kasir dipilih
         if ($kasir) {
             $query->where('kasir', $kasir);
+        }else {
+            // Jika tidak memilih kasir, maka ambil data dengan toko_id = 1
+            $query->where('toko_id', 2);
         }
     
         // Urutkan data berdasarkan ID secara descending
@@ -88,6 +91,9 @@ class Laporan_setoranpenjualantglController extends Controller
         // Filter berdasarkan kasir, hanya jika kasir dipilih
         if ($kasir) {
             $penjualan_kotor->where('kasir', $kasir);
+        }else {
+            // Jika tidak memilih kasir, maka ambil data dengan toko_id = 1
+            $penjualan_kotor->where('toko_id', 2);
         }
     
         // Filter tanggal
@@ -104,6 +110,9 @@ class Laporan_setoranpenjualantglController extends Controller
             // Filter berdasarkan kasir jika ada
             if ($kasir) {
                 $q->where('kasir', $kasir);
+            }else {
+                // Jika tidak memilih kasir, maka ambil data dengan toko_id = 1
+                $q->where('toko_id', 2);
             }
         })->get()->sum(function ($detail) {
             $harga = (float)str_replace(['Rp.', '.'], '', $detail->harga); // Hapus "Rp." dan "."
@@ -126,6 +135,9 @@ class Laporan_setoranpenjualantglController extends Controller
             }
             if ($kasir) {
                 $q->where('kasir', $kasir);
+            }else {
+                // Jika tidak memilih kasir, maka ambil data dengan toko_id = 1
+                $q->where('toko_id', 2);
             }
         })->sum('dp_pemesanan');
     
@@ -140,6 +152,8 @@ class Laporan_setoranpenjualantglController extends Controller
             }
             if ($kasir) {
                 $q->where('kasir', $kasir);
+            }else {
+                $q->where('toko_id', 2);
             }
         })->sum('dp_pemesanan');
     
@@ -150,6 +164,8 @@ class Laporan_setoranpenjualantglController extends Controller
 
             if ($kasir) {
                 $queryPenjualan->where('kasir', $kasir);
+            }else {
+                $queryPenjualan->where('toko_id', 2);
             }
 
             if ($tanggal_penjualan && $tanggal_akhir) {
@@ -169,6 +185,8 @@ class Laporan_setoranpenjualantglController extends Controller
 
             if ($kasir) {
                 $queryPemesanan->where('kasir', $kasir);
+            }else {
+                $queryPemesanan->where('toko_id', 2);
             }
 
             if ($tanggal_penjualan && $tanggal_akhir) {
@@ -201,10 +219,12 @@ class Laporan_setoranpenjualantglController extends Controller
         $produks = Produk::all();
         $tokos = Toko::all();
         $klasifikasis = Klasifikasi::all();
+
         $kasirs = Penjualanproduk::select('kasir')
         ->where('toko_id', 2) 
         ->distinct()
         ->get();    
+
         // Hitung total metode dan setoran
         $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
         $total_setoran = $total_penjualan - $total_metode;
@@ -261,6 +281,9 @@ class Laporan_setoranpenjualantglController extends Controller
         // Filter berdasarkan kasir yang dipilih
         if ($kasir) {
             $query->where('kasir', $kasir);
+        }else {
+            // Jika tidak memilih kasir, maka ambil data dengan toko_id = 1
+            $query->where('toko_id', 2);
         }
 
         // Urutkan data berdasarkan ID secara descending
@@ -275,6 +298,9 @@ class Laporan_setoranpenjualantglController extends Controller
         // Filter berdasarkan kasir
         if ($kasir) {
             $penjualan_kotor->where('kasir', $kasir);
+        }else {
+            // Jika tidak memilih kasir, maka ambil data dengan toko_id = 1
+            $penjualan_kotor->where('toko_id', 2);
         }
 
         // Filter tanggal
@@ -291,6 +317,9 @@ class Laporan_setoranpenjualantglController extends Controller
             // Filter berdasarkan kasir jika ada
             if ($kasir) {
                 $q->where('kasir', $kasir);
+            }else {
+                // Jika tidak memilih kasir, maka ambil data dengan toko_id = 1
+                $q->where('toko_id', 2);
             }
         })->get()->sum(function ($detail) {
             $harga = (float)str_replace(['Rp.', '.'], '', $detail->harga); // Hapus "Rp." dan "."
@@ -313,6 +342,9 @@ class Laporan_setoranpenjualantglController extends Controller
             }
             if ($kasir) {
                 $q->where('kasir', $kasir);
+            }else {
+                // Jika tidak memilih kasir, maka ambil data dengan toko_id = 1
+                $q->where('toko_id', 2);
             }
         })->sum('dp_pemesanan');
 
@@ -327,6 +359,9 @@ class Laporan_setoranpenjualantglController extends Controller
             }
             if ($kasir) {
                 $q->where('kasir', $kasir);
+            }else {
+                // Jika tidak memilih kasir, maka ambil data dengan toko_id = 1
+                $q->where('toko_id', 2);
             }
         })->sum('dp_pemesanan');
 
@@ -363,6 +398,9 @@ class Laporan_setoranpenjualantglController extends Controller
 
             if ($kasir) {
                 $queryPemesanan->where('kasir', $kasir);
+            }else {
+                // Jika tidak memilih kasir, maka ambil data dengan toko_id = 1
+                $queryPemesanan->where('toko_id', 2);
             }
 
             if ($tanggal_penjualan && $tanggal_akhir) {
