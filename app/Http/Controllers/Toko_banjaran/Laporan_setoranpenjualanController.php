@@ -74,8 +74,10 @@ class Laporan_setoranpenjualanController extends Controller
         // Filter berdasarkan kasir, hanya jika kasir dipilih
         if ($kasir) {
             $query->where('kasir', $kasir);
+        } else {
+            // Jika tidak memilih kasir, maka ambil data dengan toko_id = 1
+            $query->where('toko_id', 1);
         }
-    
         // Urutkan data berdasarkan ID secara descending
         $query->orderBy('id', 'DESC');
     
