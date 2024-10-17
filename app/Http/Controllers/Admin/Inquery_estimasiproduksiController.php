@@ -34,6 +34,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
+use App\Models\Estimasiproduksi;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -126,7 +127,7 @@ public function index(Request $request)
     $tanggal_estimasi = $request->tanggal_estimasi;
     $tanggal_akhir = $request->tanggal_akhir;
 
-    $inquery = Permintaanproduk::query();
+    $inquery = Estimasiproduksi::query();
 
     if ($status) {
         $inquery->where('status', $status);
@@ -135,35 +136,46 @@ public function index(Request $request)
     if ($tanggal_estimasi && $tanggal_akhir) {
         $tanggal_estimasi = Carbon::parse($tanggal_estimasi)->startOfDay();
         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-        $inquery->whereHas('detailpermintaanproduks', function($query) use ($tanggal_estimasi, $tanggal_akhir) {
+        $inquery->whereHas('detailestimasiproduksi', function($query) use ($tanggal_estimasi, $tanggal_akhir) {
             $query->whereBetween('tanggal_estimasi', [$tanggal_estimasi, $tanggal_akhir]);
         });
     } elseif ($tanggal_estimasi) {
         $tanggal_estimasi = Carbon::parse($tanggal_estimasi)->startOfDay();
-        $inquery->whereHas('detailpermintaanproduks', function($query) use ($tanggal_estimasi) {
+        $inquery->whereHas('detailestimasiproduksi', function($query) use ($tanggal_estimasi) {
             $query->where('tanggal_estimasi', '>=', $tanggal_estimasi);
         });
     } elseif ($tanggal_akhir) {
         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-        $inquery->whereHas('detailpermintaanproduks', function($query) use ($tanggal_akhir) {
+        $inquery->whereHas('detailestimasiproduksi', function($query) use ($tanggal_akhir) {
             $query->where('tanggal_estimasi', '<=', $tanggal_akhir);
         });
     } else {
         // Jika tidak ada filter tanggal, ambil data hari ini
-        $inquery->whereHas('detailpermintaanproduks', function($query) {
+        $inquery->whereHas('detailestimasiproduksi', function($query) {
             $query->whereDate('tanggal_estimasi', Carbon::today());
         });
     }
 
     $inquery->orderBy('id', 'DESC');
 
-    // Menggunakan with untuk eager loading relasi detailpermintaanproduks dan toko
-    $permintaanProduks = $inquery->with(['detailpermintaanproduks', 'toko'])->get();
+    // Menggunakan with untuk eager loading relasi detailestimasiproduksi dan toko
+    $permintaanProduks = $inquery->with(['detailestimasiproduksi', 'toko'])->get();
 
-   return view('admin.inquery_estimasiproduksi. index', compact('permintaanProduks'));
+   return view('admin.inquery_estimasiproduksi.index', compact('permintaanProduks'));
 }
 
+public function destroy($id)
+{
+    $permintaanProduk = Estimasiproduksi::findOrFail($id);
 
+    // Hapus detail permintaan produk terkait
+    $permintaanProduk->detailestimasiproduksi()->delete();
+
+    // Hapus permintaan produk itu sendiri
+    $permintaanProduk->delete();
+
+    return redirect()->route('inquery_estimasiproduksi.index')->with('success', 'Permintaan produk dan detail terkait berhasil dihapus.');
+}
 
 
 }

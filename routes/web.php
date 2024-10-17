@@ -10,6 +10,7 @@ use App\Http\Controllers\KlasifikasiController;
 use App\Http\Controllers\Admin\AddpelangganController;
 use App\Http\Controllers\Admin\EstimasiproduksiController;
 use App\Http\Controllers\Admin\HargajualController;
+use App\Http\Controllers\Admin\Inquery_estimasiproduksiController;
 use App\Http\Controllers\Admin\Inquery_hasilpenjualanController;
 use App\Http\Controllers\Admin\Inquery_pemesananprodukController;
 use App\Http\Controllers\Admin\Inquery_pemindahanbarangjadiController;
@@ -359,6 +360,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
 
     Route::resource('inquery_estimasiproduksi', \App\Http\Controllers\Admin\Inquery_estimasiproduksiController::class);
+    Route::delete('admin/inquery_estimasiproduksi/{id}', [Inquery_estimasiproduksiController::class, 'destroy'])->name('admin.inquery_estimasiproduksi.destroy');
 
     Route::resource('laporan_estimasiproduksi', \App\Http\Controllers\Admin\Laporan_estimasiproduksiController::class);
     Route::get('printReport', [\App\Http\Controllers\Admin\Laporan_estimasiproduksiController::class, 'printReport']);
