@@ -293,6 +293,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/admin/pengiriman_barangjadi/pengiriman_pemesanan', [PengirimanbarangjadiController::class, 'pengiriman_pemesanan'])->name('admin.pengiriman_barangjadi.pengiriman_pemesanan');
     Route::post('admin/pengiriman_barangjadi/pengiriman_pemesanan', [PengirimanbarangjadiController::class, 'SimpanPengirimanpemesanan'])->name('pengiriman_barangjadi.pengirimanpemesanan.simpan');
     // Route::get('pengiriman_barangjadi/{id}', [PengirimanbarangjadiController::class, 'showPesanan'])->name('pengiriman_barangjadi.showpesanan');
+    Route::post('admin/pengiriman_barangjadi/store', [PengirimanBarangJadiController::class, 'store'])->name('admin.pengiriman_barangjadi.store');
 
 
     Route::resource('pengiriman_barangjadipesanan', \App\Http\Controllers\Admin\PengirimanbarangjadipesananController::class);

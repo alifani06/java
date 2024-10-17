@@ -97,10 +97,6 @@
                         </div>
                     </form>
                 
-                   
-                    
-                   
-
                     @if($permintaanProduks->isNotEmpty())
                     <form action="{{ url('admin/estimasi_produksi/' . $permintaanProduks->first()->id) }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                         @csrf
