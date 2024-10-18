@@ -137,12 +137,12 @@ class PenjualanprodukbanjaranController extends Controller
     // }
 
     public function getProduks(Request $request)
-{
-    // Ambil semua data produk dengan relasi yang diperlukan
-    $produks = Produk::with(['tokobanjaran', 'stok_tokobanjaran'])->get();
+    {
+        // Ambil semua data produk dengan relasi yang diperlukan
+        $produks = Produk::with(['tokobanjaran', 'stok_tokobanjaran'])->get();
 
-    return response()->json($produks);
-}
+        return response()->json($produks);
+    }
 
 
         //store lama
@@ -292,6 +292,8 @@ class PenjualanprodukbanjaranController extends Controller
             'pdfUrl' => $pdfUrl,
         ]);
     }
+
+
 
     public function pelunasan()
     {

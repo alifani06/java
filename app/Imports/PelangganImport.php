@@ -100,6 +100,7 @@ class PelangganImport implements ToModel, WithHeadingRow
 
         return new Pelanggan([
             'nama_pelanggan'  => $row['nama_pelanggan'],  // Wajib diisi
+            'kode_pelangganlama'  => $row['kode_pelangganlama'],  // Wajib diisi
             'alamat'          => $row['alamat'] ?? null,  // Nullable
             'telp'            => $row['telp'] ?? null,            // Wajib diisi
             'tanggal_awal'    => isset($row['tanggal_awal']) ? Date::excelToDateTimeObject($row['tanggal_awal'])->format('Y-m-d') : null,   // Nullable
