@@ -185,9 +185,9 @@ subKlasifikasiSelect.selectedIndex = 0;
         var selectedValue = this.value;
 
         if (selectedValue === 'stok') {
-            window.location.href = "{{ url('toko_tegal/laporan_stoktokobanjaran') }}";
+            window.location.href = "{{ url('toko_tegal/laporan_stoktokotegal') }}";
         } else if (selectedValue === 'stokpesanan') {
-            window.location.href = "{{ url('toko_tegal/stoktokopesananbanjaran') }}";
+            window.location.href = "{{ url('toko_tegal/stoktokopesanantegal') }}";
         }
     });
 </script>
