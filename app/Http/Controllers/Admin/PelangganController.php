@@ -31,7 +31,7 @@ class PelangganController extends Controller
     // $pelanggans = Pelanggan::all();
     $pelanggans = Pelanggan::when($search, function ($query, $search) {
         return $query->where('nama_pelanggan', 'like', '%' . $search . '%')
-                     ->orWhere('kode_lama', 'like', '%' . $search . '%');
+                     ->orWhere('kode_pelangganlama', 'like', '%' . $search . '%');
     }) ->paginate(10);
 
       return view('admin.pelanggan.index', compact('pelanggans', 'search'));
@@ -57,21 +57,21 @@ class PelangganController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                // 'kode_lama' => 'required',
+                'kode_pelangganlama' => 'required',
                 'nama_pelanggan' => 'required',
-                'alamat' => 'required',
+                'alamat' => 'nullable',
                 'gender' => 'nullable',
-                'telp' => 'required',
+                'telp' => 'nullable',
                 'email' => 'nullable',
                 'pekerjaan' => 'nullable',
                 'tanggal_lahir' => 'nullable',
                 'tanggal_awal' => 'nullable',
-                'tanggal_akhir' => 'required',
+                'tanggal_akhir' => 'nullable',
                 'gambar' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ],
             [
              
-                'kode_lama.required' => 'Masukkan kode lama',
+                'kode_pelangganlama.required' => 'Masukkan kode lama',
                 'nama_pelanggan.required' => 'Masukkan nama pelanggan',
                
                 'pekerjaan.nullable' => 'masukan pekerjaan',
@@ -191,13 +191,13 @@ class PelangganController extends Controller
             $namaGambar = $pelanggans->gambar_ktp;
         }
 
-        if ($pelanggans->kode_lama == null) {
+        if ($pelanggans->kode_pelangganlama == null) {
 
             Pelanggan::where('id', $id)->update([
                 // 'gambar_ktp'=> $namaGambar,
                 'nama_pelanggan' => $request->nama_pelanggan,
                 'kode_pelanggan' => $request->kode_pelanggan,
-                'kode_lama' => $request->kode_lama,
+                'kode_pelangganlama' => $request->kode_pelangganlama,
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'tanggal_awal' => $request->tanggal_awal,
                 'tanggal_akhir' => $request->tanggal_akhir,
@@ -217,7 +217,7 @@ class PelangganController extends Controller
                 'kode_pelanggan' => $request->kode_pelanggan,
                 'qrcode_pelanggan' => 'https://javabakery.id/pelanggan/' . $pelanggans->kode_pelanggan,
 
-                'kode_lama' => $request->kode_lama,
+                'kode_pelangganlama' => $request->kode_pelangganlama,
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'tanggal_awal' => $request->tanggal_awal,
                 'tanggal_akhir' => $request->tanggal_akhir,
@@ -234,7 +234,7 @@ class PelangganController extends Controller
             // 'gambar_ktp'=> $namaGambar,
             'nama_pelanggan' => $request->nama_pelanggan,
             'kode_pelanggan' => $request->kode_pelanggan,
-            'kode_lama' => $request->kode_lama,
+            'kode_pelangganlama' => $request->kode_pelangganlama,
             // 'qrcode_pelanggan' => $request->qrcode_pelanggan,
             'tanggal_lahir' => $request->tanggal_lahir,
             'tanggal_gabung' => $request->tanggal_gabung,
@@ -300,14 +300,32 @@ class PelangganController extends Controller
 
     }
 
-    public function import(Request $request)
-    {
-        $request->validate([
-            'file_excel' => 'required|file|mimes:xlsx,xls',
-        ]);
+    // public function import(Request $request)
+    // {
+    //     $request->validate([
+    //         'file_excel' => 'required|file|mimes:xlsx,xls',
+    //     ]);
     
-        Excel::import(new PelangganImport, $request->file('file_excel'));
+    //     Excel::import(new PelangganImport, $request->file('file_excel'));
     
-        return redirect('admin/pelanggan')->with('success', 'Berhasil mengimpor pelanggan dari Excel');
+    //     return redirect('admin/pelanggan')->with('success', 'Berhasil mengimpor pelanggan dari Excel');
+    // }
+
+    public function importPelanggan(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'file' => 'required|mimes:xls,xlsx',
+    ], [
+        'file.required' => 'File Excel diperlukan',
+        'file.mimes' => 'File harus berupa format Excel (xls atau xlsx)',
+    ]);
+
+    if ($validator->fails()) {
+        return back()->withErrors($validator)->withInput();
     }
+
+    Excel::import(new PelangganImport, $request->file('file'));
+
+    return redirect()->route('admin.pelanggan')->with('success', 'Data Pelanggan berhasil diimport');
+}
 }

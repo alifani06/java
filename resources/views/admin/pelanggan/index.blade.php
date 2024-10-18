@@ -85,7 +85,7 @@
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $pelanggan->kode_pelanggan }}</td>
-                                    <td>{{ $pelanggan->kode_lama }}</td>
+                                    <td>{{ $pelanggan->kode_pelangganlama }}</td>
                                     <td>{{ $pelanggan->nama_pelanggan }}</td>
                                     <td>{{ $pelanggan->telp }}</td>
                                     <td data-toggle="modal" data-target="#modal-qrcode-{{ $pelanggan->id }}"

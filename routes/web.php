@@ -131,7 +131,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('pelanggan', \App\Http\Controllers\Admin\PelangganController::class);
     Route::get('pelanggan/getpelanggan/{id}', [\App\Http\Controllers\Admin\PelangganController::class, 'getpelanggan']);
     Route::get('pelanggan/cetak_pdf/{id}', [PelangganController::class, 'cetak_pdf'])->name('pelanggan.cetak_pdf');
-    Route::post('admin/pelanggan/import', [PelangganController::class, 'import'])->name('pelanggan.import');
+    // Route::post('admin/pelanggan/import', [PelangganController::class, 'import'])->name('pelanggan.import');
+    Route::post('admin/pelanggan/import', [PelangganController::class, 'importPelanggan'])->name('pelanggan.import');
 
     Route::resource('departemen', \App\Http\Controllers\Admin\DepartemenController::class); 
 

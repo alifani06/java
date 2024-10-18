@@ -36,14 +36,23 @@
             @endif
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('pelanggan.import') }}" method="POST" enctype="multipart/form-data">
+                    {{-- <form action="{{ route('pelanggan.import') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
                             <label for="file_excel">Unggah File Excel</label>
                             <input type="file" class="form-control-file" id="file_excel" name="file_excel" accept=".xlsx">
                         </div>
                         <button type="submit" class="btn btn-primary">Import</button>
+                    </form> --}}
+                    <form action="{{ route('pelanggan.import') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="form-group">
+                            <label for="file">Import Data Pelanggan (Excel)</label>
+                            <input type="file" name="file" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload</button>
                     </form>
+                    
                 </div>
             </div>
             <form action="{{ url('admin/pelanggan') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
@@ -58,9 +67,9 @@
                     <div class="row">
                     </div>
                     <div class="form-group  mb-3">
-                        <label for="kode_lama">Kode Pelanggan Lama</label>
-                        <input type="text" class="form-control" id="kode_lama" name="kode_lama"
-                            placeholder="Masukan kode pelanggan" value="{{ old('kode_lama') }}">
+                        <label for="kode_pelangganlama">Kode Pelanggan Lama</label>
+                        <input type="text" class="form-control" id="kode_pelangganlama" name="kode_pelangganlama"
+                            placeholder="Masukan kode pelanggan" value="{{ old('kode_pelangganlama') }}">
                     </div>
                         <div class="form-group  mb-3">
                             <label for="nama_pelanggan">Nama Pelanggan</label>
