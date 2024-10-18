@@ -95,8 +95,6 @@ class PengirimanbarangjadiController extends Controller{
         return view('admin.pengiriman_barangjadi.create', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
     }
 
-
-
 // public function store(Request $request)
 // {
 //     // Ambil tanggal pengiriman dari input
@@ -136,8 +134,8 @@ class PengirimanbarangjadiController extends Controller{
 
 //             // Simpan data berdasarkan kategori
 //             if ($kategori[$index] === 'permintaan') {
-//                 // Simpan ke tabel pengiriman_barangjadi
-//                 Pengiriman_barangjadi::create([
+//                 // Simpan ke tabel pengiriman_barangjadi dan ambil ID-nya
+//                 $pengiriman = Pengiriman_barangjadi::create([
 //                     'produk_id' => $produk_id,
 //                     'toko_id' => $toko_id,
 //                     'kode_pengiriman' => $kode,
@@ -153,7 +151,9 @@ class PengirimanbarangjadiController extends Controller{
 //                         'kode_pengiriman' => $kode,
 //                         'jumlah' => $jumlahs[$index],
 //                         'tanggal_input' => $tanggalPengirimanDenganJam,
-//                         'status' => 'unpost'
+//                         'status' => 'unpost',
+//                         'toko_id' => 1,
+//                         'pengiriman_barangjadi_id' => $pengiriman->id // Simpan pengiriman_barangjadi_id
 //                     ]);
 //                 } elseif ($toko_id == 2) {
 //                     Pengiriman_tokotegal::create([
@@ -161,13 +161,15 @@ class PengirimanbarangjadiController extends Controller{
 //                         'kode_pengiriman' => $kode,
 //                         'jumlah' => $jumlahs[$index],
 //                         'tanggal_input' => $tanggalPengirimanDenganJam,
-//                         'status' => 'unpost'
+//                         'status' => 'unpost',
+//                         'toko_id' => 2,
+//                         'pengiriman_barangjadi_id' => $pengiriman->id // Simpan pengiriman_barangjadi_id
 //                     ]);
 //                 }
 
 //             } elseif ($kategori[$index] === 'pesanan') {
-//                 // Simpan ke tabel pengiriman_barangjadipesanan
-//                 Pengiriman_barangjadipesanan::create([
+//                 // Simpan ke tabel pengiriman_barangjadipesanan dan ambil ID-nya
+//                 $pengirimanPesanan = Pengiriman_barangjadipesanan::create([
 //                     'produk_id' => $produk_id,
 //                     'toko_id' => $toko_id,
 //                     'kode_pengirimanpesanan' => $kode1,
@@ -183,7 +185,9 @@ class PengirimanbarangjadiController extends Controller{
 //                         'kode_pengirimanpesanan' => $kode1,
 //                         'jumlah' => $jumlahs[$index],
 //                         'tanggal_input' => $tanggalPengirimanDenganJam,
-//                         'status' => 'unpost'
+//                         'status' => 'unpost',
+//                         'toko_id' => 1,
+//                         'pengiriman_barangjadi_id' => $pengirimanPesanan->id // Simpan pengiriman_barangjadi_id
 //                     ]);
 //                 } elseif ($toko_id == 2) {
 //                     Pengirimanpemesanan_tokotegal::create([
@@ -191,7 +195,9 @@ class PengirimanbarangjadiController extends Controller{
 //                         'kode_pengirimanpesanan' => $kode1,
 //                         'jumlah' => $jumlahs[$index],
 //                         'tanggal_input' => $tanggalPengirimanDenganJam,
-//                         'status' => 'unpost'
+//                         'status' => 'unpost',
+//                         'toko_id' => 2,
+//                         'pengiriman_barangjadi_id' => $pengirimanPesanan->id // Simpan pengiriman_barangjadi_id
 //                     ]);
 //                 }
 //             }
@@ -206,6 +212,7 @@ class PengirimanbarangjadiController extends Controller{
 //     return redirect()->route('pengiriman_barangjadi.index')
 //                     ->with('success', 'Berhasil menambahkan permintaan produk, mengurangi stok, dan menyimpan data pengiriman.');
 // }
+
 public function store(Request $request)
 {
     // Ambil tanggal pengiriman dari input
@@ -239,9 +246,7 @@ public function store(Request $request)
 
         // Cek apakah stok mencukupi
         if ($stok && $stok->jumlah >= $jumlahs[$index]) {
-            // Kurangi stok sesuai jumlah pengiriman
-            $stok->jumlah -= $jumlahs[$index];
-            $stok->save(); // Simpan perubahan stok
+            // Tidak mengurangi stok sesuai jumlah pengiriman, hanya menyimpan data
 
             // Simpan data berdasarkan kategori
             if ($kategori[$index] === 'permintaan') {
@@ -321,8 +326,9 @@ public function store(Request $request)
 
     // Redirect ke halaman index dengan pesan sukses
     return redirect()->route('pengiriman_barangjadi.index')
-                    ->with('success', 'Berhasil menambahkan permintaan produk, mengurangi stok, dan menyimpan data pengiriman.');
+                    ->with('success', 'Berhasil menambahkan permintaan produk, menyimpan data pengiriman.');
 }
+
 
 
 
