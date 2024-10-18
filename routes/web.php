@@ -645,6 +645,7 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::resource('pelanggan', \App\Http\Controllers\Toko_tegal\PelangganController::class);
     Route::get('pelanggan/getpelanggan/{id}', [\App\Http\Controllers\Toko_tegal\PelangganController::class, 'getpelanggan']);
     Route::get('pelanggan/cetak_pdf/{id}', [PelangganController::class, 'cetak_pdf'])->name('pelanggan.cetak_pdf');
+    Route::get('admin/pelanggan', [PelangganController::class, 'index'])->name('admin.pelanggan');
 
     Route::resource('produk', \App\Http\Controllers\Toko_tegal\ProdukController::class);
 
