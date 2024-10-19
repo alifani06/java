@@ -338,16 +338,16 @@
                                 <tr>
                                     <td style="font-size: 8px; text-transform: uppercase">{{ $detail->kode_lama }}</td>
                                     <td style="font-size: 8px;">{{ $detail->nama_produk }}</td>
-                                    <td style="font-size: 8px;">{{ $detail->jumlah }}</td>
-                                    <td style="font-size: 8px;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
-                                    <td style="font-size: 8px;">
+                                    <td style="font-size: 8px; text-align: right;">{{ $detail->jumlah }}</td>
+                                    <td style="font-size: 8px; text-align: right;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
+                                    <td style="font-size: 8px; text-align: right;">
                                         @if ($detail->diskon > 0)
                                             {{ $detail->diskon }} %
                                         @else
                                             -
                                         @endif
                                     </td>
-                                    <td style="font-size: 8px;">{{ number_format($detail->total, 0, ',', '.') }}</td>
+                                    <td style="font-size: 8px; text-align: right;">{{ number_format($detail->total, 0, ',', '.') }}</td>
                                 </tr>
                                 @php
                                     // Validasi dan konversi data menjadi numerik
