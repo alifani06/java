@@ -44,24 +44,79 @@ use Maatwebsite\Excel\Facades\Excel;
 class EstimasiproduksiController extends Controller{
 
 
+    // public function index(Request $request)
+    // {
+    //     $status = $request->status;
+    //     $tanggal = $request->tanggal;
+    //     $toko_id = $request->toko_id;
+
+    //     // Cek apakah filter tanggal atau toko dipilih
+    //     if (!$tanggal && !$toko_id) {
+    //         // Jika tidak ada filter tanggal atau toko, tampilkan view tanpa data
+    //         $permintaanProduks = collect(); // Kosongkan data
+    //         $pemesananProduks = collect();  // Kosongkan data
+    //     } else {
+    //         // Memulai query dari Permintaanproduk dan Pemesananproduk
+    //         $inquery = Permintaanproduk::query();
+    //         $inquery1 = Pemesananproduk::query();
+
+    //         // Filter berdasarkan tanggal untuk Permintaanproduk
+    //         if ($tanggal) {
+    //             $tanggal = Carbon::parse($tanggal)->startOfDay();
+    //             $inquery->whereHas('detailpermintaanproduks', function($query) use ($tanggal) {
+    //                 $query->whereDate('tanggal_permintaan', $tanggal);
+    //             });
+
+    //             // Filter berdasarkan tanggal untuk Pemesananproduk (satu hari setelah tanggal yang dipilih)
+    //             $tanggalPemesanan = Carbon::parse($tanggal)->addDay(); // Menambahkan satu hari
+    //             $inquery1->whereDate('tanggal_kirim', $tanggalPemesanan);
+    //         }
+
+    //         // Filter berdasarkan toko_id pada tabel detailpermintaanproduks
+    //         if ($toko_id) {
+    //             $inquery->whereHas('detailpermintaanproduks', function($query) use ($toko_id) {
+    //                 $query->where('toko_id', $toko_id);
+    //             });
+
+    //             // Filter berdasarkan toko_id pada pemesanan produk
+    //             $inquery1->whereHas('detailpemesananproduk', function($query) use ($toko_id) {
+    //                 $query->where('toko_id', $toko_id);
+    //             });
+    //         }
+
+    //         // Urutkan berdasarkan ID secara descending
+    //         $inquery->orderBy('id', 'DESC');
+    //         $inquery1->orderBy('id', 'DESC');
+
+    //         // Eager load relasi dan ambil semua data
+    //         $permintaanProduks = $inquery->with(['detailpermintaanproduks.toko', 'detailpermintaanproduks.produk', 'toko'])->get();
+    //         $pemesananProduks = $inquery1->with(['detailpemesananproduk'])->get();
+    //     }
+
+    //     // Ambil semua data toko dan produk untuk dropdown filter
+    //     $tokos = Toko::all();
+    //     $produks = Produk::all();
+
+    //     // Tampilkan ke view tanpa data jika tidak ada filter
+    //     return view('admin.estimasi_produksi.index', compact('pemesananProduks', 'permintaanProduks', 'tokos', 'produks'));
+    // }
     public function index(Request $request)
-{
-    $status = $request->status;
-    $tanggal = $request->tanggal;
-    $toko_id = $request->toko_id;
+    {
+        $status = $request->status;
+        $tanggal = $request->tanggal;
+        $toko_id = $request->toko_id;
 
-    // Cek apakah filter tanggal atau toko dipilih
-    if (!$tanggal && !$toko_id) {
-        // Jika tidak ada filter tanggal atau toko, tampilkan view tanpa data
-        $permintaanProduks = collect(); // Kosongkan data
-        $pemesananProduks = collect();  // Kosongkan data
-    } else {
-        // Memulai query dari Permintaanproduk dan Pemesananproduk
-        $inquery = Permintaanproduk::query();
-        $inquery1 = Pemesananproduk::query();
+        // Cek apakah filter tanggal dipilih
+        if (!$tanggal) {
+            // Jika tidak ada filter tanggal, tampilkan view tanpa data
+            $permintaanProduks = collect(); // Kosongkan data
+            $pemesananProduks = collect();  // Kosongkan data
+        } else {
+            // Memulai query dari Permintaanproduk dan Pemesananproduk
+            $inquery = Permintaanproduk::query();
+            $inquery1 = Pemesananproduk::query();
 
-        // Filter berdasarkan tanggal untuk Permintaanproduk
-        if ($tanggal) {
+            // Filter berdasarkan tanggal untuk Permintaanproduk
             $tanggal = Carbon::parse($tanggal)->startOfDay();
             $inquery->whereHas('detailpermintaanproduks', function($query) use ($tanggal) {
                 $query->whereDate('tanggal_permintaan', $tanggal);
@@ -70,36 +125,35 @@ class EstimasiproduksiController extends Controller{
             // Filter berdasarkan tanggal untuk Pemesananproduk (satu hari setelah tanggal yang dipilih)
             $tanggalPemesanan = Carbon::parse($tanggal)->addDay(); // Menambahkan satu hari
             $inquery1->whereDate('tanggal_kirim', $tanggalPemesanan);
+
+            // Filter berdasarkan toko_id hanya jika toko_id ada
+            if ($toko_id) {
+                $inquery->whereHas('detailpermintaanproduks', function($query) use ($toko_id) {
+                    $query->where('toko_id', $toko_id);
+                });
+
+                $inquery1->whereHas('detailpemesananproduk', function($query) use ($toko_id) {
+                    $query->where('toko_id', $toko_id);
+                });
+            }
+
+            // Urutkan berdasarkan ID secara descending
+            $inquery->orderBy('id', 'DESC');
+            $inquery1->orderBy('id', 'DESC');
+
+            // Eager load relasi dan ambil semua data
+            $permintaanProduks = $inquery->with(['detailpermintaanproduks.toko', 'detailpermintaanproduks.produk', 'toko'])->get();
+            $pemesananProduks = $inquery1->with(['detailpemesananproduk'])->get();
         }
 
-        // Filter berdasarkan toko_id pada tabel detailpermintaanproduks
-        if ($toko_id) {
-            $inquery->whereHas('detailpermintaanproduks', function($query) use ($toko_id) {
-                $query->where('toko_id', $toko_id);
-            });
+        // Ambil semua data toko dan produk untuk dropdown filter
+        $tokos = Toko::all();
+        $produks = Produk::all();
 
-            // Filter berdasarkan toko_id pada pemesanan produk
-            $inquery1->whereHas('detailpemesananproduk', function($query) use ($toko_id) {
-                $query->where('toko_id', $toko_id);
-            });
-        }
-
-        // Urutkan berdasarkan ID secara descending
-        $inquery->orderBy('id', 'DESC');
-        $inquery1->orderBy('id', 'DESC');
-
-        // Eager load relasi dan ambil semua data
-        $permintaanProduks = $inquery->with(['detailpermintaanproduks.toko', 'detailpermintaanproduks.produk', 'toko'])->get();
-        $pemesananProduks = $inquery1->with(['detailpemesananproduk'])->get();
+        // Tampilkan ke view
+        return view('admin.estimasi_produksi.index', compact('pemesananProduks', 'permintaanProduks', 'tokos', 'produks'));
     }
 
-    // Ambil semua data toko dan produk untuk dropdown filter
-    $tokos = Toko::all();
-    $produks = Produk::all();
-
-    // Tampilkan ke view tanpa data jika tidak ada filter
-    return view('admin.estimasi_produksi.index', compact('pemesananProduks', 'permintaanProduks', 'tokos', 'produks'));
-}
 
 
     public function kode()

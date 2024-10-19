@@ -74,6 +74,11 @@
                 <div class="card-body">
                     <form method="GET" id="form-action">
                         <div class="row">
+                            
+                            <div class="col-md-3 mb-3">
+                                <input class="form-control" id="tanggal" name="tanggal" type="date" value="{{ Request::get('tanggal') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal">(Tanggal)</label>
+                            </div>
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="toko" name="toko_id" onchange="document.getElementById('form-action').submit();">
                                     <option value="">- Semua Toko -</option>
@@ -84,10 +89,6 @@
                                     @endforeach
                                 </select>
                                 <label for="toko">(Pilih Toko)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal" name="tanggal" type="date" value="{{ Request::get('tanggal') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal">(Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
@@ -287,7 +288,7 @@
     </script>
     --}}
 
-    <script>
+    {{-- <script>
         var form = document.getElementById('form-action');
     
         function cari() {
@@ -295,7 +296,26 @@
             form.action = "{{ url('admin/estimasi_produksi') }}";
             form.submit(); // Mengirimkan form
         }
+    </script> --}}
+    <script>
+        var form = document.getElementById('form-action');
+    
+        function cari() {
+            // Mengambil nilai tanggal dari input
+            const tanggal = document.getElementById('tanggal').value;
+    
+            // Memeriksa apakah tanggal telah dipilih
+            if (!tanggal) {
+                alert("Silakan pilih tanggal terlebih dahulu.");
+                return; // Jika tidak ada tanggal, hentikan eksekusi fungsi
+            }
+    
+            // Mengatur action form untuk mengarahkan ke URL yang tepat
+            form.action = "{{ url('admin/estimasi_produksi') }}";
+            form.submit(); // Mengirimkan form
+        }
     </script>
+    
 
 
    <script>
