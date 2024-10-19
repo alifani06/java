@@ -44,7 +44,6 @@
                             <option value="stok" {{ old('kategori1') == 'stok' ? 'selected' : '' }}>Data Stok</option>
                             <option value="stokpesanan" {{ old('kategori1') == 'stokpesanan' ? 'selected' : '' }}>Data Stok Pesanan</option>
                             <option value="semuastok" {{ old('kategori1') == 'semuastok' ? 'selected' : '' }}>Data Semua Stok</option>
-
                         </select>
                     </div>
                     <h3 class="card-title">Laporan Stok Toko</h3>
@@ -60,7 +59,7 @@
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="toko" name="toko_id">
                                     {{-- <option value="">- Semua Toko -</option> --}}
-                                    <option value="1" {{ Request::get('toko_id') == '1' ? 'selected' : '' }}>Toko Banjaran</option>
+                                    <option value="2" {{ Request::get('toko_id') == '2' ? 'selected' : '' }}>Toko Tegal</option>
                                     {{-- <option value="2" {{ Request::get('toko_id') == '2' ? 'selected' : '' }}>Toko Tegal</option>
                                     <option value="3" {{ Request::get('toko_id') == '3' ? 'selected' : '' }}>Toko Slawi</option>
                                     <option value="4" {{ Request::get('toko_id') == '4' ? 'selected' : '' }}>Toko Pemalang</option>
@@ -110,15 +109,15 @@
                     
                     
                 
-                    <table id="datatables1" class="table table-bordered" style="font-size: 13px">
-                        <thead>
+                    <table id="datatables1" class="table table-bordered table-striped" style="font-size: 13px; width: 100%;">
+                        <thead class="thead-light">
                             <tr>
-                                <th>No</th>
-                                <th>Kode Produk</th>
-                                <th>Nama Produk</th>
-                                <th>Stok</th>
-                                <th>Harga</th>
-                                <th>Sub Total</th>
+                                <th style="text-align: center; width: 5%;">No</th>
+                                <th style="text-align: center; width: 15%;">Kode Produk</th>
+                                <th style="text-align: center; width: 30%;">Nama Produk</th>
+                                <th style="text-align: center; width: 10%;">Stok</th>
+                                <th style="text-align: center; width: 15%;">Harga (Rp)</th>
+                                <th style="text-align: center; width: 20%;">Sub Total (Rp)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -127,21 +126,22 @@
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $produk->kode_lama }}</td>
                                     <td>{{ $produk->nama_produk }}</td>
-                                    <td style="text-align: right">{{ $produk->jumlah }}</td>
-                                    <td style="text-align: right">{{ number_format($produk->harga, 0, ',', '.') }} </td>
-                                    <td style="text-align: right">{{ number_format($produk->subTotal, 0, ',', '.') }} </td> <!-- Sub Total -->
+                                    <td style="text-align: right">{{ number_format($produk->jumlah, 0, ',', '.') }}</td> <!-- Stok with number format -->
+                                    <td style="text-align: right">{{ number_format($produk->harga, 0, ',', '.') }}</td> <!-- Harga with number format -->
+                                    <td style="text-align: right">{{ number_format($produk->subTotal, 0, ',', '.') }}</td> <!-- Sub Total with number format -->
                                 </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
                                 <th colspan="3" class="text-center">Total</th>
-                                <th style="text-align: right">{{ $totalStok }}</th>
+                                <th style="text-align: right">{{ number_format($totalStok, 0, ',', '.') }}</th> <!-- Total Stok -->
                                 <th></th>
-                                <th style="text-align: right">{{ 'Rp. ' . number_format($totalSubTotal, 0, ',', '.') }}</th>
+                                <th style="text-align: right">{{ 'Rp. ' . number_format($totalSubTotal, 0, ',', '.') }}</th> <!-- Total Sub Total -->
                             </tr>
                         </tfoot>
                     </table>
+                    
                 </div>
                 
                 
@@ -154,7 +154,7 @@
     function printReport() {
         if (event) event.preventDefault();
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printstoktokobanjaran') }}";
+    form.action = "{{ url('toko_banjaran/printsemuastoktokobanjaran') }}";
     form.target = "_blank";
     form.submit();
 }

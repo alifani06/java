@@ -50,6 +50,7 @@ use App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController;
 use App\Http\Controllers\Toko_banjaran\Laporan_pemesananprodukbanjaranController;
 use App\Http\Controllers\Toko_banjaran\Laporan_pemindahanbanjaranController;
 use App\Http\Controllers\Toko_banjaran\Laporan_setoranpenjualanController;
+use App\Http\Controllers\Toko_banjaran\Laporan_stoktokobanjaranController;
 use App\Http\Controllers\Toko_banjaran\PelunasanpemesananController;
 use App\Http\Controllers\Toko_banjaran\PemesananprodukbanjaranController;
 use App\Http\Controllers\Toko_banjaran\Pengiriman_tokobanjaranController;
@@ -77,6 +78,7 @@ use App\Http\Controllers\Toko_tegal\Inquery_setorantunaitegalController;
 use App\Http\Controllers\Toko_tegal\Laporan_pemesananproduktegalController;
 use App\Http\Controllers\Toko_tegal\Laporan_pemindahantegalController;
 use App\Http\Controllers\Toko_tegal\Laporan_setoranpenjualantglController;
+use App\Http\Controllers\Toko_tegal\Laporan_stoktokotegalController;
 use App\Http\Controllers\Toko_tegal\PelunasanpemesananTglController;
 use App\Http\Controllers\Toko_tegal\PemesananproduktegalController;
 use App\Http\Controllers\Toko_tegal\Pengiriman_tokotegalController;
@@ -591,6 +593,9 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('printstoktokobanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_stoktokobanjaranController::class, 'printReport']);
     Route::get('stoktokopesananbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_stoktokobanjaranController::class, 'stoktokopesananbanjaran']);
     Route::get('printstoktokopesananbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_stoktokobanjaranController::class, 'printReportstokpesananbanjaran']);
+    Route::get('semuastoktokobanjaran', [Laporan_stoktokobanjaranController::class, 'semuaStokTokoBanjaran'])->name('laporan.semuaStokTokoBanjaran');
+    Route::get('printsemuastoktokobanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_stoktokobanjaranController::class, 'printReportsemuastokbanjaran']);
+
 
     Route::resource('laporan_pengirimantokobanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_pengirimantokobanjaranController::class);
     Route::get('printpengirimantokobanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_pengirimantokobanjaranController::class, 'printReport']);
@@ -776,6 +781,8 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::get('printstoktokotegal', [\App\Http\Controllers\Toko_tegal\Laporan_stoktokotegalController::class, 'printReport']);
     Route::get('stoktokopesanantegal', [\App\Http\Controllers\Toko_tegal\Laporan_stoktokotegalController::class, 'stoktokopesanantegal']);
     Route::get('printstoktokopesanantegal', [\App\Http\Controllers\Toko_tegal\Laporan_stoktokotegalController::class, 'printReportstokpesanantegal']);
+    Route::get('semuastoktokotegal', [Laporan_stoktokotegalController::class, 'semuaStokTokoTegal'])->name('laporan.semuaStokTokoTegal');
+    Route::get('printsemuastoktokotegal', [\App\Http\Controllers\Toko_tegal\Laporan_stoktokotegalController::class, 'printReportsemuastoktegal']);
 
     Route::resource('laporan_pengirimantokotegal', \App\Http\Controllers\Toko_tegal\Laporan_pengirimantokotegalController::class);
     Route::get('printpengirimantokotegal', [\App\Http\Controllers\Toko_tegal\Laporan_pengirimantokotegalController::class, 'printReport']);

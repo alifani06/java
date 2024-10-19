@@ -43,6 +43,8 @@
                             <option value="">- Pilih -</option>
                             <option value="stok" {{ old('kategori1') == 'stok' ? 'selected' : '' }}>Data Stok</option>
                             <option value="stokpesanan" {{ old('kategori1') == 'stokpesanan' ? 'selected' : '' }}>Data Stok Pesanan</option>
+                            <option value="semuastok" {{ old('kategori1') == 'semuastok' ? 'selected' : '' }}>Data Semua Stok</option>
+
                         </select>
                     </div>
                     <h3 class="card-title">Laporan Stok Toko</h3>
@@ -188,6 +190,8 @@ subKlasifikasiSelect.selectedIndex = 0;
             window.location.href = "{{ url('toko_tegal/laporan_stoktokotegal') }}";
         } else if (selectedValue === 'stokpesanan') {
             window.location.href = "{{ url('toko_tegal/stoktokopesanantegal') }}";
+        }else if (selectedValue === 'semuastok') {
+            window.location.href = "{{ url('toko_tegal/semuastoktokotegal') }}";
         }
     });
 </script>
