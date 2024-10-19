@@ -73,7 +73,9 @@ class Laporan_pengirimantokotegalController extends Controller
 
             return view('toko_tegal.laporan_pengirimantokotegal.index', compact('stokBarangJadi'));
     }
-   
+
+
+    
     public function printReport(Request $request)
 {
     // Ambil parameter dari request

@@ -16,7 +16,7 @@
 
         body {
             font-family: Arial, sans-serif;
-            font-size: 10px;
+            font-size: 12px;
             margin: 0;
             padding: 0;
             padding-bottom: 80px; /* Tambahkan ruang ekstra untuk informasi admin */
@@ -81,19 +81,19 @@
         }
         /* Atur ukuran font di dalam tabel */
         table td, table th {
-            font-size: 8px; /* Ukuran font tabel lebih kecil */
+            font-size: 10px; /* Ukuran font tabel lebih kecil */
         }
         table th:nth-child(1),
         table td:nth-child(1) { width: 5%; } /* Lebar untuk kolom No */
 
         table th:nth-child(2),
-        table td:nth-child(2) { width: 25%; } /* Lebar untuk kolom Kode Produk */
+        table td:nth-child(2) { width: 10%; } /* Lebar untuk kolom Kode Produk */
 
         table th:nth-child(3),
         table td:nth-child(3) { width: 25%; } /* Lebar untuk kolom Kategori */
 
         table th:nth-child(4),
-        table td:nth-child(4) { width: 30%; } /* Lebar untuk kolom Produk */
+        table td:nth-child(4) { width: 45%; } /* Lebar untuk kolom Produk */
 
         table th:nth-child(5),
         table td:nth-child(5) { width: 10%; } /* Lebar untuk kolom Jumlah */
@@ -101,28 +101,7 @@
             margin-top: 60px;
             text-align: center;
         }
-        .signature {
-            display: inline-block;
-            margin: 0 30px;
-            text-align: center;
-        }
-        .signature p {
-            margin: 0;
-        }
-        .row p {
-            margin: 0;
-        }
-        p {
-            margin: 5px 0;
-        }
-        .total-row {
-            font-weight: bold;
-        }
-        .admin-info {
-            text-align: right;
-            margin-top: 10px;
-            font-size: 12px;
-        }
+       
     </style>
 </head>
 <body>
@@ -196,13 +175,6 @@
             </tfoot>
         </table><br>
         @endforeach
-
-        <!-- Informasi Admin Toko -->
-        <div class="admin-info">
-            <p><strong>Admin Toko</strong></p><br><br>
-            <p>{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</p>
-    
-        </div>
     </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

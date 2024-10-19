@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surat Permintaan Produk</title>
+    <title>Surat Hasil Produksi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <style>
@@ -16,7 +16,7 @@
 
         body {
             font-family: Arial, sans-serif;
-            font-size: 10px;
+            font-size: 12px;
             margin: 0;
             padding: 0;
             padding-bottom: 80px; /* Tambahkan ruang ekstra untuk informasi admin */
@@ -81,48 +81,25 @@
         }
         /* Atur ukuran font di dalam tabel */
         table td, table th {
-            font-size: 8px; /* Ukuran font tabel lebih kecil */
+            font-size: 10px; /* Ukuran font tabel lebih kecil */
         }
         table th:nth-child(1),
         table td:nth-child(1) { width: 5%; } /* Lebar untuk kolom No */
 
         table th:nth-child(2),
-        table td:nth-child(2) { width: 25%; } /* Lebar untuk kolom Kode Produk */
+        table td:nth-child(2) { width: 15%; } /* Lebar untuk kolom Kode Produk */
 
         table th:nth-child(3),
         table td:nth-child(3) { width: 25%; } /* Lebar untuk kolom Kategori */
 
         table th:nth-child(4),
-        table td:nth-child(4) { width: 30%; } /* Lebar untuk kolom Produk */
+        table td:nth-child(4) { width: 40%; } /* Lebar untuk kolom Produk */
 
         table th:nth-child(5),
         table td:nth-child(5) { width: 10%; } /* Lebar untuk kolom Jumlah */
-        .signature-container {
-            margin-top: 60px;
-            text-align: center;
-        }
-        .signature {
-            display: inline-block;
-            margin: 0 30px;
-            text-align: center;
-        }
-        .signature p {
-            margin: 0;
-        }
-        .row p {
-            margin: 0;
-        }
-        p {
-            margin: 5px 0;
-        }
-        .total-row {
-            font-weight: bold;
-        }
-        .admin-info {
-            text-align: right;
-            margin-top: 10px;
-            font-size: 12px;
-        }
+
+
+       
     </style>
 </head>
 <body>
