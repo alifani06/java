@@ -194,11 +194,18 @@
 
             
                 <div class="card">
-                   
+                    <div class="card-header">
+                        <h3 class="card-title"><span></span></h3>
+                        <div class="float-right">
+                            <button  type="button" class="btn btn-primary btn-sm" onclick="addPesanan()">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col">
-                                <table id="tabel-pembelian" class="table table-bordered table-striped">
+                                <table class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
                                             <th style="font-size:14px" class="text-center">No</th>
@@ -207,26 +214,30 @@
                                             <th style="font-size:14px">Nama Produk</th>
                                             <th style="font-size:14px">Jumlah</th>
                                             <th style="font-size:14px">Diskon</th>
-                                            <th hidden style="font-size:14px">Nominal Diskon</th>
+                                            <th hidden style="font-size:14px">Nomminal Diskon</th>
                                             <th style="font-size:14px">Harga</th>
                                             <th style="font-size:14px">Total</th>
                                             <th style="font-size:14px; text-align:center">Opsi</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tabel-pembelian-body"></tbody>
+                                    <tbody id="tabel-pembelian">
+                                        
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title"><span></span></h3>
-                        <div class="float-right">
-                            <input type="text" id="searchInput" class="form-control" placeholder="Cari Produk..." onkeyup="searchProduct()">
 
-                        </div>
-                    </div>
+                <div class="modal fade" id="tableProduk" data-backdrop="static">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Data Produk</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                             <div class="modal-body">
                                 <table id="datatables5" class="table table-bordered table-striped" style="font-size: 12px;">
                                     <thead>
@@ -240,6 +251,7 @@
                                             <th>Harga Non Member</th>
                                             <th>Diskon Non Member</th>
                                             <th>Stok</th> <!-- Tambahkan kolom stok -->
+                                            <th>Opsi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -248,7 +260,17 @@
                                                 $tokobanjaran = $item->tokobanjaran->first();
                                                 $stok_tokobanjaran = $item->stok_tokobanjaran ? $item->stok_tokobanjaran->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
                                             @endphp
-                                            <tr>
+                                            <tr class="pilih-btn"
+                                                data-id="{{ $item->id }}"
+                                                data-kode="{{ $item->kode_produk }}"
+                                                data-kodel="{{ $item->kode_lama }}"
+                                                data-catatan="{{ $item->catatanproduk }}"
+                                                data-nama="{{ $item->nama_produk }}"
+                                                data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
+                                                data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
+                                                data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
+                                                data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
+
                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td >{{ $item->kode_produk }}</td>
                                                 <td>{{ $item->kode_lama }}</td>
@@ -269,13 +291,29 @@
                                                     {{ $stok_tokobanjaran }} <!-- Tampilkan stok produk -->
                                                 </td>
 
-                                                
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-primary btn-sm pilih-btn"
+                                                        data-id="{{ $item->id }}"
+                                                        data-kode="{{ $item->kode_produk }}"
+                                                        data-kodel="{{ $item->kode_lama }}"
+                                                        data-catatan="{{ $item->catatanproduk }}"
+                                                        data-nama="{{ $item->nama_produk }}"
+                                                        data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
+                                                        data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
+                                                        data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
+                                                        data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
+                                                        <i class="fas fa-plus"></i> 
+                                                    </button>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
                             </div>
                         </div>
+                    </div>
+                </div>
+                
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <div class="card">
@@ -381,64 +419,7 @@
             </form>
         </div>
     </section>
-  <script>
-    function searchProduct() {
-    let query = document.getElementById('searchInput').value;
-    
-    if (query.length > 0) {
-        // Gunakan AJAX untuk mencari produk
-        $.ajax({
-            url: '/search-product',  // Ubah sesuai dengan URL pencarian di backend
-            method: 'GET',
-            data: { query: query },
-            success: function(response) {
-                // Isi tabel pembelian dengan produk yang ditemukan
-                fillPurchaseTable(response);
-            },
-            error: function(error) {
-                console.log('Error:', error);
-            }
-        });
-    }
-}
-
-  </script>
-
-  <script>
-    function fillPurchaseTable(products) {
-    let tbody = document.getElementById('tabel-pembelian-body');
-    tbody.innerHTML = ''; // Kosongkan tabel terlebih dahulu
-
-    // Iterasi melalui hasil pencarian
-    products.forEach((product, index) => {
-        let row = `
-            <tr>
-                <td class="text-center">${index + 1}</td>
-                <td hidden>${product.kode_produk}</td>
-                <td>${product.kode_lama}</td>
-                <td>${product.nama_produk}</td>
-                <td><input type="number" value="1" min="1" class="form-control jumlah"></td>
-                <td>${product.diskon}</td>
-                <td hidden>${product.nominal_diskon}</td>
-                <td>${product.harga}</td>
-                <td>${product.harga}</td> <!-- Hitung total di sini, bisa dengan jumlah * harga -->
-                <td style="text-align:center">
-                    <button class="btn btn-danger" onclick="removeRow(this)">Hapus</button>
-                </td>
-            </tr>
-        `;
-        tbody.innerHTML += row;
-    });
-}
-
-// Fungsi untuk menghapus baris di tabel
-function removeRow(button) {
-    let row = button.parentNode.parentNode;
-    row.parentNode.removeChild(row);
-}
-
-  </script>
-    
+  
   {{-- //pdf tab baru   --}}
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
