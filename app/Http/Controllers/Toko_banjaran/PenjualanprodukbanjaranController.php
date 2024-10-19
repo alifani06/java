@@ -42,7 +42,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 class PenjualanprodukbanjaranController extends Controller
-{
+    {
     
     public function index(Request $request)
     {
@@ -116,7 +116,8 @@ class PenjualanprodukbanjaranController extends Controller
         
         return view('toko_banjaran.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
     }
-    
+
+    // create baru
     // public function create(Request $request)
     // {
     //     $barangs = Barang::all();
@@ -143,7 +144,6 @@ class PenjualanprodukbanjaranController extends Controller
 
         return response()->json($produks);
     }
-
 
         //store lama
     public function store(Request $request)
@@ -293,8 +293,6 @@ class PenjualanprodukbanjaranController extends Controller
         ]);
     }
 
-
-
     public function pelunasan()
     {
         $barangs = Barang::all();
@@ -311,8 +309,6 @@ class PenjualanprodukbanjaranController extends Controller
  
         return view('toko_banjaran.penjualan_produk.pelunasan', compact('barangs','metodes', 'tokos', 'produks', 'details', 'tokoslawis', 'tokobanjarans', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks'));
     }
-    
-  
 
     public function fetchProductData(Request $request)
     {
@@ -605,29 +601,29 @@ class PenjualanprodukbanjaranController extends Controller
     //     return $newCode;
     // }
     public function kode()
-{
-    $prefix = 'FPC';
-    $year = date('y'); // Dua digit terakhir dari tahun
-    $monthDay = date('dm'); // Format bulan dan hari: MMDD
+    {
+        $prefix = 'FPC';
+        $year = date('y'); // Dua digit terakhir dari tahun
+        $monthDay = date('dm'); // Format bulan dan hari: MMDD
 
-    // Mengambil kode terakhir yang dibuat pada hari yang sama dengan prefix PBNJ
-    $lastBarang = Penjualanproduk::where('kode_penjualan', 'LIKE', $prefix . '%')
-                                  ->whereDate('tanggal_penjualan', Carbon::today())
-                                  ->orderBy('kode_penjualan', 'desc')
-                                  ->first();
+        // Mengambil kode terakhir yang dibuat pada hari yang sama dengan prefix PBNJ
+        $lastBarang = Penjualanproduk::where('kode_penjualan', 'LIKE', $prefix . '%')
+                                    ->whereDate('tanggal_penjualan', Carbon::today())
+                                    ->orderBy('kode_penjualan', 'desc')
+                                    ->first();
 
-    if (!$lastBarang) {
-        $num = 1;
-    } else {
-        $lastCode = $lastBarang->kode_penjualan;
-        $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
-        $num = $lastNum + 1;
+        if (!$lastBarang) {
+            $num = 1;
+        } else {
+            $lastCode = $lastBarang->kode_penjualan;
+            $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
+            $num = $lastNum + 1;
+        }
+
+        $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
+        $newCode = $prefix . $monthDay . $year . $formattedNum;
+        return $newCode;
     }
-
-    $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
-    $newCode = $prefix . $monthDay . $year . $formattedNum;
-    return $newCode;
-}
 
     
     public function cetak($id)
@@ -838,30 +834,6 @@ class PenjualanprodukbanjaranController extends Controller
             return response()->json($products);
         }
 
-        // public function destroy($id)
-        // {
-        //     DB::transaction(function () use ($id) {
-        //         $penjualan = Penjualanproduk::findOrFail($id);
-                
-        //         // Ambil semua detail pemesanan terkait
-        //         $detailPenjualanProduks = Detailpenjualanproduk::where('penjualanproduk_id', $id)->get();
-        
-        //         // Mengembalikan stok untuk setiap produk yang dipesan
-        //         foreach ($detailPenjualanProduks as $detail) {
-        //             DB::table('stok_tokobanjarans')
-        //                 ->where('produk_id', $detail->produk_id)
-        //                 ->increment('jumlah', $detail->jumlah);
-        //         }
-        
-        //         // Menghapus (soft delete) detail pemesanan terkait
-        //         Detailpenjualanproduk::where('penjualanproduk_id', $id)->delete();
-        
-        //         // Menghapus (soft delete) data pemesanan
-        //         $penjualan->delete();
-        //     });
-        
-        //     return redirect('toko_banjaran/penjualan_produk')->with('success', 'Berhasil menghapus data penjualan');
-        // }
         public function destroy($id)
         {
             DB::transaction(function () use ($id) {
@@ -888,17 +860,33 @@ class PenjualanprodukbanjaranController extends Controller
         }
 
         public function getProduk(Request $request)
-{
-    $search = $request->input('search', '');
+        {
+            $search = $request->input('search', '');
 
-    // Ambil data berdasarkan pencarian
-    $produks = Produk::with('tokobanjaran') // Gunakan eager loading jika perlu
-        ->where('nama_produk', 'LIKE', '%' . $search . '%')
-        ->orWhere('kode_lama', 'LIKE', '%' . $search . '%')
-        ->get();
+            // Ambil data berdasarkan pencarian
+            $produks = Produk::with('tokobanjaran') // Gunakan eager loading jika perlu
+                ->where('nama_produk', 'LIKE', '%' . $search . '%')
+                ->orWhere('kode_lama', 'LIKE', '%' . $search . '%')
+                ->get();
 
-    return response()->json($produks);
-}
+            return response()->json($produks);
+        }
+       
+
+        public function cariProduk1(Request $request) 
+        {
+            try {
+                $query = $request->input('query');
+                $produks = Produk::with(['tokobanjaran', 'stok_tokobanjaran'])
+                    ->where('kode_produk', 'LIKE', "%{$query}%")
+                    ->orWhere('kode_lama', 'LIKE', "%{$query}%")
+                    ->orWhere('nama_produk', 'LIKE', "%{$query}%")
+                    ->get();
         
-
+                return response()->json($produks, 200);  // Ensure a valid JSON response is returned
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Error fetching products: ' . $e->getMessage()], 500);  // Handle potential server errors
+            }
+        }
+        
 }

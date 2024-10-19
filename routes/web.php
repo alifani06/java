@@ -494,8 +494,9 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('/penjualan-produk/fetch-product-data', [PenjualanprodukbanjaranController::class, 'fetchProductData'])->name('toko_banjaran.penjualan_produk.fetchProductData');
     Route::get('/search-product', [PenjualanprodukbanjaranController::class, 'getProduk']);
     Route::get('/get-produks', [PenjualanprodukbanjaranController::class, 'getProduks']);
-    Route::get('/search', [PenjualanprodukbanjaranController::class, 'search']);
-
+    Route::get('/produk/search', [PenjualanprodukbanjaranController::class, 'search'])->name('produk.search');
+    Route::get('/cari-produk', [PenjualanprodukbanjaranController::class, 'cariProduk1'])->name('cari.produk');
+    
 
 
 
@@ -523,6 +524,8 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('permintaan_produk/posting_permintaanproduk/{id}', [\App\Http\Controllers\Toko_banjaran\PermintaanprodukbanjaranController::class, 'posting_permintaanproduk']);
     // Route::delete('Toko_banjaran/permintaan_produk/{id}', [PermintaanProdukController::class, 'destroy'])->name('Toko_banjaran.permintaan_produk.destroy');
     Route::post('toko_banjaran/permintaan/import', [PermintaanProdukBanjaranController::class, 'import'])->name('permintaan.import');
+
+    Route::resource('inquery_pelunasanbanjaran', \App\Http\Controllers\Toko_banjaran\Inquery_pelunasanbanjaranController::class);
 
 
     Route::resource('inquery_permintaanproduk', \App\Http\Controllers\Toko_banjaran\Inquery_permintaanprodukController::class);
@@ -715,6 +718,8 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
 
     Route::resource('inquery_permintaanproduk', \App\Http\Controllers\Toko_tegal\Inquery_permintaanprodukController::class);
   
+    Route::resource('inquery_pelunasantegal', \App\Http\Controllers\Toko_tegal\Inquery_pelunasantegalController::class);
+
 
     Route::resource('laporan_permintaanproduk', \App\Http\Controllers\Toko_tegal\Laporan_permintaanprodukController::class);
     Route::get('printReport1', [\App\Http\Controllers\Toko_tegal\Laporan_permintaanprodukController::class, 'printReport']);

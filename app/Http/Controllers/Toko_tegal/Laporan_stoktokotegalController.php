@@ -120,7 +120,7 @@ class Laporan_stoktokotegalController extends Controller
     
         $produk = $produkQuery->get();
     
-        $stok = Stokpesanan_tokobanjaran::with('produk')->get();
+        $stok = Stokpesanan_tokotegal::with('produk')->get();
     
         $stokGrouped = $stok->groupBy('produk_id')->map(function ($group) {
             $firstItem = $group->first();
@@ -282,7 +282,7 @@ class Laporan_stoktokotegalController extends Controller
         return $dompdf->stream('laporan_stoktoko.pdf', ['Attachment' => false]);
     }
 
-    public function printReportstokpesananbanjaran(Request $request)
+    public function printReportstokpesanantegal(Request $request)
     {
         $klasifikasis = Klasifikasi::all();
         $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);

@@ -81,27 +81,43 @@ class PelunasanpemesananTglController extends Controller
     }
 
     public function create()
-    {
-        $barangs = Barang::all();
-        $pelanggans = Pelanggan::all();
-        $details = Detailbarangjadi::all();
-        $tokoslawis = Tokoslawi::all();
-        $tokos = Toko::all();
-        $dppemesanans = Dppemesanan::all();
-        $pemesananproduks = Pemesananproduk::all();
-        $metodes = Metodepembayaran::all();
-        
-        // Filter produk berdasarkan nama klasifikasi
-        $produks = Produk::with(['tokotegal', 'klasifikasi'])
-                    ->whereHas('klasifikasi', function($query) {
-                        $query->whereIn('nama', ['FREE MAINAN', 'FREE PACKAGING', 'BAKERY']);
-                    })
-                    ->get();
+{
+    $barangs = Barang::all();
+    $pelanggans = Pelanggan::all();
+    $details = Detailbarangjadi::all();
+    $tokoslawis = Tokoslawi::all();
+    $tokos = Toko::all();
+    $pemesananproduks = Pemesananproduk::all();
+    $metodes = Metodepembayaran::all();
     
-        $kategoriPelanggan = 'member';
-        
-        return view('toko_tegal.pelunasan_pemesananTgl.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
-    }
+    // Filter produk berdasarkan nama klasifikasi
+    $produks = Produk::with(['tokotegal', 'klasifikasi'])
+                ->whereHas('klasifikasi', function($query) {
+                    $query->whereIn('nama', ['FREE MAINAN', 'FREE PACKAGING', 'BAKERY']);
+                })
+                ->get();
+
+    // Filter Dppemesanan berdasarkan toko_id = 2
+    $dppemesanans = Dppemesanan::whereHas('pemesananproduk', function($query) {
+        $query->where('toko_id', 2);
+    })->get();
+
+    $kategoriPelanggan = 'member';
+    
+    return view('toko_tegal.pelunasan_pemesananTgl.create', compact(
+        'barangs', 
+        'tokos', 
+        'produks', 
+        'details', 
+        'tokoslawis', 
+        'pelanggans', 
+        'kategoriPelanggan', 
+        'dppemesanans', 
+        'pemesananproduks', 
+        'metodes'
+    ));
+}
+
     // public function create()
     // {
 

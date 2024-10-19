@@ -13,7 +13,7 @@
             font-family: Arial, sans-serif;
             line-height: 1.6;
             /* margin: 0; */
-            margin-left: -5;    
+            margin-left: -5;
             margin-top: 0;
             /* padding: 0; */
             padding-right: 450px;
@@ -190,15 +190,15 @@
         <hr class="divider">
         <hr class="divider">
         <div class="section">
-            <h2>Struk Pelunasan Pemesanan</h2>
+            <h2>Struk penjualan</h2>
             <p style="text-align: right; font-size: 8px;">
-                {{ \Carbon\Carbon::parse($inquery->tanggal_pelunasan)->locale('id')->translatedFormat('l, d F Y H:i') }}
+                {{ \Carbon\Carbon::parse($penjualan->tanggal_penjualan)->locale('id')->translatedFormat('l, d F Y H:i') }}
             </p><br>
             <div class="detail-info">
                 <div class="penjualan">
                     <p>
                         <span style="min-width: 100px; display: inline-flex; align-items: center;">No penjualan</span>
-                        <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $inquery->kode_penjualan }}</span>
+                        <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $penjualan->kode_penjualan }}</span>
                     </p>
                 </div>
                 <div class="kasir">
@@ -207,21 +207,26 @@
                         <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</span>
                     </p>
                 </div>
-               
-                <div class="pelanggan">
-                    <p>
-                        <span style="min-width: 100px; display: inline-flex; align-items: center;">Pelanggan</span>
-                        <span style="min-width: 50px; display: inline-flex; align-items: center;">
-                            : 
-                           {{ $inquery->dppemesanan->pemesananproduk->nama_pelanggan }}
-                       
-                        </span>
-                    </p>
-                </div>
+                @if(!is_null($penjualan->nama_pelanggan))
+                    <div class="pelanggan">
+                        <p>
+                            <span style="min-width: 100px; display: inline-flex; align-items: center;">Pelanggan</span>
+                            <span style="min-width: 50px; display: inline-flex; align-items: center;">
+                                : 
+                                @if ($penjualan->kode_pelanggan && $penjualan->nama_pelanggan)
+                                    {{ $penjualan->kode_pelanggan }} / {{ $penjualan->nama_pelanggan }}
+                                @else
+                                    non member
+                                @endif
+                            </span>
+                        </p>
+                    </div>
+                @endif
+
                 
-                {{-- @if($inquery->dppemesanan->isEmpty())
+                @if($penjualan->detailpenjualanproduk->isEmpty())
                     <p>Tidak ada detail penjualan produk.</p>
-                @else --}}
+                @else
                 <table style="font-size: 12px; width: 100%;">
                     <thead>
                         <tr>
@@ -237,7 +242,7 @@
                         @php
                             $subtotal = 0;
                         @endphp
-                        @foreach($inquery->dppemesanan->pemesananproduk->detailpemesananproduk as $detail)
+                        @foreach($penjualan->detailpenjualanproduk as $detail)
                             <tr>
                                 <td style="font-size: 8px;">{{ $detail->kode_lama }}</td>
                                 <td style="font-size: 8px;">{{ $detail->nama_produk }}</td>
@@ -250,53 +255,68 @@
                                         -
                                     @endif
                                 </td>
-                                <td style="font-size: 8px; text-align: right;">{{'Rp.'. number_format($detail->total , 0, ',', '.')}}</td>
+                                <td style="font-size: 8px; text-align: right;">{{number_format($detail->total , 0, ',', '.')}}</td>
                             </tr>
                             @php
                                 $total = is_numeric($detail->total) ? $detail->total : 0;
                                 $subtotal += $total;
                             @endphp
                             @endforeach
-                            
                             <tr>
-                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total  </strong></td>
-                                <td style="font-size: 8px;">{{'Rp.'.  number_format($inquery->dppemesanan->pemesananproduk->sub_total, 0, ',', '.') }}</td>
-                            </tr>  
-                            <tr>
-                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong>DP  </strong></td>
-                                <td style="font-size: 8px;">{{'Rp.'.  number_format($inquery->dppemesanan->dp_pemesanan, 0, ',', '.') }}</td>
-                            </tr>  
-                            <tr>
-                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kekurangan  </strong></td>
-                                <td style="font-size: 8px;">{{'Rp.'.  number_format($inquery->dppemesanan->kekurangan_pemesanan, 0, ',', '.') }}</td>
-                            </tr>  
-                            
-                            <tr>
-                                @if($inquery->metode_id !== null)
-                                    <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee {{$inquery->metodepembayaran->nama_metode}} {{$inquery->metodepembayaran->fee}}%</strong></td>
+                                @if($penjualan->metode_id !== null)
+                                    <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Fee {{$penjualan->metodepembayaran->nama_metode}} {{$penjualan->metodepembayaran->fee}}%</strong></td>
                                     <td style="font-size: 8px; text-align: right;">
                                         @php
                                             // Menghapus semua karakter kecuali angka
-                                            $total_fee = preg_replace('/[^\d]/', '', $inquery->total_fee);
+                                            $total_fee = preg_replace('/[^\d]/', '', $penjualan->total_fee);
                                             // Konversi ke tipe float
                                             $total_fee = (float) $total_fee;
                                         @endphp
-                                        {{ 'Rp. ' . number_format($total_fee, 0, ',', '.') }}
+                                        {{number_format($total_fee, 0, ',', '.') }}
                                     </td>
                                 @endif
                             </tr>
+                        
+                        
+                        <tr>
+                            <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total </strong></td>
+                            <td style="font-size: 8px; text-align: right;">{{number_format($penjualan->sub_total, 0, ',', '.') }}</td>
+                        </tr>
+                        @if($penjualan->metode_id == Null)
                             <tr>
-                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Bayar </strong></td>
-                                <td style="font-size: 8px;">{{'Rp.'.  number_format($inquery->pelunasan, 0, ',', '.') }}</td>
-                            </tr>  
+                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Bayar</strong></td>
+                                <td style="font-size: 8px;">{{ number_format($penjualan->bayar, 0, ',', '.') }}</td>
+                            </tr>
                             <tr>
-                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kembali </strong></td>
-                                <td style="font-size: 8px;">{{'Rp.'.  number_format($inquery->kembali, 0, ',', '.') }}</td>
-                            </tr>  
+                                <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kembali</strong></td>
+                                <td style="font-size: 8px;">{{ number_format($penjualan->kembali, 0, ',', '.') }}</td>
+                            </tr>
+                        @elseif($penjualan->metode_bayar == 'mesinedc' || $penjualan->metode_bayar == 'gobiz')
+                            
+                        @endif
                     </tbody>
                 </table>
+                
+                
+                
+                @endif
             </div>
             
+            @if(!is_null($penjualan->catatan))
+            <div class="catatan">
+                <label>Catatan:</label>
+                <p>{{$penjualan->catatan}}</p>
+            </div>
+             @endif
+             
+             @if(preg_replace('/[^0-9]/', '', $penjualan->sub_total) < preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli))
+             <div class="hemat">
+                 <label>Anda telah hemat: </label>
+                 <span><strong>{{ 'Rp. ' . number_format(preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli) - preg_replace('/[^0-9]/', '', $penjualan->sub_total), 0, ',', '.') }}</strong></span>
+             </div>
+             @endif
+             
+         
             <div class="terimakasih">
                 <p>Untuk pemesanan, kritik dan saran Hubungi.082136638003.</p>
             </div>
@@ -308,19 +328,19 @@
                 <p>Terimakasih atas kunjungannya</p><br> 
             </div>
             <div class="qr" style="display: flex; justify-content: center; align-items: center; margin-top: 10px; margin-left: 4px">
-                {{-- <div style="text-align: center;">
+                <div style="text-align: center;">
                     {!! DNS2D::getBarcodeHTML($penjualan->qrcode_penjualan, 'QRCODE', 1.5, 1.5) !!}
-                </div> --}}
+                </div>
             </div> 
             
             <div class="d-flex justify-content-between">
                 <div>
-                    <a href="{{ url('toko_tegal/pelunasan_pemesananTgl') }}" class="btn btn-primary btn-sm">
+                    <a href="{{ url('toko_tegal/inquery_penjualanproduktegal') }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i> Kembali
                     </a>
                 </div>
                 <div>
-                    <a href="{{ route('toko_tegal.pelunasan_pemesananTgl.cetak-pdf', $inquery->id) }}"  id="printButton" target="_blank" class="btn btn-primary btn-sm">
+                    <a href="{{ route('toko_tegal.inquery_penjualanproduk.cetak-pdf', $penjualan->id) }}"  id="printButton" target="_blank" class="btn btn-primary btn-sm">
                         <i class="fas fa-print"></i> Cetak PDF
                     </a>
                 </div>

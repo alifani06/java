@@ -297,7 +297,7 @@
         <div class="section">
             <h2>Struk Pelunasan Pemesanan</h2>
             <p style="text-align: right; font-size: 8px;">
-                {{ \Carbon\Carbon::parse($inquery->tanggal_pemesanan)->locale('id')->translatedFormat('l, d F Y H:i') }}
+                {{ \Carbon\Carbon::parse($inquery->tanggal_pemesanan)->locale('id')->translatedFormat('d F Y H:i') }}
             </p><br>
             <div class="detail-info">
                 <div class="pemesanan">

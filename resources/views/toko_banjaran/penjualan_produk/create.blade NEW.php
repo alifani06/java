@@ -332,65 +332,7 @@
                             </div>
                         </div>
                     </div>
-                    
-                </div>
-                
-                 {{-- <div class="row">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <input type="text" id="searchInput" class="form-control" placeholder="Cari Produk..." onkeyup="searchProducts()">
-                                </div>
-                
-                                <table id="data" class="table table-bordered table-striped" style="font-size: 12px;">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">No</th>
-                                            <th hidden>Kode Produk</th>
-                                            <th>Kode Lama</th>
-                                            <th>Nama Produk</th>
-                                            <th>Harga Member</th>
-                                            <th>Diskon Member</th>
-                                            <th>Harga Non Member</th>
-                                            <th>Diskon Non Member</th>
-                                            <th>Stok</th>
-                                            <th hidden>QR</th>
-                                            <th hidden>Opsi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="data-body">
-                                        <!-- Data produk akan dimuat di sini menggunakan AJAX -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                
-                    <div class="col-md-6">
-                        <div class="card" id="selected-products-card" style="display: none;">
-                            <div class="card-body">
-                                <table class="table table-bordered table-striped" style="font-size: 12px;">
-                                    <thead>
-                                        <tr>
-                                            <th hidden style="background-color: #000; color: #fff;">Kode Produk</th>
-                                            <th style="background-color: #000; color: #fff;">Kode Lama</th>
-                                            <th style="background-color: #000; color: #fff;">Nama Produk</th>
-                                            <th style="background-color: #000; color: #fff;">Jumlah</th>
-                                            <th style="background-color: #000; color: #fff;">Diskon</th>
-                                            <th style="background-color: #000; color: #fff;">Harga</th>
-                                            <th style="background-color: #000; color: #fff;">Total</th>
-                                            <th style="background-color: #000; color: #fff;">Opsi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="selected-products-body">
-                
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
+                </div>  
                 
                 <div class="row mb-3">
                     <div class="col-md-6">
@@ -470,6 +412,7 @@
                         </div> 
                     </div>
                 </div>
+
             </div>
                 <div class="card">
                     <div class="card-header">
@@ -495,11 +438,9 @@
             </form>
         </div>
     </section>
-  
    
-
     <script>
-            document.getElementById('searchInput').addEventListener('input', function () {
+        document.getElementById('searchInput').addEventListener('input', function () {
         const searchText = this.value.toLowerCase(); // Ambil teks pencarian
         const rows = document.querySelectorAll('#data-body tr'); // Ambil semua baris dalam tabel
         let anyMatch = false; // Flag untuk mengecek apakah ada kecocokan
@@ -524,62 +465,62 @@
                 row.classList.add('hidden'); // Menyembunyikan baris
             }
         });
-    });
+        });
 
-    // Event listener untuk menangkap "Enter" dan mengambil data
-    document.getElementById('searchInput').addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') { // Jika tombol Enter ditekan
-            event.preventDefault(); // Mencegah aksi default seperti submit form
+        // Event listener untuk menangkap "Enter" dan mengambil data
+        document.getElementById('searchInput').addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') { // Jika tombol Enter ditekan
+                event.preventDefault(); // Mencegah aksi default seperti submit form
 
-            const searchText = this.value.toLowerCase();
-            
-            // Cek apakah input pencarian kosong
-            if (searchText.trim() === '') {
-                return; // Jika kosong, hentikan eksekusi
-            }
+                const searchText = this.value.toLowerCase();
+                
+                // Cek apakah input pencarian kosong
+                if (searchText.trim() === '') {
+                    return; // Jika kosong, hentikan eksekusi
+                }
 
-            const rows = document.querySelectorAll('#data-body tr'); // Ambil semua baris dalam tabel
-            let foundData = false;
+                const rows = document.querySelectorAll('#data-body tr'); // Ambil semua baris dalam tabel
+                let foundData = false;
 
-            // Loop melalui baris untuk mencari yang cocok
-            rows.forEach(row => {
-                const cells = row.getElementsByTagName('td');
-                let found = false;
+                // Loop melalui baris untuk mencari yang cocok
+                rows.forEach(row => {
+                    const cells = row.getElementsByTagName('td');
+                    let found = false;
 
-                // Cari kecocokan pada kolom data (bukan kolom pertama dan terakhir)
-                for (let i = 1; i < cells.length - 1; i++) {
-                    if (cells[i].innerText.toLowerCase().includes(searchText)) {
-                        found = true;
-                        break;
+                    // Cari kecocokan pada kolom data (bukan kolom pertama dan terakhir)
+                    for (let i = 1; i < cells.length - 1; i++) {
+                        if (cells[i].innerText.toLowerCase().includes(searchText)) {
+                            found = true;
+                            break;
+                        }
                     }
+
+                    // Jika kecocokan ditemukan, ambil data dan masukkan ke tabel yang dipilih
+                    if (found) {
+                        const productData = {
+                            id: row.querySelector('td:nth-child(1)').innerText, // Ambil produk_id dari kolom pertama
+                            kode: row.querySelector('td:nth-child(2)').innerText,
+                            kodel: row.querySelector('td:nth-child(3)').innerText,
+                            nama: row.querySelector('td:nth-child(4)').innerText,
+                            member: row.querySelector('.member_harga_bnjr').innerText,
+                            diskonmember: row.querySelector('.member_diskon_bnjr').innerText,
+                            nonmember: row.querySelector('.non_harga_bnjr').innerText,
+                            diskonnonmember: row.querySelector('.non_diskon_bnjr').innerText
+                        };
+
+                        // Tambahkan produk ke tabel di card
+                        addProductToCard(productData);
+
+                        foundData = true; // Tandai bahwa data telah ditemukan
+                    }
+                });
+
+                // Jika data ditemukan, kosongkan input pencarian
+                if (foundData) {
+                    this.value = ''; // Kosongkan input pencarian
                 }
-
-                // Jika kecocokan ditemukan, ambil data dan masukkan ke tabel yang dipilih
-                if (found) {
-                    const productData = {
-                        id: row.querySelector('td:nth-child(1)').innerText, // Ambil produk_id dari kolom pertama
-                        kode: row.querySelector('td:nth-child(2)').innerText,
-                        kodel: row.querySelector('td:nth-child(3)').innerText,
-                        nama: row.querySelector('td:nth-child(4)').innerText,
-                        member: row.querySelector('.member_harga_bnjr').innerText,
-                        diskonmember: row.querySelector('.member_diskon_bnjr').innerText,
-                        nonmember: row.querySelector('.non_harga_bnjr').innerText,
-                        diskonnonmember: row.querySelector('.non_diskon_bnjr').innerText
-                    };
-
-                    // Tambahkan produk ke tabel di card
-                    addProductToCard(productData);
-
-                    foundData = true; // Tandai bahwa data telah ditemukan
-                }
-            });
-
-            // Jika data ditemukan, kosongkan input pencarian
-            if (foundData) {
-                this.value = ''; // Kosongkan input pencarian
             }
-        }
-    });
+        });
 
     
         let kategoriPelanggan = ''; // Variabel untuk menyimpan tipe pelanggan
@@ -635,97 +576,94 @@
         }
         
         function addProductToCard(productData) {
-    const tbody = document.getElementById('selected-products-body');
-    let harga = 0;
-    let diskon = 0;
+        const tbody = document.getElementById('selected-products-body');
+        let harga = 0;
+        let diskon = 0;
 
-    // Cek tipe pelanggan untuk menentukan harga dan diskon
-    if (kategoriPelanggan === 'member') {
-        harga = parseFloat(productData.member) || 0;
-        diskon = parseFloat(productData.diskonmember) || 0;
-    } else if (kategoriPelanggan === 'nonmember') {
-        harga = parseFloat(productData.nonmember) || 0;
-        diskon = parseFloat(productData.diskonnonmember) || 0;
-    } else {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Tipe Pelanggan Belum Dipilih',
-            text: 'Silakan pilih tipe pelanggan terlebih dahulu.',
-            confirmButtonText: 'OK'
+        // Cek tipe pelanggan untuk menentukan harga dan diskon
+        if (kategoriPelanggan === 'member') {
+            harga = parseFloat(productData.member) || 0;
+            diskon = parseFloat(productData.diskonmember) || 0;
+        } else if (kategoriPelanggan === 'nonmember') {
+            harga = parseFloat(productData.nonmember) || 0;
+            diskon = parseFloat(productData.diskonnonmember) || 0;
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tipe Pelanggan Belum Dipilih',
+                text: 'Silakan pilih tipe pelanggan terlebih dahulu.',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        // Cek apakah produk dengan produk_id yang sama sudah ada di tabel
+        const existingRow = Array.from(tbody.querySelectorAll('tr')).find(row => {
+            const produkId = row.querySelector('input[name="produk_id[]"]').value;
+            return produkId === productData.id;
         });
-        return;
-    }
 
-    // Cek apakah produk dengan produk_id yang sama sudah ada di tabel
-    const existingRow = Array.from(tbody.querySelectorAll('tr')).find(row => {
-        const produkId = row.querySelector('input[name="produk_id[]"]').value;
-        return produkId === productData.id;
-    });
+        if (existingRow) {
+            // Jika produk sudah ada, tambahkan jumlahnya
+            const jumlahInput = existingRow.querySelector('.jumlah-input');
+            let jumlah = parseInt(jumlahInput.value, 10) || 0;
+            jumlah += 1; // Tambah jumlah 1 (atau sesuaikan logika jika ingin menambah default jumlah input)
+            jumlahInput.value = jumlah; // Set jumlah baru
 
-    if (existingRow) {
-        // Jika produk sudah ada, tambahkan jumlahnya
-        const jumlahInput = existingRow.querySelector('.jumlah-input');
-        let jumlah = parseInt(jumlahInput.value, 10) || 0;
-        jumlah += 1; // Tambah jumlah 1 (atau sesuaikan logika jika ingin menambah default jumlah input)
-        jumlahInput.value = jumlah; // Set jumlah baru
-
-        // Hitung total harga berdasarkan jumlah baru
-        const total = calculateTotal(harga, diskon, jumlah);
-        existingRow.querySelector('.total-amount').innerText = total;
-        existingRow.querySelector('input[name="total[]"]').value = total; // Update hidden input total
-
-        existingRow.querySelector('input[name="jumlah[]"]').value = jumlah; // Update jumlah terbaru
-
-    } else {
-        // Jika produk belum ada, tambahkan produk baru ke tabel
-        const row = document.createElement('tr');
-        const jumlahInput = 1; // Default value for new product
-        row.innerHTML = `
-        <td hidden>${productData.kode}</td>
-        <td>${productData.kodel}</td>
-        <td style="width: 30%;">${productData.nama}</td>
-        <td style="width: 20%;"><input type="number" class="form-control jumlah-input" value="${jumlahInput}" min="1"></td>
-        <td>${diskon}%</td>
-        <td>${harga}</td>
-        <td class="total-amount">${calculateTotal(harga, diskon, jumlahInput)}</td>
-        <td>
-            <button class="btn btn-danger delete-btn btn-sm"><i class="fas fa-trash"></i></button>
-        </td>
-        <input type="hidden" name="produk_id[]" value="${productData.id}" />
-        <input type="hidden" name="kode_produk[]" value="${productData.kode}" />
-        <input type="hidden" name="kode_lama[]" value="${productData.kodel}" />
-        <input type="hidden" name="nama_produk[]" value="${productData.nama}" />
-        <input type="hidden" name="harga[]" value="${harga}" />
-        <input type="hidden" name="diskon[]" value="${diskon}" />
-        <input type="hidden" name="total[]" value="${calculateTotal(harga, diskon, jumlahInput)}" />
-        <input type="hidden" name="totalasli[]" value="${harga}" />
-        <input type="hidden" name="jumlah[]" value="${jumlahInput}" />
-        `;
-        tbody.appendChild(row);
-
-        // Tambahkan event listener ke input jumlah
-        row.querySelector('.jumlah-input').addEventListener('input', function() {
-            const jumlah = parseInt(this.value, 10) || 0;
+            // Hitung total harga berdasarkan jumlah baru
             const total = calculateTotal(harga, diskon, jumlah);
-            row.querySelector('.total-amount').innerText = total;
-            row.querySelector('input[name="total[]"]').value = total;
-            row.querySelector('input[name="jumlah[]"]').value = jumlah; // Update jumlah sesuai input
-            calculateSubTotal();
-        });
+            existingRow.querySelector('.total-amount').innerText = total;
+            existingRow.querySelector('input[name="total[]"]').value = total; // Update hidden input total
 
-        // Event listener untuk tombol hapus
-        row.querySelector('.delete-btn').addEventListener('click', function() {
-            row.remove(); // Menghapus row dari tabel
-            calculateSubTotal(); // Update subtotal setelah menghapus
-        });
-    }
+            existingRow.querySelector('input[name="jumlah[]"]').value = jumlah; // Update jumlah terbaru
 
-    document.getElementById('selected-products-card').style.display = 'block';
-    calculateSubTotal();
-}
+        } else {
+            // Jika produk belum ada, tambahkan produk baru ke tabel
+            const row = document.createElement('tr');
+            const jumlahInput = 1; // Default value for new product
+            row.innerHTML = `
+            <td hidden>${productData.kode}</td>
+            <td>${productData.kodel}</td>
+            <td style="width: 30%;">${productData.nama}</td>
+            <td style="width: 20%;"><input type="number" class="form-control jumlah-input" value="${jumlahInput}" min="1"></td>
+            <td>${diskon}%</td>
+            <td>${harga}</td>
+            <td class="total-amount">${calculateTotal(harga, diskon, jumlahInput)}</td>
+            <td>
+                <button class="btn btn-danger delete-btn btn-sm"><i class="fas fa-trash"></i></button>
+            </td>
+            <input type="hidden" name="produk_id[]" value="${productData.id}" />
+            <input type="hidden" name="kode_produk[]" value="${productData.kode}" />
+            <input type="hidden" name="kode_lama[]" value="${productData.kodel}" />
+            <input type="hidden" name="nama_produk[]" value="${productData.nama}" />
+            <input type="hidden" name="harga[]" value="${harga}" />
+            <input type="hidden" name="diskon[]" value="${diskon}" />
+            <input type="hidden" name="total[]" value="${calculateTotal(harga, diskon, jumlahInput)}" />
+            <input type="hidden" name="totalasli[]" value="${harga}" />
+            <input type="hidden" name="jumlah[]" value="${jumlahInput}" />
+            `;
+            tbody.appendChild(row);
 
+            // Tambahkan event listener ke input jumlah
+            row.querySelector('.jumlah-input').addEventListener('input', function() {
+                const jumlah = parseInt(this.value, 10) || 0;
+                const total = calculateTotal(harga, diskon, jumlah);
+                row.querySelector('.total-amount').innerText = total;
+                row.querySelector('input[name="total[]"]').value = total;
+                row.querySelector('input[name="jumlah[]"]').value = jumlah; // Update jumlah sesuai input
+                calculateSubTotal();
+            });
 
+            // Event listener untuk tombol hapus
+            row.querySelector('.delete-btn').addEventListener('click', function() {
+                row.remove(); // Menghapus row dari tabel
+                calculateSubTotal(); // Update subtotal setelah menghapus
+            });
+        }
 
+        document.getElementById('selected-products-card').style.display = 'block';
+        calculateSubTotal();
+        }
 
         function calculateTotal(harga, diskon, jumlah) {
         const diskonAmount = harga * (diskon / 100); // Hitung diskon berdasarkan persentase
