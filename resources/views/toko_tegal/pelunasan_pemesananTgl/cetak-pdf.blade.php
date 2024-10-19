@@ -363,7 +363,7 @@
                         </tr>  
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>DP</strong></td>
-                            <td style="font-size: 8px;">{{ number_format($inquery->dppemesanan->dp_pemesanan, 0, ',', '.') }}</td>
+                            <td style="font-size: 8px; text-align: right;">{{ number_format($inquery->dppemesanan->dp_pemesanan, 0, ',', '.') }}</td>
                         </tr>  
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kekurangan</strong></td>
