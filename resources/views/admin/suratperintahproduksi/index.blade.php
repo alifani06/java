@@ -106,6 +106,9 @@
                                 <button type="button" class="btn btn-primary btn-block" onclick="printReport()" target="_blank">
                                     <i class="fas fa-print"></i> Cetak
                                 </button>
+                                <button type="button" class="btn btn-info btn-block" onclick="printReport1()" target="_blank">
+                                    <i class="fas fa-print"></i> Cetak
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -213,7 +216,18 @@
 
 </script>
 
+<script>
+    function printReport1() {
+    const form = document.getElementById('form-action');
+    const klasifikasiId = document.getElementById('klasifikasi').value;
 
+    // Buat URL dengan parameter yang diperlukan
+    form.action = `{{ url('admin/printReportestimasirinci') }}?klasifikasi_id=${klasifikasiId}`;
+    form.target = "_blank";
+    form.submit();
+}
+
+</script>
 
 
 <script>

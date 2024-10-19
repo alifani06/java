@@ -871,22 +871,21 @@ class PenjualanprodukbanjaranController extends Controller
 
             return response()->json($produks);
         }
+
+        public function searchProduct(Request $request)
+{
+    $query = $request->input('query');
+    
+    // Cari produk berdasarkan query
+    $products = Produk::where('nama_produk', 'LIKE', "%$query%")
+                        ->orWhere('kode_produk', 'LIKE', "%$query%")
+                        ->get();
+    
+    // Kembalikan hasil dalam format JSON
+    return response()->json($products);
+}
+
        
 
-        public function cariProduk1(Request $request) 
-        {
-            try {
-                $query = $request->input('query');
-                $produks = Produk::with(['tokobanjaran', 'stok_tokobanjaran'])
-                    ->where('kode_produk', 'LIKE', "%{$query}%")
-                    ->orWhere('kode_lama', 'LIKE', "%{$query}%")
-                    ->orWhere('nama_produk', 'LIKE', "%{$query}%")
-                    ->get();
-        
-                return response()->json($produks, 200);  // Ensure a valid JSON response is returned
-            } catch (\Exception $e) {
-                return response()->json(['error' => 'Error fetching products: ' . $e->getMessage()], 500);  // Handle potential server errors
-            }
-        }
-        
+       
 }

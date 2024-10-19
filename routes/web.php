@@ -356,6 +356,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     // Route::get('admin/printReportestimasi', [SuratperintahproduksiController::class, 'printReportestimasi'])->name('printReportestimasi');
     Route::get('printReportestimasi', [\App\Http\Controllers\Admin\SuratperintahproduksiController::class, 'printReportestimasi']);
     // Route::get('/estimasi-produksi/cetak', [EstimasiProduksiController::class, 'cetak'])->name('estimasi.produksi.cetak');
+    Route::get('printReportestimasirinci', [\App\Http\Controllers\Admin\SuratperintahproduksiController::class, 'printReportestimasirinci']);
 
     Route::resource('surat_hasilproduksi', \App\Http\Controllers\Admin\SurathasilproduksiController::class);
     Route::post('/save-realisasi', [SurathasilproduksiController::class, 'saveRealisasi'])->name('saveRealisasi');
@@ -498,7 +499,8 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('/get-produks', [PenjualanprodukbanjaranController::class, 'getProduks']);
     Route::get('/produk/search', [PenjualanprodukbanjaranController::class, 'search'])->name('produk.search');
     Route::get('/cari-produk', [PenjualanprodukbanjaranController::class, 'cariProduk1'])->name('cari.produk');
-    
+    Route::get('/search-product', [PenjualanprodukbanjaranController::class, 'searchProduct']);
+
 
 
 

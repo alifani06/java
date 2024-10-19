@@ -483,8 +483,6 @@ class Pengiriman_tokobanjaranController extends Controller{
 
 
 
-    
-
     public function edit($id)
     {
         $stok_barangjadi = Stok_Barangjadi::findOrFail($id);
