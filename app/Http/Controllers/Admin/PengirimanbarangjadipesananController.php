@@ -82,112 +82,16 @@ class PengirimanbarangjadipesananController extends Controller{
         return view('admin.pengiriman_barangjadipesanan.create', compact('klasifikasis', 'tokos', 'uniqueStokBarangjadi'));
     }
     
-    // public function store(Request $request)
-    // {
-    //     $kode = $this->kode();
-    //     $produkData = $request->input('produk_id', []);
-    //     $jumlahData = $request->input('jumlah', []);
-    //     $tokoId = $request->input('toko_id');
-
-    //     // Array untuk menyimpan ID pengiriman
-    //     $pengirimanIds = [];
-
-    //     foreach ($produkData as $key => $produkId) {
-    //         $jumlah = $jumlahData[$key] ?? null;
-
-    //         if (!is_null($jumlah) && $jumlah !== '') {
-    //             // Ambil kode produk untuk pesan error
-    //             $kodeProduk = Produk::where('id', $produkId)->value('kode_produk');
-
-    //             // Simpan pengiriman tanpa mengurangi stok
-    //             $pengiriman = Pengiriman_barangjadipesanan::create([
-    //                 'kode_pengirimanpesanan' => $kode,
-    //                 'qrcode_pengiriman' => 'https://javabakery.id/pengiriman_produk/' . $kode,
-    //                 'produk_id' => $produkId,
-    //                 'toko_id' => $tokoId,
-    //                 'jumlah' => $jumlah,
-    //                 'status' => 'unpost',
-    //                 'tanggal_pengiriman' => Carbon::now('Asia/Jakarta'),
-    //             ]);
-
-    //             // Buat catatan stok di toko terkait
-    //             switch ($tokoId) {
-    //                 case 1:
-    //                     Pengirimanpemesanan_tokobanjaran::create([
-    //                         'pengiriman_barangjadi_id' => $pengiriman->id,
-    //                         'kode_pengirimanpesanan' => $kode,
-    //                         'produk_id' => $produkId,
-    //                         'jumlah' => $jumlah,
-    //                         'status' => 'unpost',
-    //                         'toko_id' => $tokoId,
-    //                         'tanggal_input' => Carbon::now('Asia/Jakarta'),
-                            
-    //                     ]);
-    //                     break;
-    //                 case 2:
-    //                     Stok_tokotegal::create([
-    //                         'pengiriman_barangjadi_id' => $pengiriman->id,
-    //                         'kode_pengiriman' => $kode,
-    //                         'produk_id' => $produkId,
-    //                         'jumlah' => $jumlah,
-    //                         'tanggal_input' => Carbon::now('Asia/Jakarta'),
-    //                     ]);
-    //                     break;
-    //                 case 3:
-    //                     Stok_tokoslawi::create([
-    //                         'pengiriman_barangjadi_id' => $pengiriman->id,
-    //                         'kode_pengiriman' => $kode,
-    //                         'produk_id' => $produkId,
-    //                         'jumlah' => $jumlah,
-    //                         'status' => 'unpost',
-    //                         'tanggal_input' => Carbon::now('Asia/Jakarta'),
-    //                     ]);
-    //                     break;
-    //                 case 4:
-    //                     Stok_tokopemalang::create([
-    //                         'pengiriman_barangjadi_id' => $pengiriman->id,
-    //                         'kode_pengiriman' => $kode,
-    //                         'produk_id' => $produkId,
-    //                         'jumlah' => $jumlah,
-    //                         'tanggal_input' => Carbon::now('Asia/Jakarta'),
-    //                     ]);
-    //                     break;
-    //                 case 5:
-    //                     Stok_tokobumiayu::create([
-    //                         'pengiriman_barangjadi_id' => $pengiriman->id,
-    //                         'kode_pengiriman' => $kode,
-    //                         'produk_id' => $produkId,
-    //                         'jumlah' => $jumlah,
-    //                         'tanggal_input' => Carbon::now('Asia/Jakarta'),
-    //                     ]);
-    //                     break;
-    //                 default:
-    //                     return redirect()->back()->with('error', 'Toko ID tidak valid');
-    //             }
-
-    //             // Simpan ID pengiriman yang baru dibuat
-    //             $pengirimanIds[] = $pengiriman->id;
-    //         }
-    //     }
-
-    //     // Jika ada ID pengiriman yang baru dibuat, arahkan ke halaman show
-    //     if (!empty($pengirimanIds)) {
-    //         $firstId = $pengirimanIds[0]; // Ambil ID pengiriman yang pertama
-    //         return redirect()->route('pengiriman_barangjadipesanan.show', $firstId)
-    //             ->with('success', 'Berhasil menambahkan permintaan produk');
-    //     }
-
-    //     return redirect()->route('pengiriman_barangjadi.index')
-    //         ->with('success', 'Berhasil menambahkan permintaan produk');
-    // }
+   
 
     public function store(Request $request)
     {
-        $kode = $this->kode();
+        $tanggalPengiriman = $request->input('tanggal_pengiriman'); 
+        $tokoId = $request->input('toko_id');
+        $kode = $this->kode($tanggalPengiriman, $tokoId); // Panggil kode() dengan tanggal pengiriman dan toko_id
         $produkData = $request->input('produk_id', []);
         $jumlahData = $request->input('jumlah', []);
         $tokoId = $request->input('toko_id');
-        $tanggalPengiriman = $request->input('tanggal_pengiriman'); // Ambil tanggal pengiriman dari input
         $kodeProduksi = implode('', $request->input('kode_produksi', [])); // Menggabungkan kode produksi tanpa koma
 
         // Validasi tanggal pengiriman (opsional)
@@ -298,58 +202,75 @@ class PengirimanbarangjadipesananController extends Controller{
     }
 
 
-    // public function kode1()
+    
+    // public function kode($tanggalPengiriman)
     // {
-    //     // Gunakan database transaction untuk menghindari race conditions
-    //     return DB::transaction(function () {
-    //         // Ambil kode pengiriman terakhir
-    //         $lastBarang = Pengiriman_barangjadipesanan::latest('kode_pengirimanpesanan')->lockForUpdate()->first();
-            
-    //         if (!$lastBarang) {
-    //             // Jika tidak ada data, mulai dari 1
-    //             $num = 1;
-    //         } else {
-    //             // Ambil kode terakhir dan pecah untuk mengambil angka
-    //             $lastCode = $lastBarang->kode_pengirimanpesanan;
-    //             $num = (int) substr($lastCode, strlen('JXp')) + 1;
-    //         }
+    //     $prefix = 'JKp';
+    //     $year = Carbon::parse($tanggalPengiriman)->format('y'); // Dua digit terakhir dari tahun berdasarkan tanggal pengiriman
+    //     $monthDay = Carbon::parse($tanggalPengiriman)->format('dm'); // Format bulan dan hari: MMDD berdasarkan tanggal pengiriman
     
-    //         // Format angka menjadi 6 digit
-    //         $formattedNum = sprintf("%06s", $num);
+    //     // Mengambil kode terakhir yang dibuat pada hari yang sama dengan prefix PBNJ
+    //     $lastBarang = Pengiriman_barangjadipesanan::where('kode_pengirimanpesanan', 'LIKE', $prefix . '%')
+    //                                   ->whereDate('tanggal_pengiriman', Carbon::parse($tanggalPengiriman))
+    //                                   ->orderBy('kode_pengirimanpesanan', 'desc')
+    //                                   ->first();
     
-    //         // Buat prefix baru
-    //         $prefix = 'JXp';
-    //         $newCode = $prefix . $formattedNum;
+    //     if (!$lastBarang) {
+    //         $num = 1;
+    //     } else {
+    //         $lastCode = $lastBarang->kode_pengirimanpesanan;
+    //         $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
+    //         $num = $lastNum + 1;
+    //     }
     
-    //         return $newCode;
-    //     });
+    //     $formattedNum = sprintf("%03d", $num); 
+    //     $newCode = $prefix . $monthDay . $year . $formattedNum;
+    //     return $newCode;
     // }
-
-    public function kode()
-    {
-        $prefix = 'JKp';
-        $year = date('y'); // Dua digit terakhir dari tahun
-        $monthDay = date('dm'); // Format bulan dan hari: MMDD
-    
-        // Mengambil kode terakhir yang dibuat pada hari yang sama dengan prefix PBNJ
-        $lastBarang = Pengiriman_barangjadipesanan::where('kode_pengirimanpesanan', 'LIKE', $prefix . '%')
-                                      ->whereDate('tanggal_pengiriman', Carbon::today())
-                                      ->orderBy('kode_pengirimanpesanan', 'desc')
-                                      ->first();
-    
-        if (!$lastBarang) {
-            $num = 1;
-        } else {
-            $lastCode = $lastBarang->kode_pengirimanpesanan;
-            $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
-            $num = $lastNum + 1;
-        }
-    
-        $formattedNum = sprintf("%03d", $num); 
-        $newCode = $prefix . $monthDay . $year . $formattedNum;
-        return $newCode;
+    public function kode($tanggalPengiriman, $tokoId)
+{
+    // Atur prefix berdasarkan toko_id
+    switch ($tokoId) {
+        case 1:
+            $prefix = 'JKpC'; // Toko Banjaran
+            break;
+        case 2:
+            $prefix = 'JKpD'; // Toko Tegal
+            break;
+        case 3:
+            $prefix = 'JKpS'; // Toko Slawi
+            break;
+        case 4:
+            $prefix = 'JKpP'; // Toko Pemalang
+            break;
+        case 5:
+            $prefix = 'JKpB'; // Toko Bumiayu
+            break;
+        default:
+            $prefix = 'JKp'; // Default prefix jika toko_id tidak valid
+            break;
     }
-    
+
+    $year = Carbon::parse($tanggalPengiriman)->format('y'); // Dua digit terakhir dari tahun berdasarkan tanggal pengiriman
+    $monthDay = Carbon::parse($tanggalPengiriman)->format('dm'); // Format bulan dan hari: MMDD berdasarkan tanggal pengiriman
+
+    // Mengambil kode terakhir yang dibuat pada hari yang sama dengan prefix yang sesuai
+    $lastBarang = Pengiriman_barangjadipesanan::where('kode_pengirimanpesanan', 'LIKE', $prefix . '%')
+                                  ->whereDate('tanggal_pengiriman', Carbon::parse($tanggalPengiriman)) // Sesuaikan dengan tanggal pengiriman
+                                  ->orderBy('kode_pengirimanpesanan', 'desc')
+                                  ->first();
+    if (!$lastBarang) {
+        $num = 1;
+    } else {
+        $lastCode = $lastBarang->kode_pengirimanpesanan;
+        $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
+        $num = $lastNum + 1;
+    }
+
+    $formattedNum = sprintf("%03d", $num); 
+    $newCode = $prefix . $monthDay . $year . $formattedNum;
+    return $newCode;
+}
    
     
 

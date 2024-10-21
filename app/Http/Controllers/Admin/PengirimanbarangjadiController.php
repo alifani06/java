@@ -89,10 +89,10 @@ class PengirimanbarangjadiController extends Controller{
     public function store(Request $request)
 {
     $tanggalPengiriman = $request->input('tanggal_pengiriman'); // Ambil tanggal pengiriman dari input
-    $kode = $this->kode($tanggalPengiriman); // Panggil kode() dengan tanggal pengiriman dari input
+    $tokoId = $request->input('toko_id');
+    $kode = $this->kode($tanggalPengiriman, $tokoId); // Panggil kode() dengan tanggal pengiriman dan toko_id
     $produkData = $request->input('produk_id', []);
     $jumlahData = $request->input('jumlah', []);
-    $tokoId = $request->input('toko_id');
 
     // Validasi tanggal pengiriman (opsional)
     $request->validate([
@@ -208,18 +208,39 @@ class PengirimanbarangjadiController extends Controller{
                     ->with('success', 'Berhasil menambahkan permintaan produk');
             }
 
-public function kode($tanggalPengiriman)
+
+public function kode($tanggalPengiriman, $tokoId)
 {
-    $prefix = 'JK';
+    // Atur prefix berdasarkan toko_id
+    switch ($tokoId) {
+        case 1:
+            $prefix = 'JKC'; // Toko Banjaran
+            break;
+        case 2:
+            $prefix = 'JKD'; // Toko Tegal
+            break;
+        case 3:
+            $prefix = 'JKS'; // Toko Slawi
+            break;
+        case 4:
+            $prefix = 'JKP'; // Toko Pemalang
+            break;
+        case 5:
+            $prefix = 'JKB'; // Toko Bumiayu
+            break;
+        default:
+            $prefix = 'JK'; // Default prefix jika toko_id tidak valid
+            break;
+    }
+
     $year = Carbon::parse($tanggalPengiriman)->format('y'); // Dua digit terakhir dari tahun berdasarkan tanggal pengiriman
     $monthDay = Carbon::parse($tanggalPengiriman)->format('dm'); // Format bulan dan hari: MMDD berdasarkan tanggal pengiriman
 
-    // Mengambil kode terakhir yang dibuat pada hari yang sama dengan prefix PBNJ
+    // Mengambil kode terakhir yang dibuat pada hari yang sama dengan prefix yang sesuai
     $lastBarang = Pengiriman_barangjadi::where('kode_pengiriman', 'LIKE', $prefix . '%')
                                   ->whereDate('tanggal_pengiriman', Carbon::parse($tanggalPengiriman)) // Sesuaikan dengan tanggal pengiriman
                                   ->orderBy('kode_pengiriman', 'desc')
                                   ->first();
-
     if (!$lastBarang) {
         $num = 1;
     } else {
@@ -232,6 +253,7 @@ public function kode($tanggalPengiriman)
     $newCode = $prefix . $monthDay . $year . $formattedNum;
     return $newCode;
 }
+        
 
 
     public function show($id)
