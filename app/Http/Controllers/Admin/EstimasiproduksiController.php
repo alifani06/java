@@ -264,6 +264,8 @@ class EstimasiproduksiController extends Controller{
         'kode_estimasi' => $kode,
         'qrcode_estimasi' => 'https://javabakery.id/estimasi_produksi/' . $kode,
         'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
+        'status' => 'posting',
+
     ]);
 
     // Menyimpan data dari pemesananProduksFirst
@@ -281,7 +283,7 @@ class EstimasiproduksiController extends Controller{
                 'jumlah' => $jumlah1,
                 'toko_id' => $toko_id,
                 'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
-                'status' => 'unpost',
+                // 'status' => 'posting',
                 'kode_lama' => $produk1->kode_lama, // Ambil kode lama dari produk
                 'nama_produk' => $produk1->nama_produk, // Ambil nama produk dari produk
                 'kategori' => 'pesanan', // Tambahkan kategori untuk pesanan
@@ -304,7 +306,7 @@ class EstimasiproduksiController extends Controller{
                 'jumlah' => $jumlah,
                 'toko_id' => $toko_id,
                 'tanggal_estimasi' => Carbon::now('Asia/Jakarta'),
-                'status' => 'unpost',
+                // 'status' => 'posting',
                 'kode_lama' => $produk->kode_lama, // Ambil kode lama dari produk
                 'nama_produk' => $produk->nama_produk, // Ambil nama produk dari produk
                 'kategori' => 'permintaan', // Tambahkan kategori untuk permintaan

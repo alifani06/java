@@ -75,13 +75,20 @@ class Hasilproduksi extends Model
     {
         return $this->hasMany(Detailpermintaanproduk::class, 'permintaanproduk_id');
     }
+    
     public function klasifikasi()
     {
         return $this->hasMany(Klasifikasi::class, 'produk_id');
     }
+
     public function detailestimasiproduksi()
     {
         return $this->hasMany(DetailEstimasiProduksi::class, 'estimasiproduksi_id');
+    }
+
+    public function detailhasilproduksi()
+    {
+        return $this->hasMany(detailhasilproduksi::class, 'hasilproduksi_id');
     }
     
 }

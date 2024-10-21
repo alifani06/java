@@ -167,7 +167,9 @@
                             </tbody>
                             
                         </table>
-                        <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Simpan</button> <!-- Tombol Simpan -->
+                            <div style="display: flex; justify-content: flex-end;">
+                                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Simpan</button>
+                            </div>
                     </form>
                     
                     

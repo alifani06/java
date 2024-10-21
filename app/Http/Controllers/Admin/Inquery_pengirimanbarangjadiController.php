@@ -52,48 +52,7 @@ use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 class Inquery_pengirimanbarangjadiController extends Controller{
 
 
-    // public function index(Request $request)
-    // {
-    //     $status = $request->status;
-    //     $tanggal_pengiriman = $request->tanggal_pengiriman;
-    //     $tanggal_akhir = $request->tanggal_akhir;
-    //     $toko_id = $request->toko_id;  // Ambil toko_id dari request
-
-    //     $query = Pengiriman_barangjadi::with(['produk.klasifikasi', 'toko']); // Pastikan toko diload
-
-    //     if ($status) {
-    //         $query->where('status', $status);
-    //     }
-
-    //     if ($toko_id) {
-    //         $query->where('toko_id', $toko_id); // Tambahkan filter berdasarkan toko_id
-    //     }
-
-    //     if ($tanggal_pengiriman && $tanggal_akhir) {
-    //         $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
-    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //         $query->whereBetween('tanggal_pengiriman', [$tanggal_pengiriman, $tanggal_akhir]);
-    //     } elseif ($tanggal_pengiriman) {
-    //         $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
-    //         $query->where('tanggal_pengiriman', '>=', $tanggal_pengiriman);
-    //     } elseif ($tanggal_akhir) {
-    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //         $query->where('tanggal_pengiriman', '<=', $tanggal_akhir);
-    //     } else {
-    //         $query->whereDate('tanggal_pengiriman', Carbon::today());
-    //     }
-
-    //     // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
-    //     $stokBarangJadi = $query
-    //         ->orderBy('created_at', 'desc')
-    //         ->get()
-    //         ->groupBy('kode_pengiriman');
-
-    //     // Ambil daftar toko untuk dropdown
-    //     $tokos = Toko::all();
-
-    //     return view('admin.inquery_pengirimanbarangjadi.index', compact('stokBarangJadi', 'tokos'));
-    // }
+    
     public function index(Request $request)
 {
     $status = $request->status;

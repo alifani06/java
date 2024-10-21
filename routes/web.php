@@ -352,6 +352,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::delete('estimasi_produksi/deletedetailpermintaan/{id}', [\App\Http\Controllers\Admin\EstimasiproduksiController::class, 'deletedetailpermintaan']);
     Route::post('admin/estimasi_produksi', [EstimasiproduksiController::class, 'store'])->name('estimasi_produksi.store');
 
+
+
     Route::resource('surat_perintahproduksi', \App\Http\Controllers\Admin\SuratperintahproduksiController::class);
     // Route::get('admin/printReportestimasi', [SuratperintahproduksiController::class, 'printReportestimasi'])->name('printReportestimasi');
     Route::get('printReportestimasi', [\App\Http\Controllers\Admin\SuratperintahproduksiController::class, 'printReportestimasi']);
@@ -368,6 +370,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::resource('inquery_estimasiproduksi', \App\Http\Controllers\Admin\Inquery_estimasiproduksiController::class);
     Route::delete('admin/inquery_estimasiproduksi/{id}', [Inquery_estimasiproduksiController::class, 'destroy'])->name('admin.inquery_estimasiproduksi.destroy');
+    Route::get('inquery_estimasiproduksi/unpost_estimasiproduksi/{id}', [\App\Http\Controllers\Admin\Inquery_estimasiproduksiController::class, 'unpost_estimasiproduksi']);
+    Route::get('inquery_estimasiproduksi/posting_estimasiproduksi/{id}', [\App\Http\Controllers\Admin\Inquery_estimasiproduksiController::class, 'posting_estimasiproduksi']);
 
     Route::resource('laporan_estimasiproduksi', \App\Http\Controllers\Admin\Laporan_estimasiproduksiController::class);
     Route::get('printReport', [\App\Http\Controllers\Admin\Laporan_estimasiproduksiController::class, 'printReport']);

@@ -51,80 +51,85 @@ class SuratperintahproduksiController extends Controller{
         $produk = $request->produk;
         $toko_id = $request->toko_id;
         $klasifikasi_id = $request->klasifikasi_id;
-
-        $query = Estimasiproduksi::with(['detailestimasiproduksi.produk.klasifikasi', 'detailestimasiproduksi.toko']);
-
-        // Filter berdasarkan status
-        if ($status) {
-            $query->whereHas('detailestimasiproduksi', function ($query) use ($status) {
-                $query->where('status', $status);
-            });
-        }
-
-        // Filter berdasarkan tanggal permintaan
-        if ($tanggal_estimasi && $tanggal_akhir) {
-            $tanggal_estimasi = Carbon::parse($tanggal_estimasi)->startOfDay();
-            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-            $query->whereHas('detailestimasiproduksi', function ($query) use ($tanggal_estimasi, $tanggal_akhir) {
-                $query->whereBetween('tanggal_estimasi', [$tanggal_estimasi, $tanggal_akhir]);
-            });
-        } elseif ($tanggal_estimasi) {
-            $tanggal_estimasi = Carbon::parse($tanggal_estimasi)->startOfDay();
-            $query->whereHas('detailestimasiproduksi', function ($query) use ($tanggal_estimasi) {
-                $query->where('tanggal_estimasi', '>=', $tanggal_estimasi);
-            });
-        } elseif ($tanggal_akhir) {
-            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-            $query->whereHas('detailestimasiproduksi', function ($query) use ($tanggal_akhir) {
-                $query->where('tanggal_estimasi', '<=', $tanggal_akhir);
-            });
+    
+        // Cek apakah filter tanggal dipilih
+        if (!$tanggal_estimasi && !$tanggal_akhir) {
+            // Jika tidak ada filter tanggal, tampilkan view tanpa data
+            $inquery = collect(); // Kosongkan data
+            $groupedInquery = collect(); // Kosongkan data
         } else {
-            $query->whereHas('detailestimasiproduksi', function ($query) {
-                $query->whereDate('tanggal_estimasi', Carbon::today());
+            // Memulai query dari Estimasiproduksi
+            $query = Estimasiproduksi::with(['detailestimasiproduksi.produk.klasifikasi', 'detailestimasiproduksi.toko']);
+    
+            // Filter berdasarkan status
+            if ($status) {
+                $query->whereHas('detailestimasiproduksi', function ($query) use ($status) {
+                    $query->where('status', $status);
+                });
+            }
+    
+            // Filter berdasarkan tanggal permintaan
+            if ($tanggal_estimasi && $tanggal_akhir) {
+                $tanggal_estimasi = Carbon::parse($tanggal_estimasi)->startOfDay();
+                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+                $query->whereHas('detailestimasiproduksi', function ($query) use ($tanggal_estimasi, $tanggal_akhir) {
+                    $query->whereBetween('tanggal_estimasi', [$tanggal_estimasi, $tanggal_akhir]);
+                });
+            } elseif ($tanggal_estimasi) {
+                $tanggal_estimasi = Carbon::parse($tanggal_estimasi)->startOfDay();
+                $query->whereHas('detailestimasiproduksi', function ($query) use ($tanggal_estimasi) {
+                    $query->where('tanggal_estimasi', '>=', $tanggal_estimasi);
+                });
+            } elseif ($tanggal_akhir) {
+                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+                $query->whereHas('detailestimasiproduksi', function ($query) use ($tanggal_akhir) {
+                    $query->where('tanggal_estimasi', '<=', $tanggal_akhir);
+                });
+            }
+    
+            // Filter berdasarkan produk
+            if ($produk) {
+                $query->whereHas('detailestimasiproduksi', function ($query) use ($produk) {
+                    $query->where('produk_id', $produk);
+                });
+            }
+    
+            // Filter berdasarkan toko
+            if ($toko_id) {
+                $query->whereHas('detailestimasiproduksi', function ($query) use ($toko_id) {
+                    $query->where('toko_id', $toko_id);
+                });
+            }
+    
+            // Filter berdasarkan klasifikasi
+            if ($klasifikasi_id) {
+                $query->whereHas('detailestimasiproduksi.produk.klasifikasi', function ($query) use ($klasifikasi_id) {
+                    $query->where('id', $klasifikasi_id);
+                });
+            }
+    
+            $query->orderBy('id', 'DESC');
+    
+            $inquery = $query->get();
+    
+            // Mengelompokkan detail berdasarkan produk_id dan menjumlahkan jumlahnya
+            $groupedInquery = $inquery->flatMap(function ($estimasiproduksi) {
+                return $estimasiproduksi->detailestimasiproduksi;
+            })->groupBy('produk_id')->map(function ($details) {
+                $firstDetail = $details->first(); 
+                $firstDetail->jumlah = $details->sum('jumlah'); 
+                return $firstDetail;
             });
         }
-
-        // Filter berdasarkan produk
-        if ($produk) {
-            $query->whereHas('detailestimasiproduksi', function ($query) use ($produk) {
-                $query->where('produk_id', $produk);
-            });
-        }
-
-        // Filter berdasarkan toko
-        if ($toko_id) {
-            $query->whereHas('detailestimasiproduksi', function ($query) use ($toko_id) {
-                $query->where('toko_id', $toko_id);
-            });
-        }
-
-        // Filter berdasarkan klasifikasi
-        if ($klasifikasi_id) {
-            $query->whereHas('detailestimasiproduksi.produk.klasifikasi', function ($query) use ($klasifikasi_id) {
-                $query->where('id', $klasifikasi_id);
-            });
-        }
-
-        $query->orderBy('id', 'DESC');
-
-        $inquery = $query->get();
-
-        // Mengelompokkan detail berdasarkan produk_id dan menjumlahkan jumlahnya
-        $groupedInquery = $inquery->flatMap(function ($estimasiproduksi) {
-            return $estimasiproduksi->detailestimasiproduksi;
-        })->groupBy('produk_id')->map(function ($details) {
-            $firstDetail = $details->first(); 
-            $firstDetail->jumlah = $details->sum('jumlah'); 
-            return $firstDetail;
-        });
-        
-
+    
         $produks = Produk::all();
         $tokos = Toko::all();
         $klasifikasis = Klasifikasi::all();
-
-        return view('admin.suratperintahproduksi.index', compact('inquery','groupedInquery', 'produks', 'tokos', 'klasifikasis', 'klasifikasi_id'));
+    
+        // Tampilkan ke view
+        return view('admin.suratperintahproduksi.index', compact('inquery', 'groupedInquery', 'produks', 'tokos', 'klasifikasis', 'klasifikasi_id'));
     }
+    
 
     // public function printReportestimasi(Request $request)
     // {
@@ -206,6 +211,7 @@ class SuratperintahproduksiController extends Controller{
 
     //     return $pdf->stream('laporan_estimasi.pdf');
     // }
+
     public function printReportestimasi(Request $request)
     {
         // Ambil filter dari request
@@ -288,8 +294,116 @@ class SuratperintahproduksiController extends Controller{
         return $pdf->stream('laporan_estimasi.pdf');
     }
 
+    // public function printReportestimasirinci(Request $request)
+    // {
+    //     // Ambil parameter dari request
+    //     $status = $request->status;
+    //     $tanggal_estimasi = $request->tanggal_estimasi;
+    //     $tanggal_akhir = $request->tanggal_akhir;
+    //     $produk = $request->produk;
+    //     $toko_id = $request->toko_id;
+    //     $klasifikasi_id = $request->klasifikasi_id;
+    
+    //     // Inisialisasi query dengan model terkait
+    //     $query = Estimasiproduksi::with(['detailestimasiproduksi.produk.klasifikasi', 'detailestimasiproduksi.toko']);
+    
+    //     // Filter berdasarkan status
+    //     if ($status) {
+    //         $query->whereHas('detailestimasiproduksi', function ($query) use ($status) {
+    //             $query->where('status', $status);
+    //         });
+    //     }
+    
+    //     // Filter berdasarkan tanggal estimasi
+    //     if ($tanggal_estimasi && $tanggal_akhir) {
+    //         $tanggal_estimasi = Carbon::parse($tanggal_estimasi)->startOfDay();
+    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //         $query->whereHas('detailestimasiproduksi', function ($query) use ($tanggal_estimasi, $tanggal_akhir) {
+    //             $query->whereBetween('tanggal_estimasi', [$tanggal_estimasi, $tanggal_akhir]);
+    //         });
+    //     } elseif ($tanggal_estimasi) {
+    //         $tanggal_estimasi = Carbon::parse($tanggal_estimasi)->startOfDay();
+    //         $query->whereHas('detailestimasiproduksi', function ($query) use ($tanggal_estimasi) {
+    //             $query->where('tanggal_estimasi', '>=', $tanggal_estimasi);
+    //         });
+    //     } elseif ($tanggal_akhir) {
+    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //         $query->whereHas('detailestimasiproduksi', function ($query) use ($tanggal_akhir) {
+    //             $query->where('tanggal_estimasi', '<=', $tanggal_akhir);
+    //         });
+    //     } else {
+    //         $query->whereHas('detailestimasiproduksi', function ($query) {
+    //             $query->whereDate('tanggal_estimasi', Carbon::today());
+    //         });
+    //     }
+    
+    //     // Filter berdasarkan produk
+    //     if ($produk) {
+    //         $query->whereHas('detailestimasiproduksi', function ($query) use ($produk) {
+    //             $query->where('produk_id', $produk);
+    //         });
+    //     }
+    
+    //     // Filter berdasarkan toko
+    //     if ($toko_id) {
+    //         $query->whereHas('detailestimasiproduksi', function ($query) use ($toko_id) {
+    //             $query->where('toko_id', $toko_id);
+    //         });
+    //     }
+    
+    //     // Filter berdasarkan klasifikasi
+    //     if ($klasifikasi_id) {
+    //         $query->whereHas('detailestimasiproduksi.produk.klasifikasi', function ($query) use ($klasifikasi_id) {
+    //             $query->where('id', $klasifikasi_id);
+    //         });
+    //     }
+    
+    //     // Eksekusi query dan ambil hasilnya
+    //     $inquery = $query->get();
+    
+    //     // Kelompokkan detail berdasarkan product_id dan jumlah total
+    //     $groupedInquery = $inquery->flatMap(function ($estimasiproduksi) {
+    //         return $estimasiproduksi->detailestimasiproduksi;
+    //     })->groupBy('produk_id')->map(function ($details) {
+    //         $firstDetail = $details->first();
+    //         $firstDetail->jumlah = $details->sum('jumlah');
+    //         return $firstDetail;
+    //     });
+    
+    //     // Kelompokkan produk berdasarkan klasifikasi
+    //     $produkByDivisi = $groupedInquery->groupBy(function ($item) {
+    //         return $item->produk->klasifikasi->nama ?? 'Tanpa Klasifikasi';
+    //     });
+    
+    //     // Hitung total kuantitas per klasifikasi
+    //     $totalPerDivisi = $produkByDivisi->map(function ($produks) {
+    //         return $produks->sum('jumlah');
+    //     });
+    
+    //     // Ambil satu toko dari hasil yang dikelompokkan
+    //     $toko = $groupedInquery->first()->toko ?? null;
+    
+    //     // Format tanggal untuk tampilan PDF
+    //     $formattedStartDate = $tanggal_estimasi ? Carbon::parse($tanggal_estimasi)->translatedFormat('d F Y') : 'Tidak ada';
+    //     $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->translatedFormat('d F Y') : 'Tidak ada';
+    //     $currentDateTime = Carbon::now()->translatedFormat('d F Y H:i');
+    
+    //     // Generate PDF
+    //     $pdf = FacadePdf::loadView('admin.suratperintahproduksi.printrinci', [
+    //         'produkByDivisi' => $produkByDivisi,
+    //         'totalPerDivisi' => $totalPerDivisi,
+    //         'toko' => $toko,
+    //         'formattedStartDate' => $formattedStartDate,
+    //         'formattedEndDate' => $formattedEndDate,
+    //         'currentDateTime' => $currentDateTime,
+    //     ]);
+    
+    //     return $pdf->stream('laporan_estimasi_produksi.pdf');
+    // }
+
     public function printReportestimasirinci(Request $request)
 {
+    // Ambil parameter dari request
     $status = $request->status;
     $tanggal_estimasi = $request->tanggal_estimasi;
     $tanggal_akhir = $request->tanggal_akhir;
@@ -297,7 +411,15 @@ class SuratperintahproduksiController extends Controller{
     $toko_id = $request->toko_id;
     $klasifikasi_id = $request->klasifikasi_id;
 
-    $query = Estimasiproduksi::with(['detailestimasiproduksi.produk.klasifikasi', 'detailestimasiproduksi.toko']);
+    // Inisialisasi query dengan model terkait
+    $query = EstimasiProduksi::with(['detailestimasiproduksi' => function ($query) use ($klasifikasi_id) {
+        if ($klasifikasi_id) {
+            // Filter berdasarkan klasifikasi_id
+            $query->whereHas('produk.klasifikasi', function ($q) use ($klasifikasi_id) {
+                $q->where('id', $klasifikasi_id);
+            });
+        }
+    }]);
 
     // Filter berdasarkan status
     if ($status) {
@@ -306,23 +428,21 @@ class SuratperintahproduksiController extends Controller{
         });
     }
 
-    // Filter berdasarkan tanggal permintaan
-    if ($tanggal_estimasi && $tanggal_akhir) {
-        $tanggal_estimasi = Carbon::parse($tanggal_estimasi)->startOfDay();
-        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-        $query->whereHas('detailestimasiproduksi', function ($query) use ($tanggal_estimasi, $tanggal_akhir) {
-            $query->whereBetween('tanggal_estimasi', [$tanggal_estimasi, $tanggal_akhir]);
-        });
-    } elseif ($tanggal_estimasi) {
-        $tanggal_estimasi = Carbon::parse($tanggal_estimasi)->startOfDay();
-        $query->whereHas('detailestimasiproduksi', function ($query) use ($tanggal_estimasi) {
-            $query->where('tanggal_estimasi', '>=', $tanggal_estimasi);
-        });
-    } elseif ($tanggal_akhir) {
-        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-        $query->whereHas('detailestimasiproduksi', function ($query) use ($tanggal_akhir) {
-            $query->where('tanggal_estimasi', '<=', $tanggal_akhir);
-        });
+    // Filter berdasarkan tanggal estimasi
+    if ($tanggal_estimasi || $tanggal_akhir) {
+        if ($tanggal_estimasi) {
+            $tanggal_estimasi = Carbon::parse($tanggal_estimasi)->startOfDay();
+            $query->whereHas('detailestimasiproduksi', function ($query) use ($tanggal_estimasi) {
+                $query->where('tanggal_estimasi', '>=', $tanggal_estimasi);
+            });
+        }
+
+        if ($tanggal_akhir) {
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $query->whereHas('detailestimasiproduksi', function ($query) use ($tanggal_akhir) {
+                $query->where('tanggal_estimasi', '<=', $tanggal_akhir);
+            });
+        }
     } else {
         $query->whereHas('detailestimasiproduksi', function ($query) {
             $query->whereDate('tanggal_estimasi', Carbon::today());
@@ -343,16 +463,15 @@ class SuratperintahproduksiController extends Controller{
         });
     }
 
-    // Filter berdasarkan klasifikasi
-    if ($klasifikasi_id) {
-        $query->whereHas('detailestimasiproduksi.produk.klasifikasi', function ($query) use ($klasifikasi_id) {
-            $query->where('id', $klasifikasi_id);
-        });
-    }
-
+    // Eksekusi query dan ambil hasilnya
     $inquery = $query->get();
 
-    // Mengelompokkan detail berdasarkan produk_id dan menjumlahkan jumlahnya
+    // Pastikan ada hasil sebelum melanjutkan
+    if ($inquery->isEmpty()) {
+        return response()->json(['message' => 'Data tidak ditemukan.'], 404);
+    }
+
+    // Kelompokkan detail berdasarkan product_id dan jumlah total
     $groupedInquery = $inquery->flatMap(function ($estimasiproduksi) {
         return $estimasiproduksi->detailestimasiproduksi;
     })->groupBy('produk_id')->map(function ($details) {
@@ -361,21 +480,33 @@ class SuratperintahproduksiController extends Controller{
         return $firstDetail;
     });
 
-    // Mengelompokkan produk berdasarkan divisi (klasifikasi)
-    $produkByDivisi = $groupedInquery->groupBy(function($item) {
-        return $item->produk->klasifikasi->nama;
+    // Kelompokkan produk berdasarkan klasifikasi
+    $produkByDivisi = $groupedInquery->groupBy(function ($item) {
+        return $item->produk->klasifikasi->nama ?? 'Tanpa Klasifikasi';
     });
 
-    // Menghitung total jumlah per divisi
-    $totalPerDivisi = $produkByDivisi->map(function($produks) {
+    // Hitung total kuantitas per klasifikasi
+    $totalPerDivisi = $produkByDivisi->map(function ($produks) {
         return $produks->sum('jumlah');
     });
 
-    // Ambil toko dari salah satu detail estimasi produksi
+    // Ambil satu toko dari hasil yang dikelompokkan
     $toko = $groupedInquery->first()->toko ?? null;
 
+    // Format tanggal untuk tampilan PDF
+    $formattedStartDate = $tanggal_estimasi ? Carbon::parse($tanggal_estimasi)->translatedFormat('d F Y') : 'Tidak ada';
+    $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->translatedFormat('d F Y') : 'Tidak ada';
+    $currentDateTime = Carbon::now()->translatedFormat('d F Y H:i');
+
     // Generate PDF
-    $pdf = FacadePdf::loadView('admin.suratperintahproduksi.printrinci', compact('inquery', 'produkByDivisi', 'totalPerDivisi', 'toko'));
+    $pdf = FacadePdf::loadView('admin.suratperintahproduksi.printrinci', [
+        'produkByDivisi' => $produkByDivisi,
+        'totalPerDivisi' => $totalPerDivisi,
+        'toko' => $toko,
+        'formattedStartDate' => $formattedStartDate,
+        'formattedEndDate' => $formattedEndDate,
+        'currentDateTime' => $currentDateTime,
+    ]);
 
     return $pdf->stream('laporan_estimasi_produksi.pdf');
 }
@@ -383,7 +514,7 @@ class SuratperintahproduksiController extends Controller{
     
 
 
-
-
-
+    
+    
+    
 }

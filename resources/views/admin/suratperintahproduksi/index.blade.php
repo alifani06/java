@@ -226,7 +226,6 @@
     form.target = "_blank";
     form.submit();
 }
-
 </script>
 
 

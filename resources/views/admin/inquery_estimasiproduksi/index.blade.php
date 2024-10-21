@@ -74,14 +74,7 @@
                 <div class="card-body">
                     <form method="GET" id="form-action">
                         <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <select class="custom-select form-control" id="status" name="status">
-                                <option value="">- Semua Status -</option>
-                                <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
-                                <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
-                            </select>
-                            <label for="status">(Pilih Status)</label>
-                        </div>
+                       
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_estimasi" name="tanggal_estimasi" type="date"
                                     value="{{ Request::get('tanggal_estimasi') }}" max="{{ date('Y-m-d') }}" />
@@ -93,10 +86,12 @@
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
+                              <p style="color: white">asasa</p> 
+                            </div>
+                            <div class="col-md-3 mb-3">
                                 <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
                                     <i class="fas fa-search"></i> Cari
-                                </button>
-                                
+                                </button>  
                             </div>
                         </div>
                     </form>
@@ -106,9 +101,9 @@
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
-                                <th>Kode Permintaan</th>
+                                <th>No Estimasi</th>
                                 <th>Cabang</th>
-                                <th>Tanggal Permintaan</th>
+                                <th>Tanggal Estimasi</th>
                                 <th>Jumlah Produk</th>
                                 <th>Status</th>
                             </tr>
@@ -142,7 +137,7 @@
                                                     <a class="dropdown-item posting-btn"data-memo-id="{{ $permintaan->id }}">Posting</a>
                                                     {{-- <a class="dropdown-item" href="{{ url('admin/inquery_estimasiproduksi/' . $permintaan->id . '/edit') }}">Update</a> --}}
                                                     <a class="dropdown-item" href="{{ url('admin/estimasi_produksi/' . $permintaan->id) }}">Show</a>
-                                                    <form action="{{ url('admin/estimasi_produksi/' . $permintaan->id) }}" method="POST" style="display: inline;">
+                                                    <form action="{{ url('admin/inquery_estimasiproduksi/' . $permintaan->id) }}" method="POST" style="display: inline;">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="dropdown-item" onclick="return confirm('Apakah Anda yakin ingin menghapus permintaan produk ini?')">Delete</button>

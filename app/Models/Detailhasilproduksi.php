@@ -66,4 +66,9 @@ class Detailhasilproduksi extends Model
     {
         return $this->belongsTo(Toko::class, 'toko_id');
     }
+
+    public function hasilproduksi()
+    {
+        return $this->belongsTo(Hasilproduksi::class, 'hasilproduksi_id'); 
+    }
 }

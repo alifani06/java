@@ -57,6 +57,12 @@ class SurathasilproduksiController extends Controller{
         $toko_id = $request->toko_id;
         $klasifikasi_id = $request->klasifikasi_id;
 
+           // Cek apakah filter tanggal dipilih
+           if (!$tanggal_estimasi && !$tanggal_akhir) {
+            // Jika tidak ada filter tanggal, tampilkan view tanpa data
+            $inquery = collect(); // Kosongkan data
+            $groupedInquery = collect(); // Kosongkan data
+        } else {
         $query = Estimasiproduksi::with(['detailestimasiproduksi.produk.klasifikasi', 'detailestimasiproduksi.toko']);
 
         // Filter berdasarkan status
@@ -122,7 +128,7 @@ class SurathasilproduksiController extends Controller{
             $firstDetail->jumlah = $details->sum('jumlah'); 
             return $firstDetail;
         });
-        
+    }
 
         $produks = Produk::all();
         $tokos = Toko::all();
@@ -255,7 +261,7 @@ class SurathasilproduksiController extends Controller{
     $hasilproduksi->kode_hasilproduksi = $kode;
     $hasilproduksi->qrcode_hasilproduksi = $qrcode_hasilproduksi;
     $hasilproduksi->toko_id = $request->toko_id;
-    $hasilproduksi->status = 'pending'; 
+    $hasilproduksi->status = 'posting'; 
     $hasilproduksi->tanggal_hasilproduksi = now();
     $hasilproduksi->save(); 
     

@@ -21,6 +21,7 @@ class Estimasiproduksi extends Model
         'kode_estimasi',
         'qrcode_estimasi',
         'tanggal_estimasi',
+        'status',
     ];
 
     use SoftDeletes;

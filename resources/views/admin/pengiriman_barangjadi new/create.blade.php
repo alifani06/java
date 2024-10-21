@@ -189,6 +189,11 @@
 
                     <form method="GET" id="form-action">
                         <div class="row">
+                            
+                            <div class="col-md-3 mb-3">
+                                <input class="form-control" id="tanggal_estimasi" name="tanggal_estimasi" type="date" value="{{ Request::get('tanggal_estimasi') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_estimasi">(Tanggal_estimasi)</label>
+                            </div>
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="toko" name="toko_id" onchange="document.getElementById('form-action').submit();">
                                     <option value="">- Semua Toko -</option>
@@ -199,10 +204,6 @@
                                     @endforeach
                                 </select>
                                 <label for="toko">(Pilih Toko)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_estimasi" name="tanggal_estimasi" type="date" value="{{ Request::get('tanggal_estimasi') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_estimasi">(Tanggal_estimasi)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
@@ -225,7 +226,6 @@
                                 </div>
                                 <div class="card">
                                     <div class="card-header">
-                                        <h3 class="card-title">Produk <span></span></h3>
                                         <div class="float-right">
                                             <button type="button" class="btn btn-primary btn-sm" onclick="addPesanan()">
                                                 <i class="fas fa-plus"></i>
@@ -233,6 +233,7 @@
                                         </div>
                                     </div>
                                     <div class="card-body">
+                                        
                                         <table class="table table-bordered table-striped">
                                             <thead>
                                                 <tr>

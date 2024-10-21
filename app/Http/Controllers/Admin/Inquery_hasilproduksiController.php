@@ -54,6 +54,42 @@ class Inquery_hasilproduksiController extends Controller{
 
 
     
+    // public function index(Request $request)
+    // {
+    //     $status = $request->status;
+    //     $tanggal_hasilproduksi = $request->tanggal_hasilproduksi;
+    //     $tanggal_akhir = $request->tanggal_akhir;
+    //     $toko_id = $request->toko_id; 
+
+    //     $query = Hasilproduksi::with(['produk.klasifikasi', 'toko', 'detailhasilproduksi.produk.klasifikasi']);
+
+    //     if ($status) {
+    //         $query->where('status', $status);
+    //     }
+
+    //     if ($toko_id) {
+    //         $query->where('toko_id', $toko_id);
+    //     }
+
+    //     if ($tanggal_hasilproduksi && $tanggal_akhir) {
+    //         $tanggal_hasilproduksi = Carbon::parse($tanggal_hasilproduksi)->startOfDay();
+    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //         $query->whereBetween('tanggal_hasilproduksi', [$tanggal_hasilproduksi, $tanggal_akhir]);
+    //     } elseif ($tanggal_hasilproduksi) {
+    //         $tanggal_hasilproduksi = Carbon::parse($tanggal_hasilproduksi)->startOfDay();
+    //         $query->where('tanggal_hasilproduksi', '>=', $tanggal_hasilproduksi);
+    //     } elseif ($tanggal_akhir) {
+    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //         $query->where('tanggal_hasilproduksi', '<=', $tanggal_akhir);
+    //     } else {
+    //         $query->whereDate('tanggal_hasilproduksi', Carbon::today());
+    //     }
+
+    //     $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_hasilproduksi');
+    //     $tokos = Toko::all();
+
+    //     return view('admin.inquery_hasilproduksi.index', compact('stokBarangJadi', 'tokos'));
+    // }
     public function index(Request $request)
 {
     $status = $request->status;
@@ -61,7 +97,13 @@ class Inquery_hasilproduksiController extends Controller{
     $tanggal_akhir = $request->tanggal_akhir;
     $toko_id = $request->toko_id; 
 
-    $query = Hasilproduksi::with(['produk.klasifikasi', 'toko']);
+    $query = Hasilproduksi::with([
+        'produk.klasifikasi', 
+        'toko', 
+        'detailhasilproduksi' => function($query) {
+            $query->with('produk')->orderBy('kode_lama', 'asc'); // Mengurutkan berdasarkan kode_lama produk
+        }
+    ]);
 
     if ($status) {
         $query->where('status', $status);
@@ -85,30 +127,29 @@ class Inquery_hasilproduksiController extends Controller{
         $query->whereDate('tanggal_hasilproduksi', Carbon::today());
     }
 
-    // Hitung jumlah pengiriman dengan status 'unpost'
-    // $unpostCount = Pengiriman_barangjadi::where('status', 'unpost')->count();
-
+    // Group hasil produksi by kode_hasilproduksi
     $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_hasilproduksi');
     $tokos = Toko::all();
 
     return view('admin.inquery_hasilproduksi.index', compact('stokBarangJadi', 'tokos'));
 }
 
-public function showPrintQr($id)
-{
+
+    public function showPrintQr($id)
+    {
 
 
-    $query = Pengiriman_barangjadi::with(['produk.klasifikasi', 'toko']);
+        $query = Pengiriman_barangjadi::with(['produk.klasifikasi', 'toko']);
 
 
-    // Hitung jumlah pengiriman dengan status 'unpost'
-    $unpostCount = Pengiriman_barangjadi::where('status', 'unpost')->count();
+        // Hitung jumlah pengiriman dengan status 'unpost'
+        $unpostCount = Pengiriman_barangjadi::where('status', 'unpost')->count();
 
-    $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_hasilproduksi');
-    $tokos = Toko::all();
+        $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_hasilproduksi');
+        $tokos = Toko::all();
 
-    return view('admin.inquery_pengirimanbarangjadi.print_qr', compact('stokBarangJadi', 'tokos', 'unpostCount'));
-}
+        return view('admin.inquery_pengirimanbarangjadi.print_qr', compact('stokBarangJadi', 'tokos', 'unpostCount'));
+    }
     
 
 

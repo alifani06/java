@@ -192,13 +192,6 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title"><span></span></h3>
-                        {{-- <div class="float-right">
-                            <input type="text" id="searchInput" class="form-control" placeholder="Cari Produk..." onkeyup="searchProduct()">
-
-                        </div> --}}
-                    </div>
                     <div class="modal-body">
                         <!-- Form Pencarian -->
                         <div class="form-group">
@@ -211,10 +204,10 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">No</th>
-                                    <th>Kode Produk</th>
+                                    <th hidden>Kode Produk</th>
                                     <th>Kode Lama</th>
                                     <th>Nama Produk</th>
-                                    <th>QR Code Produk</th> <!-- Tambahkan kolom QR Code -->
+                                    <th hidden>QR Code Produk</th> <!-- Tambahkan kolom QR Code -->
                                     <th>Harga Member</th>
                                     <th>Diskon Member</th>
                                     <th>Harga Non Member</th>
@@ -230,10 +223,10 @@
                                     @endphp
                                     <tr>
                                         <td class="text-center">{{ $loop->iteration }}</td>
-                                        <td>{{ $item->kode_produk }}</td>
+                                        <td hidden>{{ $item->kode_produk }}</td>
                                         <td>{{ $item->kode_lama }}</td>
                                         <td>{{ $item->nama_produk }}</td>
-                                        <td>{{ $item->qrcode_produk }}</td> <!-- Tampilkan QR Code Produk -->
+                                        <td hidden>{{ $item->qrcode_produk }}</td> <!-- Tampilkan QR Code Produk -->
                                         <td>
                                             <span class="member_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}</span>
                                         </td>
@@ -273,8 +266,8 @@
                             <tbody id="tabel-pembelian-body"></tbody>
                         </table>
                     </div>
-                    
-                        </div>
+                </div>
+
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <div class="card">
@@ -458,7 +451,7 @@
                 <td><input type="number" class="form-control jumlah" value="1" min="1"></td>
                 <td>${diskon}</td>
                 <td hidden>${diskon}</td>
-                <td>${harga}</td>
+                <td>${diskon}</td>
                 <td class="total">${harga}</td>
                 <td class="text-center">
                     <button type="button" class="btn btn-danger btn-sm delete-row">Hapus</button>
