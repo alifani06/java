@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_pemalang;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -39,76 +39,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 class Laporan_penjualanprodukController extends Controller
 {
 
-    // public function index(Request $request)
-    // {
-    //     $status = $request->status;
-    //     $tanggal_penjualan = $request->tanggal_penjualan;
-    //     $tanggal_akhir = $request->tanggal_akhir;
-    //     $produk = $request->produk;
-    //     $toko_id = $request->toko_id;
-    //     $klasifikasi_id = $request->klasifikasi_id;
-
-    //     // Query dasar untuk mengambil data penjualan produk
-    //     $query = Penjualanproduk::query();
-
-    //     // Filter berdasarkan status
-    //     if ($status) {
-    //         $query->where('status', $status);
-    //     }
-
-    //     // Filter berdasarkan tanggal penjualan
-    //     if ($tanggal_penjualan && $tanggal_akhir) {
-    //         $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //         $query->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
-    //     } elseif ($tanggal_penjualan) {
-    //         $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-    //         $query->where('tanggal_penjualan', '>=', $tanggal_penjualan);
-    //     } elseif ($tanggal_akhir) {
-    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //         $query->where('tanggal_penjualan', '<=', $tanggal_akhir);
-    //     } else {
-    //         // Jika tidak ada filter tanggal, tampilkan data untuk hari ini
-    //         $query->whereDate('tanggal_penjualan', Carbon::today());
-    //     }
-
-    //     // Filter berdasarkan produk
-    //     if ($produk) {
-    //         $query->whereHas('detailpenjualanproduk', function ($query) use ($produk) {
-    //             $query->where('produk_id', $produk);
-    //         });
-    //     }
-
-    //     // Filter berdasarkan toko
-    //     if ($toko_id) {
-    //         $query->where('toko_id', $toko_id);
-    //     }
-
-    //     // Filter berdasarkan klasifikasi
-    //     if ($klasifikasi_id) {
-    //         $query->whereHas('detailpenjualanproduk.produk.klasifikasi', function ($query) use ($klasifikasi_id) {
-    //             $query->where('id', $klasifikasi_id);
-    //         });
-    //     }
-
-    //     // Urutkan data berdasarkan ID secara descending
-    //     $query->orderBy('id', 'DESC');
-
-    //     // Ambil data penjualan produk
-    //     $inquery = $query->with(['toko', 'detailpenjualanproduk.produk.klasifikasi'])->get();
-
-    //     // Ambil semua data produk untuk dropdown
-    //     $produks = Produk::all();
-
-    //     // Ambil semua data toko untuk dropdown
-    //     $tokos = Toko::all();
-
-    //     // Ambil semua klasifikasi untuk dropdown
-    //     $klasifikasis = Klasifikasi::all();
-
-    //     // Kembalikan view dengan data penjualan produk, produk, toko, dan klasifikasi
-    //     return view('toko_banjaran.laporan_penjualanproduk.index', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
-    // }
+    
     public function index(Request $request)
 {
     $status = $request->status;
@@ -117,7 +48,7 @@ class Laporan_penjualanprodukController extends Controller
     $produk = $request->produk;
     $klasifikasi_id = $request->klasifikasi_id;
 
-    $query = Penjualanproduk::where('toko_id', 1);
+    $query = Penjualanproduk::where('toko_id', 4);
 
     // Filter berdasarkan status
     if ($status) {
@@ -170,7 +101,7 @@ class Laporan_penjualanprodukController extends Controller
     $klasifikasis = Klasifikasi::all();
 
     // Kembalikan view dengan data penjualan produk, produk, toko, dan klasifikasi
-    return view('toko_banjaran.laporan_penjualanproduk.index', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
+    return view('toko_pemalang.laporan_penjualanproduk.index', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
 }
 
 
@@ -186,7 +117,7 @@ class Laporan_penjualanprodukController extends Controller
 
     
         // Query dasar untuk mengambil data penjualan produk
-        $query = Penjualanproduk::where('toko_id', 1);
+        $query = Penjualanproduk::where('toko_id', 4);
     
         // Filter berdasarkan status
         if ($status) {
@@ -237,7 +168,7 @@ class Laporan_penjualanprodukController extends Controller
         $klasifikasis = Klasifikasi::all();
 
         // Kembalikan view dengan data penjualan produk, produk, dan toko
-        return view('toko_banjaran.laporan_penjualanproduk.global', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
+        return view('toko_pemalang.laporan_penjualanproduk.global', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
     }
  
 
@@ -251,7 +182,7 @@ public function printReport(Request $request)
     $klasifikasiId = $request->input('klasifikasi_id');
 
     // Initialize the query
-    $query = Penjualanproduk::where('toko_id', 1);
+    $query = Penjualanproduk::where('toko_id', 4);
 
     // Apply status filter
     if ($status) {
@@ -299,7 +230,7 @@ public function printReport(Request $request)
     $formattedEndDate = $tanggalAkhir ? Carbon::parse($tanggalAkhir)->format('d-m-Y') : 'N/A';
 
     // Generate PDF
-    $pdf = FacadePdf::loadView('toko_banjaran.laporan_penjualanproduk.print', [
+    $pdf = FacadePdf::loadView('toko_pemalang.laporan_penjualanproduk.print', [
         'inquery' => $inquery,
         'startDate' => $formattedStartDate,
         'endDate' => $formattedEndDate,
@@ -318,9 +249,9 @@ public function printReportglobal(Request $request)
     $produk = $request->produk;
     $toko_id = $request->toko_id;
 
-    // Default toko_id ke 1 jika tidak ada yang dipilih
+    // Default toko_id ke 4 jika tidak ada yang dipilih
     if (!$toko_id) {
-        $toko_id = 1; // ID Toko Banjaran
+        $toko_id = 4; // ID Toko Banjaran
     }
 
     // Query dasar untuk mengambil data penjualan produk
@@ -372,7 +303,7 @@ public function printReportglobal(Request $request)
     $dompdf = new Dompdf($options);
 
     // Memuat konten HTML dari view
-    $html = view('toko_banjaran.laporan_penjualanproduk.printglobal', [
+    $html = view('toko_pemalang.laporan_penjualanproduk.printglobal', [
         'inquery' => $inquery,
         'startDate' => $formattedStartDate,
         'endDate' => $formattedEndDate,
@@ -469,7 +400,7 @@ public function posting_penjualanproduk($id)
             $inquery = Pemesananproduk::with('detailpemesananproduk')->where('id', $id)->first();
             $selectedTokoId = $inquery->toko_id; // ID toko yang dipilih
 
-            return view('toko_banjaran.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
+            return view('toko_pemalang.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
         }
         
         public function update(Request $request, $id)
@@ -597,7 +528,7 @@ public function posting_penjualanproduk($id)
             $details = Detailpemesananproduk::where('pemesananproduk_id', $pemesanan->id)->get();
         
             // Redirect ke halaman indeks pemesananproduk
-            return redirect('toko_banjaran/inquery_pemesananproduk');
+            return redirect('toko_pemalang/inquery_pemesananproduk');
 
         }
         

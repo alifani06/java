@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_pemalang;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -65,7 +65,7 @@ class Inquery_pemesananprodukController extends Controller
     $inquery->orderBy('id', 'DESC');
     $inquery = $inquery->get();
 
-    return view('toko_banjaran.inquery_pemesananproduk.index', compact('inquery'));
+    return view('toko_pemalang.inquery_pemesananproduk.index', compact('inquery'));
 }
 
 public function unpost_pemesananproduk($id)

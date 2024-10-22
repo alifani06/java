@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_pemalang;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -41,27 +41,18 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class PelunasanpemesananController extends Controller
 {
-    // public function index()
-    // {
-    //     $inquery = Pelunasan::with(['metodePembayaran', 'dppemesanan.pemesananproduk'])
-    //         ->whereDate('created_at', now()) 
-    //         ->orderBy('kode_penjualan', 'asc')   
-    //         ->get();
-    
-    //     return view('toko_banjaran.pelunasan_pemesanan.index', compact('inquery'));
-    // }
     
     public function index()
     {
         $inquery = Pelunasan::with(['metodePembayaran', 'dppemesanan.pemesananproduk'])
             ->whereHas('dppemesanan.pemesananproduk', function($query) {
-                $query->where('toko_id', 1);  
+                $query->where('toko_id', 4);  
             })
             ->whereDate('created_at', now()) 
             ->orderBy('kode_penjualan', 'asc')   
             ->get();
     
-        return view('toko_banjaran.pelunasan_pemesanan.index', compact('inquery'));
+        return view('toko_pemalang.pelunasan_pemesanan.index', compact('inquery'));
     }
     
     public function pelanggan($id)
@@ -97,37 +88,35 @@ class PelunasanpemesananController extends Controller
     //     ->get();
     //     $kategoriPelanggan = 'member';
     
-    //     return view('toko_banjaran.pelunasan_pemesanan.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
+    //     return view('toko_pemalang.pelunasan_pemesanan.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
     // }
     public function create()
 {
     $barangs = Barang::all();
     $pelanggans = Pelanggan::all();
     $details = Detailbarangjadi::all();
-    $tokoslawis = Tokoslawi::all();
     $tokos = Toko::all();
     $pemesananproduks = Pemesananproduk::all();
     $metodes = Metodepembayaran::all();
     
     // Filter produk berdasarkan nama klasifikasi
-    $produks = Produk::with(['tokotegal', 'klasifikasi'])
+    $produks = Produk::with(['tokopemalang', 'klasifikasi'])
                 ->whereHas('klasifikasi', function($query) {
                     $query->whereIn('nama', ['FREE MAINAN', 'FREE PACKAGING', 'BAKERY']);
                 })
                 ->get();
 
     $dppemesanans = Dppemesanan::whereHas('pemesananproduk', function($query) {
-        $query->where('toko_id', 1);
+        $query->where('toko_id', 4);
     })->get();
 
     $kategoriPelanggan = 'member';
     
-    return view('toko_banjaran.pelunasan_pemesanan.create', compact(
+    return view('toko_pemalang.pelunasan_pemesanan.create', compact(
         'barangs', 
         'tokos', 
         'produks', 
         'details', 
-        'tokoslawis', 
         'pelanggans', 
         'kategoriPelanggan', 
         'dppemesanans', 
@@ -207,7 +196,7 @@ class PelunasanpemesananController extends Controller
  
     public function kode()
 {
-    $prefix = 'FPC';
+    $prefix = 'FPE';
     $year = date('y'); // Dua digit terakhir dari tahun
     $monthDay = date('dm'); // Format bulan dan hari: MMDD
 
@@ -291,7 +280,7 @@ class PelunasanpemesananController extends Controller
         $penjualan->kembali = $validated['kembali'];
         $penjualan->bayar = $validated['pelunasan'];
         $penjualan->status = 'posting';
-        $penjualan->toko_id = 1;
+        $penjualan->toko_id = 4;
         $penjualan->kode_penjualan = $kode_penjualan;
         $penjualan->tanggal_penjualan = Carbon::now('Asia/Jakarta');
         $penjualan->qrcode_penjualan = 'https://javabakery.id/penjualan/' . $kode_penjualan;
@@ -369,7 +358,7 @@ class PelunasanpemesananController extends Controller
         $details = DetailPenjualanProduk::where('penjualanproduk_id', $penjualan->id)->get();
     
 
-        return redirect()->route('toko_banjaran.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id])
+        return redirect()->route('toko_pemalang.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id])
         ->with('success', 'Transaksi berhasil disimpan, halaman cetak akan segera tampil.')
         ->with('refresh', true);  // Menambahkan session refresh
     
@@ -388,7 +377,7 @@ class PelunasanpemesananController extends Controller
         $tokos = $inquery->toko;
     
         // Mengirim data ke view
-        return view('toko_banjaran/pelunasan_pemesanan/cetak', compact('inquery', 'tokos', 'pelanggans'));
+        return view('toko_pemalang/pelunasan_pemesanan/cetak', compact('inquery', 'tokos', 'pelanggans'));
     }
 
     public function cetakpelunasan($id)
@@ -401,7 +390,7 @@ class PelunasanpemesananController extends Controller
         $tokos = $penjualan->toko;
 
         // Pass the retrieved data to the view
-        return view('toko_banjaran.penjualan_produk.cetakpelunasan', compact('penjualan', 'pelanggans', 'tokos'));
+        return view('toko_pemalang.penjualan_produk.cetakpelunasan', compact('penjualan', 'pelanggans', 'tokos'));
     }
     
 
@@ -420,7 +409,7 @@ class PelunasanpemesananController extends Controller
         // Mengakses toko dari $inquery yang sekarang menjadi instance model
         $tokos = $inquery->toko;
         
-        $pdf = FacadePdf::loadView('toko_banjaran.pelunasan_pemesanan.cetak-pdf', compact('inquery', 'tokos', 'pelanggans', 'kode_dppemesanan'));
+        $pdf = FacadePdf::loadView('toko_pemalang.pelunasan_pemesanan.cetak-pdf', compact('inquery', 'tokos', 'pelanggans', 'kode_dppemesanan'));
         $pdf->setPaper('a4', 'portrait');
         
         return $pdf->stream('pelunasan.pdf');
@@ -441,7 +430,7 @@ class PelunasanpemesananController extends Controller
         $tokos = $inquery->toko;
     
         // Mengirim data ke view
-        return view('toko_banjaran/pelunasan_pemesanan/cetak', compact('inquery', 'tokos', 'pelanggans'));
+        return view('toko_pemalang/pelunasan_pemesanan/cetak', compact('inquery', 'tokos', 'pelanggans'));
     }
     
     
@@ -456,7 +445,7 @@ class PelunasanpemesananController extends Controller
             $inquery = Pemesananproduk::with('detailpemesananproduk')->where('id', $id)->first();
             $selectedTokoId = $inquery->toko_id; // ID toko yang dipilih
 
-            return view('toko_banjaran.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
+            return view('toko_pemalang.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
         }
         
 
@@ -585,7 +574,7 @@ class PelunasanpemesananController extends Controller
             $details = Detailpemesananproduk::where('pemesananproduk_id', $pemesanan->id)->get();
         
             // Redirect ke halaman indeks pemesananproduk
-            return redirect('toko_banjaran/pemesanan_produk');
+            return redirect('toko_pemalang/pemesanan_produk');
 
         }
         
@@ -622,7 +611,7 @@ class PelunasanpemesananController extends Controller
                 $penjualan->delete();
             });
         
-            return redirect('toko_banjaran/penjualan_produk')->with('success', 'Berhasil menghapus data penjualan');
+            return redirect('toko_pemalang/penjualan_produk')->with('success', 'Berhasil menghapus data penjualan');
         }
         
         

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_pemalang;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -22,7 +22,6 @@ use App\Models\Detailpemesananproduk;
 use App\Models\Detailtokoslawi;
 use App\Models\Input;
 use App\Models\Karyawan;
-use App\Models\Pelunasan;
 use App\Models\Pemesananproduk;
 use App\Models\Penjualanproduk;
 use Carbon\Carbon;
@@ -35,50 +34,42 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class Inquery_pelunasanbanjaranController extends Controller
+class Inquery_penjualanprodukpemalangController extends Controller
 {
 
    
     public function index(Request $request)
     {
         $status = $request->status;
-        $tanggal_pelunasan = $request->tanggal_pelunasan;
+        $tanggal_penjualan = $request->tanggal_penjualan;
         $tanggal_akhir = $request->tanggal_akhir;
     
-        // Modify the query to include relationships
-        $inquery = Pelunasan::with(['metodePembayaran', 'dppemesanan.pemesananproduk'])
-            ->whereHas('dppemesanan.pemesananproduk', function($query) {
-                $query->where('toko_id', 1);
-            });
+        $inquery = Penjualanproduk::query();
     
-        // Filter by status if provided
         if ($status) {
             $inquery->where('status', $status);
         }
     
-        // Handle date filtering for pelunasan
-        if ($tanggal_pelunasan && $tanggal_akhir) {
-            $tanggal_pelunasan = Carbon::parse($tanggal_pelunasan)->startOfDay();
+        if ($tanggal_penjualan && $tanggal_akhir) {
+            $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-            $inquery->whereBetween('tanggal_pelunasan', [$tanggal_pelunasan, $tanggal_akhir]);
-        } elseif ($tanggal_pelunasan) {
-            $tanggal_pelunasan = Carbon::parse($tanggal_pelunasan)->startOfDay();
-            $inquery->where('tanggal_pelunasan', '>=', $tanggal_pelunasan);
+            $inquery->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+        } elseif ($tanggal_penjualan) {
+            $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+            $inquery->where('tanggal_penjualan', '>=', $tanggal_penjualan);
         } elseif ($tanggal_akhir) {
             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-            $inquery->where('tanggal_pelunasan', '<=', $tanggal_akhir);
+            $inquery->where('tanggal_penjualan', '<=', $tanggal_akhir);
         } else {
-            // Default to today's pelunasan if no date is provided
-            $inquery->whereDate('tanggal_pelunasan', Carbon::today());
+            // Jika tidak ada filter tanggal, filter berdasarkan hari ini
+            $inquery->whereDate('tanggal_penjualan', Carbon::today());
         }
     
-        // Order by id in descending order
         $inquery->orderBy('id', 'DESC');
         $inquery = $inquery->get();
     
-        return view('toko_banjaran.inquery_pelunasanbanjaran.index', compact('inquery'));
+        return view('toko_pemalang.inquery_penjualanproduk.index', compact('inquery'));
     }
-    
     
 
     public function posting_penjualanproduk($id)
@@ -115,7 +106,7 @@ class Inquery_pelunasanbanjaranController extends Controller
       $tokos = $penjualan->toko;
 
       // Pass the retrieved data to the view
-      return view('toko_banjaran.inquery_pelunasanbanjaran.show', compact('penjualan', 'pelanggans', 'tokos'));
+      return view('toko_pemalang.inquery_penjualanproduk.show', compact('penjualan', 'pelanggans', 'tokos'));
     }
 
     public function cetakPdf($id)
@@ -126,7 +117,7 @@ class Inquery_pelunasanbanjaranController extends Controller
     
         $tokos = $penjualan->toko;
     
-        $pdf = FacadePdf::loadView('toko_banjaran.inquery_pelunasanbanjaran.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans'));
+        $pdf = FacadePdf::loadView('toko_pemalang.inquery_penjualanproduk.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans'));
         $pdf->setPaper('a4', 'portrait');
     
         return $pdf->stream('penjualan.pdf');
@@ -142,7 +133,7 @@ class Inquery_pelunasanbanjaranController extends Controller
             $inquery = Pemesananproduk::with('detailpemesananproduk')->where('id', $id)->first();
             $selectedTokoId = $inquery->toko_id; // ID toko yang dipilih
 
-            return view('toko_banjaran.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
+            return view('toko_pemalang.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
         }
         
     public function update(Request $request, $id)
@@ -270,7 +261,7 @@ class Inquery_pelunasanbanjaranController extends Controller
             $details = Detailpemesananproduk::where('pemesananproduk_id', $pemesanan->id)->get();
         
             // Redirect ke halaman indeks pemesananproduk
-            return redirect('toko_banjaran/inquery_pemesananproduk');
+            return redirect('toko_pemalang/inquery_pemesananproduk');
 
         }
         

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_pemalang;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -41,16 +41,19 @@ use App\Imports\ProdukImport;
 use App\Models\Pengiriman_barangjadi;
 use App\Models\Pengiriman_barangjadipesanan;
 use App\Models\Stok_tokoslawi;
-use App\Models\Pengiriman_tokobanjaran;
+use App\Models\Pengiriman_tokopemalang;
 use App\Models\Pengiriman_tokotegal;
 use App\Models\Pengirimanpemesanan_tokobanjaran;
+use App\Models\Pengirimanpemesanan_tokopemalang;
+use App\Models\Stok_tokopemalang;
 use App\Models\Stokhasilproduksi;
+use App\Models\Stokpesanan_tokopemalang;
 use Maatwebsite\Excel\Facades\Excel;
 
 
 
 
-class Pengiriman_tokobanjaranController extends Controller{
+class Pengiriman_tokopemalangController extends Controller{
 
 
     public function index(Request $request)
@@ -60,7 +63,7 @@ class Pengiriman_tokobanjaranController extends Controller{
         $tanggal_akhir = $request->tanggal_akhir;
     
         // Mengambil data stok_tokoslawi dengan relasi pengiriman_barangjadi dan produk
-        $query = Pengiriman_tokobanjaran::with(['pengiriman_barangjadi.produk.klasifikasi']);
+        $query = Pengiriman_tokopemalang::with(['pengiriman_barangjadi.produk.klasifikasi']);
     
         // Filter berdasarkan status
         if ($status) {
@@ -92,7 +95,7 @@ class Pengiriman_tokobanjaranController extends Controller{
                 return $item->pengiriman_barangjadi ? $item->pengiriman_barangjadi->kode_pengiriman : 'undefined';
             });
     
-        return view('toko_banjaran.pengiriman_tokobanjaran.index', compact('stokBarangJadi'));
+        return view('toko_pemalang.pengiriman_tokopemalang.index', compact('stokBarangJadi'));
     }
 
     public function pengiriman_pemesanan(Request $request)
@@ -101,7 +104,7 @@ class Pengiriman_tokobanjaranController extends Controller{
         $tanggal_input = $request->tanggal_input;
         $tanggal_akhir = $request->tanggal_akhir;
     
-        $query = Pengirimanpemesanan_tokobanjaran::with(['pengiriman_barangjadi.produk.klasifikasi']);
+        $query = Pengirimanpemesanan_tokopemalang::with(['pengiriman_barangjadi.produk.klasifikasi']);
     
         // Filter berdasarkan status
         if ($status) {
@@ -133,13 +136,13 @@ class Pengiriman_tokobanjaranController extends Controller{
                 return $item->pengiriman_barangjadi ? $item->pengiriman_barangjadi->kode_pengirimanpesanan : 'undefined';
             });
     
-        return view('toko_banjaran.pengiriman_tokobanjaran.pengiriman_pemesanan', compact('stokBarangJadi'));
+        return view('toko_pemalang.pengiriman_tokopemalang.pengiriman_pemesanan', compact('stokBarangJadi'));
     }
     
     public function show($id)
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-        $detailStokBarangJadi = Pengiriman_tokobanjaran::where('id', $id)->value('kode_pengiriman');
+        $detailStokBarangJadi = Pengiriman_tokopemalang::where('id', $id)->value('kode_pengiriman');
         
         // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -147,19 +150,19 @@ class Pengiriman_tokobanjaranController extends Controller{
         }
         
         // Ambil semua data dengan kode_pengiriman yang sama
-        $pengirimanBarangJadi = Pengiriman_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+        $pengirimanBarangJadi = Pengiriman_tokopemalang::with(['produk.subklasifikasi', 'toko'])->where('kode_pengiriman', $detailStokBarangJadi)->get();
         
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        return view('toko_banjaran.pengiriman_tokobanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
+        return view('toko_pemalang.pengiriman_tokopemalang.show', compact('pengirimanBarangJadi', 'firstItem'));
     }
 
 
     public function showpemesanan($id)
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-        $detailStokBarangJadi = Pengirimanpemesanan_tokobanjaran::where('id', $id)->value('kode_pengirimanpesanan');
+        $detailStokBarangJadi = Pengirimanpemesanan_tokopemalang::where('id', $id)->value('kode_pengirimanpesanan');
         
         // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -167,18 +170,18 @@ class Pengiriman_tokobanjaranController extends Controller{
         }
         
         // Ambil semua data dengan kode_pengiriman yang sama
-        $pengirimanBarangJadi = Pengirimanpemesanan_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_pengirimanpesanan', $detailStokBarangJadi)->get();
+        $pengirimanBarangJadi = Pengirimanpemesanan_tokopemalang::with(['produk.subklasifikasi', 'toko'])->where('kode_pengirimanpesanan', $detailStokBarangJadi)->get();
         
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        return view('toko_banjaran.pengiriman_tokobanjaran.showpemesanan', compact('pengirimanBarangJadi', 'firstItem'));
+        return view('toko_pemalang.pengiriman_tokopemalang.showpemesanan', compact('pengirimanBarangJadi', 'firstItem'));
     }
 
     public function print($id)
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-        $detailStokBarangJadi = Pengiriman_tokobanjaran::where('id', $id)->value('kode_pengiriman');
+        $detailStokBarangJadi = Pengiriman_tokopemalang::where('id', $id)->value('kode_pengiriman');
                 
         // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -186,11 +189,11 @@ class Pengiriman_tokobanjaranController extends Controller{
         }
 
         // Ambil semua data dengan kode_pengiriman yang sama
-        $pengirimanBarangJadi = Pengiriman_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+        $pengirimanBarangJadi = Pengiriman_tokopemalang::with(['produk.subklasifikasi', 'toko'])->where('kode_pengiriman', $detailStokBarangJadi)->get();
 
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
-        $pdf = FacadePdf::loadView('toko_banjaran.pengiriman_tokobanjaran.print', compact('detailStokBarangJadi', 'pengirimanBarangJadi', 'firstItem'));
+        $pdf = FacadePdf::loadView('toko_pemalang.pengiriman_tokopemalang.print', compact('detailStokBarangJadi', 'pengirimanBarangJadi', 'firstItem'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
     }
@@ -199,7 +202,7 @@ class Pengiriman_tokobanjaranController extends Controller{
     public function printpemesanan($id)
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-        $detailStokBarangJadi = Pengirimanpemesanan_tokobanjaran::where('id', $id)->value('kode_pengirimanpesanan');
+        $detailStokBarangJadi = Pengirimanpemesanan_tokopemalang::where('id', $id)->value('kode_pengirimanpesanan');
                 
         // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -207,11 +210,11 @@ class Pengiriman_tokobanjaranController extends Controller{
         }
 
         // Ambil semua data dengan kode_pengiriman yang sama
-        $pengirimanBarangJadi = Pengirimanpemesanan_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_pengirimanpesanan', $detailStokBarangJadi)->get();
+        $pengirimanBarangJadi = Pengirimanpemesanan_tokopemalang::with(['produk.subklasifikasi', 'toko'])->where('kode_pengirimanpesanan', $detailStokBarangJadi)->get();
 
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
-        $pdf = FacadePdf::loadView('toko_banjaran.pengiriman_tokobanjaran.printpemesanan', compact('detailStokBarangJadi', 'pengirimanBarangJadi', 'firstItem'));
+        $pdf = FacadePdf::loadView('toko_pemalang.pengiriman_tokopemalang.printpemesanan', compact('detailStokBarangJadi', 'pengirimanBarangJadi', 'firstItem'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
     }
@@ -220,7 +223,7 @@ class Pengiriman_tokobanjaranController extends Controller{
     public function posting_pengiriman($id)
     {
         // Ambil data stok_tokobanjaran berdasarkan ID
-        $stok = Pengiriman_tokobanjaran::where('id', $id)->first();
+        $stok = Pengiriman_tokopemalang::where('id', $id)->first();
 
         // Pastikan data ditemukan
         if (!$stok) {
@@ -272,7 +275,7 @@ class Pengiriman_tokobanjaranController extends Controller{
             }
 
             // Tambahkan jumlah ke stok_tokobanjarans
-            $stokToko = Stok_tokobanjaran::where('produk_id', $pengirimanItem->produk_id)->first();
+            $stokToko = Stok_tokopemalang::where('produk_id', $pengirimanItem->produk_id)->first();
             if ($stokToko) {
                 $stokToko->jumlah += $pengirimanItem->jumlah;
                 $stokToko->save();
@@ -280,7 +283,7 @@ class Pengiriman_tokobanjaranController extends Controller{
         }
 
         // Update status untuk semua stok_tokobanjaran dengan kode_pengiriman yang sama
-        Pengiriman_tokobanjaran::where('kode_pengiriman', $kodePengiriman)->update([
+        Pengiriman_tokopemalang::where('kode_pengiriman', $kodePengiriman)->update([
             'status' => 'posting',
             'tanggal_terima' => Carbon::now('Asia/Jakarta'),
         ]);
@@ -298,7 +301,7 @@ class Pengiriman_tokobanjaranController extends Controller{
     public function unpost_pengiriman($id)
     {
         // Ambil data stok_tokobanjaran berdasarkan ID
-        $stok = Pengiriman_tokobanjaran::where('id', $id)->first();
+        $stok = Pengiriman_tokopemalang::where('id', $id)->first();
 
         // Pastikan data ditemukan
         if (!$stok) {
@@ -322,7 +325,7 @@ class Pengiriman_tokobanjaranController extends Controller{
 
         foreach ($productsInPengiriman as $pengirimanItem) {
             // Ambil stok yang ada di stok_tokobanjaran untuk produk ini
-            $stokToko = Stok_tokobanjaran::where('produk_id', $pengirimanItem->produk_id)->first();
+            $stokToko = Stok_tokopemalang::where('produk_id', $pengirimanItem->produk_id)->first();
             
             if ($stokToko) {
                 // Mengurangi jumlah pada stok_tokobanjaran sesuai jumlah pengiriman
@@ -355,7 +358,7 @@ class Pengiriman_tokobanjaranController extends Controller{
         }
 
         // Update status untuk semua stok_tokobanjaran dengan kode_pengiriman yang sama
-        Pengiriman_tokobanjaran::where('kode_pengiriman', $kodePengiriman)->update([
+        Pengiriman_tokopemalang::where('kode_pengiriman', $kodePengiriman)->update([
             'status' => 'unpost',
             'tanggal_terima' => null, // Reset tanggal terima
         ]);
@@ -375,7 +378,7 @@ class Pengiriman_tokobanjaranController extends Controller{
     public function posting_pengirimanpemesanan($id)
     {
         // Ambil data stok_tokobanjaran berdasarkan ID
-        $stok = Pengirimanpemesanan_tokobanjaran::find($id);
+        $stok = Pengirimanpemesanan_tokopemalang::find($id);
     
         // Pastikan data ditemukan
         if (!$stok) {
@@ -435,7 +438,7 @@ class Pengiriman_tokobanjaranController extends Controller{
         }
     
         // Update status untuk semua stok_tokobanjaran dengan kode_pengiriman yang sama
-        Pengirimanpemesanan_tokobanjaran::where('kode_pengirimanpesanan', $kodePengiriman)->update([
+        Pengirimanpemesanan_tokopemalang::where('kode_pengirimanpesanan', $kodePengiriman)->update([
             'status' => 'posting',
             'tanggal_terima' => Carbon::now('Asia/Jakarta'),
         ]);
@@ -452,7 +455,7 @@ class Pengiriman_tokobanjaranController extends Controller{
     public function unpost_pengirimanpemesanan($id)
     {
         // Ambil data stok_tokobanjaran berdasarkan ID
-        $stok = Pengirimanpemesanan_tokobanjaran::where('id', $id)->first();
+        $stok = Pengirimanpemesanan_tokopemalang::where('id', $id)->first();
 
         // Pastikan data ditemukan
         if (!$stok) {
@@ -476,7 +479,7 @@ class Pengiriman_tokobanjaranController extends Controller{
 
         foreach ($productsInPengiriman as $pengirimanItem) {
             // Ambil stok yang ada di stok_tokobanjaran untuk produk ini
-            $stokToko = Stokpesanan_tokobanjaran::where('produk_id', $pengirimanItem->produk_id)->first();
+            $stokToko = Stokpesanan_tokopemalang::where('produk_id', $pengirimanItem->produk_id)->first();
             
             if ($stokToko) {
                 // Mengurangi jumlah pada stok_tokobanjaran sesuai jumlah pengiriman
@@ -509,7 +512,7 @@ class Pengiriman_tokobanjaranController extends Controller{
         }
 
         // Update status untuk semua stok_tokobanjaran dengan kode_pengiriman yang sama
-        Pengirimanpemesanan_tokobanjaran::where('kode_pengirimanpesanan', $kodePengiriman)->update([
+        Pengirimanpemesanan_tokopemalang::where('kode_pengirimanpesanan', $kodePengiriman)->update([
             'status' => 'unpost',
             'tanggal_terima' => null, // Reset tanggal terima
         ]);
@@ -530,7 +533,7 @@ class Pengiriman_tokobanjaranController extends Controller{
         $stok_barangjadi = Stok_Barangjadi::findOrFail($id);
         $klasifikasis = Klasifikasi::all(); // Menyediakan daftar klasifikasi
 
-        return view('toko_banjaran.stok_barangjadi.edit', compact('stok_barangjadi', 'klasifikasis'));
+        return view('toko_pemalang.stok_barangjadi.edit', compact('stok_barangjadi', 'klasifikasis'));
     }
 
     // Method untuk memproses update data
@@ -568,7 +571,7 @@ class Pengiriman_tokobanjaranController extends Controller{
                 $pemesanan->delete();
             });
         
-            return redirect('toko_banjaran/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
+            return redirect('toko_pemalang/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
         }
         
         public function import(Request $request)
@@ -587,6 +590,6 @@ class Pengiriman_tokobanjaranController extends Controller{
         {
             $klasifikasis = Klasifikasi::with('produks')->get();
             $importedData = session('imported_data', []);
-            return view('toko_banjaran.permintaan_produk.form', compact('klasifikasis', 'importedData'));
+            return view('toko_pemalang.permintaan_produk.form', compact('klasifikasis', 'importedData'));
         }
 }

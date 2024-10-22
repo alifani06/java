@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_pemalang;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -43,20 +43,22 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Pemindahan_tokobanjaran;
+use App\Models\Pemindahan_tokopemalang;
+use App\Models\Pemindahan_tokopemalangmasuk;
 use App\Models\Retur_barnagjadi;
 use Maatwebsite\Excel\Facades\Excel;
 
-class Pemindahan_tokobanjaranController extends Controller{
+class Pemindahan_tokopemalangController extends Controller{
 
     public function index()
     {
         // Ambil data retur_tokoslawi beserta relasi produk dan urutkan berdasarkan created_at terbaru
-        $pemindahan_tokobanjaran = Pemindahan_tokobanjaran::with('produk')
+        $pemindahan_tokopemalang = Pemindahan_tokopemalang::with('produk')
                             ->where('status', 'posting')
                             ->orderBy('created_at', 'desc')
                             ->get();
     
-        return view('toko_banjaran.pemindahan_tokobanjaran.index', compact('pemindahan_tokobanjaran'));
+        return view('toko_pemalang.pemindahan_tokopemalang.index', compact('pemindahan_tokopemalang'));
     }
       
 
@@ -66,7 +68,7 @@ public function create()
     $produks = Produk::all();
     $tokos = Toko::all();
 
-    return view('toko_banjaran.pemindahan_tokobanjaran.create', compact('produks', 'tokos'));
+    return view('toko_pemalang.pemindahan_tokopemalang.create', compact('produks', 'tokos'));
 }
 
 
@@ -88,7 +90,7 @@ public function store(Request $request)
 
     foreach ($produk_ids as $index => $produk_id) {
         // Simpan ke tabel pemindahan_tokoslawi
-        Pemindahan_tokobanjaran::create([
+        Pemindahan_tokopemalang::create([
             'kode_pemindahan' => $kode,
             'produk_id' => $produk_id,
             'toko_id' => '1',  // Ganti sesuai dengan toko tujuan
@@ -144,6 +146,17 @@ public function store(Request $request)
                         'tanggal_input' => Carbon::now('Asia/Jakarta'),
                     ]);
                     break;
+                    case 'PEMALANG':
+                        Pemindahan_tokopemalangmasuk::create([
+                            'kode_pemindahan' => $kode,
+                            'produk_id' => $produk_id,
+                            'toko_id' => '1',  // Ganti sesuai dengan ID toko TEGAL
+                            'status' => 'unpost',
+                            'jumlah' => $jumlahs[$index],
+                            'keterangan' => $keterangans[$index],
+                            'tanggal_input' => Carbon::now('Asia/Jakarta'),
+                        ]);
+                        break;
             // Tambahkan kasus lain jika ada toko lain yang perlu ditangani
             default:
                 // Tidak melakukan apa-apa jika keterangan tidak cocok
@@ -163,7 +176,7 @@ public function kode()
     $date = date('md'); // Format bulan dan hari: MMDD
 
     // Mengambil kode retur terakhir yang dibuat pada hari yang sama
-    $lastBarang = Pemindahan_tokobanjaran::whereDate('tanggal_input', Carbon::today())
+    $lastBarang = Pemindahan_tokopemalang::whereDate('tanggal_input', Carbon::today())
                                   ->orderBy('kode_pemindahan', 'desc')
                                   ->first();
 
@@ -181,52 +194,7 @@ public function kode()
 }
 
 
-public function unpost_retur($id)
-{
-    // Ambil data stok barang berdasarkan ID
-    $stok = Retur_tokoslawi::where('id', $id)->first();
 
-    // Pastikan data ditemukan
-    if (!$stok) {
-        return back()->with('error', 'Data tidak ditemukan.');
-    }
-
-    // Ambil kode_input dari stok yang diambil
-    $kodeInput = $stok->kode_retur;
-
-    // Update status untuk semua stok dengan kode_input yang sama di tabel stok_barangjadi
-    Retur_tokoslawi::where('kode_retur', $kodeInput)->update([
-        'status' => 'unpost'
-    ]);
-    return back()->with('success', 'Berhasil mengubah status semua produk dan detail terkait dengan kode_input yang sama.');
-}
-
-
-public function posting_retur($id)
-{
-   // Ambil data Retur_tokoslawi berdasarkan ID
-    $pengiriman = Retur_tokoslawi::where('id', $id)->first();
-
-    // Pastikan data ditemukan
-    if (!$pengiriman) {
-        return response()->json(['error' => 'Data tidak ditemukan.'], 404);
-    }
-
-    // Ambil kode_retur dari pengiriman yang diambil
-    $kodePengiriman = $pengiriman->kode_retur;
-
-    // Update status untuk semua Retur_tokoslawi dengan kode_retur yang sama
-    Retur_tokoslawi::where('kode_retur', $kodePengiriman)->update([
-        'status' => 'posting'
-    ]);
-
-    // Update status untuk semua stok_tokoslawi terkait dengan Retur_tokoslawi_id
-    Stok_tokoslawi::where('pengiriman_barangjadi_id', $id)->update([
-        'status' => 'posting'
-    ]);
-
-    return response()->json(['success' => 'Berhasil mengubah status semua produk dan detail terkait dengan kode_retur yang sama.']);
-}
 
 public function show($id)
 {
@@ -244,7 +212,7 @@ public function show($id)
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    return view('toko_banjaran.inquery_returbanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
+    return view('toko_pemalang.inquery_returbanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
 public function print($id)
@@ -262,11 +230,11 @@ public function print($id)
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        $pdf = FacadePdf::loadView('toko_banjaran.inquery_returbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
+        $pdf = FacadePdf::loadView('toko_pemalang.inquery_returbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
         
-        // return view('toko_banjaran.retur_tokoslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
+        // return view('toko_pemalang.retur_tokoslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
         }
 
 }

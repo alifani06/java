@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_pemalang;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -43,43 +43,14 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
+use App\Models\Pemindahan_tokopemalang;
+use App\Models\Pemindahan_tokopemalangmasuk;
 use App\Models\Retur_barnagjadi;
 use Maatwebsite\Excel\Facades\Excel;
 
-class Inquery_pemindahanbanjaranController extends Controller{
+class Inquery_pemindahanpemalangController extends Controller{
 
-    // public function index(Request $request)
-    // {
-    //         $status = $request->status;
-    //         $tanggal_input = $request->tanggal_input;
-    //         $tanggal_akhir = $request->tanggal_akhir;
-
-    //         $query = Pemindahan_tokobanjaran::with('produk.klasifikasi');
-
-    //         if ($status) {
-    //             $query->where('status', $status);
-    //         }
-
-    //         if ($tanggal_input && $tanggal_akhir) {
-    //             $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
-    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //             $query->whereBetween('tanggal_input', [$tanggal_input, $tanggal_akhir]);
-    //         } elseif ($tanggal_input) {
-    //             $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
-    //             $query->where('tanggal_input', '>=', $tanggal_input);
-    //         } elseif ($tanggal_akhir) {
-    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //             $query->where('tanggal_input', '<=', $tanggal_akhir);
-    //         } else {
-    //             // Jika tidak ada filter tanggal, tampilkan data hari ini
-    //             $query->whereDate('tanggal_input', Carbon::today());
-    //         }
-
-    //         // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
-    //         $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pemindahan');
-
-    //         return view('toko_banjaran.inquery_pemindahanbanjaran.index', compact('stokBarangJadi'));
-    // }
+   
     public function index(Request $request)
     {
         $status = $request->status;
@@ -87,10 +58,10 @@ class Inquery_pemindahanbanjaranController extends Controller{
         $tanggal_akhir = $request->tanggal_akhir;
     
         // Query untuk pemindahan_tokoslawi
-        $query1 = Pemindahan_tokobanjaran::with('produk.klasifikasi');
+        $query1 = Pemindahan_tokopemalang::with('produk.klasifikasi');
     
         // Query untuk pemindahan_tokoslawimasuks
-        $query2 = Pemindahan_tokobanjaranmasuk::with('produk.klasifikasi');
+        $query2 = Pemindahan_tokopemalangmasuk::with('produk.klasifikasi');
     
         if ($status) {
             $query1->where('status', $status);
@@ -122,7 +93,7 @@ class Inquery_pemindahanbanjaranController extends Controller{
             ->get()
             ->groupBy('kode_pemindahan');
     
-        return view('toko_banjaran.inquery_pemindahanbanjaran.index', compact('stokBarangJadi'));
+        return view('toko_pemalang.inquery_pemindahanpemalang.index', compact('stokBarangJadi'));
     }
 
 
@@ -300,7 +271,7 @@ public function show($id)
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    return view('toko_banjaran.inquery_pemindahanbanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
+    return view('toko_pemalang.inquery_pemindahanpemalang.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
 public function print($id)
@@ -318,11 +289,11 @@ public function print($id)
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        $pdf = FacadePdf::loadView('toko_banjaran.inquery_pemindahanbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
+        $pdf = FacadePdf::loadView('toko_pemalang.inquery_pemindahanpemalang.print', compact('pengirimanBarangJadi', 'firstItem'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
         
-        // return view('toko_banjaran.retur_tokoslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
+        // return view('toko_pemalang.retur_tokoslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
     }
 
 }

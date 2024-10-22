@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_pemalang;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -39,16 +39,17 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Retur_barnagjadi;
+use App\Models\Retur_tokopemalang;
 use Maatwebsite\Excel\Facades\Excel;
 
-class Inquery_returbanjaranController extends Controller{
+class Inquery_returpemalangController extends Controller{
 
     // public function index()
     // {
     //     // Ambil data retur_tokoslawi beserta relasi produk
     //     $retur_tokoslawi = Retur_tokoslawi::with('produk')->where('status', 'posting')->get();
     
-    //     return view('toko_banjaran.retur_tokoslawi.index', compact('retur_tokoslawi'));
+    //     return view('toko_pemalang.retur_tokoslawi.index', compact('retur_tokoslawi'));
     // }
     public function index(Request $request)
     {
@@ -56,7 +57,7 @@ class Inquery_returbanjaranController extends Controller{
             $tanggal_input = $request->tanggal_input;
             $tanggal_akhir = $request->tanggal_akhir;
 
-            $query = Retur_tokobanjaran::with('produk.klasifikasi');
+            $query = Retur_tokopemalang::with('produk.klasifikasi');
 
             if ($status) {
                 $query->where('status', $status);
@@ -80,7 +81,7 @@ class Inquery_returbanjaranController extends Controller{
             // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
             $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_retur');
 
-            return view('toko_banjaran.inquery_returbanjaran.index', compact('stokBarangJadi'));
+            return view('toko_pemalang.inquery_returpemalang.index', compact('stokBarangJadi'));
     }
 
     
@@ -91,7 +92,7 @@ public function create()
     $produks = Produk::all();
     $tokos = Toko::all();
 
-    return view('toko_banjaran.retur_tokoslawi.create', compact('produks', 'tokos'));
+    return view('toko_pemalang.retur_tokoslawi.create', compact('produks', 'tokos'));
 }
 
 public function show($id)
@@ -110,7 +111,7 @@ public function show($id)
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    return view('toko_banjaran.inquery_returslawi.show', compact('pengirimanBarangJadi', 'firstItem'));
+    return view('toko_pemalang.inquery_returslawi.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
 public function print($id)
@@ -128,11 +129,11 @@ public function print($id)
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        $pdf = FacadePdf::loadView('toko_banjaran.inquery_returbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
+        $pdf = FacadePdf::loadView('toko_pemalang.inquery_returpemalang.print', compact('pengirimanBarangJadi', 'firstItem'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
         
-        // return view('toko_banjaran.retur_tokoslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
+        // return view('toko_pemalang.retur_tokoslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
         }
 
 }

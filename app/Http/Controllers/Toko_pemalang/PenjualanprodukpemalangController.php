@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_pemalang;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -30,6 +30,8 @@ use App\Models\Penjualanproduk;
 use App\Models\Toko;
 use App\Models\Dppemesanan;
 use App\Models\Metodepembayaran;
+use App\Models\Stok_tokopemalang;
+use App\Models\Stokpesanan_tokopemalang;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Log;
@@ -41,7 +43,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class PenjualanprodukbanjaranController extends Controller
+class PenjualanprodukpemalangController extends Controller
     {
     
     public function index(Request $request)
@@ -49,7 +51,7 @@ class PenjualanprodukbanjaranController extends Controller
         $today = Carbon::today();
         
         $inquery = Penjualanproduk::with('metodePembayaran')
-            ->where('toko_id', 1) 
+            ->where('toko_id', 4) 
             ->where(function ($query) use ($today) {
                 $query->whereDate('created_at', $today)
                       ->orWhere(function ($query) use ($today) {
@@ -60,7 +62,7 @@ class PenjualanprodukbanjaranController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
     
-        return view('toko_banjaran.penjualan_produk.index', compact('inquery'));
+        return view('toko_pemalang.penjualan_produk.index', compact('inquery'));
     }
     
     
@@ -110,11 +112,11 @@ class PenjualanprodukbanjaranController extends Controller
         $metodes = Metodepembayaran::all();
         
         // Pastikan kita memanggil relasi stokbanjaran
-        $produks = Produk::with(['tokobanjaran', 'stok_tokobanjaran'])->get();
+        $produks = Produk::with(['tokopemalang', 'stok_tokopemalang'])->get();
 
         $kategoriPelanggan = 'member';
         
-        return view('toko_banjaran.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
+        return view('toko_pemalang.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
     }
 
     // create baru
@@ -134,13 +136,13 @@ class PenjualanprodukbanjaranController extends Controller
 
     //     $kategoriPelanggan = 'member';
         
-    //     return view('toko_banjaran.penjualan_produk.create', compact('search','barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
+    //     return view('toko_pemalang.penjualan_produk.create', compact('search','barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
     // }
 
     public function getProduks(Request $request)
     {
         // Ambil semua data produk dengan relasi yang diperlukan
-        $produks = Produk::with(['tokobanjaran', 'stok_tokobanjaran'])->get();
+        $produks = Produk::with(['tokopemalang', 'stok_tokopemalang'])->get();
 
         return response()->json($produks);
     }
@@ -239,7 +241,7 @@ class PenjualanprodukbanjaranController extends Controller
             'metode_id' => $request->metode_id, 
             'total_fee' => $request->total_fee, 
             'keterangan' => $request->keterangan, 
-            'toko_id' => 1,
+            'toko_id' => 4,
             'kasir' => ucfirst(auth()->user()->karyawan->nama_lengkap),
             'kode_penjualan' => $kode,
             'qrcode_penjualan' => 'https://javabakery.id/penjualan/' . $kode,
@@ -268,7 +270,7 @@ class PenjualanprodukbanjaranController extends Controller
             ]);
 
             // Kurangi stok di tabel stok_tokobanjaran
-            $stok = Stok_tokobanjaran::where('produk_id', $data_pesanan['produk_id'])->first();
+            $stok = Stok_tokopemalang::where('produk_id', $data_pesanan['produk_id'])->first();
             if ($stok) {
                 // Jika jumlah stok 0, maka kurangi dengan nilai jumlah dari inputan dan buat stok jadi minus
                 if ($stok->jumlah == 0) {
@@ -284,7 +286,7 @@ class PenjualanprodukbanjaranController extends Controller
         $details = Detailpenjualanproduk::where('penjualanproduk_id', $cetakpdf->id)->get();
 
         // Kirimkan URL untuk tab baru
-        $pdfUrl = route('toko_banjaran.penjualan_produk.cetak-pdf', ['id' => $cetakpdf->id]);
+        $pdfUrl = route('toko_pemalang.penjualan_produk.cetak-pdf', ['id' => $cetakpdf->id]);
 
         // Return response dengan URL PDF
         return response()->json([
@@ -304,10 +306,10 @@ class PenjualanprodukbanjaranController extends Controller
         $metodes = Metodepembayaran::all();
         $dppemesanans = Dppemesanan::all();
         $pemesananproduks = Pemesananproduk::all();
-        $produks = Produk::with('tokobanjaran')->get();
+        $produks = Produk::with('tokopemalang')->get();
         $kategoriPelanggan = 'member';
  
-        return view('toko_banjaran.penjualan_produk.pelunasan', compact('barangs','metodes', 'tokos', 'produks', 'details', 'tokoslawis', 'tokobanjarans', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks'));
+        return view('toko_pemalang.penjualan_produk.pelunasan', compact('barangs','metodes', 'tokos', 'produks', 'details', 'tokoslawis', 'tokobanjarans', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks'));
     }
 
     public function fetchProductData(Request $request)
@@ -343,7 +345,7 @@ class PenjualanprodukbanjaranController extends Controller
         $produks = Produk::where('nama_produk', 'LIKE', '%' . $query . '%')
                         ->orWhere('kode_lama', 'LIKE', '%' . $query . '%')
                         ->orWhere('qrcode_produk', 'LIKE', '%' . $query . '%')
-                        ->with('tokobanjaran', 'stok_tokobanjaran')
+                        ->with('tokopemalang', 'stok_tokopemalang')
                         ->get();
     
         return response()->json(['produks' => $produks]);
@@ -410,7 +412,7 @@ class PenjualanprodukbanjaranController extends Controller
         $penjualan->kembali = $validated['kembali'];
         $penjualan->bayar = $validated['pelunasan'];
         $penjualan->status = 'posting';
-        $penjualan->toko_id = 1;
+        $penjualan->toko_id = 4;
         $penjualan->kode_penjualan = $kode_penjualan;
         $penjualan->tanggal_penjualan = Carbon::now('Asia/Jakarta');
         $penjualan->qrcode_penjualan = 'https://javabakery.id/penjualan/' . $kode_penjualan;
@@ -428,7 +430,7 @@ class PenjualanprodukbanjaranController extends Controller
         $pelunasan->tanggal_pelunasan = Carbon::now('Asia/Jakarta');
         $pelunasan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
         $pelunasan->status = 'posting';
-        $pelunasan->toko_id = '1'; 
+        $pelunasan->toko_id = '4'; 
         $pelunasan->kode_penjualan = $penjualan->kode_penjualan; // Menggunakan kode_penjualan dari penjualan
         $pelunasan->save();
     
@@ -456,10 +458,10 @@ class PenjualanprodukbanjaranController extends Controller
                 ($produk->klasifikasi_id == 13 && in_array($produk->kode_lama, ['KU001', 'M0002']))
             ) {
                 // Pengurangan stok untuk stok_tokobanjaran
-                $stok = Stok_tokobanjaran::where('produk_id', $detail->produk_id)->first();
+                $stok = Stok_tokopemalang::where('produk_id', $detail->produk_id)->first();
             } else {
                 // Jika tidak, kurangi stok dari stokpesanan_tokobanjaran
-                $stok = Stokpesanan_tokobanjaran::where('produk_id', $detail->produk_id)->first();
+                $stok = Stokpesanan_tokopemalang::where('produk_id', $detail->produk_id)->first();
             }
 
             if ($stok) {
@@ -471,12 +473,12 @@ class PenjualanprodukbanjaranController extends Controller
                 if (in_array($produk->klasifikasi_id, [15, 16]) || 
                     ($produk->klasifikasi_id == 13 && in_array($detail->kode_lama, ['KU001', 'M0002']))
                 ) {
-                    Stok_tokobanjaran::create([
+                    Stok_tokopemalang::create([
                         'produk_id' => $detail->produk_id,
                         'jumlah' => -$detail->jumlah,
                     ]);
                 } else {
-                    Stokpesanan_tokobanjaran::create([
+                    Stokpesanan_tokopemalang::create([
                         'produk_id' => $detail->produk_id,
                         'jumlah' => -$detail->jumlah,
                     ]);
@@ -490,7 +492,7 @@ class PenjualanprodukbanjaranController extends Controller
         $details = DetailPenjualanProduk::where('penjualanproduk_id', $penjualan->id)->get();
     
         // Kirimkan URL untuk tab baru
-        $pdfUrl = route('toko_banjaran.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id]);
+        $pdfUrl = route('toko_pemalang.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id]);
     
         // Return response dengan URL PDF
         return response()->json([
@@ -577,32 +579,10 @@ class PenjualanprodukbanjaranController extends Controller
         }
     }
  
-    // public function kode()
-    // {
-    //     $prefix = 'PBNJ';
-    //     $year = date('y'); // Dua digit terakhir dari tahun
-    //     $monthDay = date('dm'); // Format bulan dan hari: MMDD
-        
-    //     // Mengambil kode retur terakhir yang dibuat pada hari yang sama
-    //     $lastBarang = Penjualanproduk::whereDate('tanggal_penjualan', Carbon::today())
-    //                                   ->orderBy('kode_penjualan', 'desc')
-    //                                   ->first();
-    
-    //     if (!$lastBarang) {
-    //         $num = 1;
-    //     } else {
-    //         $lastCode = $lastBarang->kode_penjualan;
-    //         $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
-    //         $num = $lastNum + 1;
-    //     }
-    
-    //     $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
-    //     $newCode = $prefix . $monthDay . $year . $formattedNum;
-    //     return $newCode;
-    // }
+   
     public function kode()
     {
-        $prefix = 'FPC';
+        $prefix = 'FPE';
         $year = date('y'); // Dua digit terakhir dari tahun
         $monthDay = date('dm'); // Format bulan dan hari: MMDD
 
@@ -636,7 +616,7 @@ class PenjualanprodukbanjaranController extends Controller
         $tokos = $penjualan->toko;
 
         // Pass the retrieved data to the view
-        return view('toko_banjaran.penjualan_produk.cetak', compact('penjualan', 'pelanggans', 'tokos'));
+        return view('toko_pemalang.penjualan_produk.cetak', compact('penjualan', 'pelanggans', 'tokos'));
     }
 
     public function cetakpelunasan($id)
@@ -649,7 +629,7 @@ class PenjualanprodukbanjaranController extends Controller
         $tokos = $penjualan->toko;
 
         // Pass the retrieved data to the view
-        return view('toko_banjaran.penjualan_produk.cetakpelunasan', compact('penjualan', 'pelanggans', 'tokos'));
+        return view('toko_pemalang.penjualan_produk.cetakpelunasan', compact('penjualan', 'pelanggans', 'tokos'));
     }
     
     public function cetakPdf($id)
@@ -658,7 +638,7 @@ class PenjualanprodukbanjaranController extends Controller
         $pelanggans = Pelanggan::all();
         $tokos = $penjualan->toko;
     
-        $pdf = FacadePdf::loadView('toko_banjaran.penjualan_produk.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans'));
+        $pdf = FacadePdf::loadView('toko_pemalang.penjualan_produk.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans'));
         $pdf->setPaper('a4', 'portrait');
     
         return $pdf->stream('penjualan.pdf');
@@ -676,7 +656,7 @@ class PenjualanprodukbanjaranController extends Controller
       $tokos = $penjualan->toko;
 
       // Pass the retrieved data to the view
-      return view('toko_banjaran.penjualan_produk.cetak', compact('penjualan', 'pelanggans', 'tokos'));
+      return view('toko_pemalang.penjualan_produk.cetak', compact('penjualan', 'pelanggans', 'tokos'));
     }
     
 
@@ -690,7 +670,7 @@ class PenjualanprodukbanjaranController extends Controller
             $inquery = Pemesananproduk::with('detailpemesananproduk')->where('id', $id)->first();
             $selectedTokoId = $inquery->toko_id; // ID toko yang dipilih
 
-            return view('toko_banjaran.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
+            return view('toko_pemalang.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
         }
         
 
@@ -819,7 +799,7 @@ class PenjualanprodukbanjaranController extends Controller
             $details = Detailpemesananproduk::where('pemesananproduk_id', $pemesanan->id)->get();
         
             // Redirect ke halaman indeks pemesananproduk
-            return redirect('toko_banjaran/pemesanan_produk');
+            return redirect('toko_pemalang/pemesanan_produk');
 
         }
         
@@ -856,7 +836,7 @@ class PenjualanprodukbanjaranController extends Controller
                 $penjualan->delete();
             });
 
-            return redirect('toko_banjaran/penjualan_produk')->with('success', 'Berhasil menghapus data penjualan');
+            return redirect('toko_pemalang/penjualan_produk')->with('success', 'Berhasil menghapus data penjualan');
         }
 
         public function getProduk(Request $request)

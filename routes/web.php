@@ -820,18 +820,18 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
 });
 
 Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {
-    Route::get('/', [\App\Http\Controllers\Toko_banjaran\DashboardController::class, 'index']);
+    Route::get('/', [\App\Http\Controllers\Toko_pemalang\DashboardController::class, 'index']);
 
-    Route::resource('pelanggan', \App\Http\Controllers\Toko_banjaran\PelangganController::class);
-    Route::get('pelanggan/getpelanggan/{id}', [\App\Http\Controllers\Toko_banjaran\PelangganController::class, 'getpelanggan']);
+    Route::resource('pelanggan', \App\Http\Controllers\Toko_pemalang\PelangganController::class);
+    Route::get('pelanggan/getpelanggan/{id}', [\App\Http\Controllers\Toko_pemalang\PelangganController::class, 'getpelanggan']);
     Route::get('pelanggan/cetak_pdf/{id}', [PelangganController::class, 'cetak_pdf'])->name('pelanggan.cetak_pdf');
 
-    Route::resource('produk', \App\Http\Controllers\Toko_banjaran\ProdukController::class);
+    Route::resource('produk', \App\Http\Controllers\Toko_pemalang\ProdukController::class);
 
-    Route::resource('pemesanan_produk', \App\Http\Controllers\Toko_banjaran\PemesananprodukbanjaranController::class);
+    Route::resource('pemesanan_produk', \App\Http\Controllers\Toko_pemalang\PemesananprodukbanjaranController::class);
     Route::get('/toko_banjaran/pemesanan_produk/cetak/{id}', [PemesananprodukbanjaranController::class, 'cetak'])->name('toko_banjaran.pemesanan_produk.cetak');
     Route::get('/get-customer/{kode}', [PemesananprodukbanjaranController::class, 'getCustomerByKode']);
-    Route::get('pemesanan/pelanggan/{id}', [\App\Http\Controllers\Toko_banjaran\PemesananprodukbanjaranController::class, 'pelanggan']);
+    Route::get('pemesanan/pelanggan/{id}', [\App\Http\Controllers\Toko_pemalang\PemesananprodukbanjaranController::class, 'pelanggan']);
     Route::get('/get-customer-data', [PemesananprodukbanjaranController::class, 'getCustomerData'])->name('get.customer.data');
     Route::get('/toko_banjaran/pemesanan_produk/update/{id}', [PemesananprodukbanjaranController::class, 'edit'])->name('pemesanan_produk.update');
     Route::get('/toko_banjaran/pemesanan_produk/cetak-pdf{id}', [PemesananprodukbanjaranController::class, 'cetakPdf'])->name('toko_banjaran.pemesanan_produk.cetak-pdf');

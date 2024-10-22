@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_pemalang;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -36,11 +36,11 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Imports\StokBanjaranImport;
-use App\Models\Stok_tokobanjaran;
+use App\Models\Stok_tokopemalang;
 use App\Models\Subklasifikasi;
 use Maatwebsite\Excel\Facades\Excel;
 
-class Stok_tokobanjaranController extends Controller{
+class Stok_tokopemalangController extends Controller{
 
 public function index(Request $request)
 {
@@ -60,8 +60,8 @@ public function index(Request $request)
 
     $produk = $produkQuery->get();
 
-    $stok_tokobanjaran = Stok_tokobanjaran::with('produk')->get();
-    $stokGrouped = $stok_tokobanjaran->groupBy('produk_id')->map(function ($group) {
+    $stok_tokopemalang = Stok_tokopemalang::with('produk')->get();
+    $stokGrouped = $stok_tokopemalang->groupBy('produk_id')->map(function ($group) {
         $firstItem = $group->first();
         $totalJumlah = $group->sum('jumlah');
         $firstItem->jumlah = $totalJumlah;
@@ -88,7 +88,7 @@ public function index(Request $request)
         ? SubKlasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get() 
         : collect();
 
-    return view('toko_banjaran.stok_tokobanjaran.index', compact('produkWithStok', 'klasifikasis', 'subklasifikasis', 'totalHarga', 'totalStok', 'totalSubTotal'));
+    return view('toko_pemalang.stok_tokopemalang.index', compact('produkWithStok', 'klasifikasis', 'subklasifikasis', 'totalHarga', 'totalStok', 'totalSubTotal'));
 }
 
 
@@ -99,7 +99,7 @@ public function create()
     $produks = Produk::all();
     $tokos = Toko::all();
 
-    return view('toko_banjaran.stok_tokobanjaran.create', compact('produks', 'tokos'));
+    return view('toko_pemalang.stok_tokopemalang.create', compact('produks', 'tokos'));
 }
 
 
@@ -118,7 +118,7 @@ public function create()
         $jumlahs = $request->input('jumlah');
 
         foreach ($produk_ids as $index => $produk_id) {
-            $stok = Stok_tokobanjaran::where('produk_id', $produk_id)->first();
+            $stok = Stok_tokopemalang::where('produk_id', $produk_id)->first();
 
             if ($stok) {
                 // Jika stok sudah ada, lakukan update jumlah
@@ -128,7 +128,7 @@ public function create()
                 ]);
             } else {
                 // Jika stok belum ada, buat entri baru
-                Stok_tokobanjaran::create([
+                Stok_tokopemalang::create([
                     // 'toko_id' => $toko_id,
                     'produk_id' => $produk_id,
                     'status' => 'posting',
@@ -138,7 +138,7 @@ public function create()
             }
         }
 
-        return redirect()->route('stok_tokobanjaran.index')->with('success', 'Data stok barang berhasil disimpan.');
+        return redirect()->route('stok_tokopemalang.index')->with('success', 'Data stok barang berhasil disimpan.');
     }
 
     public function update(Request $request, $produk_id)
@@ -149,11 +149,11 @@ public function create()
         ]);
 
         // Temukan stok berdasarkan produk_id
-        $stok = Stok_tokobanjaran::where('produk_id', $produk_id)->first();
+        $stok = Stok_tokopemalang::where('produk_id', $produk_id)->first();
 
         // Jika stok tidak ditemukan, bisa memberikan respons error atau membuat entri stok baru
         if (!$stok) {
-            return redirect()->route('stok_tokobanjaran.index')->with('error', 'Stok untuk produk ini tidak ditemukan.');
+            return redirect()->route('stok_tokopemalang.index')->with('error', 'Stok untuk produk ini tidak ditemukan.');
         }
 
         // Update jumlah stok
@@ -161,7 +161,7 @@ public function create()
         $stok->save(); // Simpan perubahan
 
         // Redirect kembali ke halaman stok dengan pesan sukses
-        return redirect()->route('stok_tokobanjaran.index')->with('success', 'Stok produk berhasil diperbarui.');
+        return redirect()->route('stok_tokopemalang.index')->with('success', 'Stok produk berhasil diperbarui.');
     }
 // public function update(Request $request, $produk_id)
 // {
@@ -171,7 +171,7 @@ public function create()
 //     ]);
 
 //     // Temukan stok berdasarkan produk_id
-//     $stok = Stok_tokobanjaran::where('produk_id', $produk_id)->first();
+//     $stok = Stok_tokopemalang::where('produk_id', $produk_id)->first();
 
 //     // Jika stok tidak ditemukan, bisa memberikan respons error atau membuat entri stok baru
 //     if (!$stok) {
@@ -189,8 +189,8 @@ public function create()
 
     public function deleteAll()
     {
-        // Menghapus seluruh data pada kolom jumlah (stok) di tabel stok_tokobanjarans
-        Stok_tokobanjaran::query()->update(['jumlah' => 0]);
+        // Menghapus seluruh data pada kolom jumlah (stok) di tabel stok_tokopemalangs
+        Stok_tokopemalang::query()->update(['jumlah' => 0]);
 
         return redirect()->back()->with('success', 'Semua data stok berhasil dihapus.');
     }
@@ -198,7 +198,7 @@ public function create()
     public function edit($id)
     {
         $produk = Produk::findOrFail($id); // Mengambil data produk berdasarkan id
-        return view('stok_tokobanjaran.edit', compact('produk')); // Menampilkan form edit stok
+        return view('stok_tokopemalang.edit', compact('produk')); // Menampilkan form edit stok
     }
 
 
@@ -210,7 +210,7 @@ public function create()
     
         Excel::import(new StokBanjaranImport, $request->file('file_excel'));
     
-        return redirect('toko_banjaran/stok_tokobanjaran')->with('success', 'Berhasil mengimpor produk dari Excel');
+        return redirect('toko_pemalang/stok_tokopemalang')->with('success', 'Berhasil mengimpor produk dari Excel');
     }
 
 }

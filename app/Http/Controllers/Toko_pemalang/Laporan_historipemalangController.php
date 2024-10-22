@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_pemalang;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -43,7 +43,7 @@ use App\Exports\StokBarangExportBR;
 
 
 
-class Laporan_historibanjaranController extends Controller
+class Laporan_historipemalangController extends Controller
 {
 
     public function index(Request $request)
@@ -106,7 +106,7 @@ class Laporan_historibanjaranController extends Controller
         $stokBarangJadi = $query->orderBy('produks.kode_lama', 'asc')->get();
 
         // Kirim data ke view
-        return view('toko_banjaran.laporan_historibanjaran.index', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'produks'));
+        return view('toko_pemalang.laporan_historipemalang.index', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'produks'));
     }
 
     public function barangMasukpesananbanjaran(Request $request)
@@ -169,7 +169,7 @@ class Laporan_historibanjaranController extends Controller
         $stokBarangJadi = $query->orderBy('produks.kode_lama', 'asc')->get();
 
         // Kirim data ke view
-        return view('toko_banjaran.laporan_historibanjaran.barangmasukpesanan', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'produks'));
+        return view('toko_pemalang.laporan_historipemalang.barangmasukpesanan', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'produks'));
     }
 
 
@@ -261,7 +261,7 @@ class Laporan_historibanjaranController extends Controller
         $klasifikasis = Klasifikasi::all();
         $produks = Produk::all(); // Ambil semua produk untuk dropdown
     
-        return view('toko_banjaran.laporan_historibanjaran.barangkeluar', [
+        return view('toko_pemalang.laporan_historipemalang.barangkeluar', [
             'finalResults' => $finalResults,
             'tokos' => $tokos,
             'produks' => $produks,
@@ -353,7 +353,7 @@ class Laporan_historibanjaranController extends Controller
     $klasifikasis = Klasifikasi::all();
     $produks = Produk::all(); // Ambil semua produk untuk dropdown
 
-    return view('toko_banjaran.laporan_historibanjaran.barangkeluarrinci', [
+    return view('toko_pemalang.laporan_historipemalang.barangkeluarrinci', [
         'finalResults' => $finalResults,
         'tokos' => $tokos,
         'produks' => $produks,
@@ -422,7 +422,7 @@ class Laporan_historibanjaranController extends Controller
         $tokos = Toko::all();
         $klasifikasis = Klasifikasi::all();
 
-        return view('toko_banjaran.laporan_historibanjaran.barangretur', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'totalJumlah', 'grandTotal'));
+        return view('toko_pemalang.laporan_historipemalang.barangretur', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'totalJumlah', 'grandTotal'));
     }
     
     public function printLaporanBmbanjaran(Request $request)
@@ -505,7 +505,7 @@ class Laporan_historibanjaranController extends Controller
         });
 
         // Memuat konten HTML dari view
-        $pdf = FacadePdf::loadView('toko_banjaran.laporan_historibanjaran.printbm', [
+        $pdf = FacadePdf::loadView('toko_pemalang.laporan_historipemalang.printbm', [
             'groupedData' => $groupedData,
             'startDate' => $formattedStartDate,
             'endDate' => $formattedEndDate,
@@ -616,7 +616,7 @@ class Laporan_historibanjaranController extends Controller
         });
 
         // Memuat konten HTML dari view
-        $pdf = FacadePdf::loadView('toko_banjaran.laporan_historibanjaran.printbmpesanan', [
+        $pdf = FacadePdf::loadView('toko_pemalang.laporan_historipemalang.printbmpesanan', [
             'groupedData' => $groupedData,
             'startDate' => $formattedStartDate,
             'endDate' => $formattedEndDate,
@@ -763,7 +763,7 @@ class Laporan_historibanjaranController extends Controller
     $endDate = $tanggal_akhir;
 
     // Menggunakan Barryvdh\DomPDF\Facade\Pdf untuk memuat dan menghasilkan PDF
-    $pdf = FacadePdf::loadView('toko_banjaran.laporan_historibanjaran.printbk', [
+    $pdf = FacadePdf::loadView('toko_pemalang.laporan_historipemalang.printbk', [
         'finalResults' => $finalResults,
         'startDate' => $startDate,
         'endDate' => $endDate,
@@ -894,7 +894,7 @@ class Laporan_historibanjaranController extends Controller
     $endDate = $tanggal_akhir;
 
     // Menggunakan Barryvdh\DomPDF\Facade\Pdf untuk memuat dan menghasilkan PDF
-    $pdf = FacadePdf::loadView('toko_banjaran.laporan_historibanjaran.printbkrinci', [
+    $pdf = FacadePdf::loadView('toko_pemalang.laporan_historipemalang.printbkrinci', [
         'finalResults' => $finalResults,
         'startDate' => $startDate,
         'endDate' => $endDate,
@@ -992,7 +992,7 @@ class Laporan_historibanjaranController extends Controller
         }
 
         // Menggunakan FacadePdf untuk menghasilkan PDF
-        $pdf = FacadePdf::loadView('toko_banjaran.laporan_historibanjaran.printbr', [
+        $pdf = FacadePdf::loadView('toko_pemalang.laporan_historipemalang.printbr', [
             'stokBarangJadi' => $stokBarangJadi,
             'startDate' => $formattedStartDate,
             'endDate' => $formattedEndDate,

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_pemalang;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -51,7 +51,7 @@ use Dompdf\Options;
 
 
 
-class Laporan_stoktokobanjaranController extends Controller
+class Laporan_stoktokopemalangController extends Controller
 {
 
     public function index(Request $request)
@@ -71,7 +71,7 @@ class Laporan_stoktokobanjaranController extends Controller
     
         $produk = $produkQuery->get();
     
-        $stok = Stok_tokobanjaran::with('produk')->get();
+        $stok = Stok_tokopemalang::with('produk')->get();
     
         $stokGrouped = $stok->groupBy('produk_id')->map(function ($group) {
             $firstItem = $group->first();
@@ -100,10 +100,10 @@ class Laporan_stoktokobanjaranController extends Controller
             ? SubKlasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get() 
             : collect();
     
-        return view('toko_banjaran.laporan_stoktokobanjaran.index', compact('produkWithStok', 'klasifikasis', 'subklasifikasis', 'totalHarga', 'totalStok', 'totalSubTotal'));
+        return view('toko_pemalang.laporan_stoktokopemalang.index', compact('produkWithStok', 'klasifikasis', 'subklasifikasis', 'totalHarga', 'totalStok', 'totalSubTotal'));
     }
 
-    public function stoktokopesananbanjaran(Request $request)
+    public function stoktokopesananpemalang(Request $request)
     {
         $klasifikasis = Klasifikasi::all();
         $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);
@@ -149,10 +149,10 @@ class Laporan_stoktokobanjaranController extends Controller
             ? SubKlasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get() 
             : collect();
     
-        return view('toko_banjaran.laporan_stoktokobanjaran.indexpesanan', compact('produkWithStok', 'klasifikasis', 'subklasifikasis', 'totalHarga', 'totalStok', 'totalSubTotal'));
+        return view('toko_pemalang.laporan_stoktokopemalang.indexpesanan', compact('produkWithStok', 'klasifikasis', 'subklasifikasis', 'totalHarga', 'totalStok', 'totalSubTotal'));
     }
     
-    public function semuaStokTokoBanjaran(Request $request)
+    public function semuaStokTokoPemalang(Request $request)
     {
         $klasifikasis = Klasifikasi::all();
         $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);
@@ -214,7 +214,7 @@ class Laporan_stoktokobanjaranController extends Controller
             ? SubKlasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get() 
             : collect();
     
-        return view('toko_banjaran.laporan_stoktokobanjaran.indexall', compact('produkWithStok', 'klasifikasis', 'subklasifikasis', 'totalHarga', 'totalStok', 'totalSubTotal'));
+        return view('toko_pemalang.laporan_stoktokopemalang.indexall', compact('produkWithStok', 'klasifikasis', 'subklasifikasis', 'totalHarga', 'totalStok', 'totalSubTotal'));
     }
 
     
@@ -304,7 +304,7 @@ class Laporan_stoktokobanjaranController extends Controller
         $dompdf = new Dompdf($options);
     
         // Memuat konten HTML dari view
-        $html = view('toko_banjaran.laporan_stoktokobanjaran.print', [
+        $html = view('toko_pemalang.laporan_stoktokopemalang.print', [
             'produkWithStok' => $produkWithStok,
             'klasifikasis' => $klasifikasis,
             'subklasifikasis' => $subklasifikasis,
@@ -345,7 +345,7 @@ class Laporan_stoktokobanjaranController extends Controller
         return $dompdf->stream('laporan_stoktoko.pdf', ['Attachment' => false]);
     }
 
-    public function printReportstokpesananbanjaran(Request $request)
+    public function printReportstokpesananpemalang(Request $request)
     {
         $klasifikasis = Klasifikasi::all();
         $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);
@@ -425,7 +425,7 @@ class Laporan_stoktokobanjaranController extends Controller
         $dompdf = new Dompdf($options);
     
         // Memuat konten HTML dari view
-        $html = view('toko_banjaran.laporan_stoktokobanjaran.printpesanan', [
+        $html = view('toko_pemalang.laporan_stoktokopemalang.printpesanan', [
             'produkWithStok' => $produkWithStok,
             'klasifikasis' => $klasifikasis,
             'subklasifikasis' => $subklasifikasis,
@@ -465,7 +465,7 @@ class Laporan_stoktokobanjaranController extends Controller
         return $dompdf->stream('laporan_stoktoko.pdf', ['Attachment' => false]);
     }
     
-    public function printReportsemuastokbanjaran(Request $request)
+    public function printReportsemuastokpemalang(Request $request)
     {
         $klasifikasis = Klasifikasi::all();
         $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);
@@ -526,7 +526,7 @@ class Laporan_stoktokobanjaranController extends Controller
         $dompdf = new Dompdf($options);
     
         // Memuat konten HTML dari view
-        $html = view('toko_banjaran.laporan_stoktokobanjaran.printsemuastok', [
+        $html = view('toko_pemalang.laporan_stoktokopemalang.printsemuastok', [
             'produkWithStok' => $produkWithStok,
             'klasifikasis' => $klasifikasis,
             'subklasifikasis' => $subklasifikasis,

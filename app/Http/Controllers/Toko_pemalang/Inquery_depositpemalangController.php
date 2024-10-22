@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_pemalang;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -33,7 +33,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class Inquery_depositbanjaranController extends Controller
+class Inquery_depositpemalangController extends Controller
 {
  
     public function index(Request $request)
@@ -46,7 +46,7 @@ class Inquery_depositbanjaranController extends Controller
     
         $inquery = Dppemesanan::with(['pemesananproduk.toko'])
         ->whereHas('pemesananproduk', function ($query) {
-            $query->where('toko_id', 1); // Filter berdasarkan toko_id = 2
+            $query->where('toko_id', 4); // Filter berdasarkan toko_id = 2
         });
     
         // Filter berdasarkan status
@@ -91,7 +91,7 @@ class Inquery_depositbanjaranController extends Controller
         $inquery = $inquery->get();
     
         // Kirim data ke view
-        return view('toko_banjaran.inquery_deposit.index', compact('inquery'));
+        return view('toko_pemalang.inquery_deposit.index', compact('inquery'));
     }
     
     

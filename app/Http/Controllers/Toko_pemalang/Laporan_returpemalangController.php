@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_pemalang;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -38,7 +38,7 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
-class Laporan_returbanjaranController extends Controller
+class Laporan_returpemalangController extends Controller
 {
 
     public function index(Request $request)
@@ -73,7 +73,7 @@ class Laporan_returbanjaranController extends Controller
             $query->whereDate('tanggal_retur', Carbon::today());
         }
     
-        $query->where('toko_id', 1);
+        $query->where('toko_id', 4);
 
         // Filter berdasarkan klasifikasi
         if ($klasifikasi_id) {
@@ -98,7 +98,7 @@ class Laporan_returbanjaranController extends Controller
         $tokos = Toko::all();
         $klasifikasis = Klasifikasi::all();
 
-        return view('toko_banjaran.laporan_returbanjaran.index', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'totalJumlah', 'grandTotal'));
+        return view('toko_pemalang.laporan_returpemalang.index', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'totalJumlah', 'grandTotal'));
     }
             
 
@@ -115,7 +115,7 @@ class Laporan_returbanjaranController extends Controller
         $formattedStartDate = $tanggal_retur ? Carbon::parse($tanggal_retur)->format('d-m-Y') : 'N/A';
         $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : 'N/A';
 
-        $toko = Toko::find(1); // Selalu ambil dari toko_id = 1
+        $toko = Toko::find(4); // Selalu ambil dari toko_id = 4
         $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
 
         // Query dasar untuk mengambil data Retur_barangjadi
@@ -129,7 +129,7 @@ class Laporan_returbanjaranController extends Controller
             $query->where('retur_barangjadis.status', $status);
         }
 
-         $query->where('retur_barangjadis.toko_id', 1);
+         $query->where('retur_barangjadis.toko_id', 4);
 
         // Filter berdasarkan klasifikasi_id
         if ($klasifikasi_id) {
