@@ -210,7 +210,7 @@
                                         <tr>
                                             <th style="font-size:14px" class="text-center">No</th>
                                             <th hidden style="font-size:14px">Kode Produk</th>
-                                            <th style="font-size:14px">Kode Lama</th>
+                                            <th style="font-size:14px">Kode Produk</th>
                                             <th style="font-size:14px">Nama Produk</th>
                                             <th style="font-size:14px">Jumlah</th>
                                             <th style="font-size:14px">Diskon</th>

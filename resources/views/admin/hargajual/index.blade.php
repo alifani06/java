@@ -65,6 +65,10 @@
                     <select id="tokoSelect" class="form-control" onchange="showTable(this.value)">
                         <option value="banjaran">Toko Banjaran</option>
                         <option value="slawi">Toko Slawi</option>
+                        <option value="tegal">Toko Tegal</option>
+                        <option value="pemalang">Toko Pemalang</option>
+                        <option value="bumiayu">Toko Bumiayu</option>
+                        <option value="cilacap">Toko Cilacap</option>
                         <!-- Tambahkan opsi lain di sini jika ada toko tambahan -->
                     </select>
                 </div>
@@ -128,9 +132,8 @@
                     </table>
                 </div>
    
-                <!-- Tabel Toko Slawi -->
-                <div id="tabelSlawi" style="display: none;">
-                    <table id="datatables2" class="table table-sm table-bordered table-striped table-hover" style="font-size: 12px;">
+                <div id="tabelTegal">
+                    <table id="datatables1" class="table table-sm table-bordered table-striped table-hover" style="font-size: 12px;">
                         <thead>
                             <tr>
                                 <th rowspan="3" style="text-align: center;">No</th>
@@ -138,7 +141,7 @@
                                 <th rowspan="3" style="text-align: center;">Nama Produk</th>
                                 <th rowspan="3" style="text-align: center;">Harga Awal</th>
                                 <th rowspan="3" style="text-align: center;">+</th>
-                                <th colspan="4" style="text-align: center;">Toko Slawi</th>
+                                <th colspan="4" style="text-align: center;">Toko Banjaran</th>
                             </tr>
                             <tr>
                                 <th colspan="2" style="text-align: center;">Member</th>
@@ -158,7 +161,7 @@
                                 <form id="update-harga-form-{{ $index }}" method="POST" action="{{ route('update.harga') }}">
                                     @csrf
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $item->kode_produk }}</td>
+                                    <td>{{ $item->kode_lama }}</td>
                                     <td>{{ $item->nama_produk }}</td>
                                     <td>{{ $item->harga }}</td>
                                     <td>
@@ -167,18 +170,18 @@
                                         </button>
                                     </td>
    
-                                     {{-- Slawi --}}
+                                     {{-- Banjaran --}}
                                      <td style="text-align: center;">
-                                        <input type="number" class="form-control form-control-sm" style="width: 70px;"   name="member_harga_slw" id="member-harga-slw-{{ $loop->index }}" value="{{ $item->tokoslawi->first()->member_harga_slw ?? $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
+                                        <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_harga_tgl" id="member-harga-tgl-{{ $loop->index }}" value="{{ $item->tokotegal->first()->member_harga_tgl ?? $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
                                     </td>
                                     <td>
-                                        <input type="number" class="form-control form-control-sm" style="width: 70px;"  name="member_diskon_slw" id="diskon-member-slw-{{ $loop->index }}" value="{{ $item->tokoslawi->first()->member_diskon_slw ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
+                                        <input type="number" class="form-control form-control-sm" style="width: 70px;" name="member_diskon_tgl" id="diskon-member-tgl-{{ $loop->index }}" value="{{ $item->tokotegal->first()->member_diskon_tgl ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
                                     </td>
                                     <td style="text-align: center;">
-                                        <input type="number" class="form-control form-control-sm" style="width: 70px;"  name="non_harga_slw" id="non-member-harga-slw-{{ $loop->index }}" value="{{ $item->tokoslawi->first()->non_harga_slw ?? $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
+                                        <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_harga_tgl" id="non-member-harga-tgl-{{ $loop->index }}" value="{{ $item->tokotegal->first()->non_harga_tgl ?? $item->harga }}" onchange="markAsChanged({{ $loop->index }})">
                                     </td>
                                     <td>
-                                        <input type="number" class="form-control form-control-sm" style="width: 70px;"  name="non_diskon_slw" id="diskon-non-member-slw-{{ $loop->index }}" value="{{ $item->tokoslawi->first()->non_diskon_slw ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
+                                        <input type="number" class="form-control form-control-sm" style="width: 70px;" name="non_diskon_tgl" id="diskon-non-member-tgl-{{ $loop->index }}" value="{{ $item->tokotegal->first()->non_diskon_tgl ?? $item->diskon }}" onchange="markAsChanged({{ $loop->index }})">
                                     </td>
                                 </form>
                             </tr>
@@ -186,6 +189,7 @@
                         </tbody>
                     </table>
                 </div>
+                
             </div>
         </div>
     </div>
@@ -197,13 +201,13 @@
     function showTable(toko) {
         // Sembunyikan semua tabel
         document.getElementById('tabelBanjaran').style.display = 'none';
-        document.getElementById('tabelSlawi').style.display = 'none';
+        document.getElementById('tabelTegal').style.display = 'none';
         
         // Tampilkan tabel sesuai pilihan
         if (toko === 'banjaran') {
             document.getElementById('tabelBanjaran').style.display = 'block';
-        } else if (toko === 'slawi') {
-            document.getElementById('tabelSlawi').style.display = 'block';
+        } else if (toko === 'tegal') {
+            document.getElementById('tabelTegal').style.display = 'block';
         }
     }
 

@@ -91,148 +91,92 @@
             <form id="pemesananForm" action="{{ url('toko_banjaran/pemesanan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 {{-- detail pelanggan --}}
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row mb-3 align-items-center">
-                            <div class="col-md-2 mt-2">
-                                <label class="form-label" for="kategori">Tipe Pelanggan</label>
-                                <select class="form-control" id="kategori" name="kategori">
-                                    <option value="">- Pilih -</option>
-                                    <option value="member" {{ old('kategori') == 'member' ? 'selected' : null }}>Member</option>
-                                    <option value="nonmember" {{ old('kategori') == 'nonmember' ? 'selected' : null }}>Non Member</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3 mt-2" id="kodePelangganRow" hidden>
-                                <label for="qrcode_pelanggan">Scan Kode Pelanggan</label>
-                                <input type="text" class="form-control" id="qrcode_pelanggan" name="qrcode_pelanggan" placeholder="scan kode Pelanggan" onchange="getData(this.value)">
-                            </div>
-
-                        </div>
-                    
-                        <div class="row mb-3 align-items-center" id="namaPelangganRow" style="display: none;">
-                            <div class="col-md">
-                                <button class="btn btn-outline-primary mb-3 btn-sm" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
-                                    <i class="fas fa-search" style=""></i>Cari pelanggan
-                                </button> 
-                            </div>      
-                            <div class="col-md-6 mb-3 "> 
-                                <input hidden type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('kode_pelanggan') }}" onclick="showCategoryModalpemesanan()">
-                                <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}">
-                            </div>     
-                        </div>
-
-                        <div class="row  align-items-center" id="telpRow" hidden>
-                            <div class="col-md-6 mb-3">
-                                <label for="telp">No. Telepon</label>
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">+62</span>
-                                    </div>
-                                    <input type="number" id="telp" name="telp" class="form-control" placeholder="Masukan nomor telepon" value="{{ old('telp') }}">
-                                </div>
-                            </div>
-                        </div>
-                    
-                        <div class="row mb-3 align-items-center" id="alamatRow" hidden>
-                            <div class="col-md-6 mb-3">
-                                <label for="catatan">Alamat</label>
-                                <textarea placeholder="" type="text" class="form-control" id="alamat" name="alamat">{{ old('alamat') }}</textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal fade" id="tableMarketing" data-backdrop="static">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Data Pelanggan</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" id="toggleButton">
+                                    <i class="fas fa-minus"></i>
                                 </button>
                             </div>
-                            <div class="modal-body">
-                                <table id="datatables4" class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">No</th>
-                                            <th>Kode Pelanggan</th>
-                                            <th>Kode Lama</th>
-                                            <th>Nama Pelanggan</th>
-                                            <th>No Telpon</th>
-                                            <th>Alamat</th>
-                                            <th>Opsi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($pelanggans as $item)
-                                            <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}')">
-                                                <td class="text-center">{{ $loop->iteration }}</td>
-                                                <td>{{ $item->kode_pelanggan }}</td>
-                                                <td>{{ $item->kode_lama }}</td>
-                                                <td>{{ $item->nama_pelanggan }}</td>
-                                                <td>{{ $item->telp }}</td>
-                                                <td>{{ $item->alamat }}</td>
-                                                <td class="text-center">
-                                                    <button type="button" class="btn btn-primary btn-sm" >
-                                                        <i class="fas fa-plus"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        @endforeach 
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Detail Pengambilan</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="row mb-3 align-items-center">
-                        <div class="col-md-6">
-                            <label for="tanggal_kirim">Tanggal Pengambilan:</label>
-                            <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
-                                <input type="text" id="tanggal_kirim" name="tanggal_kirim"
-                                       class="form-control datetimepicker-input"
-                                       data-target="#reservationdatetime"
-                                       value="{{ old('tanggal_kirim') }}"
-                                       placeholder="DD/MM/YYYY HH:mm">
-                                <div class="input-group-append" data-target="#reservationdatetime" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
-                            </div>
-                        </div>
-                        </div>
-                        
-                        <div class="row mb-3 align-items-center">
-                            <div class="col-md-6 -auto" id="" >
-                                <label for="nama_penerima">Nama Penerima </label> <span style="font-size: 10px;">(kosongkan jika sama dengan nama pelanggan)</span>
-                                <input type="text" class="form-control" id="nama_penerima" name="nama_penerima" placeholder="masukan nama Penerima" value="{{ old('nama_penerima') }}">
-                            </div>
-                        </div>
-                        <div class="row  align-items-center" id="telp_penerima" >
-                            <div class="col-md-6">
-                                <label for="telp_penerima">No. Telepon</label> <span style="font-size: 10px;">(kosongkan jika sama dengan Nomer telepon pelanggan)</span>
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">+62</span>
+                            <div class="card-body collapse show" id="cardContent">
+                                <!-- Your form fields go here -->
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-6 mt-2">
+                                        <label class="form-label" for="kategori">Tipe Pelanggan</label>
+                                        <select class="form-control" id="kategori" name="kategori">
+                                            <option value="">- Pilih -</option>
+                                            <option value="member" {{ old('kategori') == 'member' ? 'selected' : null }}>Member</option>
+                                            <option value="nonmember" {{ old('kategori') == 'nonmember' ? 'selected' : null }}>Non Member</option>
+                                        </select>
                                     </div>
-                                    <input type="number" id="telp_penerima" name="telp_penerima" class="form-control" placeholder="Masukan nomor telepon" value="{{ old('telp_penerima') }}">
+                                    <div class="col-md-6 mt-2" id="kodePelangganRow" hidden>
+                                        <label for="qrcode_pelanggan">Scan Kode Pelanggan</label>
+                                        <input type="text" class="form-control" id="qrcode_pelanggan" name="qrcode_pelanggan" placeholder="scan kode Pelanggan" onchange="getData(this.value)">
+                                    </div>
+                                </div>
+                    
+                                <div class="row mb-3 align-items-center" id="namaPelangganRow" style="display: none;">
+                                    <div class="col-md">
+                                        <button class="btn btn-outline-primary mb-3 btn-sm" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
+                                            <i class="fas fa-search"></i>Cari pelanggan
+                                        </button> 
+                                    </div>      
+                                    <div class="col-md-12 mb-3 "> 
+                                        <input hidden type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('kode_pelanggan') }}" onclick="showCategoryModalpemesanan()">
+                                        <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}">
+                                    </div>     
+                                </div>
+                    
+                                <div class="row align-items-center" id="telpRow" hidden>
+                                    <div class="col-md-12 mb-3">
+                                        <label for="telp">No. Telepon</label>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">+62</span>
+                                            </div>
+                                            <input type="number" id="telp" name="telp" class="form-control" placeholder="Masukan nomor telepon" value="{{ old('telp') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                    
+                                <div class="row mb-3 align-items-center" id="alamatRow" hidden>
+                                    <div class="col-md-12 mb-3">
+                                        <label for="catatan">Alamat</label>
+                                        <textarea placeholder="" type="text" class="form-control" id="alamat" name="alamat">{{ old('alamat') }}</textarea>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb-3 align-items-center" id="alamat_penerima" >
-                            <div class="col-md-6 mb-3">
-                                <label for="alamat_penerima">Alamat Penerima</label><span style="font-size: 10px;"> (kosongkan jika sama dengan alamat pelanggan)</span>
-                                <textarea placeholder="Masukan alamat penerima" type="text" class="form-control" id="alamat_penerima" name="alamat_penerima">{{ old('alamat_penerima') }}</textarea>
+                    </div>
+                
+                    <div class="col-md-6">
+                        <div class="card">
+                           
+                            <div class="card-body">
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-6">
+                                        <label for="tanggal_kirim">Tanggal Pengambilan:</label>
+                                        <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
+                                            <input type="text" id="tanggal_kirim" name="tanggal_kirim"
+                                                   class="form-control datetimepicker-input"
+                                                   data-target="#reservationdatetime"
+                                                   value="{{ old('tanggal_kirim') }}" 
+                                                   placeholder="DD/MM/YYYY HH:mm">
+                                            <div class="input-group-append" data-target="#reservationdatetime" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                        @if ($errors->has('tanggal_kirim'))
+                                            <div class="text-danger">{{ $errors->first('tanggal_kirim') }}</div>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+       
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title"><span></span></h3>
@@ -250,7 +194,7 @@
                                         <tr>
                                             <th style="font-size:14px" class="text-center">No</th>
                                             {{-- <th style="font-size:14px">Kode Produk</th> --}}
-                                            <th style="font-size:14px">Kode Lama</th>
+                                            <th style="font-size:14px">Kode Produk</th>
                                             <th style="font-size:14px">Nama Produk</th>
                                             <th style="font-size:14px">Jumlah</th>
                                             <th style="font-size:14px">Diskon</th>
@@ -268,88 +212,6 @@
                     </div>
                 </div>
 
-                <div class="modal fade" id="tableProduk" data-backdrop="static">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Data Produk</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <table id="datatables5" class="table table-bordered table-striped" style="font-size: 12px;">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">No</th>
-                                            <th>Kode Produk</th>
-                                            <th>Kode Lama</th>
-                                            <th>Nama Produk</th>
-                                            <th>Harga Member</th>
-                                            <th>Diskon Member</th>
-                                            <th>Harga Non Member</th>
-                                            <th>Diskon Non Member</th>
-                                            <th>Opsi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($produks as $item)
-                                            @php
-                                                $tokobanjaran = $item->tokobanjaran->first();
-                                                $stokpesanan_tokobanjaran = $item->stokpesanan_tokobanjaran ? $item->stokpesanan_tokobanjaran->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
-
-                                            @endphp
-                                            <tr class="pilih-btn"
-                                                data-id="{{ $item->id }}"
-                                                data-kode="{{ $item->kode_produk }}"
-                                                data-lama="{{ $item->kode_lama }}"
-                                                data-catatan="{{ $item->catatanproduk }}"
-                                                data-nama="{{ $item->nama_produk }}"
-                                                data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
-                                                data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
-                                                data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
-                                                data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
-                                                <td class="text-center">{{ $loop->iteration }}</td>
-                                                <td>{{ $item->kode_produk }}</td>
-                                                <td>{{ $item->kode_lama }}</td>
-                                                <td>{{ $item->nama_produk }}</td>
-                                                <td>
-                                                    <span class="member_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="member_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="non_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="non_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}</span>
-                                                </td>
-                                            
-                                                <td class="text-center">
-                                                    <button type="button" class="btn btn-primary btn-sm pilih-btn"
-                                                        data-id="{{ $item->id }}"
-                                                        data-kode="{{ $item->kode_produk }}"
-                                                        data-lama="{{ $item->kode_lama }}"
-                                                        data-catatan="{{ $item->catatanproduk }}"
-                                                        data-nama="{{ $item->nama_produk }}"
-                                                        data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
-                                                        data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
-                                                        data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
-                                                        data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
-                                                        <i class="fas fa-plus"></i> 
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                
-                            </div>
-                 
-                        </div>
-                    </div>
-                </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <div class="card">
@@ -453,10 +315,139 @@
                 </div>
             </form>
         </div>
+
+        <div class="modal fade" id="tableMarketing" data-backdrop="static">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Data Pelanggan</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table id="datatables4" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">No</th>
+                                    <th>Kode Pelanggan</th>
+                                    <th>Kode Lama</th>
+                                    <th>Nama Pelanggan</th>
+                                    <th>No Telpon</th>
+                                    <th>Alamat</th>
+                                    <th>Opsi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($pelanggans as $item)
+                                    <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}')">
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td>{{ $item->kode_pelanggan }}</td>
+                                        <td>{{ $item->kode_pelangganlama }}</td>
+                                        <td>{{ $item->nama_pelanggan }}</td>
+                                        <td>{{ $item->telp }}</td>
+                                        <td>{{ $item->alamat }}</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-primary btn-sm" >
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach 
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="tableProduk" data-backdrop="static">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Data Produk</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table id="datatables5" class="table table-bordered table-striped" style="font-size: 12px;">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">No</th>
+                                    <th>Kode Produk</th>
+                                    <th>Kode Lama</th>
+                                    <th>Nama Produk</th>
+                                    <th>Harga Member</th>
+                                    <th>Diskon Member</th>
+                                    <th>Harga Non Member</th>
+                                    <th>Diskon Non Member</th>
+                                    <th>Opsi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($produks as $item)
+                                    @php
+                                        $tokobanjaran = $item->tokobanjaran->first();
+                                        $stokpesanan_tokobanjaran = $item->stokpesanan_tokobanjaran ? $item->stokpesanan_tokobanjaran->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
+
+                                    @endphp
+                                    <tr class="pilih-btn"
+                                        data-id="{{ $item->id }}"
+                                        data-kode="{{ $item->kode_produk }}"
+                                        data-lama="{{ $item->kode_lama }}"
+                                        data-catatan="{{ $item->catatanproduk }}"
+                                        data-nama="{{ $item->nama_produk }}"
+                                        data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
+                                        data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
+                                        data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
+                                        data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td>{{ $item->kode_produk }}</td>
+                                        <td>{{ $item->kode_lama }}</td>
+                                        <td>{{ $item->nama_produk }}</td>
+                                        <td>
+                                            <span class="member_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="member_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="non_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="non_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}</span>
+                                        </td>
+                                    
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-primary btn-sm pilih-btn"
+                                                data-id="{{ $item->id }}"
+                                                data-kode="{{ $item->kode_produk }}"
+                                                data-lama="{{ $item->kode_lama }}"
+                                                data-catatan="{{ $item->catatanproduk }}"
+                                                data-nama="{{ $item->nama_produk }}"
+                                                data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
+                                                data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
+                                                data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
+                                                data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
+                                                <i class="fas fa-plus"></i> 
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        
+                    </div>
+         
+                </div>
+            </div>
+        </div>
+
     </section>
 
     
-    <script>
+{{-- <script>
         $(document).ready(function () {
             // Set locale Moment.js ke bahasa Indonesia
             moment.locale('id');
@@ -481,13 +472,13 @@
             // Pastikan locale diterapkan ulang setelah inisialisasi datetimepicker
             $('#reservationdatetime').datetimepicker('locale', 'id');  // Memaksa locale ke bahasa Indonesia
         });
-        </script>
+</script> --}}
     
     
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
+{{-- <script>
     $(document).ready(function() {
         $('#pemesananForm').submit(function(event) {
             event.preventDefault(); // Mencegah pengiriman form default
@@ -528,8 +519,83 @@
             $(this).data('default-value', $(this).val());
         });
     });
-</script>
+</script> --}}
+<script>
+    $(document).ready(function() {
+        // Set locale Moment.js ke bahasa Indonesia
+        moment.locale('id');
 
+        // Inisialisasi datetimepicker
+        $('#reservationdatetime').datetimepicker({
+            format: 'DD/MM/YYYY HH:mm',
+            locale: 'id',
+            icons: {
+                time: 'fa fa-clock',
+                date: 'fa fa-calendar',
+                up: 'fa fa-arrow-up',
+                down: 'fa fa-arrow-down',
+                previous: 'fa fa-chevron-left',
+                next: 'fa fa-chevron-right',
+                today: 'fa fa-calendar-check-o',
+                clear: 'fa fa-trash',
+                close: 'fa fa-times'
+            }
+        });
+
+        // Pastikan locale diterapkan ulang setelah inisialisasi datetimepicker
+        $('#reservationdatetime').datetimepicker('locale', 'id');
+
+        $('#pemesananForm').submit(function(event) {
+            event.preventDefault(); // Mencegah pengiriman form default
+
+            // Check if tanggal_kirim is filled
+            if (!$('#tanggal_kirim').val()) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Tanggal pengambilan harus diisi!',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+                return; // Stop the submission
+            }
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.pdfUrl) {
+                        // Membuka URL di tab baru
+                        window.open(response.pdfUrl, '_blank');
+                    }
+                    if (response.success) {
+                        // Tampilkan pesan sukses menggunakan SweetAlert2
+                        Swal.fire({
+                            title: 'Sukses!',
+                            text: response.success,
+                            icon: 'success',
+                            confirmButtonText: 'OK',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Lakukan refresh halaman setelah menekan OK
+                                location.reload(); // Ini akan merefresh seluruh halaman
+                            }
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    // Tangani error jika diperlukan
+                    console.log(xhr.responseText);
+                }
+            });
+        });
+
+        // Menyimpan nilai default untuk setiap elemen form ketika halaman dimuat
+        $('#pemesananForm').find('input[type="text"], input[type="number"], textarea, select').each(function() {
+            $(this).data('default-value', $(this).val());
+        });
+    });
+</script>
 <script>
      function getData1() {
         var metodeId = document.getElementById('nama_metode').value;
