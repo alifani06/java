@@ -39,14 +39,11 @@
                 </script>
             @endif
             <div class="row mb-2">
-                <div class="col-sm-6">
+                {{-- <div class="col-sm-6">
                     <h1 class="m-0">Penjualan Produk Banjaran</h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6">
-                 
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
+                </div> --}}
+            </div>
+        </div>
     </div>
     <!-- /.content-header -->
     <style>
@@ -70,21 +67,7 @@
             @endif
             <form id="penjualanForm" action="{{ url('toko_banjaran/penjualan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
-                {{-- detail pelanggan --}}
-                <div class="card">
-                    <div class="card-header">
-                        <div class="float-right">
-                            <select class="form-control" id="kategori1" name="kategori">
-                                <option value="">- Pilih -</option>
-                                <option value="penjualan" {{ old('kategori1') == 'penjualan' ? 'selected' : '' }}>Penjualan Produk</option>
-                                <option value="pelunasan" {{ old('kategori1') == 'pelunasan' ? 'selected' : '' }}>Pelunasan Pemesanan Produk</option>
-                            </select>
-                        </div>
-                        {{-- <div class="float-right">
-                            <a href="{{ route('toko_slawi.penjualan_produk.pelunasan') }}"  class="btn btn-primary btn-sm">Pelunasan Pemesanan
-                            </a>
-                        </div> --}}
-                    </div>
+                {{-- <div class="card">
                     <div class="card-body">
                         <div class="row mb-3 align-items-center">
                             <div class="col-md-2 mt-2">
@@ -121,7 +104,7 @@
                             <div class="col-md-6 mb-3 "> 
                                 <input hidden type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('kode_pelanggan') }}" onclick="showCategoryModalpemesanan()">
                                 <input hidden type="text" class="form-control" id="kode_pelangganlama" name="kode_pelangganlama" value="{{ old('kode_pelangganlama') }}" onclick="showCategoryModalpemesanan()">
-                                <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" onclick="showCategoryModalpemesanan()">
+                                <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" >
                             </div>     
                         </div>
 
@@ -144,8 +127,72 @@
                             </div>
                         </div>
                     </div>
+                </div> --}}
+             
+                
+                <!-- Bagian card form -->
+                <div class="card" id="formContainer">
+                    <div class="card-body">
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-2 mt-2">
+                                <label class="form-label" for="kategori">Tipe Pelanggan</label>
+                                <select class="form-control" id="kategori" name="kategori">
+                                    <option value="">- Pilih -</option>
+                                    <option value="member" {{ old('kategori') == 'member' ? 'selected' : null }}>Member</option>
+                                    <option value="nonmember" {{ old('kategori') == 'nonmember' ? 'selected' : null }}>Non Member</option>
+                                </select>
+                            </div>
+                
+                            <div class="col-md-2 mt-2" hidden>
+                                <label class="form-label" for="toko">Pilih Cabang</label>
+                                <select class="form-control" id="toko" name="toko">
+                                    <option value="">- Pilih -</option>
+                                    @foreach ($tokos as $toko)
+                                        <option value="{{ $toko->id }}" {{ old('toko') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                
+                            <div class="col-md-3 mt-2" id="kodePelangganRow" hidden>
+                                <label for="qrcode_pelanggan">Scan Kode Pelanggan</label>
+                                <input type="text" class="form-control" id="qrcode_pelanggan" name="qrcode_pelanggan" placeholder="scan kode Pelanggan" onchange="getData(this.value)">
+                            </div>
+                
+                            <div class="col-md-5 mt-4" id="namaPelangganRow" style="display: none;">
+                                <label for="nama_pelanggan">Nama Pelanggan</label>
+                                <div class="input-group mb-3">
+                                    <input hidden type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('kode_pelanggan') }}" onclick="showCategoryModalpemesanan()">
+                                    <input hidden type="text" class="form-control" id="kode_pelangganlama" name="kode_pelangganlama" value="{{ old('kode_pelangganlama') }}" onclick="showCategoryModalpemesanan()">
+                                    <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}">
+                                    <button class="btn btn-outline-primary" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <div class="row align-items-center" id="telpRow" hidden>
+                            <div class="col-md-6 mb-3">
+                                <label for="telp">No. Telepon</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">+62</span>
+                                    </div>
+                                    <input type="number" id="telp" name="telp" class="form-control" placeholder="Masukan nomor telepon" value="{{ old('telp') }}">
+                                </div>
+                            </div>
+                        </div>
+                
+                        <div class="row mb-3 align-items-center" id="alamatRow" hidden>
+                            <div class="col-md-6 mb-3">
+                                <label for="catatan">Alamat</label>
+                                <textarea placeholder="" type="text" class="form-control" id="alamat" name="alamat">{{ old('alamat') }}</textarea>
+                            </div>
+                        </div>
+                
+                    </div>
                 </div>
-
+                
                 <div class="modal fade" id="tableMarketing" data-backdrop="static">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -191,21 +238,26 @@
                         </div>
                     </div>
                 </div>
-                <div class="card">
+                
+                {{-- <div class="card">
                     <div class="modal-body">
                         <!-- Form Pencarian -->
                         <div class="form-group">
                             <label for="searchInput">Cari Produk:</label>
-                            <input type="text" id="searchInput" placeholder="Cari produk...">
+                            <div class="input-group">
+                                <input type="text" id="searchInput" placeholder="Cari produk..." class="form-control"  onclick="checkCustomerType()">
+                               
+                            </div>
                         </div>
+                        
                     
                         <!-- Tabel Produk -->
                         <table id="datatables5" class="table table-bordered table-striped" style="font-size: 12px;">
-                            <thead>
+                            <thead id="table-head" style="display: none;"> <!-- Sembunyikan thead secara default -->
                                 <tr>
                                     <th class="text-center">No</th>
                                     <th hidden>Kode Produk</th>
-                                    <th>Kode Lama</th>
+                                    <th>Kode Produk</th>
                                     <th>Nama Produk</th>
                                     <th hidden>QR Code Produk</th> <!-- Tambahkan kolom QR Code -->
                                     <th>Harga Member</th>
@@ -219,52 +271,134 @@
                                 @foreach ($produks as $item)
                                     @php
                                     $tokobanjaran = $item->tokobanjaran->first();
-                                    $stok_tokobanjaran = $item->stok_tokobanjaran ? $item->stok_tokobanjaran->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
+                                    $stok_tokobanjaran = $item->stok_tokobanjaran ? $item->stok_tokobanjaran->jumlah : 0;
                                     @endphp
                                     <tr>
                                         <td class="text-center">{{ $loop->iteration }}</td>
                                         <td hidden>{{ $item->kode_produk }}</td>
                                         <td>{{ $item->kode_lama }}</td>
                                         <td>{{ $item->nama_produk }}</td>
-                                        <td hidden>{{ $item->qrcode_produk }}</td> <!-- Tampilkan QR Code Produk -->
+                                        <td hidden>{{ $item->qrcode_produk }}</td>
                                         <td>
-                                            <span class="member_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}</span>
+                                            <span class="member_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : 'N/A' }}</span>
                                         </td>
                                         <td>
-                                            <span class="member_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}</span>
+                                            <span class="member_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : 'N/A' }}</span>
                                         </td>
                                         <td>
-                                            <span class="non_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}</span>
+                                            <span class="non_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : 'N/A' }}</span>
                                         </td>
                                         <td>
-                                            <span class="non_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}</span>
+                                            <span class="non_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : 'N/A' }}</span>
                                         </td>
                                         <td class="text-center">
-                                            {{ $stok_tokobanjaran }} <!-- Tampilkan stok produk -->
+                                            {{ $stok_tokobanjaran }}
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
+                            
                         </table>
                         
                         
                         <table id="tabel-pembelian" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th style="font-size:14px" class="text-center">No</th>
-                                    <th hidden style="font-size:14px">Kode Produk</th>
-                                    <th style="font-size:14px">Kode Lama</th>
-                                    <th style="font-size:14px">Nama Produk</th>
-                                    <th style="font-size:14px">Jumlah</th>
-                                    <th style="font-size:14px">Diskon</th>
-                                    <th hidden style="font-size:14px">Nominal Diskon</th>
-                                    <th style="font-size:14px">Harga</th>
-                                    <th style="font-size:14px">Total</th>
-                                    <th style="font-size:14px; text-align:center">Opsi</th>
+                                    <th style="font-size:12px" class="text-center">No</th>
+                                    <th hidden style="font-size:12px">Kode Produk</th>
+                                    <th style="font-size:12px">Kode Produk</th>
+                                    <th style="font-size:12px">Nama Produk</th>
+                                    <th style="font-size:12px">Jumlah</th>
+                                    <th style="font-size:12px">Diskon</th>
+                                    <th hidden style="font-size:12px">Nominal Diskon</th>
+                                    <th style="font-size:12px">Harga</th>
+                                    <th style="font-size:12px">Total</th>
+                                    <th style="font-size:12px; text-align:center">Opsi</th>
                                 </tr>
                             </thead>
                             <tbody id="tabel-pembelian-body"></tbody>
                         </table>
+                    </div>
+                </div> --}}
+                <div class="card">
+                    <div class="modal-body">
+                        <!-- Form Pencarian -->
+                        <div class="form-group">
+                            <label for="searchInput">Cari Produk:</label>
+                            <div class="input-group">
+                                <input type="text" id="searchInput" placeholder="Cari produk..." class="form-control" onclick="checkCustomerType()">
+                            </div>
+                        </div>
+                
+                        <!-- Tabel Produk -->
+                        <table id="datatables5" class="table table-bordered table-striped" style="font-size: 12px;">
+                            <thead id="table-head" style="display: none;">
+                                <tr>
+                                    <th class="text-center">No</th>
+                                    <th hidden>Kode Produk</th>
+                                    <th>Kode Produk</th>
+                                    <th>Nama Produk</th>
+                                    <th hidden>QR Code Produk</th>
+                                    <th>Harga Member</th>
+                                    <th>Diskon Member</th>
+                                    <th>Harga Non Member</th>
+                                    <th>Diskon Non Member</th>
+                                    <th>Stok</th>
+                                    <th hidden>ID Produk</th> <!-- Kolom tersembunyi untuk ID produk -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($produks as $item)
+                                    @php
+                                        $tokobanjaran = $item->tokobanjaran->first();
+                                        $stok_tokobanjaran = $item->stok_tokobanjaran ? $item->stok_tokobanjaran->jumlah : 0;
+                                    @endphp
+                                    <tr>
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td hidden>{{ $item->kode_produk }}</td>
+                                        <td>{{ $item->kode_lama }}</td>
+                                        <td>{{ $item->nama_produk }}</td>
+                                        <td hidden>{{ $item->qrcode_produk }}</td>
+                                        <td>
+                                            <span class="member_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : 'N/A' }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="member_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : 'N/A' }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="non_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : 'N/A' }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="non_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : 'N/A' }}</span>
+                                        </td>
+                                        <td class="text-center">{{ $stok_tokobanjaran }}</td>
+                                        <td hidden>{{ $item->id }}</td> <!-- Tambahkan ID produk -->
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                
+                        <!-- Tabel Pembelian -->
+                        <table id="tabel-pembelian" class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th style="font-size:12px; width: 5%;" class="text-center">No</th>
+                                    <th hidden style="font-size:12px">Kode Produk</th>
+                                    <th style="font-size:12px; width: 15%;">Kode Produk</th>
+                                    <th style="font-size:12px; width: 40%;">Nama Produk</th>
+                                    <th style="font-size:12px; width: 10%;">Jumlah</th>
+                                    <th style="font-size:12px; width: 10%;">Diskon</th>
+                                    <th  style="font-size:12px">Nominal Diskon</th>
+                                    <th style="font-size:12px; width: 10%;">Harga</th>
+                                    <th style="font-size:12px; width: 10%;">Total</th>
+                                    <th style="font-size:12px;; width: 10%; text-align:center">Opsi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabel-pembelian-body"></tbody>
+                        </table>
+                
+                        <!-- Total Pembelian -->
+                        {{-- <div id="total-sum" style="font-weight: bold;">Total: 0</div> --}}
                     </div>
                 </div>
 
@@ -376,245 +510,497 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
- $(document).ready(function() {
-    // Inisialisasi DataTable tanpa pagination dan tanpa pencarian dan info entri
-    $('#datatables5').DataTable({
-        paging: false, // Nonaktifkan pagination
-        searching: false, // Nonaktifkan pencarian
-        info: false, // Nonaktifkan informasi entri
-        lengthChange: false // Nonaktifkan perubahan jumlah entri yang ditampilkan
-    });
+    function checkCustomerType() {
+        var kategori = document.getElementById("kategori").value;
 
-    // Sembunyikan semua baris di tabel produk
-    $('#datatables5 tbody tr').hide();
-
-    // Fungsi untuk menangani pencarian
-    $('#searchInput').on('keyup', function() {
-        var value = $(this).val().toLowerCase();
-        
-        // Tampilkan baris yang cocok dengan pencarian, sembunyikan yang lain
-        if (value) {
-            $('#datatables5 tbody tr').filter(function() {
-                var kodeProduk = $(this).find('td').eq(1).text().toLowerCase();
-                var kodeLama = $(this).find('td').eq(2).text().toLowerCase();
-                var namaProduk = $(this).find('td').eq(3).text().toLowerCase();
-                var qrcodeProduk = $(this).find('td').eq(4).text().toLowerCase();
-
-                $(this).toggle(kodeProduk.indexOf(value) > -1 || 
-                               kodeLama.indexOf(value) > -1 || 
-                               namaProduk.indexOf(value) > -1 || 
-                               qrcodeProduk.indexOf(value) > -1);
+        if (kategori === "") {
+            Swal.fire({
+                title: 'Pilih Tipe Pelanggan',
+                text: 'Silakan pilih tipe pelanggan terlebih dahulu!',
+                icon: 'warning',
+                confirmButtonText: 'Ok'
             });
         } else {
-            $('#datatables5 tbody tr').hide(); // Jika input kosong, sembunyikan semua baris
+            console.log("Searching for products...");
         }
-    });
-
-    // Ketika baris pada tabel produk diklik
-    $('#datatables5 tbody').on('click', 'tr', function() {
-        addRowToPurchaseTable($(this)); // Menambahkan baris ke tabel pembelian saat baris dipilih
-        $('#searchInput').val(''); // Kosongkan input pencarian setelah memilih produk
-        $('#datatables5 tbody tr').show(); // Tampilkan kembali semua baris
-    });
-
-    // Menangani event Enter pada input pencarian
-    $('#searchInput').on('keydown', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault(); // Mencegah form dari submit
-            var selectedRow = $('#datatables5 tbody tr:visible').first(); // Ambil baris pertama yang terlihat
-            if (selectedRow.length) {
-                // Jika ada baris yang terlihat, tambahkan ke tabel pembelian
-                addRowToPurchaseTable(selectedRow);
-                $(this).val(''); // Kosongkan input pencarian setelah menambahkan produk
-                $('#datatables5 tbody tr').show(); // Tampilkan kembali semua baris
-            }
-        }
-    });
-
-    // Fungsi untuk menambahkan baris ke tabel pembelian
-    function addRowToPurchaseTable(row) {
-        var kodeProduk = row.find('td').eq(1).text();
-        var kodeLama = row.find('td').eq(2).text();
-        var namaProduk = row.find('td').eq(3).text();
-        var harga = parseFloat(row.find('td').eq(4).text()) || 0; // Ubah menjadi float
-        var diskon = row.find('td').eq(5).text();
-
-        // Buat baris baru untuk tabel pembelian
-        var newRow = `
-            <tr>
-                <td class="text-center">${$('#tabel-pembelian-body tr').length + 1}</td>
-                <td hidden>${kodeProduk}</td>
-                <td>${kodeLama}</td>
-                <td>${namaProduk}</td>
-                <td><input type="number" class="form-control jumlah" value="1" min="1"></td>
-                <td>${diskon}</td>
-                <td hidden>${diskon}</td>
-                <td>${diskon}</td>
-                <td class="total">${harga}</td>
-                <td class="text-center">
-                    <button type="button" class="btn btn-danger btn-sm delete-row">Hapus</button>
-                </td>
-            </tr>
-        `;
-
-        // Tambahkan baris ke tabel pembelian
-        $('#tabel-pembelian-body').append(newRow);
-
-        // Hitung total
-        updateTotal();
     }
-
-    // Fungsi untuk menghapus baris dari tabel pembelian
-    $('#tabel-pembelian-body').on('click', '.delete-row', function() {
-        $(this).closest('tr').remove();
-        updateTotal();
-    });
-
-    // Fungsi untuk menghitung ulang total ketika jumlah diubah
-    $('#tabel-pembelian-body').on('input', '.jumlah', function() {
-        var jumlah = $(this).val();
-        var harga = parseFloat($(this).closest('tr').find('td').eq(7).text()) || 0;
-        var total = jumlah * harga;
-        $(this).closest('tr').find('.total').text(total);
-
-        updateTotal();
-    });
-
-    // Fungsi untuk menghitung total keseluruhan
-    function updateTotal() {
-        var totalAll = 0;
-        $('#tabel-pembelian-body tr').each(function() {
-            totalAll += parseFloat($(this).find('.total').text()) || 0;
-        });
-        $('#total-sum').text('Total: ' + totalAll);
-    }
-});
-
 </script>
+
+
 
 {{-- <script>
     $(document).ready(function() {
-    // Inisialisasi DataTable tanpa pagination dan tanpa pencarian dan info entri
-    $('#datatables5').DataTable({
-        paging: false, // Nonaktifkan pagination
-        searching: false, // Nonaktifkan pencarian
-        info: false, // Nonaktifkan informasi entri
-        lengthChange: false // Nonaktifkan perubahan jumlah entri yang ditampilkan
-    });
-
-    // Sembunyikan semua baris di tabel produk
-    $('#datatables5 tbody tr').hide();
-
-    // Fungsi untuk menangani pencarian
-    $('#searchInput').on('keyup', function() {
-        var value = $(this).val().toLowerCase();
-        
-        // Tampilkan baris yang cocok dengan pencarian, sembunyikan yang lain
-        if (value) {
-            $('#datatables5 tbody tr').filter(function() {
-                // Periksa apakah baris mengandung teks yang dicari di kolom yang relevan
-                var kodeProduk = $(this).find('td').eq(1).text().toLowerCase();
-                var kodeLama = $(this).find('td').eq(2).text().toLowerCase();
-                var namaProduk = $(this).find('td').eq(3).text().toLowerCase();
-                var qrcodeProduk = $(this).find('td').eq(4).text().toLowerCase(); // Ambil QR Code Produk
-
-                // Tampilkan baris jika ada yang cocok di salah satu kolom
-                $(this).toggle(kodeProduk.indexOf(value) > -1 || 
-                            kodeLama.indexOf(value) > -1 || 
-                            namaProduk.indexOf(value) > -1 || 
-                            qrcodeProduk.indexOf(value) > -1);
-            });
-        } else {
-            // Jika input kosong, sembunyikan semua baris
-            $('#datatables5 tbody tr').hide();
-        }
-    });
-
-
-    // Ketika baris pada tabel produk diklik
-    $('#datatables5 tbody').on('click', 'tr', function() {
-        addRowToPurchaseTable($(this)); // Menambahkan baris ke tabel pembelian saat baris dipilih
-    });
-
-    // Menangani event Enter pada input pencarian
-    $('#searchInput').on('keydown', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault(); // Mencegah form dari submit
-            var selectedRow = $('#datatables5 tbody tr:visible').first(); // Ambil baris pertama yang terlihat
-            if (selectedRow.length) {
-                // Jika ada baris yang terlihat, tambahkan ke tabel pembelian
-                addRowToPurchaseTable(selectedRow);
-            }
-        }
-    });
-
-    // Fungsi untuk menambahkan baris ke tabel pembelian
-    function addRowToPurchaseTable(row) {
-        var kodeProduk = row.find('td').eq(1).text();
-        var kodeLama = row.find('td').eq(2).text();
-        var namaProduk = row.find('td').eq(3).text();
-        var harga = parseFloat(row.find('td').eq(4).text()) || 0; // Ubah menjadi float
-        var diskon = row.find('td').eq(5).text();
-
-        // Buat baris baru untuk tabel pembelian
-        var newRow = `
-            <tr>
-                <td class="text-center">${$('#tabel-pembelian-body tr').length + 1}</td>
-                <td hidden>${kodeProduk}</td>
-                <td>${kodeLama}</td>
-                <td>${namaProduk}</td>
-                <td><input type="number" class="form-control jumlah" value="1" min="1"></td>
-                <td>${diskon}</td>
-                <td hidden>${diskon}</td>
-                <td>${harga}</td>
-                <td class="total">${harga}</td>
-                <td class="text-center">
-                    <button type="button" class="btn btn-danger btn-sm delete-row">Hapus</button>
-                </td>
-            </tr>
-        `;
-
-        // Tambahkan baris ke tabel pembelian
-        $('#tabel-pembelian-body').append(newRow);
-
-        // Hitung total
-        updateTotal();
-    }
-
-    // Fungsi untuk menghapus baris dari tabel pembelian
-    $('#tabel-pembelian-body').on('click', '.delete-row', function() {
-        $(this).closest('tr').remove();
-        updateTotal();
-    });
-
-    // Fungsi untuk menghitung ulang total ketika jumlah diubah
-    $('#tabel-pembelian-body').on('input', '.jumlah', function() {
-        var jumlah = $(this).val();
-        var harga = parseFloat($(this).closest('tr').find('td').eq(7).text()) || 0;
-        var total = jumlah * harga;
-        $(this).closest('tr').find('.total').text(total);
-
-        updateTotal();
-    });
-
-    // Fungsi untuk menghitung total keseluruhan
-    function updateTotal() {
-        var totalAll = 0;
-        $('#tabel-pembelian-body tr').each(function() {
-            totalAll += parseFloat($(this).find('.total').text()) || 0;
+        // Event listener untuk perubahan tipe pelanggan
+        $('#kategori').change(function() {
+            var tipePelanggan = $(this).val(); // Ambil nilai yang dipilih
+            updatePrices(tipePelanggan); // Panggil fungsi untuk mengupdate harga dan diskon
         });
-        $('#total-sum').text('Total: ' + totalAll);
-    }
+
+        // Fungsi untuk memperbarui harga dan diskon
+        function updatePrices(tipePelanggan) {
+            $('#datatables5 tbody tr').each(function() {
+                var hargaMember = parseFloat($(this).find('.member_harga_bnjr').text()) || 0;
+                var diskonMember = parseFloat($(this).find('.member_diskon_bnjr').text()) || 0;
+                var hargaNonMember = parseFloat($(this).find('.non_harga_bnjr').text()) || 0;
+                var diskonNonMember = parseFloat($(this).find('.non_diskon_bnjr').text()) || 0;
+
+                if (tipePelanggan === 'member') {
+                    // Update harga dan diskon member
+                    $(this).find('.member_harga_bnjr').text(hargaMember); // Harga member
+                    $(this).find('.member_diskon_bnjr').text(diskonMember); // Diskon member
+                } else if (tipePelanggan === 'nonmember') {
+                    // Update harga dan diskon non-member
+                    $(this).find('.non_harga_bnjr').text(hargaNonMember); // Harga non-member
+                    $(this).find('.non_diskon_bnjr').text(diskonNonMember); // Diskon non-member
+                }
+            });
+        }
+
+        // Inisialisasi DataTable tanpa pagination, pencarian, dan info entri
+        $('#datatables5').DataTable({
+            paging: false,
+            searching: false,
+            info: false,
+            lengthChange: false
+        });
+
+        // Sembunyikan semua baris di tabel produk di awal
+        $('#datatables5 tbody tr').hide();
+
+        // Menampilkan baris yang sesuai pencarian, menyembunyikan yang tidak sesuai
+        $('#searchInput').on('keyup', function() {
+            var value = $(this).val().toLowerCase();
+            if (value) {
+                $('#table-head').show(); // Tampilkan thead
+                $('#datatables5 tbody tr').filter(function() {
+                    var kodeProduk = $(this).find('td').eq(1).text().toLowerCase();
+                    var kodeLama = $(this).find('td').eq(2).text().toLowerCase();
+                    var namaProduk = $(this).find('td').eq(3).text().toLowerCase();
+                    var qrcodeProduk = $(this).find('td').eq(4).text().toLowerCase();
+
+                    $(this).toggle(kodeProduk.indexOf(value) > -1 || 
+                                   kodeLama.indexOf(value) > -1 || 
+                                   namaProduk.indexOf(value) > -1 || 
+                                   qrcodeProduk.indexOf(value) > -1);
+                });
+            } else {
+                $('#table-head').hide(); // Sembunyikan thead jika input kosong
+                $('#datatables5 tbody tr').hide();
+            }
+        });
+
+        // Tangkap event klik pada baris produk untuk menambahkan ke tabel pembelian
+        $('#datatables5 tbody').on('click', 'tr', function() {
+            addRowToPurchaseTable($(this)); // Tambahkan produk ke tabel pembelian
+            $('#searchInput').val(''); // Kosongkan pencarian
+            $('#datatables5 tbody tr').hide(); // Sembunyikan semua baris
+            $('#table-head').hide(); // Sembunyikan header tabel
+        });
+
+        // Tangkap event tekan Enter pada input pencarian
+        $('#searchInput').on('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                var selectedRow = $('#datatables5 tbody tr:visible').first(); // Ambil baris pertama yang terlihat
+                if (selectedRow.length) {
+                    addRowToPurchaseTable(selectedRow); // Tambahkan produk ke tabel pembelian
+                    $(this).val(''); // Kosongkan pencarian
+                    $('#datatables5 tbody tr').hide(); // Sembunyikan semua baris
+                    $('#table-head').hide(); // Sembunyikan header tabel
+                }
+            }
+        });
+
+        function addRowToPurchaseTable(row) {
+            // Ambil tipe pelanggan yang dipilih
+            var tipePelanggan = $('#kategori').val();
+
+            // Ambil data produk dari row yang diklik
+            var kodeProduk = row.find('td').eq(1).text();
+            var kodeLama = row.find('td').eq(2).text();
+            var namaProduk = row.find('td').eq(3).text();
+            var idProduk = row.find('td').eq(10).text();
+
+            // Tentukan harga dan diskon berdasarkan tipe pelanggan
+            var harga, diskon;
+            if (tipePelanggan === 'member') {
+                harga = parseFloat(row.find('.member_harga_bnjr').text()) || 0;
+                diskon = parseFloat(row.find('.member_diskon_bnjr').text()) || 0;
+            } else if (tipePelanggan === 'nonmember') {
+                harga = parseFloat(row.find('.non_harga_bnjr').text()) || 0;
+                diskon = parseFloat(row.find('.non_diskon_bnjr').text()) || 0;
+            }
+
+            // Ambil jumlah dari input
+            var jumlah = 1; // Default nilai jumlah saat menambahkan produk baru
+
+            // Hitung nominal diskon dan total per item
+            var nominal_diskon = (harga * (diskon / 100)) * jumlah;
+            var totalPerItem = (harga - (harga * (diskon / 100))) * jumlah;
+
+            // Periksa apakah produk dengan kodeProduk sudah ada di tabel pembelian
+            var existingRow = $('#tabel-pembelian-body tr').filter(function() {
+                return $(this).find('td').eq(1).text() === kodeProduk;
+            });
+
+            if (existingRow.length > 0) {
+                // Jika produk sudah ada, perbarui jumlah dan total
+                var jumlahInput = existingRow.find('.jumlah');
+                var jumlahSekarang = parseInt(jumlahInput.val()) || 1;
+                var jumlahBaru = jumlahSekarang + 1;
+                jumlahInput.val(jumlahBaru);
+
+                // Hitung nominal_diskon dan total per item berdasarkan jumlah baru
+                nominal_diskon = (harga * (diskon / 100)) * jumlahBaru; // Hitung nominal diskon
+                totalPerItem = (harga - (harga * (diskon / 100))) * jumlahBaru; // Hitung total per item setelah diskon
+
+                existingRow.find('.total').text(totalPerItem.toFixed(2)); // Update total per item
+                existingRow.find('.nominal_diskon').text(nominal_diskon.toFixed(2)); // Update nominal diskon
+            } else {
+                // Jika produk belum ada, tambahkan row baru
+                var newRow = `
+                    <tr style="font-size: 13px;">
+                        <td class="text-center">${$('#tabel-pembelian-body tr').length + 1}</td>
+                        <td hidden>${kodeProduk}</td>
+                        <td>${kodeLama}</td>
+                        <td>${namaProduk}</td>
+                        <td><input type="number" class="form-control jumlah" value="1" min="1"></td>
+                        <td>${diskon}%</td>
+                        <td class="nominal_diskon">${nominal_diskon.toFixed(2)}</td> <!-- Menampilkan nominal diskon -->
+                        <td>${harga}</td>
+                        <td class="total">${totalPerItem.toFixed(2)}</td> <!-- Menampilkan total per item -->
+                        <td class="text-center">
+                            <button type="button" class="btn btn-danger btn-sm delete-row"><i class="fas fa-trash"></i></button>
+                        </td>
+                        <td hidden>${idProduk}</td>
+                    </tr>
+                `;
+
+                // Tambahkan row baru ke tabel pembelian
+                $('#tabel-pembelian-body').append(newRow);
+            }
+
+            // Hitung total pembelian
+            calculateTotal();
+
+            // Reset input jumlah ketika menambahkan produk baru
+            $('.jumlah').on('input', function() {
+                var jumlah = parseInt($(this).val()) || 0; // Ambil nilai jumlah dari input
+                var hargaSatuan = parseFloat($(this).closest('tr').find('td').eq(7).text()) || 0; // Harga satuan
+                var diskon = parseFloat($(this).closest('tr').find('td').eq(6).text()) || 0; // Diskon
+
+                // Hitung nominal_diskon dan total per item berdasarkan jumlah baru
+                var nominal_diskon = (hargaSatuan * (diskon / 100)) * jumlah; // Hitung nominal diskon
+                var total = (hargaSatuan - (hargaSatuan * (diskon / 100))) * jumlah; // Total per item setelah diskon
+
+                // Update total dan nominal diskon di baris yang sama
+                $(this).closest('tr').find('.total').text(total.toFixed(2)); // Update total per item
+                $(this).closest('tr').find('.nominal_diskon').text(nominal_diskon.toFixed(2)); // Update nominal diskon
+
+                calculateTotal(); // Hitung ulang total pembelian
+            });
+
+            // Event listener untuk tombol hapus baris
+            $('#tabel-pembelian-body').on('click', '.delete-row', function() {
+                $(this).closest('tr').remove(); // Hapus baris
+                calculateTotal(); // Hitung ulang total pembelian
+            });
+        }
+
+        // Fungsi untuk menghitung total pembelian
+        function calculateTotal() {
+            var total = 0;
+            $('#tabel-pembelian-body .total').each(function() {
+                total += parseFloat($(this).text()) || 0; // Tambah total tanpa format
+            });
+            $('#total-sum').text('Total: ' + total.toFixed(2)); // Update total tanpa format
+        }
+    });
+</script> --}}
+<script>
+    $(document).ready(function() {
+        // Event listener untuk perubahan tipe pelanggan
+        $('#kategori').change(function() {
+            var tipePelanggan = $(this).val(); // Ambil nilai yang dipilih
+            updatePrices(tipePelanggan); // Panggil fungsi untuk mengupdate harga dan diskon
+        });
+
+        // Fungsi untuk memperbarui harga dan diskon
+        function updatePrices(tipePelanggan) {
+            $('#datatables5 tbody tr').each(function() {
+                var hargaMember = parseFloat($(this).find('.member_harga_bnjr').text()) || 0;
+                var diskonMember = parseFloat($(this).find('.member_diskon_bnjr').text()) || 0;
+                var hargaNonMember = parseFloat($(this).find('.non_harga_bnjr').text()) || 0;
+                var diskonNonMember = parseFloat($(this).find('.non_diskon_bnjr').text()) || 0;
+
+                if (tipePelanggan === 'member') {
+                    // Update harga dan diskon member
+                    $(this).find('.member_harga_bnjr').text(hargaMember); // Harga member
+                    $(this).find('.member_diskon_bnjr').text(diskonMember); // Diskon member
+                } else if (tipePelanggan === 'nonmember') {
+                    // Update harga dan diskon non-member
+                    $(this).find('.non_harga_bnjr').text(hargaNonMember); // Harga non-member
+                    $(this).find('.non_diskon_bnjr').text(diskonNonMember); // Diskon non-member
+                }
+            });
+        }
+
+        // Inisialisasi DataTable tanpa pagination, pencarian, dan info entri
+        $('#datatables5').DataTable({
+            paging: false,
+            searching: false,
+            info: false,
+            lengthChange: false
+        });
+
+        // Sembunyikan semua baris di tabel produk di awal
+        $('#datatables5 tbody tr').hide();
+
+        // Menampilkan baris yang sesuai pencarian, menyembunyikan yang tidak sesuai
+        $('#searchInput').on('keyup', function() {
+            var value = $(this).val().toLowerCase();
+            if (value) {
+                $('#table-head').show(); // Tampilkan thead
+                $('#datatables5 tbody tr').filter(function() {
+                    var kodeProduk = $(this).find('td').eq(1).text().toLowerCase();
+                    var kodeLama = $(this).find('td').eq(2).text().toLowerCase();
+                    var namaProduk = $(this).find('td').eq(3).text().toLowerCase();
+                    var qrcodeProduk = $(this).find('td').eq(4).text().toLowerCase();
+
+                    $(this).toggle(kodeProduk.indexOf(value) > -1 || 
+                                   kodeLama.indexOf(value) > -1 || 
+                                   namaProduk.indexOf(value) > -1 || 
+                                   qrcodeProduk.indexOf(value) > -1);
+                });
+            } else {
+                $('#table-head').hide(); // Sembunyikan thead jika input kosong
+                $('#datatables5 tbody tr').hide();
+            }
+        });
+
+        // Tangkap event klik pada baris produk untuk menambahkan ke tabel pembelian
+        $('#datatables5 tbody').on('click', 'tr', function() {
+            addRowToPurchaseTable($(this)); // Tambahkan produk ke tabel pembelian
+            $('#searchInput').val(''); // Kosongkan pencarian
+            $('#datatables5 tbody tr').hide(); // Sembunyikan semua baris
+            $('#table-head').hide(); // Sembunyikan header tabel
+        });
+
+        // Tangkap event tekan Enter pada input pencarian
+        $('#searchInput').on('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                var selectedRow = $('#datatables5 tbody tr:visible').first(); // Ambil baris pertama yang terlihat
+                if (selectedRow.length) {
+                    addRowToPurchaseTable(selectedRow); // Tambahkan produk ke tabel pembelian
+                    $(this).val(''); // Kosongkan pencarian
+                    $('#datatables5 tbody tr').hide(); // Sembunyikan semua baris
+                    $('#table-head').hide(); // Sembunyikan header tabel
+                }
+            }
+        });
+
+        function addRowToPurchaseTable(row) {
+            // Ambil tipe pelanggan yang dipilih
+            var tipePelanggan = $('#kategori').val();
+
+            // Ambil data produk dari row yang diklik
+            var kodeProduk = row.find('td').eq(1).text();
+            var kodeLama = row.find('td').eq(2).text();
+            var namaProduk = row.find('td').eq(3).text();
+            var idProduk = row.find('td').eq(10).text();
+
+            // Tentukan harga dan diskon berdasarkan tipe pelanggan
+            var harga, diskon;
+            if (tipePelanggan === 'member') {
+                harga = parseFloat(row.find('.member_harga_bnjr').text()) || 0;
+                diskon = parseFloat(row.find('.member_diskon_bnjr').text()) || 0;
+            } else if (tipePelanggan === 'nonmember') {
+                harga = parseFloat(row.find('.non_harga_bnjr').text()) || 0;
+                diskon = parseFloat(row.find('.non_diskon_bnjr').text()) || 0;
+            }
+
+            // Ambil jumlah dari input
+            var jumlah = 1; // Default nilai jumlah saat menambahkan produk baru
+
+            // Hitung nominal diskon dan total per item
+            var nominal_diskon = (harga * (diskon / 100)) * jumlah;
+            var totalPerItem = (harga - (harga * (diskon / 100))) * jumlah;
+
+            // Periksa apakah produk dengan kodeProduk sudah ada di tabel pembelian
+            var existingRow = $('#tabel-pembelian-body tr').filter(function() {
+                return $(this).find('td').eq(1).text() === kodeProduk;
+            });
+
+            if (existingRow.length > 0) {
+                // Jika produk sudah ada, perbarui jumlah dan total
+                var jumlahInput = existingRow.find('.jumlah');
+                var jumlahSekarang = parseInt(jumlahInput.val()) || 1;
+                var jumlahBaru = jumlahSekarang + 1;
+                jumlahInput.val(jumlahBaru);
+
+                // Hitung nominal_diskon dan total per item berdasarkan jumlah baru
+                nominal_diskon = (harga * (diskon / 100)) * jumlahBaru; // Hitung nominal diskon
+                totalPerItem = (harga - (harga * (diskon / 100))) * jumlahBaru; // Hitung total per item setelah diskon
+
+                existingRow.find('.total').text(totalPerItem.toFixed(2)); // Update total per item
+                existingRow.find('.nominal_diskon').text(nominal_diskon.toFixed(2)); // Update nominal diskon
+            } else {
+                // Jika produk belum ada, tambahkan row baru
+                var newRow = `
+                    <tr style="font-size: 13px;">
+                        <td class="text-center">${$('#tabel-pembelian-body tr').length + 1}</td>
+                        <td hidden>${kodeProduk}</td>
+                        <td>${kodeLama}</td>
+                        <td>${namaProduk}</td>
+                        <td><input type="number" class="form-control-sm jumlah" value="1" min="1"></td>
+                        <td>${diskon}%</td>
+                        <td class="nominal_diskon">${nominal_diskon.toFixed(2)}</td> <!-- Menampilkan nominal diskon -->
+                        <td>${harga}</td>
+                        <td class="total">${totalPerItem.toFixed(2)}</td> <!-- Menampilkan total per item -->
+                        <td class="text-center">
+                            <button type="button" class="btn btn-danger btn-sm delete-row"><i class="fas fa-trash"></i></button>
+                        </td>
+                        <td hidden>${idProduk}</td>
+                    </tr>
+                `;
+
+                // Tambahkan row baru ke tabel pembelian
+                $('#tabel-pembelian-body').append(newRow);
+            }
+
+            // Hitung total pembelian
+            calculateTotal();
+
+           // Penanganan untuk mengupdate total dan nominal_diskon saat jumlah diubah
+            $('#tabel-pembelian-body').on('input', '.jumlah', function() {
+                var jumlah = parseInt($(this).val()) || 0; // Ambil nilai jumlah dari input
+                var hargaSatuan = parseFloat($(this).closest('tr').find('td').eq(7).text()) || 0; // Harga satuan
+                var diskon = parseFloat($(this).closest('tr').find('td').eq(5).text()) || 0; // Ambil diskon dari kolom yang tepat
+
+                // Hitung nominal_diskon dan total per item berdasarkan jumlah baru
+                var nominal_diskon = (hargaSatuan * (diskon / 100)) * jumlah; // Hitung nominal diskon
+                var total = (hargaSatuan - (hargaSatuan * (diskon / 100))) * jumlah; // Total per item setelah diskon
+
+                // Update total dan nominal diskon di baris yang sama
+                $(this).closest('tr').find('.total').text(total.toFixed(2)); // Update total per item
+                $(this).closest('tr').find('.nominal_diskon').text(nominal_diskon.toFixed(2)); // Update nominal diskon
+
+                calculateTotal(); // Hitung ulang total pembelian
+            });
+
+
+            // Event listener untuk tombol hapus baris
+            $('#tabel-pembelian-body').on('click', '.delete-row', function() {
+                $(this).closest('tr').remove(); // Hapus baris
+                calculateTotal(); // Hitung ulang total pembelian
+            });
+        }
+
+        // Fungsi untuk menghitung total pembelian
+        function calculateTotal() {
+            var total = 0;
+            $('#tabel-pembelian-body .total').each(function() {
+                total += parseFloat($(this).text()) || 0; // Tambah total tanpa format
+            });
+            $('#total-sum').text('Total: ' + total.toFixed(2)); // Update total tanpa format
+        }
+    });
+</script>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var kategoriSelect = document.getElementById('kategori');
+        var namaPelangganRow = document.getElementById('namaPelangganRow');
+        var telpRow = document.getElementById('telpRow');
+        var alamatRow = document.getElementById('alamatRow');
+        var kodePelangganRow = document.getElementById('kodePelangganRow'); 
+        var namaPelangganInput = document.getElementById('nama_pelanggan');
+        
+        kategoriSelect.addEventListener('change', function() {
+            if (kategoriSelect.value === 'member') {
+
+                kodePelangganRow.hidden = false; 
+                namaPelangganInput.readOnly = true; 
+                namaPelangganRow.style.display = 'block'; 
+                telpRow.hidden = true; 
+                alamatRow.hidden = true; 
+            } else if (kategoriSelect.value === 'nonmember') {
+
+                kodePelangganRow.hidden = true; 
+                namaPelangganInput.readOnly = false; 
+                namaPelangganRow.style.display = 'none'; 
+                telpRow.hidden = true; 
+                alamatRow.hidden = true; 
+            } else {
+                namaPelangganRow.style.display = 'none'; 
+                telpRow.hidden = true; 
+                alamatRow.hidden = true; 
+                kodePelangganRow.hidden = true; 
+            }
+        });
+
+        if (kategoriSelect.value === 'nonmember') {
+            namaPelangganRow.style.display = 'none'; 
+            telpRow.hidden = true; 
+            alamatRow.hidden = true; 
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var kategoriSelect = document.getElementById('kategori');
+        var searchButtonRow = document.querySelector('.col-md');
+
+        kategoriSelect.addEventListener('change', function() {
+            if (kategoriSelect.value === 'member') {
+                searchButtonRow.hidden = false;
+            } else {
+                searchButtonRow.hidden = true;
+            }
+        });
+
+        if (kategoriSelect.value === 'nonmember') {
+            searchButtonRow.hidden = true;
+        }
+    });
+</script>
+
+<script>
+    // Inisialisasi DataTable dan atur modal
+    $(document).ready(function() {
+        var pelangganTable = $('#datatables4').DataTable();
+
+        $('#tableMarketing').on('shown.bs.modal', function () {
+            pelangganTable.columns.adjust().draw();
+        });
     });
 
-</script> --}}
+    // Fungsi untuk menampilkan modal
+    function showCategoryModalpemesanan() {
+        $('#tableMarketing').modal('show');
+    }
+
+    // Fungsi untuk mendapatkan data pelanggan dari modal dan menyembunyikan modal
+    function getSelectedDataPemesanan(nama_pelanggan, telp, alamat, kode_pelanggan, kode_pelangganlama) {
+        // Masukkan data yang dipilih ke dalam input form
+        document.getElementById('nama_pelanggan').value = nama_pelanggan;
+        document.getElementById('kode_pelanggan').value = kode_pelanggan;
+        document.getElementById('kode_pelangganlama').value = kode_pelangganlama; // Perbaikan: gunakan ID yang benar
+        document.getElementById('telp').value = telp;
+        document.getElementById('alamat').value = alamat;
+
+        // Sembunyikan modal setelah data dipilih
+        $('#tableMarketing').modal('hide');
+    }
+</script>
 
 
 
-
-
-    
 
 @endsection
