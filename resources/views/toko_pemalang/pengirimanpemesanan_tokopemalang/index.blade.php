@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Inquery Pengiriman Toko Banjaran (Permintaan)</h1>
+                    <h1 class="m-0">Inquery Pengiriman Toko Pemalang (Pesanan)</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -78,7 +78,7 @@
                 
                 <div class="card-body">
                     <!-- Tabel -->
-                    <form method="GET" id="form-action">
+                    <form method="GET" id="form-action" >
                         <div class="row">
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="status" name="status">
@@ -123,9 +123,9 @@
                             @endphp
                                 <tr class="dropdown" data-permintaan-id="{{ $firstItem->id }}">
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                <td>{{ $firstItem->kode_pengiriman }}</td>
+                                <td>{{ $firstItem->kode_pengirimanpesanan }}</td>
                                 <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_input)->format('d/m/Y H:i') }} </td>
-                                <td>{{ $firstItem->tanggal_terima ? \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') : '-' }} </td>
+                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') }} </td>
                                   
                                 <td class="text-center">
                                     @if ($firstItem->status == 'posting')
@@ -145,14 +145,14 @@
                                                 <a class="dropdown-item posting-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Posting</a>
                                             
-                                                <a class="dropdown-item"
-                                                href="{{ url('/toko_banjaran/pengiriman_tokobanjaran/' . $firstItem->id)  }}">Show</a>
+                                                    <a class="dropdown-item" href="{{ route('pengirimanpemesanan_tokopemalang.show', $firstItem->id) }}">Show</a>
+
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 <a class="dropdown-item unpost-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Unpost</a>
-                                                <a class="dropdown-item"
-                                                href="{{ url('/toko_banjaran/pengiriman_tokobanjaran/' . $firstItem->id)  }}">Show</a>
+                                                    <a class="dropdown-item" href="{{ route('pengirimanpemesanan_tokopemalang.show', $firstItem->id) }}">Show</a>
+
                                         @endif
                                        
                                     </div>
@@ -207,6 +207,7 @@
         </div>
     </section>
 
+
     <script>
         var tanggalAwal = document.getElementById('tanggal_input');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
@@ -227,13 +228,11 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_banjaran/pengiriman_tokobanjaran') }}";
+            form.action = "{{ url('toko_pemalang/pengirimanpemesanan_tokopemalang') }}";
             form.submit();
         }
 
     </script>
-
-
 
     {{-- unpost stok  --}}
     <script>
@@ -245,7 +244,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_banjaran/pengiriman_tokobanjaran/unpost_pengiriman/') }}/" + memoId,
+                    url: "{{ url('toko_pemalang/pengiriman_tokopemalang/unpost_pengirimanpemesanan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -275,7 +274,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_banjaran/pengiriman_tokobanjaran/posting_pengiriman/') }}/" + memoId,
+                    url: "{{ url('toko_pemalang/pengiriman_tokopemalang/posting_pengirimanpemesanan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -365,9 +364,9 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'permintaan') {
-            window.location.href = "{{ route('toko_banjaran.pengiriman_tokobanjaran.index') }}"; 
+            window.location.href = "{{ route('toko_pemalang.pengiriman_tokopemalang.index') }}"; 
         } else if (selectedValue === 'pemesanan') {
-            window.location.href = "{{ route('pengirimanpemesanan_tokobanjaran.index') }}"; 
+            window.location.href = "{{ route('pengirimanpemesanan_tokopemalang.index') }}"; 
         }
     });
 </script>

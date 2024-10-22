@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_pemalang;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -20,6 +20,7 @@ use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use App\Imports\ProdukImport;
+use App\Models\Tokobanjaran;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -34,7 +35,7 @@ class ProdukController extends Controller
     public function index()
     {
         $produks = Produk::all();
-        return view('toko_banjaran.produk.index', compact('produks'));
+        return view('toko_pemalang.produk.index', compact('produks'));
     }
 
     public function getkategori($id)
@@ -119,7 +120,7 @@ class ProdukController extends Controller
             'non_diskon_slw' => 0,
         ]);
     
-        Tokobenjaran::create([
+        Tokobanjaran::create([
             'produk_id' => $produk->id,
             'harga_awal' => $request->harga,
             'diskon_awal' => 0,

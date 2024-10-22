@@ -34,7 +34,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class PemesananprodukpealangController extends Controller
+class PemesananprodukpemalangController extends Controller
 {
     
     public function index(Request $request)

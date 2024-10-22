@@ -210,7 +210,7 @@
                                         <tr>
                                             <th style="font-size:14px" class="text-center">No</th>
                                             <th hidden style="font-size:14px">Kode Produk</th>
-                                            <th style="font-size:14px">Kode Produk</th>
+                                            <th style="font-size:14px">Kode Lama</th>
                                             <th style="font-size:14px">Nama Produk</th>
                                             <th style="font-size:14px">Jumlah</th>
                                             <th style="font-size:14px">Diskon</th>
@@ -260,17 +260,7 @@
                                                 $tokobanjaran = $item->tokobanjaran->first();
                                                 $stok_tokobanjaran = $item->stok_tokobanjaran ? $item->stok_tokobanjaran->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
                                             @endphp
-                                            <tr class="   <tr>
-            <th style="width: 50px; text-align: center;">No.</th>
-            <th hidden style="width: 100px;">Kode Produk</th>
-            <th style="width: 100px; text-align: center;">Kode Lama</th>
-            <th style="width: 200px; text-align: center;">Nama Produk</th>
-            <th style="width: 100px; text-align: center;">Jumlah</th>
-            <th style="width: 100px; text-align: center;">Diskon</th>
-            <th style="width: 100px; text-align: center;">Harga</th>
-            <th style="width: 100px; text-align: center;">Total</th>
-            <th style="width: 70px; text-align: center;">Aksi</th>
-        </tr>"
+                                            <tr class="pilih-btn"
                                                 data-id="{{ $item->id }}"
                                                 data-kode="{{ $item->kode_produk }}"
                                                 data-kodel="{{ $item->kode_lama }}"

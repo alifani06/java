@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_pemalang;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -10,7 +10,7 @@ use App\Models\Stok_tokoslawi;
 use App\Models\Stok_tokobanjaran;
 use App\Models\Retur_tokoslawi;
 use App\Models\Klasifikasi;
-use App\Models\Retur_tokobanjaran;
+use App\Models\Retur_tokopemalang;
 use App\Models\Retur_barangjadi;
 use App\Models\Toko;
 use Carbon\Carbon;
@@ -22,7 +22,7 @@ use App\Imports\ProdukImport;
 use App\Models\Retur_barnagjadi;
 use Maatwebsite\Excel\Facades\Excel;
 
-class Retur_tokobanjaranController extends Controller{
+class Retur_tokopemalangController extends Controller{
 
 
     
@@ -32,7 +32,7 @@ class Retur_tokobanjaranController extends Controller{
             $tanggal_input = $request->tanggal_input;
             $tanggal_akhir = $request->tanggal_akhir;
 
-            $query = Retur_tokobanjaran::with('produk.klasifikasi');
+            $query = Retur_tokopemalang::with('produk.klasifikasi');
 
             if ($status) {
                 $query->where('status', $status);
@@ -56,7 +56,7 @@ class Retur_tokobanjaranController extends Controller{
             // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
             $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_retur');
 
-            return view('toko_banjaran.retur_tokobanjaran.index', compact('stokBarangJadi'));
+            return view('toko_pemalang.retur_tokopemalang.index', compact('stokBarangJadi'));
     }
 
     // public function create()
@@ -65,7 +65,7 @@ class Retur_tokobanjaranController extends Controller{
     //     $tokos = Toko::all();
     //     $klasifikasis = Klasifikasi::all(); // Pastikan ini ada
     
-    //     return view('toko_banjaran.retur_tokobanjaran.create', compact('produks', 'tokos', 'klasifikasis'));
+    //     return view('toko_pemalang.retur_tokopemalang.create', compact('produks', 'tokos', 'klasifikasis'));
     // }
 
     public function create()
@@ -80,7 +80,7 @@ class Retur_tokobanjaranController extends Controller{
         ->groupBy('produk_id')
         ->pluck('jumlah_stok', 'produk_id');
 
-    return view('toko_banjaran.retur_tokobanjaran.create', compact('produks', 'tokos', 'klasifikasis', 'stokProduk'));
+    return view('toko_pemalang.retur_tokopemalang.create', compact('produks', 'tokos', 'klasifikasis', 'stokProduk'));
 }
 
     
@@ -123,7 +123,7 @@ class Retur_tokobanjaranController extends Controller{
     //         }
 
     //         // Menyimpan retur tanpa mengurangi stok
-    //         Retur_tokobanjaran::create([
+    //         Retur_tokopemalang::create([
     //             'kode_retur' => $kode,
     //             'produk_id' => $produk_id,
     //             'toko_id' => '1',
@@ -145,7 +145,7 @@ class Retur_tokobanjaranController extends Controller{
     //         ]);
     //     }
 
-    //     return redirect()->route('retur_tokobanjaran.index')->with('success', 'Data retur barang berhasil disimpan.');
+    //     return redirect()->route('retur_tokopemalang.index')->with('success', 'Data retur barang berhasil disimpan.');
     // }
     public function store(Request $request)
 {
@@ -209,10 +209,10 @@ class Retur_tokobanjaranController extends Controller{
         }
 
         // Menyimpan retur dengan status 'posting'
-        Retur_tokobanjaran::create([
+        Retur_tokopemalang::create([
             'kode_retur' => $kode,
             'produk_id' => $produk_id,
-            'toko_id' => '1',
+            'toko_id' => '4',
             'status' => 'unpost', // Ubah status menjadi posting
             'jumlah' => $jumlah_yang_dibutuhkan,
             'keterangan' => $keterangans[$index],
@@ -222,7 +222,7 @@ class Retur_tokobanjaranController extends Controller{
         Retur_barangjadi::create([
             'kode_retur' => $kode,
             'produk_id' => $produk_id,
-            'toko_id' => '1',
+            'toko_id' => '4',
             'nama_produk' => $nama_produk_retur,
             'status' => 'unpost', // Ubah status menjadi posting
             'jumlah' => $jumlah_yang_dibutuhkan,
@@ -231,7 +231,7 @@ class Retur_tokobanjaranController extends Controller{
         ]);
     }
 
-    return redirect()->route('retur_tokobanjaran.index')->with('success', 'Data retur barang berhasil disimpan dan stok berhasil dikurangi.');
+    return redirect()->route('retur_tokopemalang.index')->with('success', 'Data retur barang berhasil disimpan dan stok berhasil dikurangi.');
 }
 
 
@@ -240,12 +240,12 @@ class Retur_tokobanjaranController extends Controller{
 
 public function kode()
 {
-    $prefix = 'FRC';
+    $prefix = 'FRE';
     $year = date('y'); // Dua digit terakhir dari tahun
     $date = date('dm'); // Format bulan dan hari: MMDD
 
     // Mengambil kode retur terakhir yang dibuat pada hari yang sama
-    $lastBarang = Retur_tokobanjaran::whereDate('tanggal_input', Carbon::today())
+    $lastBarang = Retur_tokopemalang::whereDate('tanggal_input', Carbon::today())
                                   ->orderBy('kode_retur', 'desc')
                                   ->first();
 
@@ -313,7 +313,7 @@ public function posting_retur($id)
 public function show($id)
 {
     // Ambil kode_retur dari pengiriman_barangjadi berdasarkan id
-    $detailStokBarangJadi = Retur_tokobanjaran::where('id', $id)->value('kode_retur');
+    $detailStokBarangJadi = Retur_tokopemalang::where('id', $id)->value('kode_retur');
     
     // Jika kode_retur tidak ditemukan, tampilkan pesan error
     if (!$detailStokBarangJadi) {
@@ -321,17 +321,17 @@ public function show($id)
     }
     
     // Ambil semua data dengan kode_retur yang sama
-    $pengirimanBarangJadi = Retur_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
+    $pengirimanBarangJadi = Retur_tokopemalang::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
     
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    return view('toko_banjaran.inquery_returbanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
+    return view('toko_pemalang.inquery_returbanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
     // public function print($id)
     // {
-    //     $detailStokBarangJadi = Retur_tokobanjaran::where('id', $id)->value('kode_retur');
+    //     $detailStokBarangJadi = Retur_tokopemalang::where('id', $id)->value('kode_retur');
     
     //     // Jika kode_retur tidak ditemukan, tampilkan pesan error
     //     if (!$detailStokBarangJadi) {
@@ -339,12 +339,12 @@ public function show($id)
     //     }
         
     //     // Ambil semua data dengan kode_retur yang sama
-    //     $pengirimanBarangJadi = Retur_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
+    //     $pengirimanBarangJadi = Retur_tokopemalang::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
         
     //     // Ambil item pertama untuk informasi toko
     //     $firstItem = $pengirimanBarangJadi->first();
         
-    //     $pdf = FacadePdf::loadView('toko_banjaran.inquery_returbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
+    //     $pdf = FacadePdf::loadView('toko_pemalang.inquery_returbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
 
     //     return $pdf->stream('surat_permintaan_produk.pdf');
         
@@ -352,7 +352,7 @@ public function show($id)
 
     public function print($id)
 {
-    $kodeRetur = Retur_tokobanjaran::where('id', $id)->value('kode_retur');
+    $kodeRetur = Retur_tokopemalang::where('id', $id)->value('kode_retur');
 
     // Jika kode_retur tidak ditemukan, tampilkan pesan error
     if (!$kodeRetur) {
@@ -360,7 +360,7 @@ public function show($id)
     }
     
     // Ambil semua data dengan kode_retur yang sama
-    $pengirimanBarangJadi = Retur_tokobanjaran::with([
+    $pengirimanBarangJadi = Retur_tokopemalang::with([
         'produk.subklasifikasi.klasifikasi', // Tambahkan relasi klasifikasi
         'toko'
     ])->where('kode_retur', $kodeRetur)->get();
@@ -368,7 +368,7 @@ public function show($id)
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    $pdf = FacadePdf::loadView('toko_banjaran.inquery_returbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
+    $pdf = FacadePdf::loadView('toko_pemalang.inquery_returbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
 
     return $pdf->stream('surat_permintaan_produk.pdf');
 }

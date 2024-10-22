@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_pemalang;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -40,7 +40,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class Setoran_tokobanjaranController extends Controller
+class Setoran_tokopemalangController extends Controller
 {
 
     public function index(Request $request)
@@ -49,7 +49,7 @@ class Setoran_tokobanjaranController extends Controller
         $setoranPenjualans = Setoran_penjualan::orderBy('id', 'DESC')->get();
     
         // Kirim data ke view
-        return view('toko_banjaran.setoran_tokobanjaran.index', compact('setoranPenjualans'));
+        return view('toko_pemalang.setoran_tokopemalang.index', compact('setoranPenjualans'));
     }
     
     public function create(Request $request)
@@ -149,7 +149,7 @@ class Setoran_tokobanjaranController extends Controller
         $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
         $total_setoran = $total_penjualan - $total_metode;
 
-        return view('toko_banjaran.setoran_tokobanjaran.create', compact(
+        return view('toko_pemalang.setoran_tokopemalang.create', compact(
             'produks',
             'tokos',
             'klasifikasis',
@@ -308,7 +308,7 @@ class Setoran_tokobanjaranController extends Controller
         $setoranPenjualans = Setoran_penjualan::findOrFail($id);
     
         // Load view untuk PDF dan kirimkan data
-        $pdf = FacadePdf::loadView('toko_banjaran.setoran_tokobanjaran.printtunai', compact('setoranPenjualans'));
+        $pdf = FacadePdf::loadView('toko_pemalang.setoran_tokopemalang.printtunai', compact('setoranPenjualans'));
     
         // Return PDF stream agar langsung bisa ditampilkan
         return $pdf->stream('setoran_penjualan.pdf');

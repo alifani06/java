@@ -8,11 +8,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Data Stok Toko Banjaran</h1>
+                    <h1 class="m-0">Data Stok Toko Pemalang</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Data Stok Banjaran</li>
+                        <li class="breadcrumb-item active">Data Stok Pemalang</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -39,11 +39,11 @@
             <div class="card">
                 <div class="card-header">
                     <div class="float-right">
-                        <a href="{{ url('toko_banjaran/stok_tokobanjaran/create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url('toko_pemalang/stok_tokopemalang/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i>
                         </a>
                     </div>
-                    <form action="{{ route('stok_tokobanjaran.deleteAll') }}" method="POST" style="display: inline-block;">
+                    <form action="{{ route('stok_tokopemalang.deleteAll') }}" method="POST" style="display: inline-block;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus seluruh data stok?')">

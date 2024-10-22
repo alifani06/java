@@ -74,7 +74,7 @@
                 </div>
             @endif
         
-            <form  action="{{ url('toko_banjaran/pelunasan_pemesanan') }}" method="POST" enctype="multipart/form-data"
+            <form  action="{{ url('toko_pemalang/pelunasan_pemesanan') }}" method="POST" enctype="multipart/form-data"
                 autocomplete="off">
                 @csrf
                 <div class="card">
@@ -478,7 +478,7 @@
     var itemCounter = 0;
     function fetchDataByKode(kode) {
         $.ajax({
-            url: '{{ route("toko_banjaran.penjualan_produk.fetchData") }}', // Adjust the route accordingly
+            url: '{{ route("toko_pemalang.penjualan_produk.fetchData") }}', // Adjust the route accordingly
             method: 'GET',
             data: { kode_pemesanan: kode },
             success: function(response) {
@@ -649,7 +649,7 @@ function reIndexRows() {
     // function fetchProductData(rowId) {
     //     var kodeLama = document.getElementById('kode_lama_' + rowId).value;
     //     $.ajax({
-    //         url: '{{ route("toko_banjaran.penjualan_produk.fetchProductData") }}', // Sesuaikan dengan rute Anda
+    //         url: '{{ route("toko_pemalang.penjualan_produk.fetchProductData") }}', // Sesuaikan dengan rute Anda
     //         method: 'GET',
     //         data: { kode_lama: kodeLama },
     //         success: function(response) {
@@ -890,9 +890,9 @@ function updateGrandTotal() {
             var selectedValue = this.value;
 
             if (selectedValue === 'penjualan') {
-                window.location.href = "{{ route('toko_banjaran.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
+                window.location.href = "{{ route('toko_pemalang.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
             } else if (selectedValue === 'pelunasan') {
-                window.location.href = "{{ route('toko_banjaran.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
+                window.location.href = "{{ route('toko_pemalang.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
             }
         });
     </script>

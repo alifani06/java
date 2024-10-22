@@ -88,7 +88,7 @@
                     @endforeach
                 </div>
             @endif
-            <form id="pemesananForm" action="{{ url('toko_banjaran/pemesanan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form id="pemesananForm" action="{{ url('toko_pemalang/pemesanan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 {{-- detail pelanggan --}}
                 <div class="row">
@@ -609,7 +609,7 @@
             paymentFields.style.display = 'none';
         } else if (metodeId) {
             $.ajax({
-                url: "{{ url('toko_banjaran/metodebayar/metode') }}" + "/" + metodeId,
+                url: "{{ url('toko_pemalang/metodebayar/metode') }}" + "/" + metodeId,
                 type: "GET",
                 dataType: "json",
                 success: function(response) {

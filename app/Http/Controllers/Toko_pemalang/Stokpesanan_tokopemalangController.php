@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_pemalang;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -36,10 +36,11 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Stokpesanan_tokobanjaran;
+use App\Models\Stokpesanan_tokopemalang;
 use App\Models\Subklasifikasi;
 use Maatwebsite\Excel\Facades\Excel;
 
-class Stokpesanan_tokobanjaranController extends Controller{
+class Stokpesanan_tokopemalangController extends Controller{
 
 
 public function index(Request $request)
@@ -59,7 +60,7 @@ public function index(Request $request)
 
     $produk = $produkQuery->get();
 
-    $stok_tokobanjaran = Stokpesanan_tokobanjaran::with('produk')->get();
+    $stok_tokobanjaran = Stokpesanan_tokopemalang::with('produk')->get();
     $stokGrouped = $stok_tokobanjaran->groupBy('produk_id')->map(function ($group) {
         $firstItem = $group->first();
         $totalJumlah = $group->sum('jumlah');
@@ -87,45 +88,7 @@ public function index(Request $request)
         ? SubKlasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get() 
         : collect();
 
-    return view('toko_banjaran.stokpesanan_tokobanjaran.index', compact('produkWithStok', 'klasifikasis', 'subklasifikasis', 'totalHarga', 'totalStok', 'totalSubTotal'));
-}
-
-
-public function create()
-{
-    // Fetch all products
-    $produks = Produk::all();
-    $tokos = Toko::all();
-
-    return view('toko_banjaran.stok_tokobanjaran.create', compact('produks', 'tokos'));
-}
-
-
-public function store(Request $request)
-{
-    $request->validate([
-        // 'toko_id' => 'required|exists:tokos,id',
-        'produk_id' => 'required|array',
-        'produk_id.*' => 'exists:produks,id',
-        'jumlah' => 'required|array',
-        'jumlah.*' => 'integer|min:1'
-    ]);
-
-    // $toko_id = $request->input('toko_id');
-    $produk_ids = $request->input('produk_id');
-    $jumlahs = $request->input('jumlah');
-
-    foreach ($produk_ids as $index => $produk_id) {
-        Stok_tokoslawi::create([
-            // 'toko_id' => $toko_id,
-            'produk_id' => $produk_id,
-            'status' => 'posting',
-            'jumlah' => $jumlahs[$index],
-            'tanggal_input' => Carbon::now('Asia/Jakarta'),
-        ]);
-    }
-
-    return redirect()->route('stok_tokoslawi.index')->with('success', 'Data stok barang berhasil disimpan.');
+    return view('toko_pemalang.stokpesanan_tokopemalang.index', compact('produkWithStok', 'klasifikasis', 'subklasifikasis', 'totalHarga', 'totalStok', 'totalSubTotal'));
 }
 
 

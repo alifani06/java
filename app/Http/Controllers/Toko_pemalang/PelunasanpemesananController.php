@@ -29,7 +29,9 @@ use App\Models\Penjualanproduk;
 use App\Models\Toko;
 use App\Models\Dppemesanan;
 use App\Models\Metodepembayaran;
+use App\Models\Stok_tokopemalang;
 use App\Models\Stokpesanan_tokobanjaran;
+use App\Models\Stokpesanan_tokopemalang;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
@@ -325,10 +327,10 @@ class PelunasanpemesananController extends Controller
                     ($produk->klasifikasi_id == 13 && in_array($produk->kode_lama, ['KU001', 'M0002']))
                 ) {
                     // Pengurangan stok untuk stok_tokobanjaran
-                    $stok = Stok_tokobanjaran::where('produk_id', $detail->produk_id)->first();
+                    $stok = Stok_tokopemalang::where('produk_id', $detail->produk_id)->first();
                 } else {
                     // Jika tidak, kurangi stok dari stokpesanan_tokobanjaran
-                    $stok = Stokpesanan_tokobanjaran::where('produk_id', $detail->produk_id)->first();
+                    $stok = Stokpesanan_tokopemalang::where('produk_id', $detail->produk_id)->first();
                 }
     
                 if ($stok) {
