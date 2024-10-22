@@ -174,6 +174,9 @@
                         @if (auth()->user()->isTokotegal())
                             @include('layouts.menu.toko_tegal')
                         @endif
+                        @if (auth()->user()->isTokopemalang())
+                            @include('layouts.menu.toko_pemalang')
+                        @endif
 
                     </ul>
                 </nav>

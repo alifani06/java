@@ -107,6 +107,14 @@ class User extends Authenticatable
         return false;
     }
 
+    public function isTokopemalang()
+    {
+        if ($this->level == 'toko_pemalang') {
+            return true;
+        }
+        return false;
+    }
+
     public function karyawan()
     {
         return $this->belongsTo(Karyawan::class);
