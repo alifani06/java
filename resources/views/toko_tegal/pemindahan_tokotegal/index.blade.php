@@ -51,7 +51,7 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Kode Pemindahan</th>
+                                <th>No. Pemindahan</th>
                                 <th>Kode Produk</th>
                                 <th>Nama Produk</th>
                                 <th>Keterangan</th>
@@ -62,7 +62,7 @@
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $stok->kode_pemindahan }}</td>
-                                    <td>{{ $stok->produk->kode_produk }}</td>
+                                    <td>{{ $stok->produk->kode_lama }}</td>
                                     <td>{{ $stok->produk->nama_produk }}</td>
                                     <td style="text-transform: uppercase;">
                                         @if ($stok->keterangan === 'oper')

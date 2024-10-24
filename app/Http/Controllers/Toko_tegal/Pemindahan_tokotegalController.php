@@ -49,9 +49,7 @@ class Pemindahan_tokotegalController extends Controller{
 
     public function index()
     {
-        // Ambil data retur_tokoslawi beserta relasi produk dan urutkan berdasarkan created_at terbaru
         $pemindahan_tokotegal = Pemindahan_tokotegal::with('produk')
-                            ->where('status', 'posting')
                             ->orderBy('created_at', 'desc')
                             ->get();
     
