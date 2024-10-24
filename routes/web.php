@@ -71,6 +71,7 @@ use App\Http\Controllers\Toko_pemalang\Inquery_returpemalangController;
 use App\Http\Controllers\Toko_pemalang\Inquery_setorantunaipemalangController;
 use App\Http\Controllers\Toko_pemalang\Laporan_pemesananprodukpemalangController;
 use App\Http\Controllers\Toko_pemalang\Laporan_pemindahanpemalangController;
+use App\Http\Controllers\Toko_pemalang\Laporan_setoranpenjualanpmlController;
 use App\Http\Controllers\Toko_pemalang\Laporan_stoktokopemalangController;
 use App\Http\Controllers\Toko_pemalang\PemesananprodukpemalangController;
 use App\Http\Controllers\Toko_pemalang\Pengiriman_tokopemalangController;
@@ -988,8 +989,8 @@ Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {
     Route::post('toko_banjaran/setoran_toko', [Setoran_tokopemalangController::class, 'store'])->name('setoran.store');
 
 
-    Route::resource('laporan_setorantokopemalang', \App\Http\Controllers\Toko_pemalang\Laporan_setoranpenjualanController::class);
-    Route::get('printReportsetoran', [Laporan_setoranpenjualanController::class, 'printReportsetoran'])->name('laporan_setoranpenjualan.print');
+    Route::resource('laporan_setorantokopemalang', \App\Http\Controllers\Toko_pemalang\Laporan_setoranpenjualanpmlController::class);
+    Route::get('printReportsetoranpml', [Laporan_setoranpenjualanpmlController::class, 'printReportsetoranpml'])->name('laporan_setoranpenjualan.print');
 
     Route::resource('inquery_depositpemalang', \App\Http\Controllers\Toko_pemalang\Inquery_depositpemalangController::class);
 

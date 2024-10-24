@@ -38,7 +38,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class Laporan_setoranpenjualanController extends Controller
+class Laporan_setoranpenjualanpmlController extends Controller
 {
     
     
@@ -247,7 +247,7 @@ class Laporan_setoranpenjualanController extends Controller
     ));
 }
 
-    public function printReportsetoran(Request $request)
+    public function printReportsetoranpml(Request $request)
     {
         $status = $request->status;
         $tanggal_penjualan = $request->tanggal_penjualan;

@@ -238,88 +238,7 @@
                         </div>
                     </div>
                 </div>
-                
-                {{-- <div class="card">
-                    <div class="modal-body">
-                        <!-- Form Pencarian -->
-                        <div class="form-group">
-                            <label for="searchInput">Cari Produk:</label>
-                            <div class="input-group">
-                                <input type="text" id="searchInput" placeholder="Cari produk..." class="form-control"  onclick="checkCustomerType()">
-                               
-                            </div>
-                        </div>
-                        
-                    
-                        <!-- Tabel Produk -->
-                        <table id="datatables5" class="table table-bordered table-striped" style="font-size: 12px;">
-                            <thead id="table-head" style="display: none;"> <!-- Sembunyikan thead secara default -->
-                                <tr>
-                                    <th class="text-center">No</th>
-                                    <th hidden>Kode Produk</th>
-                                    <th>Kode Produk</th>
-                                    <th>Nama Produk</th>
-                                    <th hidden>QR Code Produk</th> <!-- Tambahkan kolom QR Code -->
-                                    <th>Harga Member</th>
-                                    <th>Diskon Member</th>
-                                    <th>Harga Non Member</th>
-                                    <th>Diskon Non Member</th>
-                                    <th>Stok</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($produks as $item)
-                                    @php
-                                    $tokobanjaran = $item->tokobanjaran->first();
-                                    $stok_tokobanjaran = $item->stok_tokobanjaran ? $item->stok_tokobanjaran->jumlah : 0;
-                                    @endphp
-                                    <tr>
-                                        <td class="text-center">{{ $loop->iteration }}</td>
-                                        <td hidden>{{ $item->kode_produk }}</td>
-                                        <td>{{ $item->kode_lama }}</td>
-                                        <td>{{ $item->nama_produk }}</td>
-                                        <td hidden>{{ $item->qrcode_produk }}</td>
-                                        <td>
-                                            <span class="member_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : 'N/A' }}</span>
-                                        </td>
-                                        <td>
-                                            <span class="member_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : 'N/A' }}</span>
-                                        </td>
-                                        <td>
-                                            <span class="non_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : 'N/A' }}</span>
-                                        </td>
-                                        <td>
-                                            <span class="non_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : 'N/A' }}</span>
-                                        </td>
-                                        <td class="text-center">
-                                            {{ $stok_tokobanjaran }}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                            
-                        </table>
-                        
-                        
-                        <table id="tabel-pembelian" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th style="font-size:12px" class="text-center">No</th>
-                                    <th hidden style="font-size:12px">Kode Produk</th>
-                                    <th style="font-size:12px">Kode Produk</th>
-                                    <th style="font-size:12px">Nama Produk</th>
-                                    <th style="font-size:12px">Jumlah</th>
-                                    <th style="font-size:12px">Diskon</th>
-                                    <th hidden style="font-size:12px">Nominal Diskon</th>
-                                    <th style="font-size:12px">Harga</th>
-                                    <th style="font-size:12px">Total</th>
-                                    <th style="font-size:12px; text-align:center">Opsi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabel-pembelian-body"></tbody>
-                        </table>
-                    </div>
-                </div> --}}
+            
                 <div class="card">
                     <div class="modal-body">
                         <!-- Form Pencarian -->
@@ -403,7 +322,7 @@
                 </div>
 
                 <div class="row mb-3">
-                    <div class="col-md-6">
+                    {{-- <div class="col-md-6">
                         <div class="card">
                             <div class="card-header">
                                 <div class="row">
@@ -416,6 +335,36 @@
                                     <div class="col mb-3 d-flex align-items-center">
                                         <label for="sub_totalasli" class="mr-2">Sub Total Asli</label>
                                         <input type="text" class="form-control large-font" id="sub_totalasli" name="sub_totalasli" value="Rp0" >
+                                    </div>
+                                </div>
+                                <div class="row" id="payment-row">
+                                    <div class="col mb-3 d-flex align-items-center">
+                                        <label for="bayar" class="mr-2">Uang Bayar</label>
+                                        <input type="text" class="form-control large-font" id="bayar" name="bayar" value="{{ old('bayar') }}" oninput="formatAndUpdateKembali()">
+                                    </div>
+                                </div>
+                                <div class="row" id="change-row">
+                                    <div class="col mb-3 d-flex align-items-center">
+                                        <label for="kembali" class="mr-2">Kembali</label>
+                                        <input type="text" class="form-control large-font" id="kembali" name="kembali" value="{{ old('kembali') }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> --}}
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col mb-3 d-flex align-items-center">
+                                        <label for="sub_total" class="mr-2">Sub Total</label>
+                                        <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="Rp0" readonly>
+                                    </div>
+                                </div>
+                                <div class="row" hidden>
+                                    <div class="col mb-3 d-flex align-items-center">
+                                        <label for="sub_totalasli" class="mr-2">Sub Total Asli</label>
+                                        <input type="text" class="form-control large-font" id="sub_totalasli" name="sub_totalasli" value="Rp0" readonly>
                                     </div>
                                 </div>
                                 <div class="row" id="payment-row">
@@ -528,197 +477,6 @@
     }
 </script>
 
-
-
-{{-- <script>
-    $(document).ready(function() {
-        // Event listener untuk perubahan tipe pelanggan
-        $('#kategori').change(function() {
-            var tipePelanggan = $(this).val(); // Ambil nilai yang dipilih
-            updatePrices(tipePelanggan); // Panggil fungsi untuk mengupdate harga dan diskon
-        });
-
-        // Fungsi untuk memperbarui harga dan diskon
-        function updatePrices(tipePelanggan) {
-            $('#datatables5 tbody tr').each(function() {
-                var hargaMember = parseFloat($(this).find('.member_harga_bnjr').text()) || 0;
-                var diskonMember = parseFloat($(this).find('.member_diskon_bnjr').text()) || 0;
-                var hargaNonMember = parseFloat($(this).find('.non_harga_bnjr').text()) || 0;
-                var diskonNonMember = parseFloat($(this).find('.non_diskon_bnjr').text()) || 0;
-
-                if (tipePelanggan === 'member') {
-                    // Update harga dan diskon member
-                    $(this).find('.member_harga_bnjr').text(hargaMember); // Harga member
-                    $(this).find('.member_diskon_bnjr').text(diskonMember); // Diskon member
-                } else if (tipePelanggan === 'nonmember') {
-                    // Update harga dan diskon non-member
-                    $(this).find('.non_harga_bnjr').text(hargaNonMember); // Harga non-member
-                    $(this).find('.non_diskon_bnjr').text(diskonNonMember); // Diskon non-member
-                }
-            });
-        }
-
-        // Inisialisasi DataTable tanpa pagination, pencarian, dan info entri
-        $('#datatables5').DataTable({
-            paging: false,
-            searching: false,
-            info: false,
-            lengthChange: false
-        });
-
-        // Sembunyikan semua baris di tabel produk di awal
-        $('#datatables5 tbody tr').hide();
-
-        // Menampilkan baris yang sesuai pencarian, menyembunyikan yang tidak sesuai
-        $('#searchInput').on('keyup', function() {
-            var value = $(this).val().toLowerCase();
-            if (value) {
-                $('#table-head').show(); // Tampilkan thead
-                $('#datatables5 tbody tr').filter(function() {
-                    var kodeProduk = $(this).find('td').eq(1).text().toLowerCase();
-                    var kodeLama = $(this).find('td').eq(2).text().toLowerCase();
-                    var namaProduk = $(this).find('td').eq(3).text().toLowerCase();
-                    var qrcodeProduk = $(this).find('td').eq(4).text().toLowerCase();
-
-                    $(this).toggle(kodeProduk.indexOf(value) > -1 || 
-                                   kodeLama.indexOf(value) > -1 || 
-                                   namaProduk.indexOf(value) > -1 || 
-                                   qrcodeProduk.indexOf(value) > -1);
-                });
-            } else {
-                $('#table-head').hide(); // Sembunyikan thead jika input kosong
-                $('#datatables5 tbody tr').hide();
-            }
-        });
-
-        // Tangkap event klik pada baris produk untuk menambahkan ke tabel pembelian
-        $('#datatables5 tbody').on('click', 'tr', function() {
-            addRowToPurchaseTable($(this)); // Tambahkan produk ke tabel pembelian
-            $('#searchInput').val(''); // Kosongkan pencarian
-            $('#datatables5 tbody tr').hide(); // Sembunyikan semua baris
-            $('#table-head').hide(); // Sembunyikan header tabel
-        });
-
-        // Tangkap event tekan Enter pada input pencarian
-        $('#searchInput').on('keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                var selectedRow = $('#datatables5 tbody tr:visible').first(); // Ambil baris pertama yang terlihat
-                if (selectedRow.length) {
-                    addRowToPurchaseTable(selectedRow); // Tambahkan produk ke tabel pembelian
-                    $(this).val(''); // Kosongkan pencarian
-                    $('#datatables5 tbody tr').hide(); // Sembunyikan semua baris
-                    $('#table-head').hide(); // Sembunyikan header tabel
-                }
-            }
-        });
-
-        function addRowToPurchaseTable(row) {
-            // Ambil tipe pelanggan yang dipilih
-            var tipePelanggan = $('#kategori').val();
-
-            // Ambil data produk dari row yang diklik
-            var kodeProduk = row.find('td').eq(1).text();
-            var kodeLama = row.find('td').eq(2).text();
-            var namaProduk = row.find('td').eq(3).text();
-            var idProduk = row.find('td').eq(10).text();
-
-            // Tentukan harga dan diskon berdasarkan tipe pelanggan
-            var harga, diskon;
-            if (tipePelanggan === 'member') {
-                harga = parseFloat(row.find('.member_harga_bnjr').text()) || 0;
-                diskon = parseFloat(row.find('.member_diskon_bnjr').text()) || 0;
-            } else if (tipePelanggan === 'nonmember') {
-                harga = parseFloat(row.find('.non_harga_bnjr').text()) || 0;
-                diskon = parseFloat(row.find('.non_diskon_bnjr').text()) || 0;
-            }
-
-            // Ambil jumlah dari input
-            var jumlah = 1; // Default nilai jumlah saat menambahkan produk baru
-
-            // Hitung nominal diskon dan total per item
-            var nominal_diskon = (harga * (diskon / 100)) * jumlah;
-            var totalPerItem = (harga - (harga * (diskon / 100))) * jumlah;
-
-            // Periksa apakah produk dengan kodeProduk sudah ada di tabel pembelian
-            var existingRow = $('#tabel-pembelian-body tr').filter(function() {
-                return $(this).find('td').eq(1).text() === kodeProduk;
-            });
-
-            if (existingRow.length > 0) {
-                // Jika produk sudah ada, perbarui jumlah dan total
-                var jumlahInput = existingRow.find('.jumlah');
-                var jumlahSekarang = parseInt(jumlahInput.val()) || 1;
-                var jumlahBaru = jumlahSekarang + 1;
-                jumlahInput.val(jumlahBaru);
-
-                // Hitung nominal_diskon dan total per item berdasarkan jumlah baru
-                nominal_diskon = (harga * (diskon / 100)) * jumlahBaru; // Hitung nominal diskon
-                totalPerItem = (harga - (harga * (diskon / 100))) * jumlahBaru; // Hitung total per item setelah diskon
-
-                existingRow.find('.total').text(totalPerItem.toFixed(2)); // Update total per item
-                existingRow.find('.nominal_diskon').text(nominal_diskon.toFixed(2)); // Update nominal diskon
-            } else {
-                // Jika produk belum ada, tambahkan row baru
-                var newRow = `
-                    <tr style="font-size: 13px;">
-                        <td class="text-center">${$('#tabel-pembelian-body tr').length + 1}</td>
-                        <td hidden>${kodeProduk}</td>
-                        <td>${kodeLama}</td>
-                        <td>${namaProduk}</td>
-                        <td><input type="number" class="form-control jumlah" value="1" min="1"></td>
-                        <td>${diskon}%</td>
-                        <td class="nominal_diskon">${nominal_diskon.toFixed(2)}</td> <!-- Menampilkan nominal diskon -->
-                        <td>${harga}</td>
-                        <td class="total">${totalPerItem.toFixed(2)}</td> <!-- Menampilkan total per item -->
-                        <td class="text-center">
-                            <button type="button" class="btn btn-danger btn-sm delete-row"><i class="fas fa-trash"></i></button>
-                        </td>
-                        <td hidden>${idProduk}</td>
-                    </tr>
-                `;
-
-                // Tambahkan row baru ke tabel pembelian
-                $('#tabel-pembelian-body').append(newRow);
-            }
-
-            // Hitung total pembelian
-            calculateTotal();
-
-            // Reset input jumlah ketika menambahkan produk baru
-            $('.jumlah').on('input', function() {
-                var jumlah = parseInt($(this).val()) || 0; // Ambil nilai jumlah dari input
-                var hargaSatuan = parseFloat($(this).closest('tr').find('td').eq(7).text()) || 0; // Harga satuan
-                var diskon = parseFloat($(this).closest('tr').find('td').eq(6).text()) || 0; // Diskon
-
-                // Hitung nominal_diskon dan total per item berdasarkan jumlah baru
-                var nominal_diskon = (hargaSatuan * (diskon / 100)) * jumlah; // Hitung nominal diskon
-                var total = (hargaSatuan - (hargaSatuan * (diskon / 100))) * jumlah; // Total per item setelah diskon
-
-                // Update total dan nominal diskon di baris yang sama
-                $(this).closest('tr').find('.total').text(total.toFixed(2)); // Update total per item
-                $(this).closest('tr').find('.nominal_diskon').text(nominal_diskon.toFixed(2)); // Update nominal diskon
-
-                calculateTotal(); // Hitung ulang total pembelian
-            });
-
-            // Event listener untuk tombol hapus baris
-            $('#tabel-pembelian-body').on('click', '.delete-row', function() {
-                $(this).closest('tr').remove(); // Hapus baris
-                calculateTotal(); // Hitung ulang total pembelian
-            });
-        }
-
-        // Fungsi untuk menghitung total pembelian
-        function calculateTotal() {
-            var total = 0;
-            $('#tabel-pembelian-body .total').each(function() {
-                total += parseFloat($(this).text()) || 0; // Tambah total tanpa format
-            });
-            $('#total-sum').text('Total: ' + total.toFixed(2)); // Update total tanpa format
-        }
-    });
-</script> --}}
 <script>
     $(document).ready(function() {
         // Event listener untuk perubahan tipe pelanggan
@@ -845,8 +603,8 @@
                 nominal_diskon = (harga * (diskon / 100)) * jumlahBaru; // Hitung nominal diskon
                 totalPerItem = (harga - (harga * (diskon / 100))) * jumlahBaru; // Hitung total per item setelah diskon
 
-                existingRow.find('.total').text(totalPerItem.toFixed(2)); // Update total per item
-                existingRow.find('.nominal_diskon').text(nominal_diskon.toFixed(2)); // Update nominal diskon
+                existingRow.find('.total').text(totalPerItem); // Update total per item
+                existingRow.find('.nominal_diskon').text(nominal_diskon); // Update nominal diskon
             } else {
                 // Jika produk belum ada, tambahkan row baru
                 var newRow = `
@@ -857,9 +615,9 @@
                         <td>${namaProduk}</td>
                         <td><input type="number" class="form-control-sm jumlah" value="1" min="1"></td>
                         <td>${diskon}%</td>
-                        <td class="nominal_diskon">${nominal_diskon.toFixed(2)}</td> <!-- Menampilkan nominal diskon -->
+                        <td class="nominal_diskon">${nominal_diskon}</td> <!-- Menampilkan nominal diskon -->
                         <td>${harga}</td>
-                        <td class="total">${totalPerItem.toFixed(2)}</td> <!-- Menampilkan total per item -->
+                        <td class="total">${totalPerItem}</td> <!-- Menampilkan total per item -->
                         <td class="text-center">
                             <button type="button" class="btn btn-danger btn-sm delete-row"><i class="fas fa-trash"></i></button>
                         </td>
@@ -885,8 +643,8 @@
                 var total = (hargaSatuan - (hargaSatuan * (diskon / 100))) * jumlah; // Total per item setelah diskon
 
                 // Update total dan nominal diskon di baris yang sama
-                $(this).closest('tr').find('.total').text(total.toFixed(2)); // Update total per item
-                $(this).closest('tr').find('.nominal_diskon').text(nominal_diskon.toFixed(2)); // Update nominal diskon
+                $(this).closest('tr').find('.total').text(total); // Update total per item
+                $(this).closest('tr').find('.nominal_diskon').text(nominal_diskon); // Update nominal diskon
 
                 calculateTotal(); // Hitung ulang total pembelian
             });
@@ -899,14 +657,71 @@
             });
         }
 
-        // Fungsi untuk menghitung total pembelian
+
         function calculateTotal() {
-            var total = 0;
+            var subtotal = 0;
             $('#tabel-pembelian-body .total').each(function() {
-                total += parseFloat($(this).text()) || 0; // Tambah total tanpa format
+                subtotal += parseFloat($(this).text()) || 0; // Tambah subtotal dari setiap total produk
             });
-            $('#total-sum').text('Total: ' + total.toFixed(2)); // Update total tanpa format
+
+            // Format subtotal ke dalam format rupiah
+            var formattedSubtotal = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(subtotal);
+
+            // Update subtotal di elemen input
+            $('#sub_total').val(formattedSubtotal);
+            $('#sub_totalasli').val(subtotal); // Simpan nilai asli tanpa format
+
+            calculateKembali(); // Panggil fungsi untuk menghitung kembali
         }
+            // Fungsi untuk menghitung uang kembalian
+            function calculateKembali() {
+                var bayar = parseFloat($('#bayar').val().replace(/[^\d]/g, '')) || 0; // Ambil nilai bayar tanpa format
+                var subtotal = parseFloat($('#sub_totalasli').val()) || 0; // Ambil subtotal tanpa format
+
+                var kembali = bayar - subtotal; // Hitung kembalian
+
+                // Format kembali ke dalam format rupiah
+                var formattedKembali = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(kembali);
+
+                // Update input kembali
+                $('#kembali').val(formattedKembali);
+            }
+
+            // Fungsi untuk memformat input bayar saat pengguna selesai mengetik (saat blur)
+            function formatAndUpdateKembali() {
+                var bayar = $('#bayar').val().replace(/[^\d]/g, ''); // Hilangkan semua karakter kecuali angka
+                if (bayar !== "") {
+                    var formattedBayar = "Rp " + new Intl.NumberFormat('id-ID').format(bayar); // Tambahkan "Rp" dan format ke rupiah
+                    $('#bayar').val(formattedBayar); // Set kembali ke input setelah selesai mengetik
+                }
+                calculateKembali(); // Hitung kembalian setelah pemformatan
+            }
+
+            // Event listener untuk format hanya saat input kehilangan fokus (blur)
+            $('#bayar').on('blur', function() {
+                formatAndUpdateKembali(); // Format hanya setelah input selesai
+            });
+
+            // Fungsi untuk menghilangkan format ketika pengguna fokus ke input (agar bisa mengetik angka tanpa gangguan)
+            $('#bayar').on('focus', function() {
+                var bayar = $(this).val().replace(/[^\d]/g, ''); // Hilangkan format saat fokus
+                $(this).val(bayar); // Tampilkan angka tanpa format ketika input difokuskan
+            });
+
+            // Menghitung kembali setiap kali input bayar diubah (tanpa format langsung)
+            $('#bayar').on('input', function() {
+                calculateKembali(); // Hitung kembalian tanpa format langsung
+            });
+
+
+        // // Fungsi untuk menghitung total pembelian
+        // function calculateTotal() {
+        //     var total = 0;
+        //     $('#tabel-pembelian-body .total').each(function() {
+        //         total += parseFloat($(this).text()) || 0; // Tambah total tanpa format
+        //     });
+        //     $('#total-sum').text('Total: ' + total.toFixed(2)); // Update total tanpa format
+        // }
     });
 </script>
 

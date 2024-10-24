@@ -174,8 +174,8 @@
         <div class="header">
             <div class="text">
                 <h1>PT JAVA BAKERY FACTORY</h1>
-                <p>Cabang : BANJARAN</p>
-                <p>Jl. Raya Utara Adiwerna No.40, Pesalakan, Adiwerna, Kec. Adiwerna, Kabupaten Tegal, Jawa Tengah 52194</p>
+                <p>Cabang : PEMALANG</p>
+                <p>Jl. Hayam Wuruk No.7, Bendan, Kec. Pekalongan Bar., Kota Pekalongan, Jawa Tengah 51119</p>
             </div>
         </div>
         <hr class="divider">
