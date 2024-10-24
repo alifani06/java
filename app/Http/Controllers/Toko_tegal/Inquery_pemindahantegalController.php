@@ -92,7 +92,7 @@ class Inquery_pemindahantegalController extends Controller{
             ->get()
             ->groupBy('kode_pemindahan');
     
-        return view('toko_tegal.inquery_pemindahantegal.index', compact('stokBarangJadi'));
+        return view('toko_tegal/inquery_pemindahantegal/index', compact('stokBarangJadi'));
     }
 
 

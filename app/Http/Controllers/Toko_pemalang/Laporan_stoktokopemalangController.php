@@ -533,7 +533,7 @@ class Laporan_stoktokopemalangController extends Controller
             'totalHarga' => $totalHarga,
             'totalStok' => $totalStok,
             'totalSubTotal' => $totalSubTotal,
-            'tokoCabang' => 'BANJARAN', // Ini harus ada untuk menyertakan variabel
+            'tokoCabang' => 'PEMALANG', // Ini harus ada untuk menyertakan variabel
 
         ])->render();
     
