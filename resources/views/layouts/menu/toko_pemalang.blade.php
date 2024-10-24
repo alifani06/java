@@ -111,7 +111,7 @@
     request()->is('toko_pemalang/permintaan_produk*')|| 
     request()->is('toko_pemalang/pengiriman_barangjadi*')|| 
     request()->is('toko_pemalang/return_barangjadi*')|| 
-    request()->is('toko_pemalang/pelunasan_pemesanan*')|| 
+    request()->is('toko_pemalang/pelunasan_pemesananPml*')|| 
     request()->is('toko_pemalang/setoran_tokopemalang*')|| 
     request()->is('toko_pemalang/pemindahan_tokopemalang*') 
     // request()->is('toko_pemalang/input*')
@@ -126,7 +126,7 @@
         request()->is('toko_pemalang/permintaan_produk*')||  
         request()->is('toko_pemalang/pengiriman_barangjadi*')||  
         request()->is('toko_pemalang/retur_barangjadi*')||  
-        request()->is('toko_pemalang/pelunasan_pemesanan*')||  
+        request()->is('toko_pemalang/pelunasan_pemesananPml*')||  
         request()->is('toko_pemalang/setoran_tokopemalang*')||  
         request()->is('toko_pemalang/pemindahan_tokopemalang*')  
         // request()->is('toko_pemalang/input*')
@@ -163,8 +163,8 @@
 
         {{-- @if (auth()->check() && auth()->user()->menu['pelunasan banjaran']) --}}
         <li class="nav-item">
-            <a href="{{ url('toko_pemalang/pelunasan_pemesanan') }}"
-                class="nav-link {{ request()->is('toko_pemalang/pelunasan_pemesanan*') ? 'active' : '' }}">
+            <a href="{{ url('toko_pemalang/pelunasan_pemesananPml') }}"
+                class="nav-link {{ request()->is('toko_pemalang/pelunasan_pemesananPml*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Pelunasan Pemesanan</p>
             </a>

@@ -56,7 +56,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="float-right">
-                        <a href="{{ url('toko_pemalang/pelunasan_pemesanan/create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url('toko_pemalang/pelunasan_pemesananPml/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> 
                         </a>
                     </div>
@@ -121,7 +121,7 @@
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($item->status == 'unpost')
                                                 <a class="dropdown-item posting-btn" data-memo-id="{{ $item->id }}">Posting</a>
-                                                <a class="dropdown-item" href="{{ url('/toko_pemalang/pelunasan_pemesanan/' . $item->id ) }}">Show</a>
+                                                <a class="dropdown-item" href="{{ url('/toko_pemalang/pelunasan_pemesananPml/' . $item->id ) }}">Show</a>
                                                 <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
                                                     @csrf
                                                     @method('DELETE')
@@ -130,7 +130,7 @@
                                             @endif
                                             @if ($item->status == 'posting')
                                                 <a class="dropdown-item unpost-btn" data-memo-id="{{ $item->id }}">Unpost</a>
-                                                <a class="dropdown-item" href="{{ url('/toko_pemalang/pelunasan_pemesanan/' . $item->id ) }}">Show</a>
+                                                <a class="dropdown-item" href="{{ url('/toko_pemalang/pelunasan_pemesananPml/' . $item->id ) }}">Show</a>
                                             @endif
                                         </div>
                                     </td>
@@ -185,7 +185,7 @@
         var form = document.getElementById('form-action');
 
         function cari() {
-            form.action = "{{ url('toko_pemalang/inquery_penjualanprodukbanjaran') }}";
+            form.action = "{{ url('toko_pemalang/inquery_penjualanprodukpemalang') }}";
             form.submit();
         }
     </script>

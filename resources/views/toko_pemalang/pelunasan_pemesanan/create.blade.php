@@ -74,7 +74,7 @@
                 </div>
             @endif
         
-            <form  action="{{ url('toko_pemalang/pelunasan_pemesanan') }}" method="POST" enctype="multipart/form-data"
+            <form  action="{{ url('toko_pemalang/pelunasan_pemesananPml') }}" method="POST" enctype="multipart/form-data"
                 autocomplete="off">
                 @csrf
                 <div class="card">

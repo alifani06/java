@@ -41,7 +41,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class PelunasanpemesananController extends Controller
+class PelunasanpemesananPmlController extends Controller
 {
     
     public function index()
@@ -360,7 +360,7 @@ class PelunasanpemesananController extends Controller
         $details = DetailPenjualanProduk::where('penjualanproduk_id', $penjualan->id)->get();
     
 
-        return redirect()->route('toko_pemalang.pelunasan_pemesanan.cetak-pdf', ['id' => $pelunasan->id])
+        return redirect()->route('toko_pemalang.pelunasan_pemesananPml.cetak-pdf', ['id' => $pelunasan->id])
         ->with('success', 'Transaksi berhasil disimpan, halaman cetak akan segera tampil.')
         ->with('refresh', true);  // Menambahkan session refresh
     
