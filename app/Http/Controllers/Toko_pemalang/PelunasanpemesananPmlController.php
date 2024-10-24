@@ -396,28 +396,53 @@ class PelunasanpemesananPmlController extends Controller
     }
     
 
+    // public function cetakPdf($id)
+    // {
+    //     // Mengambil satu item Pelunasan berdasarkan ID
+    //     $inquery = Pelunasan::with(['metodePembayaran', 'penjualanproduk.detailpenjualanproduk', 'dppemesanan'])
+    //         ->findOrFail($id);
+
+    //     // Mengambil kode_dppemesanan
+    //     $kode_dppemesanan = $inquery->dppemesanan->kode_dppemesanan ?? 'N/A'; // Mengakses kode_dppemesanan
+
+    //     // Mengambil semua pelanggan
+    //     $pelanggans = Pelanggan::all();
+
+    //     // Mengakses toko dari $inquery yang sekarang menjadi instance model
+    //     $tokos = $inquery->toko;
+        
+    //     $pdf = FacadePdf::loadView('toko_pemalang.pelunasan_pemesanan.cetak-pdf', compact('inquery', 'tokos', 'pelanggans', 'kode_dppemesanan'));
+    //     $pdf->setPaper('a4', 'portrait');
+        
+    //     return $pdf->stream('pelunasan.pdf');
+    // }
+
     public function cetakPdf($id)
     {
         // Mengambil satu item Pelunasan berdasarkan ID
-        $inquery = Pelunasan::with(['metodePembayaran', 'penjualanproduk.detailpenjualanproduk', 'dppemesanan'])
-            ->findOrFail($id);
-
+        $inquery = Pelunasan::with([
+            'metodePembayaran', 
+            'penjualanproduk.detailpenjualanproduk', 
+            'dppemesanan.pemesananproduk' // Menambahkan relasi ke Pemesananproduk
+        ])->findOrFail($id);
+    
         // Mengambil kode_dppemesanan
         $kode_dppemesanan = $inquery->dppemesanan->kode_dppemesanan ?? 'N/A'; // Mengakses kode_dppemesanan
-
+    
         // Mengambil semua pelanggan
         $pelanggans = Pelanggan::all();
-
+    
         // Mengakses toko dari $inquery yang sekarang menjadi instance model
         $tokos = $inquery->toko;
-        
-        $pdf = FacadePdf::loadView('toko_pemalang.pelunasan_pemesanan.cetak-pdf', compact('inquery', 'tokos', 'pelanggans', 'kode_dppemesanan'));
+    
+        // Mengambil catatan dari tabel Pemesananproduk melalui dppemesanan
+        $pemesananproduk = $inquery->dppemesanan->pemesananproduk ?? null; // Mengakses relasi ke Pemesananproduk
+    
+        $pdf = FacadePdf::loadView('toko_pemalang.pelunasan_pemesanan.cetak-pdf', compact('inquery', 'tokos', 'pelanggans', 'kode_dppemesanan', 'pemesananproduk'));
         $pdf->setPaper('a4', 'portrait');
         
         return $pdf->stream('pelunasan.pdf');
     }
-
-
 
     public function show($id)
     {   

@@ -403,15 +403,19 @@
                                 {{ in_array($inquery->kembali, [null, 0, 1]) ? '-' : number_format($inquery->kembali, 0, ',', '.') }}
                             </td>
                         </tr> 
-   
+{{--    
                         @if ($inquery->dppemesanan && $inquery->dppemesanan->pemesananproduk)
                         <tr>
                             <td colspan="5" style="text-align: left; font-size: 8px;">
                             {!! nl2br(e($inquery->dppemesanan->pemesananproduk->catatan)) ?? '-' !!}
                             </td>
-                        </tr>
-                    @endif
+                        </tr> --}}
+                        @endif
                     </tbody>
+                    <div class="catatan">
+                        <label style="font-size: 9px;"><strong>Catatan:</strong></label>
+                        <p style="margin-top: 1px; font-size: 9px;">{!! nl2br(e($inquery->dppemesanan->pemesananproduk->catatan)) ?? '-' !!}</p>
+                    </div>
                 </table>   
             </div>
         
