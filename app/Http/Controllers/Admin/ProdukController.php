@@ -89,131 +89,6 @@ class ProdukController extends Controller
     }
 
 
-    // public function store(Request $request)
-    // {
-    //     $validator = Validator::make(
-    //         $request->all(),
-    //         [
-    //             'nama_produk' => 'required',
-    //             'klasifikasi_id' => 'required',
-    //             'subklasifikasi_id' => 'required',
-    //             'kode_lama' => 'required',
-    //             'satuan' => 'required',
-    //             'harga' => 'required|numeric',
-    //             'gambar' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
-    //         ],
-    //         [
-    //             'nama_produk.required' => 'Masukan nama produk',
-    //             'klasifikasi_id.required' => 'Masukkan klasifikasi produk',
-    //             'subklasifikasi_id.required' => 'Masukkan subklasifikasi produk',
-    //             'kode_lama.required' => 'Masukkan Kode',
-    //             'satuan.required' => 'Masukkan satuan',
-    //             'harga.required' => 'Masukkan harga',
-    //             'gambar.image' => 'Gambar yang dimasukan salah!',
-    //         ]
-    //     );
-    
-    //     if ($validator->fails()) {
-    //         $errors = $validator->errors()->all();
-    //         return back()->withInput()->with('error', $errors);
-    //     }
-    
-    //     if ($request->gambar) {
-    //         $gambar = str_replace(' ', '', $request->gambar->getClientOriginalName());
-    //         $namaGambar = 'produk/' . date('mYdHs') . rand(1, 10) . '_' . $gambar;
-    //         $request->gambar->storeAs('public/uploads/', $namaGambar);
-    //     } else {
-    //         $namaGambar = null;
-    //     }
-    //     $kode = $this->kode();
-    
-    //     // Simpan data produk
-    //     $produk = Produk::create(array_merge(
-    //         $request->all(),
-    //         [
-    //             'diskon' => 0,
-    //             'gambar' => $namaGambar,
-    //             'kode_produk' => $kode,
-    //             'qrcode_produk' => 'https://javabakery.id/produk/' . $kode,
-    //             'tanggal' => Carbon::now('Asia/Jakarta'),
-    //         ]
-    //     ));
-    
-    //     // Simpan data ke tabel toko
-    //     TokoSlawi::create([
-    //         'produk_id' => $produk->id,
-    //         'member_harga_slw' => $request->harga,
-    //         'harga_awal' => $request->harga,
-    //         'diskon_awal' => 0,
-    //         'member_diskon_slw' => 0,
-    //         'non_harga_slw' => $request->harga,
-    //         'non_diskon_slw' => 0,
-    //     ]);
-    
-    //     Tokobanjaran::create([
-    //         'produk_id' => $produk->id,
-    //         'harga_awal' => $request->harga,
-    //         'diskon_awal' => 0,
-    //         'member_harga_bnjr' => $request->harga,
-    //         'member_diskon_bnjr' => 0,
-    //         'non_harga_bnjr' => $request->harga,
-    //         'non_diskon_bnjr' => 0,
-    //     ]);
-    
-    //     Tokotegal::create([
-    //         'produk_id' => $produk->id,
-    //         'harga_awal' => $request->harga,
-    //         'diskon_awal' => 0,
-    //         'member_harga_tgl' => $request->harga,
-    //         'member_diskon_tgl' => 0,
-    //         'non_harga_tgl' => $request->harga,
-    //         'non_diskon_tgl' => 0,
-    //     ]);
-    
-    //     Tokopemalang::create([
-    //         'produk_id' => $produk->id,
-    //         'harga_awal' => $request->harga,
-    //         'diskon_awal' => 0,
-    //         'member_harga_pml' => $request->harga,
-    //         'member_diskon_pml' => 0,
-    //         'non_harga_pml' => $request->harga,
-    //         'non_diskon_pml' => 0,
-    //     ]);
-    
-    //     Tokobumiayu::create([
-    //         'produk_id' => $produk->id,
-    //         'harga_awal' => $request->harga,
-    //         'diskon_awal' => 0,
-    //         'member_harga_bmy' => $request->harga,
-    //         'member_diskon_bmy' => 0,
-    //         'non_harga_bmy' => $request->harga,
-    //         'non_diskon_bmy' => 0,
-    //     ]);
-    
-    //     Tokocilacap::create([
-    //         'produk_id' => $produk->id,
-    //         'harga_awal' => $request->harga,
-    //         'diskon_awal' => 0,
-    //         'member_harga_clc' => $request->harga,
-    //         'member_diskon_clc' => 0,
-    //         'non_harga_clc' => $request->harga,
-    //         'non_diskon_clc' => 0,
-    //     ]);
-    
-    //     // Simpan data ke tabel stok_tokobanjarans dengan jumlah 0
-    //     Stok_tokobanjaran::create([
-    //         'produk_id' => $produk->id,
-    //         'jumlah' => 0,
-    //     ]);
-    
-    //       // Simpan data ke tabel stokpesanan_tokobanjaran dengan nilai yang sama seperti stok_tokobanjaran
-    //     Stokpesanan_tokobanjaran::create([
-    //     'produk_id' => $produk->id,
-    //     'jumlah' => 0
-    // ]);
-    //     return redirect('admin/produk')->with('success', 'Berhasil menambahkan produk');
-    // }
-
     public function store(Request $request)
 {
     $validator = Validator::make(
@@ -349,14 +224,14 @@ class ProdukController extends Controller
     ]);
 
 
-    // Stok_tokopemalang::create([
-    //     'produk_id' => $produk->id,
-    //     'jumlah' => 0,
-    // ]);
-    // Stokpesanan_tokopemalang::create([
-    //     'produk_id' => $produk->id,
-    //     'jumlah' => 0
-    // ]);
+    Stok_tokopemalang::create([
+        'produk_id' => $produk->id,
+        'jumlah' => 0,
+    ]);
+    Stokpesanan_tokopemalang::create([
+        'produk_id' => $produk->id,
+        'jumlah' => 0
+    ]);
 
 
     // Stok_tokobumiayu::create([
