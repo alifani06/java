@@ -120,7 +120,7 @@ class Laporan_stoktokopemalangController extends Controller
     
         $produk = $produkQuery->get();
     
-        $stok = Stokpesanan_tokobanjaran::with('produk')->get();
+        $stok = Stokpesanan_tokopemalang::with('produk')->get();
     
         $stokGrouped = $stok->groupBy('produk_id')->map(function ($group) {
             $firstItem = $group->first();
@@ -170,8 +170,8 @@ class Laporan_stoktokopemalangController extends Controller
         $produk = $produkQuery->get();
     
         // Retrieve stok from both Stok_tokotegal and Stokpesanan_tokotegal
-        $stokTokoTegal = Stok_tokobanjaran::with('produk')->get();
-        $stokPesananTokoTegal = Stokpesanan_tokobanjaran::with('produk')->get();
+        $stokTokoTegal = Stok_tokopemalang::with('produk')->get();
+        $stokPesananTokoTegal = Stokpesanan_tokopemalang::with('produk')->get();
     
         // Combine stok and group by produk_id
         // Gabungkan stok dari dua tabel
@@ -483,8 +483,8 @@ class Laporan_stoktokopemalangController extends Controller
         $produk = $produkQuery->get();
     
         // Retrieve stok from both Stok_tokotegal and Stokpesanan_tokotegal
-        $stokTokoTegal = Stok_tokobanjaran::with('produk')->get();
-        $stokPesananTokoTegal = Stokpesanan_tokobanjaran::with('produk')->get();
+        $stokTokoTegal = Stok_tokopemalang::with('produk')->get();
+        $stokPesananTokoTegal = Stokpesanan_tokopemalang::with('produk')->get();
     
         // Combine stok and group by produk_id
         $stokCombined = $stokTokoTegal->concat($stokPesananTokoTegal)

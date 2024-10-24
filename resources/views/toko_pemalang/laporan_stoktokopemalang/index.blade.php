@@ -154,7 +154,7 @@
     function printReport() {
         if (event) event.preventDefault();
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printstoktokobanjaran') }}";
+    form.action = "{{ url('toko_pemalang/printstoktokopemalang') }}";
     form.target = "_blank";
     form.submit();
 }
@@ -187,11 +187,11 @@ subKlasifikasiSelect.selectedIndex = 0;
         var selectedValue = this.value;
 
         if (selectedValue === 'stok') {
-            window.location.href = "{{ url('toko_banjaran/laporan_stoktokobanjaran') }}";
+            window.location.href = "{{ url('toko_pemalang/laporan_stoktokopemalang') }}";
         } else if (selectedValue === 'stokpesanan') {
-            window.location.href = "{{ url('toko_banjaran/stoktokopesananbanjaran') }}";
+            window.location.href = "{{ url('toko_pemalang/stoktokopesananpemalang') }}";
         }else if (selectedValue === 'semuastok') {
-            window.location.href = "{{ url('toko_banjaran/semuastoktokobanjaran') }}";
+            window.location.href = "{{ url('toko_pemalang/semuastoktokopemalang') }}";
         }
     });
 </script>

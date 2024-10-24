@@ -60,7 +60,7 @@
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="toko" name="toko_id">
                                     {{-- <option value="">- Semua Toko -</option> --}}
-                                    <option value="1" {{ Request::get('toko_id') == '1' ? 'selected' : '' }}>Toko Banjaran</option>
+                                    <option value="1" {{ Request::get('toko_id') == '4' ? 'selected' : '' }}>Toko Pemalang</option>
                                     {{-- <option value="2" {{ Request::get('toko_id') == '2' ? 'selected' : '' }}>Toko Tegal</option>
                                     <option value="3" {{ Request::get('toko_id') == '3' ? 'selected' : '' }}>Toko Slawi</option>
                                     <option value="4" {{ Request::get('toko_id') == '4' ? 'selected' : '' }}>Toko Pemalang</option>
@@ -154,7 +154,7 @@
     function printReport() {
         if (event) event.preventDefault();
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printstoktokopesananbanjaran') }}";
+    form.action = "{{ url('toko_pemalang/printstoktokopesananpemalang') }}";
     form.target = "_blank";
     form.submit();
 }
@@ -187,11 +187,11 @@ subKlasifikasiSelect.selectedIndex = 0;
         var selectedValue = this.value;
 
         if (selectedValue === 'stok') {
-            window.location.href = "{{ url('toko_banjaran/laporan_stoktokobanjaran') }}";
+            window.location.href = "{{ url('toko_pemalang/laporan_stoktokopemalang') }}";
         } else if (selectedValue === 'stokpesanan') {
-            window.location.href = "{{ url('toko_banjaran/stoktokopesananbanjaran') }}";
+            window.location.href = "{{ url('toko_pemalang/stoktokopesananpemalang') }}";
         }else if (selectedValue === 'semuastok') {
-            window.location.href = "{{ url('toko_banjaran/semuastoktokobanjaran') }}";
+            window.location.href = "{{ url('toko_pemalang/semuastoktokopemalang') }}";
         }
     });
 </script>

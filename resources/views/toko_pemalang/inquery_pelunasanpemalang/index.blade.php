@@ -21,11 +21,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Inquery Pelunasan Banjaran</h1>
+                    <h1 class="m-0">Inquery Pelunasan Pemalang</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Inquery Pelunasan Banjaran</li>
+                        <li class="breadcrumb-item active">Inquery Pelunasan Pemalang</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -149,7 +149,7 @@
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($item->status == 'unpost')
                                                 <a class="dropdown-item posting-btn" data-memo-id="{{ $item->id }}">Posting</a>
-                                                <a class="dropdown-item" href="{{ url('/toko_banjaran/pelunasan_pemesanan/' . $item->id ) }}">Show</a>
+                                                <a class="dropdown-item" href="{{ url('/toko_pemalang/pelunasan_pemesanan/' . $item->id ) }}">Show</a>
                                                 <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
                                                     @csrf
                                                     @method('DELETE')
@@ -158,7 +158,7 @@
                                             @endif
                                             @if ($item->status == 'posting')
                                                 <a class="dropdown-item unpost-btn" data-memo-id="{{ $item->id }}">Unpost</a>
-                                                <a class="dropdown-item" href="{{ url('/toko_banjaran/pelunasan_pemesanan/' . $item->id ) }}">Show</a>
+                                                <a class="dropdown-item" href="{{ url('/toko_pemalang/pelunasan_pemesanan/' . $item->id ) }}">Show</a>
                                             @endif
                                         </div>
                                     </td>
@@ -212,7 +212,7 @@
         // Fungsi untuk mengirim form
         function cari() {
             var form = document.getElementById('form-action');
-            form.action = "{{ url('toko_banjaran/inquery_pelunasanbanjaran') }}";
+            form.action = "{{ url('toko_pemalang/inquery_pelunasanpemalang') }}";
             form.submit();
         }
     </script>
@@ -230,7 +230,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan unpost
                 $.ajax({
-                    url: "{{ url('toko_banjaran/inquery_pelunasanbanjaran/unpost_penjualanproduk/') }}/" + memoId,
+                    url: "{{ url('toko_pemalang/inquery_pelunasanpemalang/unpost_penjualanproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -271,7 +271,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan posting
                 $.ajax({
-                    url: "{{ url('toko_banjaran/inquery_pelunasanbanjaran/posting_penjualanproduk/') }}/" + memoId,
+                    url: "{{ url('toko_pemalang/inquery_pelunasanpemalang/posting_penjualanproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
