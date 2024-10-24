@@ -102,7 +102,7 @@
                         <tbody>
                             @foreach ($produkWithStok as $produk)
                             <tr>
-                                <form action="{{ route('stok_tokobanjaran.update', $produk->id) }}" method="POST">
+                                <form action="{{ route('stok_tokopemalang.update', $produk->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
                                     <td class="text-center">{{ $loop->iteration }}</td>
