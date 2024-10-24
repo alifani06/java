@@ -342,7 +342,6 @@
                                 <tr>
                                     {{-- <td style="font-size: 9px;">{{ $detail->kode_lama }}</td> --}}
                                     
-                                    {{-- Tampilkan nama produk dengan pemotongan karakter --}}
                                     <td style="font-size: 9px; word-wrap: break-word; white-space: pre-line;">{{ $nama_produk }}</td>
                                     <td style="font-size: 9px; text-align: right">{{ $detail->jumlah }}</td>
                                     <td style="font-size: 9px; text-align: right">{{ number_format($detail->harga, 0, ',', '.') }}</td>

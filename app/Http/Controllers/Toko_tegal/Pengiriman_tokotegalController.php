@@ -148,14 +148,20 @@ class Pengiriman_tokotegalController extends Controller{
             return redirect()->back()->with('error', 'Data tidak ditemukan.');
         }
         
-        // Ambil semua data dengan kode_pengiriman yang sama
-        $pengirimanBarangJadi = Pengiriman_tokotegal::with(['produk.subklasifikasi', 'toko'])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+        // Ambil semua data dengan kode_pengiriman yang sama dan urutkan berdasarkan kode_lama
+        $pengirimanBarangJadi = Pengiriman_tokotegal::with(['produk.subklasifikasi', 'toko'])
+            ->where('kode_pengiriman', $detailStokBarangJadi)
+            ->get()
+            ->sortBy('produk.kode_lama')
+            ->values(); // Reset indeks setelah sorting
         
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
         return view('toko_tegal.pengiriman_tokotegal.show', compact('pengirimanBarangJadi', 'firstItem'));
     }
+    
+    
 
 
     public function showpemesanan($id)
@@ -169,7 +175,11 @@ class Pengiriman_tokotegalController extends Controller{
         }
         
         // Ambil semua data dengan kode_pengiriman yang sama
-        $pengirimanBarangJadi = Pengirimanpemesanan_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_pengirimanpesanan', $detailStokBarangJadi)->get();
+        $pengirimanBarangJadi = Pengirimanpemesanan_tokobanjaran::with(['produk.subklasifikasi', 'toko'])
+        ->where('kode_pengirimanpesanan', $detailStokBarangJadi)
+        ->get()
+        ->sortBy('produk.kode_lama')
+        ->values();
         
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
@@ -181,21 +191,28 @@ class Pengiriman_tokotegalController extends Controller{
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
         $detailStokBarangJadi = Pengiriman_tokotegal::where('id', $id)->value('kode_pengiriman');
-                
+        
         // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
             return redirect()->back()->with('error', 'Data tidak ditemukan.');
         }
-
-        // Ambil semua data dengan kode_pengiriman yang sama
-        $pengirimanBarangJadi = Pengiriman_tokotegal::with(['produk.subklasifikasi', 'toko'])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+    
+        // Ambil semua data dengan kode_pengiriman yang sama, dan urutkan berdasarkan kode_lama secara ascending
+        $pengirimanBarangJadi = Pengiriman_tokotegal::with(['produk.subklasifikasi', 'toko'])
+            ->where('kode_pengiriman', $detailStokBarangJadi)
+            ->get()
+            ->sortBy('produk.kode_lama') // Mengurutkan berdasarkan kode_lama secara ascending
+            ->values(); // Reset indeks setelah sorting
 
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
+    
+        // Generate PDF dengan data yang sudah diurutkan
         $pdf = FacadePdf::loadView('toko_tegal.pengiriman_tokotegal.print', compact('detailStokBarangJadi', 'pengirimanBarangJadi', 'firstItem'));
-
+    
         return $pdf->stream('surat_permintaan_produk.pdf');
     }
+    
 
 
     public function printpemesanan($id)
@@ -209,7 +226,11 @@ class Pengiriman_tokotegalController extends Controller{
         }
 
         // Ambil semua data dengan kode_pengiriman yang sama
-        $pengirimanBarangJadi = Pengirimanpemesanan_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_pengirimanpesanan', $detailStokBarangJadi)->get();
+        $pengirimanBarangJadi = Pengirimanpemesanan_tokobanjaran::with(['produk.subklasifikasi', 'toko'])
+        ->where('kode_pengirimanpesanan', $detailStokBarangJadi)
+        ->get()
+        ->sortBy('produk.kode_lama') // Mengurutkan berdasarkan kode_lama secara ascending
+        ->values();
 
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();

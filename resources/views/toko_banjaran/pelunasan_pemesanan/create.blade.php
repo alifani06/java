@@ -336,6 +336,37 @@
                                     </tr>
                                 @endif
                             @endforeach
+                            {{-- @foreach ($dppemesanans as $return)
+                                @if (is_null($return->pelunasan))
+                                    <tr style="font-size: 14px" 
+                                    onclick="checkTanggalKirim(
+                                        '{{ $return->pemesananproduk ? $return->pemesananproduk->tanggal_kirim : '0000-00-00' }}',
+                                        '{{ $return->id }}',
+                                        '{{ $return->pemesananproduk ? $return->pemesananproduk->kode_pemesanan : 'No Data' }}',
+                                        '{{ $return->dp_pemesanan }}'
+                                    )">
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td>{{ $return->kode_dppemesanan }}</td>
+                                        <td>{{ $return->pemesananproduk ? $return->pemesananproduk->kode_pemesanan : 'No Data' }}</td>
+                                        <td>{{ $return->pemesananproduk ? $return->pemesananproduk->nama_pelanggan : 'No Data' }}</td>
+                                        <td>{{ $return->pemesananproduk ? $return->pemesananproduk->tanggal_kirim : 'No Data' }}</td>
+                                        <td>{{ number_format($return->dp_pemesanan, 0, ',', '.') }}</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-primary btn-sm"
+                                                onclick="checkTanggalKirim(
+                                                '{{ $return->pemesananproduk ? $return->pemesananproduk->tanggal_kirim : '0000-00-00' }}',
+                                                '{{ $return->id }}',
+                                                '{{ $return->pemesananproduk ? $return->pemesananproduk->kode_pemesanan : 'No Data' }}',
+                                                '{{ $return->dp_pemesanan }}'
+                                            )">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endif
+                            @endforeach --}}
+
+
                             </tbody>
                         </table>
                     </div>
@@ -430,6 +461,28 @@
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Fungsi untuk mendapatkan tanggal hari ini
+    function getTodayDate() {
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Januari = 0
+        const yyyy = today.getFullYear();
+        return `${yyyy}-${mm}-${dd}`;
+    }
+
+    // Fungsi untuk memeriksa apakah tanggal_kirim sudah bisa diambil
+    function checkTanggalKirim(tanggalKirim, id, kodePemesanan, dpPemesanan) {
+        const todayDate = getTodayDate();
+
+        if (tanggalKirim > todayDate) {
+            alert('Tidak dapat diambil karena belum waktunya.');
+        } else {
+            // Tanggal kirim sama dengan hari ini atau sudah lewat
+            GetReturn(id, kodePemesanan, dpPemesanan);
+        }
+    }
+</script>
 
 {{-- <script>
     $(document).ready(function() {

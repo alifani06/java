@@ -171,7 +171,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($stokBarangJadiItems as $detail)
+                                            @foreach ($stokBarangJadiItems->sortBy('produk.kode_lama') as $detail)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $detail->produk->klasifikasi->nama }}</td>
@@ -181,6 +181,7 @@
                                             </tr>
                                             @endforeach
                                         </tbody>
+                                        
                                     </table>
                                 </td>
                             </tr>

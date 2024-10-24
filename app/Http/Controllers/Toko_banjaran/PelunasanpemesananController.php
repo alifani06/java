@@ -100,41 +100,41 @@ class PelunasanpemesananController extends Controller
     //     return view('toko_banjaran.pelunasan_pemesanan.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
     // }
     public function create()
-{
-    $barangs = Barang::all();
-    $pelanggans = Pelanggan::all();
-    $details = Detailbarangjadi::all();
-    $tokoslawis = Tokoslawi::all();
-    $tokos = Toko::all();
-    $pemesananproduks = Pemesananproduk::all();
-    $metodes = Metodepembayaran::all();
-    
-    // Filter produk berdasarkan nama klasifikasi
-    $produks = Produk::with(['tokotegal', 'klasifikasi'])
-                ->whereHas('klasifikasi', function($query) {
-                    $query->whereIn('nama', ['FREE MAINAN', 'FREE PACKAGING', 'BAKERY']);
-                })
-                ->get();
+    {
+        $barangs = Barang::all();
+        $pelanggans = Pelanggan::all();
+        $details = Detailbarangjadi::all();
+        $tokoslawis = Tokoslawi::all();
+        $tokos = Toko::all();
+        $pemesananproduks = Pemesananproduk::all();
+        $metodes = Metodepembayaran::all();
+        
+        // Filter produk berdasarkan nama klasifikasi
+        $produks = Produk::with(['tokotegal', 'klasifikasi'])
+                    ->whereHas('klasifikasi', function($query) {
+                        $query->whereIn('nama', ['FREE MAINAN', 'FREE PACKAGING', 'BAKERY']);
+                    })
+                    ->get();
 
-    $dppemesanans = Dppemesanan::whereHas('pemesananproduk', function($query) {
-        $query->where('toko_id', 1);
-    })->get();
+        $dppemesanans = Dppemesanan::whereHas('pemesananproduk', function($query) {
+            $query->where('toko_id', 1);
+        })->get();
 
-    $kategoriPelanggan = 'member';
-    
-    return view('toko_banjaran.pelunasan_pemesanan.create', compact(
-        'barangs', 
-        'tokos', 
-        'produks', 
-        'details', 
-        'tokoslawis', 
-        'pelanggans', 
-        'kategoriPelanggan', 
-        'dppemesanans', 
-        'pemesananproduks', 
-        'metodes'
-    ));
-}
+        $kategoriPelanggan = 'member';
+        
+        return view('toko_banjaran.pelunasan_pemesanan.create', compact(
+            'barangs', 
+            'tokos', 
+            'produks', 
+            'details', 
+            'tokoslawis', 
+            'pelanggans', 
+            'kategoriPelanggan', 
+            'dppemesanans', 
+            'pemesananproduks', 
+            'metodes'
+        ));
+    }
 
 
    
