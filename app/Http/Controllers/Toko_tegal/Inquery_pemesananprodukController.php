@@ -41,7 +41,7 @@ class Inquery_pemesananprodukController extends Controller
     $tanggal_pemesanan = $request->tanggal_pemesanan;
     $tanggal_akhir = $request->tanggal_akhir;
 
-    $inquery = Pemesananproduk::with('toko');
+    $inquery = Pemesananproduk::with('toko')->where('toko_id', 2); // Menambah filter toko_id = 1
 
     if ($status) {
         $inquery->where('status', $status);
