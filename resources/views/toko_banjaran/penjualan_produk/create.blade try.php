@@ -485,7 +485,6 @@
             updatePrices(tipePelanggan); // Panggil fungsi untuk mengupdate harga dan diskon
         });
 
-        // Fungsi untuk memperbarui harga dan diskon
         function updatePrices(tipePelanggan) {
             $('#datatables5 tbody tr').each(function() {
                 var hargaMember = parseFloat($(this).find('.member_harga_bnjr').text()) || 0;

@@ -429,7 +429,7 @@ class Pengiriman_tokopemalangController extends Controller{
             }
     
             // Tambahkan jumlah ke stok di Stokpesanan_tokobanjaran
-            $stokToko = Stokpesanan_tokobanjaran::firstOrCreate(
+            $stokToko = Stokpesanan_tokopemalang::firstOrCreate(
                 ['produk_id' => $pengirimanItem->produk_id],
                 ['jumlah' => 0]
             );
