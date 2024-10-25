@@ -155,7 +155,7 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            
+                
                             <div class="modal-body">
                                 <table id="datatables4" class="table table-bordered table-striped">
                                     <thead>
@@ -171,7 +171,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($pelanggans as $item)
-                                            <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}', '{{ $item->kode_pelangganlama }}')">
+                                            <tr onclick="checkExpired('{{ $item->tanggal_akhir }}', '{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}', '{{ $item->kode_pelangganlama }}')">
                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td>{{ $item->kode_pelanggan }}</td>
                                                 <td>{{ $item->kode_pelangganlama }}</td>
@@ -419,7 +419,26 @@
             </form>
         </div>
     </section>
-  
+    <script>
+        function checkExpired(tanggal_akhir, nama, telp, alamat, kode, kode_lama) {
+            var today = new Date();  // Tanggal hari ini
+            var tanggalAkhir = new Date(tanggal_akhir);  // Mengubah tanggal_akhir ke objek Date
+            
+            // Periksa apakah tanggal akhir lebih kecil dari hari ini
+            if (tanggalAkhir < today) {
+                // Menampilkan SweetAlert jika member sudah expired
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Member Expired',
+                    text: 'Pelanggan dengan tanggal akhir ' + tanggal_akhir + ' tidak dapat dipilih.',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                // Jika tidak expired, jalankan fungsi ini
+                getSelectedDataPemesanan(nama, telp, alamat, kode, kode_lama);
+            }
+        }
+        </script>
   {{-- //pdf tab baru   --}}
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -826,17 +845,26 @@
             });
 
             document.querySelector('form').addEventListener('submit', function(event) {
-                let subTotalElement = document.getElementById('sub_total');
-                let bayarElement = document.getElementById('bayar');
-                let kembaliElement = document.getElementById('kembali');
+            let subTotalElement = document.getElementById('sub_total');
+            let bayarElement = document.getElementById('bayar');
+            let kembaliElement = document.getElementById('kembali');
 
-                // Menghapus format Rupiah dari input sebelum submit
-                subTotalElement.value = removeRupiahFormat(subTotalElement.value);
-                bayarElement.value = removeRupiahFormat(bayarElement.value);
-                kembaliElement.value = removeRupiahFormat(kembaliElement.value);
+            // Menghapus format Rupiah dari input sebelum submit
+            subTotalElement.value = removeRupiahFormat(subTotalElement.value);
+            bayarElement.value = removeRupiahFormat(bayarElement.value);
+            kembaliElement.value = removeRupiahFormat(kembaliElement.value);
 
-                // Formulir akan disubmit dengan nilai numerik
+            // Cek jika Uang Bayar = 0
+            let bayarValue = parseFloat(bayarElement.value);
+            if (bayarValue === 0 || isNaN(bayarValue)) {
+                alert('Uang Bayar tidak boleh 0!');
+                event.preventDefault(); // Blokir submit form
+                return;
+            }
+
+            // Formulir akan disubmit dengan nilai numerik
             });
+
 
     </script>
 

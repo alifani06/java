@@ -150,28 +150,28 @@ class PelangganController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'nama_pelanggan' => 'required',
-                'gender' => 'required',
-                'tanggal_lahir' => 'required',
-                'tanggal_awal' => 'required',
-                'tanggal_akhir' => 'required',
-                'telp' => 'required',
-                'email' => 'required',
-                'pekerjaan' => 'required',
-                'alamat' => 'required',
+                'nama_pelanggan' => 'nullable',
+                'gender' => 'nullable',
+                'tanggal_lahir' => 'nullable',
+                'tanggal_awal' => 'nullable',
+                'tanggal_akhir' => 'nullable',
+                'telp' => 'nullable',
+                'email' => 'nullable',
+                'pekerjaan' => 'nullable',
+                'alamat' => 'nullable',
                 // 'gambar_ktp' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ],
             [
-                'nama_pelanggan.required' => 'Masukkan nama lengkap',
-                'gender.required' => 'Pilih gender',
-                // 'umur.required' => 'Masukkan umur',
-                'alamat.required' => 'Masukkan alamat',
-                'tanggal_lahir.required' => 'Masukkan tanggal lahir',
-                'tanggal_awal.required' => 'Masukkan tanggal gabung',
-                'tanggal_akhir.required' => 'Masukkan tanggal expired',
-                'telp.required' => 'Masukkan no telepon',
-                'email.required' => 'Masukkan email',
-                'pekerjaan.required' => 'Masukkan pekerjaan',
+                'nama_pelanggan.nullable' => 'Masukkan nama lengkap',
+                'gender.nullable' => 'Pilih gender',
+                // 'umur.nullable' => 'Masukkan umur',
+                'alamat.nullable' => 'Masukkan alamat',
+                'tanggal_lahir.nullable' => 'Masukkan tanggal lahir',
+                'tanggal_awal.nullable' => 'Masukkan tanggal gabung',
+                'tanggal_akhir.nullable' => 'Masukkan tanggal expired',
+                'telp.nullable' => 'Masukkan no telepon',
+                'email.nullable' => 'Masukkan email',
+                'pekerjaan.nullable' => 'Masukkan pekerjaan',
                 // 'gambar_ktp.image' => 'Gambar yang dimasukan salah!',
             ]
         );
@@ -192,13 +192,13 @@ class PelangganController extends Controller
             $namaGambar = $pelanggans->gambar_ktp;
         }
 
-        if ($pelanggans->kode_lama == null) {
+        if ($pelanggans->kode_pelangganlama == null) {
 
             Pelanggan::where('id', $id)->update([
                 // 'gambar_ktp'=> $namaGambar,
                 'nama_pelanggan' => $request->nama_pelanggan,
                 'kode_pelanggan' => $request->kode_pelanggan,
-                'kode_lama' => $request->kode_lama,
+                'kode_pelangganlama' => $request->kode_pelangganlama,
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'tanggal_awal' => $request->tanggal_awal,
                 'tanggal_akhir' => $request->tanggal_akhir,
@@ -218,7 +218,7 @@ class PelangganController extends Controller
                 'kode_pelanggan' => $request->kode_pelanggan,
                 'qrcode_pelanggan' => 'https://javabakery.id/pelanggan/' . $pelanggans->kode_pelanggan,
 
-                'kode_lama' => $request->kode_lama,
+                'kode_pelangganlama' => $request->kode_pelangganlama,
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'tanggal_awal' => $request->tanggal_awal,
                 'tanggal_akhir' => $request->tanggal_akhir,
@@ -235,7 +235,7 @@ class PelangganController extends Controller
             // 'gambar_ktp'=> $namaGambar,
             'nama_pelanggan' => $request->nama_pelanggan,
             'kode_pelanggan' => $request->kode_pelanggan,
-            'kode_lama' => $request->kode_lama,
+            'kode_pelangganlama' => $request->kode_pelangganlama,
             // 'qrcode_pelanggan' => $request->qrcode_pelanggan,
             'tanggal_lahir' => $request->tanggal_lahir,
             'tanggal_gabung' => $request->tanggal_gabung,

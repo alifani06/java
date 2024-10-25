@@ -68,7 +68,7 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Laporan Pengiriman Toko Banjaran</h3>
+                    <h3 class="card-title">Laporan Pengiriman Toko Pemalang</h3>
                 </div>
 
                 <!-- /.card-header -->
@@ -281,7 +281,7 @@
     const tanggalAkhir = document.getElementById('tanggal_akhir').value;
     const status = document.getElementById('status').value;
 
-    form.action = `{{ url('toko_banjaran/printpengirimantokobanjaran') }}?tanggal_input=${tanggalPengiriman}&tanggal_akhir=${tanggalAkhir}&status=${status}`;
+    form.action = `{{ url('toko_pemalang/printpengirimantokopemalang') }}?tanggal_input=${tanggalPengiriman}&tanggal_akhir=${tanggalAkhir}&status=${status}`;
     form.target = "_blank";
     form.submit();
 }

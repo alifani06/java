@@ -67,69 +67,6 @@
             @endif
             <form id="penjualanForm" action="{{ url('toko_banjaran/penjualan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
-                {{-- <div class="card">
-                    <div class="card-body">
-                        <div class="row mb-3 align-items-center">
-                            <div class="col-md-2 mt-2">
-                                <label class="form-label" for="kategori">Tipe Pelanggan</label>
-                                <select class="form-control" id="kategori" name="kategori">
-                                    <option value="">- Pilih -</option>
-                                    <option value="member" {{ old('kategori') == 'member' ? 'selected' : null }}>Member</option>
-                                    <option value="nonmember" {{ old('kategori') == 'nonmember' ? 'selected' : null }}>Non Member</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2 mt-2" hidden>
-                                <label class="form-label" for="toko">Pilih Cabang</label>
-                                <select class="form-control" id="toko" name="toko">
-                                    <option value="">- Pilih -</option>
-                                    @foreach ($tokos as $toko)
-                                        <option value="{{ $toko->id }}" {{ old('toko') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                       
-                            <div class="col-md-3 mt-2" id="kodePelangganRow" hidden>
-                                <label for="qrcode_pelanggan">Scan Kode Pelanggan</label>
-                                <input type="text" class="form-control" id="qrcode_pelanggan" name="qrcode_pelanggan" placeholder="scan kode Pelanggan" onchange="getData(this.value)">
-                            </div>
-
-                        </div>
-                    
-                        <div class="row mb-3 align-items-center" id="namaPelangganRow" style="display: none;">
-                            <div class="col-md">
-                                <button class="btn btn-outline-primary mb-3 btn-sm" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
-                                    <i class="fas fa-search" style=""></i>Cari pelanggan
-                                </button> 
-                            </div>      
-                            <div class="col-md-6 mb-3 "> 
-                                <input hidden type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('kode_pelanggan') }}" onclick="showCategoryModalpemesanan()">
-                                <input hidden type="text" class="form-control" id="kode_pelangganlama" name="kode_pelangganlama" value="{{ old('kode_pelangganlama') }}" onclick="showCategoryModalpemesanan()">
-                                <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" >
-                            </div>     
-                        </div>
-
-                        <div class="row  align-items-center" id="telpRow" hidden>
-                            <div class="col-md-6 mb-3">
-                                <label for="telp">No. Telepon</label>
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">+62</span>
-                                    </div>
-                                    <input type="number" id="telp" name="telp" class="form-control" placeholder="Masukan nomor telepon" value="{{ old('telp') }}">
-                                </div>
-                            </div>
-                        </div>
-                    
-                        <div class="row mb-3 align-items-center" id="alamatRow" hidden>
-                            <div class="col-md-6 mb-3">
-                                <label for="catatan">Alamat</label>
-                                <textarea placeholder="" type="text" class="form-control" id="alamat" name="alamat">{{ old('alamat') }}</textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
-             
-                
                 <!-- Bagian card form -->
                 <div class="card" id="formContainer">
                     <div class="card-body">
@@ -322,66 +259,37 @@
                 </div>
 
                 <div class="row mb-3">
-                    {{-- <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="row">
-                                    <div class="col mb-3 d-flex align-items-center">
-                                        <label for="sub_total" class="mr-2">Sub Total</label>
-                                        <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="Rp0" oninput="updateCalculations();">
-                                    </div>
-                                </div>
-                                <div class="row" hidden>
-                                    <div class="col mb-3 d-flex align-items-center">
-                                        <label for="sub_totalasli" class="mr-2">Sub Total Asli</label>
-                                        <input type="text" class="form-control large-font" id="sub_totalasli" name="sub_totalasli" value="Rp0" >
-                                    </div>
-                                </div>
-                                <div class="row" id="payment-row">
-                                    <div class="col mb-3 d-flex align-items-center">
-                                        <label for="bayar" class="mr-2">Uang Bayar</label>
-                                        <input type="text" class="form-control large-font" id="bayar" name="bayar" value="{{ old('bayar') }}" oninput="formatAndUpdateKembali()">
-                                    </div>
-                                </div>
-                                <div class="row" id="change-row">
-                                    <div class="col mb-3 d-flex align-items-center">
-                                        <label for="kembali" class="mr-2">Kembali</label>
-                                        <input type="text" class="form-control large-font" id="kembali" name="kembali" value="{{ old('kembali') }}" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-header">
                                 <div class="row">
-                                    <div class="col mb-3 d-flex align-items-center">
-                                        <label for="sub_total" class="mr-2">Sub Total</label>
-                                        <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="Rp0" readonly>
+                                    <div class="col mb-3 d-flex justify-content-between align-items-center">
+                                        <label for="sub_total" class="mr-2">Sub Total :</label>
+                                        <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="Rp0" readonly style="width: 70%;">
                                     </div>
                                 </div>
-                                <div class="row" hidden>
-                                    <div class="col mb-3 d-flex align-items-center">
-                                        <label for="sub_totalasli" class="mr-2">Sub Total Asli</label>
-                                        <input type="text" class="form-control large-font" id="sub_totalasli" name="sub_totalasli" value="Rp0" readonly>
+                                <div class="row" >
+                                    <div class="col mb-3 d-flex justify-content-between align-items-center">
+                                        <label for="sub_totalasli" class="mr-2">Sub Total Asli </label>
+                                        <input type="text" class="form-control large-font" id="sub_totalasli" name="sub_totalasli" value="Rp0" readonly style="width: 70%;">
                                     </div>
                                 </div>
                                 <div class="row" id="payment-row">
-                                    <div class="col mb-3 d-flex align-items-center">
-                                        <label for="bayar" class="mr-2">Uang Bayar</label>
-                                        <input type="text" class="form-control large-font" id="bayar" name="bayar" value="{{ old('bayar') }}" oninput="formatAndUpdateKembali()">
+                                    <div class="col mb-3 d-flex justify-content-between align-items-center">
+                                        <label for="bayar" class="mr-2">Uang Bayar </label>
+                                        <input type="text" class="form-control large-font" id="bayar" name="bayar" value="{{ old('bayar') }}" oninput="formatAndUpdateKembali()" style="width: 70%;">
                                     </div>
                                 </div>
                                 <div class="row" id="change-row">
-                                    <div class="col mb-3 d-flex align-items-center">
-                                        <label for="kembali" class="mr-2">Kembali</label>
-                                        <input type="text" class="form-control large-font" id="kembali" name="kembali" value="{{ old('kembali') }}" readonly>
+                                    <div class="col mb-3 d-flex justify-content-between align-items-center">
+                                        <label for="kembali" class="mr-2">Kembali </label>
+                                        <input type="text" class="form-control large-font" id="kembali" name="kembali" value="{{ old('kembali') }}" readonly style="width: 70%;">
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
                     
                     <div class="col-md-6">
                         <div class="form-group" style="flex: 8;">
@@ -460,6 +368,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     function checkCustomerType() {
         var kategori = document.getElementById("kategori").value;
@@ -475,6 +384,49 @@
             console.log("Searching for products...");
         }
     }
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#penjualanForm').submit(function(event) {
+            event.preventDefault(); // Mencegah pengiriman form default
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.pdfUrl) {
+                        // Membuka URL di tab baru
+                        window.open(response.pdfUrl, '_blank');
+                    }
+                    if (response.success) {
+                        // Tampilkan pesan sukses menggunakan SweetAlert2
+                        Swal.fire({
+                            title: 'Sukses!',
+                            text: response.success,
+                            icon: 'success',
+                            confirmButtonText: 'OK',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Lakukan refresh halaman setelah menekan OK
+                                location.reload(); // Ini akan merefresh seluruh halaman
+                            }
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    // Tangani error jika diperlukan
+                    console.log(xhr.responseText);
+                }
+            });
+        });
+
+        // Menyimpan nilai default untuk setiap elemen form ketika halaman dimuat
+        $('#penjualanForm').find('input[type="text"], input[type="number"], textarea, select').each(function() {
+            $(this).data('default-value', $(this).val());
+        });
+    });
 </script>
 
 <script>
@@ -658,72 +610,169 @@
 
 
         function calculateTotal() {
-            var subtotal = 0;
-            $('#tabel-pembelian-body .total').each(function() {
-                subtotal += parseFloat($(this).text()) || 0; // Tambah subtotal dari setiap total produk
-            });
+        var subtotal = 0;
+        var subtotalAsli = 0; // Inisialisasi subtotal asli
+        $('#tabel-pembelian-body tr').each(function() {
+            var jumlah = parseInt($(this).find('.jumlah').val()) || 0; // Ambil jumlah dari input
+            var hargaSatuan = parseFloat($(this).find('td').eq(7).text()) || 0; // Ambil harga satuan
+            var diskon = parseFloat($(this).find('td').eq(5).text()) || 0; // Ambil diskon
 
-            // Format subtotal ke dalam format rupiah
-            var formattedSubtotal = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(subtotal);
+            // Hitung subtotal berdasarkan jumlah dan diskon
+            var totalPerItem = (hargaSatuan - (hargaSatuan * (diskon / 100))) * jumlah; 
+            subtotal += totalPerItem; // Tambahkan ke subtotal yang mempertimbangkan diskon
 
-            // Update subtotal di elemen input
-            $('#sub_total').val(formattedSubtotal);
-            $('#sub_totalasli').val(subtotal); // Simpan nilai asli tanpa format
+            // Hitung subtotal asli
+            subtotalAsli += hargaSatuan * jumlah; // Tambahkan ke subtotal asli
+        });
 
-            calculateKembali(); // Panggil fungsi untuk menghitung kembali
+        var formattedSubtotal = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(subtotal);
+        var formattedSubtotalAsli = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(subtotalAsli);
+
+        $('#sub_total').val(formattedSubtotal);
+        $('#sub_totalasli').val(formattedSubtotalAsli); // Simpan subtotal asli dengan format
+
+        calculateKembali(); // Panggil fungsi untuk menghitung kembali
+         }
+
+
+        function calculateKembali() {
+            // Ambil nilai bayar dari input dan hilangkan format
+            var bayar = parseFloat($('#bayar').val().replace(/[^\d]/g, '')) || 0; 
+
+            // Ambil subtotal asli yang sudah dihilangkan format
+            var subtotal = parseFloat($('#sub_total').val().replace(/[^\d]/g, '')) || 0; 
+
+            // Hitung kembalian
+            var kembali = bayar - subtotal; 
+
+            // Format kembalian untuk ditampilkan
+            var formattedKembali = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(kembali);
+
+            // Update input kembali
+            $('#kembali').val(formattedKembali);
         }
-            // Fungsi untuk menghitung uang kembalian
-            function calculateKembali() {
-                var bayar = parseFloat($('#bayar').val().replace(/[^\d]/g, '')) || 0; // Ambil nilai bayar tanpa format
-                var subtotal = parseFloat($('#sub_totalasli').val()) || 0; // Ambil subtotal tanpa format
 
-                var kembali = bayar - subtotal; // Hitung kembalian
 
-                // Format kembali ke dalam format rupiah
-                var formattedKembali = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(kembali);
-
-                // Update input kembali
-                $('#kembali').val(formattedKembali);
+        function formatAndUpdateKembali() {
+            var bayar = $('#bayar').val().replace(/[^\d]/g, ''); // Hilangkan semua karakter kecuali angka
+            if (bayar !== "") {
+                // Tambahkan "Rp" dan format ke rupiah tanpa desimal
+                var formattedBayar = "Rp " + new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(bayar);
+                $('#bayar').val(formattedBayar); // Set kembali ke input setelah selesai mengetik
             }
+            calculateKembali(); // Hitung kembalian setelah pemformatan
+        }
 
-            // Fungsi untuk memformat input bayar saat pengguna selesai mengetik (saat blur)
-            function formatAndUpdateKembali() {
-                var bayar = $('#bayar').val().replace(/[^\d]/g, ''); // Hilangkan semua karakter kecuali angka
-                if (bayar !== "") {
-                    var formattedBayar = "Rp " + new Intl.NumberFormat('id-ID').format(bayar); // Tambahkan "Rp" dan format ke rupiah
-                    $('#bayar').val(formattedBayar); // Set kembali ke input setelah selesai mengetik
-                }
-                calculateKembali(); // Hitung kembalian setelah pemformatan
+        $('#bayar').on('input', function() {
+            var bayar = $(this).val().replace(/[^\d]/g, ''); // Hilangkan format saat mengetik
+            if (bayar !== "") {
+                // Format inputan ke rupiah saat pengguna mengetik
+                var formattedBayar = "Rp " + new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(bayar);
+                $(this).val(formattedBayar); // Update input dengan format
             }
+            calculateKembali(); // Hitung kembalian
+        });
 
-            // Event listener untuk format hanya saat input kehilangan fokus (blur)
-            $('#bayar').on('blur', function() {
-                formatAndUpdateKembali(); // Format hanya setelah input selesai
-            });
+        $('#bayar').on('blur', function() {
+            formatAndUpdateKembali(); // Format hanya setelah input selesai
+        });
 
-            // Fungsi untuk menghilangkan format ketika pengguna fokus ke input (agar bisa mengetik angka tanpa gangguan)
-            $('#bayar').on('focus', function() {
-                var bayar = $(this).val().replace(/[^\d]/g, ''); // Hilangkan format saat fokus
-                $(this).val(bayar); // Tampilkan angka tanpa format ketika input difokuskan
-            });
-
-            // Menghitung kembali setiap kali input bayar diubah (tanpa format langsung)
-            $('#bayar').on('input', function() {
-                calculateKembali(); // Hitung kembalian tanpa format langsung
-            });
-
-
-        // // Fungsi untuk menghitung total pembelian
-        // function calculateTotal() {
-        //     var total = 0;
-        //     $('#tabel-pembelian-body .total').each(function() {
-        //         total += parseFloat($(this).text()) || 0; // Tambah total tanpa format
-        //     });
-        //     $('#total-sum').text('Total: ' + total.toFixed(2)); // Update total tanpa format
-        // }
+        $('#bayar').on('focus', function() {
+            var bayar = $(this).val().replace(/[^\d]/g, ''); // Hilangkan format saat fokus
+            $(this).val(bayar); // Tampilkan angka tanpa format ketika input difokuskan
+        });
     });
 </script>
 
+<script>
+    function getData1() {
+        var metodeId = document.getElementById('nama_metode').value;
+        var fee = document.getElementById('fee');
+        var keterangan = document.getElementById('keterangan');
+        var paymentFields = document.getElementById('payment-fields');
+        var paymentRow = document.getElementById('payment-row');
+        var changeRow = document.getElementById('change-row');
+        
+        // Check if the selected payment method is "Tunai"
+        if (metodeId && document.querySelector('#nama_metode option:checked').text === 'Tunai') {
+            paymentFields.style.display = 'none';
+            paymentRow.style.display = 'block';
+            changeRow.style.display = 'block';
+        } else if (metodeId) {
+            $.ajax({
+                url: "{{ url('toko_banjaran/metodebayar/metode') }}" + "/" + metodeId,
+                type: "GET",
+                dataType: "json",
+                success: function(response) {
+                    console.log('Respons dari server:', response);
+
+                    fee.value = '';
+                    keterangan.value = '';
+                    paymentFields.style.display = 'block';
+
+                    if (response && response.fee) {
+                        fee.value = response.fee;
+                    }
+                    if (response && response.keterangan) {
+                        keterangan.value = response.keterangan;
+                    }
+
+                    // Hide payment and change fields for all payment methods
+                    paymentRow.style.display = 'none';
+                    changeRow.style.display = 'none';
+                    
+                    // Update calculations whenever data is fetched
+                    updateCalculations();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Terjadi kesalahan dalam permintaan AJAX:', error);
+                }
+            });
+        } else {
+            paymentFields.style.display = 'none';
+            paymentRow.style.display = 'block';
+            changeRow.style.display = 'block';
+            // Reset calculations if no method is selected
+            updateCalculations();
+        }
+    }
+
+    function updateCalculations() {
+        var subTotal = parseFloat(document.getElementById('sub_totalasli').value.replace(/\./g, '')) || 0;
+        var fee = parseFloat(document.getElementById('fee').value.replace('%', '').trim()) || 0;
+        
+        // Hitung total fee dan bulatkan hasilnya
+        var totalFee = Math.round((subTotal * fee / 100)) || 0; 
+        var finalTotal = subTotal + totalFee;
+
+        // Format nilai tanpa .00
+        function formatCurrency(value) {
+            var formattedValue = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            return 'Rp ' + formattedValue;
+        }
+
+        // Update total fee dan sub total akhir
+        document.getElementById('total_fee').value = formatCurrency(totalFee);
+        document.getElementById('sub_total').value = formatCurrency(finalTotal);
+    }
+
+    // Add event listeners for initialization
+    document.getElementById('nama_metode').addEventListener('change', getData1);
+    document.getElementById('sub_total').addEventListener('input', updateCalculations);
+
+    // Initialize with "Tunai" as default method
+    document.addEventListener('DOMContentLoaded', function() {
+        var defaultMethod = 'Tunai';
+        var options = document.getElementById('nama_metode').options;
+        for (var i = 0; i < options.length; i++) {
+            if (options[i].text === defaultMethod) {
+                options[i].selected = true;
+                break;
+            }
+        }
+        getData1();
+    });
+</script>
 
 
 <script>

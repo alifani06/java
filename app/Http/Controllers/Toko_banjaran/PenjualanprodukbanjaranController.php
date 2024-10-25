@@ -117,6 +117,28 @@ class PenjualanprodukbanjaranController extends Controller
         return view('toko_banjaran.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
     }
 
+    // create try
+//     public function create()
+// {
+//     $barangs = Barang::all();
+//     $details = Detailbarangjadi::all();
+//     $tokos = Toko::all();
+//     $dppemesanans = Dppemesanan::all();
+//     $pemesananproduks = Pemesananproduk::all();
+//     $metodes = Metodepembayaran::all();
+
+//     // Mengambil semua pelanggan yang belum expired
+//     $today = Carbon::today();
+//     $pelanggans = Pelanggan::where('tanggal_akhir', '>=', $today)->get();
+
+//     // Mengambil produk yang tersedia di toko banjaran
+//     $produks = Produk::with(['tokobanjaran', 'stok_tokobanjaran'])->get();
+
+//     $kategoriPelanggan = 'member';
+
+//     return view('toko_banjaran.penjualan_produk.create', compact('barangs', 'tokos', 'produks', 'details', 'pelanggans', 'kategoriPelanggan', 'dppemesanans', 'pemesananproduks', 'metodes'));
+// }
+
     // create baru
     // public function create(Request $request)
     // {
@@ -206,7 +228,6 @@ class PenjualanprodukbanjaranController extends Controller
                 $total = $request->input('total.' . $i, '');
                 $totalasli = $request->input('totalasli.' . $i, '');
 
-                $nominal_diskon = ($harga * ($diskon / 100)) * $jumlah;
 
                 $data_pembelians->push([
                     'kode_produk' => $kode_produk,
@@ -245,7 +266,6 @@ class PenjualanprodukbanjaranController extends Controller
             'qrcode_penjualan' => 'https://javabakery.id/penjualan/' . $kode,
             'tanggal_penjualan' => Carbon::now('Asia/Jakarta'),
             'status' => 'posting',
-            'nominal_diskon' => $nominal_diskon, // Simpan total nominal diskon
 
         ]);
 
@@ -254,7 +274,8 @@ class PenjualanprodukbanjaranController extends Controller
 
         // Simpan detail pemesanan dan kurangi stok
         foreach ($data_pembelians as $data_pesanan) {
-            Detailpenjualanproduk::create([
+            // Simpan detail pemesanan
+            $detailPenjualan = Detailpenjualanproduk::create([
                 'penjualanproduk_id' => $cetakpdf->id,
                 'produk_id' => $data_pesanan['produk_id'],
                 'kode_produk' => $data_pesanan['kode_produk'],
@@ -266,7 +287,13 @@ class PenjualanprodukbanjaranController extends Controller
                 'total' => $data_pesanan['total'],
                 'totalasli' => $data_pesanan['totalasli'],
             ]);
-
+        
+            // Periksa apakah penyimpanan berhasil
+            if (!$detailPenjualan) {
+                // Jika gagal, simpan log atau ambil error
+                Log::error('Gagal menyimpan detail penjualan produk', $data_pesanan);
+            }
+        
             // Kurangi stok di tabel stok_tokobanjaran
             $stok = Stok_tokobanjaran::where('produk_id', $data_pesanan['produk_id'])->first();
             if ($stok) {
@@ -279,6 +306,7 @@ class PenjualanprodukbanjaranController extends Controller
                 $stok->save();
             }
         }
+        
 
         // Ambil detail pemesanan untuk ditampilkan di halaman cetak
         $details = Detailpenjualanproduk::where('penjualanproduk_id', $cetakpdf->id)->get();
@@ -292,6 +320,9 @@ class PenjualanprodukbanjaranController extends Controller
             'pdfUrl' => $pdfUrl,
         ]);
     }
+    
+
+
 
     public function pelunasan()
     {

@@ -146,7 +146,7 @@
                     </div>
                 </div>
 
-                <div class="modal fade" id="tableMarketing" data-backdrop="static">
+                {{-- <div class="modal fade" id="tableMarketing" data-backdrop="static">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -190,7 +190,53 @@
                             </div>
                         </div>
                     </div>
+                </div> --}}
+                <div class="modal fade" id="tableMarketing" data-backdrop="static">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Data Pelanggan</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                
+                            <div class="modal-body">
+                                <table id="datatables4" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">No</th>
+                                            <th>Kode Pelanggan</th>
+                                            <th>Kode Lama</th>
+                                            <th>Nama Pelanggan</th>
+                                            <th>No Telpon</th>
+                                            <th>Alamat</th>
+                                            <th>Opsi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($pelanggans as $item)
+                                            <tr onclick="checkExpired('{{ $item->tanggal_akhir }}', '{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}', '{{ $item->kode_pelangganlama }}')">
+                                                <td class="text-center">{{ $loop->iteration }}</td>
+                                                <td>{{ $item->kode_pelanggan }}</td>
+                                                <td>{{ $item->kode_pelangganlama }}</td>
+                                                <td>{{ $item->nama_pelanggan }}</td>
+                                                <td>{{ $item->telp }}</td>
+                                                <td>{{ $item->alamat }}</td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-primary btn-sm" >
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @endforeach 
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                
 
             
                 <div class="card">
@@ -420,6 +466,28 @@
         </div>
     </section>
   
+    <script>
+        function checkExpired(tanggal_akhir, nama, telp, alamat, kode, kode_lama) {
+            var today = new Date();  // Tanggal hari ini
+            var tanggalAkhir = new Date(tanggal_akhir);  // Mengubah tanggal_akhir ke objek Date
+            
+            // Periksa apakah tanggal akhir lebih kecil dari hari ini
+            if (tanggalAkhir < today) {
+                // Menampilkan SweetAlert jika member sudah expired
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Member Expired',
+                    text: 'Pelanggan dengan tanggal akhir ' + tanggal_akhir + ' tidak dapat dipilih.',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                // Jika tidak expired, jalankan fungsi ini
+                getSelectedDataPemesanan(nama, telp, alamat, kode, kode_lama);
+            }
+        }
+        </script>
+        
+        
   {{-- //pdf tab baru   --}}
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

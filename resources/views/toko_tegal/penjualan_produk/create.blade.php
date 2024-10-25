@@ -120,7 +120,7 @@
                             </div>      
                             <div class="col-md-6 mb-3 "> 
                                 <input hidden type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('kode_pelanggan') }}" onclick="showCategoryModalpemesanan()">
-                                <input hidden type="text" class="form-control" id="kode_lama1" name="kode_lama1" value="{{ old('kode_lama1') }}" onclick="showCategoryModalpemesanan()">
+                                <input hidden type="text" class="form-control" id="kode_pelangganlama" name="kode_pelangganlama" value="{{ old('kode_pelangganlama') }}" onclick="showCategoryModalpemesanan()">
                                 <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" onclick="showCategoryModalpemesanan()">
                             </div>     
                         </div>
@@ -155,7 +155,7 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            
+                
                             <div class="modal-body">
                                 <table id="datatables4" class="table table-bordered table-striped">
                                     <thead>
@@ -171,10 +171,10 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($pelanggans as $item)
-                                            <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}', '{{ $item->kode_lama }}')">
+                                            <tr onclick="checkExpired('{{ $item->tanggal_akhir }}', '{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}', '{{ $item->kode_pelangganlama }}')">
                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td>{{ $item->kode_pelanggan }}</td>
-                                                <td>{{ $item->kode_lama }}</td>
+                                                <td>{{ $item->kode_pelangganlama }}</td>
                                                 <td>{{ $item->nama_pelanggan }}</td>
                                                 <td>{{ $item->telp }}</td>
                                                 <td>{{ $item->alamat }}</td>
@@ -324,7 +324,7 @@
                                         <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="Rp0" oninput="updateCalculations();">
                                     </div>
                                 </div>
-                                <div class="row" hidden>
+                                <div class="row" >
                                     <div class="col mb-3 d-flex align-items-center">
                                         <label for="sub_totalasli" class="mr-2">Sub Total Asli</label>
                                         <input type="text" class="form-control large-font" id="sub_totalasli" name="sub_totalasli" value="Rp0" >
@@ -419,6 +419,27 @@
             </form>
         </div>
     </section>
+
+    <script>
+        function checkExpired(tanggal_akhir, nama, telp, alamat, kode, kode_lama) {
+            var today = new Date();  // Tanggal hari ini
+            var tanggalAkhir = new Date(tanggal_akhir);  // Mengubah tanggal_akhir ke objek Date
+            
+            // Periksa apakah tanggal akhir lebih kecil dari hari ini
+            if (tanggalAkhir < today) {
+                // Menampilkan SweetAlert jika member sudah expired
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Member Expired',
+                    text: 'Pelanggan dengan tanggal akhir ' + tanggal_akhir + ' tidak dapat dipilih.',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                // Jika tidak expired, jalankan fungsi ini
+                getSelectedDataPemesanan(nama, telp, alamat, kode, kode_lama);
+            }
+        }
+        </script>
     <script>
         $(document).ready(function() {
             $('#penjualanForm').submit(function(event) {
@@ -700,10 +721,10 @@
                 $('#tableMarketing').modal('show');
             }
         
-            function getSelectedDataPemesanan(nama_pelanggan,  telp, alamat, kode_pelanggan, kode_lama1) {
+            function getSelectedDataPemesanan(nama_pelanggan,  telp, alamat, kode_pelanggan, kode_pelangganlama) {
                 document.getElementById('nama_pelanggan').value = nama_pelanggan;
                 document.getElementById('kode_pelanggan').value = kode_pelanggan;
-                document.getElementById('kode_lama1').value = kode_lama1;
+                document.getElementById('kode_pelangganlama').value = kode_pelangganlama;
                 document.getElementById('telp').value = telp;
                 document.getElementById('alamat').value = alamat;
                 $('#tableMarketing').modal('hide');
