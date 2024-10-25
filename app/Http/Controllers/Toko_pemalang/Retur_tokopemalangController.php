@@ -87,67 +87,7 @@ class Retur_tokopemalangController extends Controller{
     
 
 
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'produk_id' => 'required|array',
-    //         'produk_id.*' => 'exists:produks,id',
-    //         'jumlah' => 'required|array',
-    //         'jumlah.*' => 'integer|min:1',
-    //         'keterangan' => 'required|array',
-    //         // 'keterangan.*' => 'in:produk_gagal,oper,sampel',
-    //     ]);
-
-    //     $kode = $this->kode();
-    //     $produk_ids = $request->input('produk_id');
-    //     $jumlahs = $request->input('jumlah');
-    //     $keterangans = $request->input('keterangan');
-
-    //     foreach ($produk_ids as $index => $produk_id) {
-    //         $jumlah_yang_dibutuhkan = $jumlahs[$index];
-            
-    //         $produk = Produk::find($produk_id);
-    //         if (!$produk) {
-    //             return redirect()->back()->with('error', 'Produk dengan ID ' . $produk_id . ' tidak ditemukan.');
-    //         }
-
-    //         $nama_produk_retur = $produk->nama_produk . ' RETUR';
-
-    //         // Ambil semua stok yang tersedia untuk produk ini
-    //         $stok_items = Stok_tokobanjaran::where('produk_id', $produk_id)
-    //             ->where('jumlah', '>', 0)
-    //             ->orderBy('jumlah', 'asc')
-    //             ->get();
-
-    //         if ($stok_items->isEmpty()) {
-    //             return redirect()->back()->with('error', 'Stok untuk produk dengan ID ' . $produk_id . ' tidak ditemukan.');
-    //         }
-
-    //         // Menyimpan retur tanpa mengurangi stok
-    //         Retur_tokopemalang::create([
-    //             'kode_retur' => $kode,
-    //             'produk_id' => $produk_id,
-    //             'toko_id' => '1',
-    //             'status' => 'unpost',
-    //             'jumlah' => $jumlah_yang_dibutuhkan,
-    //             'keterangan' => $keterangans[$index],
-    //             'tanggal_input' => Carbon::now('Asia/Jakarta'),
-    //         ]);
-
-    //         Retur_barangjadi::create([
-    //             'kode_retur' => $kode,
-    //             'produk_id' => $produk_id,
-    //             'toko_id' => '1',
-    //             'nama_produk' => $nama_produk_retur,
-    //             'status' => 'unpost',
-    //             'jumlah' => $jumlah_yang_dibutuhkan,
-    //             'keterangan' => $keterangans[$index],
-    //             'tanggal_retur' => Carbon::now('Asia/Jakarta'),
-    //         ]);
-    //     }
-
-    //     return redirect()->route('retur_tokopemalang.index')->with('success', 'Data retur barang berhasil disimpan.');
-    // }
+   
     public function store(Request $request)
 {
     $request->validate([
