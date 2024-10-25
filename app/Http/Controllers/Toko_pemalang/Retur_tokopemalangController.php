@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Retur_barnagjadi;
+use App\Models\Stok_tokopemalang;
 use Maatwebsite\Excel\Facades\Excel;
 
 class Retur_tokopemalangController extends Controller{
@@ -75,7 +76,7 @@ class Retur_tokopemalangController extends Controller{
     $klasifikasis = Klasifikasi::all();
 
     // Ambil stok dari tabel stok_tokobanjaran berdasarkan produk_id
-    $stokProduk = DB::table('stok_tokobanjarans')
+    $stokProduk = DB::table('stok_tokopemalangs')
         ->select('produk_id', DB::raw('SUM(jumlah) as jumlah_stok'))
         ->groupBy('produk_id')
         ->pluck('jumlah_stok', 'produk_id');
@@ -173,7 +174,7 @@ class Retur_tokopemalangController extends Controller{
         $nama_produk_retur = $produk->nama_produk . ' RETUR';
 
         // Ambil semua stok yang tersedia untuk produk ini
-        $stok_items = Stok_tokobanjaran::where('produk_id', $produk_id)
+        $stok_items = Stok_tokopemalang::where('produk_id', $produk_id)
             ->where('jumlah', '>', 0)
             ->orderBy('jumlah', 'asc')
             ->get();
@@ -326,7 +327,7 @@ public function show($id)
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    return view('toko_pemalang.inquery_returbanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
+    return view('toko_pemalang.inquery_returpemalang.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
     // public function print($id)
@@ -368,7 +369,7 @@ public function show($id)
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    $pdf = FacadePdf::loadView('toko_pemalang.inquery_returbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
+    $pdf = FacadePdf::loadView('toko_pemalang.inquery_returpemalang.print', compact('pengirimanBarangJadi', 'firstItem'));
 
     return $pdf->stream('surat_permintaan_produk.pdf');
 }

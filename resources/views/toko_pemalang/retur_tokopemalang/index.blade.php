@@ -69,7 +69,7 @@
             <div class="card">
             <div class="card-body">
                 <div class="float-right">
-                    <a href="{{ url('toko_banjaran/retur_tokobanjaran/create') }}" class="btn btn-primary btn-sm">
+                    <a href="{{ url('toko_pemalang/retur_tokopemalang/create') }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i> 
                     </a>
                 </div>
@@ -126,13 +126,13 @@
                                                     href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a> --}}
                                             
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_banjaran/retur_tokobanjaran/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/toko_pemalang/retur_tokopemalang/' . $firstItem->id ) }}">Show</a>
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 {{-- <a class="dropdown-item unpost-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Unpost</a> --}}
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_banjaran/retur_tokobanjaran/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/toko_pemalang/retur_tokopemalang/' . $firstItem->id ) }}">Show</a>
                                         @endif
                                        
                                     </div>
@@ -208,7 +208,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_banjaran/inquery_returslawi') }}";
+            form.action = "{{ url('toko_pemalang/inquery_returslawi') }}";
             form.submit();
         }
 
@@ -226,7 +226,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_banjaran/retur_tokobanjaran/unpost_retur/') }}/" + memoId,
+                    url: "{{ url('toko_pemalang/retur_tokopemalang/unpost_retur/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -256,7 +256,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_banjaran/retur_tokobanjaran/posting_retur/') }}/" + memoId,
+                    url: "{{ url('toko_pemalang/retur_tokopemalang/posting_retur/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
