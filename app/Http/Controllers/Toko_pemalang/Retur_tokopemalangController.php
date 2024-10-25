@@ -85,9 +85,6 @@ class Retur_tokopemalangController extends Controller{
 }
 
     
-
-
-   
     public function store(Request $request)
 {
     $request->validate([
@@ -174,10 +171,6 @@ class Retur_tokopemalangController extends Controller{
 
     return redirect()->route('retur_tokopemalang.index')->with('success', 'Data retur barang berhasil disimpan dan stok berhasil dikurangi.');
 }
-
-
-
-
 
 public function kode()
 {

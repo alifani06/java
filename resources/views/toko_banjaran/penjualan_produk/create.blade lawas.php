@@ -40,7 +40,7 @@
             @endif
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Penjualan Produk Pemalang</h1>
+                    <h1 class="m-0">Penjualan Produk Banjaran</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                  
@@ -68,18 +68,18 @@
                     @endforeach
                 </div>
             @endif
-            <form id="penjualanForm" action="{{ url('toko_pemalang/penjualan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form id="penjualanForm" action="{{ url('toko_banjaran/penjualan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 {{-- detail pelanggan --}}
                 <div class="card">
                     <div class="card-header">
-                        {{-- <div class="float-right">
+                        <div class="float-right">
                             <select class="form-control" id="kategori1" name="kategori">
                                 <option value="">- Pilih -</option>
                                 <option value="penjualan" {{ old('kategori1') == 'penjualan' ? 'selected' : '' }}>Penjualan Produk</option>
                                 <option value="pelunasan" {{ old('kategori1') == 'pelunasan' ? 'selected' : '' }}>Pelunasan Pemesanan Produk</option>
                             </select>
-                        </div> --}}
+                        </div>
                         {{-- <div class="float-right">
                             <a href="{{ route('toko_slawi.penjualan_produk.pelunasan') }}"  class="btn btn-primary btn-sm">Pelunasan Pemesanan
                             </a>
@@ -146,6 +146,51 @@
                     </div>
                 </div>
 
+                {{-- <div class="modal fade" id="tableMarketing" data-backdrop="static">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Data Pelanggan</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            
+                            <div class="modal-body">
+                                <table id="datatables4" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">No</th>
+                                            <th>Kode Pelanggan</th>
+                                            <th>Kode Lama</th>
+                                            <th>Nama Pelanggan</th>
+                                            <th>No Telpon</th>
+                                            <th>Alamat</th>
+                                            <th>Opsi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($pelanggans as $item)
+                                            <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}', '{{ $item->kode_pelangganlama }}')">
+                                                <td class="text-center">{{ $loop->iteration }}</td>
+                                                <td>{{ $item->kode_pelanggan }}</td>
+                                                <td>{{ $item->kode_pelangganlama }}</td>
+                                                <td>{{ $item->nama_pelanggan }}</td>
+                                                <td>{{ $item->telp }}</td>
+                                                <td>{{ $item->alamat }}</td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-primary btn-sm" >
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @endforeach 
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div> --}}
                 <div class="modal fade" id="tableMarketing" data-backdrop="static">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -191,6 +236,7 @@
                         </div>
                     </div>
                 </div>
+                
 
             
                 <div class="card">
@@ -257,8 +303,8 @@
                                     <tbody>
                                         @foreach ($produks as $item)
                                             @php
-                                                $tokopemalang = $item->tokopemalang->first();
-                                                $stok_tokopemalang = $item->stok_tokopemalang ? $item->stok_tokopemalang->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
+                                                $tokobanjaran = $item->tokobanjaran->first();
+                                                $stok_tokobanjaran = $item->stok_tokobanjaran ? $item->stok_tokobanjaran->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
                                             @endphp
                                             <tr class="pilih-btn"
                                                 data-id="{{ $item->id }}"
@@ -266,29 +312,29 @@
                                                 data-kodel="{{ $item->kode_lama }}"
                                                 data-catatan="{{ $item->catatanproduk }}"
                                                 data-nama="{{ $item->nama_produk }}"
-                                                data-member="{{ $tokopemalang ? $tokopemalang->member_harga_pml : '' }}"
-                                                data-diskonmember="{{ $tokopemalang ? $tokopemalang->member_diskon_pml : '' }}"
-                                                data-nonmember="{{ $tokopemalang ? $tokopemalang->non_harga_pml : '' }}"
-                                                data-diskonnonmember="{{ $tokopemalang ? $tokopemalang->non_diskon_pml : '' }}">
+                                                data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
+                                                data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
+                                                data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
+                                                data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
 
                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td >{{ $item->kode_produk }}</td>
                                                 <td>{{ $item->kode_lama }}</td>
                                                 <td>{{ $item->nama_produk }}</td>
                                                 <td>
-                                                    <span class="member_harga_pml">{{ $tokopemalang ? $tokopemalang->member_harga_pml : '' }}</span>
+                                                    <span class="member_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="member_diskon_pml">{{ $tokopemalang ? $tokopemalang->member_diskon_pml : '' }}</span>
+                                                    <span class="member_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="non_harga_pml">{{ $tokopemalang ? $tokopemalang->non_harga_pml : '' }}</span>
+                                                    <span class="non_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="non_diskon_pml">{{ $tokopemalang ? $tokopemalang->non_diskon_pml : '' }}</span>
+                                                    <span class="non_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}</span>
                                                 </td>
                                                 <td class="text-center">
-                                                    {{ $stok_tokopemalang }} <!-- Tampilkan stok produk -->
+                                                    {{ $stok_tokobanjaran }} <!-- Tampilkan stok produk -->
                                                 </td>
 
                                                 <td class="text-center">
@@ -298,10 +344,10 @@
                                                         data-kodel="{{ $item->kode_lama }}"
                                                         data-catatan="{{ $item->catatanproduk }}"
                                                         data-nama="{{ $item->nama_produk }}"
-                                                        data-member="{{ $tokopemalang ? $tokopemalang->member_harga_pml : '' }}"
-                                                        data-diskonmember="{{ $tokopemalang ? $tokopemalang->member_diskon_pml : '' }}"
-                                                        data-nonmember="{{ $tokopemalang ? $tokopemalang->non_harga_pml : '' }}"
-                                                        data-diskonnonmember="{{ $tokopemalang ? $tokopemalang->non_diskon_pml : '' }}">
+                                                        data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
+                                                        data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
+                                                        data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
+                                                        data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
                                                         <i class="fas fa-plus"></i> 
                                                     </button>
                                                 </td>
@@ -419,6 +465,7 @@
             </form>
         </div>
     </section>
+  
     <script>
         function checkExpired(tanggal_akhir, nama, telp, alamat, kode, kode_lama) {
             var today = new Date();  // Tanggal hari ini
@@ -439,6 +486,8 @@
             }
         }
         </script>
+        
+        
   {{-- //pdf tab baru   --}}
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -502,7 +551,7 @@
                 changeRow.style.display = 'block';
             } else if (metodeId) {
                 $.ajax({
-                    url: "{{ url('toko_pemalang/metodebayar/metode') }}" + "/" + metodeId,
+                    url: "{{ url('toko_banjaran/metodebayar/metode') }}" + "/" + metodeId,
                     type: "GET",
                     dataType: "json",
                     success: function(response) {
@@ -845,26 +894,17 @@
             });
 
             document.querySelector('form').addEventListener('submit', function(event) {
-            let subTotalElement = document.getElementById('sub_total');
-            let bayarElement = document.getElementById('bayar');
-            let kembaliElement = document.getElementById('kembali');
+                let subTotalElement = document.getElementById('sub_total');
+                let bayarElement = document.getElementById('bayar');
+                let kembaliElement = document.getElementById('kembali');
 
-            // Menghapus format Rupiah dari input sebelum submit
-            subTotalElement.value = removeRupiahFormat(subTotalElement.value);
-            bayarElement.value = removeRupiahFormat(bayarElement.value);
-            kembaliElement.value = removeRupiahFormat(kembaliElement.value);
+                // Menghapus format Rupiah dari input sebelum submit
+                subTotalElement.value = removeRupiahFormat(subTotalElement.value);
+                bayarElement.value = removeRupiahFormat(bayarElement.value);
+                kembaliElement.value = removeRupiahFormat(kembaliElement.value);
 
-            // Cek jika Uang Bayar = 0
-            let bayarValue = parseFloat(bayarElement.value);
-            if (bayarValue === 0 || isNaN(bayarValue)) {
-                alert('Uang Bayar tidak boleh 0!');
-                event.preventDefault(); // Blokir submit form
-                return;
-            }
-
-            // Formulir akan disubmit dengan nilai numerik
+                // Formulir akan disubmit dengan nilai numerik
             });
-
 
     </script>
 
@@ -872,14 +912,16 @@
     
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        
+        // Panggil fungsi itemPembelian dengan baris default
+        // itemPembelian(1, 0); // Misalnya, menambahkan satu baris default
+
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
-                event.preventDefault(); 
-                addPesanan(); 
+                event.preventDefault(); // Mencegah aksi default dari tombol Enter
+                addPesanan(); // Memanggil addPesanan saat tombol Enter ditekan
             }
-            if (event.key === 'F1') { 
-                event.preventDefault(); 
+            if (event.key === 'F1') { // Misalnya, F1 untuk menampilkan modal produk
+                event.preventDefault(); // Mencegah aksi default dari tombol F1
                 var urutan = $('#tabel-pembelian tr').length; // Ambil urutan terakhir atau default
                 showCategoryModal(urutan); // Menampilkan modal produk
             }
@@ -1080,9 +1122,9 @@ function showCategoryModal(urutan) {
         var selectedValue = this.value;
 
         if (selectedValue === 'penjualan') {
-            window.location.href = "{{ route('toko_pemalang.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
+            window.location.href = "{{ route('toko_banjaran.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
         } else if (selectedValue === 'pelunasan') {
-            window.location.href = "{{ route('toko_pemalang.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
+            window.location.href = "{{ route('toko_banjaran.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
         }
     });
 </script>
