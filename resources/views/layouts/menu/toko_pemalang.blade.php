@@ -197,7 +197,7 @@
                 <a href="{{ url('toko_pemalang/retur_tokopemalang') }}"
                     class="nav-link {{ request()->is('toko_pemalang/retur_tokopemalang*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                    <p style="font-size: 14px;">Retur Toko Banjaran</p>
+                    <p style="font-size: 14px;">Retur Toko Pemalang</p>
                 </a>
             </li>
             {{-- @endif --}}
