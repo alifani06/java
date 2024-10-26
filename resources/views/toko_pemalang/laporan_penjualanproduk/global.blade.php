@@ -201,7 +201,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_banjaran/indexglobal') }}";
+            form.action = "{{ url('toko_pemalang/indexglobal') }}";
             form.submit();
         }
     </script>
@@ -209,7 +209,7 @@
 <script>
     function printReportglobal() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printReportglobal') }}";
+    form.action = "{{ url('toko_pemalang/printReportglobal') }}";
     form.target = "_blank";
     form.submit();
 }
@@ -222,9 +222,9 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'global') {
-            window.location.href = "{{ url('toko_banjaran/indexglobal') }}";
+            window.location.href = "{{ url('toko_pemalang/indexglobal') }}";
         } else if (selectedValue === 'rinci') {
-            window.location.href = "{{ url('toko_banjaran/laporan_penjualanproduk') }}";
+            window.location.href = "{{ url('toko_pemalang/laporan_penjualanproduk') }}";
         }
     });
 </script>
