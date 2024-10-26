@@ -60,7 +60,6 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ url('toko_slawi/pemesanan_produk') }}">Pemesanan Produk</a></li>
                         <li class="breadcrumb-item active">Tambah</li>
                     </ol>
                 </div><!-- /.col -->
@@ -446,80 +445,31 @@
 
     </section>
 
-    
-{{-- <script>
-        $(document).ready(function () {
-            // Set locale Moment.js ke bahasa Indonesia
-            moment.locale('id');
-            
-            // Inisialisasi datetimepicker
-            $('#reservationdatetime').datetimepicker({
-                format: 'DD/MM/YYYY HH:mm',
-                locale: 'id',  // Locale diatur di sini
-                icons: {
-                    time: 'fa fa-clock',
-                    date: 'fa fa-calendar',
-                    up: 'fa fa-arrow-up',
-                    down: 'fa fa-arrow-down',
-                    previous: 'fa fa-chevron-left',
-                    next: 'fa fa-chevron-right',
-                    today: 'fa fa-calendar-check-o',
-                    clear: 'fa fa-trash',
-                    close: 'fa fa-times'
-                }
-            });
-        
-            // Pastikan locale diterapkan ulang setelah inisialisasi datetimepicker
-            $('#reservationdatetime').datetimepicker('locale', 'id');  // Memaksa locale ke bahasa Indonesia
-        });
-</script> --}}
-    
+
     
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-{{-- <script>
-    $(document).ready(function() {
-        $('#pemesananForm').submit(function(event) {
-            event.preventDefault(); // Mencegah pengiriman form default
 
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function(response) {
-                    if (response.pdfUrl) {
-                        // Membuka URL di tab baru
-                        window.open(response.pdfUrl, '_blank');
-                    }
-                    if (response.success) {
-                        // Tampilkan pesan sukses menggunakan SweetAlert2
-                        Swal.fire({
-                            title: 'Sukses!',
-                            text: response.success,
-                            icon: 'success',
-                            confirmButtonText: 'OK',
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                // Lakukan refresh halaman setelah menekan OK
-                                location.reload(); // Ini akan merefresh seluruh halaman
-                            }
-                        });
-                    }
-                },
-                error: function(xhr) {
-                    // Tangani error jika diperlukan
-                    console.log(xhr.responseText);
-                }
-            });
-        });
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const form = document.getElementById("form-id");
+        form.addEventListener("submit", function(event) {
+            const dpInput = document.getElementById("dp_pemesanan");
+            const dpValue = parseFloat(dpInput.value.replace(/[^0-9]/g, ''));
 
-        // Menyimpan nilai default untuk setiap elemen form ketika halaman dimuat
-        $('#pemesananForm').find('input[type="text"], input[type="number"], textarea, select').each(function() {
-            $(this).data('default-value', $(this).val());
+            if (dpValue < 1) {
+                event.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'DP tidak boleh kurang dari 1!',
+                });
+            }
         });
     });
-</script> --}}
+</script>
+
 <script>
     $(document).ready(function() {
         // Set locale Moment.js ke bahasa Indonesia
@@ -681,15 +631,22 @@
     var dpPemesanan = parseFloat(document.getElementById('dp_pemesanan').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
     var minDP = subTotal * 0.5;
     var dpPemesananElement = document.getElementById('dp_pemesanan');
-    
+
+    if (dpPemesanan === 0 || isNaN(dpPemesanan)) {
+        dpPemesananElement.setCustomValidity(''); // Reset validity
+        swal("Peringatan", "DP tidak boleh kosong atau 0", "warning");
+        return; // Hentikan eksekusi jika DP tidak valid
+    }
+
     if (dpPemesanan < minDP) {
-        dpPemesananElement.setCustomValidity('DP inimal 50% dari Total');
+        dpPemesananElement.setCustomValidity('DP minimal 50% dari Total');
     } else if (dpPemesanan > subTotal) {
         dpPemesananElement.setCustomValidity('DP Tidak Boleh Melebihi Total');
     } else {
         dpPemesananElement.setCustomValidity('');
     }
-    }
+}
+
 
     document.getElementById('dp_pemesanan').addEventListener('input', function() {
         formatAndUpdateKembali();
@@ -994,48 +951,40 @@
     </script>
 
     <script>
-       document.addEventListener('DOMContentLoaded', function() {
-    document.addEventListener('keydown', function(event) {
-        // Cek apakah elemen yang aktif adalah textarea
-        const activeElement = document.activeElement;
-        if (activeElement.tagName === 'TEXTAREA') {
-            return; // Jika ya, biarkan Enter untuk pindah ke baris baru
-        }
-
-        if (event.key === 'Enter') {
-            event.preventDefault(); // Mencegah aksi default dari tombol Enter
-            addPesanan(); // Memanggil addPesanan saat tombol Enter ditekan
-        }
-        
-        if (event.key === 'F1') { // Misalnya, F1 untuk menampilkan modal produk
-            event.preventDefault(); // Mencegah aksi default dari tombol F1
-            var urutan = $('#tabel-pembelian tr').length; // Ambil urutan terakhir atau default
-            showCategoryModal(urutan); // Menampilkan modal produk
-        }
-    });
-});
-
-
-
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('keydown', function(event) {
+                const activeElement = document.activeElement;
+                if (activeElement.tagName === 'TEXTAREA') {
+                    return;
+                }
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    addPesanan();
+                }
+                if (event.key === 'F1') {
+                    event.preventDefault();
+                    var urutan = $('#tabel-pembelian tr').length;
+                    showCategoryModal(urutan);
+                }
+            });
+        });
+    
         var data_pembelian = @json(session('data_pembelians'));
         var jumlah_ban = 0;
-
+    
         if (data_pembelian != null) {
             jumlah_ban = data_pembelian.length;
             $('#tabel-pembelian').empty();
             var urutan = 0;
             $.each(data_pembelian, function(key, value) {
-                urutan = urutan + 1;
+                urutan++;
                 itemPembelian(urutan, key, value);
             });
         }
-
-        // Fungsi untuk menampilkan modal barang
+    
         function showCategoryModal(urutan) {
-            var kategori = $('#kategori').val(); // Ambil nilai kategori (member/nonmember)
-
+            var kategori = $('#kategori').val();
             if (!kategori) {
-                // Jika kategori belum dipilih, tampilkan SweetAlert
                 Swal.fire({
                     icon: 'warning',
                     title: 'Tipe Pelanggan Belum Dipilih!',
@@ -1043,14 +992,11 @@
                     confirmButtonText: 'OK'
                 });
             } else {
-                // Jika kategori sudah dipilih, tampilkan modal produk
                 $('#tableProduk').modal('show');
-                // Simpan urutan untuk menyimpan data ke baris yang sesuai
                 $('#tableProduk').attr('data-urutan', urutan);
             }
         }
-
-        // Event listener for pilih-btn
+    
         $(document).on('click', '.pilih-btn', function() {
             var id = $(this).data('id');
             var kode = $(this).data('kode');
@@ -1061,135 +1007,119 @@
             var nonmember = $(this).data('nonmember');
             var diskonnonmember = $(this).data('diskonnonmember');
             
-            getSelectedData(id, kode,lama, nama, member, diskonmember, nonmember, diskonnonmember);
+            getSelectedData(id, kode, lama, nama, member, diskonmember, nonmember, diskonnonmember);
         });
-
-        // Fungsi untuk memilih data barang dari modal
-        function getSelectedData(id, kode_produk,kode_lama, nama_produk, member, diskonmember, nonmember, diskonnonmember) {
+    
+        function getSelectedData(id, kode_produk, kode_lama, nama_produk, member, diskonmember, nonmember, diskonnonmember) {
             var urutan = $('#tableProduk').attr('data-urutan');
             var kategori = $('#kategori').val();
             var harga = kategori === 'member' ? member : nonmember;
             var diskon = kategori === 'member' ? diskonmember : diskonnonmember;
-
-            // Set nilai input pada baris yang sesuai
+    
             $('#produk_id-' + urutan).val(id);
             $('#kode_produk-' + urutan).val(kode_produk);
             $('#kode_lama-' + urutan).val(kode_lama);
             $('#nama_produk-' + urutan).val(nama_produk);
             $('#harga-' + urutan).val(harga);
             $('#diskon-' + urutan).val(diskon);
-            // Hitung total
+            
             hitungTotal(urutan);
-            // Tutup modal
             $('#tableProduk').modal('hide');
-
-            // Setelah menambahkan data dari modal, fokuskan ke input jumlah
             document.getElementById('jumlah-' + urutan).focus();
         }
-
-        // Fungsi untuk menghitung total berdasarkan harga dan jumlah
+    
         function hitungTotal(urutan) {
             var harga = parseFloat($('#harga-' + urutan).val().replace(/[^0-9]/g, '')) || 0;
             var diskon = parseFloat($('#diskon-' + urutan).val()) || 0;
             var jumlah = parseFloat($('#jumlah-' + urutan).val()) || 0;
-
+    
             var hargaSetelahDiskon = harga - (harga * (diskon / 100));
             var total = hargaSetelahDiskon * jumlah;
             var totalasli = harga * jumlah;
-
-            // Format total ke dalam format rupiah dan set nilai input total
+    
             $('#total-' + urutan).val(total);
             $('#totalasli-' + urutan).val(totalasli);
-            // Hitung subtotal setiap kali total di baris berubah
             hitungSubTotal();
         }
-
-        // Fungsi untuk menghitung subtotal semua barang
+    
         function hitungSubTotal() {
             var subTotal = 0;
             var subTotalAsli = 0;
-
+    
             $('[id^=total-]').each(function() {
                 var total = parseFloat($(this).val().replace(/[^0-9]/g, '')) || 0;
                 subTotal += total;
             });
-
+    
             $('[id^=totalasli-]').each(function() {
                 var totalAsli = parseFloat($(this).val().replace(/[^0-9]/g, '')) || 0;
                 subTotalAsli += totalAsli;
             });
-
+    
             $('#sub_total').val(formatRupiah(subTotal));
             $('#sub_totalasli').val(formatRupiah(subTotalAsli));
         }
-
+    
         function addPesanan() {
-            jumlah_ban = jumlah_ban + 1;
+            jumlah_ban++;
             if (jumlah_ban === 1) {
                 $('#tabel-pembelian').empty();
             }
-            itemPembelian(jumlah_ban, jumlah_ban - 1);
+            itemPembelian(jumlah_ban, jumlah_ban);
+            updateUrutan();
         }
-
+    
         function removeBan(params) {
-            jumlah_ban = jumlah_ban - 1;
-            var tabel_pesanan = document.getElementById('tabel-pembelian');
-            var pembelian = document.getElementById('pembelian-' + params);
-            tabel_pesanan.removeChild(pembelian);
+            $('#pembelian-' + params).remove();
+            jumlah_ban--;
+            updateUrutan();
             if (jumlah_ban === 0) {
-                var item_pembelian = '<tr>';
-                item_pembelian += '<td class="text-center" colspan="5">- Barang Jadi belum ditambahkan -</td>';
-                item_pembelian += '</tr>';
-                $('#tabel-pembelian').html(item_pembelian);
-            } else {
-                var urutan = document.querySelectorAll('#urutan');
-                for (let i = 0; i < urutan.length; i++) {
-                    urutan[i].innerText = i + 1;
-                }
+                $('#tabel-pembelian').html('<tr><td class="text-center" colspan="5">- Barang Jadi belum ditambahkan -</td></tr>');
             }
             hitungSubTotal();
         }
-
+    
+        function updateUrutan() {
+            var rows = document.querySelectorAll('#tabel-pembelian tr');
+            rows.forEach((row, index) => {
+                var urutan = index + 1;
+                row.id = 'pembelian-' + urutan;
+                row.querySelector('td[id^="urutan-"]').id = 'urutan-' + urutan;
+                row.querySelector('td[id^="urutan-"]').innerText = urutan;
+                row.querySelector('button.btn-primary').setAttribute('onclick', 'showCategoryModal(' + urutan + ')');
+                row.querySelector('button.btn-danger').setAttribute('onclick', 'removeBan(' + urutan + ')');
+            });
+        }
+    
         function itemPembelian(urutan, key, value = null) {
-            var produk_id = '';
-            var kode_produk = '';
-            var kode_lama = '';
-            var nama_produk = '';
-            var jumlah = '';
-            var diskon = '';
-            var harga = '';
-            var total = '';
-            var totalasli = '';
-
-            if (value !== null) {
-                produk_id = value.produk_id;
-                kode_produk = value.kode_produk;
-                kode_lama = value.kode_lama;
-                nama_produk = value.nama_produk;
-                jumlah = value.jumlah;
-                diskon = value.diskon;
-                harga = value.harga;
-                total = value.total;
-                totalasli = value.totalasli;
-            }
-
-            var item_pembelian = '<tr id="pembelian-' + urutan + '">';
-            item_pembelian += '<td style="width: 5%; font-size:14px" class="text-center" id="urutan-' + urutan + '">' + urutan + '</td>'; 
-            item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="produk_id-' + urutan + '" name="produk_id[]" value="' + produk_id + '"></div></td>';
-            item_pembelian += '<td style="width: 10%" hidden onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
-            item_pembelian += '<td style="width: 10%" onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_lama-' + urutan + '" name="kode_lama[]" value="' + kode_lama + '"></div></td>';
-            item_pembelian += '<td style="width: 30%" onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
-            item_pembelian += '<td style="width: 10%" style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
-            item_pembelian += '<td style="width: 10%" onclick="showCategoryModal(' + urutan + ')" style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" readonly id="diskon-' + urutan + '" name="diskon[]" value="' + diskon + '" ></div></td>';
-            item_pembelian += '<td style="width: 10%" onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="harga-' + urutan + '" name="harga[]" value="' + harga + '"></div></td>';
-            item_pembelian += '<td style="width: 10%" onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="total-' + urutan + '" name="total[]" value="' + total + '"></div></td>';
-            item_pembelian += '<td style="width: 10%" hidden onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" hidden id="totalasli-' + urutan + '" name="totalasli[]" value="' + totalasli + '"></div></td>';
-            item_pembelian += '<td style="width: 10%"><button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(' + urutan + ')"><i class="fas fa-plus"></i></button><button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' + urutan + ')"><i class="fas fa-trash"></i></button></td>';
-            item_pembelian += '</tr>';
-
+            var produk_id = value?.produk_id || '';
+            var kode_produk = value?.kode_produk || '';
+            var kode_lama = value?.kode_lama || '';
+            var nama_produk = value?.nama_produk || '';
+            var jumlah = value?.jumlah || '';
+            var diskon = value?.diskon || '';
+            var harga = value?.harga || '';
+            var total = value?.total || '';
+            var totalasli = value?.totalasli || '';
+    
+            var item_pembelian = `<tr id="pembelian-${urutan}">
+                <td style="width: 5%; font-size:14px" class="text-center" id="urutan-${urutan}">${urutan}</td> 
+                <td hidden><div class="form-group"><input type="text" class="form-control" id="produk_id-${urutan}" name="produk_id[]" value="${produk_id}"></div></td>
+                <td style="width: 10%" hidden onclick="showCategoryModal(${urutan})"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-${urutan}" name="kode_produk[]" value="${kode_produk}"></div></td>
+                <td style="width: 10%" onclick="showCategoryModal(${urutan})"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_lama-${urutan}" name="kode_lama[]" value="${kode_lama}"></div></td>
+                <td style="width: 30%" onclick="showCategoryModal(${urutan})"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-${urutan}" name="nama_produk[]" value="${nama_produk}"></div></td>
+                <td style="width: 10%"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-${urutan}" name="jumlah[]" value="${jumlah}" oninput="hitungTotal(${urutan})"></div></td>
+                <td style="width: 10%" onclick="showCategoryModal(${urutan})"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" readonly id="diskon-${urutan}" name="diskon[]" value="${diskon}"></div></td>
+                <td style="width: 10%" onclick="showCategoryModal(${urutan})"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="harga-${urutan}" name="harga[]" value="${harga}"></div></td>
+                <td style="width: 10%" onclick="showCategoryModal(${urutan})"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="total-${urutan}" name="total[]" value="${total}"></div></td>
+                <td style="width: 10%" hidden><div class="form-group"><input type="text" class="form-control" hidden style="font-size:14px" id="totalasli-${urutan}" name="totalasli[]" value="${totalasli}"></div></td>
+                <td style="width: 10%"><button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(${urutan})"><i class="fas fa-plus"></i></button><button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(${urutan})"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
+    
             $('#tabel-pembelian').append(item_pembelian);
-            }
+        }
     </script>
+    
 
 
 @endsection
