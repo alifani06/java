@@ -649,7 +649,7 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
 
     Route::resource('laporan_historibanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class);
     Route::get('barangMasukpesananbanjaran', [Laporan_historibanjaranController::class, 'barangMasukpesananbanjaran'])->name('barangMasukpesananbanjaran');
-    Route::get('barangKeluarbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangKeluarbanjaran']);
+    Route::get('barangKeluarbanjaran', [Laporan_historibanjaranController::class, 'barangKeluarbanjaran'])->name('barangKeluarbanjaran');
     Route::get('barangKeluarRincibanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangKeluarRincibanjaran']);
     Route::get('barangReturbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangReturbanjaran']);
     Route::get('barangKeluarbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangKeluarbanjaran'])->name('barangKeluar');

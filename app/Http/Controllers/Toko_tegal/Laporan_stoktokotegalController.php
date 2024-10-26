@@ -295,6 +295,12 @@ class Laporan_stoktokotegalController extends Controller
             ? SubKlasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get() 
             : collect();
     
+            // Mendapatkan nama klasifikasi yang dipilih
+$selectedKlasifikasi = null;
+if ($request->has('klasifikasi_id') && $request->klasifikasi_id) {
+    $selectedKlasifikasi = Klasifikasi::find($request->klasifikasi_id);
+}
+
         // Inisialisasi DOMPDF
         $options = new Options();
         $options->set('isHtml5ParserEnabled', true);
@@ -310,7 +316,8 @@ class Laporan_stoktokotegalController extends Controller
             'totalHarga' => $totalHarga,
             'totalStok' => $totalStok,
             'totalSubTotal' => $totalSubTotal,
-            'tokoCabang' => $tokoCabang, // Pass the cabang name
+            'tokoCabang' => $tokoCabang,
+            'selectedKlasifikasi' => $selectedKlasifikasi 
 
         ])->render();
     

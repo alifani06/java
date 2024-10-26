@@ -324,7 +324,7 @@
                                         <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="Rp0" oninput="updateCalculations();">
                                     </div>
                                 </div>
-                                <div class="row" >
+                                <div class="row" hidden>
                                     <div class="col mb-3 d-flex align-items-center">
                                         <label for="sub_totalasli" class="mr-2">Sub Total Asli</label>
                                         <input type="text" class="form-control large-font" id="sub_totalasli" name="sub_totalasli" value="Rp0" >

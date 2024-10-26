@@ -63,22 +63,29 @@
             <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
         </div>
         <h1 class="title">PT JAVA BAKERY FACTORY</h1>
-        <p class="title1">Cabang: {{ $tokoCabang }}</p> <!-- Menampilkan nama cabang -->
+        <p class="title1">Cabang: {{ $tokoCabang }}</p>
         <div class="divider"></div>
     
         <h1 class="title2">LAPORAN STOK TOKO</h1>
+    
         @php
-        \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesi
-        $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
-        $periodDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y');
-    @endphp
-      
-      <p class="period">
-        {{ $periodDateTime }}
-    </p>
-      <p class="period right-align" style="font-size: 10px; position: absolute; top: 0; right: 0; margin: 10px;">
-        {{ $currentDateTime }}
-    </p>
+            \Carbon\Carbon::setLocale('id'); // Set locale ke bahasa Indonesia
+            $currentDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y H:i');
+            $periodDateTime = \Carbon\Carbon::now()->translatedFormat('d F Y');
+        @endphp
+    
+        <p class="period">{{ $periodDateTime }}</p>
+        <p class="period right-align" style="font-size: 10px; position: absolute; top: 0; right: 0; margin: 10px;">
+            {{ $currentDateTime }}
+        </p>
+    </div>
+    
+    <div class="klasifikasi-info">
+        @if ($selectedKlasifikasi)
+            <h2>{{ $selectedKlasifikasi->nama }}</h2>
+        @else
+            <h2>Semua Divisi</h2>
+        @endif
     </div>
     
     <table>

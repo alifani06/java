@@ -81,14 +81,14 @@
                                     <option value="bkglobal" {{ old('kategori2') == 'bkglobal' ? 'selected' : '' }}>Laporan Barang Keluar Global</option>
                                 </select>
                     
-                                <label style="margin-top:7px" for="status">Pilih Toko</label>
+                                <label style="margin-top:7px" for="status">Toko</label>
                                 <select class="select2bs4 select2-hidden-accessible" name="toko_id"
                                     data-placeholder="Pilih Toko" style="width: 100%;" data-select2-id="23"
                                     tabindex="-1" aria-hidden="true" id="toko_id">
-                                    <option value="">- Pilih -</option>
-                                    @foreach($tokos as $toko)
+                                    <option value="">Toko Banjaran</option>
+                                    {{-- @foreach($tokos as $toko)
                                         <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
-                                    @endforeach
+                                    @endforeach --}}
                                 </select>
                             </div>
                     
@@ -250,9 +250,9 @@
     
         function cari() {
             var form = document.getElementById('form-action');
-            form.action = "{{ route('barangKeluarbanjaran') }}";
-            form.submit();
-        }
+            form.action = "{{ url('toko_banjaran/barangKeluarbanjaran') }}";
+        form.submit();
+     }
     </script>
 
 <script>
@@ -260,11 +260,11 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'masuk') {
-            window.location.href = "{{ url('admin/laporan_historibanjaran') }}";
+            window.location.href = "{{ url('toko_banjaran/laporan_historibanjaran') }}";
         } else if (selectedValue === 'keluar') {
-            window.location.href = "{{ url('admin/barangKeluarbanjaran') }}";
+            window.location.href = "{{ url('toko_banjaran/barangKeluarbanjaran') }}";
         }else if (selectedValue === 'retur') {
-            window.location.href = "{{ url('admin/barangReturbanjaran') }}";
+            window.location.href = "{{ url('toko_banjaran/barangReturbanjaran') }}";
         }
     });
 </script>
@@ -274,9 +274,9 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'bk') {
-            window.location.href = "{{ url('admin/barangKeluarRincibanjaran') }}";
+            window.location.href = "{{ url('toko_banjaran/barangKeluarRincibanjaran') }}";
         } else if (selectedValue === 'bkglobal') {
-            window.location.href = "{{ url('admin/barangKeluarbanjaran') }}";
+            window.location.href = "{{ url('toko_banjaran/barangKeluarbanjaran') }}";
         }
     });
 </script>
@@ -303,7 +303,7 @@
         }
 
     const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printLaporanBKbanjaran') }}";
+    form.action = "{{ url('toko_banjaran/printLaporanBKbanjaran') }}";
     form.target = "_blank";
     form.submit();
     }
@@ -312,7 +312,7 @@
 <script>
     function exportExcelBK() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printExcelBkbanjaran') }}";
+    form.action = "{{ url('toko_banjaran/printExcelBkbanjaran') }}";
     form.target = "_blank";
     form.submit();
 }
