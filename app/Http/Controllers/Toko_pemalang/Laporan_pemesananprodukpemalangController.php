@@ -427,7 +427,7 @@ class Laporan_pemesananprodukpemalangController extends Controller
     //     return $pdf->stream('Laporan_Pemesanan_Produk.pdf');
     // }
 
-    public function printReportpemesananglobalbnjr(Request $request)
+    public function printReportpemesananglobalpml(Request $request)
     {
         // Validasi input
         $validatedData = $request->validate([
