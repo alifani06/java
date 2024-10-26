@@ -169,7 +169,7 @@
                                             <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}')">
                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td>{{ $item->kode_pelanggan }}</td>
-                                                <td>{{ $item->kode_lama }}</td>
+                                                <td>{{ $item->kode_pelangganlama }}</td>
                                                 <td>{{ $item->nama_pelanggan }}</td>
                                                 <td>{{ $item->telp }}</td>
                                                 <td>{{ $item->alamat }}</td>
