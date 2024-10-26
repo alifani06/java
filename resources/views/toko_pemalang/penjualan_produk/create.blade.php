@@ -845,25 +845,26 @@
             });
 
             document.querySelector('form').addEventListener('submit', function(event) {
-            let subTotalElement = document.getElementById('sub_total');
-            let bayarElement = document.getElementById('bayar');
-            let kembaliElement = document.getElementById('kembali');
+    let subTotalElement = document.getElementById('sub_total');
+    let bayarElement = document.getElementById('bayar');
+    let kembaliElement = document.getElementById('kembali');
 
-            // Menghapus format Rupiah dari input sebelum submit
-            subTotalElement.value = removeRupiahFormat(subTotalElement.value);
-            bayarElement.value = removeRupiahFormat(bayarElement.value);
-            kembaliElement.value = removeRupiahFormat(kembaliElement.value);
+    // Menghapus format Rupiah dari input sebelum submit
+    subTotalElement.value = removeRupiahFormat(subTotalElement.value);
+    bayarElement.value = removeRupiahFormat(bayarElement.value);
+    kembaliElement.value = removeRupiahFormat(kembaliElement.value);
 
-            // Cek jika Uang Bayar = 0
-            let bayarValue = parseFloat(bayarElement.value);
-            if (bayarValue === 0 || isNaN(bayarValue)) {
-                alert('Uang Bayar tidak boleh 0!');
-                event.preventDefault(); // Blokir submit form
-                return;
-            }
+    // Cek jika Uang Bayar = 0
+    let bayarValue = parseFloat(bayarElement.value);
+    if (bayarValue === 0 || isNaN(bayarValue)) {
+        alert('Uang Bayar tidak boleh 0!');
+        event.preventDefault(); // Blokir submit form
+        return; // Keluar dari fungsi jika nilai bayar tidak valid
+    }
 
-            // Formulir akan disubmit dengan nilai numerik
-            });
+    // Formulir akan disubmit dengan nilai numerik
+});
+
 
 
     </script>

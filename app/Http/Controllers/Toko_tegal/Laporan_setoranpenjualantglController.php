@@ -197,9 +197,17 @@ class Laporan_setoranpenjualantglController extends Controller
                 $queryPemesanan->where('tanggal_pemesanan', '<=', $tanggal_akhir);
             }
 
-            $totalPemesanan = $queryPemesanan
-                ->select(Pemesananproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
-                ->value('total');
+            // $totalPemesanan = $queryPemesanan
+            //     ->select(Pemesananproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
+            //     ->value('total');
+            $totalPemesanan = $queryPemesanan->with('dppemesanan') // Pastikan ada relasi di model
+        ->get()
+        ->sum(function($pemesanan) {
+            return $pemesanan->dppemesanan->sum(function($dp) {
+                return (int) str_replace(["Rp.", "."], "", $dp->dp_pemesanan);
+            });
+        });
+
 
             // Jumlahkan total dari Penjualanproduk dan Pemesananproduk
             return $totalPenjualan + $totalPemesanan;

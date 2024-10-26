@@ -428,10 +428,9 @@
 
 <script>
     $(document).ready(function() {
-        // Event listener untuk perubahan tipe pelanggan
         $('#kategori').change(function() {
-            var tipePelanggan = $(this).val(); // Ambil nilai yang dipilih
-            updatePrices(tipePelanggan); // Panggil fungsi untuk mengupdate harga dan diskon
+            var tipePelanggan = $(this).val(); 
+            updatePrices(tipePelanggan); 
         });
 
         function updatePrices(tipePelanggan) {
@@ -443,8 +442,8 @@
 
                 if (tipePelanggan === 'member') {
                     // Update harga dan diskon member
-                    $(this).find('.member_harga_bnjr').text(hargaMember); // Harga member
-                    $(this).find('.member_diskon_bnjr').text(diskonMember); // Diskon member
+                    $(this).find('.member_harga_bnjr').text(hargaMember); 
+                    $(this).find('.member_diskon_bnjr').text(diskonMember); 
                 } else if (tipePelanggan === 'nonmember') {
                     // Update harga dan diskon non-member
                     $(this).find('.non_harga_bnjr').text(hargaNonMember); // Harga non-member
@@ -509,103 +508,105 @@
         });
 
         function addRowToPurchaseTable(row) {
-    // Ambil tipe pelanggan yang dipilih
-    var tipePelanggan = $('#kategori').val();
+            // Ambil tipe pelanggan yang dipilih
+            var tipePelanggan = $('#kategori').val();
 
-    // Ambil data produk dari row yang diklik
-    var kodeProduk = row.find('td').eq(1).text();
-    var kodeLama = row.find('td').eq(2).text();
-    var namaProduk = row.find('td').eq(3).text();
-    var idProduk = row.find('td').eq(10).text();
+            // Ambil data produk dari row yang diklik
+            var kodeProduk = row.find('td').eq(1).text();
+            var kodeLama = row.find('td').eq(2).text();
+            var namaProduk = row.find('td').eq(3).text();
+            var idProduk = row.find('td').eq(10).text();
 
-    // Tentukan harga dan diskon berdasarkan tipe pelanggan
-    var harga, diskon;
-    if (tipePelanggan === 'member') {
-        harga = parseFloat(row.find('.member_harga_bnjr').text()) || 0;
-        diskon = parseFloat(row.find('.member_diskon_bnjr').text()) || 0;
-    } else if (tipePelanggan === 'nonmember') {
-        harga = parseFloat(row.find('.non_harga_bnjr').text()) || 0;
-        diskon = parseFloat(row.find('.non_diskon_bnjr').text()) || 0;
-    }
+            // Tentukan harga dan diskon berdasarkan tipe pelanggan
+            var harga, diskon;
+            if (tipePelanggan === 'member') {
+                harga = parseFloat(row.find('.member_harga_bnjr').text()) || 0;
+                diskon = parseFloat(row.find('.member_diskon_bnjr').text()) || 0;
+            } else if (tipePelanggan === 'nonmember') {
+                harga = parseFloat(row.find('.non_harga_bnjr').text()) || 0;
+                diskon = parseFloat(row.find('.non_diskon_bnjr').text()) || 0;
+            }
 
-    // Ambil jumlah dari input
-    var jumlah = 1; // Default nilai jumlah saat menambahkan produk baru
+            // Ambil jumlah dari input
+            var jumlah = 1; // Default nilai jumlah saat menambahkan produk baru
 
-    // Periksa apakah produk dengan kodeProduk sudah ada di tabel pembelian
-    var existingRow = $('#tabel-pembelian-body tr').filter(function() {
-        return $(this).find('input[name="kode_produk[]"]').val() === kodeProduk;
-    });
+            // Periksa apakah produk dengan kodeProduk sudah ada di tabel pembelian
+            var existingRow = $('#tabel-pembelian-body tr').filter(function() {
+                return $(this).find('input[name="kode_produk[]"]').val() === kodeProduk;
+            });
 
-    if (existingRow.length > 0) {
-        // Jika produk sudah ada, perbarui jumlah dan total
-        var jumlahInput = existingRow.find('.jumlah');
-        var jumlahSekarang = parseInt(jumlahInput.val()) || 1;
-        var jumlahBaru = jumlahSekarang + 1;
-        jumlahInput.val(jumlahBaru);
+            if (existingRow.length > 0) {
+                // Jika produk sudah ada, perbarui jumlah dan total
+                var jumlahInput = existingRow.find('.jumlah');
+                var jumlahSekarang = parseInt(jumlahInput.val()) || 1;
+                var jumlahBaru = jumlahSekarang + 1;
+                jumlahInput.val(jumlahBaru);
 
-        // Hitung nominal_diskon dan total per item berdasarkan jumlah baru
-        var nominal_diskon = (harga * (diskon / 100)) * jumlahBaru; // Hitung nominal diskon
-        var totalPerItem = (harga - (harga * (diskon / 100))) * jumlahBaru; // Hitung total per item setelah diskon
-        var totalAsli = harga * jumlahBaru; // Total asli
+                // Hitung nominal_diskon dan total per item berdasarkan jumlah baru
+                var nominal_diskon = (harga * (diskon / 100)) * jumlahBaru; // Hitung nominal diskon
+                var totalPerItem = (harga - (harga * (diskon / 100))) * jumlahBaru; // Hitung total per item setelah diskon
+                var totalAsli = harga * jumlahBaru; // Total asli
 
-        existingRow.find('.total').text(totalPerItem); // Update total per item
-        existingRow.find('.nominal_diskon').text(nominal_diskon); // Update nominal diskon
-        existingRow.find('.totalasli').text(totalAsli); // Update total asli
-    } else {
-        // Jika produk belum ada, tambahkan row baru
-        var nominal_diskon = (harga * (diskon / 100)) * jumlah;
-        var totalPerItem = (harga - (harga * (diskon / 100))) * jumlah;
-        var totalAsli = harga * jumlah;
+                existingRow.find('.total').text(totalPerItem); // Update total per item
+                existingRow.find('.nominal_diskon').text(nominal_diskon); // Update nominal diskon
+                existingRow.find('.totalasli').text(totalAsli); // Update total asli
+            } else {
+                // Jika produk belum ada, tambahkan row baru
+                var nominal_diskon = (harga * (diskon / 100)) * jumlah;
+                var totalPerItem = (harga - (harga * (diskon / 100))) * jumlah;
+                var totalAsli = harga * jumlah;
 
-        var newRow = `
-            <tr style="font-size: 13px;">
-                <td class="text-center">${$('#tabel-pembelian-body tr').length + 1}</td>
-                <td hidden><input type="text" name="kode_produk[]" value="${kodeProduk}" hidden></td>
-                <td><input type="text" name="kode_lama[]" value="${kodeLama}"></td>
-                <td><input type="text" name="nama_produk[]" value="${namaProduk}"></td>
-                <td><input type="number" class="form-control-sm jumlah" name="jumlah[]" value="1" min="1"></td>
-                <td><input type="text" name="diskon[]" value="${diskon}"></td>
-                <td hidden class="nominal_diskon"><input type="text" name="nominal_diskon[]" value="${nominal_diskon}" hidden></td> 
-                <td><input type="text" name="harga[]" value="${harga}"></td>
-                <td class="total"><input type="text" name="total[]" value="${totalPerItem}"></td> 
-                <td hidden class="totalasli"><input type="text" name="totalasli[]" value="${totalAsli}" hidden></td> 
-                <td class="text-center">
-                    <button type="button" class="btn btn-danger btn-sm delete-row"><i class="fas fa-trash"></i></button>
-                </td>
-                <td hidden><input type="text" name="produk_id[]" value="${idProduk}" hidden></td>
-            </tr>
-        `;
+                var newRow = `
+                    <tr style="font-size: 13px;">
+                        <td class="text-center">${$('#tabel-pembelian-body tr').length + 1}</td>
+                        <td hidden><input type="text" name="kode_produk[]" value="${kodeProduk}" class="form-control" readonly hidden></td>
+                        <td><input type="text" name="kode_lama[]" value="${kodeLama}" class="form-control" readonly></td>
+                        <td><input type="text" name="nama_produk[]" value="${namaProduk}" class="form-control" readonly></td>
+                        <td><input type="number" class="form-control form-control-sm jumlah" name="jumlah[]" value="1" min="1"></td>
+                        <td><input type="text" name="diskon[]" value="${diskon}" class="form-control" readonly></td>
+                        <td hidden class="nominal_diskon"><input type="text" name="nominal_diskon[]" value="${nominal_diskon}" class="form-control" readonly hidden></td> 
+                        <td><input type="text" name="harga[]" value="${harga}" class="form-control" readonly></td>
+                        <td class="total"><input type="text" name="total[]" value="${totalPerItem}" class="form-control" readonly></td> 
+                        <td hidden class="totalasli"><input type="text" name="totalasli[]" value="${totalAsli}" class="form-control" readonly hidden></td> 
+                        <td class="text-center">
+                            <button type="button" class="btn btn-danger btn-sm delete-row"><i class="fas fa-trash"></i></button>
+                        </td>
+                        <td hidden><input type="text" name="produk_id[]" value="${idProduk}" class="form-control" readonly hidden></td>
+                    </tr>
+                `;
 
-        // Tambahkan row baru ke tabel pembelian
-        $('#tabel-pembelian-body').append(newRow);
-    }
 
-    // Hitung total pembelian
-    calculateTotal();
 
-    // Penanganan untuk mengupdate total dan nominal_diskon saat jumlah diubah
-    $('#tabel-pembelian-body').on('input', '.jumlah', function() {
-        var jumlah = parseInt($(this).val()) || 0; // Ambil nilai jumlah dari input
-        var hargaSatuan = parseFloat($(this).closest('tr').find('input[name="harga[]"]').val()) || 0; // Ambil harga satuan dari input harga[]
-        var diskon = parseFloat($(this).closest('tr').find('input[name="diskon[]"]').val()) || 0; // Ambil diskon dari input diskon[]
+                // Tambahkan row baru ke tabel pembelian
+                $('#tabel-pembelian-body').append(newRow);
+            }
 
-        // Hitung nominal_diskon dan total per item berdasarkan jumlah baru
-        var nominal_diskon = (hargaSatuan * (diskon / 100)) * jumlah; // Hitung nominal diskon
-        var total = (hargaSatuan - (hargaSatuan * (diskon / 100))) * jumlah; // Total per item setelah diskon
+            // Hitung total pembelian
+            calculateTotal();
 
-        // Update total dan nominal diskon di baris yang sama
-        $(this).closest('tr').find('.total').text(total); // Update total per item
-        $(this).closest('tr').find('.nominal_diskon').text(nominal_diskon); // Update nominal diskon
+            // Penanganan untuk mengupdate total dan nominal_diskon saat jumlah diubah
+            $('#tabel-pembelian-body').on('input', '.jumlah', function() {
+                var jumlah = parseInt($(this).val()) || 0; // Ambil nilai jumlah dari input
+                var hargaSatuan = parseFloat($(this).closest('tr').find('input[name="harga[]"]').val()) || 0; // Ambil harga satuan dari input harga[]
+                var diskon = parseFloat($(this).closest('tr').find('input[name="diskon[]"]').val()) || 0; // Ambil diskon dari input diskon[]
 
-        calculateTotal(); // Hitung ulang total pembelian
-    });
+                // Hitung nominal_diskon dan total per item berdasarkan jumlah baru
+                var nominal_diskon = (hargaSatuan * (diskon / 100)) * jumlah; // Hitung nominal diskon
+                var total = (hargaSatuan - (hargaSatuan * (diskon / 100))) * jumlah; // Total per item setelah diskon
 
-    // Event listener untuk tombol hapus baris
-    $('#tabel-pembelian-body').on('click', '.delete-row', function() {
-        $(this).closest('tr').remove(); // Hapus baris
-        calculateTotal(); // Hitung ulang total pembelian
-    });
-}
+                // Update total dan nominal diskon di baris yang sama
+                $(this).closest('tr').find('.total').text(total); // Update total per item
+                $(this).closest('tr').find('.nominal_diskon').text(nominal_diskon); // Update nominal diskon
+
+                calculateTotal(); // Hitung ulang total pembelian
+            });
+
+            // Event listener untuk tombol hapus baris
+            $('#tabel-pembelian-body').on('click', '.delete-row', function() {
+                $(this).closest('tr').remove(); // Hapus baris
+                calculateTotal(); // Hitung ulang total pembelian
+            });
+        }
 
 
 
@@ -773,6 +774,8 @@
         getData1();
     });
 </script>
+
+
 
 
 <script>
