@@ -66,7 +66,9 @@ class Laporan_hasilpenjualanController extends Controller
         $query = Pengiriman_barangjadi::join('produks', 'pengiriman_barangjadis.produk_id', '=', 'produks.id')
             ->join('klasifikasis', 'produks.klasifikasi_id', '=', 'klasifikasis.id')
             ->select('pengiriman_barangjadis.*', 'produks.kode_lama')
-            ->with('produk.klasifikasi');
+            ->with('produk.klasifikasi')
+            ->where('pengiriman_barangjadis.status', 'posting'); // Tampilkan hanya status "posting"
+
 
         // Filter berdasarkan status
         if ($status) {

@@ -35,7 +35,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Barang Masuk Permintaan</h1>
+                    <h1 class="m-0">Laporan Barang Masuk (Stok)</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -77,7 +77,7 @@
                             <option value="retur" {{ old('kategori1') == 'retur' ? 'selected' : '' }}>Barang Retur</option>
                         </select>
                     </div>
-                    <h3 class="card-title">Laporan Barang Masuk Permintaan</h3>
+                    <h3 class="card-title">Laporan Barang Masuk (Stok)</h3>
                 </div>
                 
                 <div class="card-body">
@@ -92,7 +92,7 @@
                                     <option value="pemesanan" {{ old('kategori2') == 'pemesanan' ? 'selected' : '' }}>BM PEMESANAN</option>
                                 </select>
                             </div>
-                            <div class="col-md-3 mb-3">
+                            <div hidden class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="toko_id" name="toko_id">
                                     <option value="">- Semua Toko -</option>
                                     @foreach($tokos as $toko)
@@ -100,6 +100,17 @@
                                     @endforeach
                                 </select>
                                 <label for="toko_id">(Pilih Toko)</label>
+                            </div>
+                              
+                            <div class="col-md-3 mb-3">
+                                <input class="form-control" id="tanggal_pengiriman" name="tanggal_pengiriman" type="date"
+                                    value="{{ Request::get('tanggal_pengiriman') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_pengiriman">(Dari Tanggal)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
+                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
 
                             <div class="col-md-3 mb-3">
@@ -127,17 +138,14 @@
                                 </select>
                                 <label style="margin-top:7px" for="produk_id">Produk</label>
                             </div>
-                            
-                            <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_pengiriman" name="tanggal_pengiriman" type="date"
-                                    value="{{ Request::get('tanggal_pengiriman') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_pengiriman">(Dari Tanggal)</label>
+
+                            <div class="col-md-3 mb-3" >
+                                <input class="form-control" style="border: none; background-color: transparent; color: white;"/>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
-                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_akhir">(Sampai Tanggal)</label>
+                                <input  class="form-control" style="border: none; background-color: transparent; color: white;"/>
                             </div>
+                          
                             <div class="col-md-3 mb-3">
                                 <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
                                     <i class="fas fa-search"></i> Cari
@@ -262,7 +270,7 @@
         if (selectedValue === 'permintaan') {
             window.location.href = "{{ url('toko_banjaran/laporan_historibanjaran') }}";
         } else if (selectedValue === 'pemesanan') {
-            window.location.href = "{{ url('toko_banjaran/barangMasukpesananbanjaran') }}";
+            window.location.href = "{{ route('barangMasukpesananbanjaran') }}"; 
         }
     });
 </script>
