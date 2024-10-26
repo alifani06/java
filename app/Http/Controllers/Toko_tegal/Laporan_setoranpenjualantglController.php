@@ -357,62 +357,6 @@ class Laporan_setoranpenjualantglController extends Controller
         }
     })->sum('dp_pemesanan');
 
-    // Hitung total dari berbagai metode pembayaran
-    // $metodePembayaran = function($metode_id, $tanggal_penjualan = null, $tanggal_akhir = null) use ($kasir) {
-    //     $queryPenjualan = Penjualanproduk::where('metode_id', $metode_id);
-
-    //     if ($kasir) {
-    //         $queryPenjualan->where('kasir', $kasir);
-    //     } else {
-    //         $queryPenjualan->where('toko_id', 2);
-    //     }
-
-    //     if ($tanggal_penjualan && $tanggal_akhir) {
-    //         $queryPenjualan->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
-    //     } elseif ($tanggal_penjualan) {
-    //         $queryPenjualan->where('tanggal_penjualan', '>=', $tanggal_penjualan);
-    //     } elseif ($tanggal_akhir) {
-    //         $queryPenjualan->where('tanggal_penjualan', '<=', $tanggal_akhir);
-    //     }
-
-    //     if ($metode_id == 1) {
-    //         $totalPenjualan = $queryPenjualan
-    //             ->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED) - CAST(REPLACE(REPLACE(nominal_diskon, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
-    //             ->value('total');
-    //     } else {
-    //         $totalPenjualan = $queryPenjualan
-    //             ->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
-    //             ->value('total');
-    //     }
-
-    //     $queryPemesanan = Pemesananproduk::where('metode_id', $metode_id);
-
-    //     if ($kasir) {
-    //         $queryPemesanan->where('kasir', $kasir);
-    //     } else {
-    //         $queryPemesanan->where('toko_id', 2);
-    //     }
-
-    //     if ($tanggal_penjualan && $tanggal_akhir) {
-    //         $queryPemesanan->whereBetween('tanggal_pemesanan', [$tanggal_penjualan, $tanggal_akhir]);
-    //     } elseif ($tanggal_penjualan) {
-    //         $queryPemesanan->where('tanggal_pemesanan', '>=', $tanggal_penjualan);
-    //     } elseif ($tanggal_akhir) {
-    //         $queryPemesanan->where('tanggal_pemesanan', '<=', $tanggal_akhir);
-    //     }
-
-    //     if ($metode_id == 1) {
-    //         $totalPemesanan = $queryPemesanan
-    //             ->select(Pemesananproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED) - CAST(REPLACE(REPLACE(nominal_diskon, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
-    //             ->value('total');
-    //     } else {
-    //         $totalPemesanan = $queryPemesanan
-    //             ->select(Pemesananproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
-    //             ->value('total');
-    //     }
-
-    //     return $totalPenjualan + $totalPemesanan;
-    // };
     $metodePembayaran = function($metode_id, $tanggal_penjualan = null, $tanggal_akhir = null) use ($kasir) {
         // Query untuk penjualan produk
         $queryPenjualan = Penjualanproduk::where('metode_id', $metode_id);
@@ -664,6 +608,7 @@ class Laporan_setoranpenjualantglController extends Controller
         
             return $totalPenjualan + $totalPemesanan;
         };
+        
         $mesin_edc = $metodePembayaran(1, $tanggal_penjualan, $tanggal_akhir);
         $qris = $metodePembayaran(17, $tanggal_penjualan, $tanggal_akhir);
         $gobiz = $metodePembayaran(2, $tanggal_penjualan, $tanggal_akhir); 

@@ -406,16 +406,14 @@
    
                         @if ($inquery->dppemesanan && $inquery->dppemesanan->pemesananproduk)
                         <tr>
-                            <td colspan="5" style="text-align: left; font-size: 8px;">
+                            
+                            <td colspan="5" style="text-align: left; font-size: 8px;"><strong>Catatan:</strong> <br>
                             {!! nl2br(e($inquery->dppemesanan->pemesananproduk->catatan)) ?? '-' !!}
                             </td>
                         </tr>
                         @endif
                     </tbody>
-                    <div class="catatan">
-                        <label style="font-size: 9px;"><strong>Catatan:</strong></label>
-                        <p style="margin-top: 1px; font-size: 9px;">{!! nl2br(e($inquery->dppemesanan->pemesananproduk->catatan)) ?? '-' !!}</p>
-                    </div>
+                 
                 </table>   
             </div>
         
