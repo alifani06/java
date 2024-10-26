@@ -222,9 +222,9 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'global') {
-            window.location.href = "{{ url('toko_pemalang/indexpemesananglobalbnjr') }}";
+            window.location.href = "{{ url('toko_pemalang/indexpemesananglobalpml') }}";
         } else if (selectedValue === 'rinci') {
-            window.location.href = "{{ url('toko_pemalang/laporan_pemesananprodukbnjr') }}";
+            window.location.href = "{{ url('toko_pemalang/laporan_pemesananprodukpml') }}";
         }
     });
 </script>
