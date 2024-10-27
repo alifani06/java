@@ -340,7 +340,7 @@
                     </a>
                 </div>
                 <div>
-                    <a href="{{ route('toko_banjaran.inquery_penjualanproduk.cetak-pdf', $penjualan->id) }}"  id="printButton" target="_blank" class="btn btn-primary btn-sm">
+                    <a href="{{ route('toko_banjaran.inquery_penjualanprodukbanjaran.cetak-pdf', $penjualan->id) }}"  id="printButton" target="_blank" class="btn btn-primary btn-sm">
                         <i class="fas fa-print"></i> Cetak PDF
                     </a>
                 </div>

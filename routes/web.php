@@ -189,6 +189,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('hargajual', \App\Http\Controllers\Admin\HargajualController::class);
     Route::get('admin/hargajual/all', [HargajualController::class, 'all'])->name('admin.hargajual.all');
     Route::post('/admin/update-harga', [HargajualController::class, 'updateHarga'])->name('update.harga');
+    Route::post('/admin/update-hargaTgl', [HargajualController::class, 'updateHargaTgl'])->name('update.hargaTgl');
+    Route::post('/admin/update-hargaPml', [HargajualController::class, 'updateHargaPml'])->name('update.hargaPml');
     Route::get('admin/hargajual/show', [App\Http\Controllers\Admin\HargajualController::class, 'show'])->name('show');
     Route::get('/cetak-pdf', [HargajualController::class, 'cetakPdf'])->name('cetak.pdf');
     Route::get('/admin/hargajual/filter', [HargajualController::class, 'all'])->name('admin.hargajual.filter');
@@ -534,7 +536,7 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('/toko_banjaran/inquery_penjualanprodukbanajran', [Inquery_penjualanprodukbanjaranController::class, 'index'])->name('toko_banjaran.inquery_penjualanproduk.index');
     Route::get('inquery_penjualanprodukbanjaran/unpost_penjualanproduk/{id}', [\App\Http\Controllers\Toko_banjaran\Inquery_penjualanprodukbanjaranController::class, 'unpost_penjualanproduk']);
     Route::get('inquery_penjualanprodukbanjaran/posting_penjualanproduk/{id}', [\App\Http\Controllers\Toko_banjaran\Inquery_penjualanprodukbanjaranController::class, 'posting_penjualanproduk']);
-    Route::get('/toko_banjaran/inquery_penjualanproduk/cetak-pdf{id}', [Inquery_penjualanprodukbanjaranController::class, 'cetakPdf'])->name('toko_banjaran.inquery_penjualanproduk.cetak-pdf');
+    Route::get('/toko_banjaran/inquery_penjualanprodukbanjaran/cetak-pdf{id}', [Inquery_penjualanprodukbanjaranController::class, 'cetakPdf'])->name('toko_banjaran.inquery_penjualanproduk.cetak-pdf');
 
     Route::resource('laporan_penjualanproduk', \App\Http\Controllers\Toko_banjaran\Laporan_penjualanprodukController::class);
     Route::get('printReport', [\App\Http\Controllers\Toko_banjaran\Laporan_penjualanprodukController::class, 'printReport']);
