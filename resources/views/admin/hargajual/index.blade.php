@@ -258,23 +258,59 @@
 @endsection
 
 <script>
-    function showTable(toko) {
-        // Sembunyikan semua tabel
-        document.getElementById('tabelBanjaran').style.display = 'none';
-        document.getElementById('tabelTegal').style.display = 'none';
-        
-        // Tampilkan tabel sesuai pilihan
-        if (toko === 'banjaran') {
-            document.getElementById('tabelBanjaran').style.display = 'block';
-        } else if (toko === 'tegal') {
-            document.getElementById('tabelTegal').style.display = 'block';
-        }
+    // Variabel untuk menyimpan DataTable instance
+let tableBanjaran;
+let tableTegal;
+let tablePemalang;
+
+// Fungsi untuk menampilkan tabel dan menginisialisasi DataTable
+function showTable(toko) {
+    // Sembunyikan semua tabel toko terlebih dahulu
+    let tables = document.querySelectorAll('[id^="tabel"]');
+    tables.forEach(table => table.style.display = 'none');
+
+    // Hapus DataTable jika sebelumnya sudah diinisialisasi
+    if ($.fn.DataTable.isDataTable('#datatables1')) {
+        $('#datatables1').DataTable().destroy();
     }
 
-    // Inisialisasi tampilan tabel berdasarkan pilihan default
-    document.addEventListener('DOMContentLoaded', (event) => {
-        showTable(document.getElementById('tokoSelect').value);
-    });
+    // Tampilkan dan inisialisasi DataTable sesuai toko yang dipilih
+    if (toko === 'banjaran') {
+        document.getElementById('tabelBanjaran').style.display = 'block';
+
+        // Inisialisasi DataTable dengan fitur pencarian aktif
+        tableBanjaran = $('#datatables1').DataTable({
+            searching: true,
+            paging: true,
+            info: true,
+        });
+
+    } else if (toko === 'tegal') {
+        document.getElementById('tabelTegal').style.display = 'block';
+
+        // Inisialisasi DataTable dengan fitur pencarian non-aktif
+        tableTegal = $('#datatables1').DataTable({
+            searching: false,
+            paging: true,
+            info: true,
+        });
+    }else if (toko === 'pemalang') {
+        document.getElementById('tabelPemalang').style.display = 'block';
+
+        // Inisialisasi DataTable dengan fitur pencarian non-aktif
+        tableTegal = $('#datatables1').DataTable({
+            searching: false,
+            paging: true,
+            info: true,
+        });
+    }
+}
+
+// Inisialisasi tampilan tabel berdasarkan pilihan default
+document.addEventListener('DOMContentLoaded', () => {
+    showTable(document.getElementById('tokoSelect').value);
+});
+
 </script>
 
 
