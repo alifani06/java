@@ -8,11 +8,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Data Stok Toko Bumiayu</h1>
+                    <h1 class="m-0">Data Stok Toko </h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Data Stok Bumiayu</li>
+                        <li class="breadcrumb-item active">Data Stok </li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -39,15 +39,37 @@
             <div class="card">
                 <div class="card-header">
                     <div class="float-right">
-                        <a href="{{ url('toko_bumiayu/stok_tokobumiayu/create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus"></i> 
-                        </a>
+                        <select class="form-control" id="kategori1" name="kategori">
+                            <option value="">- Pilih -</option>
+                            <option value="stok" {{ old('kategori1') == 'stok' ? 'selected' : '' }}>Data Stok</option>
+                            <option value="stokpesanan" {{ old('kategori1') == 'stokpesanan' ? 'selected' : '' }}>Data Stok Pesanan</option>
+                            <option value="semuastok" {{ old('kategori1') == 'semuastok' ? 'selected' : '' }}>Data Semua Stok</option>
+                        </select>
                     </div>
+                    <h3 class="card-title">Laporan Stok Toko</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
+                    
+                   
+
                     <form method="GET" id="form-action">
                         <div class="row">
+                            <!-- Filter Toko -->
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="toko" name="toko_id">
+                                    {{-- <option value="">- Semua Toko -</option> --}}
+                                    <option value="2" {{ Request::get('toko_id') == '2' ? 'selected' : '' }}>Toko Tegal</option>
+                                    {{-- <option value="2" {{ Request::get('toko_id') == '2' ? 'selected' : '' }}>Toko Tegal</option>
+                                    <option value="3" {{ Request::get('toko_id') == '3' ? 'selected' : '' }}>Toko Slawi</option>
+                                    <option value="4" {{ Request::get('toko_id') == '4' ? 'selected' : '' }}>Toko Pemalang</option>
+                                    <option value="5" {{ Request::get('toko_id') == '5' ? 'selected' : '' }}>Toko Bumiayu</option>
+                                    <option value="6" {{ Request::get('toko_id') == '6' ? 'selected' : '' }}>Toko Cilacap</option> --}}
+                                </select>
+                                <label for="toko">(Pilih Toko)</label>
+                            </div>
+                    
+                            <!-- Filter Divisi -->
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="klasifikasi" name="klasifikasi_id" onchange="filterSubKlasifikasi()">
                                     <option value="">- Semua Divisi -</option>
@@ -59,6 +81,8 @@
                                 </select>
                                 <label for="klasifikasi">(Pilih Divisi)</label>
                             </div>
+                    
+                            <!-- Filter Sub Divisi -->
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="subklasifikasi" name="subklasifikasi_id">
                                     <option value="">- Semua Sub Klasifikasi -</option>
@@ -70,13 +94,20 @@
                                 </select>
                                 <label for="subklasifikasi">(Pilih Sub Klasifikasi)</label>
                             </div>
+                           
+                            <!-- Tombol Cari -->
                             <div class="col-md-3 mb-3">
                                 <button type="submit" class="btn btn-outline-primary btn-block">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
+                                <button type="button" class="btn btn-primary btn-block" onclick="printReport(event)">
+                                    <i class="fas fa-print"></i> Cetak
+                                </button>
                             </div>
                         </div>
                     </form>
+                    
+                    
                 
                     <table id="datatables1" class="table table-bordered" style="font-size: 13px">
                         <thead>
@@ -119,39 +150,48 @@
     </section>
     
     <script>
-        function filterSubKlasifikasi() {
-            var klasifikasiId = document.getElementById('klasifikasi').value;
-            var subKlasifikasiSelect = document.getElementById('subklasifikasi');
-            var subKlasifikasiOptions = subKlasifikasiSelect.options;
-    
-            // Show all options initially
-            for (var i = 0; i < subKlasifikasiOptions.length; i++) {
-                var option = subKlasifikasiOptions[i];
-                if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
-                    option.style.display = "block";
-                } else {
-                    option.style.display = "none";
-                }
-            }
-    
-            // Automatically select the first valid option if any
-            var foundValidOption = false;
-            for (var i = 1; i < subKlasifikasiOptions.length; i++) { // Skip the first option (default)
-                var option = subKlasifikasiOptions[i];
-                if (option.style.display === "block") {
-                    subKlasifikasiSelect.selectedIndex = i;
-                    foundValidOption = true;
-                    break;
-                }
-            }
-            if (!foundValidOption) {
-                subKlasifikasiSelect.selectedIndex = 0; // Select default if no valid option found
-            }
-        }
-    
-        // Initialize the filter on page load to show the correct subklasifikasi options
-        document.addEventListener('DOMContentLoaded', function() {
-            filterSubKlasifikasi();
-        });
+    function printReport() {
+        if (event) event.preventDefault();
+    const form = document.getElementById('form-action');
+    form.action = "{{ url('toko_tegal/printstoktokotegal') }}";
+    form.target = "_blank";
+    form.submit();
+}
     </script>
+
+<script>
+    function filterSubKlasifikasi() {
+var klasifikasiId = document.getElementById('klasifikasi').value;
+var subKlasifikasiSelect = document.getElementById('subklasifikasi');
+var subKlasifikasiOptions = subKlasifikasiSelect.options;
+
+// Show all options initially
+for (var i = 0; i < subKlasifikasiOptions.length; i++) {
+    var option = subKlasifikasiOptions[i];
+    if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
+        option.style.display = "block";
+    } else {
+        option.style.display = "none";
+    }
+}
+
+// Don't automatically select sub classification, let the user decide
+subKlasifikasiSelect.selectedIndex = 0;
+}
+
+</script>
+
+<script>
+    document.getElementById('kategori1').addEventListener('change', function() {
+        var selectedValue = this.value;
+
+        if (selectedValue === 'stok') {
+            window.location.href = "{{ url('toko_tegal/laporan_stoktokotegal') }}";
+        } else if (selectedValue === 'stokpesanan') {
+            window.location.href = "{{ url('toko_tegal/stoktokopesanantegal') }}";
+        }else if (selectedValue === 'semuastok') {
+            window.location.href = "{{ url('toko_tegal/semuastoktokotegal') }}";
+        }
+    });
+</script>       
 @endsection

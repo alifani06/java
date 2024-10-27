@@ -12,7 +12,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ url('toko_banjaran/pelanggan') }}">Pelanggan</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('toko_tegal/pelanggan') }}">Pelanggan</a></li>
                         <li class="breadcrumb-item active">Tambah</li>
                     </ol>
                 </div><!-- /.col -->
@@ -39,7 +39,7 @@
                     <h3 class="card-title">Tambah Pelanggan</h3>
                 </div> --}}
             <!-- /.card-header -->
-            <form action="{{ url('toko_banjaran/pelanggan') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form action="{{ url('toko_tegal/pelanggan') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <div class="card">
                     <div class="card-header">
@@ -50,9 +50,9 @@
                     <div class="row">
                     </div>
                     <div class="form-group  mb-3">
-                        <label for="kode_lama">Kode Pelanggan Lama</label>
-                        <input type="text" class="form-control" id="kode_lama" name="kode_lama"
-                            placeholder="Masukan kode pelanggan" value="{{ old('kode_lama') }}">
+                        <label for="kode_pelangganlama">Kode Pelanggan Lama</label>
+                        <input type="text" class="form-control" id="kode_pelangganlama" name="kode_pelangganlama"
+                            placeholder="Masukan kode pelanggan" value="{{ old('kode_pelangganlama') }}">
                     </div>
                         <div class="form-group  mb-3">
                             <label for="nama_pelanggan">Nama Pelanggan</label>

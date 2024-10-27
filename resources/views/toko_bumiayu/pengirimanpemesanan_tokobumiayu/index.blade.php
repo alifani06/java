@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Inquery Pengiriman Toko Banjaran (Pesanan)</h1>
+                    <h1 class="m-0">Inquery Pengiriman Toko Tegal (Pesanan)</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -78,7 +78,7 @@
                 
                 <div class="card-body">
                     <!-- Tabel -->
-                    <form method="GET" id="form-action">
+                    <form method="GET" id="form-action" >
                         <div class="row">
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="status" name="status">
@@ -145,14 +145,14 @@
                                                 <a class="dropdown-item posting-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Posting</a>
                                             
-                                                <a class="dropdown-item"
-                                                href="{{ url('/toko_banjaran/pengiriman_tokobanjaran/' . $firstItem->id)  }}">Show</a>
+                                                    <a class="dropdown-item" href="{{ route('pengirimanpemesanan_tokotegal.show', $firstItem->id) }}">Show</a>
+
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 <a class="dropdown-item unpost-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Unpost</a>
-                                                <a class="dropdown-item"
-                                                href="{{ url('/toko_banjaran/pengiriman_tokobanjaran/' . $firstItem->id)  }}">Show</a>
+                                                    <a class="dropdown-item" href="{{ route('pengirimanpemesanan_tokotegal.show', $firstItem->id) }}">Show</a>
+
                                         @endif
                                        
                                     </div>
@@ -207,6 +207,7 @@
         </div>
     </section>
 
+
     <script>
         var tanggalAwal = document.getElementById('tanggal_input');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
@@ -226,18 +227,12 @@
         });
         var form = document.getElementById('form-action')
 
+        function cari() {
+            form.action = "{{ url('toko_tegal/pengirimanpemesanan_tokotegal') }}";
+            form.submit();
+        }
 
     </script>
-
-<script>
-    function cari() {
-        // Menetapkan URL action pada form
-        document.getElementById('form-action').action = "{{ url('toko_banjaran/pengiriman_tokobanjaran/pengiriman_pemesanan') }}";
-        
-        // Mengirimkan form
-        document.getElementById('form-action').submit();
-    }
-</script>
 
     {{-- unpost stok  --}}
     <script>
@@ -249,7 +244,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_banjaran/pengiriman_tokobanjaran/unpost_pengirimanpemesanan/') }}/" + memoId,
+                    url: "{{ url('toko_tegal/pengiriman_tokotegal/unpost_pengirimanpemesanan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -279,7 +274,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_banjaran/pengiriman_tokobanjaran/posting_pengirimanpemesanan/') }}/" + memoId,
+                    url: "{{ url('toko_tegal/pengiriman_tokotegal/posting_pengirimanpemesanan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -369,9 +364,9 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'permintaan') {
-            window.location.href = "{{ route('toko_banjaran.pengiriman_tokobanjaran.index') }}"; 
+            window.location.href = "{{ route('toko_tegal.pengiriman_tokotegal.index') }}"; 
         } else if (selectedValue === 'pemesanan') {
-            window.location.href = "{{ route('toko_banjaran.pengiriman_tokobanjaran.pengiriman_pemesanan') }}"; 
+            window.location.href = "{{ route('pengirimanpemesanan_tokotegal.index') }}"; 
         }
     });
 </script>

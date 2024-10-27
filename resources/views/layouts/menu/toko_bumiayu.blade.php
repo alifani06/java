@@ -112,8 +112,8 @@
     request()->is('toko_bumiayu/stok_barangjadi*')||  
     request()->is('toko_bumiayu/permintaan_produk*')|| 
     request()->is('toko_bumiayu/pengiriman_barangjadi*')|| 
-    request()->is('toko_bumiayureturn_barangjadi*')|| 
-    request()->is('toko_bumiayurpelunasan_pemesanan*')|| 
+    request()->is('toko_bumiayu/return_barangjadi*')|| 
+    request()->is('toko_bumiayu/pelunasan_pemesananBmy*')|| 
     request()->is('toko_bumiayu/pemindahan_tokobumiayu*') 
     // request()->is('toko_bumiayu/input*')
   
@@ -127,7 +127,7 @@
         request()->is('toko_bumiayu/permintaan_produk*')||  
         request()->is('toko_bumiayu/pengiriman_barangjadi*')||  
         request()->is('toko_bumiayu/retur_barangjadi*')||  
-        request()->is('toko_bumiayu/pelunasan_pemesanan*')||  
+        request()->is('toko_bumiayu/pelunasan_pemesananBmy*')||  
         request()->is('toko_bumiayu/pemindahan_tokobumiayu*')  
         // request()->is('toko_bumiayu/input*')
       
@@ -163,8 +163,8 @@
 
         {{-- @if (auth()->check() && auth()->user()->menu['pelunasan banjaran']) --}}
         <li class="nav-item">
-            <a href="{{ url('toko_bumiayu/pelunasan_pemesanan') }}"
-                class="nav-link {{ request()->is('toko_bumiayu/pelunasan_pemesanan*') ? 'active' : '' }}">
+            <a href="{{ url('toko_bumiayu/pelunasan_pemesananBmy') }}"
+                class="nav-link {{ request()->is('toko_bumiayu/pelunasan_pemesananBmy*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Pelunasan Pemesanan</p>
             </a>

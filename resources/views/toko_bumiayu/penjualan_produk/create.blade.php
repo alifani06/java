@@ -40,7 +40,7 @@
             @endif
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Penjualan Produk Bumiayu</h1>
+                    <h1 class="m-0">Penjualan Produk Tegal</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                  
@@ -68,18 +68,18 @@
                     @endforeach
                 </div>
             @endif
-            <form id="penjualanForm" action="{{ url('toko_bumiayu/penjualan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form id="penjualanForm" action="{{ url('toko_tegal/penjualan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 {{-- detail pelanggan --}}
                 <div class="card">
                     <div class="card-header">
-                        <div class="float-right">
+                        {{-- <div class="float-right">
                             <select class="form-control" id="kategori1" name="kategori">
                                 <option value="">- Pilih -</option>
                                 <option value="penjualan" {{ old('kategori1') == 'penjualan' ? 'selected' : '' }}>Penjualan Produk</option>
                                 <option value="pelunasan" {{ old('kategori1') == 'pelunasan' ? 'selected' : '' }}>Pelunasan Pemesanan Produk</option>
                             </select>
-                        </div>
+                        </div> --}}
                         {{-- <div class="float-right">
                             <a href="{{ route('toko_slawi.penjualan_produk.pelunasan') }}"  class="btn btn-primary btn-sm">Pelunasan Pemesanan
                             </a>
@@ -120,7 +120,7 @@
                             </div>      
                             <div class="col-md-6 mb-3 "> 
                                 <input hidden type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('kode_pelanggan') }}" onclick="showCategoryModalpemesanan()">
-                                <input hidden type="text" class="form-control" id="kode_lama1" name="kode_lama1" value="{{ old('kode_lama1') }}" onclick="showCategoryModalpemesanan()">
+                                <input hidden type="text" class="form-control" id="kode_pelangganlama" name="kode_pelangganlama" value="{{ old('kode_pelangganlama') }}" onclick="showCategoryModalpemesanan()">
                                 <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" onclick="showCategoryModalpemesanan()">
                             </div>     
                         </div>
@@ -145,8 +145,6 @@
                         </div>
                     </div>
                 </div>
-       
-                 
 
                 <div class="modal fade" id="tableMarketing" data-backdrop="static">
                     <div class="modal-dialog modal-lg">
@@ -157,6 +155,7 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
+                
                             <div class="modal-body">
                                 <table id="datatables4" class="table table-bordered table-striped">
                                     <thead>
@@ -172,10 +171,10 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($pelanggans as $item)
-                                            <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}', '{{ $item->kode_lama }}')">
+                                            <tr onclick="checkExpired('{{ $item->tanggal_akhir }}', '{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}', '{{ $item->kode_pelangganlama }}')">
                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td>{{ $item->kode_pelanggan }}</td>
-                                                <td>{{ $item->kode_lama }}</td>
+                                                <td>{{ $item->kode_pelangganlama }}</td>
                                                 <td>{{ $item->nama_pelanggan }}</td>
                                                 <td>{{ $item->telp }}</td>
                                                 <td>{{ $item->alamat }}</td>
@@ -193,6 +192,7 @@
                     </div>
                 </div>
 
+            
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title"><span></span></h3>
@@ -257,8 +257,8 @@
                                     <tbody>
                                         @foreach ($produks as $item)
                                             @php
-                                                $tokobumiayu = $item->tokobumiayu->first();
-                                                $stok_tokobumiayu = $item->stok_tokobumiayu ? $item->stok_tokobumiayu->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
+                                                $tokotegal = $item->tokotegal->first();
+                                                $stok_tokotegal = $item->stok_tokotegal ? $item->stok_tokotegal->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
                                             @endphp
                                             <tr class="pilih-btn"
                                                 data-id="{{ $item->id }}"
@@ -266,29 +266,29 @@
                                                 data-kodel="{{ $item->kode_lama }}"
                                                 data-catatan="{{ $item->catatanproduk }}"
                                                 data-nama="{{ $item->nama_produk }}"
-                                                data-member="{{ $tokobumiayu ? $tokobumiayu->member_harga_bmy : '' }}"
-                                                data-diskonmember="{{ $tokobumiayu ? $tokobumiayu->member_diskon_bmy : '' }}"
-                                                data-nonmember="{{ $tokobumiayu ? $tokobumiayu->non_harga_bmy : '' }}"
-                                                data-diskonnonmember="{{ $tokobumiayu ? $tokobumiayu->non_diskon_bmy : '' }}">
+                                                data-member="{{ $tokotegal ? $tokotegal->member_harga_tgl : '' }}"
+                                                data-diskonmember="{{ $tokotegal ? $tokotegal->member_diskon_tgl : '' }}"
+                                                data-nonmember="{{ $tokotegal ? $tokotegal->non_harga_tgl : '' }}"
+                                                data-diskonnonmember="{{ $tokotegal ? $tokotegal->non_diskon_tgl : '' }}">
 
                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td >{{ $item->kode_produk }}</td>
                                                 <td>{{ $item->kode_lama }}</td>
                                                 <td>{{ $item->nama_produk }}</td>
                                                 <td>
-                                                    <span class="member_harga_slw">{{ $tokobumiayu ? $tokobumiayu->member_harga_bmy : '' }}</span>
+                                                    <span class="member_harga_tgl">{{ $tokotegal ? $tokotegal->member_harga_tgl : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="member_diskon_slw">{{ $tokobumiayu ? $tokobumiayu->member_diskon_bmy : '' }}</span>
+                                                    <span class="member_diskon_tgl">{{ $tokotegal ? $tokotegal->member_diskon_tgl : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="non_harga_slw">{{ $tokobumiayu ? $tokobumiayu->non_harga_bmy : '' }}</span>
+                                                    <span class="non_harga_tgl">{{ $tokotegal ? $tokotegal->non_harga_tgl : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="non_diskon_slw">{{ $tokobumiayu ? $tokobumiayu->non_diskon_bmy : '' }}</span>
+                                                    <span class="non_diskon_tgl">{{ $tokotegal ? $tokotegal->non_diskon_tgl : '' }}</span>
                                                 </td>
                                                 <td class="text-center">
-                                                    {{ $stok_tokobumiayu }} <!-- Tampilkan stok produk -->
+                                                    {{ $stok_tokotegal }} <!-- Tampilkan stok produk -->
                                                 </td>
 
                                                 <td class="text-center">
@@ -298,10 +298,10 @@
                                                         data-kodel="{{ $item->kode_lama }}"
                                                         data-catatan="{{ $item->catatanproduk }}"
                                                         data-nama="{{ $item->nama_produk }}"
-                                                        data-member="{{ $tokobumiayu ? $tokobumiayu->member_harga_bmy : '' }}"
-                                                        data-diskonmember="{{ $tokobumiayu ? $tokobumiayu->member_diskon_bmy : '' }}"
-                                                        data-nonmember="{{ $tokobumiayu ? $tokobumiayu->non_harga_bmy : '' }}"
-                                                        data-diskonnonmember="{{ $tokobumiayu ? $tokobumiayu->non_diskon_bmy : '' }}">
+                                                        data-member="{{ $tokotegal ? $tokotegal->member_harga_tgl : '' }}"
+                                                        data-diskonmember="{{ $tokotegal ? $tokotegal->member_diskon_tgl : '' }}"
+                                                        data-nonmember="{{ $tokotegal ? $tokotegal->non_harga_tgl : '' }}"
+                                                        data-diskonnonmember="{{ $tokotegal ? $tokotegal->non_diskon_tgl : '' }}">
                                                         <i class="fas fa-plus"></i> 
                                                     </button>
                                                 </td>
@@ -324,10 +324,10 @@
                                         <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="Rp0" oninput="updateCalculations();">
                                     </div>
                                 </div>
-                                <div class="row"hidden>
+                                <div class="row" hidden>
                                     <div class="col mb-3 d-flex align-items-center">
                                         <label for="sub_totalasli" class="mr-2">Sub Total Asli</label>
-                                        <input type="text" class="form-control large-font" id="sub_totalasli" name="sub_totalasli" value="Rp0" oninput="updateCalculations();">
+                                        <input type="text" class="form-control large-font" id="sub_totalasli" name="sub_totalasli" value="Rp0" >
                                     </div>
                                 </div>
                                 <div class="row" id="payment-row">
@@ -392,40 +392,65 @@
                         </div> 
                     </div>
                 </div>
-            </div>
-                <div class="card">
-                    <div class="card-header">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="catatan">Catatan</label>
-                                <textarea placeholder="" type="text" class="form-control" id="catatan" name="catatan">{{ old('catatan') }}</textarea>
-                            </div>
-                            <div class="col-md-5 mb-3">
-                                <label for="kasir">Bagian Input :</label>
-                                <input type="text" class="form-control" readonly name="kasir" value="{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}">
-                            </div> 
-                        </div>     
-                    </div>
+
                 </div>
-                <div class="card-footer text-right mt-3">
-                    <button type="reset" class="btn btn-secondary" id="btnReset">Reset</button>
-                    <button type="" class="btn btn-primary" id="simpanButton">Simpan</button>
-                    <div id="loading" style="display: none;">
-                        <i class="fas fa-spinner fa-spin"></i> Sedang Menyimpan...
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="catatan">Catatan</label>
+                                    <textarea placeholder="" type="text" class="form-control" id="catatan" name="catatan">{{ old('catatan') }}</textarea>
+                                </div>
+                                <div class="col-md-5 mb-3">
+                                    <label for="kasir">Bagian Input :</label>
+                                    <input type="text" class="form-control" readonly name="kasir" value="{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}">
+                                </div> 
+                            </div>     
+                        </div>
                     </div>
-                </div>
+
+                    <div class="card-footer text-right mt-3">
+                        <button type="reset" class="btn btn-secondary" id="btnReset">Reset</button>
+                        <button type="" class="btn btn-primary" id="simpanButton">Simpan</button>
+                        <div id="loading" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i> Sedang Menyimpan...
+                        </div>
+                    </div>
             </form>
         </div>
     </section>
-  
-  {{-- //pdf tab baru   --}}
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function checkExpired(tanggal_akhir, nama, telp, alamat, kode, kode_lama) {
+            var today = new Date();  // Tanggal hari ini
+            var tanggalAkhir = new Date(tanggal_akhir);  // Mengubah tanggal_akhir ke objek Date
+            
+            // Periksa apakah tanggal akhir lebih kecil dari hari ini
+            if (tanggalAkhir < today) {
+                // Menampilkan SweetAlert jika member sudah expired
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Member Expired',
+                    text: 'Pelanggan dengan tanggal akhir ' + tanggal_akhir + ' tidak dapat dipilih.',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                // Jika tidak expired, jalankan fungsi ini
+                getSelectedDataPemesanan(nama, telp, alamat, kode, kode_lama);
+            }
+        }
+        </script>
     <script>
         $(document).ready(function() {
             $('#penjualanForm').submit(function(event) {
                 event.preventDefault(); // Mencegah pengiriman form default
+    
+                var simpanButton = $('#simpanButton');
+                var loading = $('#loading');
+    
+                // Disable tombol simpan dan tampilkan loading
+                simpanButton.prop('disabled', true);
+                loading.show();
     
                 $.ajax({
                     url: $(this).attr('action'),
@@ -450,10 +475,16 @@
                                 }
                             });
                         }
+                        // Aktifkan kembali tombol setelah sukses (jika dibutuhkan)
+                        simpanButton.prop('disabled', false);
+                        loading.hide();
                     },
                     error: function(xhr) {
                         // Tangani error jika diperlukan
                         console.log(xhr.responseText);
+                        // Aktifkan kembali tombol jika ada error
+                        simpanButton.prop('disabled', false);
+                        loading.hide();
                     }
                 });
             });
@@ -464,6 +495,12 @@
             });
         });
     </script>
+
+  {{-- //pdf tab baru   --}}
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     
     <script>
         function getData1() {
@@ -481,7 +518,7 @@
                 changeRow.style.display = 'block';
             } else if (metodeId) {
                 $.ajax({
-                    url: "{{ url('toko_bumiayu/metodebayar/metode') }}" + "/" + metodeId,
+                    url: "{{ url('toko_tegal/metodebayar/metode') }}" + "/" + metodeId,
                     type: "GET",
                     dataType: "json",
                     success: function(response) {
@@ -684,10 +721,10 @@
                 $('#tableMarketing').modal('show');
             }
         
-            function getSelectedDataPemesanan(nama_pelanggan,  telp, alamat, kode_pelanggan, kode_lama1) {
+            function getSelectedDataPemesanan(nama_pelanggan,  telp, alamat, kode_pelanggan, kode_pelangganlama) {
                 document.getElementById('nama_pelanggan').value = nama_pelanggan;
                 document.getElementById('kode_pelanggan').value = kode_pelanggan;
-                document.getElementById('kode_lama1').value = kode_lama1;
+                document.getElementById('kode_pelangganlama').value = kode_pelangganlama;
                 document.getElementById('telp').value = telp;
                 document.getElementById('alamat').value = alamat;
                 $('#tableMarketing').modal('hide');
@@ -1052,9 +1089,9 @@ function showCategoryModal(urutan) {
         var selectedValue = this.value;
 
         if (selectedValue === 'penjualan') {
-            window.location.href = "{{ route('toko_bumiayu.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
+            window.location.href = "{{ route('toko_tegal.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
         } else if (selectedValue === 'pelunasan') {
-            window.location.href = "{{ route('toko_bumiayu.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
+            window.location.href = "{{ route('toko_tegal.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
         }
     });
 </script>

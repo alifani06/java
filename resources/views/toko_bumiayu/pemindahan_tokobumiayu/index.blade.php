@@ -8,11 +8,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Pemindahan Produk Toko Bumiayu</h1>
+                    <h1 class="m-0">Pemindahan Produk Toko Tegal</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Pemindahan Produk Toko Bumiayu</li>
+                        <li class="breadcrumb-item active">Pemindahan Produk Toko Tegal</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -38,9 +38,9 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Pemindahan Produk Toko Bumiayu</h3>
+                    <h3 class="card-title">Pemindahan Produk Toko Tegal</h3>
                     <div class="float-right">
-                        <a href="{{ url('toko_bumiayu/pemindahan_tokobumiayu/create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url('toko_tegal/pemindahan_tokotegal/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> 
                         </a>
                     </div>
@@ -51,18 +51,18 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Kode Pemindahan</th>
+                                <th>No. Pemindahan</th>
                                 <th>Kode Produk</th>
                                 <th>Nama Produk</th>
                                 <th>Keterangan</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($pemindahan_tokobumiayu as $stok)
+                            @foreach ($pemindahan_tokotegal as $stok)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $stok->kode_pemindahan }}</td>
-                                    <td>{{ $stok->produk->kode_produk }}</td>
+                                    <td>{{ $stok->produk->kode_lama }}</td>
                                     <td>{{ $stok->produk->nama_produk }}</td>
                                     <td style="text-transform: uppercase;">
                                         @if ($stok->keterangan === 'oper')

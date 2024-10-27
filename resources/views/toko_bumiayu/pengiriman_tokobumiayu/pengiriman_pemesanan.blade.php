@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Inquery Pengiriman Toko Banjaran (Permintaan)</h1>
+                    <h1 class="m-0">Inquery Pengiriman Toko Banjaran (Pesanan)</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -78,7 +78,7 @@
                 
                 <div class="card-body">
                     <!-- Tabel -->
-                    <form method="GET" id="form-action">
+                    <form method="GET" id="form-action" >
                         <div class="row">
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="status" name="status">
@@ -123,7 +123,7 @@
                             @endphp
                                 <tr class="dropdown" data-permintaan-id="{{ $firstItem->id }}">
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                <td>{{ $firstItem->kode_pengiriman }}</td>
+                                <td>{{ $firstItem->kode_pengirimanpesanan }}</td>
                                 <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_input)->format('d/m/Y H:i') }} </td>
                                 <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') }} </td>
                                   
@@ -145,14 +145,14 @@
                                                 <a class="dropdown-item posting-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Posting</a>
                                             
-                                                <a class="dropdown-item"
-                                                href="{{ url('/toko_banjaran/pengiriman_tokobanjaran/' . $firstItem->id)  }}">Show</a>
+                                                <<a class="dropdown-item" href="{{ route('toko_banjaran.pengiriman_tokobanjaran.showpemesanan', $firstItem->id) }}">Show</a>
+
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 <a class="dropdown-item unpost-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Unpost</a>
-                                                <a class="dropdown-item"
-                                                href="{{ url('/toko_banjaran/pengiriman_tokobanjaran/' . $firstItem->id)  }}">Show</a>
+                                                    <a class="dropdown-item" href="{{ route('toko_banjaran.pengiriman_tokobanjaran.showpemesanan', $firstItem->id) }}">Show</a>
+
                                         @endif
                                        
                                     </div>
@@ -175,7 +175,7 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $detail->produk->klasifikasi->nama }}</td>
-                                                <td>{{ $detail->produk->kode_produk }}</td>
+                                                <td>{{ $detail->produk->kode_lama }}</td>
                                                 <td>{{ $detail->produk->nama_produk }}</td>
                                                 <td>{{ $detail->jumlah }}</td>
                                             </tr>
@@ -207,33 +207,32 @@
         </div>
     </section>
 
-    <script>
-        var tanggalAwal = document.getElementById('tanggal_input');
-        var tanggalAkhir = document.getElementById('tanggal_akhir');
-        if (tanggalAwal.value == "") {
+
+<script>
+    var tanggalAwal = document.getElementById('tanggal_input');
+    var tanggalAkhir = document.getElementById('tanggal_akhir');
+    if (tanggalAwal.value == "") {
+        tanggalAkhir.readOnly = true;
+    }
+    tanggalAwal.addEventListener('change', function() {
+        if (this.value == "") {
             tanggalAkhir.readOnly = true;
-        }
-        tanggalAwal.addEventListener('change', function() {
-            if (this.value == "") {
-                tanggalAkhir.readOnly = true;
-            } else {
-                tanggalAkhir.readOnly = false;
-            };
-            tanggalAkhir.value = "";
-            var today = new Date().toISOString().split('T')[0];
-            tanggalAkhir.value = today;
-            tanggalAkhir.setAttribute('min', this.value);
-        });
-        var form = document.getElementById('form-action')
+        } else {
+            tanggalAkhir.readOnly = false;
+        };
+        tanggalAkhir.value = "";
+        var today = new Date().toISOString().split('T')[0];
+        tanggalAkhir.value = today;
+        tanggalAkhir.setAttribute('min', this.value);
+    });
+    var form = document.getElementById('form-action')
 
-        function cari() {
-            form.action = "{{ url('toko_banjaran/pengiriman_tokobanjaran') }}";
-            form.submit();
-        }
+    function cari() {
+        form.action = "{{ url('toko_banjaran/pengiriman_tokobanjaran/pengiriman_pemesanan') }}";
+        form.submit();
+    }
 
-    </script>
-
-
+</script>
 
     {{-- unpost stok  --}}
     <script>
@@ -245,7 +244,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_banjaran/pengiriman_tokobanjaran/unpost_pengiriman/') }}/" + memoId,
+                    url: "{{ url('toko_banjaran/pengiriman_tokobanjaran/unpost_pengirimanpemesanan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -275,7 +274,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_banjaran/pengiriman_tokobanjaran/posting_pengiriman/') }}/" + memoId,
+                    url: "{{ url('toko_banjaran/pengiriman_tokobanjaran/posting_pengirimanpemesanan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

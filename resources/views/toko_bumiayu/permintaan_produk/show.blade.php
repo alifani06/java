@@ -135,7 +135,7 @@
         <!-- Informasi Permintaan -->
         <div>
             <p>
-                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Permintaan</strong></span>
+                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>No Permintaan</strong></span>
                 <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->kode_permintaan }}</span>
             </p>
             <p>
@@ -197,7 +197,7 @@
 
         <div class="d-flex justify-content-between">
             <div>
-                <a href="{{ url('toko_banjaran/permintaan_produk') }}" class="btn btn-primary btn-sm">
+                <a href="{{ url('toko_tegal/permintaan_produk') }}" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus"></i> Kembali
                 </a>
             </div>
@@ -207,7 +207,7 @@
                 </a>
             </div> --}}
             <div>
-                <a href="{{ url('toko_banjaran/permintaan-produk/' . $permintaanProduk->id . '/print') }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
+                <a href="{{ url('toko_tegal/permintaan-produk/' . $permintaanProduk->id . '/print') }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
                     <i class="fas fa-print"></i> Cetak 
                 </a>
             </div>

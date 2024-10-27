@@ -68,12 +68,21 @@
                 </div>
             @endif
             <div class="card">
-                
+                {{-- <div class="card-header">
+                    <form action="{{ route('stok_tokobanjaran.import') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="form-group">
+                            <label for="file_excel">Unggah File Excel</label>
+                            <input type="file" class="form-control-file" id="file_excel" name="file_excel" accept=".xlsx">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Import</button>
+                    </form>
+                </div> --}}
                 <!-- /.card-header -->
                 <div class="card-body">
                     
 
-                    <form action="{{ url('toko_bumiayu/stok_tokobumiayu') }}" method="POST">
+                    <form action="{{ url('toko_tegal/stok_tokotegal') }}" method="POST">
                         @csrf
                         <input type="hidden" name="toko_id" > <!-- Assuming $toko is passed from the controller -->
                         <div class="row">

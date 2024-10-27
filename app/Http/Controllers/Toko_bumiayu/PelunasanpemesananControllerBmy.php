@@ -38,7 +38,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class PelunasanpemesananController extends Controller
+class PelunasanpemesananBmyController extends Controller
 {
     public function index()
     {

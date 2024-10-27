@@ -174,16 +174,18 @@
         <div class="header">
             <div class="text">
                 <h1>PT JAVA BAKERY FACTORY</h1>
-                <p>Cabang : BANJARAN</p>
-                <p>Jl. Raya Utara Adiwerna No.40, Pesalakan, Adiwerna, Kec. Adiwerna, Kabupaten Tegal, Jawa Tengah 52194</p>
+                <p>Cabang : TEGAL</p>
+                <p>Jl. AR. Hakim No.118, Mangkukusuman, Kec. Tegal Tim., Kota Tegal, Jawa Tengah 52131</p>
             </div>
         </div>
         <hr class="divider">
         <hr class="divider">
         <div class="section">
             <h2>NOTA SETORAN PENJUALAN</h2>
+            <strong>Kasir:</strong> {{ $kasir ? $kasir : 'Semua Kasir' }}
             <p style="text-align: right; font-size: 8px;">
-            </p><br>
+            </p>
+            
             <table class="no-border mb-1">
                 <tr>
                     <td class="text-left"><strong>PENJUALAN KOTOR</strong></td>

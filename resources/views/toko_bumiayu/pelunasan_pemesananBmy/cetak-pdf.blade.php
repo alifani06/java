@@ -72,7 +72,7 @@
             margin-top: 5px;
         }
         .section table th, .section table td {
-            border: 1px solid #ccc;
+            border: 1px solid white;
             padding: 5px;
             font-size: 8px;
         }
@@ -297,7 +297,7 @@
         <div class="section">
             <h2>Struk Pelunasan Pemesanan</h2>
             <p style="text-align: right; font-size: 8px;">
-                {{ \Carbon\Carbon::parse($inquery->tanggal_pemesanan)->locale('id')->translatedFormat('l, d F Y H:i') }}
+                {{ \Carbon\Carbon::parse($inquery->tanggal_pemesanan)->locale('id')->translatedFormat('d F Y H:i') }}
             </p><br>
             <div class="detail-info">
                 <div class="pemesanan">
@@ -336,18 +336,18 @@
                         @foreach($inquery->penjualanproduk->detailpenjualanproduk as $detail)
                             @if($detail->kode_produk) <!-- Pengecekan jika kode_produk tidak null -->
                                 <tr>
-                                    <td style="font-size: 8px;">{{ $detail->kode_lama }}</td>
+                                    <td style="font-size: 8px; text-transform: uppercase">{{ $detail->kode_lama }}</td>
                                     <td style="font-size: 8px;">{{ $detail->nama_produk }}</td>
-                                    <td style="font-size: 8px;">{{ $detail->jumlah }}</td>
-                                    <td style="font-size: 8px;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
-                                    <td style="font-size: 8px;">
+                                    <td style="font-size: 8px; text-align: right;">{{ $detail->jumlah }}</td>
+                                    <td style="font-size: 8px; text-align: right;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
+                                    <td style="font-size: 8px; text-align: right;">
                                         @if ($detail->diskon > 0)
                                             {{ $detail->diskon }} %
                                         @else
                                             -
                                         @endif
                                     </td>
-                                    <td style="font-size: 8px;">{{ number_format($detail->total, 0, ',', '.') }}</td>
+                                    <td style="font-size: 8px; text-align: right;">{{ number_format($detail->total, 0, ',', '.') }}</td>
                                 </tr>
                                 @php
                                     // Validasi dan konversi data menjadi numerik
@@ -363,11 +363,11 @@
                         </tr>  
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>DP</strong></td>
-                            <td style="font-size: 8px;">{{ number_format($inquery->dppemesanan->dp_pemesanan, 0, ',', '.') }}</td>
+                            <td style="font-size: 8px; text-align: right;">{{ number_format($inquery->dppemesanan->dp_pemesanan, 0, ',', '.') }}</td>
                         </tr>  
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kekurangan</strong></td>
-                            <td style="font-size: 8px;">
+                            <td style="font-size: 8px; text-align: right;">
                                 {{ in_array($inquery->dppemesanan->kekurangan_pemesanan, [null, 0, 1]) ? '-' : number_format($inquery->dppemesanan->kekurangan_pemesanan, 0, ',', '.') }}
                             </td>
                         </tr> 
@@ -388,22 +388,27 @@
                         @endif
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Bayar</strong></td>
-                            <td style="font-size: 8px;">
+                            <td style="font-size: 8px; text-align: right;">
                                 {{ in_array($inquery->pelunasan, [null, 0, 1]) ? '-' : number_format($inquery->pelunasan, 0, ',', '.') }}
                             </td>
                         </tr> 
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kembali</strong></td>
-                            <td style="font-size: 8px;">
+                            <td style="font-size: 8px; text-align: right;">
                                 {{ in_array($inquery->kembali, [null, 0, 1]) ? '-' : number_format($inquery->kembali, 0, ',', '.') }}
                             </td>
                         </tr> 
+                
                     </tbody>
+                    <div class="catatan">
+                        <label style="font-size: 9px;"><strong>Catatan:</strong></label>
+                        <p style="margin-top: 1px; font-size: 9px;">{!! nl2br(e($inquery->dppemesanan->pemesananproduk->catatan)) ?? '-' !!}</p>
+                    </div>
                 </table>   
             </div>
         
             <div class="terimakasih">
-                <p>Untuk pemesanan, kritik dan saran Hubungi.082136638003</p>
+                <p>Untuk pemesanan, kritik dan saran Hubungi.082136638004</p>
             </div>
             <div class="terimakasihd" style="text-align: left; margin-top: -15px ; font-size: 10px; font-style: italic" >
                 <p>Barang yang sudah dibeli tidak bisa dikembalikan atau ditukar.</p><br> 

@@ -3,18 +3,40 @@
 @section('title', 'Pemesanan Produk')
 
 @section('content')
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<!-- Moment.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/id.min.js"></script>
+
+<!-- Bootstrap 4 (CSS & JS) -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<!-- Tempus Dominus Bootstrap 4 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.39.0/build/css/tempusdominus-bootstrap-4.min.css">
+<script src="https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.39.0/build/js/tempusdominus-bootstrap-4.min.js"></script>
+
 <style>
-    .label-width {
-        width: 100px; /* Atur sesuai kebutuhan */
-    }
+    .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
 
-    .input-width {
-        flex: 1;
-    }
+.form-group label {
+    margin-right: 1rem;
+    white-space: nowrap; /* Prevents label text from wrapping */
+    width: 150px; /* Adjust based on your design */
+}
 
-    .large-font {
-        font-size: 1rem; /* Atur ukuran font sesuai kebutuhan */
-    }
+.form-group input {
+    flex: 1; /* Allows input to fill the remaining space */
+}
+
+
 </style>
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -38,7 +60,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ url('admin/subklasifikasi') }}">Pemesanan Produk</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('toko_slawi/pemesanan_produk') }}">Pemesanan Produk</a></li>
                         <li class="breadcrumb-item active">Tambah</li>
                     </ol>
                 </div><!-- /.col -->
@@ -52,8 +74,9 @@
             font-weight: bold;
         }
     </style>
-    <section class="content">
+    <section class="content" onload="showPaymentFields()">
         <div class="container-fluid">
+           
             @if (session('error'))
                 <div class="alert alert-danger alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -65,13 +88,10 @@
                     @endforeach
                 </div>
             @endif
-            <form action="{{ url('admin/pemesanan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form id="pemesananForm" action="{{ url('toko_banjaran/pemesanan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 {{-- detail pelanggan --}}
                 <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Detail Pelanggan</h3>
-                    </div>
                     <div class="card-body">
                         <div class="row mb-3 align-items-center">
                             <div class="col-md-2 mt-2">
@@ -82,20 +102,11 @@
                                     <option value="nonmember" {{ old('kategori') == 'nonmember' ? 'selected' : null }}>Non Member</option>
                                 </select>
                             </div>
-                            <div class="col-md-2 mt-2">
-                                <label class="form-label" for="toko">Pilih Cabang</label>
-                                <select class="form-control" id="toko" name="toko">
-                                    <option value="">- Pilih -</option>
-                                    @foreach ($tokos as $toko)
-                                        <option value="{{ $toko->id }}" {{ old('toko') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                       
                             <div class="col-md-3 mt-2" id="kodePelangganRow" hidden>
                                 <label for="qrcode_pelanggan">Scan Kode Pelanggan</label>
                                 <input type="text" class="form-control" id="qrcode_pelanggan" name="qrcode_pelanggan" placeholder="scan kode Pelanggan" onchange="getData(this.value)">
                             </div>
+
                         </div>
                     
                         <div class="row mb-3 align-items-center" id="namaPelangganRow" style="display: none;">
@@ -105,7 +116,8 @@
                                 </button> 
                             </div>      
                             <div class="col-md-6 mb-3 "> 
-                                <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" >
+                                <input hidden type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('kode_pelanggan') }}" onclick="showCategoryModalpemesanan()">
+                                <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}">
                             </div>     
                         </div>
 
@@ -129,6 +141,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="modal fade" id="tableMarketing" data-backdrop="static">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -143,6 +156,8 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">No</th>
+                                            <th>Kode Pelanggan</th>
+                                            <th>Kode Lama</th>
                                             <th>Nama Pelanggan</th>
                                             <th>No Telpon</th>
                                             <th>Alamat</th>
@@ -151,8 +166,10 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($pelanggans as $item)
-                                            <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}')">
+                                            <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}')">
                                                 <td class="text-center">{{ $loop->iteration }}</td>
+                                                <td>{{ $item->kode_pelanggan }}</td>
+                                                <td>{{ $item->kode_lama }}</td>
                                                 <td>{{ $item->nama_pelanggan }}</td>
                                                 <td>{{ $item->telp }}</td>
                                                 <td>{{ $item->alamat }}</td>
@@ -170,38 +187,13 @@
                     </div>
                 </div>
 
-                 <div class="modal fade" id="tableCatatan" data-backdrop="static">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Catatan Produk</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label for="modalCatatanInput">Catatan:</label>
-                                    <input type="text" class="form-control" id="modalCatatanInput">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" onclick="saveCatatan()">Simpan</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-
-                {{-- detail pengiriman --}}
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Detail Pengiriman</h3>
+                        <h3 class="card-title">Detail Pengambilan</h3>
                     </div>
                     <div class="card-body">
                         <div class="col-md-4 mb-3">
-                            <label for="tanggal_kirim">Tanggal Pengiriman:</label>
+                            <label for="tanggal_kirim">Tanggal Pengambilan:</label>
                             <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
                                 <input type="text" id="tanggal_kirim" name="tanggal_kirim"
                                        class="form-control datetimepicker-input"
@@ -239,7 +231,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title"><span></span></h3>
@@ -256,7 +247,8 @@
                                     <thead>
                                         <tr>
                                             <th style="font-size:14px" class="text-center">No</th>
-                                            <th style="font-size:14px">Kode Produk</th>
+                                            {{-- <th style="font-size:14px">Kode Produk</th> --}}
+                                            <th style="font-size:14px">Kode Lama</th>
                                             <th style="font-size:14px">Nama Produk</th>
                                             <th style="font-size:14px">Jumlah</th>
                                             <th style="font-size:14px">Diskon</th>
@@ -274,7 +266,7 @@
                     </div>
                 </div>
 
-                 <div class="modal fade" id="tableProduk" data-backdrop="static">
+                <div class="modal fade" id="tableProduk" data-backdrop="static">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -284,58 +276,68 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <table id="datatables5" class="table table-bordered table-striped">
+                                <table id="datatables5" class="table table-bordered table-striped" style="font-size: 12px;">
                                     <thead>
                                         <tr>
                                             <th class="text-center">No</th>
                                             <th>Kode Produk</th>
+                                            <th>Kode Lama</th>
                                             <th>Nama Produk</th>
                                             <th>Harga Member</th>
                                             <th>Diskon Member</th>
                                             <th>Harga Non Member</th>
                                             <th>Diskon Non Member</th>
+                                            <th>Stok</th>
                                             <th>Opsi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($produks as $item)
                                             @php
-                                                $tokoslawi = $item->tokoslawi->first();
+                                                $tokobanjaran = $item->tokobanjaran->first();
+                                                $stokpesanan_tokobanjaran = $item->stokpesanan_tokobanjaran ? $item->stokpesanan_tokobanjaran->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
+
                                             @endphp
                                             <tr class="pilih-btn"
                                                 data-id="{{ $item->id }}"
                                                 data-kode="{{ $item->kode_produk }}"
+                                                data-lama="{{ $item->kode_lama }}"
                                                 data-catatan="{{ $item->catatanproduk }}"
                                                 data-nama="{{ $item->nama_produk }}"
-                                                data-member="{{ $tokoslawi ? $tokoslawi->member_harga_slw : '' }}"
-                                                data-diskonmember="{{ $tokoslawi ? $tokoslawi->member_diskon_slw : '' }}"
-                                                data-nonmember="{{ $tokoslawi ? $tokoslawi->non_harga_slw : '' }}"
-                                                data-diskonnonmember="{{ $tokoslawi ? $tokoslawi->non_diskon_slw : '' }}">
+                                                data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
+                                                data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
+                                                data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
+                                                data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td>{{ $item->kode_produk }}</td>
+                                                <td>{{ $item->kode_lama }}</td>
                                                 <td>{{ $item->nama_produk }}</td>
                                                 <td>
-                                                    <span class="member_harga_slw">{{ $tokoslawi ? $tokoslawi->member_harga_slw : '' }}</span>
+                                                    <span class="member_harga_slw">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="member_diskon_slw">{{ $tokoslawi ? $tokoslawi->member_diskon_slw : '' }}</span>
+                                                    <span class="member_diskon_slw">{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="non_harga_slw">{{ $tokoslawi ? $tokoslawi->non_harga_slw : '' }}</span>
+                                                    <span class="non_harga_slw">{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="non_diskon_slw">{{ $tokoslawi ? $tokoslawi->non_diskon_slw : '' }}</span>
+                                                    <span class="non_diskon_slw">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ $stokpesanan_tokobanjaran }} <!-- Tampilkan stok produk -->
                                                 </td>
                                                 <td class="text-center">
                                                     <button type="button" class="btn btn-primary btn-sm pilih-btn"
                                                         data-id="{{ $item->id }}"
                                                         data-kode="{{ $item->kode_produk }}"
+                                                        data-lama="{{ $item->kode_lama }}"
                                                         data-catatan="{{ $item->catatanproduk }}"
                                                         data-nama="{{ $item->nama_produk }}"
-                                                        data-member="{{ $tokoslawi ? $tokoslawi->member_harga_slw : '' }}"
-                                                        data-diskonmember="{{ $tokoslawi ? $tokoslawi->member_diskon_slw : '' }}"
-                                                        data-nonmember="{{ $tokoslawi ? $tokoslawi->non_harga_slw : '' }}"
-                                                        data-diskonnonmember="{{ $tokoslawi ? $tokoslawi->non_diskon_slw : '' }}">
+                                                        data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
+                                                        data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
+                                                        data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
+                                                        data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
                                                         <i class="fas fa-plus"></i> 
                                                     </button>
                                                 </td>
@@ -345,39 +347,43 @@
                                 </table>
                                 
                             </div>
+                 
                         </div>
                     </div>
                 </div>
-         
-                
-
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col mb-3 d-flex align-items-center">
-                                        <label for="sub_total" class="label-width mr-2">Sub Total</label>
-                                        <input type="text" class="form-control large-font input-width" id="sub_total" name="sub_total" value="Rp0" oninput="validateNumberInput(event); showPaymentFields()">
+                                        <label for="sub_total" class="mr-2" style="width: 150px;">Sub Total</label>
+                                        <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="Rp0" oninput="updateCalculations();">
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row" hidden>
                                     <div class="col mb-3 d-flex align-items-center">
-                                        <label for="dp_pemesanan" class="label-width mr-4">DP</label>
-                                        <input type="text" class="form-control large-font input-width" id="dp_pemesanan" name="dp_pemesanan" value="{{ old('dp_pemesanan') }}" oninput="formatAndUpdateKembali()">
+                                        <label for="sub_totalasli" class="mr-2" style="width: 150px;">Sub Total Asli</label>
+                                        <input type="text" class="form-control large-font" id="sub_totalasli" name="sub_totalasli" value="Rp0" oninput="updateCalculations();">
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row" id="payment-row">
                                     <div class="col mb-3 d-flex align-items-center">
-                                        <label for="kekurangan_pemesanan" class="label-width mr-2">Kekurangan</label>
-                                        <input type="text" class="form-control large-font input-width" id="kekurangan_pemesanan" name="kekurangan_pemesanan" value="{{ old('kekurangan_pemesanan') }}" readonly>
+                                        <label for="dp_pemesanan" class="mr-2" style="width: 150px;">DP</label>
+                                        <input type="text" class="form-control large-font" id="dp_pemesanan" name="dp_pemesanan" value="{{ old('dp_pemesanan') }}" oninput="formatAndUpdateKembali()">
+                                    </div>
+                                </div>
+                                <div class="row" id="change-row">
+                                    <div class="col mb-3 d-flex align-items-center">
+                                        <label for="kekurangan_pemesanan" class="mr-2" style="width: 150px;">Kurang</label>
+                                        <input type="text" class="form-control large-font" id="kekurangan_pemesanan" name="kekurangan_pemesanan" value="{{ old('kekurangan_pemesanan') }}" readonly>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-        
+                    
                     <div class="col-md-6">
                         <div class="form-group" style="flex: 8;">
                             <label for="metode_id">Jenis Pembayaran</label>
@@ -424,7 +430,7 @@
                         </div> 
                     </div>
                 </div>
-
+            </div>
                 <div class="card">
                     <div class="card-header">
                         <div class="row">
@@ -433,8 +439,8 @@
                                 <textarea placeholder="" type="text" class="form-control" id="catatan" name="catatan">{{ old('catatan') }}</textarea>
                             </div>
                             <div class="col-md-5 mb-3">
-                                <label for="catatan">Bagian Input :</label>
-                                <input type="text" class="form-control" readonly value="{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}">
+                                <label for="kasir">Bagian Input :</label>
+                                <input type="text" class="form-control" readonly name="kasir" value="{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}">
                             </div> 
                         </div>     
                     </div>
@@ -450,6 +456,200 @@
         </div>
     </section>
 
+    
+    <script>
+        $(document).ready(function () {
+            // Set locale Moment.js ke bahasa Indonesia
+            moment.locale('id');
+            
+            // Inisialisasi datetimepicker
+            $('#reservationdatetime').datetimepicker({
+                format: 'DD/MM/YYYY HH:mm',
+                locale: 'id',  // Locale diatur di sini
+                icons: {
+                    time: 'fa fa-clock',
+                    date: 'fa fa-calendar',
+                    up: 'fa fa-arrow-up',
+                    down: 'fa fa-arrow-down',
+                    previous: 'fa fa-chevron-left',
+                    next: 'fa fa-chevron-right',
+                    today: 'fa fa-calendar-check-o',
+                    clear: 'fa fa-trash',
+                    close: 'fa fa-times'
+                }
+            });
+        
+            // Pastikan locale diterapkan ulang setelah inisialisasi datetimepicker
+            $('#reservationdatetime').datetimepicker('locale', 'id');  // Memaksa locale ke bahasa Indonesia
+        });
+        </script>
+    
+    
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function() {
+        $('#pemesananForm').submit(function(event) {
+            event.preventDefault(); // Mencegah pengiriman form default
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.pdfUrl) {
+                        // Membuka URL di tab baru
+                        window.open(response.pdfUrl, '_blank');
+                    }
+                    if (response.success) {
+                        // Tampilkan pesan sukses menggunakan SweetAlert2
+                        Swal.fire({
+                            title: 'Sukses!',
+                            text: response.success,
+                            icon: 'success',
+                            confirmButtonText: 'OK',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Lakukan refresh halaman setelah menekan OK
+                                location.reload(); // Ini akan merefresh seluruh halaman
+                            }
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    // Tangani error jika diperlukan
+                    console.log(xhr.responseText);
+                }
+            });
+        });
+
+        // Menyimpan nilai default untuk setiap elemen form ketika halaman dimuat
+        $('#pemesananForm').find('input[type="text"], input[type="number"], textarea, select').each(function() {
+            $(this).data('default-value', $(this).val());
+        });
+    });
+</script>
+
+<script>
+     function getData1() {
+        var metodeId = document.getElementById('nama_metode').value;
+        var fee = document.getElementById('fee');
+        var keterangan = document.getElementById('keterangan');
+        var paymentFields = document.getElementById('payment-fields');
+        var paymentRow = document.getElementById('payment-row');
+        var changeRow = document.getElementById('change-row');
+    
+        if (metodeId && document.querySelector('#nama_metode option:checked').text === 'Tunai') {
+            paymentFields.style.display = 'none';
+        } else if (metodeId) {
+            $.ajax({
+                url: "{{ url('toko_banjaran/metodebayar/metode') }}" + "/" + metodeId,
+                type: "GET",
+                dataType: "json",
+                success: function(response) {
+                    console.log('Respons dari server:', response);
+    
+                    fee.value = '';
+                    keterangan.value = '';
+                    paymentFields.style.display = 'block';
+    
+                    if (response && response.fee) {
+                        fee.value = response.fee;
+                    }
+                    if (response && response.keterangan) {
+                        keterangan.value = response.keterangan;
+                    }
+    
+                    // Update calculations whenever data is fetched
+                    updateCalculations();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Terjadi kesalahan dalam permintaan AJAX:', error);
+                }
+            });
+        } else {
+            paymentFields.style.display = 'none';
+        }
+    
+        // Display payment and change rows for all payment methods
+        paymentRow.style.display = 'block';
+        changeRow.style.display = 'block';
+        
+        // Update calculations to reflect any changes
+        updateCalculations();
+    }
+
+    function updateCalculations() {
+        var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+        var fee = parseFloat(document.getElementById('fee').value.replace('%', '').trim()) || 0;
+        var totalFee = (subTotal * fee / 100) || 0;
+        var finalTotal = subTotal + totalFee;
+
+        // Format the values without .00
+        function formatCurrency(value) {
+            var formattedValue = value.toFixed(2).replace(/\.00$/, '');
+            return 'Rp' + formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        // Update total fee and final sub total fields
+        document.getElementById('total_fee').value = formatCurrency(totalFee);
+        document.getElementById('sub_total').value = formatCurrency(finalTotal);
+
+        // Validate DP
+        validateDP();
+    }
+
+    function formatAndUpdateKembali() {
+        var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+        var dpPemesanan = parseFloat(document.getElementById('dp_pemesanan').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+        var kekuranganPemesanan = subTotal - dpPemesanan;
+
+        document.getElementById('kekurangan_pemesanan').value = formatCurrency(kekuranganPemesanan);
+
+        // Validate DP
+        validateDP();
+    }
+
+    function validateDP() {
+    var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+    var dpPemesanan = parseFloat(document.getElementById('dp_pemesanan').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+    var minDP = subTotal * 0.5;
+    var dpPemesananElement = document.getElementById('dp_pemesanan');
+    
+    if (dpPemesanan < minDP) {
+        dpPemesananElement.setCustomValidity('DP inimal 50% dari Total');
+    } else if (dpPemesanan > subTotal) {
+        dpPemesananElement.setCustomValidity('DP Tidak Boleh Melebihi Total');
+    } else {
+        dpPemesananElement.setCustomValidity('');
+    }
+    }
+
+    document.getElementById('dp_pemesanan').addEventListener('input', function() {
+        formatAndUpdateKembali();
+        validateDP();
+    });
+
+
+    // Add event listeners for initialization
+    document.getElementById('nama_metode').addEventListener('change', getData1);
+    document.getElementById('sub_total').addEventListener('input', updateCalculations);
+    document.getElementById('dp_pemesanan').addEventListener('input', formatAndUpdateKembali);
+    
+    // Initialize with "Tunai" as default method
+    document.addEventListener('DOMContentLoaded', function() {
+        var defaultMethod = 'Tunai';
+        var options = document.getElementById('nama_metode').options;
+        for (var i = 0; i < options.length; i++) {
+            if (options[i].text === defaultMethod) {
+                options[i].selected = true;
+                break;
+            }
+        }
+        getData1();
+    });
+</script>
 
     <script>
         function showCategoryModalCatatan(urutan) {
@@ -473,7 +673,7 @@
             // Tutup modal
             $('#tableCatatan').modal('hide');
         }
-    </script>
+    </script>   
     
     <script>
         $('#tableCatatan').on('show.bs.modal', function (event) {
@@ -499,130 +699,6 @@
             // Tutup modal
             $('#tableCatatan').modal('hide');
         }
-    </script>
-    
-
-<script>
-    let originalSubTotal = 0;
-
-    function cleanSubTotal(subTotal) {
-        // Hapus "Rp" dan titik
-        return parseFloat(subTotal.replace(/Rp|\.|,/g, '')) || 0;
-    }
-
-    function formatRupiah(angka) {
-        // Format angka ke format Rupiah
-        const numberString = angka.toString();
-        const sisa = numberString.length % 3;
-        let rupiah = numberString.substr(0, sisa);
-        const ribuan = numberString.substr(sisa).match(/\d{3}/g);
-
-        if (ribuan) {
-            const separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
-        }
-
-        return 'Rp' + rupiah;
-    }
-
-    function showPaymentFields() {
-        const paymentFields = document.querySelectorAll('.payment-field');
-        paymentFields.forEach(field => field.hidden = true);
-
-        const metodebayar = document.getElementById('metodebayar').value;
-        const subTotalField = document.getElementById('sub_total');
-        let subTotal = cleanSubTotal(subTotalField.value);
-
-        console.log('Sub Total:', subTotal);
-
-        // Simpan nilai asli dari subTotal saat pertama kali metode pembayaran dipilih
-        if (originalSubTotal === 0 && subTotal > 0) {
-            originalSubTotal = subTotal;
-        }
-
-        if (metodebayar === "gobiz") {
-            document.getElementById('gobiz-fields').hidden = false;
-            const feeField = document.getElementById('gobiz_fee');
-            const fee = Math.round(subTotal * 0.20);
-            feeField.value = fee;
-            subTotalField.value = formatRupiah(subTotal + fee);
-        } else if (metodebayar === "mesinedc") {
-            document.getElementById('mesinedc-fields').hidden = false;
-            const feeField = document.getElementById('struk_edc_fee');
-            const fee = Math.round(subTotal * 0.01);
-            feeField.value = fee;
-            subTotalField.value = formatRupiah(subTotal + fee);
-        } else if (metodebayar === "transfer") {
-            document.getElementById('transfer-fields').hidden = false;
-        } else if (metodebayar === "qris") {
-            document.getElementById('qris-fields').hidden = false;
-        } else if (metodebayar === "tunai") {
-            document.getElementById('tunai-fields').hidden = false;
-        } else if (metodebayar === "voucher") {
-            document.getElementById('voucher-fields').hidden = false;
-        } else {
-            // Kembalikan nilai subTotal ke nilai asli jika metode pembayaran dikosongkan
-            subTotalField.value = formatRupiah(originalSubTotal);
-            originalSubTotal = 0;
-        }
-    }
-
-    function validateNumberInput(event) {
-        const input = event.target;
-        const value = input.value;
-        const sanitizedValue = value.replace(/[^0-9.,Rp]/g, '');
-
-        if (sanitizedValue !== value) {
-            input.value = sanitizedValue;
-        }
-    }
-
-    document.getElementById('sub_total').addEventListener('input', validateNumberInput);
-    document.getElementById('sub_total').addEventListener('input', showPaymentFields);
-    window.onload = showPaymentFields;
-</script>
-
-   <script>
-        $(function () {
-            $('#reservationdatetime').datetimepicker({
-                format: 'DD/MM/YYYY HH:mm',
-                icons: {
-                    time: 'fa fa-clock',
-                    date: 'fa fa-calendar',
-                    up: 'fa fa-arrow-up',
-                    down: 'fa fa-arrow-down',
-                    previous: 'fa fa-chevron-left',
-                    next: 'fa fa-chevron-right',
-                    today: 'fa fa-calendar-check-o',
-                    clear: 'fa fa-trash',
-                    close: 'fa fa-times'
-                }
-            });
-        });
-    </script>
-
-    <script>
-        function handleEnter(event, urutan) {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // Mencegah form dari submit jika ada
-                addPesanan(urutan);
-            }
-        }
-
-        function addPesanan(urutan) {
-            // Logika untuk menambah pesanan
-            console.log("Pesanan ditambahkan untuk urutan " + urutan);
-        }
-
-        function simpanPesanan() {
-            // Logika untuk menyimpan pesanan
-            console.log("Pesanan disimpan");
-        }
-
-        // Contoh: Tambahkan event listener untuk tombol simpan
-        document.getElementById('simpanButton').addEventListener('click', function() {
-            simpanPesanan();
-        });
     </script>
 
     <script>
@@ -664,56 +740,218 @@
 
         });
     </script>
-
+    
     <script>
-        //    memunculkan button utk mencari pelanggan yg sudah ada
-        document.addEventListener('DOMContentLoaded', function() {
-            var kategoriSelect = document.getElementById('kategori');
-            var searchButtonRow = document.querySelector('.col-md');
+            //    memunculkan button utk mencari pelanggan yg sudah ada
+            document.addEventListener('DOMContentLoaded', function() {
+                var kategoriSelect = document.getElementById('kategori');
+                var searchButtonRow = document.querySelector('.col-md');
 
-            kategoriSelect.addEventListener('change', function() {
-                if (kategoriSelect.value === 'member') {
-                    searchButtonRow.hidden = false;
-                } else {
+                kategoriSelect.addEventListener('change', function() {
+                    if (kategoriSelect.value === 'member') {
+                        searchButtonRow.hidden = false;
+                    } else {
+                        searchButtonRow.hidden = true;
+                    }
+                });
+
+                if (kategoriSelect.value === 'nonmember') {
                     searchButtonRow.hidden = true;
                 }
             });
+    </script>
 
-            if (kategoriSelect.value === 'nonmember') {
-                searchButtonRow.hidden = true;
+    <script>
+            // memunculkan datatable pelaanggan dan produk
+            $(document).ready(function() {
+                // Inisialisasi datatables
+                var pelangganTable = $('#datatables4').DataTable();
+                var produkTable = $('#datatables5').DataTable();
+        
+                $('#tableMarketing').on('shown.bs.modal', function () {
+                    pelangganTable.columns.adjust().draw();
+                });
+        
+                $('#tableProduk').on('shown.bs.modal', function () {
+                    produkTable.columns.adjust().draw();
+                });
+            });
+        
+            function showCategoryModalpemesanan() {
+                $('#tableMarketing').modal('show');
             }
-        });
+        
+            function getSelectedDataPemesanan(nama_pelanggan,  telp, alamat, kode_pelanggan) {
+                document.getElementById('nama_pelanggan').value = nama_pelanggan;
+                document.getElementById('kode_pelanggan').value = kode_pelanggan;
+                document.getElementById('telp').value = telp;
+                document.getElementById('alamat').value = alamat;
+                $('#tableMarketing').modal('hide');
+            }
+        
+    </script>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+            var delayTimer;
+            var scanned = false; // Tambahkan variabel untuk menandai apakah sudah discan atau belum
+        
+            $(document).ready(function() {
+                // Fokuskan input saat halaman dimuat
+                $('#qrcode_pelanggan').focus();
+        
+                $('#qrcode_pelanggan').on('input', function() {
+                    var qrcode_pelanggan = $(this).val().trim();
+        
+                    // Hapus timer sebelumnya jika ada
+                    clearTimeout(delayTimer);
+        
+                    // Tunggu sebentar sebelum mengambil data
+                    delayTimer = setTimeout(function() {
+                        if (qrcode_pelanggan !== '') {
+                            // Periksa apakah sudah discan sebelumnya
+                            if (!scanned) {
+                                getData(qrcode_pelanggan);
+                            } else {
+                                // Data sudah discan sebelumnya, tidak perlu melakukan apa-apa
+                                console.log('Data sudah discan sebelumnya.');
+                            }
+                        } else {
+                            // Handle jika qrcode_pelanggan kosong
+                            $('#nama_pelanggan').val('');
+                            $('#telp').val('');
+                            $('#alamat').val('');
+                            scanned = false; // Reset status scanned
+                        }
+                    }, 200); // Waktu penundaan dalam milidetik (misalnya 200ms)
+                });
+            });
+        
+            function getData(qrcode_pelanggan) {
+                // Ajax request untuk mengambil data dari backend
+                $.ajax({
+                    url: '{{ route("get.customer.data") }}', // Menggunakan route() untuk mengambil URL endpoint
+                    method: 'GET',
+                    data: { qrcode_pelanggan: qrcode_pelanggan },
+                    success: function(response) {
+                        // Isi nilai nama pelanggan, telepon, dan alamat berdasarkan respons dari backend
+                        $('#nama_pelanggan').val(response.nama_pelanggan);
+                        $('#telp').val(response.telp);
+                        $('#alamat').val(response.alamat);
+                        scanned = true; // Tandai bahwa sudah discan
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error jika ada
+                        console.error('Error:', error);
+                    }
+                });
+            }
+    </script>
+      
+
+    <script>
+        function formatAndUpdateKembali() {
+                let subTotalElement = document.getElementById('sub_total');
+                let subTotalAsliElement = document.getElementById('sub_totalasli');
+                let dp_pemesananElement = document.getElementById('dp_pemesanan');
+                let kekurangan_pemesananElement = document.getElementById('kekurangan_pemesanan');
+
+                // Mengambil nilai sub_total
+                let subTotal = removeRupiahFormat(subTotalElement.value);
+                let subTotalAsli = removeRupiahFormat(subTotalAsliElement.value);
+
+
+                // Format dan ambil nilai dp_pemesanan
+                let dp_pemesananValue = dp_pemesananElement.value.replace(/[^0-9,-]/g, '').replace(',', '.');
+                let dp_pemesanan = parseFloat(dp_pemesananValue) || 0; // Jika tidak valid, set 0
+
+                // Format input 'dp_pemesanan'
+                dp_pemesananElement.value = formatRupiah(dp_pemesananValue);
+
+                // Hitung kekurangan_pemesananan
+                let kekurangan_pemesanan = subTotal - dp_pemesanan;
+                
+                // Format hasil kekurangan_pemesananan sebagai Rupiah
+                kekurangan_pemesananElement.value = kekurangan_pemesanan >= 0 ? formatRupiah(kekurangan_pemesanan) : 'Rp. 0';
+
+                // Validasi DP
+                validateDP();
+            }
+
+            // Fungsi untuk menghapus format Rupiah dan mengembalikan nilai numerik
+            function removeRupiahFormat(value) {
+                return parseFloat(value.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
+            }
+
+            // Format angka menjadi format Rupiah
+            function formatRupiah(value) {
+                let numberString = value.toString().replace(/[^,\d]/g, ''),
+                    split = numberString.split(','),
+                    sisa = split[0].length % 3,
+                    rupiah = split[0].substr(0, sisa),
+                    ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+                if (ribuan) {
+                    let separator = sisa ? '.' : '';
+                    rupiah += separator + ribuan.join('.');
+                }
+
+                return split[1] !== undefined ? 'Rp. ' + rupiah + ',' + split[1] : 'Rp. ' + rupiah;
+            }
+
+            // Panggil fungsi ini saat halaman dimuat untuk format sub_total yang mungkin sudah ada
+            document.addEventListener('DOMContentLoaded', function() {
+                let subTotalElement = document.getElementById('sub_total');
+                let subTotalAsliElement = document.getElementById('sub_totalasli');
+
+                let subTotal = removeRupiahFormat(subTotalElement.value);
+                subTotalElement.value = formatRupiah(subTotal);
+            });
+
+            document.querySelector('form').addEventListener('submit', function(event) {
+                let subTotalElement = document.getElementById('sub_total');
+                let subTotalAsliElement = document.getElementById('sub_totalasli');
+
+                let dp_pemesananElement = document.getElementById('dp_pemesanan');
+                let kekurangan_pemesananElement = document.getElementById('kekurangan_pemesanan');
+
+                // Menghapus format Rupiah dari input sebelum submit
+                subTotalElement.value = removeRupiahFormat(subTotalElement.value);
+                subTotalAsliElement.value = removeRupiahFormat(subTotalAsliElement.value);
+
+                dp_pemesananElement.value = removeRupiahFormat(dp_pemesananElement.value);
+                kekurangan_pemesananElement.value = removeRupiahFormat(kekurangan_pemesananElement.value);
+
+                // Formulir akan disubmit dengan nilai numerik
+            });
     </script>
 
     <script>
-        // memunculkan datatable pelaanggan dan produk
-        $(document).ready(function() {
-            // Inisialisasi datatables
-            var pelangganTable = $('#datatables4').DataTable();
-            var produkTable = $('#datatables5').DataTable();
-    
-            $('#tableMarketing').on('shown.bs.modal', function () {
-                pelangganTable.columns.adjust().draw();
-            });
-    
-            $('#tableProduk').on('shown.bs.modal', function () {
-                produkTable.columns.adjust().draw();
-            });
-        });
-    
-        function showCategoryModalpemesanan() {
-            $('#tableMarketing').modal('show');
+       document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('keydown', function(event) {
+        // Cek apakah elemen yang aktif adalah textarea
+        const activeElement = document.activeElement;
+        if (activeElement.tagName === 'TEXTAREA') {
+            return; // Jika ya, biarkan Enter untuk pindah ke baris baru
         }
-    
-        function getSelectedDataPemesanan(nama_pelanggan, telp, alamat) {
-            document.getElementById('nama_pelanggan').value = nama_pelanggan;
-            document.getElementById('telp').value = telp;
-            document.getElementById('alamat').value = alamat;
-            $('#tableMarketing').modal('hide');
-        }
-    </script>
 
-    <script>
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Mencegah aksi default dari tombol Enter
+            addPesanan(); // Memanggil addPesanan saat tombol Enter ditekan
+        }
+        
+        if (event.key === 'F1') { // Misalnya, F1 untuk menampilkan modal produk
+            event.preventDefault(); // Mencegah aksi default dari tombol F1
+            var urutan = $('#tabel-pembelian tr').length; // Ambil urutan terakhir atau default
+            showCategoryModal(urutan); // Menampilkan modal produk
+        }
+    });
+});
+
+
+
         var data_pembelian = @json(session('data_pembelians'));
         var jumlah_ban = 0;
 
@@ -729,26 +967,40 @@
 
         // Fungsi untuk menampilkan modal barang
         function showCategoryModal(urutan) {
-            $('#tableProduk').modal('show');
-            // Simpan urutan untuk menyimpan data ke baris yang sesuai
-            $('#tableProduk').attr('data-urutan', urutan);
+            var kategori = $('#kategori').val(); // Ambil nilai kategori (member/nonmember)
+
+            if (!kategori) {
+                // Jika kategori belum dipilih, tampilkan SweetAlert
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Tipe Pelanggan Belum Dipilih!',
+                    text: 'Silakan pilih tipe pelanggan terlebih dahulu sebelum memilih produk.',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                // Jika kategori sudah dipilih, tampilkan modal produk
+                $('#tableProduk').modal('show');
+                // Simpan urutan untuk menyimpan data ke baris yang sesuai
+                $('#tableProduk').attr('data-urutan', urutan);
+            }
         }
-       
+
         // Event listener for pilih-btn
         $(document).on('click', '.pilih-btn', function() {
             var id = $(this).data('id');
             var kode = $(this).data('kode');
+            var lama = $(this).data('lama');
             var nama = $(this).data('nama');
             var member = $(this).data('member');
             var diskonmember = $(this).data('diskonmember');
             var nonmember = $(this).data('nonmember');
             var diskonnonmember = $(this).data('diskonnonmember');
             
-            getSelectedData(id, kode, nama, member, diskonmember, nonmember, diskonnonmember);
+            getSelectedData(id, kode,lama, nama, member, diskonmember, nonmember, diskonnonmember);
         });
 
         // Fungsi untuk memilih data barang dari modal
-        function getSelectedData(id, kode_produk, nama_produk, member, diskonmember, nonmember, diskonnonmember) {
+        function getSelectedData(id, kode_produk,kode_lama, nama_produk, member, diskonmember, nonmember, diskonnonmember) {
             var urutan = $('#tableProduk').attr('data-urutan');
             var kategori = $('#kategori').val();
             var harga = kategori === 'member' ? member : nonmember;
@@ -757,6 +1009,7 @@
             // Set nilai input pada baris yang sesuai
             $('#produk_id-' + urutan).val(id);
             $('#kode_produk-' + urutan).val(kode_produk);
+            $('#kode_lama-' + urutan).val(kode_lama);
             $('#nama_produk-' + urutan).val(nama_produk);
             $('#harga-' + urutan).val(harga);
             $('#diskon-' + urutan).val(diskon);
@@ -765,21 +1018,8 @@
             // Tutup modal
             $('#tableProduk').modal('hide');
 
-
-                // Setelah menambahkan data dari modal, fokuskan ke input jumlah
-            var InputJumlah =  document.getElementById('jumlah-' + urutan).focus();
-
-            // InputJumlah.addEventListener('keydown', function(event){
-            //     if(event.key === 'Enter'){
-
-            //         event.preventDefault();
-                    
-            //         addPesanan();
-
-            //     }
-
-            // });
-
+            // Setelah menambahkan data dari modal, fokuskan ke input jumlah
+            document.getElementById('jumlah-' + urutan).focus();
         }
 
         // Fungsi untuk menghitung total berdasarkan harga dan jumlah
@@ -790,9 +1030,11 @@
 
             var hargaSetelahDiskon = harga - (harga * (diskon / 100));
             var total = hargaSetelahDiskon * jumlah;
+            var totalasli = harga * jumlah;
 
             // Format total ke dalam format rupiah dan set nilai input total
             $('#total-' + urutan).val(total);
+            $('#totalasli-' + urutan).val(totalasli);
             // Hitung subtotal setiap kali total di baris berubah
             hitungSubTotal();
         }
@@ -800,11 +1042,20 @@
         // Fungsi untuk menghitung subtotal semua barang
         function hitungSubTotal() {
             var subTotal = 0;
+            var subTotalAsli = 0;
+
             $('[id^=total-]').each(function() {
                 var total = parseFloat($(this).val().replace(/[^0-9]/g, '')) || 0;
                 subTotal += total;
             });
-            $('#sub_total').val(subTotal);
+
+            $('[id^=totalasli-]').each(function() {
+                var totalAsli = parseFloat($(this).val().replace(/[^0-9]/g, '')) || 0;
+                subTotalAsli += totalAsli;
+            });
+
+            $('#sub_total').val(formatRupiah(subTotal));
+            $('#sub_totalasli').val(formatRupiah(subTotalAsli));
         }
 
         function addPesanan() {
@@ -836,168 +1087,44 @@
 
         function itemPembelian(urutan, key, value = null) {
             var produk_id = '';
-            var catatanproduk = '';
             var kode_produk = '';
+            var kode_lama = '';
             var nama_produk = '';
             var jumlah = '';
             var diskon = '';
             var harga = '';
             var total = '';
+            var totalasli = '';
 
             if (value !== null) {
                 produk_id = value.produk_id;
-                catatanproduk = value.catatanproduk;
                 kode_produk = value.kode_produk;
+                kode_lama = value.kode_lama;
                 nama_produk = value.nama_produk;
                 jumlah = value.jumlah;
                 diskon = value.diskon;
                 harga = value.harga;
                 total = value.total;
+                totalasli = value.totalasli;
             }
 
-            var item_pembelian = '<tr  id="pembelian-' + urutan + '">';
-            item_pembelian += '<td style="width: 70px; font-size:14px" class="text-center" id="urutan-' + urutan + '">' + urutan + '</td>'; 
+            var item_pembelian = '<tr id="pembelian-' + urutan + '">';
+            item_pembelian += '<td style="width: 5%; font-size:14px" class="text-center" id="urutan-' + urutan + '">' + urutan + '</td>'; 
             item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="produk_id-' + urutan + '" name="produk_id[]" value="' + produk_id + '"></div></td>';
-            item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="catatanproduk-' + urutan + '" name="catatanproduk[]"></div></td>';
-            item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
-            item_pembelian += '<td onclick="showCategoryModalCatatan(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
-            item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
-            item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')" style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" readonly id="diskon-' + urutan + '" name="diskon[]" value="' + diskon + '" ></div></td>';
-            item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="harga-' + urutan + '" name="harga[]" value="' + harga + '"></div></td>';
-            item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="total-' + urutan + '" name="total[]" value="' + total + '"></div></td>';
-            item_pembelian += '<td style="width: 100px"><button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(' + urutan + ')"><i class="fas fa-plus"></i></button><button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' + urutan + ')"><i class="fas fa-trash"></i></button></td>';
+            item_pembelian += '<td style="width: 10%" hidden onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
+            item_pembelian += '<td style="width: 10%" onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_lama-' + urutan + '" name="kode_lama[]" value="' + kode_lama + '"></div></td>';
+            item_pembelian += '<td style="width: 30%" onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
+            item_pembelian += '<td style="width: 10%" style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
+            item_pembelian += '<td style="width: 10%" onclick="showCategoryModal(' + urutan + ')" style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" readonly id="diskon-' + urutan + '" name="diskon[]" value="' + diskon + '" ></div></td>';
+            item_pembelian += '<td style="width: 10%" onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="harga-' + urutan + '" name="harga[]" value="' + harga + '"></div></td>';
+            item_pembelian += '<td style="width: 10%" onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="total-' + urutan + '" name="total[]" value="' + total + '"></div></td>';
+            item_pembelian += '<td style="width: 10%" hidden onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" hidden id="totalasli-' + urutan + '" name="totalasli[]" value="' + totalasli + '"></div></td>';
+            item_pembelian += '<td style="width: 10%"><button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(' + urutan + ')"><i class="fas fa-plus"></i></button><button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' + urutan + ')"><i class="fas fa-trash"></i></button></td>';
             item_pembelian += '</tr>';
 
             $('#tabel-pembelian').append(item_pembelian);
-        }
-
-        // function formatRupiah(angka, prefix = '') {
-        //     var number_string = angka.toString().replace(/[^,\d]/g, '');
-        //     var split = number_string.split(',');
-        //     var sisa = split[0].length % 3;
-        //     var rupiah = split[0].substr(0, sisa);
-        //     var ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-        //     if (ribuan) {
-        //         var separator = sisa ? '.' : '';
-        //         rupiah += separator + ribuan.join('.');
-        //     }
-
-        //     rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-        //     return prefix + rupiah;
-        // }
-    </script>
-
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <script>
-        var delayTimer;
-        var scanned = false; // Tambahkan variabel untuk menandai apakah sudah discan atau belum
-    
-        $(document).ready(function() {
-            // Fokuskan input saat halaman dimuat
-            $('#qrcode_pelanggan').focus();
-    
-            $('#qrcode_pelanggan').on('input', function() {
-                var qrcode_pelanggan = $(this).val().trim();
-    
-                // Hapus timer sebelumnya jika ada
-                clearTimeout(delayTimer);
-    
-                // Tunggu sebentar sebelum mengambil data
-                delayTimer = setTimeout(function() {
-                    if (qrcode_pelanggan !== '') {
-                        // Periksa apakah sudah discan sebelumnya
-                        if (!scanned) {
-                            getData(qrcode_pelanggan);
-                        } else {
-                            // Data sudah discan sebelumnya, tidak perlu melakukan apa-apa
-                            console.log('Data sudah discan sebelumnya.');
-                        }
-                    } else {
-                        // Handle jika qrcode_pelanggan kosong
-                        $('#nama_pelanggan').val('');
-                        $('#telp').val('');
-                        $('#alamat').val('');
-                        scanned = false; // Reset status scanned
-                    }
-                }, 200); // Waktu penundaan dalam milidetik (misalnya 200ms)
-            });
-        });
-    
-        function getData(qrcode_pelanggan) {
-            // Ajax request untuk mengambil data dari backend
-            $.ajax({
-                url: '{{ route("get.customer.data") }}', // Menggunakan route() untuk mengambil URL endpoint
-                method: 'GET',
-                data: { qrcode_pelanggan: qrcode_pelanggan },
-                success: function(response) {
-                    // Isi nilai nama pelanggan, telepon, dan alamat berdasarkan respons dari backend
-                    $('#nama_pelanggan').val(response.nama_pelanggan);
-                    $('#telp').val(response.telp);
-                    $('#alamat').val(response.alamat);
-                    scanned = true; // Tandai bahwa sudah discan
-                },
-                error: function(xhr, status, error) {
-                    // Handle error jika ada
-                    console.error('Error:', error);
-                }
-            });
-        }
-    </script>
-    
-
-    <script>
-        // Fungsi untuk menghapus format Rupiah dan mengembalikan nilai numerik
-        function removeRupiahFormat(value) {
-            return parseFloat(value.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
-        }
-
-        // Format angka menjadi format Rupiah
-        function formatRupiah(value) {
-            let numberString = value.toString().replace(/[^,\d]/g, ''),
-                split = numberString.split(','),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-            if (ribuan) {
-                let separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
             }
-
-            return split[1] !== undefined ? 'Rp. ' + rupiah + ',' + split[1] : 'Rp. ' + rupiah;
-        }
-        
-        // Format input dan update kembalian
-        function formatAndUpdateKembali() {
-            let subTotalElement = document.getElementById('sub_total');
-            let bayarElement = document.getElementById('dp_pemesanan');
-            let kembaliElement = document.getElementById('kekurangan_pemesanan');
-
-            // Mengambil nilai sub_total
-            let subTotal = removeRupiahFormat(subTotalElement.value);
-
-            // Format dan ambil nilai bayar
-            let bayarValue = bayarElement.value.replace(/[^0-9,-]/g, '').replace(',', '.');
-            let bayar = parseFloat(bayarValue) || 0; // Jika tidak valid, set 0
-
-            // Format input 'bayar'
-            bayarElement.value = formatRupiah(bayarValue);
-
-            // Hitung kembalian
-            let kembali = subTotal - bayar;
-            
-            // Format hasil kembalian sebagai Rupiah
-            kembaliElement.value = kembali >= 0 ? formatRupiah(kembali) : 'Rp. 0';
-        }
-
-        // Panggil fungsi ini saat halaman dimuat untuk format sub_total yang mungkin sudah ada
-        document.addEventListener('DOMContentLoaded', function() {
-            let subTotalElement = document.getElementById('sub_total');
-            let subTotal = removeRupiahFormat(subTotalElement.value);
-            subTotalElement.value = formatRupiah(subTotal);
-        });
     </script>
+
+
 @endsection

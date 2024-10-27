@@ -37,7 +37,17 @@
                 </script>
             @endif
             <div class="card">
-                
+                <div class="card-header">
+                    <div class="float-right">
+                        <select class="form-control" id="kategori1" name="kategori">
+                            <option value="">- Pilih -</option>
+                            <option value="stok" {{ old('kategori1') == 'stok' ? 'selected' : '' }}>Data Stok</option>
+                            <option value="stokpesanan" {{ old('kategori1') == 'stokpesanan' ? 'selected' : '' }}>Data Stok Pesanan</option>
+                            <option value="semuastok" {{ old('kategori1') == 'semuastok' ? 'selected' : '' }}>Data Semua Stok</option>
+                        </select>
+                    </div>
+                    <h3 class="card-title">Laporan Stok Toko</h3>
+                </div>
                 <!-- /.card-header -->
                 <div class="card-body">
                     
@@ -48,13 +58,13 @@
                             <!-- Filter Toko -->
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="toko" name="toko_id">
-                                    <option value="">- Semua Toko -</option>
-                                    <option value="1" {{ Request::get('toko_id') == '1' ? 'selected' : '' }}>Toko Banjaran</option>
+                                    {{-- <option value="">- Semua Toko -</option> --}}
                                     <option value="2" {{ Request::get('toko_id') == '2' ? 'selected' : '' }}>Toko Tegal</option>
+                                    {{-- <option value="2" {{ Request::get('toko_id') == '2' ? 'selected' : '' }}>Toko Tegal</option>
                                     <option value="3" {{ Request::get('toko_id') == '3' ? 'selected' : '' }}>Toko Slawi</option>
                                     <option value="4" {{ Request::get('toko_id') == '4' ? 'selected' : '' }}>Toko Pemalang</option>
                                     <option value="5" {{ Request::get('toko_id') == '5' ? 'selected' : '' }}>Toko Bumiayu</option>
-                                    <option value="6" {{ Request::get('toko_id') == '6' ? 'selected' : '' }}>Toko Cilacap</option>
+                                    <option value="6" {{ Request::get('toko_id') == '6' ? 'selected' : '' }}>Toko Cilacap</option> --}}
                                 </select>
                                 <label for="toko">(Pilih Toko)</label>
                             </div>
@@ -99,15 +109,15 @@
                     
                     
                 
-                    <table id="datatables1" class="table table-bordered" style="font-size: 13px">
-                        <thead>
+                    <table id="datatables1" class="table table-bordered table-striped" style="font-size: 13px; width: 100%;">
+                        <thead class="thead-light">
                             <tr>
-                                <th>No</th>
-                                <th>Kode Produk</th>
-                                <th>Nama Produk</th>
-                                <th>Stok</th>
-                                <th>Harga</th>
-                                <th>Sub Total</th>
+                                <th style="text-align: center; width: 5%;">No</th>
+                                <th style="text-align: center; width: 15%;">Kode Produk</th>
+                                <th style="text-align: center; width: 30%;">Nama Produk</th>
+                                <th style="text-align: center; width: 10%;">Stok</th>
+                                <th style="text-align: center; width: 15%;">Harga (Rp)</th>
+                                <th style="text-align: center; width: 20%;">Sub Total (Rp)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -116,21 +126,22 @@
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $produk->kode_lama }}</td>
                                     <td>{{ $produk->nama_produk }}</td>
-                                    <td style="text-align: right">{{ $produk->jumlah }}</td>
-                                    <td style="text-align: right">{{ number_format($produk->harga, 0, ',', '.') }} </td>
-                                    <td style="text-align: right">{{ number_format($produk->subTotal, 0, ',', '.') }} </td> <!-- Sub Total -->
+                                    <td style="text-align: right">{{ number_format($produk->jumlah, 0, ',', '.') }}</td> <!-- Stok with number format -->
+                                    <td style="text-align: right">{{ number_format($produk->harga, 0, ',', '.') }}</td> <!-- Harga with number format -->
+                                    <td style="text-align: right">{{ number_format($produk->subTotal, 0, ',', '.') }}</td> <!-- Sub Total with number format -->
                                 </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
                                 <th colspan="3" class="text-center">Total</th>
-                                <th style="text-align: right">{{ $totalStok }}</th>
+                                <th style="text-align: right">{{ number_format($totalStok, 0, ',', '.') }}</th> <!-- Total Stok -->
                                 <th></th>
-                                <th style="text-align: right">{{ 'Rp. ' . number_format($totalSubTotal, 0, ',', '.') }}</th>
+                                <th style="text-align: right">{{ 'Rp. ' . number_format($totalSubTotal, 0, ',', '.') }}</th> <!-- Total Sub Total -->
                             </tr>
                         </tfoot>
                     </table>
+                    
                 </div>
                 
                 
@@ -143,46 +154,45 @@
     function printReport() {
         if (event) event.preventDefault();
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printstoktokobanjaran') }}";
+    form.action = "{{ url('toko_tegal/printsemuastoktokotegal') }}";
     form.target = "_blank";
     form.submit();
 }
     </script>
 
-    <script>
-        function filterSubKlasifikasi() {
-            var klasifikasiId = document.getElementById('klasifikasi').value;
-            var subKlasifikasiSelect = document.getElementById('subklasifikasi');
-            var subKlasifikasiOptions = subKlasifikasiSelect.options;
-    
-            // Show all options initially
-            for (var i = 0; i < subKlasifikasiOptions.length; i++) {
-                var option = subKlasifikasiOptions[i];
-                if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
-                    option.style.display = "block";
-                } else {
-                    option.style.display = "none";
-                }
-            }
-    
-            // Automatically select the first valid option if any
-            var foundValidOption = false;
-            for (var i = 1; i < subKlasifikasiOptions.length; i++) { // Skip the first option (default)
-                var option = subKlasifikasiOptions[i];
-                if (option.style.display === "block") {
-                    subKlasifikasiSelect.selectedIndex = i;
-                    foundValidOption = true;
-                    break;
-                }
-            }
-            if (!foundValidOption) {
-                subKlasifikasiSelect.selectedIndex = 0; // Select default if no valid option found
-            }
+<script>
+    function filterSubKlasifikasi() {
+var klasifikasiId = document.getElementById('klasifikasi').value;
+var subKlasifikasiSelect = document.getElementById('subklasifikasi');
+var subKlasifikasiOptions = subKlasifikasiSelect.options;
+
+// Show all options initially
+for (var i = 0; i < subKlasifikasiOptions.length; i++) {
+    var option = subKlasifikasiOptions[i];
+    if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
+        option.style.display = "block";
+    } else {
+        option.style.display = "none";
+    }
+}
+
+// Don't automatically select sub classification, let the user decide
+subKlasifikasiSelect.selectedIndex = 0;
+}
+
+</script>
+
+<script>
+    document.getElementById('kategori1').addEventListener('change', function() {
+        var selectedValue = this.value;
+
+        if (selectedValue === 'stok') {
+            window.location.href = "{{ url('toko_tegal/laporan_stoktokotegal') }}";
+        } else if (selectedValue === 'stokpesanan') {
+            window.location.href = "{{ url('toko_tegal/stoktokopesanantegal') }}";
+        }else if (selectedValue === 'semuastok') {
+            window.location.href = "{{ url('toko_tegal/semuastoktokotegal') }}";
         }
-    
-        // Initialize the filter on page load to show the correct subklasifikasi options
-        document.addEventListener('DOMContentLoaded', function() {
-            filterSubKlasifikasi();
-        });
-    </script>
+    });
+</script>
 @endsection

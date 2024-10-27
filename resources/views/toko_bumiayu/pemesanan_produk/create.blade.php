@@ -60,7 +60,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ url('toko_bumiayu/pemesanan_produk') }}">Pemesanan Produk</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('toko_tegal/pemesanan_produk') }}">Pemesanan Produk</a></li>
                         <li class="breadcrumb-item active">Tambah</li>
                     </ol>
                 </div><!-- /.col -->
@@ -88,7 +88,7 @@
                     @endforeach
                 </div>
             @endif
-            <form id="pemesananForm" action="{{ url('toko_bumiayu/pemesanan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form id="pemesananForm" action="{{ url('toko_tegal/pemesanan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 {{-- detail pelanggan --}}
                 <div class="card">
@@ -169,7 +169,7 @@
                                             <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}')">
                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td>{{ $item->kode_pelanggan }}</td>
-                                                <td>{{ $item->kode_lama }}</td>
+                                                <td>{{ $item->kode_pelangganlama }}</td>
                                                 <td>{{ $item->nama_pelanggan }}</td>
                                                 <td>{{ $item->telp }}</td>
                                                 <td>{{ $item->alamat }}</td>
@@ -192,7 +192,8 @@
                         <h3 class="card-title">Detail Pengambilan</h3>
                     </div>
                     <div class="card-body">
-                        <div class="col-md-4 mb-3">
+                        <div class="row mb-3 align-items-center">
+                        <div class="col-md-6">
                             <label for="tanggal_kirim">Tanggal Pengambilan:</label>
                             <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
                                 <input type="text" id="tanggal_kirim" name="tanggal_kirim"
@@ -205,7 +206,19 @@
                                 </div>
                             </div>
                         </div>
+                        </div>
                         
+                        {{-- <div class="row mb-3 align-items-center">
+                            <div class="col-md-6 -auto" id="" >
+                                <label class="form-label" for="toko_pengambilan">Toko Pengambilan</label>
+                                <select class="custom-select form-control" id="toko" name="toko_id">
+                                    <option value="">- Pilih Toko -</option>
+                                    @foreach ($tokos as $toko)
+                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div> --}}
                         <div class="row mb-3 align-items-center">
                             <div class="col-md-6 -auto" id="" >
                                 <label for="nama_penerima">Nama Penerima </label> <span style="font-size: 10px;">(kosongkan jika sama dengan nama pelanggan)</span>
@@ -287,15 +300,14 @@
                                             <th>Diskon Member</th>
                                             <th>Harga Non Member</th>
                                             <th>Diskon Non Member</th>
-                                            <th>Stok</th>
                                             <th>Opsi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($produks as $item)
                                             @php
-                                                $tokobumiayu = $item->tokobumiayu->first();
-                                                $stokpesanan_tokobumiayu = $item->stokpesanan_tokobumiayu ? $item->stokpesanan_tokobumiayu->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
+                                                $tokotegal = $item->tokotegal->first();
+                                                $stokpesanan_tokotegal = $item->stokpesanan_tokotegal ? $item->stokpesanan_tokotegal->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
 
                                             @endphp
                                             <tr class="pilih-btn"
@@ -304,29 +316,27 @@
                                                 data-lama="{{ $item->kode_lama }}"
                                                 data-catatan="{{ $item->catatanproduk }}"
                                                 data-nama="{{ $item->nama_produk }}"
-                                                data-member="{{ $tokobumiayu ? $tokobumiayu->member_harga_bmy : '' }}"
-                                                data-diskonmember="{{ $tokobumiayu ? $tokobumiayu->member_diskon_bmy : '' }}"
-                                                data-nonmember="{{ $tokobumiayu ? $tokobumiayu->non_harga_bmy : '' }}"
-                                                data-diskonnonmember="{{ $tokobumiayu ? $tokobumiayu->non_diskon_bmy : '' }}">
+                                                data-member="{{ $tokotegal ? $tokotegal->member_harga_tgl : '' }}"
+                                                data-diskonmember="{{ $tokotegal ? $tokotegal->member_diskon_tgl : '' }}"
+                                                data-nonmember="{{ $tokotegal ? $tokotegal->non_harga_tgl : '' }}"
+                                                data-diskonnonmember="{{ $tokotegal ? $tokotegal->non_diskon_tgl : '' }}">
                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td>{{ $item->kode_produk }}</td>
                                                 <td>{{ $item->kode_lama }}</td>
                                                 <td>{{ $item->nama_produk }}</td>
                                                 <td>
-                                                    <span class="member_harga_slw">{{ $tokobumiayu ? $tokobumiayu->member_harga_bmy : '' }}</span>
+                                                    <span class="member_harga_tgl">{{ $tokotegal ? $tokotegal->member_harga_tgl : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="member_diskon_slw">{{ $tokobumiayu ? $tokobumiayu->member_diskon_bmy : '' }}</span>
+                                                    <span class="member_diskon_tgl">{{ $tokotegal ? $tokotegal->member_diskon_tgl : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="non_harga_slw">{{ $tokobumiayu ? $tokobumiayu->non_harga_bmy : '' }}</span>
+                                                    <span class="non_harga_tgl">{{ $tokotegal ? $tokotegal->non_harga_tgl : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="non_diskon_slw">{{ $tokobumiayu ? $tokobumiayu->non_diskon_bmy : '' }}</span>
+                                                    <span class="non_diskon_tgl">{{ $tokotegal ? $tokotegal->non_diskon_tgl : '' }}</span>
                                                 </td>
-                                                <td class="text-center">
-                                                    {{ $stokpesanan_tokobumiayu }} <!-- Tampilkan stok produk -->
-                                                </td>
+                                            
                                                 <td class="text-center">
                                                     <button type="button" class="btn btn-primary btn-sm pilih-btn"
                                                         data-id="{{ $item->id }}"
@@ -334,10 +344,10 @@
                                                         data-lama="{{ $item->kode_lama }}"
                                                         data-catatan="{{ $item->catatanproduk }}"
                                                         data-nama="{{ $item->nama_produk }}"
-                                                        data-member="{{ $tokobumiayu ? $tokobumiayu->member_harga_bmy : '' }}"
-                                                        data-diskonmember="{{ $tokobumiayu ? $tokobumiayu->member_diskon_bmy : '' }}"
-                                                        data-nonmember="{{ $tokobumiayu ? $tokobumiayu->non_harga_bmy : '' }}"
-                                                        data-diskonnonmember="{{ $tokobumiayu ? $tokobumiayu->non_diskon_bmy : '' }}">
+                                                        data-member="{{ $tokotegal ? $tokotegal->member_harga_tgl : '' }}"
+                                                        data-diskonmember="{{ $tokotegal ? $tokotegal->member_diskon_tgl : '' }}"
+                                                        data-nonmember="{{ $tokotegal ? $tokotegal->non_harga_tgl : '' }}"
+                                                        data-diskonnonmember="{{ $tokotegal ? $tokotegal->non_diskon_tgl : '' }}">
                                                         <i class="fas fa-plus"></i> 
                                                     </button>
                                                 </td>
@@ -544,7 +554,7 @@
             paymentFields.style.display = 'none';
         } else if (metodeId) {
             $.ajax({
-                url: "{{ url('toko_bumiayu/metodebayar/metode') }}" + "/" + metodeId,
+                url: "{{ url('toko_tegal/metodebayar/metode') }}" + "/" + metodeId,
                 type: "GET",
                 dataType: "json",
                 success: function(response) {
