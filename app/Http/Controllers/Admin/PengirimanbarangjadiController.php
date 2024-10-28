@@ -31,6 +31,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Pengiriman_tokobumiayu;
 use App\Models\Pengiriman_tokopemalang;
+use App\Models\Pengiriman_tokoslawi;
 use App\Models\Pengiriman_tokotegal;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -158,15 +159,16 @@ class PengirimanbarangjadiController extends Controller{
                     ]);
                     break;
                 case 3:
-                    Stok_tokoslawi::create([
+                    Pengiriman_tokoslawi::create([
                         'pengiriman_barangjadi_id' => $pengiriman->id,
-                        'kode_pengiriman' => $kode,
-                        'produk_id' => $produkId,
-                        'jumlah' => $jumlah,
-                        'status' => 'unpost',
-                        'tanggal_input' => $tanggalPengirimanDenganJam, // Simpan tanggal dengan jam yang sama
-                    ]);
-                    break;
+                         'kode_pengiriman' => $kode,
+                         'produk_id' => $produkId,
+                         'toko_id' => $tokoId,
+                         'jumlah' => $jumlah,
+                         'status' => 'unpost',
+                         'tanggal_input' => $tanggalPengirimanDenganJam,  // Simpan tanggal dengan jam yang sama
+                     ]);
+                     break;
                 case 4:
                     Pengiriman_tokopemalang::create([
                         'pengiriman_barangjadi_id' => $pengiriman->id,
@@ -233,6 +235,9 @@ public function kode($tanggalPengiriman, $tokoId)
             break;
         case 5:
             $prefix = 'JKF'; // Toko Bumiayu
+            break;
+        case 6:
+            $prefix = 'JKG'; // Toko Bumiayu
             break;
         default:
             $prefix = 'JK'; // Default prefix jika toko_id tidak valid

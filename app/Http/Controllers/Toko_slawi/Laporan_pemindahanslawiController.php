@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_tegal;
+namespace App\Http\Controllers\Toko_slawi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -43,7 +43,7 @@ use App\Models\Pemindahan_tokotegal;
 use App\Models\Retur_barnagjadi;
 use Maatwebsite\Excel\Facades\Excel;
 
-class Laporan_pemindahantegalController extends Controller{
+class Laporan_pemindahanslawiController extends Controller{
 
     public function index(Request $request)
     {
@@ -51,7 +51,7 @@ class Laporan_pemindahantegalController extends Controller{
             $tanggal_input = $request->tanggal_input;
             $tanggal_akhir = $request->tanggal_akhir;
 
-            $query = Pemindahan_tokotegal::with('produk.klasifikasi');
+            $query = Pemindahan_tokoslawi::with('produk.klasifikasi');
 
             if ($status) {
                 $query->where('status', $status);
@@ -75,7 +75,7 @@ class Laporan_pemindahantegalController extends Controller{
             // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
             $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pemindahan');
 
-            return view('toko_tegal.laporan_pemindahantegal.index', compact('stokBarangJadi'));
+            return view('toko_slawi.laporan_pemindahanslawi.index', compact('stokBarangJadi'));
     }
 
 
@@ -98,7 +98,7 @@ public function show($id)
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    return view('toko_tegal.inquery_pemindahanslawi.show', compact('pengirimanBarangJadi', 'firstItem'));
+    return view('toko_slawi.inquery_pemindahanslawi.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
 // public function printReport(Request $request)
@@ -131,7 +131,7 @@ public function show($id)
 //     // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
 //     $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pemindahan');
 
-//     return view('toko_tegal.laporan_pemindahanslawi.print', compact('stokBarangJadi', 'status', 'tanggal_input', 'tanggal_akhir'));
+//     return view('toko_slawi.laporan_pemindahanslawi.print', compact('stokBarangJadi', 'status', 'tanggal_input', 'tanggal_akhir'));
 // }
 
 public function printReport(Request $request)
@@ -165,7 +165,7 @@ public function printReport(Request $request)
     $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pemindahan');
 
     // Generate PDF
-    $pdf = FacadePdf::loadView('toko_tegal.laporan_pemindahanslawi.print', compact('stokBarangJadi', 'status', 'tanggal_input', 'tanggal_akhir'));
+    $pdf = FacadePdf::loadView('toko_slawi.laporan_pemindahanslawi.print', compact('stokBarangJadi', 'status', 'tanggal_input', 'tanggal_akhir'));
 
     // Download PDF file
     return $pdf->stream('laporan_pemindahan.pdf');

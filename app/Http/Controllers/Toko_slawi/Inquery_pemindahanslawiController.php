@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_tegal;
+namespace App\Http\Controllers\Toko_slawi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -43,11 +43,12 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
+use App\Models\Pemindahan_tokoslawimasuk;
 use App\Models\Pemindahan_tokotegalmasuk;
 use App\Models\Retur_barnagjadi;
 use Maatwebsite\Excel\Facades\Excel;
 
-class Inquery_pemindahantegalController extends Controller{
+class Inquery_pemindahanslawiController extends Controller{
 
 
     public function index(Request $request)
@@ -57,10 +58,10 @@ class Inquery_pemindahantegalController extends Controller{
         $tanggal_akhir = $request->tanggal_akhir;
     
         // Query untuk pemindahan_tokoslawi
-        $query1 = Pemindahan_tokotegal::with('produk.klasifikasi');
+        $query1 = Pemindahan_tokoslawi::with('produk.klasifikasi');
     
         // Query untuk pemindahan_tokoslawimasuks
-        $query2 = Pemindahan_tokotegalmasuk::with('produk.klasifikasi');
+        $query2 = Pemindahan_tokoslawimasuk::with('produk.klasifikasi');
     
         if ($status) {
             $query1->where('status', $status);
@@ -92,14 +93,14 @@ class Inquery_pemindahantegalController extends Controller{
             ->get()
             ->groupBy('kode_pemindahan');
     
-        return view('toko_tegal/inquery_pemindahantegal/index', compact('stokBarangJadi'));
+        return view('toko_slawi/inquery_pemindahanslawi/index', compact('stokBarangJadi'));
     }
 
 
 public function posting_pemindahan($id)
 {
     // Temukan data pemindahan berdasarkan ID
-    $pemindahan = Pemindahan_tokotegalmasuk::findOrFail($id);
+    $pemindahan = Pemindahan_tokoslawimasuk::findOrFail($id);
 
     // Cek apakah status saat ini adalah 'unpost'
     if ($pemindahan->status == 'unpost') {
@@ -117,7 +118,7 @@ public function posting_pemindahan($id)
             ]);
 
         // Update status dan tanggal terima pada tabel pemindahan_tokoslawimasuks
-        Pemindahan_tokotegalmasuk::where('kode_pemindahan', $pemindahan->kode_pemindahan)
+        Pemindahan_tokoslawimasuk::where('kode_pemindahan', $pemindahan->kode_pemindahan)
             ->update([
                 'status' => 'posting',
                 'tanggal_terima' => Carbon::now('Asia/Jakarta'),
@@ -202,7 +203,7 @@ private function kurangiStok($stok_items, $jumlah_yang_dibutuhkan)
 public function show($id)
 {
     // Ambil kode_retur dari pengiriman_barangjadi berdasarkan id
-    $detailStokBarangJadi = Pemindahan_tokotegal::where('id', $id)->value('kode_pemindahan');
+    $detailStokBarangJadi = Pemindahan_tokoslawi::where('id', $id)->value('kode_pemindahan');
     
     // Jika kode_pemindahan tidak ditemukan, tampilkan pesan error
     if (!$detailStokBarangJadi) {
@@ -210,17 +211,17 @@ public function show($id)
     }
     
     // Ambil semua data dengan kode_pemindahan yang sama
-    $pengirimanBarangJadi = Pemindahan_tokotegal::with(['produk.subklasifikasi', 'toko'])->where('kode_pemindahan', $detailStokBarangJadi)->get();
+    $pengirimanBarangJadi = Pemindahan_tokoslawi::with(['produk.subklasifikasi', 'toko'])->where('kode_pemindahan', $detailStokBarangJadi)->get();
     
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    return view('toko_tegal.inquery_pemindahantegal.show', compact('pengirimanBarangJadi', 'firstItem'));
+    return view('toko_slawi.inquery_pemindahanslawi.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
 public function print($id)
     {
-        $detailStokBarangJadi = Pemindahan_tokotegal::where('id', $id)->value('kode_pemindahan');
+        $detailStokBarangJadi = Pemindahan_tokoslawi::where('id', $id)->value('kode_pemindahan');
     
         // Jika kode_pemindahan tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -228,16 +229,16 @@ public function print($id)
         }
         
         // Ambil semua data dengan kode_pemindahan yang sama
-        $pengirimanBarangJadi = Pemindahan_tokotegal::with(['produk.subklasifikasi', 'toko'])->where('kode_pemindahan', $detailStokBarangJadi)->get();
+        $pengirimanBarangJadi = Pemindahan_tokoslawi::with(['produk.subklasifikasi', 'toko'])->where('kode_pemindahan', $detailStokBarangJadi)->get();
         
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        $pdf = FacadePdf::loadView('toko_tegal.inquery_pemindahantegal.print', compact('pengirimanBarangJadi', 'firstItem'));
+        $pdf = FacadePdf::loadView('toko_slawi.inquery_pemindahanslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
         
-        // return view('toko_tegal.retur_tokoslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
+        // return view('toko_slawi.retur_tokoslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
     }
 
 }

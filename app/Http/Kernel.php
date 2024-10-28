@@ -76,6 +76,7 @@ class Kernel extends HttpKernel
         'toko_bumiayu' => \App\Http\Middleware\isTokobumiayu::class,
         'toko_tegal' => \App\Http\Middleware\isTokotegal::class,
         'toko_pemalang' => \App\Http\Middleware\isTokopemalang::class,
+        'toko_cilacap' => \App\Http\Middleware\isTokocilacap::class,
         'isLogin' => \App\Http\Middleware\isLogin::class,
     ];
 }

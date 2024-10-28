@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_tegal;
+namespace App\Http\Controllers\Toko_slawi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -77,7 +77,7 @@ class Inquery_pengirimanbarangjadiController extends Controller{
             ->get()
             ->groupBy('kode_pengiriman');
 
-            return view('toko_tegal.inquery_pengirimanbarangjadi.index', compact('stokBarangJadi'));
+            return view('toko_slawi.inquery_pengirimanbarangjadi.index', compact('stokBarangJadi'));
     }
 
     
@@ -97,7 +97,7 @@ class Inquery_pengirimanbarangjadiController extends Controller{
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        return view('toko_tegal.inquery_pengirimanbarangjadi.show', compact('pengirimanBarangJadi', 'firstItem'));
+        return view('toko_slawi.inquery_pengirimanbarangjadi.show', compact('pengirimanBarangJadi', 'firstItem'));
     }
 
 
@@ -189,7 +189,7 @@ class Inquery_pengirimanbarangjadiController extends Controller{
         });
         $toko = $detailPermintaanProduks->first()->toko;
 
-        $pdf = FacadePdf::loadView('toko_tegal.permintaan_produk.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi','toko'));
+        $pdf = FacadePdf::loadView('toko_slawi.permintaan_produk.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi','toko'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
     }
@@ -215,7 +215,7 @@ class Inquery_pengirimanbarangjadiController extends Controller{
         $stok_barangjadi = Stok_Barangjadi::findOrFail($id);
         $klasifikasis = Klasifikasi::all(); // Menyediakan daftar klasifikasi
 
-        return view('toko_tegal.stok_barangjadi.edit', compact('stok_barangjadi', 'klasifikasis'));
+        return view('toko_slawi.stok_barangjadi.edit', compact('stok_barangjadi', 'klasifikasis'));
     }
 
     // Method untuk memproses update data
@@ -253,7 +253,7 @@ class Inquery_pengirimanbarangjadiController extends Controller{
                 $pemesanan->delete();
             });
         
-            return redirect('toko_tegal/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
+            return redirect('toko_slawi/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
         }
         
         public function import(Request $request)
@@ -272,6 +272,6 @@ class Inquery_pengirimanbarangjadiController extends Controller{
         {
             $klasifikasis = Klasifikasi::with('produks')->get();
             $importedData = session('imported_data', []);
-            return view('toko_tegal.permintaan_produk.form', compact('klasifikasis', 'importedData'));
+            return view('toko_slawi.permintaan_produk.form', compact('klasifikasis', 'importedData'));
         }
 }

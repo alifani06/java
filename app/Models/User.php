@@ -114,6 +114,13 @@ class User extends Authenticatable
         }
         return false;
     }
+    public function isTokocilacap()
+    {
+        if ($this->level == 'toko_cilacap') {
+            return true;
+        }
+        return false;
+    }
 
     public function karyawan()
     {

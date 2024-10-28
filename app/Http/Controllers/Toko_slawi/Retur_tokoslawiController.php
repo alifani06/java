@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_tegal;
+namespace App\Http\Controllers\Toko_slawi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,7 +8,6 @@ use App\Models\Produk;
 use Illuminate\Support\Facades\DB;
 use App\Models\Stok_tokoslawi;
 use App\Models\Stok_tokobanjaran;
-use App\Models\Retur_tokoslawi;
 use App\Models\Klasifikasi;
 use App\Models\Retur_barangjadi;
 use App\Models\Toko;
@@ -19,11 +18,11 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Retur_barnagjadi;
-use App\Models\Retur_tokotegal;
+use App\Models\Retur_tokoslawi;
 use App\Models\Stok_tokotegal;
 use Maatwebsite\Excel\Facades\Excel;
 
-class Retur_tokotegalController extends Controller{
+class Retur_tokoslawiController extends Controller{
 
 
     
@@ -33,7 +32,7 @@ class Retur_tokotegalController extends Controller{
             $tanggal_input = $request->tanggal_input;
             $tanggal_akhir = $request->tanggal_akhir;
 
-            $query = Retur_tokotegal::with('produk.klasifikasi');
+            $query = Retur_tokoslawi::with('produk.klasifikasi');
 
             if ($status) {
                 $query->where('status', $status);
@@ -57,7 +56,7 @@ class Retur_tokotegalController extends Controller{
             // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
             $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_retur');
 
-            return view('toko_tegal.retur_tokotegal.index', compact('stokBarangJadi'));
+            return view('toko_slawi.retur_tokoslawi.index', compact('stokBarangJadi'));
     }
 
     // public function create()
@@ -66,7 +65,7 @@ class Retur_tokotegalController extends Controller{
     //     $tokos = Toko::all();
     //     $klasifikasis = Klasifikasi::all(); // Pastikan ini ada
     
-    //     return view('toko_tegal.retur_tokotegal.create', compact('produks', 'tokos', 'klasifikasis'));
+    //     return view('toko_slawi.retur_tokoslawi.create', compact('produks', 'tokos', 'klasifikasis'));
     // }
 
     public function create()
@@ -81,7 +80,7 @@ class Retur_tokotegalController extends Controller{
         ->groupBy('produk_id')
         ->pluck('jumlah_stok', 'produk_id');
 
-    return view('toko_tegal.retur_tokotegal.create', compact('produks', 'tokos', 'klasifikasis', 'stokProduk'));
+    return view('toko_slawi.retur_tokoslawi.create', compact('produks', 'tokos', 'klasifikasis', 'stokProduk'));
 }
 
     
@@ -114,7 +113,7 @@ class Retur_tokotegalController extends Controller{
         $nama_produk_retur = $produk->nama_produk . ' RETUR';
 
         // Ambil semua stok yang tersedia untuk produk ini
-        $stok_items = Stok_tokotegal::where('produk_id', $produk_id)
+        $stok_items = Stok_tokoslawi::where('produk_id', $produk_id)
             ->where('jumlah', '>', 0)
             ->orderBy('jumlah', 'asc')
             ->get();
@@ -150,10 +149,10 @@ class Retur_tokotegalController extends Controller{
         }
 
         // Menyimpan retur dengan status 'posting'
-        Retur_tokotegal::create([
+        Retur_tokoslawi::create([
             'kode_retur' => $kode,
             'produk_id' => $produk_id,
-            'toko_id' => '2',
+            'toko_id' => '3',
             'status' => 'unpost', // Ubah status menjadi posting
             'jumlah' => $jumlah_yang_dibutuhkan,
             'keterangan' => $keterangans[$index],
@@ -163,7 +162,7 @@ class Retur_tokotegalController extends Controller{
         Retur_barangjadi::create([
             'kode_retur' => $kode,
             'produk_id' => $produk_id,
-            'toko_id' => '2',
+            'toko_id' => '3',
             'nama_produk' => $nama_produk_retur,
             'status' => 'unpost', // Ubah status menjadi posting
             'jumlah' => $jumlah_yang_dibutuhkan,
@@ -172,7 +171,7 @@ class Retur_tokotegalController extends Controller{
         ]);
     }
 
-    return redirect()->route('retur_tokotegal.index')->with('success', 'Data retur barang berhasil disimpan dan stok berhasil dikurangi.');
+    return redirect()->route('retur_tokoslawi.index')->with('success', 'Data retur barang berhasil disimpan dan stok berhasil dikurangi.');
 }
 
 
@@ -181,12 +180,12 @@ class Retur_tokotegalController extends Controller{
 
 public function kode()
 {
-    $prefix = 'FRD';
+    $prefix = 'FRB';
     $year = date('y'); // Dua digit terakhir dari tahun
     $date = date('dm'); // Format bulan dan hari: MMDD
 
     // Mengambil kode retur terakhir yang dibuat pada hari yang sama
-    $lastBarang = Retur_tokotegal::whereDate('tanggal_input', Carbon::today())
+    $lastBarang = Retur_tokoslawi::whereDate('tanggal_input', Carbon::today())
                                   ->orderBy('kode_retur', 'desc')
                                   ->first();
 
@@ -254,7 +253,7 @@ public function posting_retur($id)
 public function show($id)
 {
     // Ambil kode_retur dari pengiriman_barangjadi berdasarkan id
-    $detailStokBarangJadi = Retur_tokotegal::where('id', $id)->value('kode_retur');
+    $detailStokBarangJadi = Retur_tokoslawi::where('id', $id)->value('kode_retur');
     
     // Jika kode_retur tidak ditemukan, tampilkan pesan error
     if (!$detailStokBarangJadi) {
@@ -262,19 +261,19 @@ public function show($id)
     }
     
     // Ambil semua data dengan kode_retur yang sama
-    $pengirimanBarangJadi = Retur_tokotegal::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
+    $pengirimanBarangJadi = Retur_tokoslawi::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
     
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    return view('toko_tegal.inquery_returtegal.show', compact('pengirimanBarangJadi', 'firstItem'));
+    return view('toko_slawi.inquery_returslawi.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
 
 
     public function print($id)
 {
-    $kodeRetur = Retur_tokotegal::where('id', $id)->value('kode_retur');
+    $kodeRetur = Retur_tokoslawi::where('id', $id)->value('kode_retur');
 
     // Jika kode_retur tidak ditemukan, tampilkan pesan error
     if (!$kodeRetur) {
@@ -282,7 +281,7 @@ public function show($id)
     }
     
     // Ambil semua data dengan kode_retur yang sama
-    $pengirimanBarangJadi = Retur_tokotegal::with([
+    $pengirimanBarangJadi = Retur_tokoslawi::with([
         'produk.subklasifikasi.klasifikasi', // Tambahkan relasi klasifikasi
         'toko'
     ])->where('kode_retur', $kodeRetur)->get();
@@ -290,7 +289,7 @@ public function show($id)
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    $pdf = FacadePdf::loadView('toko_tegal.inquery_returtegal.print', compact('pengirimanBarangJadi', 'firstItem'));
+    $pdf = FacadePdf::loadView('toko_slawi.inquery_returslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
 
     return $pdf->stream('surat_permintaan_produk.pdf');
 }

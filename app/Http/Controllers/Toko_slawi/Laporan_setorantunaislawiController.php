@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Toko_tegal;
+namespace App\Http\Controllers\Toko_slawi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Produk;
 use App\Models\Klasifikasi;
-use Illuminate\Support\Facades\DB;
 use App\Models\Subklasifikasi;
 use App\Models\Subsub;
 use App\Models\Pelanggan;
@@ -40,17 +39,28 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class Setoran_tokotegalController extends Controller
+class Laporan_setorantunaislawiController extends Controller
 {
-
+   
     public function index(Request $request)
     {
-        // Ambil semua data setoran penjualan
-        $setoranPenjualans = Setoran_penjualan::orderBy('id', 'DESC')->get();
+        // Ambil parameter tanggal dari request
+        $tanggalPenjualan = $request->input('tanggal_penjualan');
+        $tanggalAkhir = $request->input('tanggal_akhir');
+    
+        // Ambil semua data setoran penjualan dengan filter tanggal dan toko_id = 3
+        $setoranPenjualans = Setoran_penjualan::where('toko_id', 3) // Filter berdasarkan toko_id = 3
+            ->when($tanggalPenjualan, function ($query) use ($tanggalPenjualan, $tanggalAkhir) {
+                return $query->whereDate('tanggal_setoran', '>=', $tanggalPenjualan)
+                             ->whereDate('tanggal_setoran', '<=', $tanggalAkhir ?? $tanggalPenjualan);
+            })
+            ->orderBy('id', 'DESC')
+            ->get();
     
         // Kirim data ke view
-        return view('toko_tegal.setoran_tokotegal.index', compact('setoranPenjualans'));
+        return view('toko_slawi.laporan_setorantunai.index', compact('setoranPenjualans'));
     }
+    
     
     public function create(Request $request)
     {
@@ -137,7 +147,7 @@ class Setoran_tokotegalController extends Controller
             ->where('kasir', $kasir)
             ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
 
-        $gobiz = Penjualanproduk::where('metode_id', 2)
+        $gobiz = Penjualanproduk::where('metode_id', 3)
             ->where('kasir', $kasir)
             ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
 
@@ -149,7 +159,7 @@ class Setoran_tokotegalController extends Controller
         $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
         $total_setoran = $total_penjualan - $total_metode;
 
-        return view('toko_tegal.setoran_tokotegal.create', compact(
+        return view('toko_slawi.setoran_tokotegal.create', compact(
             'produks',
             'tokos',
             'klasifikasis',
@@ -167,6 +177,7 @@ class Setoran_tokotegalController extends Controller
             'deposit_keluar'
         ));
     }
+
 
     public function getdata(Request $request)
     {
@@ -216,7 +227,7 @@ class Setoran_tokotegalController extends Controller
             ->whereDate('tanggal_penjualan', $tanggalPenjualan)
             ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
     
-        $gobiz = Penjualanproduk::where('metode_id', 2)
+        $gobiz = Penjualanproduk::where('metode_id', 3)
             ->whereDate('tanggal_penjualan', $tanggalPenjualan)
             ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
     
@@ -267,7 +278,6 @@ class Setoran_tokotegalController extends Controller
             'nominal_setoran' => 'required|numeric',
             'plusminus' => 'required|numeric',
         ], [
-            // Custom error messages
             'tanggal_penjualan.required' => 'Tanggal penjualan tidak boleh kosong.',
             'penjualan_kotor.required' => 'Penjualan kotor tidak boleh kosong.',
             'diskon_penjualan.required' => 'Diskon penjualan tidak boleh kosong.',
@@ -291,8 +301,8 @@ class Setoran_tokotegalController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // Simpan data ke database dan ambil ID dari data yang baru disimpan
-        $setoranPenjualan = Setoran_penjualan::create([
+        // Simpan data ke database
+        Setoran_penjualan::create([
             'tanggal_penjualan' => $request->tanggal_penjualan,
             'penjualan_kotor' => $request->penjualan_kotor,
             'diskon_penjualan' => $request->diskon_penjualan,
@@ -306,34 +316,17 @@ class Setoran_tokotegalController extends Controller
             'transfer' => $request->transfer,
             'total_setoran' => $request->total_setoran,
             'tanggal_setoran' => $request->tanggal_setoran,
-            'tanggal_setoran2' => $request->tanggal_setoran2,
             'nominal_setoran' => $request->nominal_setoran,
-            'nominal_setoran2' => $request->nominal_setoran2,
             'plusminus' => $request->plusminus,
-            'toko_id' => 2, // Menyimpan toko_id dengan nilai 1
-            'status' => 'unpost',
+            'toko_id' => 3, // Menyimpan toko_id dengan nilai 1
+
         ]);
 
-        return response()->json([
-            'url' => route('inquery_setorantunai.print', $setoranPenjualan->id)
-        ]);
+        return redirect()->back()->with('success', 'Data berhasil disimpan.');
     }
-    
-    
 
     
 
-    public function print($id)
-    {
-        // Ambil data setoran penjualan berdasarkan id yang dipilih
-        $setoranPenjualans = Setoran_penjualan::findOrFail($id);
-    
-        // Load view untuk PDF dan kirimkan data
-        $pdf = FacadePdf::loadView('toko_tegal.setoran_tokotegal.printtunai', compact('setoranPenjualans'));
-    
-        // Return PDF stream agar langsung bisa ditampilkan
-        return $pdf->stream('setoran_penjualan.pdf');
-    }
     
 
     }

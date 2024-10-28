@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_tegal;
+namespace App\Http\Controllers\Toko_slawi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -38,7 +38,7 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
-class Laporan_returtegalController extends Controller
+class Laporan_returslawiController extends Controller
 {
 
     public function index(Request $request)
@@ -73,7 +73,7 @@ class Laporan_returtegalController extends Controller
             $query->whereDate('tanggal_retur', Carbon::today());
         }
     
-        $query->where('toko_id', 2);
+        $query->where('toko_id', 3);
 
         // Filter berdasarkan klasifikasi
         if ($klasifikasi_id) {
@@ -98,7 +98,7 @@ class Laporan_returtegalController extends Controller
         $tokos = Toko::all();
         $klasifikasis = Klasifikasi::all();
 
-        return view('toko_tegal.laporan_returtegal.index', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'totalJumlah', 'grandTotal'));
+        return view('toko_slawi.laporan_returslawi.index', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'totalJumlah', 'grandTotal'));
     }
             
 
@@ -129,7 +129,7 @@ class Laporan_returtegalController extends Controller
             $query->where('retur_barangjadis.status', $status);
         }
 
-         $query->where('retur_barangjadis.toko_id', 2);
+         $query->where('retur_barangjadis.toko_id', 3);
 
         // Filter berdasarkan klasifikasi_id
         if ($klasifikasi_id) {

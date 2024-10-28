@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_tegal;
+namespace App\Http\Controllers\Toko_slawi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -34,7 +34,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class PemesananproduktegalController extends Controller
+class PemesananprodukslawiController extends Controller
 {
     
     public function index(Request $request)
@@ -42,7 +42,7 @@ class PemesananproduktegalController extends Controller
         $today = Carbon::today();
     
         $inquery = Pemesananproduk::with('dppemesanan') // Memuat relasi dppemesanan
-            ->where('toko_id', 2) // Hanya tampilkan data dengan toko_id = 1
+            ->where('toko_id', 3) // Hanya tampilkan data dengan toko_id = 1
             ->where(function ($query) use ($today) {
                 $query->whereDate('created_at', $today)
                       ->orWhere(function ($query) use ($today) {
@@ -54,7 +54,7 @@ class PemesananproduktegalController extends Controller
             ->get();
     
         // Kirim data ke view
-        return view('toko_tegal.pemesanan_produk.index', compact('inquery'));
+        return view('toko_slawi.pemesanan_produk.index', compact('inquery'));
     }
     
     public function pelanggan($id)
@@ -75,11 +75,11 @@ class PemesananproduktegalController extends Controller
         $tokos = Toko::all();
         $metodes = Metodepembayaran::all();
 
-        $produks = Produk::with(['tokotegal', 'stokpesanan_tokotegal'])->get();
+        $produks = Produk::with(['tokoslawi', 'stokpesanan_tokoslawi'])->get();
 
         $kategoriPelanggan = 'member';
     
-        return view('toko_tegal.pemesanan_produk.create', compact('barangs','metodes', 
+        return view('toko_slawi.pemesanan_produk.create', compact('barangs','metodes', 
         'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 
         'kategoriPelanggan','tokotegal','search'));
     }
@@ -210,7 +210,7 @@ class PemesananproduktegalController extends Controller
             'telp_penerima' => $request->telp_penerima,
             'alamat_penerima' => $request->alamat_penerima,
             'tanggal_kirim' => $tanggal_kirim,
-            'toko_id' => '2',
+            'toko_id' => '3',
             // 'toko_id' =>$request->toko_id,
             'kasir' => ucfirst(auth()->user()->karyawan->nama_lengkap),
             'metode_id' => $request->metode_id, 
@@ -258,7 +258,7 @@ class PemesananproduktegalController extends Controller
 
 
             // Kirimkan URL untuk tab baru
-    $pdfUrl = route('toko_tegal.pemesanan_produk.cetak-pdf', ['id' => $cetakpdf->id]);
+    $pdfUrl = route('toko_slawi.pemesanan_produk.cetak-pdf', ['id' => $cetakpdf->id]);
 
     // Return response dengan URL PDF
     return response()->json([
@@ -279,7 +279,7 @@ class PemesananproduktegalController extends Controller
         $dp = $pemesanan->dppemesanan;
 
         // Mengirim data yang diambil ke view
-        return view('toko_tegal.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans', 'tokos', 'dp'));
+        return view('toko_slawi.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans', 'tokos', 'dp'));
     }
 
     public function cetakPdf($id)
@@ -290,7 +290,7 @@ class PemesananproduktegalController extends Controller
         $dp = $pemesanan->dppemesanan;
         $tokos = $pemesanan->toko;
     
-        $pdf = FacadePdf::loadView('toko_tegal.pemesanan_produk.cetak-pdf', compact('pemesanan', 'tokos', 'pelanggans','dp'));
+        $pdf = FacadePdf::loadView('toko_slawi.pemesanan_produk.cetak-pdf', compact('pemesanan', 'tokos', 'pelanggans','dp'));
         $pdf->setPaper('a4', 'portrait');
     
         return $pdf->stream('pemesanan.pdf');
@@ -298,7 +298,7 @@ class PemesananproduktegalController extends Controller
 
     public function kode()
     {
-        $prefix = 'PD';
+        $prefix = 'PB';
         $year = date('y'); // Dua digit terakhir dari tahun
         $date = date('dm'); // Format bulan dan hari: MMDD
     
@@ -323,7 +323,7 @@ class PemesananproduktegalController extends Controller
 
     public function kodedp()
     {
-        $prefix = 'DPD';
+        $prefix = 'DPB';
         $year = date('y'); // Dua digit terakhir dari tahun
         $date = date('dm'); // Format bulan dan hari: MMDD
     
@@ -356,7 +356,7 @@ class PemesananproduktegalController extends Controller
         $dp = $pemesanan->dppemesanan;
 
         // Mengirim data yang diambil ke view
-        return view('toko_tegal.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans', 'tokos', 'dp'));
+        return view('toko_slawi.pemesanan_produk.cetak', compact('pemesanan', 'pelanggans', 'tokos', 'dp'));
     }
 
     public function edit($id)
@@ -377,7 +377,7 @@ class PemesananproduktegalController extends Controller
         $metodes = Metodepembayaran::all();
         
         // Mengembalikan view dengan data yang diperlukan
-        return view('toko_tegal.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks', 'selectedTokoId', 'metodes'));
+        return view('toko_slawi.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks', 'selectedTokoId', 'metodes'));
     }
         
     public function update(Request $request, $id)
@@ -505,7 +505,7 @@ class PemesananproduktegalController extends Controller
             $details = Detailpemesananproduk::where('pemesananproduk_id', $pemesanan->id)->get();
         
             // Redirect ke halaman indeks pemesananproduk
-            return redirect('toko_tegal/pemesanan_produk');
+            return redirect('toko_slawi/pemesanan_produk');
 
     }   
 
@@ -521,7 +521,7 @@ class PemesananproduktegalController extends Controller
                 $pemesanan->delete();
             });
         
-            return redirect('toko_tegal/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
+            return redirect('toko_slawi/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
     }
         
 

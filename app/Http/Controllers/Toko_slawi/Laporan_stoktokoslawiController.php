@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_tegal;
+namespace App\Http\Controllers\Toko_slawi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -51,7 +51,7 @@ use Dompdf\Options;
 
 
 
-class Laporan_stoktokotegalController extends Controller
+class Laporan_stoktokoslawiController extends Controller
 {
 
     public function index(Request $request)
@@ -71,7 +71,7 @@ class Laporan_stoktokotegalController extends Controller
     
         $produk = $produkQuery->get();
     
-        $stok = Stok_tokotegal::with('produk')->get();
+        $stok = Stok_tokoslawi::with('produk')->get();
     
         $stokGrouped = $stok->groupBy('produk_id')->map(function ($group) {
             $firstItem = $group->first();
@@ -100,10 +100,10 @@ class Laporan_stoktokotegalController extends Controller
             ? SubKlasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get() 
             : collect();
     
-        return view('toko_tegal.laporan_stoktokotegal.index', compact('produkWithStok', 'klasifikasis', 'subklasifikasis', 'totalHarga', 'totalStok', 'totalSubTotal'));
+        return view('toko_slawi.laporan_stoktokoslawi.index', compact('produkWithStok', 'klasifikasis', 'subklasifikasis', 'totalHarga', 'totalStok', 'totalSubTotal'));
     }
 
-    public function stoktokopesanantegal(Request $request)
+    public function stoktokopesananslawi(Request $request)
     {
         $klasifikasis = Klasifikasi::all();
         $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);
@@ -120,7 +120,7 @@ class Laporan_stoktokotegalController extends Controller
     
         $produk = $produkQuery->get();
     
-        $stok = Stokpesanan_tokotegal::with('produk')->get();
+        $stok = Stokpesanan_tokoslawi::with('produk')->get();
     
         $stokGrouped = $stok->groupBy('produk_id')->map(function ($group) {
             $firstItem = $group->first();
@@ -149,10 +149,10 @@ class Laporan_stoktokotegalController extends Controller
             ? SubKlasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get() 
             : collect();
     
-        return view('toko_tegal.laporan_stoktokotegal.indexpesanan', compact('produkWithStok', 'klasifikasis', 'subklasifikasis', 'totalHarga', 'totalStok', 'totalSubTotal'));
+        return view('toko_slawi.laporan_stoktokoslawi.indexpesanan', compact('produkWithStok', 'klasifikasis', 'subklasifikasis', 'totalHarga', 'totalStok', 'totalSubTotal'));
     }
     
-    public function semuaStokTokoTegal(Request $request)
+    public function semuaStokTokoSlawi(Request $request)
     {
         $klasifikasis = Klasifikasi::all();
         $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);
@@ -170,8 +170,8 @@ class Laporan_stoktokotegalController extends Controller
         $produk = $produkQuery->get();
     
         // Retrieve stok from both Stok_tokotegal and Stokpesanan_tokotegal
-        $stokTokoTegal = Stok_tokotegal::with('produk')->get();
-        $stokPesananTokoTegal = Stokpesanan_tokotegal::with('produk')->get();
+        $stokTokoTegal = Stok_tokoslawi::with('produk')->get();
+        $stokPesananTokoTegal = Stokpesanan_tokoslawi::with('produk')->get();
     
         // Combine stok and group by produk_id
         // Gabungkan stok dari dua tabel
@@ -214,7 +214,7 @@ class Laporan_stoktokotegalController extends Controller
             ? SubKlasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get() 
             : collect();
     
-        return view('toko_tegal.laporan_stoktokotegal.indexall', compact('produkWithStok', 'klasifikasis', 'subklasifikasis', 'totalHarga', 'totalStok', 'totalSubTotal'));
+        return view('toko_slawi.laporan_stoktokoslawi.indexall', compact('produkWithStok', 'klasifikasis', 'subklasifikasis', 'totalHarga', 'totalStok', 'totalSubTotal'));
     }
     
     public function printReport(Request $request)
@@ -308,7 +308,7 @@ class Laporan_stoktokotegalController extends Controller
         $dompdf = new Dompdf($options);
     
         // Memuat konten HTML dari view
-        $html = view('toko_tegal.laporan_stoktokotegal.print', [
+        $html = view('toko_slawi.laporan_stoktokoslawi.print', [
             'produkWithStok' => $produkWithStok,
             'klasifikasis' => $klasifikasis,
             'subklasifikasis' => $subklasifikasis,
@@ -358,7 +358,7 @@ class Laporan_stoktokotegalController extends Controller
 
     }
 
-    public function printReportstokpesanantegal(Request $request)
+    public function printReportstokpesananslawi(Request $request)
     {
         $klasifikasis = Klasifikasi::all();
         $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);
@@ -438,7 +438,7 @@ class Laporan_stoktokotegalController extends Controller
         $dompdf = new Dompdf($options);
     
         // Memuat konten HTML dari view
-        $html = view('toko_tegal.laporan_stoktokotegal.printpesanan', [
+        $html = view('toko_slawi.laporan_stoktokoslawi.printpesanan', [
             'produkWithStok' => $produkWithStok,
             'klasifikasis' => $klasifikasis,
             'subklasifikasis' => $subklasifikasis,
@@ -478,7 +478,7 @@ class Laporan_stoktokotegalController extends Controller
         return $dompdf->stream('laporan_stoktoko.pdf', ['Attachment' => false]);
     }
 
-    public function printReportsemuastoktegal(Request $request)
+    public function printReportsemuastokslawi(Request $request)
     {
         $klasifikasis = Klasifikasi::all();
         $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);
@@ -496,8 +496,8 @@ class Laporan_stoktokotegalController extends Controller
         $produk = $produkQuery->get();
     
         // Retrieve stok from both Stok_tokotegal and Stokpesanan_tokotegal
-        $stokTokoTegal = Stok_tokotegal::with('produk')->get();
-        $stokPesananTokoTegal = Stokpesanan_tokotegal::with('produk')->get();
+        $stokTokoTegal = Stok_tokoslawi::with('produk')->get();
+        $stokPesananTokoTegal = Stokpesanan_tokoslawi::with('produk')->get();
     
         // Combine stok and group by produk_id
         $stokCombined = $stokTokoTegal->concat($stokPesananTokoTegal)
@@ -539,7 +539,7 @@ class Laporan_stoktokotegalController extends Controller
         $dompdf = new Dompdf($options);
     
         // Memuat konten HTML dari view
-        $html = view('toko_tegal.laporan_stoktokotegal.printsemuastok', [
+        $html = view('toko_slawi.laporan_stoktokoslawi.printsemuastok', [
             'produkWithStok' => $produkWithStok,
             'klasifikasis' => $klasifikasis,
             'subklasifikasis' => $subklasifikasis,

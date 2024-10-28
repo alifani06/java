@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_tegal;
+namespace App\Http\Controllers\Toko_slawi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -41,7 +41,7 @@ class Inquery_pemesananprodukController extends Controller
     $tanggal_pemesanan = $request->tanggal_pemesanan;
     $tanggal_akhir = $request->tanggal_akhir;
 
-    $inquery = Pemesananproduk::with('toko')->where('toko_id', 2); // Menambah filter toko_id = 1
+    $inquery = Pemesananproduk::with('toko')->where('toko_id', 3); // Menambah filter toko_id = 1
 
     if ($status) {
         $inquery->where('status', $status);
@@ -65,7 +65,7 @@ class Inquery_pemesananprodukController extends Controller
     $inquery->orderBy('id', 'DESC');
     $inquery = $inquery->get();
 
-    return view('toko_tegal.inquery_pemesananproduk.index', compact('inquery'));
+    return view('toko_slawi.inquery_pemesananproduk.index', compact('inquery'));
 }
 
 public function unpost_pemesananproduk($id)

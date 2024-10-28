@@ -177,6 +177,9 @@
                         @if (auth()->user()->isTokopemalang())
                             @include('layouts.menu.toko_pemalang')
                         @endif
+                        @if (auth()->user()->isTokocilacap())
+                            @include('layouts.menu.toko_cilacap')
+                        @endif
 
                     </ul>
                 </nav>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_tegal;
+namespace App\Http\Controllers\Toko_slawi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -18,7 +18,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class Laporan_deposittegalController extends Controller
+class Laporan_depositslawiController extends Controller
 {
  
 
@@ -36,7 +36,7 @@ class Laporan_deposittegalController extends Controller
         // Query dasar untuk mengambil data Dppemesanan
         $inquery = Dppemesanan::with(['pemesananproduk.toko'])
             ->whereHas('pemesananproduk', function ($query) {
-                $query->where('toko_id', 2); // Secara default ambil toko_id = 1
+                $query->where('toko_id', 3); // Secara default ambil toko_id = 1
             })
             ->orderBy('created_at', 'desc');
 
@@ -108,7 +108,7 @@ class Laporan_deposittegalController extends Controller
         $inquery = $inquery->get();
         
         // Kirim data ke view
-        return view('toko_tegal.laporan_deposittegal.index', compact('inquery', 'tokos'));
+        return view('toko_slawi.laporan_depositslawi.index', compact('inquery', 'tokos'));
     }
 
     public function indexrinci(Request $request)
@@ -125,7 +125,7 @@ class Laporan_deposittegalController extends Controller
         // Query dasar untuk mengambil data Dppemesanan
         $inquery = Dppemesanan::with(['pemesananproduk.toko'])
             ->whereHas('pemesananproduk', function ($query) {
-                $query->where('toko_id', 2); // Secara default ambil toko_id = 1
+                $query->where('toko_id', 3); // Secara default ambil toko_id = 1
             })
             ->orderBy('created_at', 'desc');
 
@@ -197,27 +197,27 @@ class Laporan_deposittegalController extends Controller
         $inquery = $inquery->get();
         
         // Kirim data ke view
-        return view('toko_tegal.laporan_deposittegal.indexrinci', compact('inquery', 'tokos'));
+        return view('toko_slawi.laporan_depositslawi.indexrinci', compact('inquery', 'tokos'));
     }
 
     public function indexsaldo(Request $request)
     {
-        // Ambil parameter filter dari request (tetapi toko_id diabaikan karena kita akan fix ke toko_id 2)
-        $toko_id = 2; // Set toko_id menjadi 2 secara hardcoded
+        // Ambil parameter filter dari request (tetapi toko_id diabaikan karena kita akan fix ke toko_id 3)
+        $toko_id = 3; // Set toko_id menjadi 3 secara hardcoded
     
         // Ambil daftar toko untuk filter (jika Anda masih membutuhkan ini untuk menampilkan toko lainnya)
         $tokos = Toko::all();
     
-        // Query dasar untuk mengambil data Dppemesanan dengan toko_id = 2
+        // Query dasar untuk mengambil data Dppemesanan dengan toko_id = 3
         $inquery = Dppemesanan::with(['pemesananproduk.toko'])
             ->whereHas('pemesananproduk', function ($query) use ($toko_id) {
-                $query->where('toko_id', $toko_id); // Filter untuk toko_id = 2
+                $query->where('toko_id', $toko_id); // Filter untuk toko_id = 3
             })
             ->orderBy('created_at', 'desc')
             ->get()
             ->groupBy('pemesananproduk.toko_id');
     
-        // Hitung saldo untuk toko dengan toko_id 2 (jumlah dp_pemesanan di mana status_pelunasan NULL)
+        // Hitung saldo untuk toko dengan toko_id 3 (jumlah dp_pemesanan di mana status_pelunasan NULL)
         $saldoPerToko = [];
         foreach ($inquery as $tokoId => $dpPemesanan) {
             $totalSaldo = $dpPemesanan->whereNull('pelunasan')->sum('dp_pemesanan');
@@ -225,7 +225,7 @@ class Laporan_deposittegalController extends Controller
         }
     
         // Kirim data ke view
-        return view('toko_tegal.laporan_deposittegal.indexsaldo', compact('saldoPerToko', 'tokos', 'toko_id'));
+        return view('toko_slawi.laporan_depositslawi.indexsaldo', compact('saldoPerToko', 'tokos', 'toko_id'));
     }
     
 
@@ -233,7 +233,7 @@ class Laporan_deposittegalController extends Controller
     public function printReportdeposit(Request $request)
     {
         // Set default toko_id untuk Banjaran
-        $banjaranTokoId = 2;
+        $banjaranTokoId = 3;
     
         // Ambil parameter filter dari request
         $status = $request->status;
@@ -332,7 +332,7 @@ class Laporan_deposittegalController extends Controller
         $branchName = Toko::find($toko_id)->nama_toko ?? 'Toko Banjaran';
     
         // Buat PDF menggunakan Facade PDF
-        $pdf = FacadePdf::loadView('toko_tegal.laporan_deposittegal.print', [
+        $pdf = FacadePdf::loadView('toko_slawi.laporan_depositslawi.print', [
             'inquery' => $inquery,
             'tokos' => $tokos,
             'status' => $status,
@@ -479,7 +479,7 @@ class Laporan_deposittegalController extends Controller
         });
 
         // Kirim data ke view cetak
-        $pdf = FacadePdf::loadView('toko_tegal.laporan_deposittegal.printrinci', compact(
+        $pdf = FacadePdf::loadView('toko_slawi.laporan_depositslawi.printrinci', compact(
             'inquery', 
             'tokos', 
             'status', 
@@ -556,7 +556,7 @@ class Laporan_deposittegalController extends Controller
     //     }
 
     //     // Kirim data ke view cetak
-    //     $pdf = FacadePdf::loadView('toko_tegal.laporan_deposittegal.printsaldo', compact(
+    //     $pdf = FacadePdf::loadView('toko_slawi.laporan_depositslawi.printsaldo', compact(
     //         'saldoPerToko',
     //         'tokos',
     //         'toko_id',
@@ -570,8 +570,8 @@ class Laporan_deposittegalController extends Controller
 
     public function printReportsaldo(Request $request)
 {
-    // Ambil parameter filter dari request, jika tidak ada, default ke toko_id = 2
-    $toko_id = $request->toko_id ?? 2; // Default toko_id ke 2 jika tidak ada di request
+    // Ambil parameter filter dari request, jika tidak ada, default ke toko_id = 3
+    $toko_id = $request->toko_id ?? 3; // Default toko_id ke 3 jika tidak ada di request
 
     // Ambil daftar toko untuk filter
     $tokos = Toko::all();
@@ -586,7 +586,7 @@ class Laporan_deposittegalController extends Controller
     $inquery = Dppemesanan::with(['pemesananproduk.toko'])
         ->orderBy('created_at', 'desc');
 
-    // Filter berdasarkan toko_id (default 2)
+    // Filter berdasarkan toko_id (default 3)
     $inquery->whereHas('pemesananproduk', function ($query) use ($toko_id) {
         $query->where('toko_id', $toko_id); // Filter untuk toko_id
     });
@@ -602,7 +602,7 @@ class Laporan_deposittegalController extends Controller
     }
 
     // Kirim data ke view cetak
-    $pdf = FacadePdf::loadView('toko_tegal.laporan_deposittegal.printsaldo', compact(
+    $pdf = FacadePdf::loadView('toko_slawi.laporan_depositslawi.printsaldo', compact(
         'saldoPerToko',
         'tokos',
         'toko_id',

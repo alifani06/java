@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Toko_tegal;
+namespace App\Http\Controllers\Toko_slawi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Produk;
 use App\Models\Klasifikasi;
+use Illuminate\Support\Facades\DB;
 use App\Models\Subklasifikasi;
 use App\Models\Subsub;
 use App\Models\Pelanggan;
@@ -39,26 +40,17 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class Inquery_setorantunaitegalController extends Controller
+class Setoran_tokoslawiController extends Controller
 {
+
     public function index(Request $request)
     {
-        // Ambil parameter tanggal dari request
-        $tanggalPenjualan = $request->input('tanggal_setoran');
-        $tanggalAkhir = $request->input('tanggal_akhir');
-    
-        // Ambil semua data setoran penjualan dengan filter tanggal jika ada
-        $setoranPenjualans = Setoran_penjualan::when($tanggalPenjualan, function ($query) use ($tanggalPenjualan, $tanggalAkhir) {
-            return $query->whereDate('tanggal_setoran', '>=', $tanggalPenjualan)
-                         ->whereDate('tanggal_setoran', '<=', $tanggalAkhir ?? $tanggalPenjualan);
-        })
-        ->orderBy('id', 'DESC')
-        ->get();
+        // Ambil semua data setoran penjualan
+        $setoranPenjualans = Setoran_penjualan::orderBy('id', 'DESC')->get();
     
         // Kirim data ke view
-        return view('toko_tegal.inquery_setorantunai.index', compact('setoranPenjualans'));
+        return view('toko_slawi.setoran_tokoslawi.index', compact('setoranPenjualans'));
     }
-    
     
     public function create(Request $request)
     {
@@ -157,7 +149,7 @@ class Inquery_setorantunaitegalController extends Controller
         $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
         $total_setoran = $total_penjualan - $total_metode;
 
-        return view('toko_tegal.setoran_tokobanjaran.create', compact(
+        return view('toko_slawi.setoran_tokoslawi.create', compact(
             'produks',
             'tokos',
             'klasifikasis',
@@ -175,7 +167,6 @@ class Inquery_setorantunaitegalController extends Controller
             'deposit_keluar'
         ));
     }
-
 
     public function getdata(Request $request)
     {
@@ -276,6 +267,7 @@ class Inquery_setorantunaitegalController extends Controller
             'nominal_setoran' => 'required|numeric',
             'plusminus' => 'required|numeric',
         ], [
+            // Custom error messages
             'tanggal_penjualan.required' => 'Tanggal penjualan tidak boleh kosong.',
             'penjualan_kotor.required' => 'Penjualan kotor tidak boleh kosong.',
             'diskon_penjualan.required' => 'Diskon penjualan tidak boleh kosong.',
@@ -299,8 +291,8 @@ class Inquery_setorantunaitegalController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // Simpan data ke database
-        Setoran_penjualan::create([
+        // Simpan data ke database dan ambil ID dari data yang baru disimpan
+        $setoranPenjualan = Setoran_penjualan::create([
             'tanggal_penjualan' => $request->tanggal_penjualan,
             'penjualan_kotor' => $request->penjualan_kotor,
             'diskon_penjualan' => $request->diskon_penjualan,
@@ -314,188 +306,34 @@ class Inquery_setorantunaitegalController extends Controller
             'transfer' => $request->transfer,
             'total_setoran' => $request->total_setoran,
             'tanggal_setoran' => $request->tanggal_setoran,
+            'tanggal_setoran2' => $request->tanggal_setoran2,
             'nominal_setoran' => $request->nominal_setoran,
+            'nominal_setoran2' => $request->nominal_setoran2,
             'plusminus' => $request->plusminus,
-            'toko_id' => 1, // Menyimpan toko_id dengan nilai 1
-
+            'toko_id' => 2, // Menyimpan toko_id dengan nilai 1
+            'status' => 'unpost',
         ]);
 
-        return redirect()->back()->with('success', 'Data berhasil disimpan.');
+        return response()->json([
+            'url' => route('inquery_setorantunai.print', $setoranPenjualan->id)
+        ]);
     }
+    
+    
 
     
-//     public function print(Request $request)
-// {
-//     $status = $request->status;
-//     $tanggal_penjualan = $request->tanggal_penjualan;
-//     $tanggal_akhir = $request->tanggal_akhir;
-//     $kasir = $request->kasir; // Kasir yang dipilih dari request
-    
-//     // Query dasar untuk mengambil data penjualan produk
-//     $query = Penjualanproduk::query();
-
-//     // Filter berdasarkan status
-//     if ($status) {
-//         $query->where('status', $status);
-//     }
-
-//     // Filter berdasarkan tanggal penjualan
-//     if ($tanggal_penjualan && $tanggal_akhir) {
-//         $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-//         $query->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
-//     } elseif ($tanggal_penjualan) {
-//         $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-//         $query->where('tanggal_penjualan', '>=', $tanggal_penjualan);
-//     } elseif ($tanggal_akhir) {
-//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-//         $query->where('tanggal_penjualan', '<=', $tanggal_akhir);
-//     } else {
-//         $query->whereDate('tanggal_penjualan', Carbon::today());
-//     }
-
-//     // Filter berdasarkan kasir yang dipilih
-//     if ($kasir) {
-//         $query->where('kasir', $kasir);
-//     }
-
-//     // Urutkan data berdasarkan ID secara descending
-//     $query->orderBy('id', 'DESC');
-
-//     // Ambil data penjualan produk dengan relasi
-//     $inquery = $query->with(['toko', 'detailpenjualanproduk.produk.klasifikasi'])->get();
-
-//     // Buat query terpisah untuk menghitung total penjualan kotor
-//     $penjualan_kotor = Penjualanproduk::select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED)) as total'));
-
-//     // Filter berdasarkan kasir
-//     if ($kasir) {
-//         $penjualan_kotor->where('kasir', $kasir);
-//     }
-
-//     // Filter tanggal
-//     if ($tanggal_penjualan && $tanggal_akhir) {
-//         $penjualan_kotor->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
-//     }
-
-//     $penjualan_kotor = $penjualan_kotor->value('total');
-
-//     // Hitung total diskon penjualan berdasarkan kasir dan tanggal_penjualan
-//     $diskon_penjualan = Detailpenjualanproduk::whereHas('penjualanproduk', function ($q) use ($tanggal_penjualan, $kasir) {
-//         $q->whereDate('tanggal_penjualan', $tanggal_penjualan);
-        
-//         // Filter berdasarkan kasir jika ada
-//         if ($kasir) {
-//             $q->where('kasir', $kasir);
-//         }
-//     })->get()->sum(function ($detail) {
-//         $harga = (float)str_replace(['Rp.', '.'], '', $detail->harga); // Hapus "Rp." dan "."
-//         $jumlah = $detail->jumlah;
-//         $diskon = $detail->diskon / 100; // Ubah diskon persen ke desimal
-
-//         return $harga * $jumlah * $diskon;
-//     });
-
-//     $penjualan_bersih = $penjualan_kotor - $diskon_penjualan;
-
-//     // Query terpisah untuk menghitung total deposit masuk
-//     $deposit_masuk = Dppemesanan::whereHas('pemesananproduk', function ($q) use ($tanggal_penjualan, $tanggal_akhir, $kasir) {
-//         if ($tanggal_penjualan && $tanggal_akhir) {
-//             $q->whereBetween('tanggal_pemesanan', [$tanggal_penjualan, $tanggal_akhir]);
-//         } elseif ($tanggal_penjualan) {
-//             $q->where('tanggal_pemesanan', '>=', $tanggal_penjualan);
-//         } elseif ($tanggal_akhir) {
-//             $q->where('tanggal_pemesanan', '<=', $tanggal_akhir);
-//         }
-//         if ($kasir) {
-//             $q->where('kasir', $kasir);
-//         }
-//     })->sum('dp_pemesanan');
-
-//     // Query untuk menghitung total deposit keluar
-//     $deposit_keluar = Dppemesanan::whereHas('penjualanproduk', function ($q) use ($kasir, $tanggal_penjualan, $tanggal_akhir) {
-//         if ($tanggal_penjualan && $tanggal_akhir) {
-//             $q->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
-//         } elseif ($tanggal_penjualan) {
-//             $q->where('tanggal_penjualan', '>=', $tanggal_penjualan);
-//         } elseif ($tanggal_akhir) {
-//             $q->where('tanggal_penjualan', '<=', $tanggal_akhir);
-//         }
-//         if ($kasir) {
-//             $q->where('kasir', $kasir);
-//         }
-//     })->sum('dp_pemesanan');
-
-//     // Hitung total dari berbagai metode pembayaran
-//     $metodePembayaran = function($metode_id, $tanggal_penjualan = null, $tanggal_akhir = null) use ($kasir) {
-//         $query = Penjualanproduk::where('metode_id', $metode_id);
-
-//         if ($kasir) {
-//             $query->where('kasir', $kasir);
-//         }
-
-//         if ($tanggal_penjualan && $tanggal_akhir) {
-//             $query->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
-//         } elseif ($tanggal_penjualan) {
-//             $query->where('tanggal_penjualan', '>=', $tanggal_penjualan);
-//         } elseif ($tanggal_akhir) {
-//             $query->where('tanggal_penjualan', '<=', $tanggal_akhir);
-//         }
-
-//         return $query->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))->value('total');
-//     };
-
-//     // Panggil metodePembayaran dengan filter tanggal_penjualan dan tanggal_akhir
-//     $mesin_edc = $metodePembayaran(1, $tanggal_penjualan, $tanggal_akhir);
-//     $qris = $metodePembayaran(17, $tanggal_penjualan, $tanggal_akhir);
-//     $gobiz = $metodePembayaran(2, $tanggal_penjualan, $tanggal_akhir);
-//     $transfer = $metodePembayaran(3, $tanggal_penjualan, $tanggal_akhir);
-
-//     $total_penjualan = $penjualan_bersih - ($deposit_keluar - $deposit_masuk);
-
-//     // Ambil semua data produk, toko, kasir, klasifikasi untuk dropdown
-//     $produks = Produk::all();
-//     $tokos = Toko::all();
-//     $klasifikasis = Klasifikasi::all();
-//     $kasirs = Penjualanproduk::select('kasir')->distinct()->get();
-
-//     // Hitung total metode dan setoran
-//     $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
-//     $total_setoran = $total_penjualan - $total_metode;
-
-//     // Return PDF dengan data yang diperlukan
-//     $pdf = FacadePdf::loadView('toko_tegal.inquery_setorantunai.print', compact(
-//         'inquery',
-//         'kasirs',
-//         'penjualan_kotor',
-//         'diskon_penjualan',
-//         'penjualan_bersih',
-//         'deposit_masuk',
-//         'total_penjualan',
-//         'mesin_edc',
-//         'qris',
-//         'gobiz',
-//         'transfer',
-//         'total_setoran',
-//         'deposit_keluar',
-//         'kasir' // Pastikan kasir yang dipilih juga dikirim ke view
-//     ));
-    
-//     return $pdf->stream('laporan_setoran_penjualan.pdf');
-// }
 
     public function print($id)
     {
         // Ambil data setoran penjualan berdasarkan id yang dipilih
         $setoranPenjualans = Setoran_penjualan::findOrFail($id);
-
+    
         // Load view untuk PDF dan kirimkan data
-        $pdf = FacadePdf::loadView('toko_tegal.inquery_setorantunai.print', compact('setoranPenjualans'));
-
+        $pdf = FacadePdf::loadView('toko_slawi.setoran_tokoslawi.printtunai', compact('setoranPenjualans'));
+    
         // Return PDF stream agar langsung bisa ditampilkan
         return $pdf->stream('setoran_penjualan.pdf');
     }
-
     
 
     }
