@@ -157,10 +157,10 @@
                                                         data-memo-id="{{ $item->id }}">Posting</a>
                                              
                                                     {{-- <a class="dropdown-item"
-                                                        href="{{ url('toko_banjaran/inquery_penjualanproduk/' . $item->id . '/edit') }}">Update</a> --}}
+                                                        href="{{ url('toko_pemalang/inquery_penjualanproduk/' . $item->id . '/edit') }}">Update</a> --}}
                                                 
                                                     <a class="dropdown-item"
-                                                    href="{{ url('/toko_banjaran/inquery_penjualanprodukbanjaran/' . $item->id ) }}">Show</a>
+                                                    href="{{ url('/toko_pemalang/inquery_penjualanprodukpemalang/' . $item->id ) }}">Show</a>
                                                     <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
                                                         @csrf
                                                         @method('DELETE')
@@ -171,7 +171,7 @@
                                                     {{-- <a class="dropdown-item unpost-btn"
                                                         data-memo-id="{{ $item->id }}">Unpost</a> --}}
                                                     <a class="dropdown-item"
-                                                    href="{{ url('/toko_banjaran/inquery_penjualanprodukbanjaran/' . $item->id ) }}">Show</a>
+                                                    href="{{ url('/toko_pemalang/inquery_penjualanprodukpemalang/' . $item->id ) }}">Show</a>
                                             @endif
                                            
                                         </div>
@@ -220,7 +220,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_banjaran/inquery_penjualanprodukbanjaran') }}";
+            form.action = "{{ url('toko_pemalang/inquery_penjualanprodukpemalang') }}";
             form.submit();
         }
 
@@ -252,7 +252,7 @@
         // Fungsi untuk mengirim form
         function cari() {
             var form = document.getElementById('form-action');
-            form.action = "{{ url('toko_banjaran/inquery_penjualanprodukbanjaran') }}";
+            form.action = "{{ url('toko_pemalang/inquery_penjualanprodukpemalang') }}";
             form.submit();
         }
     </script>
@@ -270,7 +270,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan unpost
                 $.ajax({
-                    url: "{{ url('toko_banjaran/inquery_penjualanprodukbanjaran/unpost_penjualanproduk/') }}/" + memoId,
+                    url: "{{ url('toko_pemalang/inquery_penjualanprodukpemalang/unpost_penjualanproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -311,7 +311,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan posting
                 $.ajax({
-                    url: "{{ url('toko_banjaran/inquery_penjualanprodukbanjaran/posting_penjualanproduk/') }}/" + memoId,
+                    url: "{{ url('toko_pemalang/inquery_penjualanprodukpemalang/posting_penjualanproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
