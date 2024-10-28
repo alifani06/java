@@ -44,13 +44,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class Inquery_returbumiayuController extends Controller{
 
-    // public function index()
-    // {
-    //     // Ambil data retur_tokoslawi beserta relasi produk
-    //     $retur_tokoslawi = Retur_tokoslawi::with('produk')->where('status', 'posting')->get();
-    
-    //     return view('toko_bumiayu.retur_tokoslawi.index', compact('retur_tokoslawi'));
-    // }
     public function index(Request $request)
     {
             $status = $request->status;

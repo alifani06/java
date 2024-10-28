@@ -65,6 +65,7 @@ use App\Http\Controllers\Toko_bumiayu\Laporan_pemesananprodukbumiayuController;
 use App\Http\Controllers\Toko_bumiayu\PelunasanpemesananBmyController;
 use App\Http\Controllers\Toko_bumiayu\PemesananprodukbumiayuController;
 use App\Http\Controllers\Toko_bumiayu\Pengiriman_tokobumiayuController;
+use App\Http\Controllers\Toko_bumiayu\Pengirimanpemesanan_tokobumiayuController;
 use App\Http\Controllers\Toko_bumiayu\PenjualanprodukbumiayuController;
 use App\Http\Controllers\Toko_bumiayu\PermintaanprodukbumiayuController;
 use App\Http\Controllers\Toko_bumiayu\Stok_tokobumiayuController;
@@ -1086,18 +1087,18 @@ Route::middleware('toko_bumiayu')->prefix('toko_bumiayu')->group(function () {
     Route::get('printReportglobal', [\App\Http\Controllers\Toko_bumiayu\Laporan_penjualanprodukController::class, 'printReportglobal']);
     Route::get('indexglobal', [\App\Http\Controllers\Toko_bumiayu\Laporan_penjualanprodukController::class, 'indexglobal']);
 
-    Route::resource('permintaan_produk', \App\Http\Controllers\Toko_bumiayu\PermintaanproduktegalController::class);
-    Route::post('toko_bumiayu/permintaan_produk', [PermintaanproduktegalController::class, 'store']);
-    Route::get('toko_bumiayu/permintaan_produk', [PermintaanproduktegalController::class, 'show']);
-    Route::get('/permintaan-produk/{id}/print', [PermintaanproduktegalController::class, 'print'])->name('permintaan_produk.print');
-    Route::get('permintaan_produk/unpost_permintaanproduk/{id}', [\App\Http\Controllers\Toko_bumiayu\PermintaanproduktegalController::class, 'unpost_permintaanproduk']);
-    Route::get('permintaan_produk/posting_permintaanproduk/{id}', [\App\Http\Controllers\Toko_bumiayu\PermintaanproduktegalController::class, 'posting_permintaanproduk']);
-    Route::post('toko_bumiayu/permintaan/import', [PermintaanproduktegalController::class, 'import'])->name('permintaan.import');
+    Route::resource('permintaan_produk', \App\Http\Controllers\Toko_bumiayu\PermintaanprodukbumiayuController::class);
+    Route::post('toko_bumiayu/permintaan_produk', [PermintaanprodukbumiayuController::class, 'store']);
+    Route::get('toko_bumiayu/permintaan_produk', [PermintaanprodukbumiayuController::class, 'show']);
+    Route::get('/permintaan-produk/{id}/print', [PermintaanprodukbumiayuController::class, 'print'])->name('permintaan_produk.print');
+    Route::get('permintaan_produk/unpost_permintaanproduk/{id}', [\App\Http\Controllers\Toko_bumiayu\PermintaanprodukbumiayuController::class, 'unpost_permintaanproduk']);
+    Route::get('permintaan_produk/posting_permintaanproduk/{id}', [\App\Http\Controllers\Toko_bumiayu\PermintaanprodukbumiayuController::class, 'posting_permintaanproduk']);
+    Route::post('toko_bumiayu/permintaan/import', [PermintaanprodukbumiayuController::class, 'import'])->name('permintaan.import');
 
 
     Route::resource('inquery_permintaanproduk', \App\Http\Controllers\Toko_bumiayu\Inquery_permintaanprodukController::class);
   
-    Route::resource('inquery_pelunasantegal', \App\Http\Controllers\Toko_bumiayu\Inquery_pelunasantegalController::class);
+    Route::resource('inquery_pelunasanbumiayu', \App\Http\Controllers\Toko_bumiayu\Inquery_pelunasanbumiayuController::class);
 
 
     Route::resource('laporan_permintaanproduk', \App\Http\Controllers\Toko_bumiayu\Laporan_permintaanprodukController::class);
@@ -1120,27 +1121,27 @@ Route::middleware('toko_bumiayu')->prefix('toko_bumiayu')->group(function () {
     Route::delete('/toko_bumiayu/stokpesanan_tokobumiayu/deleteAll', [Stokpesanan_tokobumiayuController::class, 'deleteAll'])->name('stokpesanan_tokobumiayu.deleteAll');
 
 
-    Route::resource('pengiriman_tokotegal', \App\Http\Controllers\Toko_bumiayu\Pengiriman_tokotegalController::class);
-    Route::get('pengiriman_tokotegal/unpost_pengiriman/{id}', [\App\Http\Controllers\Toko_bumiayu\Pengiriman_tokotegalController::class, 'unpost_pengiriman']);
-    Route::get('pengiriman_tokotegal/posting_pengiriman/{id}', [\App\Http\Controllers\Toko_bumiayu\Pengiriman_tokotegalController::class, 'posting_pengiriman']);
-    Route::get('pengiriman_tokotegal/unpost_pengirimanpemesanan/{id}', [\App\Http\Controllers\Toko_bumiayu\Pengiriman_tokotegalController::class, 'unpost_pengirimanpemesanan']);
-    Route::get('pengiriman_tokotegal/posting_pengirimanpemesanan/{id}', [\App\Http\Controllers\Toko_bumiayu\Pengiriman_tokotegalController::class, 'posting_pengirimanpemesanan']);
-    Route::get('/pengiriman_tokotegal/{id}/print', [Pengiriman_tokotegalController::class, 'print'])->name('pengiriman_tokobanjaran.print');
-    Route::get('/toko_bumiayu/pengiriman_tokotegal/printpemesanan/{id}', [Pengiriman_tokotegalController::class, 'printpemesanan'])->name('pengiriman_tokotegal.printpemesanan');
-    Route::get('toko_bumiayu/pengiriman_tokotegal/index', [Pengiriman_tokotegalController::class, 'index'])->name('toko_bumiayu.pengiriman_tokotegal.index');
-    Route::get('/toko_bumiayu/pengiriman_tokotegal/pengiriman_pemesanan', [Pengiriman_tokotegalController::class, 'pengiriman_pemesanan'])->name('toko_bumiayu.pengiriman_tokotegal.pengiriman_pemesanan');
-    Route::get('/toko_bumiayu/pengiriman_tokotegal/showpemesanan/{id}', [Pengiriman_tokotegalController::class, 'showpemesanan'])->name('toko_bumiayu.pengiriman_tokotegal.showpemesanan');
+    Route::resource('pengiriman_tokobumiayu', \App\Http\Controllers\Toko_bumiayu\Pengiriman_tokobumiayuController::class);
+    Route::get('pengiriman_tokobumiayu/unpost_pengiriman/{id}', [\App\Http\Controllers\Toko_bumiayu\Pengiriman_tokobumiayuController::class, 'unpost_pengiriman']);
+    Route::get('pengiriman_tokobumiayu/posting_pengiriman/{id}', [\App\Http\Controllers\Toko_bumiayu\Pengiriman_tokobumiayuController::class, 'posting_pengiriman']);
+    Route::get('pengiriman_tokobumiayu/unpost_pengirimanpemesanan/{id}', [\App\Http\Controllers\Toko_bumiayu\Pengiriman_tokobumiayuController::class, 'unpost_pengirimanpemesanan']);
+    Route::get('pengiriman_tokobumiayu/posting_pengirimanpemesanan/{id}', [\App\Http\Controllers\Toko_bumiayu\Pengiriman_tokobumiayuController::class, 'posting_pengirimanpemesanan']);
+    Route::get('/pengiriman_tokobumiayu/{id}/print', [Pengiriman_tokobumiayuController::class, 'print'])->name('pengiriman_tokobanjaran.print');
+    Route::get('/toko_bumiayu/pengiriman_tokobumiayu/printpemesanan/{id}', [Pengiriman_tokobumiayuController::class, 'printpemesanan'])->name('pengiriman_tokobumiayu.printpemesanan');
+    Route::get('toko_bumiayu/pengiriman_tokobumiayu/index', [Pengiriman_tokobumiayuController::class, 'index'])->name('toko_bumiayu.pengiriman_tokobumiayu.index');
+    Route::get('/toko_bumiayu/pengiriman_tokobumiayu/pengiriman_pemesanan', [Pengiriman_tokobumiayuController::class, 'pengiriman_pemesanan'])->name('toko_bumiayu.pengiriman_tokobumiayu.pengiriman_pemesanan');
+    Route::get('/toko_bumiayu/pengiriman_tokobumiayu/showpemesanan/{id}', [Pengiriman_tokobumiayuController::class, 'showpemesanan'])->name('toko_bumiayu.pengiriman_tokobumiayu.showpemesanan');
 
-    Route::resource('pengirimanpemesanan_tokotegal', \App\Http\Controllers\Toko_bumiayu\Pengirimanpemesanan_tokotegalController::class);
-    Route::get('/pengirimanpemesanan_tokotegal/print/{id}', [Pengirimanpemesanan_tokotegal::class, 'print'])->name('pengirimanpemesanan_tokotegal.print');
+    Route::resource('pengirimanpemesanan_tokobumiayu', \App\Http\Controllers\Toko_bumiayu\Pengirimanpemesanan_tokobumiayuController::class);
+    Route::get('/pengirimanpemesanan_tokobumiayu/print/{id}', [Pengirimanpemesanan_tokobumiayuController::class, 'print'])->name('pengirimanpemesanan_tokobumiayu.print');
 
 
-    Route::resource('retur_tokotegal', \App\Http\Controllers\Toko_bumiayu\Retur_tokotegalController::class);
+    Route::resource('retur_tokobumiayu', \App\Http\Controllers\Toko_bumiayu\Retur_tokobumiayuController::class);
   
-    Route::resource('inquery_returtegal', \App\Http\Controllers\Toko_bumiayu\Inquery_returtegalController::class);
-    Route::get('inquery_returtegal/unpost_retur/{id}', [\App\Http\Controllers\Toko_bumiayu\Inquery_returtegalController::class, 'unpost_retur']);
-    Route::get('inquery_returtegal/posting_retur/{id}', [\App\Http\Controllers\Toko_bumiayu\Inquery_returtegalController::class, 'posting_retur']);
-    Route::get('/inquery_returtegal/{id}/print', [Inquery_returtegalController::class, 'print'])->name('inquery_returtegal.print');
+    Route::resource('inquery_returbumiayu', \App\Http\Controllers\Toko_bumiayu\Inquery_returbumiayuController::class);
+    Route::get('inquery_returbumiayu/unpost_retur/{id}', [\App\Http\Controllers\Toko_bumiayu\Inquery_returbumiayuController::class, 'unpost_retur']);
+    Route::get('inquery_returbumiayu/posting_retur/{id}', [\App\Http\Controllers\Toko_bumiayu\Inquery_returbumiayuController::class, 'posting_retur']);
+    Route::get('/inquery_returbumiayu/{id}/print', [Inquery_returbumiayuController::class, 'print'])->name('inquery_returbumiayu.print');
 
 
     Route::resource('pemindahan_tokotegal', \App\Http\Controllers\Toko_bumiayu\Pemindahan_tokotegalController::class);
@@ -1190,147 +1191,6 @@ Route::middleware('toko_bumiayu')->prefix('toko_bumiayu')->group(function () {
 
 });
 
-
-
-// Route::middleware('toko_bumiayu')->prefix('toko_bumiayu')->group(function () {
-   
-//     Route::get('/', [\App\Http\Controllers\Toko_bumiayu\DashboardController::class, 'index']);
-
-//     Route::resource('pelanggan', \App\Http\Controllers\Toko_bumiayu\PelangganController::class);
-//     Route::get('pelanggan/getpelanggan/{id}', [\App\Http\Controllers\Toko_bumiayu\PelangganController::class, 'getpelanggan']);
-//     Route::get('pelanggan/cetak_pdf/{id}', [PelangganController::class, 'cetak_pdf'])->name('pelanggan.cetak_pdf');
-
-//     Route::resource('produk', \App\Http\Controllers\Toko_bumiayu\ProdukController::class);
-
-//     Route::resource('pemesanan_produk', \App\Http\Controllers\Toko_bumiayu\PemesananprodukbumiayuController::class);
-//     Route::get('/toko_bumiayu/pemesanan_produk/cetak/{id}', [PemesananprodukbumiayuController::class, 'cetak'])->name('toko_bumiayu.pemesanan_produk.cetak');
-//     Route::get('/get-customer/{kode}', [PemesananprodukbumiayuController::class, 'getCustomerByKode']);
-//     Route::get('pemesanan/pelanggan/{id}', [\App\Http\Controllers\Toko_bumiayu\PemesananprodukbumiayuController::class, 'pelanggan']);
-//     Route::get('/get-customer-data', [PemesananprodukbumiayuController::class, 'getCustomerData'])->name('get.customer.data');
-//     Route::get('/toko_bumiayu/pemesanan_produk/update/{id}', [PemesananprodukbumiayuController::class, 'edit'])->name('pemesanan_produk.update');
-//     Route::get('/toko_bumiayu/pemesanan_produk/cetak-pdf{id}', [PemesananprodukbumiayuController::class, 'cetakPdf'])->name('toko_bumiayu.pemesanan_produk.cetak-pdf');
-//     Route::delete('toko_bumiayu/pemesanan_produk/{id}', [PemesananprodukbumiayuController::class, 'destroy'])->name('pemesanan_produk.destroy');
-//     Route::get('/toko_bumiayu/pemesanan_produk/{id}/cetak', [PemesananprodukbumiayuController::class, 'cetak'])->name('toko_bumiayu.pemesanan_produk.cetak');
-//     Route::get('/toko_bumiayu/pemesanan-produk/create', [PemesananprodukbumiayuController::class, 'create'])->name('pemesanan-produk.create');
-
-//     Route::resource('inquery_pemesananproduk', \App\Http\Controllers\Toko_bumiayu\Inquery_pemesananprodukController::class);
-//     Route::get('/Toko_bumiayu/inquery_pemesananproduk', [Inquery_pemesananprodukController::class, 'index'])->name('Toko_bumiayu.inquery_pemesananproduk.index');
-//     Route::get('inquery_pemesananproduk/unpost_pemesananproduk/{id}', [\App\Http\Controllers\Toko_bumiayu\Inquery_pemesananprodukController::class, 'unpost_pemesananproduk']);
-//     Route::get('inquery_pemesananproduk/posting_pemesananproduk/{id}', [\App\Http\Controllers\Toko_bumiayu\Inquery_pemesananprodukController::class, 'posting_pemesananproduk']);
-
-//     Route::resource('laporan_pemesananprodukbmy', \App\Http\Controllers\Toko_bumiayu\Laporan_pemesananprodukbumiayuController::class);
-//     Route::get('print_pemesananbmy', [\App\Http\Controllers\Toko_bumiayu\Laporan_pemesananprodukbumiayuController::class, 'print_pemesanan']);
-//     Route::get('printReportpemesananbmy', [Laporan_pemesananprodukController::class, 'printReportPemesanan'])->name('printReportPemesanan');
-//     Route::get('indexpemesananglobalbmy', [\App\Http\Controllers\Toko_bumiayu\Laporan_pemesananprodukbumiayuController::class, 'indexpemesananglobal']);
-//     Route::get('printReportpemesananglobalbmy', [Laporan_pemesananprodukbanjaranController::class, 'printReportpemesananglobalbmy'])->name('printReportpemesananglobalbmy');
-
-//     Route::resource('penjualan_produk', \App\Http\Controllers\Toko_bumiayu\PenjualanprodukbumiayuController::class);
-//     // Route::get('/toko_bumiayu/penjualan_produk/cetak/{id}', [PenjualanprodukbumiayuController::class, 'cetak'])->name('toko_bumiayu.penjualan_produk.cetak');
-//     // Route::get('/toko_bumiayu/penjualan_produk/cetak-pdf{id}', [PenjualanprodukbumiayuController::class, 'cetakPdf'])->name('toko_bumiayu.penjualan_produk.cetak-pdf');
-//     // Route::get('/toko_bumiayu/penjualan_produk/pelunasan', [PenjualanprodukbumiayuController::class, 'pelunasan'])->name('toko_bumiayu.penjualan_produk.pelunasan');
-//     // Route::get('toko_bumiayu/penjualan_produk/create', [PenjualanprodukbumiayuController::class, 'create'])->name('toko_bumiayu.penjualan_produk.create');
-//     Route::get('/toko_bumiayu/penjualan_produk/pelunasan', [PenjualanprodukbumiayuController::class, 'pelunasan'])->name('toko_bumiayu.penjualan_produk.pelunasan');
-//     // Route::get('/products/{tokoId}', [PenjualanprodukbumiayuController::class, 'getProductsByToko'])->name('products.byToko');
-//     // Route::get('/fetch-data-by-kode', [PenjualanprodukbumiayuController::class, 'fetchDataByKode'])->name('toko_bumiayu.penjualan_produk.fetchData');
-//     // Route::get('/metodepembayaran/{id}', [PenjualanprodukbumiayuController::class, 'getMetodePembayaran']);
-//     // Route::get('metodebayar/metode/{id}', [\App\Http\Controllers\Toko_bumiayu\PenjualanprodukbumiayuController::class, 'metode']);
-//     // Route::post('admin/penjualan_produk/pelunasan', [PenjualanprodukbumiayuController::class, 'SimpanPelunasan'])->name('penjualan_produk.pelunasan.simpan');
-//     // Route::get('/get-product', [PenjualanprodukbumiayuController::class, 'getProductByKode']);
-//     // Route::get('/penjualan-produk/fetch-product-data', [PenjualanprodukbumiayuController::class, 'fetchProductData'])->name('toko_bumiayu.penjualan_produk.fetchProductData');
-//     // Route::get('/search-product', [PenjualanprodukbumiayuController::class, 'searchProduct']);
-    
-
-
-
-//     Route::resource('pelunasan_pemesanan', \App\Http\Controllers\Toko_bumiayu\PelunasanpemesananController::class);
-//     Route::get('/toko_bumiayu/pelunasan_pemesanan/cetak-pdf{id}', [PelunasanpemesananController::class, 'cetakPdf'])->name('toko_bumiayu.pelunasan_pemesanan.cetak-pdf');
-//     Route::get('/pelunasan-pemesanan/cetak/{id}', [PelunasanpemesananController::class, 'cetak'])->name('toko_bumiayu.pelunasan_pemesanan.cetak');
-
-//     Route::resource('inquery_penjualanprodukbumiayu', \App\Http\Controllers\Toko_bumiayu\Inquery_penjualanprodukbumiayuController::class);
-//     Route::get('/toko_bumiayu/inquery_penjualanprodukbumiayu', [Inquery_penjualanprodukbumiayuController::class, 'index'])->name('toko_bumiayu.inquery_penjualanproduk.index');
-//     Route::get('inquery_penjualanprodukbumiayu/unpost_penjualanproduk/{id}', [\App\Http\Controllers\Toko_bumiayu\Inquery_penjualanprodukbumiayuController::class, 'unpost_penjualanproduk']);
-//     Route::get('inquery_penjualanprodukbumiayu/posting_penjualanproduk/{id}', [\App\Http\Controllers\Toko_bumiayu\Inquery_penjualanprodukbumiayuController::class, 'posting_penjualanproduk']);
-//     Route::get('/toko_bumiayu/inquery_penjualanproduk/cetak-pdf{id}', [Inquery_penjualanprodukbumiayuController::class, 'cetakPdf'])->name('toko_bumiayu.inquery_penjualanproduk.cetak-pdf');
-
-//     Route::resource('laporan_penjualanproduk', \App\Http\Controllers\Toko_bumiayu\Laporan_penjualanprodukController::class);
-//     Route::get('printReport', [\App\Http\Controllers\Toko_bumiayu\Laporan_penjualanprodukController::class, 'printReport']);
-//     Route::get('printReportglobal', [\App\Http\Controllers\Toko_bumiayu\Laporan_penjualanprodukController::class, 'printReportglobal']);
-//     Route::get('indexglobal', [\App\Http\Controllers\Toko_bumiayu\Laporan_penjualanprodukController::class, 'indexglobal']);
-
-//     Route::resource('permintaan_produk', \App\Http\Controllers\Toko_bumiayu\PermintaanprodukbumiayuController::class);
-//     Route::post('toko_bumiayu/permintaan_produk', [PermintaanprodukbumiayuController::class, 'store']);
-//     Route::get('toko_bumiayu/permintaan_produk', [PermintaanprodukbumiayuController::class, 'show']);
-//     Route::get('/permintaan-produk/{id}/print', [PermintaanprodukbumiayuController::class, 'print'])->name('permintaan_produk.print');
-//     Route::get('permintaan_produk/unpost_permintaanproduk/{id}', [\App\Http\Controllers\Toko_bumiayu\PermintaanprodukbumiayuController::class, 'unpost_permintaanproduk']);
-//     Route::get('permintaan_produk/posting_permintaanproduk/{id}', [\App\Http\Controllers\Toko_bumiayu\PermintaanprodukbumiayuController::class, 'posting_permintaanproduk']);
-//     // Route::delete('Toko_bumiayu/permintaan_produk/{id}', [PermintaanProdukController::class, 'destroy'])->name('Toko_bumiayu.permintaan_produk.destroy');
-//     Route::post('Toko_bumiayu/permintaan/import', [PermintaanprodukbumiayuController::class, 'import'])->name('permintaan.import');
-
-
-//     Route::resource('inquery_permintaanproduk', \App\Http\Controllers\Toko_bumiayu\Inquery_permintaanprodukController::class);
-  
-
-//     Route::resource('laporan_permintaanproduk', \App\Http\Controllers\Toko_bumiayu\Laporan_permintaanprodukController::class);
-//     Route::get('printReport1', [\App\Http\Controllers\Toko_bumiayu\Laporan_permintaanprodukController::class, 'printReport']);
-//     Route::get('indexrinci', [\App\Http\Controllers\Toko_bumiayu\Laporan_permintaanprodukController::class, 'indexrinci']);
-//     Route::get('printReportRinci', [\App\Http\Controllers\Toko_bumiayu\Laporan_permintaanprodukController::class, 'printReportRinci']);
-
-//     // Route::resource('inquery_pengirimanbarangjadi', \App\Http\Controllers\Toko_bumiayu\Inquery_pengirimanbarangjadiController::class);
-//     Route::get('inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_bumiayu\Inquery_pengirimanbarangjadiController::class, 'unpost_pengirimanbarangjadi']);
-//     Route::get('inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_bumiayu\Inquery_pengirimanbarangjadiController::class, 'posting_pengirimanbarangjadi']);
-
-//     Route::resource('metode_pembayaran', \App\Http\Controllers\Toko_bumiayu\Metode_pembayaranController::class);
-
-//     //TOKO SLAWI
-//     Route::resource('stok_tokobumiayu', \App\Http\Controllers\Toko_bumiayu\Stok_tokobumiayuController::class);
-//     Route::resource('stokpesanan_tokobumiayu', \App\Http\Controllers\Toko_bumiayu\Stokpesanan_tokobumiayuController::class);
-
-
-//     Route::resource('pengiriman_tokobumiayu', \App\Http\Controllers\Toko_bumiayu\Pengiriman_tokobumiayuController::class);
-//     Route::get('pengiriman_tokobumiayu/unpost_pengiriman/{id}', [\App\Http\Controllers\Toko_bumiayu\Pengiriman_tokobumiayuController::class, 'unpost_pengiriman']);
-//     Route::get('pengiriman_tokobumiayu/posting_pengiriman/{id}', [\App\Http\Controllers\Toko_bumiayu\Pengiriman_tokobumiayuController::class, 'posting_pengiriman']);
-//     Route::get('pengiriman_tokobumiayu/unpost_pengirimanpemesanan/{id}', [\App\Http\Controllers\Toko_bumiayu\Pengiriman_tokobumiayuController::class, 'unpost_pengirimanpemesanan']);
-//     Route::get('pengiriman_tokobumiayu/posting_pengirimanpemesanan/{id}', [\App\Http\Controllers\Toko_bumiayu\Pengiriman_tokobumiayuController::class, 'posting_pengirimanpemesanan']);
-//     Route::get('/pengiriman_tokobumiayu/{id}/print', [Pengiriman_tokobumiayuController::class, 'print'])->name('pengiriman_tokobumiayu.print');
-//     Route::get('Toko_bumiayu/pengiriman_barangjadi/index', [Pengiriman_tokobumiayuController::class, 'index'])->name('toko_bumiayu.pengiriman_tokobumiayu.index');
-//     Route::get('/Toko_bumiayu/pengiriman_tokobumiayu/pengiriman_pemesanan', [Pengiriman_tokobumiayuController::class, 'pengiriman_pemesanan'])->name('toko_bumiayu.pengiriman_tokobumiayu.pengiriman_pemesanan');
-
-//     Route::resource('retur_tokobumiayu', \App\Http\Controllers\Toko_bumiayu\Retur_tokobumiayuController::class);
-  
-//     Route::resource('inquery_returbumiayu', \App\Http\Controllers\Toko_bumiayu\Inquery_returbumiayuController::class);
-//     Route::get('inquery_returbumiayu/unpost_retur/{id}', [\App\Http\Controllers\Toko_bumiayu\Inquery_returbumiayuController::class, 'unpost_retur']);
-//     Route::get('inquery_returbumiayu/posting_retur/{id}', [\App\Http\Controllers\Toko_bumiayu\Inquery_returbumiayuController::class, 'posting_retur']);
-//     Route::get('/inquery_returbumiayu/{id}/print', [Inquery_returbumiayuController::class, 'print'])->name('inquery_returbumiayu.print');
-
-
-//     Route::resource('pemindahan_tokobumiayu', \App\Http\Controllers\Toko_bumiayu\Pemindahan_tokobumiayuController::class);
-
-//     Route::resource('inquery_pemindahanbumiayu', \App\Http\Controllers\Toko_bumiayu\Inquery_pemindahanbumiayuController::class);
-//     Route::get('inquery_pemindahanbanjaran/posting_pemindahan/{id}', [\App\Http\Controllers\Toko_bumiayu\Inquery_pemindahanbumiayuController::class, 'posting_pemindahan']);
-//     Route::get('/inquery_pemindahanbanjaran/{id}/print', [Inquery_pemindahanbanjaranController::class, 'print'])->name('inquery_pemindahanbanjaran.print');
-
-//     Route::resource('laporan_pemindahanbanjaran', \App\Http\Controllers\Toko_bumiayu\Laporan_pemindahanbanjaranController::class);
-//     Route::get('/Toko_bumiayu/print_report', [Laporan_pemindahanbanjaranController::class, 'printReport'])->name('print.report');
-
-//     Route::resource('laporan_stoktokobanjaran', \App\Http\Controllers\Toko_bumiayu\Laporan_stoktokobanjaranController::class);
-//     Route::get('printstoktokobanjaran', [\App\Http\Controllers\Toko_bumiayu\Laporan_stoktokobanjaranController::class, 'printReport']);
-
-//     Route::resource('laporan_pengirimantokobanjaran', \App\Http\Controllers\Toko_bumiayu\Laporan_pengirimantokobanjaranController::class);
-//     Route::get('printpengirimantokobanjaran', [\App\Http\Controllers\Toko_bumiayu\Laporan_pengirimantokobanjaranController::class, 'printReport']);
-
-//     Route::resource('laporan_setorantokobanjaran', \App\Http\Controllers\Toko_bumiayu\Laporan_setoranpenjualanController::class);
-//     Route::get('printReportsetoran', [Laporan_setoranpenjualanController::class, 'printReportsetoran'])->name('laporan_setoranpenjualan.print');
-
-//     Route::resource('inquery_depositbumiayu', \App\Http\Controllers\Toko_bumiayu\Inquery_depositbumiayuController::class);
-
-//     Route::resource('laporan_depositbumiayu', \App\Http\Controllers\Toko_bumiayu\Laporan_depositbumiayuController::class);
-//     Route::get('indexrinci', [\App\Http\Controllers\Toko_bumiayu\Laporan_depositbumiayuController::class, 'indexrinci']);
-//     Route::get('indexsaldo', [\App\Http\Controllers\Toko_bumiayu\Laporan_depositbumiayuController::class, 'indexsaldo']);
-//     Route::get('saldo', [\App\Http\Controllers\Toko_bumiayu\Laporan_depositbumiayuController::class, 'saldo']);
-//     Route::get('printReportdeposit', [\App\Http\Controllers\Toko_bumiayu\Laporan_depositbumiayuController::class, 'printReportdeposit']);
-//     Route::get('printReportdepositrinci', [\App\Http\Controllers\Toko_bumiayu\Laporan_depositbumiayuController::class, 'printReportdepositrinci']);
-//     Route::get('printReportsaldo', [\App\Http\Controllers\Toko_bumiayu\Laporan_depositbumiayuController::class, 'printReportsaldo']);
-// });
 
 
 

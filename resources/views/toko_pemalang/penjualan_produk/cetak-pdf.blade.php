@@ -389,23 +389,53 @@
                         <tr>
                             <td colspan="4" style="text-align: right; font-size: 9px;">
                                 <strong>
-                                    <span style="color: black;">Total</span><span style="color: white">lllllllllllllllllllllllll</span>
+                                    <span style="color: black;">Total</span><span style="color: white;">lllllllllllllllllllllllll</span>
                                 </strong>
                             </td>
-                        <td style="font-size: 9px; text-align: right;">{{ number_format($penjualan->sub_total, 0, ',', '.') }}</td>
+                            <td style="font-size: 9px; text-align: right;">
+                                @php
+                                    // Mengambil nilai sub_total
+                                    $subTotal = $penjualan->sub_total;
+                        
+                                    // Menghapus karakter "Rp" dan mengonversi string menjadi angka
+                                    $numericValue = str_replace(['Rp',  ' '], '', $subTotal);
+                                @endphp
+                                {{ $numericValue }}
+                            </td>
                         </tr>
+                        
+                        
                         @if($penjualan->metode_id == Null)
                             <tr>
                                 <td colspan="4" style="text-align: right; font-size: 9px;"> <strong>
                                     <span style="color: black;">Bayar</span><span style="color: white">lllllllllllllllllllllllll</span>
                                 </strong></td>
-                                <td style="font-size: 9px;">{{ number_format($penjualan->bayar, 0, ',', '.') }}</td>
+                               
+                                    <td style="font-size: 9px; text-align: right;">
+                                        @php
+                                            // Mengambil nilai sub_total
+                                            $Bayar = $penjualan->bayar;
+                                
+                                            // Menghapus karakter "Rp" dan mengonversi string menjadi angka
+                                            $numericValue = str_replace(['Rp',  ' '], '', $Bayar);
+                                        @endphp
+                                        {{ $numericValue }}
+                                    </td>
                             </tr>
                             <tr>
                                 <td colspan="4" style="text-align: right; font-size: 9px;"> <strong>
                                     <span style="color: black;">Kembali</span><span style="color: white">lllllllllllllllllllll</span>
                                 </strong></td>
-                                <td style="font-size: 9px; text-align: right">{{ number_format($penjualan->kembali, 0, ',', '.') }}</td>
+                                <td style="font-size: 9px; text-align: right;">
+                                    @php
+                                        // Mengambil nilai sub_total
+                                        $Kembali = $penjualan->kembali;
+                            
+                                        // Menghapus karakter "Rp" dan mengonversi string menjadi angka
+                                        $numericValue = str_replace(['Rp',  ' '], '', $Kembali);
+                                    @endphp
+                                    {{ $numericValue }}
+                                </td>
                             </tr>
                         @elseif($penjualan->metode_bayar == 'mesinedc' || $penjualan->metode_bayar == 'gobiz')
                             <!-- Logic tambahan jika diperlukan -->

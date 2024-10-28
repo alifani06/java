@@ -202,7 +202,7 @@ class PenjualanprodukbumiayuController extends Controller
         $cetakpdf = Penjualanproduk::create([
             'nama_pelanggan' => $request->nama_pelanggan ?? null,
             'kode_pelanggan' => $request->kode_pelanggan ?? null,
-            'kode_lama' => $request->kode_lama1 ?? null,
+            'kode_pelangganlama' => $request->kode_pelangganlama ?? null,
             'telp' => $request->telp ?? null,
             'alamat' => $request->alamat ?? null,
             'kategori' => $request->kategori,
@@ -516,32 +516,10 @@ class PenjualanprodukbumiayuController extends Controller
         }
     }
  
-    // public function kode()
-    // {
-    //     $prefix = 'PBMY';
-    //     $year = date('y'); // Dua digit terakhir dari tahun
-    //     $monthDay = date('dm'); // Format bulan dan hari: MMDD
-        
-    //     // Mengambil kode retur terakhir yang dibuat pada hari yang sama
-    //     $lastBarang = Penjualanproduk::whereDate('tanggal_penjualan', Carbon::today())
-    //                                   ->orderBy('kode_penjualan', 'desc')
-    //                                   ->first();
-    
-    //     if (!$lastBarang) {
-    //         $num = 1;
-    //     } else {
-    //         $lastCode = $lastBarang->kode_penjualan;
-    //         $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
-    //         $num = $lastNum + 1;
-    //     }
-    
-    //     $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
-    //     $newCode = $prefix . $monthDay . $year . $formattedNum;
-    //     return $newCode;
-    // }
+   
     public function kode()
 {
-    $prefix = 'PBMY';
+    $prefix = 'FPF';
     $year = date('y'); // Dua digit terakhir dari tahun
     $monthDay = date('dm'); // Format bulan dan hari: MMDD
 
@@ -773,30 +751,7 @@ class PenjualanprodukbumiayuController extends Controller
             return response()->json($products);
         }
 
-        // public function destroy($id)
-        // {
-        //     DB::transaction(function () use ($id) {
-        //         $penjualan = Penjualanproduk::findOrFail($id);
-                
-        //         // Ambil semua detail pemesanan terkait
-        //         $detailPenjualanProduks = Detailpenjualanproduk::where('penjualanproduk_id', $id)->get();
-        
-        //         // Mengembalikan stok untuk setiap produk yang dipesan
-        //         foreach ($detailPenjualanProduks as $detail) {
-        //             DB::table('stok_tokobanjarans')
-        //                 ->where('produk_id', $detail->produk_id)
-        //                 ->increment('jumlah', $detail->jumlah);
-        //         }
-        
-        //         // Menghapus (soft delete) detail pemesanan terkait
-        //         Detailpenjualanproduk::where('penjualanproduk_id', $id)->delete();
-        
-        //         // Menghapus (soft delete) data pemesanan
-        //         $penjualan->delete();
-        //     });
-        
-        //     return redirect('toko_bumiayu/penjualan_produk')->with('success', 'Berhasil menghapus data penjualan');
-        // }
+       
         public function destroy($id)
         {
             DB::transaction(function () use ($id) {
