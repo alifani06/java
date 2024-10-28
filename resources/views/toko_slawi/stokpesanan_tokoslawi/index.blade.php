@@ -8,11 +8,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Data Stok Pesanan Toko Tegal</h1>
+                    <h1 class="m-0">Data Stok Pesanan Toko Slawi</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Data Stok Pesanan Tegal</li>
+                        <li class="breadcrumb-item active">Data Stok Pesanan Slawi</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -39,11 +39,11 @@
             <div class="card">
                 <div class="card-header">
                     <div class="float-right">
-                        <a href="{{ url('toko_tegal/stokpesanan_tokotegal/create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url('toko_slawi/stokpesanan_tokoslawi/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i>
                         </a>
                     </div>
-                    <form action="{{ route('stokpesanan_tokotegal.deleteAll') }}" method="POST" style="display: inline-block;">
+                    <form action="{{ route('stokpesanan_tokoslawi.deleteAll') }}" method="POST" style="display: inline-block;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus seluruh data stok?')">
@@ -102,7 +102,7 @@
                         <tbody>
                             @foreach ($produkWithStok as $produk)
                             <tr>
-                                <form action="{{ route('stokpesanan_tokotegal.update', $produk->id) }}" method="POST">
+                                <form action="{{ route('stokpesanan_tokoslawi.update', $produk->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
                                     <td class="text-center">{{ $loop->iteration }}</td>

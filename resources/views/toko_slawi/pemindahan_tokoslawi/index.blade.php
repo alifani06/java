@@ -8,11 +8,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Pemindahan Produk Toko Tegal</h1>
+                    <h1 class="m-0">Pemindahan Produk Toko Slawi</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Pemindahan Produk Toko Tegal</li>
+                        <li class="breadcrumb-item active">Pemindahan Produk Toko Slawi</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -40,7 +40,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Pemindahan Produk Toko Tegal</h3>
                     <div class="float-right">
-                        <a href="{{ url('toko_tegal/pemindahan_tokotegal/create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url('toko_slawi/pemindahan_tokoslawi/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> 
                         </a>
                     </div>

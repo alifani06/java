@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Retur Toko Tegal</h1>
+                    <h1 class="m-0">Retur Toko Slawi</h1>
                     
                 </div><!-- /.col -->
                 <div class="col-sm-6">
@@ -69,7 +69,7 @@
             <div class="card">
             <div class="card-body">
                 <div class="float-right">
-                    <a href="{{ url('toko_tegal/retur_tokotegal/create') }}" class="btn btn-primary btn-sm">
+                    <a href="{{ url('toko_slawi/retur_tokoslawi/create') }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i> 
                     </a>
                 </div>
@@ -126,13 +126,13 @@
                                                     href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a> --}}
                                             
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_tegal/retur_tokotegal/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/toko_slawi/retur_tokoslawi/' . $firstItem->id ) }}">Show</a>
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 {{-- <a class="dropdown-item unpost-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Unpost</a> --}}
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_tegal/retur_tokotegal/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/toko_slawi/retur_tokoslawi/' . $firstItem->id ) }}">Show</a>
                                         @endif
                                        
                                     </div>
@@ -208,7 +208,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_tegal/inquery_returslawi') }}";
+            form.action = "{{ url('toko_slawi/inquery_returslawi') }}";
             form.submit();
         }
 
@@ -226,7 +226,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_tegal/retur_tokotegal/unpost_retur/') }}/" + memoId,
+                    url: "{{ url('toko_slawi/retur_tokoslawi/unpost_retur/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -256,7 +256,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_tegal/retur_tokotegal/posting_retur/') }}/" + memoId,
+                    url: "{{ url('toko_slawi/retur_tokoslawi/posting_retur/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
