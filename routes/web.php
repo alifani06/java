@@ -912,7 +912,7 @@ Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {
     Route::get('/pelunasan-pemesananPml/cetak/{id}', [PelunasanpemesananPmlController::class, 'cetak'])->name('toko_pemalang.pelunasan_pemesananPml.cetak');
 
     Route::resource('inquery_penjualanprodukpemalang', \App\Http\Controllers\Toko_pemalang\Inquery_penjualanprodukpemalangController::class);
-    Route::get('/toko_pemalang/inquery_penjualanprodukpemalang', [Inquery_penjualanprodukpemalangController::class, 'index'])->name('toko_pemalang.inquery_penjualanproduk.index');
+    Route::get('/toko_pemalang/inquery_penjualanprodukpemalang', [Inquery_penjualanprodukpemalangController::class, 'index'])->name('toko_pemalang.inquery_penjualanprodukpemalang.index');
     Route::get('inquery_penjualanprodukpemalang/unpost_penjualanproduk/{id}', [\App\Http\Controllers\Toko_pemalang\Inquery_penjualanprodukpemalangController::class, 'unpost_penjualanproduk']);
     Route::get('inquery_penjualanprodukpemalang/posting_penjualanproduk/{id}', [\App\Http\Controllers\Toko_pemalang\Inquery_penjualanprodukpemalangController::class, 'posting_penjualanproduk']);
     Route::get('/toko_pemalang/inquery_penjualanproduk/cetak-pdf{id}', [Inquery_penjualanprodukpemalangController::class, 'cetakPdf'])->name('toko_pemalang.inquery_penjualanproduk.cetak-pdf');
