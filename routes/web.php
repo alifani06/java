@@ -1162,7 +1162,7 @@ Route::middleware('toko_bumiayu')->prefix('toko_bumiayu')->group(function () {
     Route::resource('laporan_stoktokobumiayu', \App\Http\Controllers\Toko_bumiayu\Laporan_stoktokobumiayuController::class);
     Route::get('printstoktokobumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_stoktokobumiayuController::class, 'printReport']);
     Route::get('stoktokopesananbumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_stoktokobumiayuController::class, 'stoktokopesananbumiayu']);
-    Route::get('printstoktokopesananbumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_stoktokobumiayuController::class, 'printReportstokpesanantegal']);
+    Route::get('printstoktokopesananbumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_stoktokobumiayuController::class, 'printReportstokpesananbumiayu']);
     Route::get('semuastoktokobumiayu', [Laporan_stoktokobumiayuController::class, 'semuaStokTokoBumiayu'])->name('laporan.semuaStokTokoBumiayu');
     Route::get('printsemuastoktokobumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_stoktokobumiayuController::class, 'printReportsemuastokbumiayu']);
 

@@ -63,7 +63,7 @@
             <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
         </div>
         <h1 class="title">PT JAVA BAKERY FACTORY</h1>
-        <p class="title1">Cabang: {{ $tokoCabang }}</p> <!-- Menampilkan nama cabang -->
+        <p class="title1">Cabang: BUMIAYU</p> <!-- Menampilkan nama cabang -->
         <div class="divider"></div>
     
         <h1 class="title2">LAPORAN STOK PESANAN TOKO</h1>
