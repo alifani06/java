@@ -35,15 +35,19 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
+use App\Imports\StokBanjaranImport;
+use App\Models\Stok_tokobanjaran;
+use App\Models\Stok_tokobumiayu;
+use App\Models\Stok_tokotegal;
 use App\Models\Stokpesanan_tokotegal;
 use App\Models\Subklasifikasi;
 use Maatwebsite\Excel\Facades\Excel;
 
 class Stokpesanan_tokotegalController extends Controller{
 
-
 public function index(Request $request)
 {
+    
     $klasifikasis = Klasifikasi::all();
     $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);
 
@@ -91,44 +95,98 @@ public function index(Request $request)
 }
 
 
+
 public function create()
 {
     // Fetch all products
     $produks = Produk::all();
     $tokos = Toko::all();
 
-    return view('toko_tegal.stok_tokobanjaran.create', compact('produks', 'tokos'));
+    return view('toko_tegal.stokpesanan_tokotegal.create', compact('produks', 'tokos'));
 }
 
-
-public function store(Request $request)
-{
-    $request->validate([
-        // 'toko_id' => 'required|exists:tokos,id',
-        'produk_id' => 'required|array',
-        'produk_id.*' => 'exists:produks,id',
-        'jumlah' => 'required|array',
-        'jumlah.*' => 'integer|min:1'
-    ]);
-
-    // $toko_id = $request->input('toko_id');
-    $produk_ids = $request->input('produk_id');
-    $jumlahs = $request->input('jumlah');
-
-    foreach ($produk_ids as $index => $produk_id) {
-        Stok_tokoslawi::create([
-            // 'toko_id' => $toko_id,
-            'produk_id' => $produk_id,
-            'status' => 'posting',
-            'jumlah' => $jumlahs[$index],
-            'tanggal_input' => Carbon::now('Asia/Jakarta'),
+    public function store(Request $request)
+    {
+        $request->validate([
+            // 'toko_id' => 'required|exists:tokos,id',
+            'produk_id' => 'required|array',
+            'produk_id.*' => 'exists:produks,id',
+            'jumlah' => 'required|array',
+            'jumlah.*' => 'integer|min:1'
         ]);
+
+        // $toko_id = $request->input('toko_id');
+        $produk_ids = $request->input('produk_id');
+        $jumlahs = $request->input('jumlah');
+
+        foreach ($produk_ids as $index => $produk_id) {
+            $stok = Stokpesanan_tokotegal::where('produk_id', $produk_id)->first();
+
+            if ($stok) {
+                // Jika stok sudah ada, lakukan update jumlah
+                $stok->update([
+                    'jumlah' => $stok->jumlah + $jumlahs[$index], // Menambahkan jumlah baru ke jumlah yang ada
+                    'tanggal_input' => Carbon::now('Asia/Jakarta'),
+                ]);
+            } else {
+                // Jika stok belum ada, buat entri baru
+                Stokpesanan_tokotegal::create([
+                    // 'toko_id' => $toko_id,
+                    'produk_id' => $produk_id,
+                    'status' => 'posting',
+                    'jumlah' => $jumlahs[$index],
+                    'tanggal_input' => Carbon::now('Asia/Jakarta'),
+                ]);
+            }
+        }
+
+        return redirect()->route('stokpesanan_tokotegal.index')->with('success', 'Data stok barang berhasil disimpan.');
     }
 
-    return redirect()->route('stok_tokoslawi.index')->with('success', 'Data stok barang berhasil disimpan.');
-}
+
+    public function update(Request $request, $produk_id)
+    {
+        // Validasi input untuk memastikan jumlah adalah angka dan tidak kosong
+        $request->validate([
+            'jumlah' => 'required|numeric|min:0',
+        ]);
+
+        // Temukan stok berdasarkan produk_id
+        $stok = Stokpesanan_tokotegal::where('produk_id', $produk_id)->first();
+
+        // Jika stok tidak ditemukan, bisa memberikan respons error atau membuat entri stok baru
+        if (!$stok) {
+            return redirect()->route('stokpesanan_tokotegal.index')->with('error', 'Stok untuk produk ini tidak ditemukan.');
+        }
+
+        // Update jumlah stok
+        $stok->jumlah = $request->input('jumlah');
+        $stok->save(); // Simpan perubahan
+
+        // Redirect kembali ke halaman stok dengan pesan sukses
+        return redirect()->route('stokpesanan_tokotegal.index')->with('success', 'Stok produk berhasil diperbarui.');
+    }
+   
+
+    public function deleteAll()
+    {
+        // Menghapus seluruh data pada kolom jumlah (stok) di tabel stok_tokobanjarans
+        Stokpesanan_tokotegal::query()->update(['jumlah' => 0]);
+
+        return redirect()->back()->with('success', 'Semua data stok berhasil dihapus.');
+    }
 
 
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|file|mimes:xlsx',
+        ]);
+    
+        Excel::import(new StokBanjaranImport, $request->file('file_excel'));
+    
+        return redirect('toko_tegal/stok_tokobanjaran')->with('success', 'Berhasil mengimpor produk dari Excel');
+    }
 
 }
 
