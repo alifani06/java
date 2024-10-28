@@ -41,7 +41,8 @@ use App\Imports\ProdukImport;
 use App\Models\Pengiriman_barangjadi;
 use App\Models\Pengiriman_barangjadipesanan;
 use App\Models\Stok_tokoslawi;
-use App\Models\Pengiriman_tokobanjaran;
+use App\Models\Pengiriman_tokobumiayu;
+use App\Models\Pengiriman_tokotegal;
 use App\Models\Pengirimanpemesanan_tokobanjaran;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -58,7 +59,7 @@ class Pengiriman_tokobumiayuController extends Controller{
         $tanggal_akhir = $request->tanggal_akhir;
     
         // Mengambil data stok_tokoslawi dengan relasi pengiriman_barangjadi dan produk
-        $query = Pengiriman_tokobanjaran::with(['pengiriman_barangjadi.produk.klasifikasi']);
+        $query = Pengiriman_tokotegal::with(['pengiriman_barangjadi.produk.klasifikasi']);
     
         // Filter berdasarkan status
         if ($status) {
@@ -90,7 +91,7 @@ class Pengiriman_tokobumiayuController extends Controller{
                 return $item->pengiriman_barangjadi ? $item->pengiriman_barangjadi->kode_pengiriman : 'undefined';
             });
     
-        return view('toko_bumiayu.pengiriman_tokobanjaran.index', compact('stokBarangJadi'));
+        return view('toko_bumiayu.pengiriman_tokobumiayu.index', compact('stokBarangJadi'));
     }
 
     public function pengiriman_pemesanan(Request $request)
@@ -132,13 +133,13 @@ class Pengiriman_tokobumiayuController extends Controller{
                 return $item->pengiriman_barangjadi ? $item->pengiriman_barangjadi->kode_pengirimanpesanan : 'undefined';
             });
     
-        return view('toko_bumiayu.pengiriman_tokobanjaran.pengiriman_pemesanan', compact('stokBarangJadi'));
+        return view('toko_bumiayu.pengiriman_tokobumiayu.pengiriman_pemesanan', compact('stokBarangJadi'));
     }
     
     public function show($id)
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-        $detailStokBarangJadi = Pengiriman_tokobanjaran::where('id', $id)->value('kode_pengiriman');
+        $detailStokBarangJadi = Pengiriman_tokobumiayu::where('id', $id)->value('kode_pengiriman');
         
         // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -146,18 +147,18 @@ class Pengiriman_tokobumiayuController extends Controller{
         }
         
         // Ambil semua data dengan kode_pengiriman yang sama
-        $pengirimanBarangJadi = Pengiriman_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+        $pengirimanBarangJadi = Pengiriman_tokobumiayu::with(['produk.subklasifikasi', 'toko'])->where('kode_pengiriman', $detailStokBarangJadi)->get();
         
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        return view('toko_bumiayu.pengiriman_tokobanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
+        return view('toko_bumiayu.pengiriman_tokobumiayu.show', compact('pengirimanBarangJadi', 'firstItem'));
     }
 
     public function print($id)
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-        $detailStokBarangJadi = Pengiriman_tokobanjaran::where('id', $id)->value('kode_pengiriman');
+        $detailStokBarangJadi = Pengiriman_tokobumiayu::where('id', $id)->value('kode_pengiriman');
                 
         // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -165,11 +166,11 @@ class Pengiriman_tokobumiayuController extends Controller{
         }
 
         // Ambil semua data dengan kode_pengiriman yang sama
-        $pengirimanBarangJadi = Pengiriman_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_pengiriman', $detailStokBarangJadi)->get();
+        $pengirimanBarangJadi = Pengiriman_tokobumiayu::with(['produk.subklasifikasi', 'toko'])->where('kode_pengiriman', $detailStokBarangJadi)->get();
 
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
-        $pdf = FacadePdf::loadView('toko_bumiayu.pengiriman_tokobanjaran.print', compact('detailStokBarangJadi', 'pengirimanBarangJadi', 'firstItem'));
+        $pdf = FacadePdf::loadView('toko_bumiayu.pengiriman_tokobumiayu.print', compact('detailStokBarangJadi', 'pengirimanBarangJadi', 'firstItem'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
     }
@@ -178,7 +179,7 @@ class Pengiriman_tokobumiayuController extends Controller{
     public function posting_pengiriman($id)
     {
         // Ambil data stok_tokobanjaran berdasarkan ID
-        $stok = Pengiriman_tokobanjaran::where('id', $id)->first();
+        $stok = Pengiriman_tokobumiayu::where('id', $id)->first();
 
         // Pastikan data ditemukan
         if (!$stok) {
@@ -240,7 +241,7 @@ class Pengiriman_tokobumiayuController extends Controller{
         }
 
         // Update status untuk semua stok_tokobanjaran dengan kode_pengiriman yang sama
-        Pengiriman_tokobanjaran::where('kode_pengiriman', $kodePengiriman)->update([
+        Pengiriman_tokobumiayu::where('kode_pengiriman', $kodePengiriman)->update([
             'status' => 'posting',
             'tanggal_terima' => Carbon::now('Asia/Jakarta'),
         ]);

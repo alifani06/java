@@ -223,13 +223,13 @@ public function kode($tanggalPengiriman, $tokoId)
             $prefix = 'JKD'; // Toko Tegal
             break;
         case 3:
-            $prefix = 'JKS'; // Toko Slawi
+            $prefix = 'JKB'; // Toko Slawi
             break;
         case 4:
             $prefix = 'JKE'; // Toko Pemalang
             break;
         case 5:
-            $prefix = 'JKB'; // Toko Bumiayu
+            $prefix = 'JKF'; // Toko Bumiayu
             break;
         default:
             $prefix = 'JK'; // Default prefix jika toko_id tidak valid
