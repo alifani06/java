@@ -113,6 +113,7 @@ use App\Http\Controllers\Toko_tegal\PenjualanproduktegalController;
 use App\Http\Controllers\Toko_tegal\PermintaanproduktegalController;
 use App\Http\Controllers\Toko_tegal\Setoran_tokotegalController;
 use App\Http\Controllers\Toko_tegal\Stok_tokotegalController;
+use App\Http\Controllers\Toko_tegal\Stokpesanan_tokotegalController;
 use App\Models\Pengiriman_barangjadi;
 use App\Models\Pengiriman_tokopemalang;
 use App\Models\Pengiriman_tokotegal;
@@ -778,7 +779,7 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::post('toko_tegal/stok_tokotegal/import', [Stok_tokotegalController::class, 'import'])->name('stok_tokotegal.import');
 
     Route::resource('stokpesanan_tokotegal', \App\Http\Controllers\Toko_tegal\Stokpesanan_tokotegalController::class);
-    Route::delete('/toko_bumiayu/stokpesanan_tokotegal/deleteAll', [Stokpesanan_tokotegal::class, 'deleteAll'])->name('stokpesanan_tokotegal.deleteAll');
+    Route::delete('/toko_tegal/stokpesanan_tokotegal/deleteAll', [Stokpesanan_tokotegalController::class, 'deleteAll'])->name('stokpesanan_tokotegal.deleteAll');
 
     Route::resource('pengiriman_tokotegal', \App\Http\Controllers\Toko_tegal\Pengiriman_tokotegalController::class);
     Route::get('pengiriman_tokotegal/unpost_pengiriman/{id}', [\App\Http\Controllers\Toko_tegal\Pengiriman_tokotegalController::class, 'unpost_pengiriman']);
