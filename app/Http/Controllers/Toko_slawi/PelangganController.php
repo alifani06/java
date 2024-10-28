@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_slawi;
+namespace App\Http\Controllers\Toko_tegal;
 
 use Carbon\Carbon;
 use Dompdf\Dompdf;
@@ -20,29 +20,29 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class PelangganController extends Controller
 {
+
     public function index(Request $request)
     {
+ 
 
-        // $pelanggans = Pelanggan::whereNotNull('kode_pelanggan')->get();
-        // return view('admin.pelanggan.index', compact('pelanggans'));
-    $filter = $request->input('filter');
+    $search = $request->input('search'); // Ambil input pencarian
 
-    if ($filter == 'new') {
-        $pelanggans = Pelanggan::whereNotNull('kode_pelanggan')->get();
-    } elseif ($filter == 'old') {
-        $pelanggans = Pelanggan::whereNull('kode_pelanggan')->get();
-    } else {
-        $pelanggans = Pelanggan::whereNotNull('kode_pelanggan')->get();
-    }
+    // $pelanggans = Pelanggan::all();
+    $pelanggans = Pelanggan::when($search, function ($query, $search) {
+        return $query->where('nama_pelanggan', 'like', '%' . $search . '%')
+                     ->orWhere('kode_pelangganlama', 'like', '%' . $search . '%');
+    }) ->paginate(10);
 
-      return view('toko_slawi.pelanggan.index', compact('pelanggans'));
+      return view('toko_tegal.pelanggan.index', compact('pelanggans', 'search'));
         
-    // }
+    
     }
+
+
     public function create()
     {
         $pelanggans = Pelanggan::all();
-        return view('toko_slawi/pelanggan.create', compact('pelanggans'));
+        return view('toko_tegal/pelanggan.create', compact('pelanggans'));
         // tidak memiliki akses
     }
    
@@ -57,21 +57,21 @@ class PelangganController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                // 'kode_lama' => 'required',
-                'nama_pelanggan' => 'required',
-                'alamat' => 'required',
-                'gender' => 'required',
-                'telp' => 'required',
-                'email' => 'required',
-                'pekerjaan' => 'required',
-                'tanggal_lahir' => 'required',
-                'tanggal_awal' => 'required',
-                'tanggal_akhir' => 'required',
+                'kode_pelangganlama' => 'nullable',
+                'nama_pelanggan' => 'nullable',
+                'alamat' => 'nullable',
+                'gender' => 'nullable',
+                'telp' => 'nullable',
+                'email' => 'nullable',
+                'pekerjaan' => 'nullable',
+                'tanggal_lahir' => 'nullable',
+                'tanggal_awal' => 'nullable',
+                'tanggal_akhir' => 'nullable',
                 'gambar' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ],
             [
              
-                'kode_lama.required' => 'Masukkan kode lama',
+                'kode_pelangganlama.nullable' => 'Masukkan kode lama',
                 'nama_pelanggan.required' => 'Masukkan nama pelanggan',
                
                 'pekerjaan.required' => 'masukan pekerjaan',
@@ -108,13 +108,12 @@ class PelangganController extends Controller
                 'status' => 'null',
                 'kode_pelanggan' => $this->kode(),
                 'qrcode_pelanggan' => 'https://javabakery.id/pelanggan/' . $kode,
-                // 'qrcode_karyawan' => 'http://192.168.1.46/tigerload/karyawan/' . $kode
                 'tanggal' => Carbon::now('Asia/Jakarta'),
 
             ]
         ));
 
-        return redirect('toko_slawi/pelanggan')->with('success', 'Berhasil menambahkan karyawan');
+        return redirect('toko_tegal/pelanggan')->with('success', 'Berhasil menambahkan karyawan');
     }
 
 
@@ -142,7 +141,7 @@ class PelangganController extends Controller
         $pelangganfirst = Pelanggan::where('id', $id)->first();
 
         $pelanggans = Pelanggan::where('kode_pelanggan', null)->get();
-        return view('toko_slawi/pelanggan.update', compact('pelanggans', 'pelangganfirst'));
+        return view('toko_tegal/pelanggan.update', compact('pelanggans', 'pelangganfirst'));
     }
 
     public function update(Request $request, $id)
@@ -150,15 +149,15 @@ class PelangganController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'nama_pelanggan' => 'required',
-                'gender' => 'required',
-                'tanggal_lahir' => 'required',
-                'tanggal_awal' => 'required',
-                'tanggal_akhir' => 'required',
-                'telp' => 'required',
-                'email' => 'required',
-                'pekerjaan' => 'required',
-                'alamat' => 'required',
+                'nama_pelanggan' => 'nullable',
+                'gender' => 'nullable',
+                'tanggal_lahir' => 'nullable',
+                'tanggal_awal' => 'nullable',
+                'tanggal_akhir' => 'nullable',
+                'telp' => 'nullable',
+                'email' => 'nullable',
+                'pekerjaan' => 'nullable',
+                'alamat' => 'nullable',
                 // 'gambar_ktp' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             ],
             [
@@ -192,13 +191,13 @@ class PelangganController extends Controller
             $namaGambar = $pelanggans->gambar_ktp;
         }
 
-        if ($pelanggans->kode_lama == null) {
+        if ($pelanggans->kode_pelangganlama == null) {
 
             Pelanggan::where('id', $id)->update([
                 // 'gambar_ktp'=> $namaGambar,
                 'nama_pelanggan' => $request->nama_pelanggan,
                 'kode_pelanggan' => $request->kode_pelanggan,
-                'kode_lama' => $request->kode_lama,
+                'kode_pelangganlama' => $request->kode_pelangganlama,
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'tanggal_awal' => $request->tanggal_awal,
                 'tanggal_akhir' => $request->tanggal_akhir,
@@ -218,7 +217,7 @@ class PelangganController extends Controller
                 'kode_pelanggan' => $request->kode_pelanggan,
                 'qrcode_pelanggan' => 'https://javabakery.id/pelanggan/' . $pelanggans->kode_pelanggan,
 
-                'kode_lama' => $request->kode_lama,
+                'kode_pelangganlama' => $request->kode_pelangganlama,
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'tanggal_awal' => $request->tanggal_awal,
                 'tanggal_akhir' => $request->tanggal_akhir,
@@ -235,7 +234,7 @@ class PelangganController extends Controller
             // 'gambar_ktp'=> $namaGambar,
             'nama_pelanggan' => $request->nama_pelanggan,
             'kode_pelanggan' => $request->kode_pelanggan,
-            'kode_lama' => $request->kode_lama,
+            'kode_pelangganlama' => $request->kode_pelangganlama,
             // 'qrcode_pelanggan' => $request->qrcode_pelanggan,
             'tanggal_lahir' => $request->tanggal_lahir,
             'tanggal_gabung' => $request->tanggal_gabung,
@@ -247,7 +246,7 @@ class PelangganController extends Controller
             'alamat' => $request->alamat,
         ]);
 
-        return redirect('toko_slawi/pelanggan')->with('success', 'Berhasil memperbarui Pelanggan');
+        return redirect('toko_tegal/pelanggan')->with('success', 'Berhasil memperbarui Pelanggan');
     }
 
 
@@ -255,7 +254,7 @@ class PelangganController extends Controller
     {
         $pelanggans = Pelanggan::find($id);
         $pdf = app('dompdf.wrapper');
-        $pdf->loadView('toko_slawi.pelanggan.cetak_pdf', compact('pelanggans'));
+        $pdf->loadView('toko_tegal.pelanggan.cetak_pdf', compact('pelanggans'));
         $pdf->setPaper('letter', 'portrait');
         return $pdf->stream('QrCodePelanggan.pdf');
     }
@@ -263,7 +262,7 @@ class PelangganController extends Controller
     public function show($id)
     {
         $pelanggan = Pelanggan::where('id', $id)->first();
-        return view('toko_slawi/pelanggan.show', compact('pelanggan'));
+        return view('toko_tegal/pelanggan.show', compact('pelanggan'));
     }
 
     public function getpelanggan($id)
@@ -278,14 +277,14 @@ class PelangganController extends Controller
         $pelanggan = Pelanggan::find($id);
         $pelanggan->delete();
 
-        return redirect('toko_slawi/pelanggan')->with('success', 'Berhasil menghapus data pelanggan');
+        return redirect('toko_tegal/pelanggan')->with('success', 'Berhasil menghapus data pelanggan');
     }
     
     // public function cetak_pdf($id)
     // {
     //     $pelanggan = Pelanggan::findOrFail($id);
 
-    //     $pdf = FacadePdf::loadView('toko_slawi.pelanggan.cetak_pdf', compact('pelanggan'));
+    //     $pdf = FacadePdf::loadView('toko_tegal.pelanggan.cetak_pdf', compact('pelanggan'));
     //     return $pdf->download('kartu_member.pdf');
     // }
     public function cetak_pdf($id)
@@ -293,7 +292,7 @@ class PelangganController extends Controller
         $pelanggan = Pelanggan::findOrFail($id);
 
         // Membuat PDF dan menetapkan ukuran kertas kustom
-        $pdf = FacadePdf::loadView('toko_slawi.pelanggan.cetak_pdf', compact('pelanggan'))
+        $pdf = FacadePdf::loadView('toko_tegal.pelanggan.cetak_pdf', compact('pelanggan'))
                         ->setPaper([0, 0, 500, 270]); // [left, top, width, height]
 
         // Mengirimkan view PDF sebagai respons

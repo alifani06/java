@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_slawi;
+namespace App\Http\Controllers\Toko_tegal;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -110,7 +110,7 @@ public function index(Request $request)
     $tokos = Toko::all();
     $klasifikasis = Klasifikasi::all();
 
-    return view('toko_slawi.laporan_permintaanproduk.index', compact('inquery', 'produks', 'tokos', 'klasifikasis', 'klasifikasi_id'));
+    return view('toko_tegal.laporan_permintaanproduk.index', compact('inquery', 'produks', 'tokos', 'klasifikasis', 'klasifikasi_id'));
 }
 
 public function indexrinci(Request $request)
@@ -183,7 +183,7 @@ public function indexrinci(Request $request)
     $tokos = Toko::all();
     $klasifikasis = Klasifikasi::all();
 
-    return view('toko_slawi.laporan_permintaanproduk.indexrinci', compact('inquery', 'produks', 'tokos', 'klasifikasis', 'klasifikasi_id'));
+    return view('toko_tegal.laporan_permintaanproduk.indexrinci', compact('inquery', 'produks', 'tokos', 'klasifikasis', 'klasifikasi_id'));
 }
 
 public function printReport(Request $request)
@@ -237,7 +237,7 @@ public function printReport(Request $request)
         $filteredKlasifikasi = Klasifikasi::find($klasifikasi_id);
     }
 
-    $pdf = FacadePdf::loadView('toko_slawi.laporan_permintaanproduk.print', compact('permintaanProduk', 'tokoData', 'klasifikasi_id', 'tanggal_permintaan', 'tanggal_akhir', 'filteredKlasifikasi'));
+    $pdf = FacadePdf::loadView('toko_tegal.laporan_permintaanproduk.print', compact('permintaanProduk', 'tokoData', 'klasifikasi_id', 'tanggal_permintaan', 'tanggal_akhir', 'filteredKlasifikasi'));
     return $pdf->stream('laporan_permintaan_produk.pdf');
 }
 
@@ -314,7 +314,7 @@ public function printReportRinci(Request $request)
     }
 
     // Pass 'permintaan' as well to the view
-    $pdf = FacadePdf::loadView('toko_slawi.laporan_permintaanproduk.printrinci', compact('permintaanProduk', 'produkByTokoAndDivisi', 'tokoData', 'klasifikasi_id', 'tanggal_permintaan', 'tanggal_akhir'));
+    $pdf = FacadePdf::loadView('toko_tegal.laporan_permintaanproduk.printrinci', compact('permintaanProduk', 'produkByTokoAndDivisi', 'tokoData', 'klasifikasi_id', 'tanggal_permintaan', 'tanggal_akhir'));
     return $pdf->stream('laporan_permintaan_produk.pdf');
 }
 
@@ -370,7 +370,7 @@ public function create()
             $inquery = Pemesananproduk::with('detailpemesananproduk')->where('id', $id)->first();
             $selectedTokoId = $inquery->toko_id; // ID toko yang dipilih
 
-            return view('toko_slawi.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
+            return view('toko_tegal.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
         }
         
         public function update(Request $request, $id)
@@ -498,7 +498,7 @@ public function create()
             $details = Detailpemesananproduk::where('pemesananproduk_id', $pemesanan->id)->get();
         
             // Redirect ke halaman indeks pemesananproduk
-            return redirect('toko_slawi/inquery_pemesananproduk');
+            return redirect('toko_tegal/inquery_pemesananproduk');
 
         }
         

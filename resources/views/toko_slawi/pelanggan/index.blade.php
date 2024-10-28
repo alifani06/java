@@ -23,7 +23,15 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-
+            {{-- @if (session('success'))
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <h5>
+                        <i class="icon fas fa-check"></i> Success!
+                    </h5>
+                    {{ session('success') }}
+                </div>
+            @endif --}}
             @if (session('success'))
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
@@ -42,12 +50,7 @@
                     <h3 class="card-title">Data Pelanggann</h3>
 
                     <div class="float-right">
-                        {{-- <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal"
-                        data-target="#modal-add">
-                        <i class="fas fa-plus"></i> Data Baru
-                    </button> --}}
-
-                    <a href="{{ url('toko_slawi/pelanggan/create') }}" class="btn btn-primary btn-sm">
+                    <a href="{{ url('toko_tegal/pelanggan/create') }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i>
                     </a>
                     </div>
@@ -55,12 +58,22 @@
     
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="datatables1" class="table table-bordered table-striped">
+                    <form method="GET" action="{{ url('toko_tegal/pelanggan') }}" class="form-inline float-right">
+                        <div class="input-group">
+                            <input type="text" name="search" value="{{ $search }}" class="form-control form-control-sm" placeholder="Cari pelanggan...">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary btn-sm" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form><br><br>
+                    <table id="data" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
-                                <th>No Member Baru</th>
-                                <th>No Member Lama</th>
+                                {{-- <th>No Member Baru</th> --}}
+                                <th>No Member</th>
                                 <th>Nama Pelanggan</th>
                                 <th>Telepon</th>
                                 <th class="text-center">Qr Code</th>
@@ -71,8 +84,8 @@
                             @foreach ($pelanggans as $pelanggan)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $pelanggan->kode_pelanggan }}</td>
-                                    <td>{{ $pelanggan->kode_lama }}</td>
+                                    {{-- <td>{{ $pelanggan->kode_pelanggan }}</td> --}}
+                                    <td>{{ $pelanggan->kode_pelangganlama }}</td>
                                     <td>{{ $pelanggan->nama_pelanggan }}</td>
                                     <td>{{ $pelanggan->telp }}</td>
                                     <td data-toggle="modal" data-target="#modal-qrcode-{{ $pelanggan->id }}"
@@ -82,11 +95,11 @@
                                         </div>
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ url('toko_slawi/pelanggan/' . $pelanggan->id) }}"
+                                        <a href="{{ url('toko_tegal/pelanggan/' . $pelanggan->id) }}"
                                             class="btn btn-info btn-sm">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ url('toko_slawi/pelanggan/' . $pelanggan->id . '/edit') }}"
+                                        <a href="{{ url('toko_tegal/pelanggan/' . $pelanggan->id . '/edit') }}"
                                             class="btn btn-warning btn-sm">
                                             <i class="fas fa-edit"></i>
                                         </a>
@@ -113,7 +126,7 @@
                                             <div class="modal-footer justify-content-between">
                                                 <button type="button" class="btn btn-default"
                                                     data-dismiss="modal">Batal</button>
-                                                <form action="{{ url('toko_slawi/pelanggan/' . $pelanggan->id) }}"
+                                                <form action="{{ url('toko_tegal/pelanggan/' . $pelanggan->id) }}"
                                                     method="POST">
                                                     @csrf
                                                     @method('delete')
@@ -146,7 +159,7 @@
                                                 <div class="modal-footer justify-content-between">
                                                     <button type="button" class="btn btn-default"
                                                         data-bs-dismiss="modal">Batal</button>
-                                                    <a href="{{ url('toko_slawi/pelanggan/cetak-qrcode/' . $pelanggan->id) }}"
+                                                    <a href="{{ url('toko_tegal/pelanggan/cetak-qrcode/' . $pelanggan->id) }}"
                                                         class="btn btn-primary btn-sm">
                                                         <i class=""></i> Cetak
                                                     </a>
@@ -174,7 +187,7 @@
                     </div>
                     <div class="modal-body">
                         <div style="text-align: center;">
-                            <form action="{{ url('toko_slawi/pelanggan') }}" enctype="multipart/form-data"
+                            <form action="{{ url('toko_tegal/pelanggan') }}" enctype="multipart/form-data"
                                 autocomplete="off" method="post">
                                 @csrf
                                 <div class="card">
@@ -225,7 +238,7 @@
         function getData(id) {
             var pelanggan_id = document.getElementById('pelanggan_id');
             $.ajax({
-                url: "{{ url('toko_slawi/pelanggan/getpelanggan') }}" + "/" + pelanggan_id.value,
+                url: "{{ url('toko_tegal/pelanggan/getpelanggan') }}" + "/" + pelanggan_id.value,
                 type: "GET",
                 dataType: "json",
                 success: function(pelanggan_id) {

@@ -205,7 +205,7 @@
         <hr class="divider">
         <hr class="divider">
         <div class="section">
-            <h2>Surat Pemesanan Produk</h2>
+            <h2>Struk Pemesanan Produk</h2>
             <p style="text-align: right; font-size: 8px;">
                 {{ \Carbon\Carbon::parse($pemesanan->tanggal_pemesanan)->locale('id')->translatedFormat('l, d F Y H:i') }}
             </p><br>
@@ -227,9 +227,9 @@
                     <div class="telepon">
                         <p><span style="min-width: 100px; display: inline-flex; align-items: center;">No Telp Pnerima</span><span style="min-width: 100px; display: inline-flex; align-items: center;">: 0{{ $pemesanan->telp_penerima ?? $pemesanan->telp }}</span></p>
                     </div>
-                    <div class="alamat">
+                    {{-- <div class="alamat">
                         <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Alamat Pengiriman</span><span style="min-width: 100px; display: inline-flex; align-items: center;"><span>: {{ $pemesanan->alamat_penerima ?? $pemesanan->alamat }}</span></p>
-                    </div>
+                    </div> --}}
                     <div class="alamat">
                         <p><span style="min-width: 100px; display: inline-flex; align-items: center;">Tanggal Pengiriman</span><span style="min-width: 100px; display: inline-flex; align-items: center;"><span>: {{ $pemesanan->tanggal_kirim }}</span></p>
                     </div>
@@ -255,7 +255,7 @@
                         @endphp
                         @foreach($pemesanan->detailpemesananproduk as $detail)
                             <tr>
-                                <td style="font-size: 8px;">{{ $detail->kode_produk }}</td>
+                                <td style="font-size: 8px;">{{ $detail->kode_lama }}</td>
                                 <td style="font-size: 8px;">{{ $detail->nama_produk }}</td>
                                 <td style="font-size: 8px;">{{ $detail->jumlah }}</td>
                                 <td style="font-size: 8px;">{{'Rp.'. number_format($detail->harga, 0, ',', '.') }}</td>
@@ -343,12 +343,12 @@
             
             <div class="d-flex justify-content-between">
                 <div>
-                    <a href="{{ url('toko_slawi/pemesanan_produk') }}" class="btn btn-primary btn-sm">
+                    <a href="{{ url('toko_tegal/pemesanan_produk') }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i> Kembali
                     </a>
                 </div>
                 <div>
-                    <a href="{{ route('toko_slawi.pemesanan_produk.cetak-pdf', $pemesanan->id) }}" target="_blank" class="btn btn-primary btn-sm">
+                    <a href="{{ route('toko_tegal.pemesanan_produk.cetak-pdf', $pemesanan->id) }}" target="_blank" class="btn btn-primary btn-sm">
                         <i class="fas fa-print"></i> Cetak PDF
                     </a>
                 </div>

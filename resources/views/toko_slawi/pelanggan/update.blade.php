@@ -12,7 +12,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ url('toko_slawi/pelanggan') }}">Pelanggan</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('toko_tegal/pelanggan') }}">Pelanggan</a></li>
                         <li class="breadcrumb-item active">Perbarui</li>
                     </ol>
                 </div><!-- /.col -->
@@ -34,7 +34,7 @@
                     @endforeach
                 </div>
             @endif
-            <form action="{{ url('toko_slawi/pelanggan/' . $pelangganfirst->id) }}" method="POST" enctype="multipart/form-data"
+            <form action="{{ url('toko_tegal/pelanggan/' . $pelangganfirst->id) }}" method="POST" enctype="multipart/form-data"
                 autocomplete="off">
                 @csrf
                 @method('put')
@@ -76,7 +76,7 @@
                                                 @foreach ($pelanggans as $pelanggan)
                                                 <tr>
                                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                                    <td>{{ $pelanggan->kode_lama }}</td>
+                                                    <td>{{ $pelanggan->kode_pelangganlama }}</td>
                                                     <td>{{ $pelanggan->nama_pelanggan }}</td>
                                                     <td>{{ $pelanggan->email }}</td>
                                                     {{-- <td>{{ $pelanggan->pekerjaan }}</td> --}}
@@ -84,7 +84,7 @@
                                                     <td>{{ $pelanggan->alamat }}</td>
                                                     <td class="text-center">
                                                         <button type="button" class="btn btn-primary btn-sm"
-                                                            onclick="getSelectedDatamarketing('{{ $pelanggan->id }}', '{{ $pelanggan->kode_lama }}', '{{ $pelanggan->nama_pelanggan }}', '{{ $pelanggan->gender }}','{{ $pelanggan->email }}', '{{ $pelanggan->telp }}'
+                                                            onclick="getSelectedDatamarketing('{{ $pelanggan->id }}', '{{ $pelanggan->kode_pelangganlama }}', '{{ $pelanggan->nama_pelanggan }}', '{{ $pelanggan->gender }}','{{ $pelanggan->email }}', '{{ $pelanggan->telp }}'
                                                             ,'{{ $pelanggan->tanggal_lahir }}', '{{ $pelanggan->alamat }}' , '{{ $pelanggan->tanggal_awal }}', '{{ $pelanggan->tanggal_akhir }}')">
                                                             <i class="fas fa-plus"></i>
                                                         </button>
@@ -111,12 +111,12 @@
                                      value="{{ old('kode_pelanggan', $pelangganfirst->kode_pelanggan) }}" readonly>
                             </div>
                             <div class="col  mb-3">
-                                <label for="kode_lama">No.Member Lama</label>
-                                <input type="text" class="form-control" id="kode_lama" name="kode_lama"
-                                    placeholder="Masukan Kode Memnber" value="{{ old('kode_lama', $pelangganfirst->kode_lama) }}">
+                                <label for="kode_pelangganlama">No.Member Lama</label>
+                                <input type="text" class="form-control" id="kode_pelangganlama" name="kode_pelangganlama"
+                                    placeholder="Masukan Kode Memnber" value="{{ old('kode_pelangganlama', $pelangganfirst->kode_pelangganlama) }}">
                             </div>
                             <div class="col  mb-3">
-                                <label for="kode_lama">qr code</label>
+                                <label for="kode_pelangganlama">qr code</label>
                                 {!! DNS2D::getBarcodeHTML("$pelangganfirst->qrcode_pelanggan", 'QRCODE', 1, 1) !!}
                             
                             </div>
@@ -228,7 +228,7 @@
             function getData(id) {
                 var pelanggan_id = document.getElementById('pelanggan_id');
                 $.ajax({
-                    url: "{{ url('toko_slawi/pelanggan/getpelanggan') }}" + "/" + pelanggan_id.value,
+                    url: "{{ url('toko_tegal/pelanggan/getpelanggan') }}" + "/" + pelanggan_id.value,
                     type: "GET",
                     dataType: "json",
                     success: function(pelanggan_id) {
@@ -273,10 +273,10 @@
         $('#tableMarketing').modal('show');
     }
 
-    function getSelectedDatamarketing(pelanggan_id, kode_lama,  nama_pelanggan, gender, email, telp, tanggal_lahir, alamat, tanggal_awal, tanggal_akhir) {
+    function getSelectedDatamarketing(pelanggan_id, kode_pelangganlama,  nama_pelanggan, gender, email, telp, tanggal_lahir, alamat, tanggal_awal, tanggal_akhir) {
         // Set the values in the form fields
         document.getElementById('pelanggan_id').value = pelanggan_id;
-        document.getElementById('kode_lama').value = kode_lama;
+        document.getElementById('kode_pelangganlama').value = kode_pelangganlama;
         document.getElementById('nama_pelanggan').value = nama_pelanggan;
         document.getElementById('gender').value = gender;
         document.getElementById('email').value = email;

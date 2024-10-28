@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Produks')
+@section('title', 'Penjualan Produks')
 
 @section('content')
     <div id="loadingSpinner" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
@@ -56,7 +56,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="float-right">
-                        <a href="{{ url('toko_slawi/penjualan_produk/create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url('toko_tegal/penjualan_produk/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> 
                         </a>
                     </div>
@@ -106,20 +106,10 @@
                                             Tunai
                                         @endif
                                     </td>
-                                    
-                                    
-                                    {{-- <td>
-                                        @if ($item->detailpenjualanproduk->isNotEmpty())
-                                            {{ ucwords(strtolower($item->detailpenjualanproduk->pluck('nama_produk')->implode(', '))) }}
-                                        @else
-                                            tidak ada
-                                        @endif
-                                    </td> --}}
-                                    
-                                    
                                     <td>
-                                        {{ number_format($item->sub_total, 0, ',', '.') }}
+                                        {{ number_format((float)$item->sub_total, 0, ',', '.') }}
                                     </td>
+                                    
 
                                     <td class="text-center">
                                         @if ($item->status == 'posting')
@@ -128,33 +118,39 @@
                                             </button>
                                         @endif
                                         @if ($item->status == 'unpost')
-                                        <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                        <button type="button" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                        {{-- <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
                                                 class="btn btn-danger btn-sm mt-2">
                                                 <i class="fas fa-trash-alt"></i> 
                                             </button>
-                                        </form>
+                                        </form> --}}
                                         @endif
                                      
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($item->status == 'unpost')
                                                 <a class="dropdown-item posting-btn"
                                                         data-memo-id="{{ $item->id }}">Posting</a>
-                                             
-                                                    <a class="dropdown-item"
-                                                        href="{{ url('toko_slawi/penjualan_produk/' . $item->id . '/edit') }}">Update</a>
                                                 
                                                     <a class="dropdown-item"
-                                                        href="{{ url('/toko_slawi/penjualan_produk/' . $item->id ) }}">Show</a>
+                                                        href="{{ url('/toko_tegal/penjualan_produk/' . $item->id ) }}">Show</a>
+                                                         {{-- Tambahkan opsi Delete --}}
+                                                    <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="dropdown-item">Delete</button>
+                                                    </form>
                                                       
                                             @endif
                                             @if ($item->status == 'posting')
-                                                    <a class="dropdown-item unpost-btn"
-                                                        data-memo-id="{{ $item->id }}">Unpost</a>
+                                                    {{-- <a class="dropdown-item unpost-btn"
+                                                        data-memo-id="{{ $item->id }}">Unpost</a> --}}
                                                     <a class="dropdown-item"
-                                                        href="{{ url('/toko_slawi/penjualan_produk/' . $item->id ) }}">Show</a>
+                                                        href="{{ url('/toko_tegal/penjualan_produk/' . $item->id ) }}">Show</a>
                                             @endif
                                            
                                           </div>
@@ -178,6 +174,7 @@
                     </div>
                 </div>
                 <!-- /.card-body -->
+                
             </div>
         </div>
     </section>
@@ -208,7 +205,7 @@
         var form = document.getElementById('form-action');
 
         function cari() {
-            form.action = "{{ url('toko_slawi/inquery_pemesnanproduk') }}";
+            form.action = "{{ url('toko_tegal/inquery_penjualanprodukbanjaran') }}";
             form.submit();
         }
     </script>
@@ -232,8 +229,8 @@
                 });
                 document.getElementById('selectedIds').value = selectedIds.join(',');
                 var selectedIdsString = selectedIds.join(',');
-                window.location.href = "{{ url('toko_slawi/cetak_fakturekspedisifilter') }}?ids=" + selectedIdsString;
-                // var url = "{{ url('toko_slawi/ban/cetak_pdffilter') }}?ids=" + selectedIdsString;
+                window.location.href = "{{ url('toko_tegal/cetak_fakturekspedisifilter') }}?ids=" + selectedIdsString;
+                // var url = "{{ url('toko_tegal/ban/cetak_pdffilter') }}?ids=" + selectedIdsString;
             }
         }
     </script>
@@ -250,7 +247,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan unpost
                 $.ajax({
-                    url: "{{ url('toko_slawi/inquery_penjualanproduk/unpost_penjualanproduk/') }}/" + memoId,
+                    url: "{{ url('toko_tegal/inquery_penjualanprodukbanjaran/unpost_penjualanproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -291,7 +288,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan posting
                 $.ajax({
-                    url: "{{ url('toko_slawi/inquery_penjualanproduk/posting_penjualanproduk/') }}/" + memoId,
+                    url: "{{ url('toko_tegal/inquery_penjualanprodukbanjaran/posting_penjualanproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

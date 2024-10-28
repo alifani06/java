@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Inquery Pengiriman Toko Slawi</h1>
+                    <h1 class="m-0">Inquery Pengiriman Toko Tegal (Permintaan)</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -66,7 +66,15 @@
                 </div>
             @endif
             <div class="card">
-            
+                <div class="card-header">
+                    <div class="float-right">
+                        <select class="form-control" id="kategori1" name="kategori">
+                            <option value="">- Pilih -</option>
+                            <option value="permintaan" {{ old('kategori1') == 'permintaan' ? 'selected' : '' }}>Pengiriman Permintaan</option>
+                            <option value="pemesanan" {{ old('kategori1') == 'pemesanan' ? 'selected' : '' }}>Pengiriman Pesanan</option>
+                        </select>
+                    </div>
+                </div>
                 
                 <div class="card-body">
                     <!-- Tabel -->
@@ -117,7 +125,7 @@
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $firstItem->kode_pengiriman }}</td>
                                 <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_input)->format('d/m/Y H:i') }} </td>
-                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') }} </td>
+                                <td>{{ $firstItem->tanggal_terima ? \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') : '-' }} </td>
                                   
                                 <td class="text-center">
                                     @if ($firstItem->status == 'posting')
@@ -138,13 +146,13 @@
                                                     data-memo-id="{{ $firstItem->id }}">Posting</a>
                                             
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_slawi/pengiriman_tokoslawi/' . $firstItem->id)  }}">Show</a>
+                                                href="{{ url('/toko_tegal/pengiriman_tokotegal/' . $firstItem->id)  }}">Show</a>
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 <a class="dropdown-item unpost-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Unpost</a>
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_slawi/pengiriman_tokoslawi/' . $firstItem->id)  }}">Show</a>
+                                                href="{{ url('/toko_tegal/pengiriman_tokotegal/' . $firstItem->id)  }}">Show</a>
                                         @endif
                                        
                                     </div>
@@ -163,20 +171,20 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($stokBarangJadiItems as $detail)
+                                            @foreach ($stokBarangJadiItems->sortBy('produk.kode_lama') as $detail)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $detail->produk->klasifikasi->nama }}</td>
-                                                <td>{{ $detail->produk->kode_produk }}</td>
+                                                <td>{{ $detail->produk->kode_lama }}</td>
                                                 <td>{{ $detail->produk->nama_produk }}</td>
                                                 <td>{{ $detail->jumlah }}</td>
                                             </tr>
                                             @endforeach
                                         </tbody>
+                                        
                                     </table>
                                 </td>
                             </tr>
-                     
                         @endforeach
                         </tbody>
                     </table> 
@@ -220,7 +228,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_slawi/inquery_pengirimanbarangjadi') }}";
+            form.action = "{{ url('toko_tegal/pengiriman_tokotegal') }}";
             form.submit();
         }
 
@@ -238,7 +246,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_slawi/pengiriman_tokoslawi/unpost_pengiriman/') }}/" + memoId,
+                    url: "{{ url('toko_tegal/pengiriman_tokotegal/unpost_pengiriman/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -268,7 +276,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_slawi/pengiriman_tokoslawi/posting_pengiriman/') }}/" + memoId,
+                    url: "{{ url('toko_tegal/pengiriman_tokotegal/posting_pengiriman/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -351,5 +359,17 @@
         $('tr.dropdown').removeClass('selected').css('background-color', ''); // Menghapus warna latar belakang dari semua baris saat menutup dropdown
     });
 });
+</script>
+
+<script>
+    document.getElementById('kategori1').addEventListener('change', function() {
+        var selectedValue = this.value;
+
+        if (selectedValue === 'permintaan') {
+            window.location.href = "{{ route('toko_tegal.pengiriman_tokotegal.index') }}"; 
+        } else if (selectedValue === 'pemesanan') {
+            window.location.href = "{{ route('pengirimanpemesanan_tokotegal.index') }}"; 
+        }
+    });
 </script>
 @endsection

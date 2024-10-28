@@ -135,7 +135,7 @@
         <!-- Informasi Permintaan -->
         <div>
             <p>
-                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Permintaan</strong></span>
+                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>No Permintaan</strong></span>
                 <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $permintaanProduk->kode_permintaan }}</span>
             </p>
             <p>
@@ -169,10 +169,10 @@
                         @foreach ($produkList as $detail)
                             <tr>
                                 <td>{{ $no++ }}</td> 
-                                <td>{{ $detail->produk->kode_produk }}</td>
+                                <td>{{ $detail->produk->kode_lama }}</td>
                                 <td>{{ $subklasifikasi }}</td>
                                 <td>{{ $detail->produk->nama_produk }}</td>
-                                <td>{{ $detail->jumlah }}</td>
+                                <td style="text-align: right">{{ $detail->jumlah }}</td>
                             </tr>
                         @endforeach
                     {{-- Menampilkan total untuk subklasifikasi --}}
@@ -187,7 +187,7 @@
             <tfoot>
                 <tr class="total-row">
                     <td colspan="4">Total </td>
-                    <td>{{ $produks->sum('jumlah') }}</td>
+                    <td style="text-align: right">{{ $produks->sum('jumlah') }}</td>
                 </tr>
             </tfoot>
         </table><br>
@@ -197,7 +197,7 @@
 
         <div class="d-flex justify-content-between">
             <div>
-                <a href="{{ url('toko_slawi/permintaan_produk') }}" class="btn btn-primary btn-sm">
+                <a href="{{ url('toko_tegal/permintaan_produk') }}" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus"></i> Kembali
                 </a>
             </div>
@@ -207,7 +207,7 @@
                 </a>
             </div> --}}
             <div>
-                <a href="{{ url('toko_slawi/permintaan-produk/' . $permintaanProduk->id . '/print') }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
+                <a href="{{ url('toko_tegal/permintaan-produk/' . $permintaanProduk->id . '/print') }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
                     <i class="fas fa-print"></i> Cetak 
                 </a>
             </div>

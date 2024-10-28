@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surat Permintaan Produk</title>
+    <title>Surat Retur Produk</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
         body {
@@ -71,11 +71,11 @@
         }
         th, td {
             padding: 6px;
-            border: 1px solid #ccc;
+            border: 1px solid black;
             text-align: left;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: white;
         }
         .signature-container {
             margin-top: 60px;
@@ -181,7 +181,7 @@
     {{-- <hr class="divider"> --}}
 
     <!-- Judul Surat -->
-    <div class="change-header">SURAT PENGIRIMAN BARANG JADI</div>
+    <div class="change-header">SURAT RETUR BARANG JADI</div>
     <div class="change-header1">
         <p style="margin-bottom: 2px;">Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
         <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
@@ -204,6 +204,7 @@
             <thead>
                 <tr>
                     <th>No</th>
+                    <th>Divisi</th>
                     <th>Kode Produk</th>
                     <th>Kategori</th>
                     <th>Produk</th>
@@ -215,20 +216,21 @@
                 @foreach($pengirimanBarangJadi as $key => $detail)
                 <tr>
                     <td>{{ $key + 1 }}</td> 
-                    <td>{{ $detail->produk->kode_produk }}</td>
+                    <td>{{ $detail->produk->klasifikasi->nama }}</td>
+                    <td>{{ $detail->produk->kode_lama }}</td>
                     <td>{{ $detail->produk->subklasifikasi->nama }}</td>
                     <td>{{ $detail->produk->nama_produk }}</td>
                     <td>{{ $detail->keterangan }}</td>
-                    <td>{{ $detail->jumlah }}</td>
+                    <td style="text-align: right">{{ $detail->jumlah }}</td>
                 </tr>
                 @endforeach
             </tbody>
-            <tfoot>
+            {{-- <tfoot>
                 <tr class="total-row">
                     <td colspan="5">Total </td>
                     <td>{{ $detail->sum('jumlah') }}</td>
                 </tr>
-            </tfoot>
+            </tfoot> --}}
         </table><br>
     </div>
     <div class="signature-container">

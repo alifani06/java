@@ -68,12 +68,22 @@
                 </div>
             @endif
             <div class="card">
+                <div class="card-body">
+                    <form action="{{ route('permintaan.import') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="form-group">
+                            <label for="file_excel">Unggah File Excel</label>
+                            <input type="file" class="form-control-file" id="file_excel" name="file_excel" accept=".xlsx">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Import</button>
+                    </form>
+                </div>
                 
                 <!-- /.card-header -->
                 <div class="card-body">
                     
 
-                    <form action="{{ url('toko_slawi/permintaan_produk') }}" method="POST">
+                    <form action="{{ url('toko_tegal/permintaan_produk') }}" method="POST">
                         @csrf
                         <input type="hidden" name="toko_id" > <!-- Assuming $toko is passed from the controller -->
                         <div class="row">
@@ -104,7 +114,7 @@
                                                             @foreach ($klasifikasi->produks as $produk)
                                                                 <tr>
                                                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                                                    <td>{{ $produk->kode_produk }}</td>
+                                                                    <td>{{ $produk->kode_lama }}</td>
                                                                     <td>{{ $produk->nama_produk }}</td>
                                                                     <td>
                                                                         <input type="number" class="form-control" id="produk-{{ $produk->id }}" name="produk[{{ $produk->id }}][jumlah]" min="0" style="width: 100px; height: 30px;">

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_slawi;
+namespace App\Http\Controllers\Toko_tegal;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -53,25 +53,25 @@ class Inquery_permintaanprodukController extends Controller
             $tanggal_permintaan = Carbon::parse($tanggal_permintaan)->startOfDay();
             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
             $inquery->whereHas('detailpermintaanproduks', function($query) use ($tanggal_permintaan, $tanggal_akhir) {
-                $query->where('toko_id', 3)  // Filter berdasarkan toko_id di detailpermintaanproduks
+                $query->where('toko_id', 2)  // Filter berdasarkan toko_id di detailpermintaanproduks
                       ->whereBetween('tanggal_permintaan', [$tanggal_permintaan, $tanggal_akhir]);
             });
         } elseif ($tanggal_permintaan) {
             $tanggal_permintaan = Carbon::parse($tanggal_permintaan)->startOfDay();
             $inquery->whereHas('detailpermintaanproduks', function($query) use ($tanggal_permintaan) {
-                $query->where('toko_id', 3)  // Filter berdasarkan toko_id di detailpermintaanproduks
+                $query->where('toko_id', 2)  // Filter berdasarkan toko_id di detailpermintaanproduks
                       ->where('tanggal_permintaan', '>=', $tanggal_permintaan);
             });
         } elseif ($tanggal_akhir) {
             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
             $inquery->whereHas('detailpermintaanproduks', function($query) use ($tanggal_akhir) {
-                $query->where('toko_id', 3)  // Filter berdasarkan toko_id di detailpermintaanproduks
+                $query->where('toko_id', 2)  // Filter berdasarkan toko_id di detailpermintaanproduks
                       ->where('tanggal_permintaan', '<=', $tanggal_akhir);
             });
         } else {
             // Jika tidak ada filter tanggal, ambil data hari ini
             $inquery->whereHas('detailpermintaanproduks', function($query) {
-                $query->where('toko_id', 3)  // Filter berdasarkan toko_id di detailpermintaanproduks
+                $query->where('toko_id', 2)  // Filter berdasarkan toko_id di detailpermintaanproduks
                       ->whereDate('tanggal_permintaan', Carbon::today());
             });
         }
@@ -80,7 +80,8 @@ class Inquery_permintaanprodukController extends Controller
         
         // Menggunakan with untuk eager loading relasi detailpermintaanproduks
         $permintaanProduks = $inquery->with('detailpermintaanproduks')->get();
-        return view('toko_slawi.inquery_permintaanproduk.index', compact('permintaanProduks'));
+        return view('toko_tegal.inquery_
+        permintaanproduk.index', compact('permintaanProduks'));
     }
     
     
@@ -142,7 +143,7 @@ public function posting_permintaanproduk($id)
             $inquery = Pemesananproduk::with('detailpemesananproduk')->where('id', $id)->first();
             $selectedTokoId = $inquery->toko_id; // ID toko yang dipilih
 
-            return view('toko_slawi.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
+            return view('toko_tegal.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
         }
         
         public function update(Request $request, $id)
@@ -270,7 +271,7 @@ public function posting_permintaanproduk($id)
             $details = Detailpemesananproduk::where('pemesananproduk_id', $pemesanan->id)->get();
         
             // Redirect ke halaman indeks pemesananproduk
-            return redirect('toko_slawi/inquery_pemesananproduk');
+            return redirect('toko_tegal/inquery_pemesananproduk');
 
         }
         

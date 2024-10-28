@@ -63,14 +63,14 @@
                 <div class="card-body">
                     <form method="GET" id="form-action">
                         <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <select class="custom-select form-control" id="status" name="status">
-                                <option value="">- Semua Status -</option>
-                                <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
-                                <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
-                            </select>
-                            <label for="status">(Pilih Status)</label>
-                        </div>
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="status" name="status">
+                                    <option value="">- Semua Status -</option>
+                                    <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
+                                    <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
+                                </select>
+                                <label for="status">(Pilih Status)</label>
+                            </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
                                     value="{{ Request::get('tanggal_penjualan') }}" max="{{ date('Y-m-d') }}" />
@@ -85,10 +85,10 @@
                                 <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
-                                
                             </div>
                         </div>
                     </form>
+                    
 
                    
                     <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
@@ -145,7 +145,9 @@
                                             </button>
                                         @endif
                                         @if ($item->status == 'unpost')
-                                      
+                                        <button type="button" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-times"></i>
+                                        </button>
                                         @endif
                                      
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -154,17 +156,22 @@
                                                     <a class="dropdown-item posting-btn"
                                                         data-memo-id="{{ $item->id }}">Posting</a>
                                              
-                                                    <a class="dropdown-item"
-                                                        href="{{ url('toko_slawi/inquery_penjualanproduk/' . $item->id . '/edit') }}">Update</a>
+                                                    {{-- <a class="dropdown-item"
+                                                        href="{{ url('toko_tegal/inquery_penjualanproduk/' . $item->id . '/edit') }}">Update</a> --}}
                                                 
                                                     <a class="dropdown-item"
-                                                    href="{{ url('/toko_slawi/penjualan_produk/' . $item->id ) }}">Show</a>
-                                                    @endif
+                                                    href="{{ url('/toko_tegal/inquery_penjualanproduktegal/' . $item->id ) }}">Show</a>
+                                                    <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="dropdown-item">Delete</button>
+                                                    </form>
+                                            @endif
                                             @if ($item->status == 'posting')
-                                                    <a class="dropdown-item unpost-btn"
-                                                        data-memo-id="{{ $item->id }}">Unpost</a>
+                                                    {{-- <a class="dropdown-item unpost-btn"
+                                                        data-memo-id="{{ $item->id }}">Unpost</a> --}}
                                                     <a class="dropdown-item"
-                                                    href="{{ url('/toko_slawi/penjualan_produk/' . $item->id ) }}">Show</a>
+                                                    href="{{ url('/toko_tegal/inquery_penjualanproduktegal/' . $item->id ) }}">Show</a>
                                             @endif
                                            
                                         </div>
@@ -191,58 +198,38 @@
         </div>
     </section>
 
-
-    <!-- /.card -->
     <script>
         var tanggalAwal = document.getElementById('tanggal_penjualan');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
+    
+        // Jika tanggalAwal kosong, tanggalAkhir tidak bisa diisi
         if (tanggalAwal.value == "") {
             tanggalAkhir.readOnly = true;
         }
+    
+        // Event Listener untuk tanggalAwal (dari tanggal)
         tanggalAwal.addEventListener('change', function() {
             if (this.value == "") {
-                tanggalAkhir.readOnly = true;
+                tanggalAkhir.readOnly = true; // Disable input tanggalAkhir
             } else {
-                tanggalAkhir.readOnly = false;
-            };
+                tanggalAkhir.readOnly = false; // Enable input tanggalAkhir
+            }
+    
+            // Reset nilai tanggalAkhir dan set batas minimalnya
             tanggalAkhir.value = "";
-            var today = new Date().toISOString().split('T')[0];
-            tanggalAkhir.value = today;
-            tanggalAkhir.setAttribute('min', this.value);
+            var today = new Date().toISOString().split('T')[0]; // Tanggal hari ini
+            tanggalAkhir.value = today; // Set default ke hari ini
+            tanggalAkhir.setAttribute('min', this.value); // Set tanggalAkhir minimum sesuai tanggalAwal
         });
-        var form = document.getElementById('form-action')
-
+    
+        // Fungsi untuk mengirim form
         function cari() {
-            form.action = "{{ url('toko_slawi/inquery_penjualanproduk') }}";
+            var form = document.getElementById('form-action');
+            form.action = "{{ url('toko_tegal/inquery_penjualanproduktegal') }}";
             form.submit();
         }
-
     </script>
-
-    <script>
-        $(function(e) {
-            $("#select_all_ids").click(function() {
-                $('.checkbox_ids').prop('checked', $(this).prop('checked'))
-            })
-        });
-
-        function printSelectedData() {
-            var selectedIds = document.querySelectorAll(".checkbox_ids:checked");
-            if (selectedIds.length === 0) {
-                alert("Harap centang setidaknya satu item sebelum mencetak.");
-            } else {
-                var selectedCheckboxes = document.querySelectorAll('.checkbox_ids:checked');
-                var selectedIds = [];
-                selectedCheckboxes.forEach(function(checkbox) {
-                    selectedIds.push(checkbox.value);
-                });
-                document.getElementById('selectedIds').value = selectedIds.join(',');
-                var selectedIdsString = selectedIds.join(',');
-                window.location.href = "{{ url('toko_slawi/cetak_fakturekspedisifilter') }}?ids=" + selectedIdsString;
-                // var url = "{{ url('toko_slawi/ban/cetak_pdffilter') }}?ids=" + selectedIdsString;
-            }
-        }
-    </script>
+    
 
     {{-- unpost memo  --}}
     <script>
@@ -256,7 +243,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan unpost
                 $.ajax({
-                    url: "{{ url('toko_slawi/inquery_penjualanproduk/unpost_penjualanproduk/') }}/" + memoId,
+                    url: "{{ url('toko_tegal/inquery_penjualanproduktegal/unpost_penjualanproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -297,7 +284,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan posting
                 $.ajax({
-                    url: "{{ url('toko_slawi/inquery_penjualanproduk/posting_penjualanproduk/') }}/" + memoId,
+                    url: "{{ url('toko_tegal/inquery_penjualanproduktegal/posting_penjualanproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

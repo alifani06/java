@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_slawi;
+namespace App\Http\Controllers\Toko_tegal;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -34,7 +34,7 @@ class ProdukController extends Controller
     public function index()
     {
         $produks = Produk::all();
-        return view('toko_slawi.produk.index', compact('produks'));
+        return view('toko_tegal.produk.index', compact('produks'));
     }
 
     public function getkategori($id)
@@ -57,7 +57,7 @@ class ProdukController extends Controller
         $klasifikasis = Klasifikasi::all();
         $subs = Subklasifikasi::all();
         $subs1 = Subsub::all();
-        return view('toko_slawi/produk.create', compact('produks', 'klasifikasis', 'subs', 'subs1'));
+        return view('toko_tegal/produk.create', compact('produks', 'klasifikasis', 'subs', 'subs1'));
     }
 
  
@@ -166,7 +166,7 @@ class ProdukController extends Controller
             'non_diskon_clc' => 0,
         ]);
     
-        return redirect('toko_slawi/produk')->with('success', 'Berhasil menambahkan produk');
+        return redirect('toko_tegal/produk')->with('success', 'Berhasil menambahkan produk');
     }
 
     /**
@@ -190,7 +190,7 @@ class ProdukController extends Controller
     {
 
         $produk = Produk::where('id', $id)->first();
-        return view('toko_slawi/produk.update', compact('produk'));  
+        return view('toko_tegal/produk.update', compact('produk'));  
     }
 
     /**
@@ -240,7 +240,7 @@ class ProdukController extends Controller
         $produk->gambar = $namaGambar;
         $produk->save();
 
-        return redirect('toko_slawi/produk')->with('success', 'Berhasil mengubah produk');
+        return redirect('toko_tegal/produk')->with('success', 'Berhasil mengubah produk');
     }
 
 
@@ -255,7 +255,7 @@ class ProdukController extends Controller
         $produk = Produk::find($id);
         $produk->delete();
 
-        return redirect('toko_slawi/produk')->with('success', 'Berhasil menghapus data produk');
+        return redirect('toko_tegal/produk')->with('success', 'Berhasil menghapus data produk');
     }
 
     public function kode()
@@ -289,7 +289,7 @@ class ProdukController extends Controller
     // {
     //     $klasifikasis = Klasifikasi::with('produks')->get();
     //     $importedData = session('imported_data', []);
-    //     return view('toko_slawi.permintaan_produk.form', compact('klasifikasis', 'importedData'));
+    //     return view('toko_tegal.permintaan_produk.form', compact('klasifikasis', 'importedData'));
     // }
     public function import(Request $request)
     {
@@ -312,6 +312,6 @@ class ProdukController extends Controller
     {
         $klasifikasis = Klasifikasi::with('produks')->get();
         $importedData = session('imported_data', []);
-        return view('toko_slawi.permintaan_produk.form', compact('klasifikasis', 'importedData'));
+        return view('toko_tegal.permintaan_produk.form', compact('klasifikasis', 'importedData'));
     }
 }

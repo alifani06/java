@@ -81,15 +81,7 @@
                                     value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
-                            <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="toko" name="toko_id">
-                                    <option value="">- Semua Toko -</option>
-                                    @foreach ($tokos as $toko)
-                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="toko">(Pilih Toko)</label>
-                            </div>
+                          
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="klasifikasi" name="klasifikasi_id" onchange="filterProduk()">
                                     <option value="">- Semua Divisi -</option>
@@ -112,7 +104,7 @@
                                 <button type="submit" class="btn btn-outline-primary btn-block">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
-                                <button type="button" class="btn btn-primary btn-block" onclick="printReport()" target="_blank">
+                                <button type="button" class="btn btn-primary btn-block" onclick="printReportglobal()" target="_blank">
                                     <i class="fas fa-print"></i> Cetak
                                 </button>
                             </div>
@@ -125,7 +117,7 @@
                                 <th class="text-center">No</th>
                                 <th>Kode penjualan</th>
                                 <th>Tanggal penjualan</th>
-                                <th>Cabang</th>
+                                <th>Kasir</th>
                                 <th>Divisi</th>
                                 <th>Produk</th>
                                 <th>Total</th>
@@ -146,7 +138,7 @@
                                     <td>{{ $item->kode_penjualan }}</td>
                                     <td>{{ \Carbon\Carbon::parse($item->tanggal_penjualan)->format('d/m/Y H:i') }}</td>
                                     {{-- <td>{{ $item->nama_pelanggan ?? 'Non Member' }}</td> --}}
-                                    <td>{{ $item->toko->nama_toko}}</td>
+                                    <td>{{ $item->kasir}}</td>
                                     <td>
                                         @if ($item->detailpenjualanproduk->isNotEmpty())
                                             {{ $item->detailpenjualanproduk->pluck('produk.klasifikasi.nama')->implode(', ') }}
@@ -209,7 +201,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_slawi/indexglobal') }}";
+            form.action = "{{ url('toko_tegal/indexglobal') }}";
             form.submit();
         }
     </script>
@@ -217,7 +209,7 @@
 <script>
     function printReportglobal() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_slawi/printReportglobal') }}";
+    form.action = "{{ url('toko_tegal/printReportglobal') }}";
     form.target = "_blank";
     form.submit();
 }
@@ -230,9 +222,9 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'global') {
-            window.location.href = "{{ url('toko_slawi/indexglobal') }}";
+            window.location.href = "{{ url('toko_tegal/indexglobal') }}";
         } else if (selectedValue === 'rinci') {
-            window.location.href = "{{ url('toko_slawi/laporan_penjualanproduk') }}";
+            window.location.href = "{{ url('toko_tegal/laporan_penjualanproduk') }}";
         }
     });
 </script>

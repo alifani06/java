@@ -165,29 +165,29 @@
                 @foreach($pengirimanBarangJadi as $key => $detail)
                 <tr>
                     <td>{{ $key + 1 }}</td> 
-                    <td>{{ $detail->produk->kode_produk }}</td>
+                    <td>{{ $detail->produk->kode_lama }}</td>
                     <td>{{ $detail->produk->subklasifikasi->nama }}</td>
                     <td>{{ $detail->produk->nama_produk }}</td>
                     <td>{{ $detail->jumlah }}</td>
                 </tr>
                 @endforeach
             </tbody>
-            {{-- <tfoot>
-                <tr class="total-row">
-                    <td colspan="4">Total </td>
-                    <td>{{ $detail->sum('jumlah') }}</td>
+            <tfoot>
+                <tr>
+                    <td colspan="4" style="text-align:right;"><strong>Total</strong></td>
+                    <td><strong>{{ $pengirimanBarangJadi->sum('jumlah') }}</strong></td>
                 </tr>
-            </tfoot> --}}
+            </tfoot>
         </table><br>
 
         <div class="d-flex justify-content-between">
             <div>
-                <a href="{{ url('toko_slawi/pengiriman_tokoslawi') }}" class="btn btn-primary btn-sm">
+                <a href="{{ url('toko_banjaran/pengiriman_tokobanjaran') }}" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus"></i> Kembali
                 </a>
             </div>
             <div>
-                <a href="{{ route('pengiriman_tokoslawi.print', $pengirimanBarangJadi->first()->id) }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
+                <a href="{{ route('pengiriman_tokobanjaran.print', $pengirimanBarangJadi->first()->id) }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
                     <i class="fas fa-print"></i> Cetak 
                 </a>
             </div>  
