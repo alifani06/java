@@ -84,7 +84,7 @@ class Laporan_pengirimantokopemalangController extends Controller
     $status = $request->input('status');
     
     // Buat query untuk ambil data berdasarkan filter
-    $query = Pengiriman_tokobanjaran::query();
+    $query = Pengiriman_tokopemalang::query();
     
     if ($tanggalPengiriman) {
         $query->whereDate('tanggal_input', '>=', $tanggalPengiriman);

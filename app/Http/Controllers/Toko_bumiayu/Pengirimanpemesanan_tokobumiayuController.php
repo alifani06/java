@@ -93,7 +93,7 @@ class Pengirimanpemesanan_tokobumiayuController extends Controller{
                 return $item->pengiriman_barangjadipesanan ? $item->pengiriman_barangjadipesanan->kode_pengirimanpesanan : 'undefined';
             });
     
-        return view('toko_tegal.pengirimanpemesanan_tokotegal.index', compact('stokBarangJadi'));
+        return view('toko_bumiayu.pengirimanpemesanan_tokobumiayu.index', compact('stokBarangJadi'));
     }
 
 
@@ -113,7 +113,7 @@ class Pengirimanpemesanan_tokobumiayuController extends Controller{
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        return view('toko_tegal.pengirimanpemesanan_tokotegal.show', compact('pengirimanBarangJadi', 'firstItem'));
+        return view('toko_bumiayu.pengirimanpemesanan_tokobumiayu.show', compact('pengirimanBarangJadi', 'firstItem'));
     }
 
 
@@ -132,7 +132,7 @@ class Pengirimanpemesanan_tokobumiayuController extends Controller{
 
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
-        $pdf = FacadePdf::loadView('toko_tegal.pengirimanpemesanan_tokotegal.print', compact('detailStokBarangJadi', 'pengirimanBarangJadi', 'firstItem'));
+        $pdf = FacadePdf::loadView('toko_bumiayu.pengirimanpemesanan_tokobumiayu.print', compact('detailStokBarangJadi', 'pengirimanBarangJadi', 'firstItem'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
     }
@@ -272,7 +272,7 @@ public function unpost_pengiriman($id)
         $stok_barangjadi = Stok_Barangjadi::findOrFail($id);
         $klasifikasis = Klasifikasi::all(); // Menyediakan daftar klasifikasi
 
-        return view('toko_tegal.stok_barangjadi.edit', compact('stok_barangjadi', 'klasifikasis'));
+        return view('toko_bumiayu.stok_barangjadi.edit', compact('stok_barangjadi', 'klasifikasis'));
     }
 
     // Method untuk memproses update data
@@ -310,7 +310,7 @@ public function unpost_pengiriman($id)
                 $pemesanan->delete();
             });
         
-            return redirect('toko_tegal/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
+            return redirect('toko_bumiayu/pemesanan_produk')->with('success', 'Berhasil menghapus data pesanan');
         }
         
         public function import(Request $request)
@@ -329,6 +329,6 @@ public function unpost_pengiriman($id)
         {
             $klasifikasis = Klasifikasi::with('produks')->get();
             $importedData = session('imported_data', []);
-            return view('toko_tegal.permintaan_produk.form', compact('klasifikasis', 'importedData'));
+            return view('toko_bumiayu.permintaan_produk.form', compact('klasifikasis', 'importedData'));
         }
 }

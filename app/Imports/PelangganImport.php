@@ -13,6 +13,43 @@ use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Shared\Date; // Tambahkan ini
 
 
+
+class PelangganImport implements ToModel, WithHeadingRow
+{
+    public function model(array $row)
+    {
+        $kode = $this->kode();
+
+        return new Pelanggan([
+            'nama_pelanggan'  => $row['nama_pelanggan'],  // Wajib diisi
+            'kode_pelangganlama'  => $row['kode_pelangganlama'],  // Wajib diisi
+            'alamat'          => $row['alamat'] ?? null,  // Nullable
+            'telp'            => $row['telp'] ?? null,            // Wajib diisi
+            'tanggal_awal'    => isset($row['tanggal_awal']) ? Date::excelToDateTimeObject($row['tanggal_awal'])->format('Y-m-d') : null,   // Nullable
+            'tanggal_akhir'   => isset($row['tanggal_akhir']) ? Date::excelToDateTimeObject($row['tanggal_akhir'])->format('Y-m-d') : null,  // Wajib diisi
+            'kode_pelanggan'  => $kode,
+            'qrcode_pelanggan'=> 'https://javabakery.id/pelanggan/' . $kode,
+        ]);
+    }
+
+    public function kode()
+    {
+        $pelanggan = Pelanggan::all();
+        if ($pelanggan->isEmpty()) {
+            $num = "000001";
+        } else {
+            $id = Pelanggan::orderBy('id', 'desc')->first();
+            $idlm = $id->id;
+            $idbr = $idlm + 1;
+            $num = sprintf("%06s", $idbr);
+        }
+
+        $data = 'JB';
+        return $data . $num;
+    }
+}
+
+
 // class PelangganImport implements ToModel, WithHeadingRow, WithChunkReading {
     
 //     use Importable;
@@ -90,42 +127,6 @@ use PhpOffice\PhpSpreadsheet\Shared\Date; // Tambahkan ini
 //         return 100; // Jumlah baris per chunk
 //     }
 // }
-
-
-class PelangganImport implements ToModel, WithHeadingRow
-{
-    public function model(array $row)
-    {
-        $kode = $this->kode();
-
-        return new Pelanggan([
-            'nama_pelanggan'  => $row['nama_pelanggan'],  // Wajib diisi
-            'kode_pelangganlama'  => $row['kode_pelangganlama'],  // Wajib diisi
-            'alamat'          => $row['alamat'] ?? null,  // Nullable
-            'telp'            => $row['telp'] ?? null,            // Wajib diisi
-            'tanggal_awal'    => isset($row['tanggal_awal']) ? Date::excelToDateTimeObject($row['tanggal_awal'])->format('Y-m-d') : null,   // Nullable
-            'tanggal_akhir'   => isset($row['tanggal_akhir']) ? Date::excelToDateTimeObject($row['tanggal_akhir'])->format('Y-m-d') : null,  // Wajib diisi
-            'kode_pelanggan'  => $kode,
-            'qrcode_pelanggan'=> 'https://javabakery.id/pelanggan/' . $kode,
-        ]);
-    }
-
-    public function kode()
-    {
-        $pelanggan = Pelanggan::all();
-        if ($pelanggan->isEmpty()) {
-            $num = "000001";
-        } else {
-            $id = Pelanggan::orderBy('id', 'desc')->first();
-            $idlm = $id->id;
-            $idbr = $idlm + 1;
-            $num = sprintf("%06s", $idbr);
-        }
-
-        $data = 'JB';
-        return $data . $num;
-    }
-}
 
 
 

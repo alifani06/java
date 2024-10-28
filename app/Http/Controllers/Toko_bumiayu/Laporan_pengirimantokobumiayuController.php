@@ -29,6 +29,7 @@ use App\Models\Permintaanproduk;
 use App\Models\Detailpermintaanproduk;
 use App\Models\Pengiriman_barangjadi;
 use App\Models\Pengiriman_tokobanjaran;
+use App\Models\Pengiriman_tokobumiayu;
 use Carbon\Carbon;
 use App\Models\Toko;
 use Dompdf\Dompdf;
@@ -46,7 +47,7 @@ class Laporan_pengirimantokobumiayuController extends Controller
             $tanggal_input = $request->tanggal_input;
             $tanggal_akhir = $request->tanggal_akhir;
 
-            $query = Pengiriman_tokobanjaran::with('produk.klasifikasi');
+            $query = Pengiriman_tokobumiayu::with('produk.klasifikasi');
 
             if ($status) {
                 $query->where('status', $status);
@@ -83,7 +84,7 @@ class Laporan_pengirimantokobumiayuController extends Controller
     $status = $request->input('status');
     
     // Buat query untuk ambil data berdasarkan filter
-    $query = Pengiriman_tokobanjaran::query();
+    $query = Pengiriman_tokobumiayu::query();
     
     if ($tanggalPengiriman) {
         $query->whereDate('tanggal_input', '>=', $tanggalPengiriman);

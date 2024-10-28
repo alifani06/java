@@ -59,7 +59,7 @@ class Pengiriman_tokobumiayuController extends Controller{
         $tanggal_akhir = $request->tanggal_akhir;
     
         // Mengambil data stok_tokoslawi dengan relasi pengiriman_barangjadi dan produk
-        $query = Pengiriman_tokotegal::with(['pengiriman_barangjadi.produk.klasifikasi']);
+        $query = Pengiriman_tokobumiayu::with(['pengiriman_barangjadi.produk.klasifikasi']);
     
         // Filter berdasarkan status
         if ($status) {

@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
+use App\Models\Pengiriman_tokobumiayu;
 use App\Models\Pengiriman_tokopemalang;
 use App\Models\Pengiriman_tokotegal;
 use Maatwebsite\Excel\Facades\Excel;
@@ -178,13 +179,15 @@ class PengirimanbarangjadiController extends Controller{
                      ]);
                      break;
                 case 5:
-                    Stok_tokobumiayu::create([
+                    Pengiriman_tokobumiayu::create([
                         'pengiriman_barangjadi_id' => $pengiriman->id,
-                        'kode_pengiriman' => $kode,
-                        'produk_id' => $produkId,
-                        'jumlah' => $jumlah,
-                        'tanggal_input' => $tanggalPengirimanDenganJam, // Simpan tanggal dengan jam yang sama
-                    ]);
+                         'kode_pengiriman' => $kode,
+                         'produk_id' => $produkId,
+                         'toko_id' => $tokoId,
+                         'jumlah' => $jumlah,
+                         'status' => 'unpost',
+                         'tanggal_input' => $tanggalPengirimanDenganJam,  // Simpan tanggal dengan jam yang sama
+                     ]);
                     break;
                 default:
                     return redirect()->back()->with('error', 'Toko ID tidak valid')->withInput();

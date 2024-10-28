@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Pengiriman Toko Banjaran</h1>
+                    <h1 class="m-0">Laporan Pengiriman Toko Bumiayu</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -281,7 +281,7 @@
     const tanggalAkhir = document.getElementById('tanggal_akhir').value;
     const status = document.getElementById('status').value;
 
-    form.action = `{{ url('toko_banjaran/printpengirimantokobanjaran') }}?tanggal_input=${tanggalPengiriman}&tanggal_akhir=${tanggalAkhir}&status=${status}`;
+    form.action = `{{ url('toko_bumiayu/printpengirimantokobumiayu') }}?tanggal_input=${tanggalPengiriman}&tanggal_akhir=${tanggalAkhir}&status=${status}`;
     form.target = "_blank";
     form.submit();
 }
