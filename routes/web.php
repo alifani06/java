@@ -955,7 +955,7 @@ Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {
     Route::get('toko_pemalang/stok_tokopemalang/{id}/edit', [Stok_tokopemalangController::class, 'edit'])->name('stok_tokopemalang.edit');
 
     Route::resource('stokpesanan_tokopemalang', \App\Http\Controllers\Toko_pemalang\Stokpesanan_tokopemalangController::class);
-    Route::delete('/toko_pemalang/stokpesanan_tokopemalang/deleteAll', [Stokpesanan_tokopemalangController::class, 'deleteAll'])->name('stokpesanan_tokotegal.deleteAll');
+    Route::delete('/toko_pemalang/stokpesanan_tokopemalang/deleteAll', [Stokpesanan_tokopemalangController::class, 'deleteAll'])->name('stokpesanan_tokopemalang.deleteAll');
 
     Route::resource('stokpesanan_tokopemalang', \App\Http\Controllers\Toko_pemalang\Stokpesanan_tokopemalangController::class);
 
