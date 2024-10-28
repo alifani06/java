@@ -187,11 +187,11 @@ subKlasifikasiSelect.selectedIndex = 0;
         var selectedValue = this.value;
 
         if (selectedValue === 'stok') {
-            window.location.href = "{{ url('toko_Bumiayu/laporan_stoktokobumiayu') }}";
+            window.location.href = "{{ url('toko_bumiayu/laporan_stoktokobumiayu') }}";
         } else if (selectedValue === 'stokpesanan') {
-            window.location.href = "{{ url('toko_Bumiayu/stoktokopesananbumiayu') }}";
+            window.location.href = "{{ url('toko_bumiayu/stoktokopesananbumiayu') }}";
         }else if (selectedValue === 'semuastok') {
-            window.location.href = "{{ url('toko_Bumiayu/semuastoktokobumiayu') }}";
+            window.location.href = "{{ url('toko_bumiayu/semuastoktokobumiayu') }}";
         }
     });
 </script>

@@ -58,7 +58,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="float-right">
-                        <a href="{{ url('toko_tegal/setoran_tokotegal/create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url('toko_bumiayu/setoran_tokobumiayu/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> 
                         </a>
                     </div>
@@ -152,7 +152,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_tegal/laporan_setorantokobanjaran') }}";
+            form.action = "{{ url('toko_bumiayu/laporan_setorantokobanjaran') }}";
             form.submit();
         }
     </script>
@@ -160,7 +160,7 @@
 <script>
     function printReport() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_tegal/printReportsetoran') }}";
+    form.action = "{{ url('toko_bumiayu/printReportsetoran') }}";
     form.target = "_blank";
     form.submit();
 }
@@ -172,9 +172,9 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'global') {
-            window.location.href = "{{ url('toko_tegal/indexglobal') }}";
+            window.location.href = "{{ url('toko_bumiayu/indexglobal') }}";
         } else if (selectedValue === 'rinci') {
-            window.location.href = "{{ url('toko_tegal/laporan_penjualanproduk') }}";
+            window.location.href = "{{ url('toko_bumiayu/laporan_penjualanproduk') }}";
         }
     });
 </script>
