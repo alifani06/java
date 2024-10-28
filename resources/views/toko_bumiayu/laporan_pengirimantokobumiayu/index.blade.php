@@ -68,7 +68,7 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Laporan Pengiriman Toko Banjaran</h3>
+                    <h3 class="card-title">Laporan Pengiriman Toko Bumiayu</h3>
                 </div>
 
                 <!-- /.card-header -->

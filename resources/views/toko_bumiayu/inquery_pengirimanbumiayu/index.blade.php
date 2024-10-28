@@ -131,11 +131,11 @@
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($status == 'unpost')
                                                 <a class="dropdown-item posting-btn" data-memo-id="{{ $firstItem->id }}">Posting</a>
-                                                <a class="dropdown-item" href="{{ url('toko_slawi/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
-                                                <a class="dropdown-item" href="{{ url('/toko_slawi/inquery_pengirimanbarangjadi/' . $firstItem->id) }}">Show</a>
+                                                <a class="dropdown-item" href="{{ url('toko_bumiayu/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
+                                                <a class="dropdown-item" href="{{ url('/toko_bumiayu/inquery_pengirimanbarangjadi/' . $firstItem->id) }}">Show</a>
                                             @elseif ($status == 'posting')
                                                 <a class="dropdown-item unpost-btn" data-memo-id="{{ $firstItem->id }}">Unpost</a>
-                                                <a class="dropdown-item" href="{{ url('toko_slawi/inquery_pengirimanbarangjadi/' . $firstItem->id) }}">Show</a>
+                                                <a class="dropdown-item" href="{{ url('toko_bumiayu/inquery_pengirimanbarangjadi/' . $firstItem->id) }}">Show</a>
                                             @endif
                                         </div>
                                     </td>
@@ -184,7 +184,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_slawi/inquery_pengirimanbarangjadi') }}";
+            form.action = "{{ url('toko_bumiayu/inquery_pengirimanbarangjadi') }}";
             form.submit();
         }
 
@@ -200,7 +200,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_slawi/pengiriman_tokoslawi/unpost_pengiriman/') }}/" + memoId,
+                    url: "{{ url('toko_bumiayu/pengiriman_tokoslawi/unpost_pengiriman/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -230,7 +230,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_slawi/pengiriman_tokoslawi/posting_pengiriman/') }}/" + memoId,
+                    url: "{{ url('toko_bumiayu/pengiriman_tokoslawi/posting_pengiriman/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

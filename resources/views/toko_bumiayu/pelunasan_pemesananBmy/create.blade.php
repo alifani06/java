@@ -74,7 +74,7 @@
                 </div>
             @endif
         
-            <form  action="{{ url('toko_tegal/pelunasan_pemesananTgl') }}" method="POST" enctype="multipart/form-data"
+            <form  action="{{ url('toko_bumiayu/pelunasan_pemesananBmy') }}" method="POST" enctype="multipart/form-data"
                 autocomplete="off">
                 @csrf
                 <div class="card">
@@ -371,8 +371,8 @@
                             <tbody>
                                 @foreach ($produks as $item)
                                     @php
-                                        $tokotegal = $item->tokotegal->first();
-                                        $stokpesanan_tokotegal = $item->stokpesanan_tokotegal ? $item->stokpesanan_tokotegal->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
+                                        $tokobumiayu = $item->tokobumiayu->first();
+                                        $stokpesanan_tokobumiayu = $item->stokpesanan_tokobumiayu ? $item->stokpesanan_tokobumiayu->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
 
                                     @endphp
                                     <tr class="pilih-btn"
@@ -381,25 +381,25 @@
                                         data-lama="{{ $item->kode_lama }}"
                                         data-catatan="{{ $item->catatanproduk }}"
                                         data-nama="{{ $item->nama_produk }}"
-                                        data-member="{{ $tokotegal ? $tokotegal->member_harga_tgl : '' }}"
-                                        data-diskonmember="{{ $tokotegal ? $tokotegal->member_diskon_tgl : '' }}"
-                                        data-nonmember="{{ $tokotegal ? $tokotegal->non_harga_tgl : '' }}"
-                                        data-diskonnonmember="{{ $tokotegal ? $tokotegal->non_diskon_tgl : '' }}">
+                                        data-member="{{ $tokobumiayu ? $tokobumiayu->member_harga_bmy : '' }}"
+                                        data-diskonmember="{{ $tokobumiayu ? $tokobumiayu->member_diskon_bmy : '' }}"
+                                        data-nonmember="{{ $tokobumiayu ? $tokobumiayu->non_harga_bmy : '' }}"
+                                        data-diskonnonmember="{{ $tokobumiayu ? $tokobumiayu->non_diskon_bmy : '' }}">
                                         <td class="text-center">{{ $loop->iteration }}</td>
                                         <td>{{ $item->kode_produk }}</td>
                                         <td>{{ $item->kode_lama }}</td>
                                         <td>{{ $item->nama_produk }}</td>
                                         <td>
-                                            <span class="member_harga_tgl">{{ $tokotegal ? $tokotegal->member_harga_tgl : '' }}</span>
+                                            <span class="member_harga_bmy">{{ $tokobumiayu ? $tokobumiayu->member_harga_bmy : '' }}</span>
                                         </td>
                                         <td>
-                                            <span class="member_diskon_tgl">{{ $tokotegal ? $tokotegal->member_diskon_tgl : '' }}</span>
+                                            <span class="member_diskon_bmy">{{ $tokobumiayu ? $tokobumiayu->member_diskon_bmy : '' }}</span>
                                         </td>
                                         <td>
-                                            <span class="non_harga_tgl">{{ $tokotegal ? $tokotegal->non_harga_tgl : '' }}</span>
+                                            <span class="non_harga_bmy">{{ $tokobumiayu ? $tokobumiayu->non_harga_bmy : '' }}</span>
                                         </td>
                                         <td>
-                                            <span class="non_diskon_tgl">{{ $tokotegal ? $tokotegal->non_diskon_tgl : '' }}</span>
+                                            <span class="non_diskon_bmy">{{ $tokobumiayu ? $tokobumiayu->non_diskon_bmy : '' }}</span>
                                         </td>
                                     
                                         <td class="text-center">
@@ -409,10 +409,10 @@
                                                 data-lama="{{ $item->kode_lama }}"
                                                 data-catatan="{{ $item->catatanproduk }}"
                                                 data-nama="{{ $item->nama_produk }}"
-                                                data-member="{{ $tokotegal ? $tokotegal->member_harga_tgl : '' }}"
-                                                data-diskonmember="{{ $tokotegal ? $tokotegal->member_diskon_tgl : '' }}"
-                                                data-nonmember="{{ $tokotegal ? $tokotegal->non_harga_tgl : '' }}"
-                                                data-diskonnonmember="{{ $tokotegal ? $tokotegal->non_diskon_tgl : '' }}">
+                                                data-member="{{ $tokobumiayu ? $tokobumiayu->member_harga_bmy : '' }}"
+                                                data-diskonmember="{{ $tokobumiayu ? $tokobumiayu->member_diskon_bmy : '' }}"
+                                                data-nonmember="{{ $tokobumiayu ? $tokobumiayu->non_harga_bmy : '' }}"
+                                                data-diskonnonmember="{{ $tokobumiayu ? $tokobumiayu->non_diskon_bmy : '' }}">
                                                 <i class="fas fa-plus"></i> 
                                             </button>
                                         </td>
@@ -478,7 +478,7 @@
     var itemCounter = 0;
     function fetchDataByKode(kode) {
         $.ajax({
-            url: '{{ route("toko_tegal.penjualan_produk.fetchData") }}', // Adjust the route accordingly
+            url: '{{ route("toko_bumiayu.penjualan_produk.fetchData") }}', // Adjust the route accordingly
             method: 'GET',
             data: { kode_pemesanan: kode },
             success: function(response) {
@@ -649,7 +649,7 @@ function reIndexRows() {
     // function fetchProductData(rowId) {
     //     var kodeLama = document.getElementById('kode_lama_' + rowId).value;
     //     $.ajax({
-    //         url: '{{ route("toko_tegal.penjualan_produk.fetchProductData") }}', // Sesuaikan dengan rute Anda
+    //         url: '{{ route("toko_bumiayu.penjualan_produk.fetchProductData") }}', // Sesuaikan dengan rute Anda
     //         method: 'GET',
     //         data: { kode_lama: kodeLama },
     //         success: function(response) {
@@ -890,9 +890,9 @@ function updateGrandTotal() {
             var selectedValue = this.value;
 
             if (selectedValue === 'penjualan') {
-                window.location.href = "{{ route('toko_tegal.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
+                window.location.href = "{{ route('toko_bumiayu.penjualan_produk.create') }}"; // Ganti dengan route yang sesuai untuk Penjualan
             } else if (selectedValue === 'pelunasan') {
-                window.location.href = "{{ route('toko_tegal.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
+                window.location.href = "{{ route('toko_bumiayu.penjualan_produk.pelunasan') }}"; // Ganti dengan route yang sesuai untuk Pelunasan
             }
         });
     </script>

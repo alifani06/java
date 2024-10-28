@@ -182,12 +182,12 @@
 
         <div class="d-flex justify-content-between">
             <div>
-                <a href="{{ url('toko_banjaran/pengiriman_tokobanjaran') }}" class="btn btn-primary btn-sm">
+                <a href="{{ url('toko_bumiayu/pengiriman_tokobumiayu') }}" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus"></i> Kembali
                 </a>
             </div>
             <div>
-                <a href="{{ route('pengiriman_tokobanjaran.print', $pengirimanBarangJadi->first()->id) }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
+                <a href="{{ route('pengiriman_tokobumiayu.print', $pengirimanBarangJadi->first()->id) }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
                     <i class="fas fa-print"></i> Cetak 
                 </a>
             </div>  

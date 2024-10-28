@@ -135,16 +135,16 @@
                                                     data-memo-id="{{ $firstItem->id }}">Posting</a>
                                          
                                                 <a class="dropdown-item"
-                                                    href="{{ url('toko_slawi/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
+                                                    href="{{ url('toko_bumiayu/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
                                             
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_slawi/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/toko_bumiayu/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 <a class="dropdown-item unpost-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Unpost</a>
                                                 <a class="dropdown-item"
-                                                href="{{ url('toko_slawi/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('toko_bumiayu/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
                                         @endif
                                        
                                     </div>
@@ -195,7 +195,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_slawi/inquery_pengirimanbarangjadi') }}";
+            form.action = "{{ url('toko_bumiayu/inquery_pengirimanbarangjadi') }}";
             form.submit();
         }
 
@@ -213,7 +213,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_slawi/inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/') }}/" + memoId,
+                    url: "{{ url('toko_bumiayu/inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -243,7 +243,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_slawi/inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/') }}/" + memoId,
+                    url: "{{ url('toko_bumiayu/inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

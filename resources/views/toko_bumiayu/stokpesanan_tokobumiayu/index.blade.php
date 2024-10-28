@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Data Stok Pesanan')
+@section('title', 'Data Stok Toko')
 
 @section('content')
     <!-- Content Header (Page header) -->
@@ -8,11 +8,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Data Stok Pesanan Toko Tegal</h1>
+                    <h1 class="m-0">Data Stok Pesanan Toko Bumiayu</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Data Stok Pesanan Tegal</li>
+                        <li class="breadcrumb-item active">Data Stok Pesanan Bumiayu</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -37,7 +37,21 @@
                 </script>
             @endif
             <div class="card">
-                
+                <div class="card-header">
+                    <div class="float-right">
+                        <a href="{{ url('toko_bumiayu/stokpesanan_tokobumiayu/create') }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i>
+                        </a>
+                    </div>
+                    <form action="{{ route('stokpesanan_tokobumiayu.deleteAll') }}" method="POST" style="display: inline-block;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus seluruh data stok?')">
+                            <i class="fas fa-trash"></i> Hapus Semua
+                        </button>
+                    </form>
+                </div>
+            
                 <!-- /.card-header -->
                 <div class="card-body">
                     <form method="GET" id="form-action">
@@ -71,7 +85,8 @@
                             </div>
                         </div>
                     </form>
-                
+            
+                    {{-- <table id="data" class="table table-bordered" style="font-size: 13px"> --}}
                     <table id="datatables1" class="table table-bordered" style="font-size: 13px">
                         <thead>
                             <tr>
@@ -81,18 +96,28 @@
                                 <th>Stok</th>
                                 <th>Harga</th>
                                 <th>Sub Total</th>
+                                <th>Aksi</th> 
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($produkWithStok as $produk)
-                                <tr>
+                            <tr>
+                                <form action="{{ route('stokpesanan_tokobumiayu.update', $produk->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $produk->kode_lama }}</td>
                                     <td>{{ $produk->nama_produk }}</td>
-                                    <td style="text-align: right">{{ $produk->jumlah }}</td>
-                                    <td style="text-align: right">{{ number_format($produk->harga, 0, ',', '.') }} </td>
-                                    <td style="text-align: right">{{ number_format($produk->subTotal, 0, ',', '.') }} </td> <!-- Sub Total -->
-                                </tr>
+                                    <td style="text-align: right">
+                                        <input type="number" name="jumlah" value="{{ $produk->jumlah }}" class="form-control" style="width: 80px; text-align: right;">
+                                    </td>
+                                    <td style="text-align: right">{{ number_format($produk->harga, 0, ',', '.') }}</td>
+                                    <td style="text-align: right">{{ number_format($produk->subTotal, 0, ',', '.') }}</td> <!-- Sub Total -->
+                                    <td>
+                                        <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-save"></i></button>
+                                    </td>
+                                </form>
+                            </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
@@ -101,12 +126,14 @@
                                 <th style="text-align: right">{{ $totalStok }}</th>
                                 <th></th>
                                 <th style="text-align: right">{{ 'Rp. ' . number_format($totalSubTotal, 0, ',', '.') }}</th>
+                                <th></th>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
                 <!-- /.card-body -->
             </div>
+            
         </div>
     </section>
     
@@ -146,4 +173,46 @@
             filterSubKlasifikasi();
         });
     </script>
+
+{{-- <script>
+    $(document).ready(function() {
+        $('form').on('submit', function(e) {
+            e.preventDefault(); // Cegah form dari pengiriman standar
+
+            var form = $(this);
+            var url = form.attr('action');
+            var data = form.serialize(); // Ambil semua input form
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: data,
+                success: function(response) {
+                    if (response.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: response.message,
+                            timer: 1000,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'Terjadi kesalahan: ' + response.message,
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Terjadi kesalahan. Silakan coba lagi.',
+                    });
+                }
+            });
+        });
+    });
+</script> --}}
 @endsection

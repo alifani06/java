@@ -35,8 +35,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
+use App\Imports\StokBanjaranImport;
 use App\Models\Stok_tokobanjaran;
 use App\Models\Stok_tokobumiayu;
+use App\Models\Stok_tokotegal;
 use App\Models\Subklasifikasi;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -102,8 +104,6 @@ public function create()
     return view('toko_bumiayu.stok_tokobumiayu.create', compact('produks', 'tokos'));
 }
 
-
-
     public function store(Request $request)
     {
         $request->validate([
@@ -143,7 +143,49 @@ public function create()
     }
 
 
+    public function update(Request $request, $produk_id)
+    {
+        // Validasi input untuk memastikan jumlah adalah angka dan tidak kosong
+        $request->validate([
+            'jumlah' => 'required|numeric|min:0',
+        ]);
 
+        // Temukan stok berdasarkan produk_id
+        $stok = Stok_tokobumiayu::where('produk_id', $produk_id)->first();
+
+        // Jika stok tidak ditemukan, bisa memberikan respons error atau membuat entri stok baru
+        if (!$stok) {
+            return redirect()->route('stok_tokobumiayu.index')->with('error', 'Stok untuk produk ini tidak ditemukan.');
+        }
+
+        // Update jumlah stok
+        $stok->jumlah = $request->input('jumlah');
+        $stok->save(); // Simpan perubahan
+
+        // Redirect kembali ke halaman stok dengan pesan sukses
+        return redirect()->route('stok_tokobumiayu.index')->with('success', 'Stok produk berhasil diperbarui.');
+    }
+   
+
+    public function deleteAll()
+    {
+        // Menghapus seluruh data pada kolom jumlah (stok) di tabel stok_tokobanjarans
+        Stok_tokobumiayu::query()->update(['jumlah' => 0]);
+
+        return redirect()->back()->with('success', 'Semua data stok berhasil dihapus.');
+    }
+
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|file|mimes:xlsx',
+        ]);
+    
+        Excel::import(new StokBanjaranImport, $request->file('file_excel'));
+    
+        return redirect('toko_bumiayu/stok_tokobanjaran')->with('success', 'Berhasil mengimpor produk dari Excel');
+    }
 
 }
 

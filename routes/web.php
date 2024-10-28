@@ -67,6 +67,8 @@ use App\Http\Controllers\Toko_bumiayu\PemesananprodukbumiayuController;
 use App\Http\Controllers\Toko_bumiayu\Pengiriman_tokobumiayuController;
 use App\Http\Controllers\Toko_bumiayu\PenjualanprodukbumiayuController;
 use App\Http\Controllers\Toko_bumiayu\PermintaanprodukbumiayuController;
+use App\Http\Controllers\Toko_bumiayu\Stok_tokobumiayuController;
+use App\Http\Controllers\Toko_bumiayu\Stokpesanan_tokobumiayuController;
 use App\Http\Controllers\Toko_pemalang\Inquery_pemindahanpemalangController;
 use App\Http\Controllers\Toko_pemalang\Inquery_penjualanprodukpemalangController;
 use App\Http\Controllers\Toko_pemalang\Inquery_returpemalangController;
@@ -1110,11 +1112,12 @@ Route::middleware('toko_bumiayu')->prefix('toko_bumiayu')->group(function () {
     Route::resource('metode_pembayaran', \App\Http\Controllers\Toko_bumiayu\Metode_pembayaranController::class);
 
  
-    Route::resource('stok_tokotegal', \App\Http\Controllers\Toko_bumiayu\Stok_tokotegalController::class);
-    Route::delete('/toko_bumiayu/stok_tokotegal/deleteAll', [Stok_tokotegalController::class, 'deleteAll'])->name('stok_tokotegal.deleteAll');
-    Route::post('toko_bumiayu/stok_tokotegal/import', [Stok_tokotegalController::class, 'import'])->name('stok_tokotegal.import');
+    Route::resource('stok_tokobumiayu', \App\Http\Controllers\Toko_bumiayu\Stok_tokobumiayuController::class);
+    Route::delete('/toko_bumiayu/stok_tokobumiayu/deleteAll', [Stok_tokobumiayuController::class, 'deleteAll'])->name('stok_tokobumiayu.deleteAll');
+    Route::post('toko_bumiayu/stok_tokobumiayu/import', [Stok_tokobumiayuController::class, 'import'])->name('stok_tokobumiayu.import');
 
-    Route::resource('stokpesanan_tokotegal', \App\Http\Controllers\Toko_bumiayu\Stokpesanan_tokotegalController::class);
+    Route::resource('stokpesanan_tokobumiayu', \App\Http\Controllers\Toko_bumiayu\Stokpesanan_tokobumiayuController::class);
+    Route::delete('/toko_bumiayu/stokpesanan_tokobumiayu/deleteAll', [Stokpesanan_tokobumiayuController::class, 'deleteAll'])->name('stokpesanan_tokobumiayu.deleteAll');
 
 
     Route::resource('pengiriman_tokotegal', \App\Http\Controllers\Toko_bumiayu\Pengiriman_tokotegalController::class);

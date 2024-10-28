@@ -303,7 +303,7 @@ class PemesananprodukbumiayuController extends Controller
 
     public function kode()
     {
-        $prefix = 'QBMY';
+        $prefix = 'PF';
         $year = date('y'); // Dua digit terakhir dari tahun
         $date = date('dm'); // Format bulan dan hari: MMDD
     
@@ -328,7 +328,7 @@ class PemesananprodukbumiayuController extends Controller
 
     public function kodedp()
     {
-        $prefix = 'DPBMY';
+        $prefix = 'DPF';
         $year = date('y'); // Dua digit terakhir dari tahun
         $date = date('dm'); // Format bulan dan hari: MMDD
     

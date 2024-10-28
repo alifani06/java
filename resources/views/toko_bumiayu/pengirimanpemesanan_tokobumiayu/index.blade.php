@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Inquery Pengiriman Toko Tegal (Pesanan)</h1>
+                    <h1 class="m-0">Inquery Pengiriman Toko Bumiayu (Pesanan)</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -145,13 +145,13 @@
                                                 <a class="dropdown-item posting-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Posting</a>
                                             
-                                                    <a class="dropdown-item" href="{{ route('pengirimanpemesanan_tokotegal.show', $firstItem->id) }}">Show</a>
+                                                    <a class="dropdown-item" href="{{ route('pengirimanpemesanan_tokobumiayu.show', $firstItem->id) }}">Show</a>
 
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 <a class="dropdown-item unpost-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Unpost</a>
-                                                    <a class="dropdown-item" href="{{ route('pengirimanpemesanan_tokotegal.show', $firstItem->id) }}">Show</a>
+                                                    <a class="dropdown-item" href="{{ route('pengirimanpemesanan_tokobumiayu.show', $firstItem->id) }}">Show</a>
 
                                         @endif
                                        
@@ -228,7 +228,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_tegal/pengirimanpemesanan_tokotegal') }}";
+            form.action = "{{ url('toko_bumiayu/pengirimanpemesanan_tokobumiayu') }}";
             form.submit();
         }
 
@@ -244,7 +244,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_tegal/pengiriman_tokotegal/unpost_pengirimanpemesanan/') }}/" + memoId,
+                    url: "{{ url('toko_bumiayu/pengiriman_tokobumiayu/unpost_pengirimanpemesanan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -274,7 +274,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_tegal/pengiriman_tokotegal/posting_pengirimanpemesanan/') }}/" + memoId,
+                    url: "{{ url('toko_bumiayu/pengiriman_tokobumiayu/posting_pengirimanpemesanan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -364,9 +364,9 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'permintaan') {
-            window.location.href = "{{ route('toko_tegal.pengiriman_tokotegal.index') }}"; 
+            window.location.href = "{{ route('toko_bumiayu.pengiriman_tokobumiayu.index') }}"; 
         } else if (selectedValue === 'pemesanan') {
-            window.location.href = "{{ route('pengirimanpemesanan_tokotegal.index') }}"; 
+            window.location.href = "{{ route('pengirimanpemesanan_tokobumiayu.index') }}"; 
         }
     });
 </script>

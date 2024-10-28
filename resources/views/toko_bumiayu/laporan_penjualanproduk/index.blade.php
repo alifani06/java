@@ -65,7 +65,7 @@
                             </select>
                         </div>
                         {{-- <div class="float-right">
-                            <a href="{{ route('toko_tegal.penjualan_produk.pelunasan') }}"  class="btn btn-primary btn-sm">Pelunasan Pemesanan
+                            <a href="{{ route('toko_bumiayu.penjualan_produk.pelunasan') }}"  class="btn btn-primary btn-sm">Pelunasan Pemesanan
                             </a>
                         </div> --}}
        
@@ -207,7 +207,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_tegal/laporan_penjualanproduk') }}";
+            form.action = "{{ url('toko_bumiayu/laporan_penjualanproduk') }}";
             form.submit();
         }
     </script>
@@ -215,7 +215,7 @@
 <script>
     function printReport() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_tegal/printReport') }}";
+    form.action = "{{ url('toko_bumiayu/printReport') }}";
     form.target = "_blank";
     form.submit();
 }
@@ -227,9 +227,9 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'global') {
-            window.location.href = "{{ url('toko_tegal/indexglobal') }}";
+            window.location.href = "{{ url('toko_bumiayu/indexglobal') }}";
         } else if (selectedValue === 'rinci') {
-            window.location.href = "{{ url('toko_tegal/laporan_penjualanproduk') }}";
+            window.location.href = "{{ url('toko_bumiayu/laporan_penjualanproduk') }}";
         }
     });
 </script>

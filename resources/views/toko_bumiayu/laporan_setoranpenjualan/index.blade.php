@@ -178,7 +178,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_tegal/laporan_setorantokotegal') }}";
+            form.action = "{{ url('toko_bumiayu/laporan_setorantokobumiayu') }}";
             form.submit();
         }
     </script>
@@ -186,7 +186,7 @@
 <script>
     function printReport() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_tegal/printReportsetorantgl') }}";
+    form.action = "{{ url('toko_bumiayu/printReportsetoranbmy') }}";
     form.target = "_blank";
     form.submit();
 }
@@ -198,9 +198,9 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'global') {
-            window.location.href = "{{ url('toko_tegal/indexglobal') }}";
+            window.location.href = "{{ url('toko_bumiayu/indexglobal') }}";
         } else if (selectedValue === 'rinci') {
-            window.location.href = "{{ url('toko_tegal/laporan_penjualanproduk') }}";
+            window.location.href = "{{ url('toko_bumiayu/laporan_penjualanproduk') }}";
         }
     });
 </script>
