@@ -92,6 +92,7 @@ use App\Http\Controllers\Toko_pemalang\PenjualanprodukpemalangController;
 use App\Http\Controllers\Toko_pemalang\PermintaanprodukpemalangController;
 use App\Http\Controllers\Toko_pemalang\Setoran_tokopemalangController;
 use App\Http\Controllers\Toko_pemalang\Stok_tokopemalangController;
+use App\Http\Controllers\Toko_pemalang\Stokpesanan_tokopemalangController;
 use App\Http\Controllers\Toko_slawi\Inquery_pemindahanslawiController;
 use App\Http\Controllers\Toko_slawi\Inquery_penjualanprodukController as Toko_slawiInquery_penjualanprodukController;
 use App\Http\Controllers\Toko_slawi\Inquery_returslawiController;
@@ -953,7 +954,8 @@ Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {
     Route::post('toko_pemalang/stok_tokopemalang/import', [Stok_tokopemalangController::class, 'import'])->name('stok_tokopemalang.import');
     Route::get('toko_pemalang/stok_tokopemalang/{id}/edit', [Stok_tokopemalangController::class, 'edit'])->name('stok_tokopemalang.edit');
 
-    Route::put('toko_pemalang/stok_tokopemalang/{id}', [Stok_tokopemalangController::class, 'update'])->name('stok_tokopemalang.update');
+    Route::resource('stokpesanan_tokopemalang', \App\Http\Controllers\Toko_pemalang\Stokpesanan_tokopemalangController::class);
+    Route::delete('/toko_pemalang/stokpesanan_tokopemalang/deleteAll', [Stokpesanan_tokopemalangController::class, 'deleteAll'])->name('stokpesanan_tokotegal.deleteAll');
 
     Route::resource('stokpesanan_tokopemalang', \App\Http\Controllers\Toko_pemalang\Stokpesanan_tokopemalangController::class);
 
