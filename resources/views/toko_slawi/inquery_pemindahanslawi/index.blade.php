@@ -154,7 +154,7 @@
                                             <a class="dropdown-item posting-btn" data-memo-id="{{ $firstItem->id }}">Posting</a>
                                         @endif
                 
-                                        <a class="dropdown-item" href="{{ url('/toko_tegal/inquery_pemindahantegal/' . $firstItem->id ) }}">Show</a>
+                                        <a class="dropdown-item" href="{{ url('/toko_slawi/inquery_pemindahanslawi/' . $firstItem->id ) }}">Show</a>
                                     </div>
                                 </td>
                             </tr>
@@ -228,7 +228,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_tegal/inquery_pemindahantegal') }}";
+            form.action = "{{ url('toko_slawi/inquery_pemindahanslawi') }}";
             form.submit();
         }
 
@@ -246,7 +246,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_tegal/inquery_pemindahantegal/unpost_pemindahan/') }}/" + memoId,
+                    url: "{{ url('toko_slawi/inquery_pemindahanslawi/unpost_pemindahan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -276,7 +276,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_tegal/inquery_pemindahantegal/posting_pemindahan/') }}/" + memoId,
+                    url: "{{ url('toko_slawi/inquery_pemindahanslawi/posting_pemindahan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

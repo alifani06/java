@@ -133,9 +133,9 @@
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($permintaan->status == 'unpost')
                                                     <a class="dropdown-item posting-btn"data-memo-id="{{ $permintaan->id }}">Posting</a>
-                                                    <a class="dropdown-item" href="{{ url('toko_tegal/permintaan_produk/' . $permintaan->id . '/edit') }}">Update</a>
-                                                    <a class="dropdown-item" href="{{ url('toko_tegal/permintaan_produk/' . $permintaan->id) }}">Show</a>
-                                                    <form action="{{ url('toko_tegal/permintaan_produk/' . $permintaan->id) }}" method="POST" style="display: inline;">
+                                                    <a class="dropdown-item" href="{{ url('toko_slawi/permintaan_produk/' . $permintaan->id . '/edit') }}">Update</a>
+                                                    <a class="dropdown-item" href="{{ url('toko_slawi/permintaan_produk/' . $permintaan->id) }}">Show</a>
+                                                    <form action="{{ url('toko_slawi/permintaan_produk/' . $permintaan->id) }}" method="POST" style="display: inline;">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="dropdown-item" onclick="return confirm('Apakah Anda yakin ingin menghapus permintaan produk ini?')">Delete</button>
@@ -143,7 +143,7 @@
                                                     @endif
                                             @if ($permintaan->status == 'posting')
                                                     <a class="dropdown-item unpost-btn" data-memo-id="{{ $permintaan->id }}">Unpost</a>
-                                                    <a class="dropdown-item" href="{{ url('toko_tegal/permintaan_produk/' . $permintaan->id) }}">Show</a>
+                                                    <a class="dropdown-item" href="{{ url('toko_slawi/permintaan_produk/' . $permintaan->id) }}">Show</a>
                                             @endif
                                         </div>
                                     </td>
@@ -219,7 +219,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_tegal/inquery_permintaanproduk') }}";
+            form.action = "{{ url('toko_slawi/inquery_permintaanproduk') }}";
             form.submit();
         }
 
@@ -301,7 +301,7 @@
             $('#modal-loading').modal('show');
 
             $.ajax({
-                url: "{{ url('toko_tegal/permintaan_produk/unpost_permintaanproduk/') }}/" + memoId,
+                url: "{{ url('toko_slawi/permintaan_produk/unpost_permintaanproduk/') }}/" + memoId,
                 type: 'GET',
                 data: {
                     id: memoId
@@ -331,7 +331,7 @@
             $('#modal-loading').modal('show');
 
             $.ajax({
-                url: "{{ url('toko_tegal/permintaan_produk/posting_permintaanproduk/') }}/" + memoId,
+                url: "{{ url('toko_slawi/permintaan_produk/posting_permintaanproduk/') }}/" + memoId,
                 type: 'GET',
                 data: {
                     id: memoId

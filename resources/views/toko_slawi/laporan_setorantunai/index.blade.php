@@ -168,7 +168,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_tegal/laporan_setorantunai') }}";
+            form.action = "{{ url('toko_slawi/laporan_setorantunai') }}";
             form.submit();
         }
     </script>
@@ -176,7 +176,7 @@
     <script>
         function printReport() {
         const form = document.getElementById('form-action');
-        form.action = "{{ url('toko_tegal/printReportsetoran') }}";
+        form.action = "{{ url('toko_slawi/printReportsetoran') }}";
         form.target = "_blank";
         form.submit();
     }

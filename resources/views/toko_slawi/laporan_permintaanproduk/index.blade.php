@@ -135,64 +135,7 @@
                             </div>
                         </div>
                     </form>
-                
-                    {{-- <table id="datatables66" class="table table-bordered" style="font-size: 13px">
-                        <thead>
-                            <tr>
-                                <th class="text-center">No</th>
-                                <th>Cabang</th>
-                                <th>Kode Permintaan</th>
-                                <th>Tanggal Permintaan</th>
-                                <th>Jumlah Produk</th>
-                                <th>Opsi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($inquery as $permintaan)
-                                <tr class="permintaan-header" data-permintaan-id="{{ $permintaan->id }}">
-                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ optional($permintaan->detailpermintaanproduks->first()->toko)->nama_toko ?? 'Toko tidak ditemukan' }}</td>
-                                    <td>{{ $permintaan->kode_permintaan }}</td>
-                                    <td>{{ $permintaan->created_at->format('d-m-Y') }}</td>
-                                    <td>{{ $permintaan->detailpermintaanproduks->count() }}</td>
-                                    <td class="text-center">
-                                        <a href="{{ url('toko_slawi/permintaan_produk/' . $permintaan->id) }}" class="btn btn-info btn-sm">
-                                            <i class="fas fa-print"></i>
-                                        </a>
-                                      
-                                    </td>
-                                    
-                                </tr>
-                                <tr class="permintaan-details" id="details-{{ $permintaan->id }}" style="display: none;">
-                                    <td colspan="5">
-                                        <table class="table table-bordered" style="font-size: 13px;">
-                                            <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>Divisi</th>
-                                                    <th>Kode Produk</th>
-                                                    <th>Produk</th>
-                                                    <th>Jumlah</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($permintaan->detailpermintaanproduks as $detail)
-                                                <tr >
-                                                    <td>{{ $loop->iteration }}</td>
-                                                        <td>{{ $detail->produk->klasifikasi->nama }}</td>
-                                                        <td>{{ $detail->produk->kode_produk }}</td>
-                                                        <td>{{ $detail->produk->nama_produk }}</td>
-                                                        <td>{{ $detail->jumlah }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </td>
-                    
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table> --}}
+
 <table id="datatables66" class="table table-bordered" style="font-size: 13px">
     <thead>
         <tr>

@@ -90,7 +90,7 @@
 
     <div class="header">
         <h1 class="title">JAVA BAKERY</h1>
-        <p class="title1">Cabang: TEGAL</p> 
+        <p class="title1">Cabang: SLAWI</p> 
         <div class="divider"></div>
         <h1 class="title2">LAPORAN PEMESANAN PRODUK RINCI</h1>
 

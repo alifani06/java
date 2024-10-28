@@ -29,7 +29,7 @@
         <thead>
             <tr>
                 <th>No</th>
-                <th>Kode Pemindahan</th>
+                <th>No. Pemindahan</th>
                 <th>Tanggal Pengiriman</th>
                 <th>Tanggal Terima</th>
                 <th>Keterangan</th>

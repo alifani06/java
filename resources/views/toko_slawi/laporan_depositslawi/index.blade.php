@@ -163,7 +163,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_tegal/laporan_deposittegal') }}";
+            form.action = "{{ url('toko_slawi/laporan_depositslawi') }}";
             form.submit();
         }
 
@@ -174,11 +174,11 @@
             var selectedValue = this.value;
 
             if (selectedValue === 'global') {
-                window.location.href = "{{ url('toko_tegal/laporan_deposittegal') }}";
+                window.location.href = "{{ url('toko_slawi/laporan_depositslawi') }}";
             } else if (selectedValue === 'rinci') {
-                window.location.href = "{{ url('toko_tegal/indexrinci') }}";
+                window.location.href = "{{ url('toko_slawi/indexrinci') }}";
             } else if (selectedValue === 'saldo') {
-                window.location.href = "{{ url('toko_tegal/indexsaldo') }}";
+                window.location.href = "{{ url('toko_slawi/indexsaldo') }}";
             }
         });
     </script>
@@ -186,7 +186,7 @@
 <script>
     function printReport() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_tegal/printReportdeposit') }}";
+    form.action = "{{ url('toko_slawi/printReportdeposit') }}";
     form.target = "_blank";
     form.submit();
 }

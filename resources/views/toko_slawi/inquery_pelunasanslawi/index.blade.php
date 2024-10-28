@@ -155,10 +155,10 @@
                                                         data-memo-id="{{ $item->id }}">Posting</a>
                                              
                                                     {{-- <a class="dropdown-item"
-                                                        href="{{ url('toko_tegal/inquery_penjualanproduk/' . $item->id . '/edit') }}">Update</a> --}}
+                                                        href="{{ url('toko_slawi/inquery_penjualanproduk/' . $item->id . '/edit') }}">Update</a> --}}
                                                 
                                                     <a class="dropdown-item"
-                                                    href="{{ url('/toko_tegal/pelunasan_pemesananTgl/' . $item->id ) }}">Show</a>
+                                                    href="{{ url('/toko_slawi/pelunasan_pemesananSlw/' . $item->id ) }}">Show</a>
                                                     <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
                                                         @csrf
                                                         @method('DELETE')
@@ -169,7 +169,7 @@
                                                     {{-- <a class="dropdown-item unpost-btn"
                                                         data-memo-id="{{ $item->id }}">Unpost</a> --}}
                                                     <a class="dropdown-item"
-                                                    href="{{ url('/toko_tegal/pelunasan_pemesananTgl/' . $item->id ) }}">Show</a>
+                                                    href="{{ url('/toko_slawi/pelunasan_pemesananSlw/' . $item->id ) }}">Show</a>
                                             @endif
                                            
                                         </div>
@@ -223,7 +223,7 @@
         // Fungsi untuk mengirim form
         function cari() {
             var form = document.getElementById('form-action');
-            form.action = "{{ url('toko_tegal/inquery_pelunasantegal') }}";
+            form.action = "{{ url('toko_slawi/inquery_pelunasanslawi') }}";
             form.submit();
         }
     </script>
@@ -241,7 +241,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan unpost
                 $.ajax({
-                    url: "{{ url('toko_tegal/inquery_pelunasantegal/unpost_penjualanproduk/') }}/" + memoId,
+                    url: "{{ url('toko_slawi/inquery_pelunasanslawi/unpost_penjualanproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -282,7 +282,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan posting
                 $.ajax({
-                    url: "{{ url('toko_tegal/inquery_pelunasantegal/posting_penjualanproduk/') }}/" + memoId,
+                    url: "{{ url('toko_slawi/inquery_pelunasanslawi/posting_penjualanproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

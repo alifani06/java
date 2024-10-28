@@ -113,11 +113,11 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'global') {
-            window.location.href = "{{ url('toko_tegal/laporan_deposittegal') }}";
+            window.location.href = "{{ url('toko_slawi/laporan_depositslawi') }}";
         } else if (selectedValue === 'rinci') {
-            window.location.href = "{{ url('toko_tegal/indexrinci') }}";
+            window.location.href = "{{ url('toko_slawi/indexrinci') }}";
         } else if (selectedValue === 'saldo') {
-            window.location.href = "{{ url('toko_tegal/indexsaldo') }}";
+            window.location.href = "{{ url('toko_slawi/indexsaldo') }}";
         }
     });
 </script>
@@ -125,7 +125,7 @@
 <script>
     function printReport() {
         const form = document.getElementById('form-action');
-        form.action = "{{ url('toko_tegal/printReportsaldo') }}";
+        form.action = "{{ url('toko_slawi/printReportsaldo') }}";
         form.target = "_blank";
         form.submit();
     }
