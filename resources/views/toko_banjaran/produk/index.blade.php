@@ -48,11 +48,11 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Data produk</h3>
-                    <div class="float-right">
+                    {{-- <div class="float-right">
                         <a href="{{ url('toko_slawi/produk/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> 
                         </a>
-                    </div>
+                    </div> --}}
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
