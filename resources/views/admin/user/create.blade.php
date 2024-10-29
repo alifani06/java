@@ -87,6 +87,7 @@
                                 <option value="toko_tegal" {{ old('level') == 'toko_tegal' ? 'selected' : '' }}>Toko Tegal</option>
                                 <option value="toko_pemalang" {{ old('level') == 'toko_pemalang' ? 'selected' : '' }}>Toko Pemalang</option>
                                 <option value="toko_bumiayu" {{ old('level') == 'toko_bumiayu' ? 'selected' : '' }}>Toko Bumiayu</option>
+                                <option value="toko_cilacap" {{ old('level') == 'toko_cilacap' ? 'selected' : '' }}>Toko Cilacap</option>
                             </select>
                         </div>
                 
