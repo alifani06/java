@@ -192,7 +192,7 @@ class PelangganController extends Controller
                 // 'gambar_ktp'=> $namaGambar,
                 'nama_pelanggan' => $request->nama_pelanggan,
                 'kode_pelanggan' => $request->kode_pelanggan,
-                'kode_lama' => $request->kode_lama,
+                'kode_pelangganlama' => $request->kode_lama,
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'tanggal_awal' => $request->tanggal_awal,
                 'tanggal_akhir' => $request->tanggal_akhir,
