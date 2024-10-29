@@ -46,76 +46,7 @@ class PelangganController extends Controller
         // tidak memiliki akses
     }
    
-    // public function store(Request $request)
-    // {
-    //     $pelanggan_id = $request->pelanggan_id;
-
-    //     return redirect('admin/pelanggan/' . $pelanggan_id . '/edit');
-    // }
-    // public function store(Request $request)
-    // {
-    //     $validator = Validator::make(
-    //         $request->all(),
-    //         [
-    //             // 'kode_lama' => 'required',
-    //             'nama_pelanggan' => 'required',
-    //             'alamat' => 'required',
-    //             'gender' => 'required',
-    //             'telp' => 'required',
-    //             'email' => 'nullable',
-    //             'pekerjaan' => 'nullable',
-    //             'tanggal_lahir' => 'nullable',
-    //             'tanggal_awal' => 'required',
-    //             'tanggal_akhir' => 'required',
-    //             'gambar' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
-    //         ],
-    //         [
-             
-    //             'kode_lama.required' => 'Masukkan kode lama',
-    //             'nama_pelanggan.required' => 'Masukkan nama pelanggan',
-               
-    //             'pekerjaan.required' => 'masukan pekerjaan',
-    //             'gender.required' => 'peilih gender',
-    //             'email.required' => 'Masukkan email',
-    //             // 'jabatan.required' => 'Pilih jabatan',
-    //             'telp.required' => 'Masukkan no telepon',
-    //             'alamat.required' => 'Masukkan alamat',
-    //             'tanggal_lahir.required' => 'Masukkan tanggal lahir',
-    //             'tanggal_awal.required' => 'Masukkan tanggal gabung',
-    //             'tanggal_akhir.required' => 'Masukkan tanggal expired',
-    //             'gambar.image' => 'Gambar yang dimasukan salah!',
-    //         ]
-    //     );
-
-    //     if ($validator->fails()) {
-    //         $errors = $validator->errors()->all();
-    //         return back()->withInput()->with('error', $errors);
-    //     }
-
-    //     if ($request->gambar) {
-    //         $gambar = str_replace(' ', '', $request->gambar->getClientOriginalName());
-    //         $namaGambar = 'karyawan/' . date('mYdHs') . rand(1, 10) . '_' . $gambar;
-    //         $request->gambar->storeAs('public/uploads/', $namaGambar);
-    //     } else {
-    //         $namaGambar = null;
-    //     }
-    //     $kode = $this->kode();
-
-    //     Pelanggan::create(array_merge(
-    //         $request->all(),
-    //         [
-    //             'gambar' => $namaGambar,
-    //             'status' => 'null',
-    //             'kode_pelanggan' => $this->kode(),
-    //             'qrcode_pelanggan' => 'https://javabakery.id/pelanggan/' . $kode,
-    //             // 'qrcode_karyawan' => 'http://192.168.1.46/tigerload/karyawan/' . $kode
-    //             'tanggal' => Carbon::now('Asia/Jakarta'),
-
-    //         ]
-    //     ));
-
-    //     return redirect('toko_bumiayu/pelanggan')->with('success', 'Berhasil menambahkan karyawan');
-    // }
+    
 
     public function store(Request $request)
     {

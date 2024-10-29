@@ -12,7 +12,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ url('toko_tegal/pelanggan') }}">Pelanggan</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('toko_bumiayu/pelanggan') }}">Pelanggan</a></li>
                         <li class="breadcrumb-item active">Tambah</li>
                     </ol>
                 </div><!-- /.col -->
@@ -39,7 +39,7 @@
                     <h3 class="card-title">Tambah Pelanggan</h3>
                 </div> --}}
             <!-- /.card-header -->
-            <form action="{{ url('toko_tegal/pelanggan') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form action="{{ url('toko_bumiayu/pelanggan') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <div class="card">
                     <div class="card-header">
