@@ -30,7 +30,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
+use App\Models\Pengirimanpemesanan_tokobumiayu;
+use App\Models\Pengirimanpemesanan_tokocilacap;
 use App\Models\Pengirimanpemesanan_tokopemalang;
+use App\Models\Pengirimanpemesanan_tokoslawi;
 use App\Models\Pengirimanpemesanan_tokotegal;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -152,12 +155,13 @@ class PengirimanbarangjadipesananController extends Controller{
                         ]);
                         break;
                     case 3:
-                        Stok_tokoslawi::create([
+                        Pengirimanpemesanan_tokoslawi::create([
                             'pengiriman_barangjadi_id' => $pengiriman->id,
-                            'kode_pengiriman' => $kode,
+                            'kode_pengirimanpesanan' => $kode,
                             'produk_id' => $produkId,
                             'jumlah' => $jumlah,
                             'status' => 'unpost',
+                            'toko_id' => $tokoId,
                             'tanggal_input' => $tanggalPengirimanDenganJam,
                             'kode_produksi' => $kodeProduksi,
                         ]);
@@ -175,15 +179,29 @@ class PengirimanbarangjadipesananController extends Controller{
                         ]);
                         break;
                     case 5:
-                        Stok_tokobumiayu::create([
+                        Pengirimanpemesanan_tokobumiayu::create([
                             'pengiriman_barangjadi_id' => $pengiriman->id,
-                            'kode_pengiriman' => $kode,
+                            'kode_pengirimanpesanan' => $kode,
                             'produk_id' => $produkId,
                             'jumlah' => $jumlah,
+                            'status' => 'unpost',
+                            'toko_id' => $tokoId,
                             'tanggal_input' => $tanggalPengirimanDenganJam,
                             'kode_produksi' => $kodeProduksi,
                         ]);
                         break;
+                        case 6:
+                            Pengirimanpemesanan_tokocilacap::create([
+                                'pengiriman_barangjadi_id' => $pengiriman->id,
+                                'kode_pengirimanpesanan' => $kode,
+                                'produk_id' => $produkId,
+                                'jumlah' => $jumlah,
+                                'status' => 'unpost',
+                                'toko_id' => $tokoId,
+                                'tanggal_input' => $tanggalPengirimanDenganJam,
+                                'kode_produksi' => $kodeProduksi,
+                            ]);
+                            break;
                     default:
                         return redirect()->back()->with('error', 'Toko ID tidak valid');
                 }
