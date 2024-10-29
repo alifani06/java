@@ -466,7 +466,7 @@ function showTable(toko) {
         document.getElementById('tabelTegal').style.display = 'block';
 
         // Inisialisasi DataTable dengan fitur pencarian non-aktif
-        tableTegal = $('#datatables2').DataTable({
+        tableTegal = $('#datatables1').DataTable({
             searching: false,
             paging: true,
             info: true,
