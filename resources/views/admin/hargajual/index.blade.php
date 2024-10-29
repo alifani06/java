@@ -134,7 +134,7 @@
    
                 {{-- tegal --}}
                 <div id="tabelTegal">
-                    <table id="datatables2" class="table table-sm table-bordered table-striped table-hover" style="font-size: 12px;">
+                    <table id="datatables1" class="table table-sm table-bordered table-striped table-hover" style="font-size: 12px;">
                         <thead>
                             <tr>
                                 <th rowspan="3" style="text-align: center;">No</th>
