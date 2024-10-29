@@ -20,24 +20,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class PelangganController extends Controller
 {
-    // public function index(Request $request)
-    // {
 
-    //     // $pelanggans = Pelanggan::whereNotNull('kode_pelanggan')->get();
-    //     // return view('admin.pelanggan.index', compact('pelanggans'));
-    // $filter = $request->input('filter');
-
-    // if ($filter == 'new') {
-    //     $pelanggans = Pelanggan::whereNotNull('kode_pelanggan')->get();
-    // } elseif ($filter == 'old') {
-    //     $pelanggans = Pelanggan::whereNull('kode_pelanggan')->get();
-    // } else {
-    //     $pelanggans = Pelanggan::whereNotNull('kode_pelanggan')->get();
-    // }
-
-    //   return view('toko_bumiayu.pelanggan.index', compact('pelanggans'));
-        
-    // }
     public function index(Request $request)
     {
  
