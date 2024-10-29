@@ -153,16 +153,16 @@
                                                         data-memo-id="{{ $item->id }}">Posting</a>
                                              
                                                     <a class="dropdown-item"
-                                                        href="{{ url('toko_tegal/inquery_pemesananproduk/' . $item->id . '/edit') }}">Update</a>
+                                                        href="{{ url('toko_cilacap/inquery_pemesananproduk/' . $item->id . '/edit') }}">Update</a>
                                                 
                                                     <a class="dropdown-item"
-                                                    href="{{ url('/toko_tegal/pemesanan_produk/' . $item->id ) }}">Show</a>
+                                                    href="{{ url('/toko_cilacap/pemesanan_produk/' . $item->id ) }}">Show</a>
                                                     @endif
                                             @if ($item->status == 'posting')
                                                     <a class="dropdown-item unpost-btn"
                                                         data-memo-id="{{ $item->id }}">Unpost</a>
                                                     <a class="dropdown-item"
-                                                    href="{{ url('/toko_tegal/pemesanan_produk/' . $item->id ) }}">Show</a>
+                                                    href="{{ url('/toko_cilacap/pemesanan_produk/' . $item->id ) }}">Show</a>
                                             @endif
                                            
                                         </div>
@@ -211,7 +211,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_tegal/inquery_pemesananproduk') }}";
+            form.action = "{{ url('toko_cilacap/inquery_pemesananproduk') }}";
             form.submit();
         }
 
@@ -236,8 +236,8 @@
                 });
                 document.getElementById('selectedIds').value = selectedIds.join(',');
                 var selectedIdsString = selectedIds.join(',');
-                window.location.href = "{{ url('toko_tegal/cetak_fakturekspedisifilter') }}?ids=" + selectedIdsString;
-                // var url = "{{ url('toko_tegal/ban/cetak_pdffilter') }}?ids=" + selectedIdsString;
+                window.location.href = "{{ url('toko_cilacap/cetak_fakturekspedisifilter') }}?ids=" + selectedIdsString;
+                // var url = "{{ url('toko_cilacap/ban/cetak_pdffilter') }}?ids=" + selectedIdsString;
             }
         }
     </script>
@@ -254,7 +254,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan unpost
                 $.ajax({
-                    url: "{{ url('toko_tegal/inquery_pemesananproduk/unpost_pemesananproduk/') }}/" + memoId,
+                    url: "{{ url('toko_cilacap/inquery_pemesananproduk/unpost_pemesananproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -295,7 +295,7 @@
 
                 // Kirim permintaan AJAX untuk melakukan posting
                 $.ajax({
-                    url: "{{ url('toko_tegal/inquery_pemesananproduk/posting_pemesananproduk/') }}/" + memoId,
+                    url: "{{ url('toko_cilacap/inquery_pemesananproduk/posting_pemesananproduk/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

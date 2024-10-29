@@ -343,12 +343,12 @@
             
             <div class="d-flex justify-content-between">
                 <div>
-                    <a href="{{ url('toko_tegal/pemesanan_produk') }}" class="btn btn-primary btn-sm">
+                    <a href="{{ url('toko_cilacap/pemesanan_produk') }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i> Kembali
                     </a>
                 </div>
                 <div>
-                    <a href="{{ route('toko_tegal.pemesanan_produk.cetak-pdf', $pemesanan->id) }}" target="_blank" class="btn btn-primary btn-sm">
+                    <a href="{{ route('toko_cilacap.pemesanan_produk.cetak-pdf', $pemesanan->id) }}" target="_blank" class="btn btn-primary btn-sm">
                         <i class="fas fa-print"></i> Cetak PDF
                     </a>
                 </div>

@@ -137,7 +137,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_tegal/inquery_deposittegal') }}";
+            form.action = "{{ url('toko_cilacap/inquery_depositcilacap') }}";
             form.submit();
         }
 

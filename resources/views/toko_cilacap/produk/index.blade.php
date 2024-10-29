@@ -49,7 +49,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Data produk</h3>
                     <div class="float-right">
-                        <a href="{{ url('toko_slawi/produk/create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url('toko_cilacap/produk/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> 
                         </a>
                     </div>
@@ -82,7 +82,7 @@
                                         <img src="{{ asset('storage/uploads/' . $produk->gambar) }}"
                                             alt="{{ $produk->nama_produk }}" style="width: 100px; height: auto;">
                                         @else
-                                        <img src="{{ asset('toko_slawilte/dist/img/img-placeholder.jpg') }}"
+                                        <img src="{{ asset('toko_cilacaplte/dist/img/img-placeholder.jpg') }}"
                                             alt="{{ $produk->nama_produk }}" style="width: 100px; height: auto;">
                                         @endif                                    </td>
                                     <td data-toggle="modal" data-target="#modal-qrcode-{{ $produk->id }}"
@@ -92,7 +92,7 @@
                                         </div>
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ url('toko_slawi/produk/' . $produk->id . '/edit') }}"
+                                        <a href="{{ url('toko_cilacap/produk/' . $produk->id . '/edit') }}"
                                             class="btn btn-warning btn-sm">
                                             <i class="fas fa-edit"></i>
                                         </a>
@@ -118,7 +118,7 @@
                                             <div class="modal-footer justify-content-between">
                                                 <button type="button" class="btn btn-default"
                                                     data-dismiss="modal">Batal</button>
-                                                <form action="{{ url('toko_slawi/produk/' . $produk->id) }}"
+                                                <form action="{{ url('toko_cilacap/produk/' . $produk->id) }}"
                                                     method="POST">
                                                     @csrf
                                                     @method('delete')
@@ -148,7 +148,7 @@
                                                 <div class="modal-footer justify-content-between">
                                                     <button type="button" class="btn btn-default"
                                                         data-dismiss="modal">Batal</button>
-                                                    <a href="{{ url('toko_slawi/produk/cetak-pdf/' . $produk->id) }}"
+                                                    <a href="{{ url('toko_cilacap/produk/cetak-pdf/' . $produk->id) }}"
                                                         class="btn btn-primary btn-sm">
                                                         <i class=""></i> Cetak
                                                     </a>

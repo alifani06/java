@@ -60,7 +60,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ url('toko_tegal/pemesanan_produk') }}">Pemesanan Produk</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('toko_cilacap/pemesanan_produk') }}">Pemesanan Produk</a></li>
                         <li class="breadcrumb-item active">Tambah</li>
                     </ol>
                 </div><!-- /.col -->
@@ -88,7 +88,7 @@
                     @endforeach
                 </div>
             @endif
-            <form id="pemesananForm" action="{{ url('toko_tegal/pemesanan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form id="pemesananForm" action="{{ url('toko_cilacap/pemesanan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 {{-- detail pelanggan --}}
                 <div class="card">
@@ -306,8 +306,8 @@
                                     <tbody>
                                         @foreach ($produks as $item)
                                             @php
-                                                $tokotegal = $item->tokotegal->first();
-                                                $stokpesanan_tokotegal = $item->stokpesanan_tokotegal ? $item->stokpesanan_tokotegal->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
+                                                $tokocilacap = $item->tokocilacap->first();
+                                                $stokpesanan_tokocilacap = $item->stokpesanan_tokocilacap ? $item->stokpesanan_tokocilacap->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
 
                                             @endphp
                                             <tr class="pilih-btn"
@@ -316,25 +316,25 @@
                                                 data-lama="{{ $item->kode_lama }}"
                                                 data-catatan="{{ $item->catatanproduk }}"
                                                 data-nama="{{ $item->nama_produk }}"
-                                                data-member="{{ $tokotegal ? $tokotegal->member_harga_tgl : '' }}"
-                                                data-diskonmember="{{ $tokotegal ? $tokotegal->member_diskon_tgl : '' }}"
-                                                data-nonmember="{{ $tokotegal ? $tokotegal->non_harga_tgl : '' }}"
-                                                data-diskonnonmember="{{ $tokotegal ? $tokotegal->non_diskon_tgl : '' }}">
+                                                data-member="{{ $tokocilacap ? $tokocilacap->member_harga_clc : '' }}"
+                                                data-diskonmember="{{ $tokocilacap ? $tokocilacap->member_diskon_clc : '' }}"
+                                                data-nonmember="{{ $tokocilacap ? $tokocilacap->non_harga_clc : '' }}"
+                                                data-diskonnonmember="{{ $tokocilacap ? $tokocilacap->non_diskon_clc : '' }}">
                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td>{{ $item->kode_produk }}</td>
                                                 <td>{{ $item->kode_lama }}</td>
                                                 <td>{{ $item->nama_produk }}</td>
                                                 <td>
-                                                    <span class="member_harga_tgl">{{ $tokotegal ? $tokotegal->member_harga_tgl : '' }}</span>
+                                                    <span class="member_harga_clc">{{ $tokocilacap ? $tokocilacap->member_harga_clc : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="member_diskon_tgl">{{ $tokotegal ? $tokotegal->member_diskon_tgl : '' }}</span>
+                                                    <span class="member_diskon_clc">{{ $tokocilacap ? $tokocilacap->member_diskon_clc : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="non_harga_tgl">{{ $tokotegal ? $tokotegal->non_harga_tgl : '' }}</span>
+                                                    <span class="non_harga_clc">{{ $tokocilacap ? $tokocilacap->non_harga_clc : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="non_diskon_tgl">{{ $tokotegal ? $tokotegal->non_diskon_tgl : '' }}</span>
+                                                    <span class="non_diskon_clc">{{ $tokocilacap ? $tokocilacap->non_diskon_clc : '' }}</span>
                                                 </td>
                                             
                                                 <td class="text-center">
@@ -344,10 +344,10 @@
                                                         data-lama="{{ $item->kode_lama }}"
                                                         data-catatan="{{ $item->catatanproduk }}"
                                                         data-nama="{{ $item->nama_produk }}"
-                                                        data-member="{{ $tokotegal ? $tokotegal->member_harga_tgl : '' }}"
-                                                        data-diskonmember="{{ $tokotegal ? $tokotegal->member_diskon_tgl : '' }}"
-                                                        data-nonmember="{{ $tokotegal ? $tokotegal->non_harga_tgl : '' }}"
-                                                        data-diskonnonmember="{{ $tokotegal ? $tokotegal->non_diskon_tgl : '' }}">
+                                                        data-member="{{ $tokocilacap ? $tokocilacap->member_harga_clc : '' }}"
+                                                        data-diskonmember="{{ $tokocilacap ? $tokocilacap->member_diskon_clc : '' }}"
+                                                        data-nonmember="{{ $tokocilacap ? $tokocilacap->non_harga_clc : '' }}"
+                                                        data-diskonnonmember="{{ $tokocilacap ? $tokocilacap->non_diskon_clc : '' }}">
                                                         <i class="fas fa-plus"></i> 
                                                     </button>
                                                 </td>
@@ -554,7 +554,7 @@
             paymentFields.style.display = 'none';
         } else if (metodeId) {
             $.ajax({
-                url: "{{ url('toko_tegal/metodebayar/metode') }}" + "/" + metodeId,
+                url: "{{ url('toko_cilacap/metodebayar/metode') }}" + "/" + metodeId,
                 type: "GET",
                 dataType: "json",
                 success: function(response) {

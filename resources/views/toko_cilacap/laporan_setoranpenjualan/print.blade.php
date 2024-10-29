@@ -174,8 +174,8 @@
         <div class="header">
             <div class="text">
                 <h1>PT JAVA BAKERY FACTORY</h1>
-                <p>Cabang : TEGAL</p>
-                <p>Jl. AR. Hakim No.118, Mangkukusuman, Kec. Tegal Tim., Kota Tegal, Jawa Tengah 52131</p>
+                <p>Cabang : CILCAP</p>
+                <p>-</p>
             </div>
         </div>
         <hr class="divider">
