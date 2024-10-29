@@ -16,7 +16,7 @@ class isTokocilacap
     public function handle(Request $request, Closure $next): Response
     {
         if(auth()->check()){
-            if ($request->user()->isTokocilcap()){
+            if ($request->user()->isTokocilacap()){
                 return $next($request);
             }else {
                 return redirect('/');

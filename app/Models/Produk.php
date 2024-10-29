@@ -94,6 +94,10 @@ class Produk extends Model
     {
         return $this->hasOne(Stok_tokobumiayu::class, 'produk_id');
     }
+    public function stok_tokocilacap()
+    {
+        return $this->hasOne(Stok_tokocilacap::class, 'produk_id');
+    }
     public function stokpesanan_tokobumiayu()
     {
         return $this->hasOne(Stokpesanan_tokobumiayu::class, 'produk_id');
@@ -105,6 +109,10 @@ class Produk extends Model
     public function stokpesanan_tokoslawi()
     {
         return $this->hasOne(Stokpesanan_tokoslawi::class, 'produk_id');
+    }
+    public function stokpesanan_tokocilacap()
+    {
+        return $this->hasOne(Stokpesanan_tokocilacap::class, 'produk_id');
     }
     public function tokotegal()
     {

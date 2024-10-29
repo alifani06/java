@@ -38,7 +38,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class Laporan_setoranpenjualantglController extends Controller
+class Laporan_setoranpenjualanclcController extends Controller
 {
 
 

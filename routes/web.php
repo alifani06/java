@@ -77,6 +77,24 @@ use App\Http\Controllers\Toko_bumiayu\PermintaanprodukbumiayuController;
 use App\Http\Controllers\Toko_bumiayu\Setoran_tokobumiayuController;
 use App\Http\Controllers\Toko_bumiayu\Stok_tokobumiayuController;
 use App\Http\Controllers\Toko_bumiayu\Stokpesanan_tokobumiayuController;
+use App\Http\Controllers\Toko_cilacap\Inquery_pemindahancilacapController;
+use App\Http\Controllers\Toko_cilacap\Inquery_penjualanprodukcilacapController;
+use App\Http\Controllers\Toko_cilacap\Inquery_returcilacapController;
+use App\Http\Controllers\Toko_cilacap\Inquery_setorantunaicilacapController;
+use App\Http\Controllers\Toko_cilacap\Laporan_pemesananprodukcilacapController;
+use App\Http\Controllers\Toko_cilacap\Laporan_pemindahancilacapController;
+use App\Http\Controllers\Toko_cilacap\Laporan_setoranpenjualanclcController;
+use App\Http\Controllers\Toko_cilacap\Laporan_stoktokocilacapController;
+use App\Http\Controllers\Toko_cilacap\PelangganController as Toko_cilacapPelangganController;
+use App\Http\Controllers\Toko_cilacap\PelunasanpemesananClcController;
+use App\Http\Controllers\Toko_cilacap\PemesananprodukcilacapController;
+use App\Http\Controllers\Toko_cilacap\Pengiriman_tokocilacapController;
+use App\Http\Controllers\Toko_cilacap\Pengirimanpemesanan_tokocilacapController;
+use App\Http\Controllers\Toko_cilacap\PenjualanprodukcilacapController;
+use App\Http\Controllers\Toko_cilacap\PermintaanprodukcilacapController;
+use App\Http\Controllers\Toko_cilacap\Setoran_tokocilacapController;
+use App\Http\Controllers\Toko_cilacap\Stok_tokocilacapController;
+use App\Http\Controllers\Toko_cilacap\Stokpesanan_tokocilacapController;
 use App\Http\Controllers\Toko_pemalang\Inquery_pemindahanpemalangController;
 use App\Http\Controllers\Toko_pemalang\Inquery_penjualanprodukpemalangController;
 use App\Http\Controllers\Toko_pemalang\Inquery_returpemalangController;
@@ -133,6 +151,7 @@ use App\Models\Pengiriman_barangjadi;
 use App\Models\Pengiriman_tokopemalang;
 use App\Models\Pengiriman_tokoslawi;
 use App\Models\Pengiriman_tokotegal;
+use App\Models\Pengirimanpemesanan_tokocilacap;
 use App\Models\Pengirimanpemesanan_tokotegal;
 use App\Models\Setoran_penjualan;
 use App\Models\Stok_retur;
@@ -1384,7 +1403,173 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
 
 });
 
+Route::middleware('toko_cilacap')->prefix('toko_cilacap')->group(function () {
 
+    Route::get('/', [\App\Http\Controllers\Toko_cilacap\DashboardController::class, 'index']);
+
+    Route::resource('pelanggan', \App\Http\Controllers\Toko_cilacap\PelangganController::class);
+    Route::get('pelanggan/getpelanggan/{id}', [\App\Http\Controllers\Toko_cilacap\PelangganController::class, 'getpelanggan']);
+    Route::get('pelanggan/cetak_pdf/{id}', [Toko_cilacapPelangganController::class, 'cetak_pdf'])->name('pelanggan.cetak_pdf');
+    Route::get('admin/pelanggan', [Toko_cilacapPelangganController::class, 'index'])->name('admin.pelanggan');
+
+    Route::resource('produk', \App\Http\Controllers\Toko_cilacap\ProdukController::class);
+
+    Route::resource('pemesanan_produk', \App\Http\Controllers\Toko_cilacap\PemesananprodukcilacapController::class);
+    Route::get('/toko_cilacap/pemesanan_produk/cetak/{id}', [PemesananprodukcilacapController::class, 'cetak'])->name('toko_cilacap.pemesanan_produk.cetak');
+    Route::get('/get-customer/{kode}', [PemesananprodukcilacapController::class, 'getCustomerByKode']);
+    Route::get('pemesanan/pelanggan/{id}', [\App\Http\Controllers\Toko_cilacap\PemesananprodukcilacapController::class, 'pelanggan']);
+    Route::get('/get-customer-data', [PemesananprodukcilacapController::class, 'getCustomerData'])->name('get.customer.data');
+    Route::get('/toko_cilacap/pemesanan_produk/update/{id}', [PemesananprodukcilacapController::class, 'edit'])->name('pemesanan_produk.update');
+    Route::get('/toko_cilacap/pemesanan_produk/cetak-pdf{id}', [PemesananprodukcilacapController::class, 'cetakPdf'])->name('toko_cilacap.pemesanan_produk.cetak-pdf');
+    Route::delete('toko_cilacap/pemesanan_produk/{id}', [PemesananprodukcilacapController::class, 'destroy'])->name('pemesanan_produk.destroy');
+    Route::get('/toko_cilacap/pemesanan_produk/{id}/cetak', [PemesananprodukcilacapController::class, 'cetak'])->name('toko_cilacap.pemesanan_produk.cetak');
+    Route::get('/toko_cilacap/pemesanan-produk/create', [PemesananprodukcilacapController::class, 'create'])->name('pemesanan-produk.create');
+
+    Route::resource('inquery_pemesananproduk', \App\Http\Controllers\Toko_cilacap\Inquery_pemesananprodukController::class);
+    Route::get('/toko_cilacap/inquery_pemesananproduk', [Inquery_pemesananprodukController::class, 'index'])->name('toko_banjaran.inquery_pemesananproduk.index');
+    Route::get('inquery_pemesananproduk/unpost_pemesananproduk/{id}', [\App\Http\Controllers\Toko_cilacap\Inquery_pemesananprodukController::class, 'unpost_pemesananproduk']);
+    Route::get('inquery_pemesananproduk/posting_pemesananproduk/{id}', [\App\Http\Controllers\Toko_cilacap\Inquery_pemesananprodukController::class, 'posting_pemesananproduk']);
+
+    Route::resource('laporan_pemesananprodukclc', \App\Http\Controllers\Toko_cilacap\Laporan_pemesananprodukcilacapController::class);
+    Route::get('print_pemesananclc', [\App\Http\Controllers\Toko_cilacap\Laporan_pemesananprodukcilacapController::class, 'print_pemesanan']);
+    Route::get('printReportpemesananclc', [Laporan_pemesananprodukcilacapController::class, 'printReportPemesanan'])->name('printReportPemesanan');
+    Route::get('indexpemesananglobalclc', [\App\Http\Controllers\Toko_cilacap\Laporan_pemesananprodukcilacapController::class, 'indexpemesananglobal']);
+    Route::get('printReportpemesananglobalclc', [Laporan_pemesananprodukcilacapController::class, 'printReportpemesananglobalclc'])->name('printReportpemesananglobalclc');
+
+    Route::resource('penjualan_produk', \App\Http\Controllers\Toko_cilacap\PenjualanprodukcilacapController::class);
+    Route::get('/toko_cilacap/penjualan_produk/cetak/{id}', [PenjualanprodukcilacapController::class, 'cetak'])->name('toko_cilacap.penjualan_produk.cetak');
+    Route::get('/toko_cilacap/penjualan_produk/cetak-pdf{id}', [PenjualanprodukcilacapController::class, 'cetakPdf'])->name('toko_cilacap.penjualan_produk.cetak-pdf');
+    Route::get('/toko_cilacap/penjualan_produk/pelunasan', [PenjualanprodukcilacapController::class, 'pelunasan'])->name('toko_cilacap.penjualan_produk.pelunasan');
+    Route::get('toko_cilacap/penjualan_produk/create', [PenjualanprodukcilacapController::class, 'create'])->name('toko_cilacap.penjualan_produk.create');
+    Route::get('/toko_cilacap/penjualan_produk/pelunasan', [PenjualanprodukcilacapController::class, 'pelunasan'])->name('toko_cilacap.penjualan_produk.pelunasan');
+    Route::get('/products/{tokoId}', [PenjualanprodukcilacapController::class, 'getProductsByToko'])->name('products.byToko');
+    Route::get('/fetch-data-by-kode', [PenjualanprodukcilacapController::class, 'fetchDataByKode'])->name('toko_cilacap.penjualan_produk.fetchData');
+    Route::get('/metodepembayaran/{id}', [PenjualanprodukcilacapController::class, 'getMetodePembayaran']);
+    Route::get('metodebayar/metode/{id}', [\App\Http\Controllers\Toko_cilacap\PenjualanprodukcilacapController::class, 'metode']);
+    Route::post('toko_cilacap/penjualan_produk/pelunasan', [PenjualanproduktegalController::class, 'SimpanPelunasan'])->name('penjualan_produk.pelunasan.simpan');
+    Route::get('/get-product', [PenjualanproduktegalController::class, 'getProductByKode']);
+    Route::get('/penjualan-produk/fetch-product-data', [PenjualanproduktegalController::class, 'fetchProductData'])->name('toko_cilacap.penjualan_produk.fetchProductData');
+    Route::get('/search-product', [PenjualanproduktegalController::class, 'searchProduct']);
+
+
+    Route::resource('pelunasan_pemesananClc', \App\Http\Controllers\Toko_cilacap\PelunasanpemesananClcController::class);
+    Route::get('/toko_cilacap/pelunasan_pemesananClc/cetak-pdf{id}', [PelunasanpemesananClcController::class, 'cetakPdf'])->name('toko_cilacap.pelunasan_pemesananClc.cetak-pdf');
+    Route::get('/pelunasan-pemesananClc/cetak/{id}', [PelunasanpemesananClcController::class, 'cetak'])->name('toko_cilacap.pelunasan_pemesananClc.cetak');
+    Route::get('/pelunasan_pemesananClc', [PelunasanpemesananClcController::class, 'index'])->name('toko_cilacap.pelunasan_pemesananClc.index');
+
+    Route::resource('inquery_penjualanprodukcilacap', \App\Http\Controllers\Toko_cilacap\Inquery_penjualanprodukcilacapController::class);
+    Route::get('/toko_cilacap/inquery_penjualanprodukcilacap', [Inquery_penjualanprodukbanjaranController::class, 'index'])->name('toko_cilacap.inquery_penjualanproduk.index');
+    Route::get('inquery_penjualanprodukcilacap/unpost_penjualanproduk/{id}', [\App\Http\Controllers\Toko_cilacap\Inquery_penjualanprodukcilacapController::class, 'unpost_penjualanproduk']);
+    Route::get('inquery_penjualanprodukcilacap/posting_penjualanproduk/{id}', [\App\Http\Controllers\Toko_cilacap\Inquery_penjualanprodukcilacapController::class, 'posting_penjualanproduk']);
+    Route::get('/toko_cilacap/inquery_penjualanproduk/cetak-pdf{id}', [Inquery_penjualanprodukcilacapController::class, 'cetakPdf'])->name('toko_cilacap.inquery_penjualanproduk.cetak-pdf');
+
+    Route::resource('laporan_penjualanproduk', \App\Http\Controllers\Toko_cilacap\Laporan_penjualanprodukController::class);
+    Route::get('printReport', [\App\Http\Controllers\Toko_cilacap\Laporan_penjualanprodukController::class, 'printReport']);
+    Route::get('printReportglobal', [\App\Http\Controllers\Toko_cilacap\Laporan_penjualanprodukController::class, 'printReportglobal']);
+    Route::get('indexglobal', [\App\Http\Controllers\Toko_cilacap\Laporan_penjualanprodukController::class, 'indexglobal']);
+
+    Route::resource('permintaan_produk', \App\Http\Controllers\Toko_cilacap\PermintaanprodukcilacapController::class);
+    Route::post('toko_cilacap/permintaan_produk', [PermintaanprodukcilacapController::class, 'store']);
+    Route::get('toko_cilacap/permintaan_produk', [PermintaanprodukcilacapController::class, 'show']);
+    Route::get('/permintaan-produk/{id}/print', [PermintaanprodukcilacapController::class, 'print'])->name('permintaan_produk.print');
+    Route::get('permintaan_produk/unpost_permintaanproduk/{id}', [\App\Http\Controllers\Toko_cilacap\PermintaanprodukcilacapController::class, 'unpost_permintaanproduk']);
+    Route::get('permintaan_produk/posting_permintaanproduk/{id}', [\App\Http\Controllers\Toko_cilacap\PermintaanprodukcilacapController::class, 'posting_permintaanproduk']);
+    Route::post('toko_cilacap/permintaan/import', [PermintaanprodukcilacapController::class, 'import'])->name('permintaan.import');
+
+
+    Route::resource('inquery_permintaanproduk', \App\Http\Controllers\Toko_cilacap\Inquery_permintaanprodukController::class);
+  
+    Route::resource('inquery_pelunasancilacap', \App\Http\Controllers\Toko_cilacap\Inquery_pelunasancilacapController::class);
+
+
+    Route::resource('laporan_permintaanproduk', \App\Http\Controllers\Toko_cilacap\Laporan_permintaanprodukController::class);
+    Route::get('printReport1', [\App\Http\Controllers\Toko_cilacap\Laporan_permintaanprodukController::class, 'printReport']);
+    Route::get('indexrinci', [\App\Http\Controllers\Toko_cilacap\Laporan_permintaanprodukController::class, 'indexrinci']);
+    Route::get('printReportRinci', [\App\Http\Controllers\Toko_cilacap\Laporan_permintaanprodukController::class, 'printReportRinci']);
+
+    // Route::resource('inquery_pengirimanbarangjadi', \App\Http\Controllers\Toko_cilacap\Inquery_pengirimanbarangjadiController::class);
+    Route::get('inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_cilacap\Inquery_pengirimanbarangjadiController::class, 'unpost_pengirimanbarangjadi']);
+    Route::get('inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_cilacap\Inquery_pengirimanbarangjadiController::class, 'posting_pengirimanbarangjadi']);
+
+    Route::resource('metode_pembayaran', \App\Http\Controllers\Toko_cilacap\Metode_pembayaranController::class);
+
+ 
+    Route::resource('stok_tokocilacap', \App\Http\Controllers\Toko_cilacap\Stok_tokocilacapController::class);
+    Route::delete('/toko_cilacap/stok_tokocilacap/deleteAll', [Stok_tokocilacapController::class, 'deleteAll'])->name('stok_tokocilacap.deleteAll');
+    Route::post('toko_cilacap/stok_tokocilacap/import', [Stok_tokocilacapController::class, 'import'])->name('stok_tokocilacap.import');
+
+    Route::resource('stokpesanan_tokocilacap', \App\Http\Controllers\Toko_cilacap\Stokpesanan_tokocilacapController::class);
+    Route::delete('/toko_cilacap/stokpesanan_tokocilacap/deleteAll', [Stokpesanan_tokocilacapController::class, 'deleteAll'])->name('stokpesanan_tokocilacap.deleteAll');
+
+    Route::resource('pengiriman_tokocilacap', \App\Http\Controllers\Toko_cilacap\Pengiriman_tokocilacapController::class);
+    Route::get('pengiriman_tokocilacap/unpost_pengiriman/{id}', [\App\Http\Controllers\Toko_cilacap\Pengiriman_tokocilacapController::class, 'unpost_pengiriman']);
+    Route::get('pengiriman_tokocilacap/posting_pengiriman/{id}', [\App\Http\Controllers\Toko_cilacap\Pengiriman_tokocilacapController::class, 'posting_pengiriman']);
+    Route::get('pengiriman_tokocilacap/unpost_pengirimanpemesanan/{id}', [\App\Http\Controllers\Toko_cilacap\Pengiriman_tokocilacapController::class, 'unpost_pengirimanpemesanan']);
+    Route::get('pengiriman_tokocilacap/posting_pengirimanpemesanan/{id}', [\App\Http\Controllers\Toko_cilacap\Pengiriman_tokocilacapController::class, 'posting_pengirimanpemesanan']);
+    Route::get('/pengiriman_tokocilacap/{id}/print', [Pengiriman_tokocilacapController::class, 'print'])->name('pengiriman_tokobanjaran.print');
+    Route::get('/toko_cilacap/pengiriman_tokocilacap/printpemesanan/{id}', [Pengiriman_tokocilacapController::class, 'printpemesanan'])->name('pengiriman_tokocilacap.printpemesanan');
+    Route::get('toko_cilacap/pengiriman_tokocilacap/index', [Pengiriman_tokocilacapController::class, 'index'])->name('toko_cilacap.pengiriman_tokocilacap.index');
+    Route::get('/toko_cilacap/pengiriman_tokocilacap/pengiriman_pemesanan', [Pengiriman_tokocilacapController::class, 'pengiriman_pemesanan'])->name('toko_cilacap.pengiriman_tokocilacap.pengiriman_pemesanan');
+    Route::get('/toko_cilacap/pengiriman_tokocilacap/showpemesanan/{id}', [Pengiriman_tokocilacapController::class, 'showpemesanan'])->name('toko_cilacap.pengiriman_tokocilacap.showpemesanan');
+
+    Route::resource('pengirimanpemesanan_tokocilacap', \App\Http\Controllers\Toko_cilacap\Pengirimanpemesanan_tokocilacapController::class);
+    Route::get('/pengirimanpemesanan_tokocilacap/print/{id}', [Pengirimanpemesanan_tokocilacapController::class, 'print'])->name('pengirimanpemesanan_tokocilacap.print');
+
+
+    Route::resource('retur_tokocilacap', \App\Http\Controllers\Toko_cilacap\Retur_tokocilacapController::class);
+  
+    Route::resource('inquery_returcilacap', \App\Http\Controllers\Toko_cilacap\Inquery_returcilacapController::class);
+    Route::get('inquery_returcilacap/unpost_retur/{id}', [\App\Http\Controllers\Toko_cilacap\Inquery_returcilacapController::class, 'unpost_retur']);
+    Route::get('inquery_returcilacap/posting_retur/{id}', [\App\Http\Controllers\Toko_cilacap\Inquery_returcilacapController::class, 'posting_retur']);
+    Route::get('/inquery_returcilacap/{id}/print', [Inquery_returcilacapController::class, 'print'])->name('inquery_returcilacap.print');
+
+
+    Route::resource('pemindahan_tokocilacap', \App\Http\Controllers\Toko_cilacap\Pemindahan_tokocilacapController::class);
+
+    Route::resource('inquery_pemindahancilacap', \App\Http\Controllers\Toko_cilacap\Inquery_pemindahancilacapController::class);
+    Route::get('inquery_pemindahancilacap/posting_pemindahan/{id}', [\App\Http\Controllers\Toko_cilacap\Inquery_pemindahancilacapController::class, 'posting_pemindahan']);
+    Route::get('/inquery_pemindahancilacap/{id}/print', [Inquery_pemindahancilacapController::class, 'print'])->name('inquery_pemindahancilacap.print');
+
+    Route::resource('laporan_pemindahancilacap', \App\Http\Controllers\Toko_cilacap\Laporan_pemindahancilacapController::class);
+    Route::get('/toko_cilacap/print_report', [Laporan_pemindahancilacapController::class, 'printReport'])->name('print.report');
+
+    Route::resource('laporan_stoktokocilacap', \App\Http\Controllers\Toko_cilacap\Laporan_stoktokocilacapController::class);
+    Route::get('printstoktokocilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_stoktokocilacapController::class, 'printReport']);
+    Route::get('stoktokopesanancilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_stoktokocilacapController::class, 'stoktokopesanancilacap']);
+    Route::get('printstoktokopesanancilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_stoktokocilacapController::class, 'printReportstokpesanantegal']);
+    Route::get('semuastoktokocilacap', [Laporan_stoktokocilacapController::class, 'semuaStokTokoCilacap'])->name('laporan.semuaStokTokoCilacap');
+    Route::get('printsemuastoktokocilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_stoktokocilacapController::class, 'printReportsemuastokcilacap']);
+
+    Route::resource('laporan_pengirimantokocilacap', \App\Http\Controllers\Toko_cilacap\Laporan_pengirimantokocilacapController::class);
+    Route::get('printpengirimantokocilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_pengirimantokocilacapController::class, 'printReport']);
+
+    Route::resource('setoran_tokocilacap', \App\Http\Controllers\Toko_cilacap\Setoran_tokocilacapController::class);
+    Route::post('/get-penjualan-kotor', [Setoran_tokocilacapController::class, 'getdata'])->name('getdata');
+    Route::post('toko_cilacap/setoran_tokocilacap', [Setoran_tokocilacapController::class, 'store'])->name('setoran.store');
+
+
+    Route::resource('laporan_setorantokocilacap', \App\Http\Controllers\Toko_cilacap\Laporan_setoranpenjualanclcController::class);
+    Route::get('printReportsetoranclc', [Laporan_setoranpenjualanclcController::class, 'printReportsetoranclc'])->name('laporan_setoranpenjualan.print');
+
+    Route::resource('inquery_deposittegal', \App\Http\Controllers\Toko_cilacap\Inquery_depositcilacapController::class);
+
+    Route::resource('laporan_depositcilacap', \App\Http\Controllers\Toko_cilacap\Laporan_depositcilacapController::class);
+    Route::get('indexrinci', [\App\Http\Controllers\Toko_cilacap\Laporan_depositcilacapController::class, 'indexrinci']);
+    Route::get('indexsaldo', [\App\Http\Controllers\Toko_cilacap\Laporan_depositcilacapController::class, 'indexsaldo']);
+    Route::get('saldo', [\App\Http\Controllers\Toko_cilacap\Laporan_depositcilacapController::class, 'saldo']);
+    Route::get('printReportdeposit', [\App\Http\Controllers\Toko_cilacap\Laporan_depositcilacapController::class, 'printReportdeposit']);
+    Route::get('printReportdepositrinci', [\App\Http\Controllers\Toko_cilacap\Laporan_depositcilacapController::class, 'printReportdepositrinci']);
+    Route::get('printReportsaldo', [\App\Http\Controllers\Toko_cilacap\Laporan_depositcilacapController::class, 'printReportsaldo']);
+    
+    Route::resource('inquery_setorantunaicilacap', \App\Http\Controllers\Toko_cilacap\Inquery_setorantunaicilacapController::class);
+    Route::get('/toko_cilacap/inquery_setorantunai/{id}/print', [Inquery_setorantunaicilacapController::class, 'print'])->name('inquery_setorantunai.print');
+
+    Route::resource('laporan_setorantunaicilacap', \App\Http\Controllers\Toko_cilacap\Laporan_setorantunaicilacapController::class);
+
+    Route::resource('laporan_returcilacap', \App\Http\Controllers\Toko_cilacap\Laporan_returcilacapController::class);
+    Route::get('printReportreturcilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_returcilacapController::class, 'printReportreturcilacap']);
+
+});
 
 
 
