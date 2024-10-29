@@ -51,16 +51,15 @@ class ProdukController extends Controller
         return response()->json($klasifikasis);
     }
 
-
     public function create()
     {
         $produks = Produk::all();
         $klasifikasis = Klasifikasi::all();
-        $subs = Subklasifikasi::all();
-        $subs1 = Subsub::all();
-        return view('toko_banjaran/produk.create', compact('produks', 'klasifikasis', 'subs', 'subs1'));
-    }
+        $subklasifikasis = Subklasifikasi::all();
 
+        return view('toko_pemalang/produk.create', compact('produks', 'klasifikasis', 'subklasifikasis'));
+    }
+    
  
     public function store(Request $request)
  
@@ -167,7 +166,7 @@ class ProdukController extends Controller
             'non_diskon_clc' => 0,
         ]);
     
-        return redirect('toko_banjaran/produk')->with('success', 'Berhasil menambahkan produk');
+        return redirect('toko_pemalang/produk')->with('success', 'Berhasil menambahkan produk');
     }
 
     /**
@@ -191,7 +190,7 @@ class ProdukController extends Controller
     {
 
         $produk = Produk::where('id', $id)->first();
-        return view('toko_banjaran/produk.update', compact('produk'));  
+        return view('toko_pemalang/produk.update', compact('produk'));  
     }
 
     /**
@@ -241,7 +240,7 @@ class ProdukController extends Controller
         $produk->gambar = $namaGambar;
         $produk->save();
 
-        return redirect('toko_banjaran/produk')->with('success', 'Berhasil mengubah produk');
+        return redirect('toko_pemalang/produk')->with('success', 'Berhasil mengubah produk');
     }
 
 
@@ -256,7 +255,7 @@ class ProdukController extends Controller
         $produk = Produk::find($id);
         $produk->delete();
 
-        return redirect('toko_banjaran/produk')->with('success', 'Berhasil menghapus data produk');
+        return redirect('toko_pemalang/produk')->with('success', 'Berhasil menghapus data produk');
     }
 
     public function kode()
@@ -290,7 +289,7 @@ class ProdukController extends Controller
     // {
     //     $klasifikasis = Klasifikasi::with('produks')->get();
     //     $importedData = session('imported_data', []);
-    //     return view('toko_banjaran.permintaan_produk.form', compact('klasifikasis', 'importedData'));
+    //     return view('toko_pemalang.permintaan_produk.form', compact('klasifikasis', 'importedData'));
     // }
     public function import(Request $request)
     {
@@ -313,6 +312,6 @@ class ProdukController extends Controller
     {
         $klasifikasis = Klasifikasi::with('produks')->get();
         $importedData = session('imported_data', []);
-        return view('toko_banjaran.permintaan_produk.form', compact('klasifikasis', 'importedData'));
+        return view('toko_pemalang.permintaan_produk.form', compact('klasifikasis', 'importedData'));
     }
 }
