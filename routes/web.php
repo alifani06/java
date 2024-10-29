@@ -111,6 +111,7 @@ use App\Http\Controllers\Toko_slawi\PenjualanprodukslawiController;
 use App\Http\Controllers\Toko_slawi\PermintaanprodukslawiController;
 use App\Http\Controllers\Toko_slawi\Retur_tokoslawiController;
 use App\Http\Controllers\Toko_slawi\Setoran_tokoslawiController;
+use App\Http\Controllers\Toko_slawi\Stok_tokoslawiController as Toko_slawiStok_tokoslawiController;
 use App\Http\Controllers\Toko_slawi\Stokpesanan_tokoslawiController;
 use App\Http\Controllers\Toko_tegal\Inquery_pemindahantegalController;
 use App\Http\Controllers\Toko_tegal\Inquery_penjualanproduktegalController;
@@ -1301,9 +1302,14 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
     Route::resource('metode_pembayaran', \App\Http\Controllers\Toko_slawi\Metode_pembayaranController::class);
 
  
+    // Route::resource('stok_tokoslawi', \App\Http\Controllers\Toko_slawi\Stok_tokoslawiController::class);
+    // Route::delete('/toko_slawi/stok_tokoslawi/deleteAll', [Stok_tokoslawiController::class, 'deleteAll'])->name('stok_tokoslawi.deleteAll');
+    // Route::post('toko_slawi/stok_tokoslawi/import', [Stok_tokoslawiController::class, 'import'])->name('stok_tokoslawi.import');
+    // Route::delete('/toko_slawi/stok_tokoslawi/deleteAll', [Toko_slawiStok_tokoslawiController::class, 'deleteAll'])->name('stok_tokobanjaran.deleteAll');
+ 
     Route::resource('stok_tokoslawi', \App\Http\Controllers\Toko_slawi\Stok_tokoslawiController::class);
-    Route::delete('/toko_slawi/stok_tokoslawi/deleteAll', [Stok_tokoslawiController::class, 'deleteAll'])->name('stok_tokoslawi.deleteAll');
-    Route::post('toko_slawi/stok_tokoslawi/import', [Stok_tokoslawiController::class, 'import'])->name('stok_tokoslawi.import');
+    Route::delete('/toko_slawi/stok_tokoslawi/deleteAll', [Toko_slawiStok_tokoslawiController::class, 'deleteAll'])->name('stok_tokoslawi.deleteAll');
+    Route::post('toko_slawi/stok_tokoslawi/import', [Toko_slawiStok_tokoslawiController::class, 'import'])->name('stok_tokoslawi.import');
 
     Route::resource('stokpesanan_tokoslawi', \App\Http\Controllers\Toko_slawi\Stokpesanan_tokoslawiController::class);
     Route::delete('/toko_slawi/stokpesanan_tokoslawi/deleteAll', [Stokpesanan_tokoslawiController::class, 'deleteAll'])->name('stokpesanan_tokoslawi.deleteAll');

@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Pengiriman_tokobumiayu;
+use App\Models\Pengiriman_tokocilacap;
 use App\Models\Pengiriman_tokopemalang;
 use App\Models\Pengiriman_tokoslawi;
 use App\Models\Pengiriman_tokotegal;
@@ -191,6 +192,17 @@ class PengirimanbarangjadiController extends Controller{
                          'tanggal_input' => $tanggalPengirimanDenganJam,  // Simpan tanggal dengan jam yang sama
                      ]);
                     break;
+                    case 6:
+                        Pengiriman_tokocilacap::create([
+                            'pengiriman_barangjadi_id' => $pengiriman->id,
+                             'kode_pengiriman' => $kode,
+                             'produk_id' => $produkId,
+                             'toko_id' => $tokoId,
+                             'jumlah' => $jumlah,
+                             'status' => 'unpost',
+                             'tanggal_input' => $tanggalPengirimanDenganJam,  // Simpan tanggal dengan jam yang sama
+                         ]);
+                        break;
                 default:
                     return redirect()->back()->with('error', 'Toko ID tidak valid')->withInput();
             }
@@ -237,7 +249,7 @@ public function kode($tanggalPengiriman, $tokoId)
             $prefix = 'JKF'; // Toko Bumiayu
             break;
         case 6:
-            $prefix = 'JKG'; // Toko Bumiayu
+            $prefix = 'JKG'; // Toko Cilacap
             break;
         default:
             $prefix = 'JK'; // Default prefix jika toko_id tidak valid
