@@ -69,18 +69,14 @@ class Produk extends Model
     {
         return $this->hasOne(Stok_tokotegal::class, 'produk_id');
     }
+    public function stok_tokoslawi()
+    {
+        return $this->hasOne(Stok_tokoslawi::class, 'produk_id');
+    }
     public function stok_tokopemalang()
     {
         return $this->hasOne(Stok_tokopemalang::class, 'produk_id');
     }
-
-    //create baru
-    // public function stok_tokobanjaran()
-    // {
-    //     return $this->hasMany(Stok_tokobanjaran::class, 'produk_id');
-    // }
-    
-
     public function stokpesanan_tokobanjaran()
     {
         return $this->hasOne(Stokpesanan_tokobanjaran::class, 'produk_id');
@@ -105,6 +101,10 @@ class Produk extends Model
     public function stokpesanan_tokopemalang()
     {
         return $this->hasOne(Stokpesanan_tokopemalang::class, 'produk_id');
+    }
+    public function stokpesanan_tokoslawi()
+    {
+        return $this->hasOne(Stokpesanan_tokoslawi::class, 'produk_id');
     }
     public function tokotegal()
     {
