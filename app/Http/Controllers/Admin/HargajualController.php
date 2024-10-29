@@ -34,17 +34,34 @@ class HargajualController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // public function index()
+    // {
+    //     $tokoslawi = Tokoslawi::latest()->first();
+    //     $tokobanjaran = Tokobanjaran::latest()->first();
+    //     $tokotegal = Tokotegal::latest()->first();
+    //     $tokopemalang = Tokopemalang::latest()->first();
+    //     $tokobumiayu = Tokobumiayu::latest()->first();
+    //     $tokocilacap = Tokocilacap::latest()->first();
+    //     $produk = Produk::with(['tokoslawi', 'tokobanjaran','tokotegal', 'tokopemalang', 'tokobumiayu' , 'tokocilacap'])->get();
+    //     return view('admin.hargajual.index', compact('produk', 'tokoslawi', 'tokobanjaran', 'tokotegal', 'tokopemalang', 'tokobumiayu', 'tokocilacap'));
+    // }
+
     public function index()
-    {
-        $tokoslawi = Tokoslawi::latest()->first();
-        $tokobanjaran = Tokobanjaran::latest()->first();
-        $tokotegal = Tokotegal::latest()->first();
-        $tokopemalang = Tokopemalang::latest()->first();
-        $tokobumiayu = Tokobumiayu::latest()->first();
-        $tokocilacap = Tokocilacap::latest()->first();
-        $produk = Produk::with(['tokoslawi', 'tokobanjaran','tokotegal', 'tokopemalang', 'tokobumiayu' , 'tokocilacap'])->get();
-        return view('admin.hargajual.index', compact('produk', 'tokoslawi', 'tokobanjaran', 'tokotegal', 'tokopemalang', 'tokobumiayu', 'tokocilacap'));
-    }
+{
+    $tokoslawi = Tokoslawi::latest()->first();
+    $tokobanjaran = Tokobanjaran::latest()->first();
+    $tokotegal = Tokotegal::latest()->first();
+    $tokopemalang = Tokopemalang::latest()->first();
+    $tokobumiayu = Tokobumiayu::latest()->first();
+    $tokocilacap = Tokocilacap::latest()->first();
+
+    // Tambahkan orderBy('kode_lama', 'asc') untuk mengurutkan berdasarkan kode_lama secara ascending
+    $produk = Produk::with(['tokoslawi', 'tokobanjaran', 'tokotegal', 'tokopemalang', 'tokobumiayu', 'tokocilacap'])
+                    ->orderBy('kode_lama', 'asc')
+                    ->get();
+
+    return view('admin.hargajual.index', compact('produk', 'tokoslawi', 'tokobanjaran', 'tokotegal', 'tokopemalang', 'tokobumiayu', 'tokocilacap'));
+}
 
 
     public function create()
