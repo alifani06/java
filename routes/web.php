@@ -239,6 +239,9 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::post('/admin/update-harga', [HargajualController::class, 'updateHarga'])->name('update.harga');
     Route::post('/admin/update-hargaTgl', [HargajualController::class, 'updateHargaTgl'])->name('update.hargaTgl');
     Route::post('/admin/update-hargaPml', [HargajualController::class, 'updateHargaPml'])->name('update.hargaPml');
+    Route::post('/admin/update-hargaSlw', [HargajualController::class, 'updateHargaSlw'])->name('update.hargaSlw');
+    Route::post('/admin/update-hargaBmy', [HargajualController::class, 'updateHargaBmy'])->name('update.hargaBmy');
+    Route::post('/admin/update-hargaClc', [HargajualController::class, 'updateHargaClc'])->name('update.hargaClc');
     Route::get('admin/hargajual/show', [App\Http\Controllers\Admin\HargajualController::class, 'show'])->name('show');
     Route::get('/cetak-pdf', [HargajualController::class, 'cetakPdf'])->name('cetak.pdf');
     Route::get('/admin/hargajual/filter', [HargajualController::class, 'all'])->name('admin.hargajual.filter');
