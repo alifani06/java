@@ -431,8 +431,8 @@
 
             {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
               <li class="nav-item">
-                <a href="{{ url('toko_cilacap/laporan_pengirimantokobanjaran') }}"
-                    class="nav-link {{ request()->is('toko_cilacap/laporan_pengirimantokobanjaran*') ? 'active' : '' }}">
+                <a href="{{ url('toko_cilacap/laporan_pengirimantokocilacap') }}"
+                    class="nav-link {{ request()->is('toko_cilacap/laporan_pengirimantokocilacap*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                     <p style="font-size: 14px;">Laporan Pengiriman Produk</p>
                 </a>
