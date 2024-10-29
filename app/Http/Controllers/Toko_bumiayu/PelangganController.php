@@ -212,7 +212,7 @@ class PelangganController extends Controller
                 'kode_pelanggan' => $request->kode_pelanggan,
                 'qrcode_pelanggan' => 'https://javabakery.id/pelanggan/' . $pelanggans->kode_pelanggan,
 
-                'kode_lama' => $request->kode_lama,
+                'kode_pelangganlama' => $request->kode_pelangganlama,
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'tanggal_awal' => $request->tanggal_awal,
                 'tanggal_akhir' => $request->tanggal_akhir,
@@ -229,7 +229,7 @@ class PelangganController extends Controller
             // 'gambar_ktp'=> $namaGambar,
             'nama_pelanggan' => $request->nama_pelanggan,
             'kode_pelanggan' => $request->kode_pelanggan,
-            'kode_lama' => $request->kode_lama,
+            'kode_pelangganlama' => $request->kode_pelangganlama,
             // 'qrcode_pelanggan' => $request->qrcode_pelanggan,
             'tanggal_lahir' => $request->tanggal_lahir,
             'tanggal_gabung' => $request->tanggal_gabung,
