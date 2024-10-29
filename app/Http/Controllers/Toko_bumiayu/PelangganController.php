@@ -30,7 +30,7 @@ class PelangganController extends Controller
     // $pelanggans = Pelanggan::all();
     $pelanggans = Pelanggan::when($search, function ($query, $search) {
         return $query->where('nama_pelanggan', 'like', '%' . $search . '%')
-                     ->orWhere('kode_lama', 'like', '%' . $search . '%');
+                     ->orWhere('kode_pelangganlama', 'like', '%' . $search . '%');
     }) ->paginate(10);
 
       return view('toko_bumiayu.pelanggan.index', compact('pelanggans', 'search'));

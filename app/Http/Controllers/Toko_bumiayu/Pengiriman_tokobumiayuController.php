@@ -44,6 +44,9 @@ use App\Models\Stok_tokoslawi;
 use App\Models\Pengiriman_tokobumiayu;
 use App\Models\Pengiriman_tokotegal;
 use App\Models\Pengirimanpemesanan_tokobanjaran;
+use App\Models\Pengirimanpemesanan_tokobumiayu;
+use App\Models\Stok_tokobumiayu;
+use App\Models\Stokpesanan_tokobumiayu;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -230,7 +233,7 @@ class Pengiriman_tokobumiayuController extends Controller{
             }
 
             // Cari record di stok_tokobanjarans yang sesuai dengan produk_id
-            $stokToko = Stok_tokobanjaran::where('produk_id', $pengirimanItem->produk_id)->first();
+            $stokToko = Stok_tokobumiayu::where('produk_id', $pengirimanItem->produk_id)->first();
             
             // Pastikan stok_tokobanjarans ditemukan
             if ($stokToko) {
@@ -259,7 +262,7 @@ class Pengiriman_tokobumiayuController extends Controller{
     public function posting_pengirimanpemesanan($id)
     {
         // Ambil data stok_tokobanjaran berdasarkan ID
-        $stok = Pengirimanpemesanan_tokobanjaran::find($id);
+        $stok = Pengirimanpemesanan_tokobumiayu::find($id);
     
         // Pastikan data ditemukan
         if (!$stok) {
@@ -310,7 +313,7 @@ class Pengiriman_tokobumiayuController extends Controller{
             }
     
             // Tambahkan jumlah ke stok di Stokpesanan_tokobanjaran
-            $stokToko = Stokpesanan_tokobanjaran::firstOrCreate(
+            $stokToko = Stokpesanan_tokobumiayu::firstOrCreate(
                 ['produk_id' => $pengirimanItem->produk_id],
                 ['jumlah' => 0]
             );
@@ -319,7 +322,7 @@ class Pengiriman_tokobumiayuController extends Controller{
         }
     
         // Update status untuk semua stok_tokobanjaran dengan kode_pengiriman yang sama
-        Pengirimanpemesanan_tokobanjaran::where('kode_pengirimanpesanan', $kodePengiriman)->update([
+        Pengirimanpemesanan_tokobumiayu::where('kode_pengirimanpesanan', $kodePengiriman)->update([
             'status' => 'posting',
             'tanggal_terima' => Carbon::now('Asia/Jakarta'),
         ]);
@@ -340,7 +343,7 @@ class Pengiriman_tokobumiayuController extends Controller{
 public function unpost_pengiriman($id)
         {
             // Ambil data stok_tokoslawi berdasarkan ID
-    $stok = Stok_tokobanjaran::where('id', $id)->first();
+    $stok = Stok_tokobumiayu::where('id', $id)->first();
 
     // Pastikan data ditemukan
     if (!$stok) {
@@ -354,7 +357,7 @@ public function unpost_pengiriman($id)
     $pengirimanId = $stok->pengiriman_barangjadi_id;
 
     // Update status untuk semua stok_tokoslawi dengan kode_pengiriman yang sama
-    Stok_tokobanjaran::where('kode_pengiriman', $kodePengiriman)->update([
+    Stok_tokobumiayu::where('kode_pengiriman', $kodePengiriman)->update([
         'status' => 'unpost'
     ]);
 
