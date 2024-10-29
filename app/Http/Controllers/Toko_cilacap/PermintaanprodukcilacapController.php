@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_tegal;
+namespace App\Http\Controllers\Toko_cilacap;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -39,7 +39,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 
 
-class PermintaanproduktegalController extends Controller{
+class PermintaanprodukcilacapController extends Controller{
 
     public function index()
     {
@@ -47,13 +47,13 @@ class PermintaanproduktegalController extends Controller{
     
         $permintaanProduks = PermintaanProduk::whereDate('created_at', $today)
             ->whereHas('detailpermintaanproduks', function($query) {
-                $query->where('toko_id', 2);  // Filter berdasarkan toko_id di detailpermintaanproduks
+                $query->where('toko_id', 6);  // Filter berdasarkan toko_id di detailpermintaanproduks
             })
             ->orderBy('created_at', 'desc')
             ->with('detailpermintaanproduks')  // Eager load detailpermintaanproduks untuk tampilan
             ->get();
     
-        return view('toko_tegal.permintaan_produk.index', compact('permintaanProduks'));
+        return view('toko_cilacap.permintaan_produk.index', compact('permintaanProduks'));
     }
     
     
@@ -62,7 +62,7 @@ class PermintaanproduktegalController extends Controller{
     {
         $klasifikasis = Klasifikasi::with('produks')->get();
         
-        return view('toko_tegal.permintaan_produk.create', compact('klasifikasis'));
+        return view('toko_cilacap.permintaan_produk.create', compact('klasifikasis'));
     }
 
     public function store(Request $request)
@@ -87,7 +87,7 @@ class PermintaanproduktegalController extends Controller{
             Detailpermintaanproduk::create([
                 'permintaanproduk_id' => $permintaanProduk->id,
                 'produk_id' => $produkId,
-                'toko_id' => '2', 
+                'toko_id' => '6', 
                 'jumlah' => $jumlah,
                 'status' => 'unpost',
                 'tanggal_permintaan' => Carbon::now('Asia/Jakarta'),
@@ -100,7 +100,7 @@ class PermintaanproduktegalController extends Controller{
 
     public function kode()
     {
-        $prefix = 'JLD';
+        $prefix = 'JLG';
         $year = date('y'); // Dua digit terakhir dari tahun
         $monthDay = date('dm'); // Format bulan dan hari: MMDD
     
@@ -148,7 +148,7 @@ public function show($id)
     // Mengambil nama toko dari salah satu detail permintaan produk
     $toko = $detailPermintaanProduks->first()->toko;
 
-    return view('toko_tegal.permintaan_produk.show', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi', 'subklasifikasiByDivisi', 'toko'));
+    return view('toko_cilacap.permintaan_produk.show', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi', 'subklasifikasiByDivisi', 'toko'));
 }
 
 
@@ -171,7 +171,7 @@ public function show($id)
         });
         $toko = $detailPermintaanProduks->first()->toko;
 
-        $pdf = FacadePdf::loadView('toko_tegal.permintaan_produk.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi','toko'));
+        $pdf = FacadePdf::loadView('toko_cilacap.permintaan_produk.print', compact('permintaanProduk', 'produkByDivisi', 'totalPerDivisi','toko'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
     }
@@ -206,7 +206,7 @@ public function edit($id)
     $klasifikasis = Klasifikasi::with('produks')->get();
     $detailPermintaanProduk = $permintaanProduk->detailpermintaanproduks()->get();
 
-    return view('toko_tegal.permintaan_produk.update', compact('permintaanProduk', 'klasifikasis', 'detailPermintaanProduk'));
+    return view('toko_cilacap.permintaan_produk.update', compact('permintaanProduk', 'klasifikasis', 'detailPermintaanProduk'));
 }
 
 

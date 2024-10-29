@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_tegal;
+namespace App\Http\Controllers\Toko_cilacap;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -29,8 +29,10 @@ use App\Models\Penjualanproduk;
 use App\Models\Toko;
 use App\Models\Dppemesanan;
 use App\Models\Metodepembayaran;
+use App\Models\Stok_tokocilacap;
 use App\Models\Stok_tokotegal;
 use App\Models\Stokpesanan_tokobanjaran;
+use App\Models\Stokpesanan_tokocilacap;
 use App\Models\Stokpesanan_tokotegal;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
@@ -41,28 +43,20 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class PelunasanpemesananTglController extends Controller
+class PelunasanpemesananClcController extends Controller
 {
-    // public function index()
-    // {
-    //     $inquery = Pelunasan::with(['metodePembayaran', 'dppemesanan.pemesananproduk'])
-    //         ->whereDate('created_at', now()) 
-    //         ->orderBy('kode_penjualan', 'asc')   
-    //         ->get();
-    
-    //     return view('toko_tegal.pelunasan_pemesananTgl.index', compact('inquery'));
-    // }
+
     public function index()
 {
     $inquery = Pelunasan::with(['metodePembayaran', 'dppemesanan.pemesananproduk'])
         ->whereHas('dppemesanan.pemesananproduk', function($query) {
-            $query->where('toko_id', 2);  // Filter untuk toko_id = 2
+            $query->where('toko_id', 6);  // Filter untuk toko_id = 6
         })
         ->whereDate('created_at', now()) 
         ->orderBy('kode_penjualan', 'asc')   
         ->get();
 
-    return view('toko_tegal.pelunasan_pemesananTgl.index', compact('inquery'));
+    return view('toko_cilacap.pelunasan_pemesananClc.index', compact('inquery'));
 }
 
     
@@ -91,20 +85,20 @@ class PelunasanpemesananTglController extends Controller
     $metodes = Metodepembayaran::all();
     
     // Filter produk berdasarkan nama klasifikasi
-    $produks = Produk::with(['tokotegal', 'klasifikasi'])
+    $produks = Produk::with(['tokocilacap', 'klasifikasi'])
                 ->whereHas('klasifikasi', function($query) {
                     $query->whereIn('nama', ['FREE MAINAN', 'FREE PACKAGING', 'BAKERY']);
                 })
                 ->get();
 
-    // Filter Dppemesanan berdasarkan toko_id = 2
+    // Filter Dppemesanan berdasarkan toko_id = 6
     $dppemesanans = Dppemesanan::whereHas('pemesananproduk', function($query) {
-        $query->where('toko_id', 2);
+        $query->where('toko_id', 6);
     })->get();
 
     $kategoriPelanggan = 'member';
     
-    return view('toko_tegal.pelunasan_pemesananTgl.create', compact(
+    return view('toko_cilacap.pelunasan_pemesananClc.create', compact(
         'barangs', 
         'tokos', 
         'produks', 
@@ -117,25 +111,6 @@ class PelunasanpemesananTglController extends Controller
         'metodes'
     ));
 }
-
-    // public function create()
-    // {
-
-    //     $barangs = Barang::all();
-    //     $pelanggans = Pelanggan::all();
-    //     $details = Detailbarangjadi::all();
-    //     $tokoslawis = Tokoslawi::all();
-    //     $tokos = Toko::all();
-    //     $dppemesanans = Dppemesanan::all();
-    //     $pemesananproduks = Pemesananproduk::all();
-    //     $metodes = Metodepembayaran::all();
-    
-    //     $produks = Produk::with('tokotegal')->get();
-
-    //     $kategoriPelanggan = 'member';
-    
-    //     return view('toko_tegal.pelunasan_pemesananTgl.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
-    // }
 
    
     public function getCustomerByKode($kode)
@@ -207,7 +182,7 @@ class PelunasanpemesananTglController extends Controller
  
     public function kode()
     {
-        $prefix = 'FPD';
+        $prefix = 'FPG';
         $year = date('y'); // Dua digit terakhir dari tahun
         $monthDay = date('dm'); // Format bulan dan hari: MMDD
 
@@ -230,141 +205,6 @@ class PelunasanpemesananTglController extends Controller
         return $newCode;
     }
 
-
-    // public function store(Request $request)
-    // {
-    //     // Validasi input
-    //     $validated = $request->validate([
-    //         'dppemesanan_id' => 'required|string',
-    //         'pelunasan' => 'required|numeric',
-    //         'metode_id' => 'nullable|integer',
-    //         'total_fee' => 'nullable|numeric',
-    //         'keterangan' => 'nullable|string',
-    //         'kode_produk' => 'nullable|array',
-    //         'kode_produk.*' => 'nullable|string',
-    //         'kode_lama.*' => 'nullable|string',
-    //         'nama_produk' => 'nullable|array',
-    //         'nama_produk.*' => 'nullable|string',
-    //         'jumlah' => 'nullable|array',
-    //         'jumlah.*' => 'nullable|integer',
-    //         'harga' => 'nullable|array', 
-    //         'harga.*' => 'nullable|numeric', 
-    //         'total' => 'nullable|array',
-    //         'total.*' => 'nullable|numeric',
-    //         'diskon' => 'nullable|array',
-    //         'diskon.*' => 'nullable|numeric',
-    //         'produk_id' => 'nullable|array',
-    //         'produk_id.*' => 'nullable|numeric',
-    //         'kembali' => 'nullable|numeric',
-    //     ]);
-    
-    //     // Jika nilai pelunasan kosong atau 0, set default ke 1
-    //     $validated['pelunasan'] = $validated['pelunasan'] > 0 ? $validated['pelunasan'] : 1;
-    
-    //     // Update kolom pelunasan di tabel dppemesanans
-    //     $dppemesanans = Dppemesanan::find($validated['dppemesanan_id']);
-    //     if (!$dppemesanans) {
-    //         return redirect()->back()->withErrors(['error' => 'Data pesanan tidak ditemukan']);
-    //     }
-    
-    //     // Update pelunasan di tabel dppemesanans
-    //     $dppemesanans->pelunasan += $validated['pelunasan'];
-    //     $dppemesanans->save();
-        
-    //     // Generate kode untuk penjualan
-    //     $kode_penjualan = $this->kode();
-    
-    //     // Simpan data ke tabel penjualan_produk
-    //     $penjualan = new PenjualanProduk();
-    //     $penjualan->dppemesanan_id = $validated['dppemesanan_id'];
-    //     $penjualan->nama_pelanggan = $dppemesanans->pemesananproduk->nama_pelanggan;
-    //     $penjualan->kode_pelanggan = $dppemesanans->pemesananproduk->kode_pelanggan;
-    //     $penjualan->telp = $dppemesanans->pemesananproduk->telp;
-    //     $penjualan->alamat = $dppemesanans->pemesananproduk->alamat;
-    //     $penjualan->sub_total = $dppemesanans->pemesananproduk->sub_total;
-    //     $penjualan->sub_totalasli = $dppemesanans->pemesananproduk->sub_totalasli;
-    //     $penjualan->nominal_diskon = $dppemesanans->pemesananproduk->nominal_diskon;
-    //     $penjualan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
-    //     $penjualan->total_fee = $validated['total_fee'];
-    //     $penjualan->keterangan = $validated['keterangan'];
-    //     $penjualan->metode_id = $validated['metode_id'];
-    //     $penjualan->kembali = $validated['kembali'];
-    //     $penjualan->bayar = $validated['pelunasan'];
-    //     $penjualan->status = 'posting';
-    //     $penjualan->toko_id = 2;
-    //     $penjualan->kode_penjualan = $kode_penjualan;
-    //     $penjualan->tanggal_penjualan = Carbon::now('Asia/Jakarta');
-    //     $penjualan->qrcode_penjualan = 'https://javabakery.id/penjualan/' . $kode_penjualan;
-    //     $penjualan->save();
-    
-    //     // Simpan data ke tabel pelunasan
-    //     $pelunasan = new Pelunasan();
-    //     $pelunasan->dppemesanan_id = $validated['dppemesanan_id'];
-    //     $pelunasan->penjualanproduk_id = $penjualan->id;
-    //     $pelunasan->pelunasan = $validated['pelunasan'];
-    //     $pelunasan->metode_id = $validated['metode_id'];
-    //     $pelunasan->total_fee = $validated['total_fee'];
-    //     $pelunasan->keterangan = $validated['keterangan'];
-    //     $pelunasan->kembali = $validated['kembali'];
-    //     $pelunasan->tanggal_pelunasan = Carbon::now('Asia/Jakarta');
-    //     $pelunasan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
-    //     $pelunasan->status = 'posting';
-    //     $pelunasan->toko_id = '2'; 
-    //     $pelunasan->kode_penjualan = $penjualan->kode_penjualan; // Menggunakan kode_penjualan dari penjualan
-    //     $pelunasan->save();
-    
-    //     // Simpan data ke tabel detailpenjualanproduk dan kurangi stok
-    //     foreach ($validated['kode_produk'] as $index => $kode_produk) {
-    //         $detail = new DetailPenjualanProduk();
-    //         $detail->penjualanproduk_id = $penjualan->id;
-    //         $detail->kode_produk = $kode_produk;
-    //         $detail->kode_lama = $validated['kode_lama'][$index];
-    //         $detail->produk_id = $validated['produk_id'][$index];
-    //         $detail->nama_produk = $validated['nama_produk'][$index];
-    //         $detail->jumlah = $validated['jumlah'][$index];
-    //         $detail->harga = $validated['harga'][$index];
-    //         $detail->diskon = $validated['diskon'][$index];
-    //         $detail->total = $validated['total'][$index];
-    //         $detail->save();
-    
-    //         // Ambil klasifikasi produk
-    //         $produk = Produk::find($detail->produk_id);
-    
-    //         // Kurangi stok berdasarkan klasifikasi_id atau kode_lama
-    //         if ($produk) {
-    //             if (in_array($produk->klasifikasi_id, [15, 16]) || ($produk->klasifikasi_id == 13 && $detail->kode_lama == 'KU001')) {
-    
-    //                 $stok = Stok_tokotegal::where('produk_id', $detail->produk_id)->first();
-    //             } else {
-    //                 // Jika tidak, kurangi stok dari stokpesanan_tokobanjaran
-    //                 $stok = Stokpesanan_tokotegal::where('produk_id', $detail->produk_id)->first();
-    //             }
-    
-    //             if ($stok) {
-    //                 // Kurangi stok tanpa memeriksa apakah stok mencukupi
-    //                 $stok->jumlah -= $detail->jumlah;
-    //                 $stok->save();
-    //             } else {
-    //                 // Jika stok tidak ditemukan, buat stok baru dengan nilai negatif
-    //                 if (in_array($produk->klasifikasi_id, [15, 16]) || ($produk->klasifikasi_id == 13 && $detail->kode_lama == 'KU001')) {
-    //                     Stok_tokotegal::create([
-    //                         'produk_id' => $detail->produk_id,
-    //                         'jumlah' => -$detail->jumlah,
-    //                     ]);
-    //                 } else {
-    //                     Stokpesanan_tokotegal::create([
-    //                         'produk_id' => $detail->produk_id,
-    //                         'jumlah' => -$detail->jumlah,
-    //                     ]);
-    //                 }
-    //             }
-    //         }
-    //     }
-    
-    //     // Redirect ke halaman cetak PDF setelah transaksi berhasil
-    //     return redirect()->route('toko_tegal.pelunasan_pemesananTgl.cetak-pdf', ['id' => $pelunasan->id])
-    //         ->with('success', 'Transaksi berhasil disimpan, halaman cetak akan segera tampil.');
-    // }
     public function store(Request $request)
     {
         // Validasi input
@@ -425,7 +265,7 @@ class PelunasanpemesananTglController extends Controller
         $penjualan->kembali = $validated['kembali'];
         $penjualan->bayar = $validated['pelunasan'];
         $penjualan->status = 'posting';
-        $penjualan->toko_id = 2;
+        $penjualan->toko_id = 6;
         $penjualan->kode_penjualan = $kode_penjualan;
         $penjualan->tanggal_penjualan = Carbon::now('Asia/Jakarta');
         $penjualan->qrcode_penjualan = 'https://javabakery.id/penjualan/' . $kode_penjualan;
@@ -443,7 +283,7 @@ class PelunasanpemesananTglController extends Controller
         $pelunasan->tanggal_pelunasan = Carbon::now('Asia/Jakarta');
         $pelunasan->kasir = ucfirst(auth()->user()->karyawan->nama_lengkap);
         $pelunasan->status = 'posting';
-        $pelunasan->toko_id = '2'; 
+        $pelunasan->toko_id = '6'; 
         $pelunasan->kode_penjualan = $penjualan->kode_penjualan; // Menggunakan kode_penjualan dari penjualan
         $pelunasan->save();
     
@@ -470,10 +310,10 @@ class PelunasanpemesananTglController extends Controller
                 ($produk->klasifikasi_id == 13 && in_array($produk->kode_lama, ['KU001', 'M0002']))
             ) {
                 // Pengurangan stok untuk stok_tokobanjaran
-                $stok = Stok_tokotegal::where('produk_id', $detail->produk_id)->first();
+                $stok = Stok_tokocilacap::where('produk_id', $detail->produk_id)->first();
             } else {
                 // Jika tidak, kurangi stok dari stokpesanan_tokobanjaran
-                $stok = Stokpesanan_tokotegal::where('produk_id', $detail->produk_id)->first();
+                $stok = Stokpesanan_tokocilacap::where('produk_id', $detail->produk_id)->first();
             }
 
             if ($stok) {
@@ -485,12 +325,12 @@ class PelunasanpemesananTglController extends Controller
                 if (in_array($produk->klasifikasi_id, [15, 16]) || 
                     ($produk->klasifikasi_id == 13 && in_array($detail->kode_lama, ['KU001', 'M0002']))
                 ) {
-                    Stok_tokotegal::create([
+                    Stok_tokocilacap::create([
                         'produk_id' => $detail->produk_id,
                         'jumlah' => -$detail->jumlah,
                     ]);
                 } else {
-                    Stokpesanan_tokotegal::create([
+                    Stokpesanan_tokocilacap::create([
                         'produk_id' => $detail->produk_id,
                         'jumlah' => -$detail->jumlah,
                     ]);
@@ -502,7 +342,7 @@ class PelunasanpemesananTglController extends Controller
     
     
         // Redirect ke halaman cetak PDF setelah transaksi berhasil
-        return redirect()->route('toko_tegal.pelunasan_pemesananTgl.cetak-pdf', ['id' => $pelunasan->id])
+        return redirect()->route('toko_cilacap.pelunasan_pemesananClc.cetak-pdf', ['id' => $pelunasan->id])
             ->with('success', 'Transaksi berhasil disimpan, halaman cetak akan segera tampil.');
     }
 
@@ -520,7 +360,7 @@ class PelunasanpemesananTglController extends Controller
         $tokos = $inquery->toko;
     
         // Mengirim data ke view
-        return view('toko_tegal/pelunasan_pemesananTgl/cetak', compact('inquery', 'tokos', 'pelanggans'));
+        return view('toko_cilacap/pelunasan_pemesananClc/cetak', compact('inquery', 'tokos', 'pelanggans'));
     }
 
     public function cetakpelunasan($id)
@@ -533,7 +373,7 @@ class PelunasanpemesananTglController extends Controller
         $tokos = $penjualan->toko;
 
         // Pass the retrieved data to the view
-        return view('toko_tegal.penjualan_produk.cetakpelunasan', compact('penjualan', 'pelanggans', 'tokos'));
+        return view('toko_cilacap.penjualan_produk.cetakpelunasan', compact('penjualan', 'pelanggans', 'tokos'));
     }
     
     
@@ -552,7 +392,7 @@ class PelunasanpemesananTglController extends Controller
     //     // Mengakses toko dari $inquery yang sekarang menjadi instance model
     //     $tokos = $inquery->toko;
         
-    //     $pdf = FacadePdf::loadView('toko_tegal.pelunasan_pemesananTgl.cetak-pdf', compact('inquery', 'tokos', 'pelanggans', 'kode_dppemesanan'));
+    //     $pdf = FacadePdf::loadView('toko_cilacap.pelunasan_pemesananClc.cetak-pdf', compact('inquery', 'tokos', 'pelanggans', 'kode_dppemesanan'));
     //     $pdf->setPaper('a4', 'portrait');
         
     //     return $pdf->stream('pelunasan.pdf');
@@ -579,7 +419,7 @@ class PelunasanpemesananTglController extends Controller
         // Mengambil catatan dari tabel Pemesananproduk melalui dppemesanan
         $pemesananproduk = $inquery->dppemesanan->pemesananproduk ?? null; // Mengakses relasi ke Pemesananproduk
     
-        $pdf = FacadePdf::loadView('toko_tegal.pelunasan_pemesananTgl.cetak-pdf', compact('inquery', 'tokos', 'pelanggans', 'kode_dppemesanan', 'pemesananproduk'));
+        $pdf = FacadePdf::loadView('toko_cilacap.pelunasan_pemesananClc.cetak-pdf', compact('inquery', 'tokos', 'pelanggans', 'kode_dppemesanan', 'pemesananproduk'));
         $pdf->setPaper('a4', 'portrait');
         
         return $pdf->stream('pelunasan.pdf');
@@ -601,7 +441,7 @@ class PelunasanpemesananTglController extends Controller
         $tokos = $inquery->toko;
     
         // Mengirim data ke view
-        return view('toko_tegal/pelunasan_pemesananTgl/cetak', compact('inquery', 'tokos', 'pelanggans'));
+        return view('toko_cilacap/pelunasan_pemesananClc/cetak', compact('inquery', 'tokos', 'pelanggans'));
     }
     
     
@@ -616,7 +456,7 @@ class PelunasanpemesananTglController extends Controller
             $inquery = Pemesananproduk::with('detailpemesananproduk')->where('id', $id)->first();
             $selectedTokoId = $inquery->toko_id; // ID toko yang dipilih
 
-            return view('toko_tegal.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
+            return view('toko_cilacap.pemesanan_produk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
         }
         
 
@@ -745,7 +585,7 @@ class PelunasanpemesananTglController extends Controller
             $details = Detailpemesananproduk::where('pemesananproduk_id', $pemesanan->id)->get();
         
             // Redirect ke halaman indeks pemesananproduk
-            return redirect('toko_tegal/pemesanan_produk');
+            return redirect('toko_cilacap/pemesanan_produk');
 
         }
         
@@ -782,7 +622,7 @@ class PelunasanpemesananTglController extends Controller
                 $penjualan->delete();
             });
         
-            return redirect('toko_tegal/penjualan_produk')->with('success', 'Berhasil menghapus data penjualan');
+            return redirect('toko_cilacap/penjualan_produk')->with('success', 'Berhasil menghapus data penjualan');
         }
         
         

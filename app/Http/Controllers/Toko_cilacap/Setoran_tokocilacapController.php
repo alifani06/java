@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_tegal;
+namespace App\Http\Controllers\Toko_cilacap;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -40,7 +40,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class Setoran_tokotegalController extends Controller
+class Setoran_tokocilacapController extends Controller
 {
 
     public function index(Request $request)
@@ -49,7 +49,7 @@ class Setoran_tokotegalController extends Controller
         $setoranPenjualans = Setoran_penjualan::orderBy('id', 'DESC')->get();
     
         // Kirim data ke view
-        return view('toko_tegal.setoran_tokotegal.index', compact('setoranPenjualans'));
+        return view('toko_cilacap.setoran_tokocilacap.index', compact('setoranPenjualans'));
     }
     
     public function create(Request $request)
@@ -149,7 +149,7 @@ class Setoran_tokotegalController extends Controller
         $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
         $total_setoran = $total_penjualan - $total_metode;
 
-        return view('toko_tegal.setoran_tokotegal.create', compact(
+        return view('toko_cilacap.setoran_tokocilacap.create', compact(
             'produks',
             'tokos',
             'klasifikasis',
@@ -310,7 +310,7 @@ class Setoran_tokotegalController extends Controller
             'nominal_setoran' => $request->nominal_setoran,
             'nominal_setoran2' => $request->nominal_setoran2,
             'plusminus' => $request->plusminus,
-            'toko_id' => 2, // Menyimpan toko_id dengan nilai 1
+            'toko_id' => 6, // Menyimpan toko_id dengan nilai 1
             'status' => 'unpost',
         ]);
 
@@ -329,7 +329,7 @@ class Setoran_tokotegalController extends Controller
         $setoranPenjualans = Setoran_penjualan::findOrFail($id);
     
         // Load view untuk PDF dan kirimkan data
-        $pdf = FacadePdf::loadView('toko_tegal.setoran_tokotegal.printtunai', compact('setoranPenjualans'));
+        $pdf = FacadePdf::loadView('toko_cilacap.setoran_tokocilacap.printtunai', compact('setoranPenjualans'));
     
         // Return PDF stream agar langsung bisa ditampilkan
         return $pdf->stream('setoran_penjualan.pdf');

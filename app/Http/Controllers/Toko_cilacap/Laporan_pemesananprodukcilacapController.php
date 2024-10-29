@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_tegal;
+namespace App\Http\Controllers\Toko_cilacap;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -32,7 +32,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class Laporan_pemesananproduktegalController extends Controller
+class Laporan_pemesananprodukcilacapController extends Controller
 {
     
    
@@ -45,7 +45,7 @@ class Laporan_pemesananproduktegalController extends Controller
         $produk = $request->produk;
         $klasifikasi_id = $request->klasifikasi_id;
     
-        $toko_id = 2;
+        $toko_id = 6;
     
         // Query dasar untuk mengambil data pemesanan produk, hanya untuk toko Banjaran
         $query = Pemesananproduk::where('toko_id', $toko_id);
@@ -98,7 +98,7 @@ class Laporan_pemesananproduktegalController extends Controller
         $klasifikasis = Klasifikasi::all();
     
         // Kembalikan view dengan data yang dibutuhkan
-        return view('toko_tegal.laporan_pemesananproduk.index', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
+        return view('toko_cilacap.laporan_pemesananproduk.index', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
     }
     
     
@@ -114,7 +114,7 @@ class Laporan_pemesananproduktegalController extends Controller
         $klasifikasi_id = $request->klasifikasi_id;
     
         // Query dasar untuk mengambil data pemesanan produk
-        $query = Pemesananproduk::where('toko_id', 2);
+        $query = Pemesananproduk::where('toko_id', 6);
     
         // Filter berdasarkan status
         if ($status) {
@@ -167,7 +167,7 @@ class Laporan_pemesananproduktegalController extends Controller
         $klasifikasis = Klasifikasi::all();
     
         // Kembalikan view dengan data pemesanan produk, produk, toko, dan klasifikasi
-        return view('toko_tegal.laporan_pemesananproduk.indexglobal', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
+        return view('toko_cilacap.laporan_pemesananproduk.indexglobal', compact('inquery', 'produks', 'tokos', 'klasifikasis'));
     }
     
    
@@ -228,7 +228,7 @@ class Laporan_pemesananproduktegalController extends Controller
         ])->get();
 
         // Menentukan cabang yang dipilih
-        $selectedCabang = $tokoId == 2 ? 'TEGAL' : $inquery->first()->toko->nama_toko;
+        $selectedCabang = $tokoId == 6 ? 'TEGAL' : $inquery->first()->toko->nama_toko;
 
         // Kelompokkan data berdasarkan klasifikasi
         $groupedByKlasifikasi = $inquery->groupBy(function($item) {
@@ -236,7 +236,7 @@ class Laporan_pemesananproduktegalController extends Controller
         });
 
         // Generate PDF menggunakan Facade PDF
-        $pdf = FacadePdf::loadView('toko_tegal.laporan_pemesananproduk.print', [
+        $pdf = FacadePdf::loadView('toko_cilacap.laporan_pemesananproduk.print', [
             'groupedByKlasifikasi' => $groupedByKlasifikasi,
             'startDate' => $tanggalPemesanan,
             'endDate' => $tanggalAkhir,
@@ -286,8 +286,8 @@ class Laporan_pemesananproduktegalController extends Controller
         $tanggalAkhir = $validatedData['tanggal_akhir'] ?? null;
     
         // Tetapkan ID toko Banjaran secara langsung
-        $tokoId = 2; // ID toko Banjaran
-        $tokoName = 'Tegal'; // Nama toko Banjaran
+        $tokoId = 6; // ID toko Banjaran
+        $tokoName = 'Cilacap'; // Nama toko Banjaran
     
         // Tentukan field toko untuk Banjaran
         $tokoFieldMap = [
@@ -369,7 +369,7 @@ class Laporan_pemesananproduktegalController extends Controller
         }
     
         // Buat PDF menggunakan Facade PDF
-        $pdf = FacadePdf::loadView('toko_tegal.laporan_pemesananproduk.printglobal', [
+        $pdf = FacadePdf::loadView('toko_cilacap.laporan_pemesananproduk.printglobal', [
             'groupedData' => $groupedData,
             'totalSubtotal' => $totalSubtotal,
             'startDate' => $formattedStartDate,

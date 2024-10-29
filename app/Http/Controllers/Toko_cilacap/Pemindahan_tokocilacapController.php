@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_tegal;
+namespace App\Http\Controllers\Toko_cilacap;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -41,19 +41,20 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Pemindahan_tokobanjaranmasuk;
+use App\Models\Pemindahan_tokocilacap;
 use App\Models\Pemindahan_tokotegal;
 use App\Models\Retur_barnagjadi;
 use Maatwebsite\Excel\Facades\Excel;
 
-class Pemindahan_tokotegalController extends Controller{
+class Pemindahan_tokocilacapController extends Controller{
 
     public function index()
     {
-        $pemindahan_tokotegal = Pemindahan_tokotegal::with('produk')
+        $pemindahan_tokotegal = Pemindahan_tokocilacap::with('produk')
                             ->orderBy('created_at', 'desc')
                             ->get();
     
-        return view('toko_tegal.pemindahan_tokotegal.index', compact('pemindahan_tokotegal'));
+        return view('toko_cilacap.pemindahan_tokocilacap.index', compact('pemindahan_tokotegal'));
     }
       
 
@@ -63,7 +64,7 @@ public function create()
     $produks = Produk::all();
     $tokos = Toko::all();
 
-    return view('toko_tegal.pemindahan_tokotegal.create', compact('produks', 'tokos'));
+    return view('toko_cilacap.pemindahan_tokotegal.create', compact('produks', 'tokos'));
 }
 
 
@@ -85,10 +86,10 @@ public function store(Request $request)
 
     foreach ($produk_ids as $index => $produk_id) {
         // Simpan ke tabel pemindahan_tokoslawi
-        Pemindahan_tokotegal::create([
+        Pemindahan_tokocilacap::create([
             'kode_pemindahan' => $kode,
             'produk_id' => $produk_id,
-            'toko_id' => '2',  // Ganti sesuai dengan toko tujuan
+            'toko_id' => '6',  // Ganti sesuai dengan toko tujuan
             'status' => 'unpost',
             'jumlah' => $jumlahs[$index],
             'keterangan' => $keterangans[$index],
@@ -99,7 +100,7 @@ public function store(Request $request)
         Pemindahan_barangjadi::create([
             'kode_pemindahan' => $kode,
             'produk_id' => $produk_id,
-            'toko_id' => '2',  // Ganti sesuai dengan toko tujuan
+            'toko_id' => '6',  // Ganti sesuai dengan toko tujuan
             'status' => 'unpost',
             'jumlah' => $jumlahs[$index],
             'keterangan' => $keterangans[$index],
@@ -155,12 +156,12 @@ public function store(Request $request)
 
 public function kode()
 {
-    $prefix = 'OD';
+    $prefix = 'OG';
     $year = date('y'); // Dua digit terakhir dari tahun
     $date = date('md'); // Format bulan dan hari: MMDD
 
     // Mengambil kode retur terakhir yang dibuat pada hari yang sama
-    $lastBarang = Pemindahan_tokotegal::whereDate('tanggal_input', Carbon::today())
+    $lastBarang = Pemindahan_tokocilacap::whereDate('tanggal_input', Carbon::today())
                                   ->orderBy('kode_pemindahan', 'desc')
                                   ->first();
 
@@ -241,7 +242,7 @@ public function show($id)
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    return view('toko_tegal.inquery_returbanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
+    return view('toko_cilacap.inquery_returbanjaran.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
 public function print($id)
@@ -259,11 +260,11 @@ public function print($id)
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        $pdf = FacadePdf::loadView('toko_tegal.inquery_returbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
+        $pdf = FacadePdf::loadView('toko_cilacap.inquery_returbanjaran.print', compact('pengirimanBarangJadi', 'firstItem'));
 
         return $pdf->stream('surat_permintaan_produk.pdf');
         
-        // return view('toko_tegal.retur_tokoslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
+        // return view('toko_cilacap.retur_tokoslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
         }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_tegal;
+namespace App\Http\Controllers\Toko_cilacap;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -34,7 +34,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class Inquery_penjualanproduktegalController extends Controller
+class Inquery_penjualanprodukcilacapController extends Controller
 {
 
    
@@ -68,7 +68,7 @@ class Inquery_penjualanproduktegalController extends Controller
         $inquery->orderBy('id', 'DESC');
         $inquery = $inquery->get();
     
-        return view('toko_tegal.inquery_penjualanproduk.index', compact('inquery'));
+        return view('toko_cilacap.inquery_penjualanproduk.index', compact('inquery'));
     }
     
 
@@ -106,7 +106,7 @@ class Inquery_penjualanproduktegalController extends Controller
       $tokos = $penjualan->toko;
 
       // Pass the retrieved data to the view
-      return view('toko_tegal.inquery_penjualanproduk.show', compact('penjualan', 'pelanggans', 'tokos'));
+      return view('toko_cilacap.inquery_penjualanproduk.show', compact('penjualan', 'pelanggans', 'tokos'));
     }
 
     public function cetakPdf($id)
@@ -117,7 +117,7 @@ class Inquery_penjualanproduktegalController extends Controller
     
         $tokos = $penjualan->toko;
     
-        $pdf = FacadePdf::loadView('toko_tegal.inquery_penjualanproduk.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans'));
+        $pdf = FacadePdf::loadView('toko_cilacap.inquery_penjualanproduk.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans'));
         $pdf->setPaper('a4', 'portrait');
     
         return $pdf->stream('penjualan.pdf');
@@ -133,7 +133,7 @@ class Inquery_penjualanproduktegalController extends Controller
             $inquery = Pemesananproduk::with('detailpemesananproduk')->where('id', $id)->first();
             $selectedTokoId = $inquery->toko_id; // ID toko yang dipilih
 
-            return view('toko_tegal.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
+            return view('toko_cilacap.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
         }
         
     public function update(Request $request, $id)
@@ -261,7 +261,7 @@ class Inquery_penjualanproduktegalController extends Controller
             $details = Detailpemesananproduk::where('pemesananproduk_id', $pemesanan->id)->get();
         
             // Redirect ke halaman indeks pemesananproduk
-            return redirect('toko_tegal/inquery_pemesananproduk');
+            return redirect('toko_cilacap/inquery_pemesananproduk');
 
         }
         

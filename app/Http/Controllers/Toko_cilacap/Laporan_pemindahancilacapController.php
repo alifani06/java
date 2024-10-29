@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_tegal;
+namespace App\Http\Controllers\Toko_cilacap;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -39,11 +39,12 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Pemindahan_tokobanjaran;
+use App\Models\Pemindahan_tokocilacap;
 use App\Models\Pemindahan_tokotegal;
 use App\Models\Retur_barnagjadi;
 use Maatwebsite\Excel\Facades\Excel;
 
-class Laporan_pemindahantegalController extends Controller{
+class Laporan_pemindahancilacapController extends Controller{
 
     public function index(Request $request)
     {
@@ -51,7 +52,7 @@ class Laporan_pemindahantegalController extends Controller{
             $tanggal_input = $request->tanggal_input;
             $tanggal_akhir = $request->tanggal_akhir;
 
-            $query = Pemindahan_tokotegal::with('produk.klasifikasi');
+            $query = Pemindahan_tokocilacap::with('produk.klasifikasi');
 
             if ($status) {
                 $query->where('status', $status);
@@ -75,7 +76,7 @@ class Laporan_pemindahantegalController extends Controller{
             // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
             $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pemindahan');
 
-            return view('toko_tegal.laporan_pemindahantegal.index', compact('stokBarangJadi'));
+            return view('toko_cilacap.laporan_pemindahancilacap.index', compact('stokBarangJadi'));
     }
 
 
@@ -85,7 +86,7 @@ class Laporan_pemindahantegalController extends Controller{
 public function show($id)
 {
     // Ambil kode_retur dari pengiriman_barangjadi berdasarkan id
-    $detailStokBarangJadi = Pemindahan_tokoslawi::where('id', $id)->value('kode_pemindahan');
+    $detailStokBarangJadi = Pemindahan_tokocilacap::where('id', $id)->value('kode_pemindahan');
     
     // Jika kode_pemindahan tidak ditemukan, tampilkan pesan error
     if (!$detailStokBarangJadi) {
@@ -93,12 +94,12 @@ public function show($id)
     }
     
     // Ambil semua data dengan kode_pemindahan yang sama
-    $pengirimanBarangJadi = Pemindahan_tokoslawi::with(['produk.subklasifikasi', 'toko'])->where('kode_pemindahan', $detailStokBarangJadi)->get();
+    $pengirimanBarangJadi = Pemindahan_tokocilacap::with(['produk.subklasifikasi', 'toko'])->where('kode_pemindahan', $detailStokBarangJadi)->get();
     
     // Ambil item pertama untuk informasi toko
     $firstItem = $pengirimanBarangJadi->first();
     
-    return view('toko_tegal.inquery_pemindahanslawi.show', compact('pengirimanBarangJadi', 'firstItem'));
+    return view('toko_cilacap.inquery_pemindahancilacap.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
 // public function printReport(Request $request)
@@ -131,7 +132,7 @@ public function show($id)
 //     // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
 //     $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pemindahan');
 
-//     return view('toko_tegal.laporan_pemindahanslawi.print', compact('stokBarangJadi', 'status', 'tanggal_input', 'tanggal_akhir'));
+//     return view('toko_cilacap.laporan_pemindahancilacap.print', compact('stokBarangJadi', 'status', 'tanggal_input', 'tanggal_akhir'));
 // }
 
 public function printReport(Request $request)
@@ -140,7 +141,7 @@ public function printReport(Request $request)
     $tanggal_input = $request->tanggal_pengiriman;
     $tanggal_akhir = $request->tanggal_akhir;
 
-    $query = Pemindahan_tokoslawi::with('produk.klasifikasi');
+    $query = Pemindahan_tokocilacap::with('produk.klasifikasi');
 
     if ($status) {
         $query->where('status', $status);
@@ -165,7 +166,7 @@ public function printReport(Request $request)
     $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pemindahan');
 
     // Generate PDF
-    $pdf = FacadePdf::loadView('toko_tegal.laporan_pemindahanslawi.print', compact('stokBarangJadi', 'status', 'tanggal_input', 'tanggal_akhir'));
+    $pdf = FacadePdf::loadView('toko_cilacap.laporan_pemindahancilacap.print', compact('stokBarangJadi', 'status', 'tanggal_input', 'tanggal_akhir'));
 
     // Download PDF file
     return $pdf->stream('laporan_pemindahan.pdf');

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_tegal;
+namespace App\Http\Controllers\Toko_cilacap;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -14,12 +14,12 @@ class AddpelangganController extends Controller
     public function index()
     {
         $pelanggans = Pelanggan::get();
-        return view('toko_tegal/pelanggan/add.index', compact('pelanggans'));
+        return view('toko_cilacap/pelanggan/add.index', compact('pelanggans'));
     }
 
     public function create()
     {
-        return view('toko_tegal/pelanggan/add/index');
+        return view('toko_cilacap/pelanggan/add/index');
         
     }
 
@@ -77,7 +77,7 @@ class AddpelangganController extends Controller
             return back()->withInput()->with('error', $errors);
         }  
     
-        return redirect('toko_tegal/pelanggan/')->with('success', 'Berhasil menambahkan pelanggan');
+        return redirect('toko_cilacap/pelanggan/')->with('success', 'Berhasil menambahkan pelanggan');
     }
 
     // public function kode()
@@ -102,7 +102,7 @@ class AddpelangganController extends Controller
     // {
 
     //     $barang = Barang::where('id', $id)->first();
-    //     return view('toko_tegal/barang.update', compact('barang'));
+    //     return view('toko_cilacap/barang.update', compact('barang'));
     // }
 
     // public function update(Request $request, $id)
@@ -140,7 +140,7 @@ class AddpelangganController extends Controller
     //         'harga' => $request->harga,
     //     ]);
 
-    //     return redirect('toko_tegal/barang')->with('success', 'Berhasil memperbarui barang');
+    //     return redirect('toko_cilacap/barang')->with('success', 'Berhasil memperbarui barang');
     // }
 
 
@@ -148,7 +148,7 @@ class AddpelangganController extends Controller
     // {
     //     $barangs = Barang::find($id);
     //     $pdf = app('dompdf.wrapper');
-    //     $pdf->loadView('toko_tegal.barang.cetak_pdf', compact('barangs'));
+    //     $pdf->loadView('toko_cilacap.barang.cetak_pdf', compact('barangs'));
     //     $pdf->setPaper('letter', 'portrait');
     //     return $pdf->stream('QrCodeBarang.pdf');
     // }
@@ -158,7 +158,7 @@ class AddpelangganController extends Controller
 
 
     //     $barang = Barang::where('id', $id)->first();
-    //     return view('toko_tegal/barang.show', compact('barang'));
+    //     return view('toko_cilacap/barang.show', compact('barang'));
     // }
 
 
@@ -167,6 +167,6 @@ class AddpelangganController extends Controller
         $tipe = Pelanggan::find($id);
         $tipe->delete();
 
-        return redirect('toko_tegal/pelanggan')->with('success', 'Berhasil menghapus barang');
+        return redirect('toko_cilacap/pelanggan')->with('success', 'Berhasil menghapus barang');
     }
 }
