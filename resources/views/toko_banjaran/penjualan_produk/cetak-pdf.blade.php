@@ -342,7 +342,7 @@
                            <td style="font-size: 9px; text-align: right">{{ number_format($detail->harga, 0, ',', '.') }}</td>
                            <td style="font-size: 9px; text-align: right">
                                @if ($detail->diskon > 0)
-                                   {{ $detail->diskon }}
+                                   {{ $detail->diskon }}%
                                @else
                                    -
                                @endif

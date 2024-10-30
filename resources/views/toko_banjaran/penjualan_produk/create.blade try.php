@@ -274,7 +274,7 @@
                                 <div class="row" id="payment-row">
                                     <div class="col mb-3 d-flex justify-content-between align-items-center">
                                         <label for="bayar" class="mr-2">Uang Bayar </label>
-                                        <input type="text" class="form-control large-font" id="bayar" name="bayar" value="{{ old('bayar') }}" oninput="formatAndUpdateKembali()" style="width: 70%;">
+                                        <input type="text" class="form-control large-font" id="bayar" name="bayar" value="{{ old('bayar') }}" oninput="formatAndUpdateKembali()" style="width: 70%;" >
                                     </div>
                                 </div>
                                 <div class="row" id="change-row">
@@ -365,6 +365,21 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{{-- <script>
+    $(document).ready(function() {
+        // Set pesan khusus untuk input #bayar
+        $('#bayar').on('invalid', function() {
+            // Atur pesan kustom
+            this.setCustomValidity('Silakan masukkan jumlah uang bayar terlebih dahulu.');
+            this.reportValidity(); // Tampilkan pesan kustom
+        });
+
+        // Hapus pesan kustom saat input berubah
+        $('#bayar').on('input', function() {
+            this.setCustomValidity(''); // Bersihkan pesan kustom saat pengguna mulai mengisi
+        });
+    });
+</script> --}}
 
 <script>
     function checkCustomerType() {
@@ -383,7 +398,7 @@
     }
 </script>
 
-<script>
+{{-- <script>
     $(document).ready(function() {
         $('#penjualanForm').submit(function(event) {
             event.preventDefault(); // Mencegah pengiriman form default
@@ -424,7 +439,66 @@
             $(this).data('default-value', $(this).val());
         });
     });
+</script> --}}
+
+<script>
+    $(document).ready(function() {
+        $('#simpanButton').on('click', function(event) {
+            event.preventDefault(); // Mencegah aksi default tombol
+            var bayar = $('#bayar').val().replace(/[^\d]/g, ''); // Ambil nilai bayar tanpa format
+
+            if (!bayar) {
+                // Tampilkan SweetAlert jika input bayar kosong
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: 'Silakan masukkan jumlah uang bayar terlebih dahulu.',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                // Lanjutkan ke proses simpan dengan submit form secara manual
+                $('#penjualanForm').submit(); 
+            }
+        });
+
+        // Proses submit form menggunakan AJAX
+        $('#penjualanForm').on('submit', function(event) {
+            event.preventDefault(); // Mencegah pengiriman form default
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.pdfUrl) {
+                        // Membuka URL di tab baru
+                        window.open(response.pdfUrl, '_blank');
+                    }
+                    if (response.success) {
+                        // Tampilkan pesan sukses menggunakan SweetAlert2
+                        Swal.fire({
+                            title: 'Sukses!',
+                            text: response.success,
+                            icon: 'success',
+                            confirmButtonText: 'OK',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Lakukan refresh halaman setelah menekan OK
+                                location.reload(); // Ini akan merefresh seluruh halaman
+                            }
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    // Tangani error jika diperlukan
+                    console.log(xhr.responseText);
+                }
+            });
+        });
+    });
 </script>
+
+
 
 <script>
     $(document).ready(function() {
@@ -567,7 +641,7 @@
                         <td hidden class="nominal_diskon"><input type="text" name="nominal_diskon[]" value="${nominal_diskon}" class="form-control" readonly hidden></td> 
                         <td><input type="text" name="harga[]" value="${harga}" class="form-control" readonly></td>
                         <td class="total"><input type="text" name="total[]" value="${totalPerItem}" class="form-control" readonly></td> 
-                        <td  class="totalasli"><input type="text" name="totalasli[]" value="${totalAsli}" class="form-control" readonly ></td> 
+                        <td hidden class="totalasli"><input type="text" name="totalasli[]" value="${totalAsli}" class="form-control" readonly hidden></td> 
                         <td class="text-center">
                             <button type="button" class="btn btn-danger btn-sm delete-row"><i class="fas fa-trash"></i></button>
                         </td>
@@ -586,20 +660,23 @@
 
             // Penanganan untuk mengupdate total dan nominal_diskon saat jumlah diubah
             $('#tabel-pembelian-body').on('input', '.jumlah', function() {
-                var jumlah = parseInt($(this).val()) || 0; // Ambil nilai jumlah dari input
-                var hargaSatuan = parseFloat($(this).closest('tr').find('input[name="harga[]"]').val()) || 0; // Ambil harga satuan dari input harga[]
-                var diskon = parseFloat($(this).closest('tr').find('input[name="diskon[]"]').val()) || 0; // Ambil diskon dari input diskon[]
+            var jumlah = parseInt($(this).val()) || 0; // Ambil nilai jumlah dari input
+            var hargaSatuan = parseFloat($(this).closest('tr').find('input[name="harga[]"]').val()) || 0; // Ambil harga satuan dari input harga[]
+            var diskon = parseFloat($(this).closest('tr').find('input[name="diskon[]"]').val()) || 0; // Ambil diskon dari input diskon[]
 
-                // Hitung nominal_diskon dan total per item berdasarkan jumlah baru
-                var nominal_diskon = (hargaSatuan * (diskon / 100)) * jumlah; // Hitung nominal diskon
-                var total = (hargaSatuan - (hargaSatuan * (diskon / 100))) * jumlah; // Total per item setelah diskon
+            // Hitung nominal_diskon dan total per item berdasarkan jumlah baru
+            var nominal_diskon = (hargaSatuan * (diskon / 100)) * jumlah; // Hitung nominal diskon
+            var total = (hargaSatuan - (hargaSatuan * (diskon / 100))) * jumlah; // Total per item setelah diskon
+            var totalAsli = hargaSatuan * jumlah; // Total asli tanpa diskon
 
-                // Update total dan nominal diskon di baris yang sama
-                $(this).closest('tr').find('.total').text(total); // Update total per item
-                $(this).closest('tr').find('.nominal_diskon').text(nominal_diskon); // Update nominal diskon
+            // Update total, nominal diskon, dan total asli di baris yang sama
+            $(this).closest('tr').find('.total').find('input').val(total); // Update total per item
+            $(this).closest('tr').find('.nominal_diskon').find('input').val(nominal_diskon); // Update nominal diskon
+            $(this).closest('tr').find('.totalasli').find('input').val(totalAsli); // Update total asli
 
-                calculateTotal(); // Hitung ulang total pembelian
-            });
+            calculateTotal(); // Hitung ulang total pembelian
+             });
+
 
             // Event listener untuk tombol hapus baris
             $('#tabel-pembelian-body').on('click', '.delete-row', function() {
