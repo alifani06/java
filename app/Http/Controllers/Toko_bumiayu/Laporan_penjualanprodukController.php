@@ -49,7 +49,7 @@ class Laporan_penjualanprodukController extends Controller
         $klasifikasi_id = $request->klasifikasi_id;
 
         // Query dasar untuk mengambil data penjualan produk
-        $query = Penjualanproduk::query();
+        $query = Penjualanproduk::query() ->where('toko_id', 5);;
 
         // Filter berdasarkan status
         if ($status) {

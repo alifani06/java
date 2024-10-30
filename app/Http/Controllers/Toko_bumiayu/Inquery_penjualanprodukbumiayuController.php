@@ -80,7 +80,6 @@ class Inquery_penjualanprodukbumiayuController extends Controller
         if ($status) {
             $inquery->where('status', $status);
         }
-    
         if ($tanggal_penjualan && $tanggal_akhir) {
             $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
