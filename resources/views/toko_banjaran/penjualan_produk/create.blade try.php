@@ -567,7 +567,7 @@
                         <td hidden class="nominal_diskon"><input type="text" name="nominal_diskon[]" value="${nominal_diskon}" class="form-control" readonly hidden></td> 
                         <td><input type="text" name="harga[]" value="${harga}" class="form-control" readonly></td>
                         <td class="total"><input type="text" name="total[]" value="${totalPerItem}" class="form-control" readonly></td> 
-                        <td hidden class="totalasli"><input type="text" name="totalasli[]" value="${totalAsli}" class="form-control" readonly hidden></td> 
+                        <td  class="totalasli"><input type="text" name="totalasli[]" value="${totalAsli}" class="form-control" readonly ></td> 
                         <td class="text-center">
                             <button type="button" class="btn btn-danger btn-sm delete-row"><i class="fas fa-trash"></i></button>
                         </td>

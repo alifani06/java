@@ -75,7 +75,7 @@ class Inquery_penjualanprodukbumiayuController extends Controller
         $tanggal_penjualan = $request->tanggal_penjualan;
         $tanggal_akhir = $request->tanggal_akhir;
     
-        $inquery = Penjualanproduk::query();
+        $inquery = Penjualanproduk::query() ->where('toko_id', 5);;
     
         if ($status) {
             $inquery->where('status', $status);
