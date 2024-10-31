@@ -224,30 +224,7 @@ class PengirimanbarangjadipesananController extends Controller{
 
 
     
-    // public function kode($tanggalPengiriman)
-    // {
-    //     $prefix = 'JKp';
-    //     $year = Carbon::parse($tanggalPengiriman)->format('y'); // Dua digit terakhir dari tahun berdasarkan tanggal pengiriman
-    //     $monthDay = Carbon::parse($tanggalPengiriman)->format('dm'); // Format bulan dan hari: MMDD berdasarkan tanggal pengiriman
-    
-    //     // Mengambil kode terakhir yang dibuat pada hari yang sama dengan prefix PBNJ
-    //     $lastBarang = Pengiriman_barangjadipesanan::where('kode_pengirimanpesanan', 'LIKE', $prefix . '%')
-    //                                   ->whereDate('tanggal_pengiriman', Carbon::parse($tanggalPengiriman))
-    //                                   ->orderBy('kode_pengirimanpesanan', 'desc')
-    //                                   ->first();
-    
-    //     if (!$lastBarang) {
-    //         $num = 1;
-    //     } else {
-    //         $lastCode = $lastBarang->kode_pengirimanpesanan;
-    //         $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
-    //         $num = $lastNum + 1;
-    //     }
-    
-    //     $formattedNum = sprintf("%03d", $num); 
-    //     $newCode = $prefix . $monthDay . $year . $formattedNum;
-    //     return $newCode;
-    // }
+   
     public function kode($tanggalPengiriman, $tokoId)
 {
     // Atur prefix berdasarkan toko_id
@@ -266,6 +243,9 @@ class PengirimanbarangjadipesananController extends Controller{
             break;
         case 5:
             $prefix = 'JKpB'; // Toko Bumiayu
+            break;
+        case 6:
+            $prefix = 'JKpG'; // Toko Bumiayu
             break;
         default:
             $prefix = 'JKp'; // Default prefix jika toko_id tidak valid
