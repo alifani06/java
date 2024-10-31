@@ -324,6 +324,7 @@ class PenjualanprodukbanjaranController extends Controller
         ]);
     }
 
+    //store try
     // public function store(Request $request)
     // {
     //     // Validasi pelanggan

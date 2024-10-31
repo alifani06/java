@@ -40,7 +40,7 @@
             @endif
             <div class="row mb-2">
                 {{-- <div class="col-sm-6">
-                    <h1 class="m-0">Penjualan Produk Banjaran</h1>
+                    <h1 class="m-0">Penjualan Produk Tegal</h1>
                 </div> --}}
             </div>
         </div>
@@ -65,7 +65,7 @@
                     @endforeach
                 </div>
             @endif
-            <form id="penjualanForm" action="{{ url('toko_slawi/penjualan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form id="penjualanForm" action="{{ url('toko_tegal/penjualan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <!-- Bagian card form -->
                 <div class="card" id="formContainer">
@@ -206,8 +206,8 @@
                             <tbody>
                                 @foreach ($produks as $item)
                                     @php
-                                        $tokoslawi = $item->tokoslawi->first();
-                                        $stok_tokoslawi = $item->stok_tokoslawi ? $item->stok_tokoslawi->jumlah : 0;
+                                        $tokobanjaran = $item->tokobanjaran->first();
+                                        $stok_tokobanjaran = $item->stok_tokobanjaran ? $item->stok_tokobanjaran->jumlah : 0;
                                     @endphp
                                     <tr>
                                         <td class="text-center">{{ $loop->iteration }}</td>
@@ -216,18 +216,18 @@
                                         <td>{{ $item->nama_produk }}</td>
                                         <td hidden>{{ $item->qrcode_produk }}</td>
                                         <td>
-                                            <span class="member_harga_slw">{{ $tokoslawi ? $tokoslawi->member_harga_slw : 'N/A' }}</span>
+                                            <span class="member_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : 'N/A' }}</span>
                                         </td>
                                         <td>
-                                            <span class="member_diskon_slw">{{ $tokoslawi ? $tokoslawi->member_diskon_slw : 'N/A' }}</span>
+                                            <span class="member_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : 'N/A' }}</span>
                                         </td>
                                         <td>
-                                            <span class="non_harga_slw">{{ $tokoslawi ? $tokoslawi->non_harga_slw : 'N/A' }}</span>
+                                            <span class="non_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : 'N/A' }}</span>
                                         </td>
                                         <td>
-                                            <span class="non_diskon_slw">{{ $tokoslawi ? $tokoslawi->non_diskon_slw : 'N/A' }}</span>
+                                            <span class="non_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : 'N/A' }}</span>
                                         </td>
-                                        <td class="text-center">{{ $stok_tokoslawi }}</td>
+                                        <td class="text-center">{{ $stok_tokobanjaran }}</td>
                                         <td hidden>{{ $item->id }}</td>
                                     </tr>
                                 @endforeach
@@ -453,19 +453,19 @@
 
         function updatePrices(tipePelanggan) {
             $('#datatables5 tbody tr').each(function() {
-                var hargaMember = parseFloat($(this).find('.member_harga_slw').text()) || 0;
-                var diskonMember = parseFloat($(this).find('.member_diskon_slw').text()) || 0;
-                var hargaNonMember = parseFloat($(this).find('.non_harga_slw').text()) || 0;
-                var diskonNonMember = parseFloat($(this).find('.non_diskon_slw').text()) || 0;
+                var hargaMember = parseFloat($(this).find('.member_harga_bnjr').text()) || 0;
+                var diskonMember = parseFloat($(this).find('.member_diskon_bnjr').text()) || 0;
+                var hargaNonMember = parseFloat($(this).find('.non_harga_bnjr').text()) || 0;
+                var diskonNonMember = parseFloat($(this).find('.non_diskon_bnjr').text()) || 0;
 
                 if (tipePelanggan === 'member') {
                     // Update harga dan diskon member
-                    $(this).find('.member_harga_slw').text(hargaMember); 
-                    $(this).find('.member_diskon_slw').text(diskonMember); 
+                    $(this).find('.member_harga_bnjr').text(hargaMember); 
+                    $(this).find('.member_diskon_bnjr').text(diskonMember); 
                 } else if (tipePelanggan === 'nonmember') {
                     // Update harga dan diskon non-member
-                    $(this).find('.non_harga_slw').text(hargaNonMember); // Harga non-member
-                    $(this).find('.non_diskon_slw').text(diskonNonMember); // Diskon non-member
+                    $(this).find('.non_harga_bnjr').text(hargaNonMember); // Harga non-member
+                    $(this).find('.non_diskon_bnjr').text(diskonNonMember); // Diskon non-member
                 }
             });
         }
@@ -534,11 +534,11 @@
         
         var harga, diskon;
         if (tipePelanggan === 'member') {
-            harga = parseFloat(row.find('.member_harga_slw').text()) || 0;
-            diskon = parseFloat(row.find('.member_diskon_slw').text()) || 0;
+            harga = parseFloat(row.find('.member_harga_bnjr').text()) || 0;
+            diskon = parseFloat(row.find('.member_diskon_bnjr').text()) || 0;
         } else if (tipePelanggan === 'nonmember') {
-            harga = parseFloat(row.find('.non_harga_slw').text()) || 0;
-            diskon = parseFloat(row.find('.non_diskon_slw').text()) || 0;
+            harga = parseFloat(row.find('.non_harga_bnjr').text()) || 0;
+            diskon = parseFloat(row.find('.non_diskon_bnjr').text()) || 0;
         }
         
         var jumlah = 1; 

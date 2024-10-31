@@ -86,8 +86,8 @@ class Laporan_penjualanprodukController extends Controller
         });
     }
 
-    // Urutkan data berdasarkan ID secara descending
-    $query->orderBy('id', 'DESC');
+    // Urutkan data berdasarkan ID secara ASCending
+    $query->orderBy('id', 'ASC');
 
     // Ambil data penjualan produk
     $inquery = $query->with(['toko', 'detailpenjualanproduk.produk.klasifikasi'])->get();
@@ -158,8 +158,8 @@ class Laporan_penjualanprodukController extends Controller
                 $query->where('id', $klasifikasi_id);
             });
         }
-            // Urutkan data berdasarkan ID secara descending
-        $query->orderBy('id', 'DESC');
+            // Urutkan data berdasarkan ID secara ASCending
+        $query->orderBy('id', 'ASC');
     
         // Ambil data penjualan produk
         $inquery = $query->with('toko', 'detailpenjualanproduk.produk.klasifikasi')->get();
@@ -226,7 +226,7 @@ public function printReport(Request $request)
     }
 
     // Order results
-    $query->orderBy('id', 'DESC');
+    $query->orderBy('id', 'ASC');
 
     // Load related data
     $inquery = $query->with(['toko', 'detailpenjualanproduk.produk.klasifikasi', 'metodePembayaran'])->get();
@@ -261,7 +261,7 @@ public function printReportglobal(Request $request)
     }
 
     // Query dasar untuk mengambil data penjualan produk
-    $query = Penjualanproduk::with(['toko', 'detailpenjualanproduk', 'dppemesanan'])->orderBy('id', 'DESC');
+    $query = Penjualanproduk::with(['toko', 'detailpenjualanproduk', 'dppemesanan'])->orderBy('id', 'ASC');
 
     // Filter berdasarkan status
     if ($status) {
