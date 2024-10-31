@@ -19,7 +19,7 @@
             background-color: #fff;
         }
             .container {
-            width: 70mm; /* Adjusted width */
+            width: 65mm; /* Adjusted width */
             margin: 0 auto;
             border: 1px solid white;
             padding: 5px;
@@ -171,7 +171,7 @@
         padding: 0;
     }
     .container {
-        width: 70mm; /* Sesuaikan dengan lebar kertas thermal */
+        width: 65mm; /* Sesuaikan dengan lebar kertas thermal */
         margin: 0 auto;
         border: none;
         padding: 0;
@@ -254,7 +254,7 @@
         border-bottom: 1px solid #0f0e0e;
     }
     @page {
-        size: 70mm auto; /* Sesuaikan dengan ukuran kertas thermal */
+        size: 65mm auto; /* Sesuaikan dengan ukuran kertas thermal */
         margin: 0mm; /* Set margin ke 0 untuk semua sisi */
     }
 }
