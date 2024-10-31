@@ -38,6 +38,11 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Pengiriman_barangjadi;
 use App\Models\Pengiriman_tokobanjaran;
+use App\Models\Pengiriman_tokobumiayu;
+use App\Models\Pengiriman_tokocilacap;
+use App\Models\Pengiriman_tokopemalang;
+use App\Models\Pengiriman_tokoslawi;
+use App\Models\Pengiriman_tokotegal;
 use App\Models\Stok_tokobanjaran;
 use App\Models\Subklasifikasi;
 use Maatwebsite\Excel\Facades\Excel;
@@ -182,95 +187,482 @@ public function showPrintQr($id)
         ));
     }
 
-    public function update(Request $request, $id)
-    {
-        // Validasi input
-        $request->validate([
-            'kode_pengiriman' => 'required|string',
-            'produk_id' => 'required|array',
-            'produk_id.*' => 'required|integer',
-            'jumlah' => 'required|array',
-            'jumlah.*' => 'required|integer|min:1',
-            'qrcode_pengiriman' => 'required|string', 
-            'kode_produksi' => 'required|string', 
-        ]);
-    
-        // Ambil data pengiriman berdasarkan ID
-        $pengiriman = Pengiriman_barangjadi::findOrFail($id);
-    
-        $pengiriman->kode_pengiriman = $request->kode_pengiriman;
-        $pengiriman->tanggal_pengiriman = now(); 
-        $pengiriman->qrcode_pengiriman = $request->qrcode_pengiriman; 
-        $pengiriman->kode_produksi = $request->kode_produksi; 
-        $pengiriman->save();
-    
-        // Mengambil detail pengiriman yang sudah ada berdasarkan kode_pengiriman
-        $existingDetails = Pengiriman_barangjadi::where('kode_pengiriman', $pengiriman->kode_pengiriman)
-            ->get()
-            ->keyBy('produk_id'); 
-    
-        foreach ($request->produk_id as $index => $produkId) {
-            $jumlahBaru = $request->jumlah[$index];
-    
-            // Update atau buat detail pengiriman
-            if (isset($existingDetails[$produkId])) {
-                $pengirimanDetail = $existingDetails[$produkId];
-                if ($pengirimanDetail->jumlah != $jumlahBaru) {
-                    $pengirimanDetail->jumlah = $jumlahBaru;
-                    $pengirimanDetail->save(); 
-                }
-            } else {
-                // Buat detail baru hanya jika produk_id baru
-                $pengirimanDetail = new Pengiriman_barangjadi();
-                $pengirimanDetail->kode_pengiriman = $pengiriman->kode_pengiriman;
-                $pengirimanDetail->produk_id = $produkId;
-                $pengirimanDetail->jumlah = $jumlahBaru;
-                $pengirimanDetail->toko_id = $pengiriman->toko_id; 
-                $pengirimanDetail->tanggal_pengiriman = now(); 
-                $pengirimanDetail->qrcode_pengiriman = $request->qrcode_pengiriman; 
-                $pengirimanDetail->kode_produksi = $request->kode_produksi; 
-                $pengirimanDetail->status = 'unpost'; 
-                $pengirimanDetail->save(); 
-            }
+
+// public function update(Request $request, $id)
+// {
+//     // Validasi input
+//     $validatedData = $request->validate([
+//         'kode_pengiriman' => 'required|string|max:255',
+//         'toko_id' => 'required|integer',
+//         'qrcode_pengiriman' => 'nullable|string|max:255',
+//         'produk_id' => 'required|array',
+//         'jumlah' => 'required|array',
+//         'tanggal_pengiriman' => 'required',
+//     ]);
+
+//     // Temukan pengiriman berdasarkan ID
+//     $pengiriman = Pengiriman_barangjadi::findOrFail($id);
+
+//     // Update kolom utama
+//     $pengiriman->kode_pengiriman = $validatedData['kode_pengiriman'];
+//     $pengiriman->tanggal_pengiriman = $validatedData['tanggal_pengiriman'];
+//     $pengiriman->toko_id = $validatedData['toko_id'];
+//     $pengiriman->qrcode_pengiriman = $validatedData['qrcode_pengiriman'];
+//     // Simpan perubahan utama
+//     $pengiriman->save();
+
+//     // Loop untuk memperbarui produk_id dan jumlah
+//     foreach ($validatedData['produk_id'] as $index => $produkId) {
+//         $jumlah = $validatedData['jumlah'][$index];
+
+//         // Cek jika produk_id sudah ada dalam pengiriman ini
+//         $existingPengiriman = Pengiriman_barangjadi::where('kode_pengiriman', $validatedData['kode_pengiriman'])
+//             ->where('produk_id', $produkId)
+//             ->first();
+
+//         if ($existingPengiriman) {
+//             // Jika produk sudah ada, update jumlahnya
+//             $existingPengiriman->jumlah = $jumlah; // Update jumlah
+//             $existingPengiriman->save(); // Simpan perubahan
+//         } else {
+//             // Jika produk baru, buat entry baru
+//             Pengiriman_barangjadi::create([
+//                 'produk_id' => $produkId,
+//                 'jumlah' => $jumlah,
+//                 'kode_pengiriman' => $validatedData['kode_pengiriman'],
+//                 'toko_id' => $validatedData['toko_id'],
+//                 'qrcode_pengiriman' => $validatedData['qrcode_pengiriman'],
+//                 'tanggal_pengiriman' => $validatedData['tanggal_pengiriman'], 
+//                 'status' => 'unpost',
+
+//             ]);
+//         }
+//     }
+
+//     // Redirect atau kembali dengan pesan sukses
+//     return redirect()->route('admin.inquery_pengirimanbarangjadi.index')->with('success', 'Data pengiriman berhasil diperbarui.');
+// }
+
+// public function update(Request $request, $id)
+// {
+//     // Validasi input
+//     $validatedData = $request->validate([
+//         'kode_pengiriman' => 'required|string|max:255',
+//         'toko_id' => 'required|integer',
+//         'qrcode_pengiriman' => 'nullable|string|max:255',
+//         'produk_id' => 'required|array',
+//         'jumlah' => 'required|array',
+//         'tanggal_pengiriman' => 'required',
+//     ]);
+
+//     // Temukan pengiriman berdasarkan ID
+//     $pengiriman = Pengiriman_barangjadi::findOrFail($id);
+
+//     // Update kolom utama
+//     $pengiriman->kode_pengiriman = $validatedData['kode_pengiriman'];
+//     $pengiriman->tanggal_pengiriman = $validatedData['tanggal_pengiriman'];
+//     $pengiriman->toko_id = $validatedData['toko_id'];
+//     $pengiriman->qrcode_pengiriman = $validatedData['qrcode_pengiriman'];
+//     // Simpan perubahan utama
+//     $pengiriman->save();
+
+//     // Loop untuk memperbarui produk_id dan jumlah
+//     foreach ($validatedData['produk_id'] as $index => $produkId) {
+//         $jumlah = $validatedData['jumlah'][$index];
+
+//         // Cek jika produk_id sudah ada dalam pengiriman ini
+//         $existingPengiriman = Pengiriman_barangjadi::where('kode_pengiriman', $validatedData['kode_pengiriman'])
+//             ->where('produk_id', $produkId)
+//             ->first();
+
+//         if ($existingPengiriman) {
+//             // Jika produk sudah ada, update jumlahnya
+//             $existingPengiriman->jumlah = $jumlah; // Update jumlah
+//             $existingPengiriman->save(); // Simpan perubahan
+//         } else {
+//             // Jika produk baru, buat entry baru
+//             Pengiriman_barangjadi::create([
+//                 'produk_id' => $produkId,
+//                 'jumlah' => $jumlah,
+//                 'kode_pengiriman' => $validatedData['kode_pengiriman'],
+//                 'toko_id' => $validatedData['toko_id'],
+//                 'qrcode_pengiriman' => $validatedData['qrcode_pengiriman'],
+//                 'tanggal_pengiriman' => $validatedData['tanggal_pengiriman'], 
+//                 'status' => 'unpost',
+//             ]);
+//         }
+//     }
+
+//     // Mengupdate data pada tabel pengiriman sesuai dengan toko_id
+//     switch ($validatedData['toko_id']) {
+//         case 1:
+//             // Lakukan update pada tabel pengiriman_tokobanjaran
+//             $pengirimanTokoBanjaran = Pengiriman_tokobanjaran::where('kode_pengiriman', $validatedData['kode_pengiriman'])->first();
+//             if ($pengirimanTokoBanjaran) {
+//                 $pengirimanTokoBanjaran->update([
+//                     'kode_pengiriman' => $validatedData['kode_pengiriman'],
+//                     'tanggal_pengiriman' => $validatedData['tanggal_pengiriman'],
+//                     'produk_id' => $produkId,
+//                     'jumlah' => $jumlah,                
+//                 ]);
+//             }
+//             break;
+        
+//         case 2:
+//             // Lakukan update pada tabel pengiriman_tokotegal
+//             $pengirimanTokoTegal = Pengiriman_tokotegal::where('kode_pengiriman', $validatedData['kode_pengiriman'])->first();
+//             if ($pengirimanTokoTegal) {
+//                 $pengirimanTokoTegal->update([
+//                     'kode_pengiriman' => $validatedData['kode_pengiriman'],
+//                     'tanggal_pengiriman' => $validatedData['tanggal_pengiriman'],
+//                     // Tambahkan field lain yang ingin diupdate
+//                 ]);
+//             }
+//             break;
+
+//         // Tambahkan case untuk toko lain jika perlu
+//     }
+
+//     // Redirect atau kembali dengan pesan sukses
+//     return redirect()->route('admin.inquery_pengirimanbarangjadi.index')->with('success', 'Data pengiriman berhasil diperbarui.');
+// }
+
+
+// public function update(Request $request, $id)
+// {
+//     // Validasi input
+//     $validatedData = $request->validate([
+//         'kode_pengiriman' => 'required|string|max:255',
+//         'toko_id' => 'required|integer',
+//         'qrcode_pengiriman' => 'nullable|string|max:255',
+//         'produk_id' => 'required|array',
+//         'jumlah' => 'required|array',
+//         'tanggal_pengiriman' => 'required',
+//     ]);
+
+//     // Temukan pengiriman berdasarkan ID
+//     $pengiriman = Pengiriman_barangjadi::findOrFail($id);
+
+//     // Update kolom utama
+//     $pengiriman->kode_pengiriman = $validatedData['kode_pengiriman'];
+//     $pengiriman->tanggal_pengiriman = $validatedData['tanggal_pengiriman'];
+//     $pengiriman->toko_id = $validatedData['toko_id'];
+//     $pengiriman->qrcode_pengiriman = $validatedData['qrcode_pengiriman'];
+//     // Simpan perubahan utama
+//     $pengiriman->save();
+
+//     // Loop untuk memperbarui produk_id dan jumlah di tabel pengiriman_barangjadi
+//     foreach ($validatedData['produk_id'] as $index => $produkId) {
+//         $jumlah = $validatedData['jumlah'][$index];
+
+//         // Cek jika produk_id sudah ada dalam pengiriman ini
+//         $existingPengiriman = Pengiriman_barangjadi::where('kode_pengiriman', $validatedData['kode_pengiriman'])
+//             ->where('produk_id', $produkId)
+//             ->first();
+
+//         if ($existingPengiriman) {
+//             // Jika produk sudah ada, update jumlahnya
+//             $existingPengiriman->jumlah = $jumlah;
+//             $existingPengiriman->save();
+//         } else {
+//             // Jika produk baru, buat entry baru
+//             Pengiriman_barangjadi::create([
+//                 'produk_id' => $produkId,
+//                 'jumlah' => $jumlah,
+//                 'kode_pengiriman' => $validatedData['kode_pengiriman'],
+//                 'toko_id' => $validatedData['toko_id'],
+//                 'qrcode_pengiriman' => $validatedData['qrcode_pengiriman'],
+//                 'tanggal_pengiriman' => $validatedData['tanggal_pengiriman'], 
+//                 'status' => 'unpost',
+//             ]);
+//         }
+//     }
+
+//     // Mengupdate data pada tabel pengiriman sesuai dengan toko_id
+//     switch ($validatedData['toko_id']) {
+//         case 1:
+//             // Lakukan update atau insert pada tabel pengiriman_tokobanjaran
+//             foreach ($validatedData['produk_id'] as $index => $produkId) {
+//                 $jumlah = $validatedData['jumlah'][$index];
+
+//                 // Cek apakah produk sudah ada pada tabel pengiriman_tokobanjaran
+//                 $pengirimanTokoBanjaran = Pengiriman_tokobanjaran::where('kode_pengiriman', $validatedData['kode_pengiriman'])
+//                     ->where('produk_id', $produkId)
+//                     ->first();
+
+//                 if ($pengirimanTokoBanjaran) {
+//                     // Jika produk sudah ada, update jumlahnya
+//                     $pengirimanTokoBanjaran->jumlah = $jumlah;
+//                     $pengirimanTokoBanjaran->save();
+//                 } else {
+//                     // Jika produk baru, tambahkan entri baru
+//                     Pengiriman_tokobanjaran::create([
+//                         'kode_pengiriman' => $validatedData['kode_pengiriman'],
+//                         'tanggal_pengiriman' => $validatedData['tanggal_pengiriman'],
+//                         'produk_id' => $produkId,
+//                         'jumlah' => $jumlah,
+//                         'toko_id' => $validatedData['toko_id'],
+//                     ]);
+//                 }
+//             }
+//             break;
+        
+//         case 2:
+//             // Lakukan update pada tabel pengiriman_tokotegal
+//             foreach ($validatedData['produk_id'] as $index => $produkId) {
+//                 $jumlah = $validatedData['jumlah'][$index];
+
+//                 $pengirimanTokoTegal = Pengiriman_tokotegal::where('kode_pengiriman', $validatedData['kode_pengiriman'])
+//                     ->where('produk_id', $produkId)
+//                     ->first();
+
+//                 if ($pengirimanTokoTegal) {
+//                     $pengirimanTokoTegal->jumlah = $jumlah;
+//                     $pengirimanTokoTegal->save();
+//                 } else {
+//                     Pengiriman_tokotegal::create([
+//                         'kode_pengiriman' => $validatedData['kode_pengiriman'],
+//                         'tanggal_pengiriman' => $validatedData['tanggal_pengiriman'],
+//                         'produk_id' => $produkId,
+//                         'jumlah' => $jumlah,
+//                         'toko_id' => $validatedData['toko_id'],
+//                     ]);
+//                 }
+//             }
+//             break;
+
+//         // Tambahkan case untuk toko lain jika perlu
+//     }
+
+//     // Redirect atau kembali dengan pesan sukses
+//     return redirect()->route('admin.inquery_pengirimanbarangjadi.index')->with('success', 'Data pengiriman berhasil diperbarui.');
+// }
+public function update(Request $request, $id)
+{
+    // Validasi input
+    $validatedData = $request->validate([
+        'kode_pengiriman' => 'required|string|max:255',
+        'toko_id' => 'required|integer',
+        'qrcode_pengiriman' => 'nullable|string|max:255',
+        'produk_id' => 'required|array',
+        'jumlah' => 'required|array',
+        'tanggal_pengiriman' => 'required',
+    ]);
+
+    // Temukan pengiriman berdasarkan ID
+    $pengiriman = Pengiriman_barangjadi::findOrFail($id);
+
+    // Update kolom utama
+    $pengiriman->kode_pengiriman = $validatedData['kode_pengiriman'];
+    $pengiriman->tanggal_pengiriman = $validatedData['tanggal_pengiriman'];
+    $pengiriman->toko_id = $validatedData['toko_id'];
+    $pengiriman->qrcode_pengiriman = $validatedData['qrcode_pengiriman'];
+    // Simpan perubahan utama
+    $pengiriman->save();
+
+    // Loop untuk memperbarui produk_id dan jumlah di tabel pengiriman_barangjadi
+    foreach ($validatedData['produk_id'] as $index => $produkId) {
+        $jumlah = $validatedData['jumlah'][$index];
+
+        // Cek jika produk_id sudah ada dalam pengiriman ini
+        $existingPengiriman = Pengiriman_barangjadi::where('kode_pengiriman', $validatedData['kode_pengiriman'])
+            ->where('produk_id', $produkId)
+            ->first();
+
+        if ($existingPengiriman) {
+            // Jika produk sudah ada, update jumlahnya
+            $existingPengiriman->jumlah = $jumlah;
+            $existingPengiriman->save();
+        } else {
+            // Jika produk baru, buat entry baru
+            $newPengiriman = Pengiriman_barangjadi::create([
+                'produk_id' => $produkId,
+                'jumlah' => $jumlah,
+                'kode_pengiriman' => $validatedData['kode_pengiriman'],
+                'toko_id' => $validatedData['toko_id'],
+                'qrcode_pengiriman' => $validatedData['qrcode_pengiriman'],
+                'tanggal_pengiriman' => $validatedData['tanggal_pengiriman'], 
+                'status' => 'unpost',
+            ]);
         }
-    
-        // Jika toko_id adalah 1, update atau simpan di pengiriman_tokobanjaran
-        if ($pengiriman->toko_id == 1) {
-            foreach ($request->produk_id as $index => $produkId) {
-                $jumlahBaru = $request->jumlah[$index];
-    
-                // Cek apakah ada pengiriman yang sudah ada di pengiriman_tokobanjaran
-                $pengirimanTokobanjaran = Pengiriman_tokobanjaran::where('kode_pengiriman', $pengiriman->kode_pengiriman)
-                    ->where('produk_id', $produkId)
-                    ->first();
-    
-                if ($pengirimanTokobanjaran) {
-                    // Update data yang ada
-                    $pengirimanTokobanjaran->jumlah = $jumlahBaru;
-                    $pengirimanTokobanjaran->kode_produksi = $request->kode_produksi;
-                    $pengirimanTokobanjaran->status = 'unpost'; 
-                    $pengirimanTokobanjaran->tanggal_input = now();
-                    $pengirimanTokobanjaran->save(); 
-                } else {
-                    $pengirimanTokobanjaran = new Pengiriman_tokobanjaran();
-                    $pengirimanTokobanjaran->produk_id = $produkId;
-                    $pengirimanTokobanjaran->toko_id = $pengiriman->toko_id; 
-                    $pengirimanTokobanjaran->kode_pengiriman = $pengiriman->kode_pengiriman;
-                    $pengirimanTokobanjaran->jumlah = $jumlahBaru;
-                    $pengirimanTokobanjaran->status = 'unpost'; 
-                    $pengirimanTokobanjaran->tanggal_input = now();
-                    $pengirimanTokobanjaran->kode_produksi = $request->kode_produksi;
-                    $pengirimanTokobanjaran->pengiriman_barangjadi_id = $pengiriman->id; 
-                    $pengirimanTokobanjaran->save(); 
-                }
-            }
-        }
-    
-        // Redirect atau kembalikan dengan pesan sukses
-        return redirect()->route('admin.inquery_pengirimanbarangjadi.index')
-            ->with('success', 'Data pengiriman barang jadi berhasil diperbarui.');
     }
 
+    // Mengupdate data pada tabel pengiriman sesuai dengan toko_id
+    switch ($validatedData['toko_id']) {
+        case 1:
+            // Lakukan update atau insert pada tabel pengiriman_tokobanjaran
+            foreach ($validatedData['produk_id'] as $index => $produkId) {
+                $jumlah = $validatedData['jumlah'][$index];
+
+                // Cek apakah produk sudah ada pada tabel pengiriman_tokobanjaran
+                $pengirimanTokoBanjaran = Pengiriman_tokobanjaran::where('kode_pengiriman', $validatedData['kode_pengiriman'])
+                    ->where('produk_id', $produkId)
+                    ->first();
+
+                if ($pengirimanTokoBanjaran) {
+                    // Jika produk sudah ada, update jumlahnya
+                    $pengirimanTokoBanjaran->jumlah = $jumlah;
+                    $pengirimanTokoBanjaran->save();
+                } else {
+                    // Jika produk baru, tambahkan entri baru
+                    Pengiriman_tokobanjaran::create([
+                        'kode_pengiriman' => $validatedData['kode_pengiriman'],
+                        'tanggal_pengiriman' => $validatedData['tanggal_pengiriman'],
+                        'tanggal_input' => $validatedData['tanggal_pengiriman'], 
+                        'produk_id' => $produkId,
+                        'jumlah' => $jumlah,
+                        'toko_id' => $validatedData['toko_id'],
+                        'pengiriman_barangjadi_id' => $pengiriman->id, 
+                        'status' => 'unpost', 
+                    ]);
+                }
+            }
+            break;
+        
+        case 2:
+            // Lakukan update pada tabel pengiriman_tokotegal
+            foreach ($validatedData['produk_id'] as $index => $produkId) {
+                $jumlah = $validatedData['jumlah'][$index];
+
+                $pengirimanTokoTegal = Pengiriman_tokotegal::where('kode_pengiriman', $validatedData['kode_pengiriman'])
+                    ->where('produk_id', $produkId)
+                    ->first();
+
+                if ($pengirimanTokoTegal) {
+                    $pengirimanTokoTegal->jumlah = $jumlah;
+                    $pengirimanTokoTegal->save();
+                } else {
+                    Pengiriman_tokotegal::create([
+                        'kode_pengiriman' => $validatedData['kode_pengiriman'],
+                        'tanggal_pengiriman' => $validatedData['tanggal_pengiriman'],
+                        'tanggal_input' => $validatedData['tanggal_pengiriman'], 
+                        'produk_id' => $produkId,
+                        'jumlah' => $jumlah,
+                        'toko_id' => $validatedData['toko_id'],
+                        'pengiriman_barangjadi_id' => $pengiriman->id, 
+                        'status' => 'unpost', 
+                    ]);
+                }
+            }
+            break;
+            case 3:
+                // Lakukan update pada tabel pengiriman_tokotegal
+                foreach ($validatedData['produk_id'] as $index => $produkId) {
+                    $jumlah = $validatedData['jumlah'][$index];
+    
+                    $pengirimanTokoTegal = Pengiriman_tokoslawi::where('kode_pengiriman', $validatedData['kode_pengiriman'])
+                        ->where('produk_id', $produkId)
+                        ->first();
+    
+                    if ($pengirimanTokoTegal) {
+                        $pengirimanTokoTegal->jumlah = $jumlah;
+                        $pengirimanTokoTegal->save();
+                    } else {
+                        Pengiriman_tokoslawi::create([
+                            'kode_pengiriman' => $validatedData['kode_pengiriman'],
+                            'tanggal_pengiriman' => $validatedData['tanggal_pengiriman'],
+                            'tanggal_input' => $validatedData['tanggal_pengiriman'], 
+                            'produk_id' => $produkId,
+                            'jumlah' => $jumlah,
+                            'toko_id' => $validatedData['toko_id'],
+                            'pengiriman_barangjadi_id' => $pengiriman->id, 
+                            'status' => 'unpost', 
+                        ]);
+                    }
+                }
+                break;
+
+                case 4:
+                    // Lakukan update pada tabel pengiriman_tokotegal
+                    foreach ($validatedData['produk_id'] as $index => $produkId) {
+                        $jumlah = $validatedData['jumlah'][$index];
+        
+                        $pengirimanTokoTegal = Pengiriman_tokopemalang::where('kode_pengiriman', $validatedData['kode_pengiriman'])
+                            ->where('produk_id', $produkId)
+                            ->first();
+        
+                        if ($pengirimanTokoTegal) {
+                            $pengirimanTokoTegal->jumlah = $jumlah;
+                            $pengirimanTokoTegal->save();
+                        } else {
+                            Pengiriman_tokopemalang::create([
+                                'kode_pengiriman' => $validatedData['kode_pengiriman'],
+                                'tanggal_pengiriman' => $validatedData['tanggal_pengiriman'],
+                                'tanggal_input' => $validatedData['tanggal_pengiriman'], 
+                                'produk_id' => $produkId,
+                                'jumlah' => $jumlah,
+                                'toko_id' => $validatedData['toko_id'],
+                                'pengiriman_barangjadi_id' => $pengiriman->id, 
+                                'status' => 'unpost', 
+                            ]);
+                        }
+                    }
+                    break;
+
+                    case 5:
+                        // Lakukan update pada tabel pengiriman_tokotegal
+                        foreach ($validatedData['produk_id'] as $index => $produkId) {
+                            $jumlah = $validatedData['jumlah'][$index];
+            
+                            $pengirimanTokoTegal = Pengiriman_tokobumiayu::where('kode_pengiriman', $validatedData['kode_pengiriman'])
+                                ->where('produk_id', $produkId)
+                                ->first();
+            
+                            if ($pengirimanTokoTegal) {
+                                $pengirimanTokoTegal->jumlah = $jumlah;
+                                $pengirimanTokoTegal->save();
+                            } else {
+                                Pengiriman_tokobumiayu::create([
+                                    'kode_pengiriman' => $validatedData['kode_pengiriman'],
+                                    'tanggal_pengiriman' => $validatedData['tanggal_pengiriman'],
+                                    'tanggal_input' => $validatedData['tanggal_pengiriman'], 
+                                    'produk_id' => $produkId,
+                                    'jumlah' => $jumlah,
+                                    'toko_id' => $validatedData['toko_id'],
+                                    'pengiriman_barangjadi_id' => $pengiriman->id, 
+                                    'status' => 'unpost', 
+                                ]);
+                            }
+                        }
+                        break;
+
+                        case 6:
+                            // Lakukan update pada tabel pengiriman_tokotegal
+                            foreach ($validatedData['produk_id'] as $index => $produkId) {
+                                $jumlah = $validatedData['jumlah'][$index];
+                
+                                $pengirimanTokoTegal = Pengiriman_tokocilacap::where('kode_pengiriman', $validatedData['kode_pengiriman'])
+                                    ->where('produk_id', $produkId)
+                                    ->first();
+                
+                                if ($pengirimanTokoTegal) {
+                                    $pengirimanTokoTegal->jumlah = $jumlah;
+                                    $pengirimanTokoTegal->save();
+                                } else {
+                                    Pengiriman_tokocilacap::create([
+                                        'kode_pengiriman' => $validatedData['kode_pengiriman'],
+                                        'tanggal_pengiriman' => $validatedData['tanggal_pengiriman'],
+                                        'tanggal_input' => $validatedData['tanggal_pengiriman'], 
+                                        'produk_id' => $produkId,
+                                        'jumlah' => $jumlah,
+                                        'toko_id' => $validatedData['toko_id'],
+                                        'pengiriman_barangjadi_id' => $pengiriman->id, 
+                                        'status' => 'unpost', 
+                                    ]);
+                                }
+                            }
+                            break;
+    }
+
+    // Redirect atau kembali dengan pesan sukses
+    return redirect()->route('admin.inquery_pengirimanbarangjadi.index')->with('success', 'Data pengiriman berhasil diperbarui.');
+}
+
+    
+    
+
+
+    
 
     public function unpost_pengirimanbarangjadi($id)
     {

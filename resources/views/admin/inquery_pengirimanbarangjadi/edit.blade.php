@@ -81,7 +81,11 @@
                             <div class="form-group">
                                 <label for="nama">Nomor Pengiriman</label>
                                 <input type="text" class="form-control" id="kode_pengiriman" name="kode_pengiriman"
-                                    value="{{ old('kode_pengiriman', $pengiriman->kode_pengiriman) }}">
+                                    value="{{ old('kode_pengiriman', $pengiriman->kode_pengiriman) }}" readonly><br>
+
+                                    <label for="nama">Tanggal Pengiriman</label>
+                                <input type="text" class="form-control" id="tanggal_pengiriman" name="tanggal_pengiriman"
+                                    value="{{ old('tanggal_pengiriman', $pengiriman->tanggal_pengiriman) }}" readonly>
 
                                 <input hidden type="text" class="form-control" id="toko_id" name="toko_id"
                                     value="{{ old('toko_id', $pengiriman->toko_id) }}">

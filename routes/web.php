@@ -614,7 +614,6 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('indexrinci', [\App\Http\Controllers\Toko_banjaran\Laporan_permintaanprodukController::class, 'indexrinci']);
     Route::get('printReportRinci', [\App\Http\Controllers\Toko_banjaran\Laporan_permintaanprodukController::class, 'printReportRinci']);
 
-    // Route::resource('inquery_pengirimanbarangjadi', \App\Http\Controllers\Toko_banjaran\Inquery_pengirimanbarangjadiController::class);
     Route::get('inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_banjaran\Inquery_pengirimanbarangjadiController::class, 'unpost_pengirimanbarangjadi']);
     Route::get('inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_banjaran\Inquery_pengirimanbarangjadiController::class, 'posting_pengirimanbarangjadi']);
 
@@ -805,7 +804,6 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::get('indexrinci', [\App\Http\Controllers\Toko_tegal\Laporan_permintaanprodukController::class, 'indexrinci']);
     Route::get('printReportRinci', [\App\Http\Controllers\Toko_tegal\Laporan_permintaanprodukController::class, 'printReportRinci']);
 
-    // Route::resource('inquery_pengirimanbarangjadi', \App\Http\Controllers\Toko_tegal\Inquery_pengirimanbarangjadiController::class);
     Route::get('inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_tegal\Inquery_pengirimanbarangjadiController::class, 'unpost_pengirimanbarangjadi']);
     Route::get('inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_tegal\Inquery_pengirimanbarangjadiController::class, 'posting_pengirimanbarangjadi']);
 
@@ -974,7 +972,6 @@ Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {
     Route::get('indexrinci', [\App\Http\Controllers\Toko_pemalang\Laporan_permintaanprodukController::class, 'indexrinci']);
     Route::get('printReportRinci', [\App\Http\Controllers\Toko_pemalang\Laporan_permintaanprodukController::class, 'printReportRinci']);
 
-    // Route::resource('inquery_pengirimanbarangjadi', \App\Http\Controllers\Toko_pemalang\Inquery_pengirimanbarangjadiController::class);
     Route::get('inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_pemalang\Inquery_pengirimanbarangjadiController::class, 'unpost_pengirimanbarangjadi']);
     Route::get('inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_pemalang\Inquery_pengirimanbarangjadiController::class, 'posting_pengirimanbarangjadi']);
 
@@ -1148,7 +1145,6 @@ Route::middleware('toko_bumiayu')->prefix('toko_bumiayu')->group(function () {
     Route::get('indexrinci', [\App\Http\Controllers\Toko_bumiayu\Laporan_permintaanprodukController::class, 'indexrinci']);
     Route::get('printReportRinci', [\App\Http\Controllers\Toko_bumiayu\Laporan_permintaanprodukController::class, 'printReportRinci']);
 
-    // Route::resource('inquery_pengirimanbarangjadi', \App\Http\Controllers\Toko_bumiayu\Inquery_pengirimanbarangjadiController::class);
     Route::get('inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_bumiayu\Inquery_pengirimanbarangjadiController::class, 'unpost_pengirimanbarangjadi']);
     Route::get('inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_bumiayu\Inquery_pengirimanbarangjadiController::class, 'posting_pengirimanbarangjadi']);
 
@@ -1317,7 +1313,6 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
     Route::get('indexrinci', [\App\Http\Controllers\Toko_slawi\Laporan_permintaanprodukController::class, 'indexrinci']);
     Route::get('printReportRinci', [\App\Http\Controllers\Toko_slawi\Laporan_permintaanprodukController::class, 'printReportRinci']);
 
-    // Route::resource('inquery_pengirimanbarangjadi', \App\Http\Controllers\Toko_tegal\Inquery_pengirimanbarangjadiController::class);
     Route::get('inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_slawi\Inquery_pengirimanbarangjadiController::class, 'unpost_pengirimanbarangjadi']);
     Route::get('inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_slawi\Inquery_pengirimanbarangjadiController::class, 'posting_pengirimanbarangjadi']);
 
@@ -1490,7 +1485,6 @@ Route::middleware('toko_cilacap')->prefix('toko_cilacap')->group(function () {
     Route::get('indexrinci', [\App\Http\Controllers\Toko_cilacap\Laporan_permintaanprodukController::class, 'indexrinci']);
     Route::get('printReportRinci', [\App\Http\Controllers\Toko_cilacap\Laporan_permintaanprodukController::class, 'printReportRinci']);
 
-    // Route::resource('inquery_pengirimanbarangjadi', \App\Http\Controllers\Toko_cilacap\Inquery_pengirimanbarangjadiController::class);
     Route::get('inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_cilacap\Inquery_pengirimanbarangjadiController::class, 'unpost_pengirimanbarangjadi']);
     Route::get('inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Toko_cilacap\Inquery_pengirimanbarangjadiController::class, 'posting_pengirimanbarangjadi']);
 
