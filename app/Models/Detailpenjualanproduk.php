@@ -27,6 +27,7 @@ class Detailpenjualanproduk extends Model
         'harga',
         'total',
         'totalasli',
+        'nominal_diskon',
   
   
     ];
