@@ -498,7 +498,7 @@ class Pengiriman_tokoslawiController extends Controller{
 
         foreach ($productsInPengiriman as $pengirimanItem) {
             // Ambil stok yang ada di stok_tokobanjaran untuk produk ini
-            $stokToko = Stokpesanan_tokotegal::where('produk_id', $pengirimanItem->produk_id)->first();
+            $stokToko = Stokpesanan_tokoslawi::where('produk_id', $pengirimanItem->produk_id)->first();
             
             if ($stokToko) {
                 // Mengurangi jumlah pada stok_tokobanjaran sesuai jumlah pengiriman

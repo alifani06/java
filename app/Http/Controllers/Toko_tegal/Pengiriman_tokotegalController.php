@@ -218,7 +218,7 @@ class Pengiriman_tokotegalController extends Controller{
     public function printpemesanan($id)
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
-        $detailStokBarangJadi = Pengirimanpemesanan_tokobanjaran::where('id', $id)->value('kode_pengirimanpesanan');
+        $detailStokBarangJadi = Pengirimanpemesanan_tokotegal::where('id', $id)->value('kode_pengirimanpesanan');
                 
         // Jika kode_pengiriman tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -226,7 +226,7 @@ class Pengiriman_tokotegalController extends Controller{
         }
 
         // Ambil semua data dengan kode_pengiriman yang sama
-        $pengirimanBarangJadi = Pengirimanpemesanan_tokobanjaran::with(['produk.subklasifikasi', 'toko'])
+        $pengirimanBarangJadi = Pengirimanpemesanan_tokotegal::with(['produk.subklasifikasi', 'toko'])
         ->where('kode_pengirimanpesanan', $detailStokBarangJadi)
         ->get()
         ->sortBy('produk.kode_lama') // Mengurutkan berdasarkan kode_lama secara ascending

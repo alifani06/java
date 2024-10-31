@@ -236,13 +236,13 @@ class PengirimanbarangjadipesananController extends Controller{
             $prefix = 'JKpD'; // Toko Tegal
             break;
         case 3:
-            $prefix = 'JKpS'; // Toko Slawi
+            $prefix = 'JKpB'; // Toko Slawi
             break;
         case 4:
             $prefix = 'JKpE'; // Toko Pemalang
             break;
         case 5:
-            $prefix = 'JKpB'; // Toko Bumiayu
+            $prefix = 'JKpF'; // Toko Bumiayu
             break;
         case 6:
             $prefix = 'JKpG'; // Toko Bumiayu
