@@ -244,7 +244,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_slawi/pengiriman_tokotegal/unpost_pengirimanpemesanan/') }}/" + memoId,
+                    url: "{{ url('toko_slawi/pengiriman_tokoslawi/unpost_pengirimanpemesanan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -274,7 +274,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_slawi/pengiriman_tokotegal/posting_pengirimanpemesanan/') }}/" + memoId,
+                    url: "{{ url('toko_slawi/pengiriman_tokoslawi/posting_pengirimanpemesanan/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
