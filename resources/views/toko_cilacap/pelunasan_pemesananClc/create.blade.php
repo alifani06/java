@@ -431,50 +431,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
 {{-- <script>
-    $(document).ready(function() {
-        $('#pelunasanForm').submit(function(event) {
-            event.preventDefault(); // Mencegah pengiriman form default
-
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function(response) {
-                    if (response.pdfUrl) {
-                        // Membuka URL di tab baru
-                        window.open(response.pdfUrl, '_blank');
-                    }
-                    if (response.success) {
-                        // Tampilkan pesan sukses menggunakan SweetAlert2
-                        Swal.fire({
-                            title: 'Sukses!',
-                            text: response.success,
-                            icon: 'success',
-                            confirmButtonText: 'OK',
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                // Lakukan refresh halaman setelah menekan OK
-                                location.reload(); // Ini akan merefresh seluruh halaman
-                            }
-                        });
-                    }
-                },
-                error: function(xhr) {
-                    // Tangani error jika diperlukan
-                    console.log(xhr.responseText);
-                }
-            });
-        });
-
-        // Menyimpan nilai default untuk setiap elemen form ketika halaman dimuat
-        $('#pelunasanForm').find('input[type="text"], input[type="number"], textarea, select').each(function() {
-            $(this).data('default-value', $(this).val());
-        });
-    });
-</script> --}}
-
-<script>
     var itemCounter = 0;
     function fetchDataByKode(kode) {
         $.ajax({
@@ -644,27 +602,6 @@ function reIndexRows() {
     });
 }
 
-
-
-    // function fetchProductData(rowId) {
-    //     var kodeLama = document.getElementById('kode_lama_' + rowId).value;
-    //     $.ajax({
-    //         url: '{{ route("toko_cilacap.penjualan_produk.fetchProductData") }}', // Sesuaikan dengan rute Anda
-    //         method: 'GET',
-    //         data: { kode_lama: kodeLama },
-    //         success: function(response) {
-    //             document.getElementById('produk_id_' + rowId).value = response.produk_id;
-    //             document.getElementById('kode_produk_' + rowId).value = response.kode_produk;
-    //             document.getElementById('nama_produk_' + rowId).value = response.nama_produk;
-    //             document.getElementById('harga_' + rowId).value = response.harga;
-    //             updateTotal(rowId);
-    //         },
-    //         error: function(xhr) {
-    //             alert('Data tidak ditemukan.');
-    //         }
-    //     });
-    // }
-
     function updateTotal(rowId) {
     var harga = parseFloat(document.getElementById('harga_' + rowId).value) || 0;
     var jumlah = parseFloat(document.getElementById('jumlah_' + rowId).value) || 0;
@@ -684,6 +621,243 @@ function updateGrandTotal() {
     // Format grandTotal without decimal places
     $('#grandTotal').val(Math.round(grandTotal));
 }
+
+
+    function removeRow(rowId) {
+        $('#row-' + rowId).remove();
+        reIndexRows();
+        updateGrandTotal();
+    }
+
+    function reIndexRows() {
+        $('.urutan').each(function(index) {
+            $(this).text(index + 1);
+        });
+    }
+</script> --}}
+
+<script>
+    var itemCounter = 0;
+    function fetchDataByKode(kode) {
+        $.ajax({
+            url: '{{ route("toko_slawi.penjualan_produk.fetchData") }}', // Adjust the route accordingly
+            method: 'GET',
+            data: { kode_pemesanan: kode },
+            success: function(response) {
+                document.getElementById('dppemesanan_id').value = response.id;
+                document.getElementById('kode_pemesanan').value = response.kode_pemesanan;
+                document.getElementById('dp_pemesanan').value = response.dp_pemesanan;
+                document.getElementById('nama_pelanggan').value = response.nama_pelanggan;
+                document.getElementById('telp').value = response.telp;
+                document.getElementById('alamat').value = response.alamat;
+                document.getElementById('tanggal_kirim').value = response.tanggal_kirim;
+                document.getElementById('nama_penerima').value = response.nama_penerima;
+                document.getElementById('telp_penerima').value = response.telp_penerima;
+                document.getElementById('alamat_penerima').value = response.alamat_penerima;
+                document.getElementById('sub_total').value = formatRupiah(response.sub_total);
+                document.getElementById('sub_totalasli').value = formatRupiah(response.sub_totalasli);
+                document.getElementById('nominal_diskon').value = formatRupiah(response.nominal_diskon);
+                document.getElementById('dp_pemesanan').value = formatRupiah(response.dp_pemesanan);
+                document.getElementById('kekurangan_pemesanan').value = formatRupiah(response.kekurangan_pemesanan);
+
+                if (response.products) {
+                    var formHtml = '<div class="card mb-3">' +
+                        '<div class="card-header">' +
+                        '<h3 class="card-title">Detail Pemesanan</h3>' +
+                        '<div class="float-right">'+
+                            '<button type="button" class="btn btn-primary btn-sm" onclick="addRow()"><i class="fas fa-plus"></i></button>' +
+                        '</div>'+
+                        '</div>' +
+                        '<div class="card-body">' +
+                        '<table class="table table-bordered table-striped">' +
+                        '<thead>' +
+                        '<tr>' +
+                        '<th style="font-size:14px" class="text-center">No</th>' +
+                        '<!-- Kolom kode_produk tidak ditampilkan -->' +
+                        '<th style="font-size:14px">Kode Lama</th>' +
+                        '<th style="font-size:14px">Nama Produk</th>' +
+                        '<th style="font-size:14px">Harga</th>' +
+                        '<th style="font-size:14px">Jumlah</th>' +
+                        '<th style="font-size:14px">Total</th>' +
+                        '<th style="font-size:14px">Aksi</th>' +
+                        '</tr>' +
+                        '</thead>' +
+                        '<tbody id="tabel-pembelian">';
+
+                    response.products.forEach((product, index) => {
+                        formHtml += '<tr id="pembelian-' + index + '">' +
+                            '<td style="width: 70px; font-size:14px" class="text-center urutan">' + (index + 1) + '</td>' +
+                            '<td hidden>' + 
+                            '   <input hidden style="font-size:14px" readonly type="text" class="form-control produk_id" name="produk_id[]" value="' + product.produk_id + '">' +
+                            '</td>' +
+                            '<td hidden>' +
+                            '   <input hidden style="font-size:14px" readonly type="text" class="form-control kode_produk" name="kode_produk[]" value="' + product.kode_produk + '">' +
+                            '</td>' +
+                            '<td hidden>' +
+                            '   <input hidden  style="font-size:14px" readonly type="text" class="form-control diskon" name="diskon[]" value="' + product.diskon + '">' +
+                            '</td>' +
+                            '<td>' +
+                            '   <div class="form-group">' +
+                            '       <input style="font-size:14px" readonly type="text" class="form-control kode_lama" name="kode_lama[]" value="' + product.kode_lama + '">' +
+                            '   </div>' +
+                            '</td>' +
+                            '<td>' +
+                            '   <div class="form-group">' +
+                            '       <input style="font-size:14px" readonly type="text" class="form-control nama_produk" name="nama_produk[]" value="' + product.nama_produk + '">' +
+                            '   </div>' +
+                            '</td>' +
+                            '<td>' +
+                            '   <div class="form-group">' +
+                            '       <input style="font-size:14px" readonly type="text" class="form-control harga" name="harga[]" value="' + product.harga + '">' +
+                            '   </div>' +
+                            '</td>' +
+                            '<td>' +
+                            '   <div class="form-group">' +
+                            '       <input style="font-size:14px" type="number" readonly class="form-control jumlah" name="jumlah[]" id="jumlah_' + index + '" value="' + product.jumlah + '">' +
+                            '   </div>' +
+                            '</td>' +
+                            '<td>' +
+                            '   <div class="form-group">' +
+                            '       <input style="font-size:14px" type="number" readonly class="form-control total" name="total[]" id="total_' + index + '" value="' + product.total + '">' +
+                            '   </div>' +
+                            '</td>' +
+                            '<td>' +
+                            '   <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(' + index + ')"><i class="fas fa-trash"></i></button>' +
+                            '</td>' +
+                            '</tr>';
+                    });
+
+                    $('#forms-container').html(formHtml);
+                }
+
+                updateGrandTotal();
+            },
+            error: function(xhr) {
+                alert('Data tidak ditemukan.');
+            }
+        });
+    }
+
+    var currentEditingRow = null; // Variabel global untuk melacak baris yang sedang diedit
+
+    function addRow() {
+        itemCounter++;
+        var isFirstRow = itemCounter === 1;
+        var newRow = '<tr id="row-' + (itemCounter + 1) + '"' + (isFirstRow ? ' style="display: none;"' : '') + '>' +
+            '<td style="width: 70px; font-size:14px" class="text-center urutan">' + (itemCounter + 2) + '</td>' +
+            '<td hidden>' + 
+            '   <input hidden style="font-size:14px" type="text" class="form-control produk_id" name="produk_id[]" id="produk_id_' + itemCounter + '" value="">' +
+            '</td>' +
+            '<td hidden>' + 
+            '   <input hidden style="font-size:14px" type="text" class="form-control kode_produk" name="kode_produk[]" id="kode_produk_' + itemCounter + '" value="">' +
+            '</td>' +
+            '<td hidden>' +
+            '   <input hidden style="font-size:14px" type="text" class="form-control diskon" name="diskon[]" id="diskon_' + itemCounter + '" value="">' +
+            '</td>' +
+            '<td onclick="showCategoryModal(' + itemCounter + ')">' +
+            '   <div class="form-group">' +
+            '       <input style="font-size:14px" type="text" class="form-control kode_lama" name="kode_lama[]" id="kode_lama_' + itemCounter + '" value="" readonly>' +
+            '   </div>' +
+            '</td>' +
+            '<td onclick="showCategoryModal(' + itemCounter + ')">' +
+            '   <div class="form-group">' +
+            '       <input style="font-size:14px" type="text" class="form-control nama_produk" name="nama_produk[]" id="nama_produk_' + itemCounter + '" value="" readonly>' +
+            '   </div>' +
+            '</td>' +
+            '<td onclick="showCategoryModal(' + itemCounter + ')">' +
+            '   <div class="form-group">' +
+            '       <input style="font-size:14px" type="text" class="form-control harga" name="harga[]" id="harga_' + itemCounter + '" value="" readonly>' +
+            '   </div>' +
+            '</td>' +
+            '<td>' +
+            '   <div class="form-group">' +
+            '       <input style="font-size:14px" type="number" class="form-control jumlah" name="jumlah[]" id="jumlah_' + itemCounter + '" value="" oninput="updateTotal(' + itemCounter + ')">' +
+            '   </div>' +
+            '</td>' +
+            '<td onclick="showCategoryModal(' + itemCounter + ')">' +
+            '   <div class="form-group">' +
+            '       <input style="font-size:14px" type="number" class="form-control total" name="total[]" id="total_' + itemCounter + '" value="" readonly>' +
+            '   </div>' +
+            '</td>' +
+            '<td>' +
+            '   <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(' + itemCounter + ')"><i class="fas fa-trash"></i></button>' +
+            '</td>' +
+            '</tr>';
+
+        $('#tabel-pembelian').append(newRow);
+        reIndexRows();
+
+        // Show the newly added row if it is not the first one
+        if (!isFirstRow) {
+            $('#row-' + (itemCounter + 1)).show();
+        }
+        updateGrandTotal(); // Panggil untuk menghitung ulang subtotal setelah menambahkan row baru
+
+    }
+
+    function showCategoryModal(rowIndex) {
+        currentEditingRow = rowIndex;  // Simpan indeks baris yang sedang diedit
+        $('#tableProduk').modal('show');
+    }
+
+
+
+    function reIndexRows() {
+        $('.urutan').each(function(index) {
+            $(this).text(index + 1);
+        });
+    }
+
+
+    function updateTotal(rowId) {
+        var harga = parseFloat(document.getElementById('harga_' + rowId).value) || 0;
+        var jumlah = parseFloat(document.getElementById('jumlah_' + rowId).value) || 0;
+        var total = harga * jumlah;
+
+        // Format total without decimal places
+        document.getElementById('total_' + rowId).value = Math.round(total);
+        updateGrandTotal(); // Hitung ulang subtotal setiap kali jumlah atau harga diubah
+    }
+
+    function updateGrandTotal() {
+        var grandTotal = 0;
+        $('.total').each(function() {
+            grandTotal += parseFloat($(this).val()) || 0;
+        });
+
+        // Format subtotal dengan format Rupiah
+        document.getElementById('sub_total').value = formatRupiah(grandTotal.toString());
+
+        // Ambil nilai DP tanpa simbol 'Rp' dan koma, lalu konversi ke angka
+        var dpValue = document.getElementById('dp_pemesanan').value || '0';
+        var dp = parseFloat(dpValue.replace(/[^0-9]/g, '')) || 0; // Hanya ambil angka
+
+        // Hitung kekurangan
+        var kekurangan = grandTotal - dp;
+
+        // Tampilkan kekurangan dengan format Rupiah
+        document.getElementById('kekurangan_pemesanan').value = formatRupiah(kekurangan.toString());
+    }
+
+    // Fungsi format Rupiah untuk menambahkan 'Rp' dan format ribuan
+    function formatRupiah(angka, prefix = 'Rp') {
+        var number_string = angka.replace(/[^,\d]/g, '').toString(),
+            split = number_string.split(','),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/g);
+
+        if (ribuan) {
+            var separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        return prefix + ' ' + rupiah + (split[1] ? ',' + split[1] : '');
+    }
+
+    function formatRupiah(value) {
+        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
 
 
     function removeRow(rowId) {
