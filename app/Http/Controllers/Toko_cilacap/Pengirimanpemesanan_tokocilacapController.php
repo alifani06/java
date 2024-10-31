@@ -222,7 +222,7 @@ class Pengirimanpemesanan_tokocilacapController extends Controller{
 public function unpost_pengiriman($id)
         {
             // Ambil data stok_tokoslawi berdasarkan ID
-    $stok = Stok_tokotegal::where('id', $id)->first();
+    $stok = Stok_tokocilacap::where('id', $id)->first();
 
     // Pastikan data ditemukan
     if (!$stok) {
