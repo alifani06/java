@@ -87,21 +87,29 @@ class Laporan_setoranpenjualanslwController extends Controller
     $inquery = $query->with(['toko', 'detailpenjualanproduk.produk.klasifikasi'])->get();
 
     // Buat query terpisah untuk menghitung total penjualan kotor
-    $penjualan_kotor = Penjualanproduk::select(Penjualanproduk::raw(
+// Buat query dasar untuk menghitung total penjualan kotor
+    $queryPenjualanKotor = Penjualanproduk::select(Penjualanproduk::raw(
         'SUM(CAST(REPLACE(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), "Rp", ""), ".", "") AS UNSIGNED)) as total'
-    ))->value('total');
-    
+    ));
+
+    // Terapkan filter berdasarkan kasir atau toko_id
     if ($kasir) {
-        $penjualan_kotor->where('kasir', $kasir);
+        $queryPenjualanKotor->where('kasir', $kasir);
     } else {
-        $penjualan_kotor->where('toko_id', 3);
+        $queryPenjualanKotor->where('toko_id', 3);
     }
 
+    // Terapkan filter berdasarkan tanggal penjualan
     if ($tanggal_penjualan && $tanggal_akhir) {
-        $penjualan_kotor->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+        $queryPenjualanKotor->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+    } elseif ($tanggal_penjualan) {
+        $queryPenjualanKotor->where('tanggal_penjualan', '>=', $tanggal_penjualan);
+    } elseif ($tanggal_akhir) {
+        $queryPenjualanKotor->where('tanggal_penjualan', '<=', $tanggal_akhir);
     }
 
-    $penjualan_kotor = $penjualan_kotor->value('total');
+    // Ambil nilai total dari query penjualan kotor
+    $penjualan_kotor = $queryPenjualanKotor->value('total');
 
     // Hitung total diskon penjualan berdasarkan kasir dan tanggal_penjualan
     $diskon_penjualan = Detailpenjualanproduk::whereHas('penjualanproduk', function ($q) use ($tanggal_penjualan, $kasir) {
