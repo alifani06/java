@@ -281,18 +281,18 @@
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total </strong></td>
                             <td>
-                                {{ Str::startsWith($item->sub_total, 'Rp') ? $item->sub_total : 'Rp ' . number_format((float)$item->sub_total, 0, ',', '.') }}
+                                {{ Str::startsWith($penjualan->sub_total, 'Rp') ? $penjualan->sub_total : 'Rp ' . number_format((float)$penjualan->sub_total, 0, ',', '.') }}
                             </td>                        </tr>
                         @if($penjualan->metode_id == Null)
                             <tr>
                                 <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Bayar</strong></td>
                                 <td>
-                                    {{ Str::startsWith($item->bayar, 'Rp') ? $item->bayar : 'Rp ' . number_format((float)$item->bayar, 0, ',', '.') }}
+                                    {{ Str::startsWith($penjualan->bayar, 'Rp') ? $penjualan->bayar : 'Rp ' . number_format((float)$penjualan->bayar, 0, ',', '.') }}
                                 </td>                            </tr>
                             <tr>
                                 <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kembali</strong></td>
                                 <td>
-                                    {{ Str::startsWith($item->kembali, 'Rp') ? $item->kembali : 'Rp ' . number_format((float)$item->kembali, 0, ',', '.') }}
+                                    {{ Str::startsWith($penjualan->kembali, 'Rp') ? $penjualan->kembali : 'Rp ' . number_format((float)$penjualan->kembali, 0, ',', '.') }}
                                 </td>                            </tr>
                         @elseif($penjualan->metode_bayar == 'mesinedc' || $penjualan->metode_bayar == 'gobiz')
                             
