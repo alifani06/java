@@ -150,8 +150,9 @@
                             {{ number_format($total_fee, 0, ',', '.') }}
                         @endif
                     </td>
-                    <td style="text-align: right">{{ number_format($item->sub_total, 0, ',', '.') }}</td>
-                </tr>
+                    <td>
+                        {{ Str::startsWith($item->sub_total, 'Rp') ? $item->sub_total : 'Rp ' . number_format((float)$item->sub_total, 0, ',', '.') }}
+                    </td>                 </tr>
             @endforeach
         </tbody>
         
