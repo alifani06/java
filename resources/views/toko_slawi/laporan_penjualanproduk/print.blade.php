@@ -131,9 +131,11 @@
                     @foreach ($items as $item)
                         @foreach ($item->detailpenjualanproduk as $detail)
                             @php
+                                // Hitung total untuk setiap detail
                                 $totalForDetail = $detail->jumlah * $detail->harga;
                                 $subTotal += $totalForDetail;
-                                // Convert diskon to float for proper formatting
+                
+                                // Konversi diskon ke float untuk format yang konsisten
                                 $diskon = floatval($detail->diskon);
                             @endphp
                             <tr>
@@ -149,53 +151,76 @@
                                 <td>{{ $detail->nama_produk }}</td>
                                 <td>{{ $detail->jumlah }}</td>
                                 <td>{{ number_format($detail->harga, 0, ',', '.') }}</td>
-                                <td>{{ $detail->diskon}}</td>
-                                <td>{{'Rp. ' .  number_format($totalForDetail, 0, ',', '.') }}</td>
+                                <td>{{ $diskon }}</td>
+                                <td>{{ 'Rp. ' . number_format($totalForDetail, 0, ',', '.') }}</td>
                             </tr>
                         @endforeach
                     @endforeach
-
+                
+                    <!-- Sub Total -->
                     <tr>
                         <td colspan="7" class="text-right"><strong>Sub Total</strong></td>
-                        <td>{{'Rp. ' .  number_format($subTotal, 0, ',', '.') }}</td>
+                        <td>{{ 'Rp. ' . number_format($subTotal, 0, ',', '.') }}</td>
                     </tr>
+                
+                    <!-- Fee Pembayaran -->
                     <tr>
                         @if($item->metode_id !== null)
-                        <td colspan="7" class="text-right"><strong> Fee {{$item->metodepembayaran->fee}}%</strong></td>
+                        <td colspan="7" class="text-right"><strong>Fee {{ $item->metodepembayaran->fee }}%</strong></td>
                         <td>
                             @php
-                                // Menghapus semua karakter kecuali angka
+                                // Menghapus semua karakter kecuali angka dari total_fee dan konversi ke float
                                 $total_fee = preg_replace('/[^\d]/', '', $item->total_fee);
-                                // Konversi ke tipe float
                                 $total_fee = (float) $total_fee;
                             @endphp
                             {{ 'Rp. ' . number_format($total_fee, 0, ',', '.') }}
                         </td>
-                    @endif
+                        @endif
                     </tr>
+                
+                    <!-- Metode Pembayaran -->
                     <tr>
                         <td colspan="7" class="text-right"><strong>Metode Pembayaran</strong></td>
                         <td>{{ $item->metodePembayaran ? $item->metodePembayaran->nama_metode : 'Tunai' }}</td>
                     </tr>
+                
+                    <!-- Total Bayar -->
                     <tr>
                         <td colspan="7" class="text-right"><strong>Total Bayar</strong></td>
                         <td>
-                            {{ Str::startsWith($item->sub_total, 'Rp') ? $item->sub_total : 'Rp ' . number_format((float)$item->sub_total, 0, ',', '.') }}
+                            @php
+                                $sub_total = preg_replace('/[^\d]/', '', $item->sub_total);
+                                $sub_total = (float) $sub_total;
+                            @endphp
+                            {{ 'Rp ' . number_format($sub_total, 0, ',', '.') }}
                         </td> 
                     </tr>
-                    @if($item->metode_id == Null)
-                    <tr>
-                        <td colspan="7" class="text-right"><strong>Uang Bayar</strong></td>
-                        <td>
-                            {{ Str::startsWith($item->bayar, 'Rp') ? $item->bayar : 'Rp ' . number_format((float)$item->bayar, 0, ',', '.') }}
-                        </td>                     </tr>
-                    <tr>
-                        <td colspan="7" class="text-right"><strong>Kembali</strong></td>
-                        <td>
-                            {{ Str::startsWith($item->kembali, 'Rp') ? $item->kembali : 'Rp ' . number_format((float)$item->kembali, 0, ',', '.') }}
-                        </td>                     </tr>
-                  @endif
+                
+                    <!-- Uang Bayar dan Kembali (jika metode_id null) -->
+                    @if($item->metode_id === null)
+                        <tr>
+                            <td colspan="7" class="text-right"><strong>Uang Bayar</strong></td>
+                            <td>
+                                @php
+                                    $bayar = preg_replace('/[^\d]/', '', $item->bayar);
+                                    $bayar = (float) $bayar;
+                                @endphp
+                                {{ 'Rp ' . number_format($bayar, 0, ',', '.') }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="7" class="text-right"><strong>Kembali</strong></td>
+                            <td>
+                                @php
+                                    $kembali = preg_replace('/[^\d]/', '', $item->kembali);
+                                    $kembali = (float) $kembali;
+                                @endphp
+                                {{ 'Rp ' . number_format($kembali, 0, ',', '.') }}
+                            </td>
+                        </tr>
+                    @endif
                 </tbody>
+                
             </table>
         </div>
     @endforeach
