@@ -525,6 +525,23 @@
             }
         });
 
+        $('#searchInput').on('keydown', function(event) {
+        if (event.key === 'Tab') {
+            event.preventDefault(); // Mencegah perilaku default
+            $('#tabel-pembelian-body .jumlah').last().focus(); // Pindahkan fokus ke input jumlah di baris terakhir tabel pembelian
+        }
+    });
+
+    // Event agar fokus kembali ke kolom pencarian setelah menekan Tab di kolom jumlah
+    $('#tabel-pembelian-body').on('keydown', '.jumlah', function(event) {
+        if (event.key === 'Tab') {
+            event.preventDefault(); // Mencegah perilaku default
+            $('#searchInput').focus(); // Pindahkan fokus kembali ke kolom pencarian produk
+        }
+    });
+
+
+
         function addRowToPurchaseTable(row) {
         var tipePelanggan = $('#kategori').val();
         var kodeProduk = row.find('td').eq(1).text();
