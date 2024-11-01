@@ -1256,7 +1256,7 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
     Route::get('inquery_pemesananproduk/unpost_pemesananproduk/{id}', [\App\Http\Controllers\Toko_slawi\Inquery_pemesananprodukController::class, 'unpost_pemesananproduk']);
     Route::get('inquery_pemesananproduk/posting_pemesananproduk/{id}', [\App\Http\Controllers\Toko_slawi\Inquery_pemesananprodukController::class, 'posting_pemesananproduk']);
 
-    Route::resource('laporan_pemesananproduktgl', \App\Http\Controllers\Toko_slawi\Laporan_pemesananprodukslawiController::class);
+    Route::resource('laporan_pemesananprodukslw', \App\Http\Controllers\Toko_slawi\Laporan_pemesananprodukslawiController::class);
     Route::get('print_pemesanaslwl', [\App\Http\Controllers\Toko_slawi\Laporan_pemesananprodukslawiController::class, 'print_pemesanan']);
     Route::get('printReportpemesananslw', [Laporan_pemesananprodukslawiController::class, 'printReportPemesanan'])->name('printReportPemesanan');
     Route::get('indexpemesananglobalslw', [\App\Http\Controllers\Toko_slawi\Laporan_pemesananprodukslawiController::class, 'indexpemesananglobal']);

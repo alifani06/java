@@ -230,7 +230,7 @@
         }
 
         const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_slawi/printReportpemesanantgl') }}";
+    form.action = "{{ url('toko_slawi/printReportpemesananslw') }}";
     form.target = "_blank";
     form.submit();
     }

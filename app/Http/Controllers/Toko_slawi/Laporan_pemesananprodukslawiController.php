@@ -177,7 +177,7 @@ class Laporan_pemesananprodukslawiController extends Controller
         $tanggalPemesanan = $request->tanggal_pemesanan;
         $tanggalAkhir = $request->tanggal_akhir;
         $produk = $request->produk;
-        $tokoId = $request->toko_id ?? 1; // Default ke toko_id = 1 jika kosong
+        $tokoId = $request->toko_id ?? 3; // Default ke toko_id = 1 jika kosong
         $klasifikasiId = $request->klasifikasi_id;
 
         // Query dasar untuk mengambil data pemesanan produk
@@ -228,7 +228,7 @@ class Laporan_pemesananprodukslawiController extends Controller
         ])->get();
 
         // Menentukan cabang yang dipilih
-        $selectedCabang = $tokoId == 3 ? 'TEGAL' : $inquery->first()->toko->nama_toko;
+        $selectedCabang = $tokoId == 3 ? 'SLAWI' : $inquery->first()->toko->nama_toko;
 
         // Kelompokkan data berdasarkan klasifikasi
         $groupedByKlasifikasi = $inquery->groupBy(function($item) {
@@ -271,7 +271,7 @@ class Laporan_pemesananprodukslawiController extends Controller
     
 
 
-    public function printReportpemesananglobaltgl(Request $request)
+    public function printReportpemesananglobalslw(Request $request)
     {
         // Validasi input
         $validatedData = $request->validate([
