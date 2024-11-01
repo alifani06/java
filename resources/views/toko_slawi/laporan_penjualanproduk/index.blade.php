@@ -131,41 +131,40 @@
                             </tr>
                         </thead>
                         <tbody>
-                             @php
-                            $grandTotal = 0;
-                            $grandTotalFee = 0;
-                        @endphp
-                            @foreach ($inquery as $item)
                             @php
-                            $grandTotal += $item->sub_total;
-                 
-                            @endphp
-                                <tr class="dropdown"{{ $item->id }}>
-                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $item->kode_penjualan }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($item->tanggal_penjualan)->format('d/m/Y H:i') }}</td>
-                                    <td>{{ $item->kasir}}</td>
-                                    <td>
-                                        @if ($item->detailpenjualanproduk->isNotEmpty())
-                                            {{ $item->detailpenjualanproduk->pluck('produk.klasifikasi.nama')->implode(', ') }}
-                                        @else
-                                            tidak ada
-                                        @endif
-                                    </td>                                    
-                                    <td>
-                                        @if ($item->detailpenjualanproduk->isNotEmpty())
-                                            {{ $item->detailpenjualanproduk->pluck('nama_produk')->implode(', ') }}
-                                        @else
-                                            tidak ada
-                                        @endif
-                                    </td>
-                                    <td>{{ number_format($item->sub_total, 0, ',', '.') }}</td>
-                                </tr>
-                            @endforeach
-                            <tr>
-                                <td colspan="6" class="text-right"><strong>Grand Total</strong></td>
-                                <td>{{ 'Rp. ' .  number_format($grandTotal, 0, ',', '.') }}</td>
-                            </tr>
+    $grandTotal = 0;
+@endphp
+@foreach ($inquery as $item)
+    @php
+        $grandTotal += floatval($item->sub_total); // Konversi ke float
+    @endphp
+    <tr class="dropdown"{{ $item->id }}>
+        <td class="text-center">{{ $loop->iteration }}</td>
+        <td>{{ $item->kode_penjualan }}</td>
+        <td>{{ \Carbon\Carbon::parse($item->tanggal_penjualan)->format('d/m/Y H:i') }}</td>
+        <td>{{ $item->kasir }}</td>
+        <td>
+            @if ($item->detailpenjualanproduk->isNotEmpty())
+                {{ $item->detailpenjualanproduk->pluck('produk.klasifikasi.nama')->implode(', ') }}
+            @else
+                tidak ada
+            @endif
+        </td>
+        <td>
+            @if ($item->detailpenjualanproduk->isNotEmpty())
+                {{ $item->detailpenjualanproduk->pluck('nama_produk')->implode(', ') }}
+            @else
+                tidak ada
+            @endif
+        </td>
+        <td>{{ number_format($item->sub_total, 0, ',', '.') }}</td>
+    </tr>
+@endforeach
+<tr>
+    <td colspan="6" class="text-right"><strong>Grand Total</strong></td>
+    <td>{{ 'Rp. ' . number_format($grandTotal, 0, ',', '.') }}</td>
+</tr>
+
                         </tbody>
                     </table>
                     <!-- Modal Loading -->
