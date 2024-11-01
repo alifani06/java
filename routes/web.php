@@ -588,6 +588,8 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('inquery_penjualanprodukbanjaran/unpost_penjualanproduk/{id}', [\App\Http\Controllers\Toko_banjaran\Inquery_penjualanprodukbanjaranController::class, 'unpost_penjualanproduk']);
     Route::get('inquery_penjualanprodukbanjaran/posting_penjualanproduk/{id}', [\App\Http\Controllers\Toko_banjaran\Inquery_penjualanprodukbanjaranController::class, 'posting_penjualanproduk']);
     Route::get('/toko_banjaran/inquery_penjualanprodukbanjaran/cetak-pdf/{id}', [Inquery_penjualanprodukbanjaranController::class, 'cetakPdf'])->name('toko_banjaran.inquery_penjualanprodukbanjaran.cetak-pdf');
+    Route::post('/toko_banjaran/inquery_penjualanprodukbanjaran/{id}/update', [Inquery_penjualanprodukbanjaranController::class, 'update'])->name('inquery_penjualanprodukbanjaran.update');
+    Route::get('metodebayarbanjaran/metode/{id}', [\App\Http\Controllers\Toko_banjaran\Inquery_penjualanprodukbanjaranController::class, 'metode']);
 
     Route::resource('laporan_penjualanproduk', \App\Http\Controllers\Toko_banjaran\Laporan_penjualanprodukController::class);
     Route::get('printReport', [\App\Http\Controllers\Toko_banjaran\Laporan_penjualanprodukController::class, 'printReport']);
@@ -1458,7 +1460,7 @@ Route::middleware('toko_cilacap')->prefix('toko_cilacap')->group(function () {
     Route::get('/pelunasan_pemesananClc', [PelunasanpemesananClcController::class, 'index'])->name('toko_cilacap.pelunasan_pemesananClc.index');
 
     Route::resource('inquery_penjualanprodukcilacap', \App\Http\Controllers\Toko_cilacap\Inquery_penjualanprodukcilacapController::class);
-    Route::get('/toko_cilacap/inquery_penjualanprodukcilacap', [Inquery_penjualanprodukbanjaranController::class, 'index'])->name('toko_cilacap.inquery_penjualanproduk.index');
+    Route::get('/toko_cilacap/inquery_penjualanprodukcilacap', [Inquery_penjualanprodukcilacapController::class, 'index'])->name('toko_cilacap.inquery_penjualanproduk.index');
     Route::get('inquery_penjualanprodukcilacap/unpost_penjualanproduk/{id}', [\App\Http\Controllers\Toko_cilacap\Inquery_penjualanprodukcilacapController::class, 'unpost_penjualanproduk']);
     Route::get('inquery_penjualanprodukcilacap/posting_penjualanproduk/{id}', [\App\Http\Controllers\Toko_cilacap\Inquery_penjualanprodukcilacapController::class, 'posting_penjualanproduk']);
     Route::get('/toko_cilacap/inquery_penjualanproduk/cetak-pdf{id}', [Inquery_penjualanprodukcilacapController::class, 'cetakPdf'])->name('toko_cilacap.inquery_penjualanproduk.cetak-pdf');

@@ -150,7 +150,7 @@ class Inquery_penjualanprodukslawiController extends Controller
 
     public function edit($id)
     {
-        $produks = Produk::with(['tokobanjaran', 'stok_tokobanjaran'])->get();
+        $produks = Produk::with(['tokoslawi', 'stok_tokoslawi'])->get();
         $metodes = Metodepembayaran::all();
 
         $penjualan = PenjualanProduk::with('detailPenjualanProduk')->findOrFail($id);
