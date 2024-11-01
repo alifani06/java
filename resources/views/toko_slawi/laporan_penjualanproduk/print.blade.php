@@ -179,7 +179,9 @@
                     </tr>
                     <tr>
                         <td colspan="7" class="text-right"><strong>Total Bayar</strong></td>
-                        <td>{{'Rp. ' .  number_format($item->sub_total, 0, ',', '.') }}</td>
+                        <td>
+                            {{ Str::startsWith($item->sub_total, 'Rp') ? $item->sub_total : 'Rp ' . number_format((float)$item->sub_total, 0, ',', '.') }}
+                        </td> 
                     </tr>
                     @if($item->metode_id == Null)
                     <tr>
