@@ -186,12 +186,14 @@
                     @if($item->metode_id == Null)
                     <tr>
                         <td colspan="7" class="text-right"><strong>Uang Bayar</strong></td>
-                        <td>{{'Rp. ' .  number_format($item->bayar, 0, ',', '.') }}</td>
-                    </tr>
+                        <td>
+                            {{ Str::startsWith($item->bayar, 'Rp') ? $item->bayar : 'Rp ' . number_format((float)$item->bayar, 0, ',', '.') }}
+                        </td>                     </tr>
                     <tr>
                         <td colspan="7" class="text-right"><strong>Kembali</strong></td>
-                        <td>{{'Rp. ' .  number_format($item->kembali, 0, ',', '.') }}</td>
-                    </tr>
+                        <td>
+                            {{ Str::startsWith($item->kembali, 'Rp') ? $item->kembali : 'Rp ' . number_format((float)$item->kembali, 0, ',', '.') }}
+                        </td>                     </tr>
                   @endif
                 </tbody>
             </table>
