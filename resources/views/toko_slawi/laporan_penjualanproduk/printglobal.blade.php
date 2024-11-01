@@ -115,13 +115,14 @@
             @endphp
             @foreach ($inquery as $item)
                 @php
-                    $grandTotal += $item->sub_total;
-    
-                    // Menghapus semua karakter kecuali angka dari fee
+                    // Konversi sub_total menjadi float untuk menghindari error
+                    $grandTotal += floatval($item->sub_total);
+                    
+                    // Menghapus semua karakter kecuali angka dari total_fee, lalu konversi ke float
                     $total_fee = preg_replace('/[^\d]/', '', $item->total_fee);
                     $total_fee = (float) $total_fee;
                     $grandTotalFee += $total_fee;
-    
+        
                     // Menambahkan deposit jika ada
                     $deposit = $item->dppemesanan->dp_pemesanan ?? 0;
                     $totalDeposit += $deposit;
@@ -139,7 +140,7 @@
                     </td>
                     <td>{{ $item->dppemesanan->kode_dppemesanan ?? '-' }}</td>
                     <td style="text-align: right">
-                        {{ $deposit > 0 ?  number_format($deposit, 0, ',', '.') : '-' }}
+                        {{ $deposit > 0 ? number_format($deposit, 0, ',', '.') : '-' }}
                     </td>
                     <td>{{ $item->metodepembayaran->nama_metode ?? 'Tunai' }}</td>
                     <td style="text-align: right">
@@ -153,6 +154,7 @@
                 </tr>
             @endforeach
         </tbody>
+        
     </table>
     
     <!-- Tabel total penjualan fee, total deposit, dan grand total -->
