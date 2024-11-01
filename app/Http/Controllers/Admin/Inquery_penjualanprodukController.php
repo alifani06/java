@@ -85,6 +85,8 @@ public function posting_penjualanproduk($id)
         ]);
     return back()->with('success', 'Berhasil');
 }
+
+
 public function unpost_penjualanproduk($id)
 {
     $item = Penjualanproduk::where('id', $id)->first();
@@ -118,32 +120,6 @@ public function unpost_penjualanproduk($id)
 
     return back()->with('error', 'Gagal, data tidak ditemukan.');
 }
-
-
-
-
-
-
-
-    public function create()
-    {
-
-       
-    }
-    
- 
-    
-    public function store(Request $request)
-{
-
-}
-
-
-
-    public function show($id)
-    {
-        //
-    }
 
 
     public function edit($id)
