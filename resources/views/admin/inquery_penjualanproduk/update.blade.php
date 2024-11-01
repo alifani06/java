@@ -39,7 +39,7 @@
                 <div class="row mb-3 align-items-center" id="namaPelangganRow" >
                     <div class="col-md-6 mb-3 "> 
                         <label for="nama_pelanggan">Nama Pelanggan</label>
-                        <input type="text" name="nama_pelanggan" class="form-control" id="nama_pelanggan" value="{{ $penjualan->nama_pelanggan }}" required>
+                        <input type="text" name="nama_pelanggan" class="form-control" id="nama_pelanggan" value="{{ $penjualan->nama_pelanggan }}" >
                     </div>     
                 </div>
 
@@ -196,7 +196,7 @@
                                 <input type="text" class="form-control large-font" id="sub_total" name="sub_total" value="Rp0" oninput="updateCalculations();">
                             </div>
                         </div>
-                        <div class="row" hidden>
+                        <div class="row" >
                             <div class="col mb-3 d-flex align-items-center">
                                 <label for="sub_totalasli" class="mr-2">Sub Total Asli</label>
                                 <input type="text" class="form-control large-font" id="sub_totalasli" name="sub_totalasli" value="Rp0" >
@@ -634,7 +634,7 @@
             }
     </script>
       
-    <script>
+    {{-- <script>
             // Fungsi untuk menghapus format Rupiah dan mengembalikan nilai numerik
             function removeRupiahFormat(value) {
                 return parseFloat(value.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
@@ -706,30 +706,113 @@
                 // Formulir akan disubmit dengan nilai numerik
             });
 
-    </script>
-
-
+    </script> --}}
+    <script>
+        // Fungsi untuk menghapus format Rupiah dan mengembalikan nilai numerik
+        function removeRupiahFormat(value) {
+            return parseFloat(value.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
+        }
     
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Panggil fungsi itemPembelian dengan baris default
-        // itemPembelian(1, 0); // Misalnya, menambahkan satu baris default
+        // Format angka menjadi format Rupiah
+        function formatRupiah(value) {
+            let numberString = value.toString().replace(/[^,\d]/g, ''),
+                split = numberString.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+    
+            if (ribuan) {
+                let separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+    
+            return split[1] !== undefined ? 'Rp. ' + rupiah + ',' + split[1] : 'Rp. ' + rupiah;
+        }
+    
+        // Fungsi untuk menghitung subtotal dari detail penjualan
+        function hitungSubTotal() {
+            let subTotal = 0;
+            $('[id^=total-]').each(function() {
+                let total = removeRupiahFormat($(this).val());
+                subTotal += total;
+            });
+            $('#sub_total').val(formatRupiah(subTotal));
+        }
+    
+        
+        // Format input dan update kembalian
+        function formatAndUpdateKembali() {
+            let subTotalElement = document.getElementById('sub_total');
+            let bayarElement = document.getElementById('bayar');
+            let kembaliElement = document.getElementById('kembali');
+    
+            // Mengambil nilai sub_total
+            let subTotal = removeRupiahFormat(subTotalElement.value);
+    
+            // Format dan ambil nilai bayar
+            let bayarValue = bayarElement.value.replace(/[^0-9,-]/g, '').replace(',', '.');
+            let bayar = parseFloat(bayarValue) || 0; // Jika tidak valid, set 0
+    
+            // Format input 'bayar'
+            bayarElement.value = formatRupiah(bayarValue);
+    
+            // Hitung kembalian
+            let kembali = bayar - subTotal;
+            
+             // Validasi pelunasan
+            let bayarElementRaw = removeRupiahFormat(bayarElement.value);
+            if (bayar < subTotal) {
+                bayarElement.setCustomValidity('Nominal bayar tidak cukup.');
+            } else {
+                bayarElement.setCustomValidity('');
+            }
+            // Format hasil kembalian sebagai Rupiah
+            kembaliElement.value = kembali >= 0 ? formatRupiah(kembali) : 'Rp. 0';
+        }
+    
+        // Panggil fungsi ini saat halaman dimuat untuk format sub_total yang mungkin sudah ada
+        document.addEventListener('DOMContentLoaded', function() {
+            let subTotalElement = document.getElementById('sub_total');
+            
+            // Hitung total dari detailPenjualanProduk dan update sub_total
+            hitungSubTotal(); // Panggil fungsi untuk menghitung sub_total
+    
+            // Format sub_total jika sudah ada
+            let subTotal = removeRupiahFormat(subTotalElement.value);
+            subTotalElement.value = formatRupiah(subTotal);
+        });
+    
+        document.querySelector('form').addEventListener('submit', function(event) {
+            let subTotalElement = document.getElementById('sub_total');
+            let bayarElement = document.getElementById('bayar');
+            let kembaliElement = document.getElementById('kembali');
+    
+            // Menghapus format Rupiah dari input sebelum submit
+            subTotalElement.value = removeRupiahFormat(subTotalElement.value);
+            bayarElement.value = removeRupiahFormat(bayarElement.value);
+            kembaliElement.value = removeRupiahFormat(kembaliElement.value);
+    
+            // Formulir akan disubmit dengan nilai numerik
+        });
+    </script>
+    
 
+{{-- <script>
+    document.addEventListener('DOMContentLoaded', function() {
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
-                event.preventDefault(); // Mencegah aksi default dari tombol Enter
-                addPesanan(); // Memanggil addPesanan saat tombol Enter ditekan
+                event.preventDefault();
+                addPesanan();
             }
-            if (event.key === 'F1') { // Misalnya, F1 untuk menampilkan modal produk
-                event.preventDefault(); // Mencegah aksi default dari tombol F1
-                var urutan = $('#tabel-pembelian tr').length; // Ambil urutan terakhir atau default
-                showCategoryModal(urutan); // Menampilkan modal produk
+            if (event.key === 'F1') {
+                event.preventDefault();
+                var urutan = $('#tabel-pembelian tr').length;
+                showCategoryModal(urutan);
             }
         });
     });
 
-
-    var data_pembelian = @json(session('data_pembelians'));
+    var data_pembelian = @json($penjualan->detailPenjualanProduk); // Ambil data dari controller
     var jumlah_ban = 0;
 
     if (data_pembelian != null) {
@@ -742,29 +825,22 @@
         });
     }
 
-// Fungsi untuk menampilkan modal barang
-function showCategoryModal(urutan) {
-    var kategori = $('#kategori').val(); // Ambil nilai kategori (member/nonmember)
+    function showCategoryModal(urutan) {
+        var kategori = $('#kategori').val();
 
-    if (!kategori) {
-        // Jika kategori belum dipilih, tampilkan SweetAlert
-        Swal.fire({
-            icon: 'warning',
-            title: 'Tipe Pelanggan Belum Dipilih!',
-            text: 'Silakan pilih tipe pelanggan terlebih dahulu sebelum memilih produk.',
-            confirmButtonText: 'OK'
-        });
-    } else {
-        // Jika kategori sudah dipilih, tampilkan modal produk
-        $('#tableProduk').modal('show');
-        // Simpan urutan untuk menyimpan data ke baris yang sesuai
-        $('#tableProduk').attr('data-urutan', urutan);
+        if (!kategori) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tipe Pelanggan Belum Dipilih!',
+                text: 'Silakan pilih tipe pelanggan terlebih dahulu sebelum memilih produk.',
+                confirmButtonText: 'OK'
+            });
+        } else {
+            $('#tableProduk').modal('show');
+            $('#tableProduk').attr('data-urutan', urutan); // Pastikan urutan diset sebelum modal ditampilkan
+        }
     }
-}
 
-
-
-    // Event listener for pilih-btn
     $(document).on('click', '.pilih-btn', function() {
         var id = $(this).data('id');
         var kode = $(this).data('kode');
@@ -774,57 +850,58 @@ function showCategoryModal(urutan) {
         var diskonmember = $(this).data('diskonmember');
         var nonmember = $(this).data('nonmember');
         var diskonnonmember = $(this).data('diskonnonmember');
-        
-        getSelectedData(id, kode,kodel, nama, member, diskonmember, nonmember, diskonnonmember);
+
+        // Logging data yang diambil untuk debugging
+        console.log('Selected Data:', {
+            id: id,
+            kode: kode,
+            kodel: kodel,
+            nama: nama,
+            member: member,
+            diskonmember: diskonmember,
+            nonmember: nonmember,
+            diskonnonmember: diskonnonmember
+        });
+
+        // Panggil fungsi untuk mengisi data ke tabel pembelian
+        getSelectedData(id, kode, kodel, nama, member, diskonmember, nonmember, diskonnonmember);
     });
 
-    // Fungsi untuk memilih data barang dari modal
-    function getSelectedData(id, kode_produk,kode_lama, nama_produk, member, diskonmember, nonmember, diskonnonmember) {
+    function getSelectedData(id, kode_produk, kode_lama, nama_produk, member, diskonmember, nonmember, diskonnonmember) {
         var urutan = $('#tableProduk').attr('data-urutan');
         var kategori = $('#kategori').val();
         var harga = kategori === 'member' ? member : nonmember;
         var diskon = kategori === 'member' ? diskonmember : diskonnonmember;
 
-        // Set nilai input pada baris yang sesuai
         $('#produk_id-' + urutan).val(id);
         $('#kode_lama-' + urutan).val(kode_lama);
         $('#kode_produk-' + urutan).val(kode_produk);
         $('#nama_produk-' + urutan).val(nama_produk);
         $('#harga-' + urutan).val(harga);
         $('#diskon-' + urutan).val(diskon);
+        $('#jumlah-' + urutan).val(1).focus();
 
-        // Set nilai default untuk input jumlah dan fokuskan ke input jumlah
-        $('#jumlah-' + urutan).val(1).focus(); // Set nilai default menjadi 1 dan fokuskan ke input jumlah
-        
-        // Hitung total
+        // Hitung total setelah mengisi data
         hitungTotal(urutan);
-
-        // Tutup modal
-        $('#tableProduk').modal('hide');
+        $('#tableProduk').modal('hide'); // Tutup modal setelah memilih produk
     }
 
-
-    // Fungsi untuk menghitung total berdasarkan harga dan jumlah
     function hitungTotal(urutan) {
         var harga = parseFloat($('#harga-' + urutan).val().replace(/[^0-9]/g, '')) || 0;
         var diskon = parseFloat($('#diskon-' + urutan).val()) || 0;
         var jumlah = parseFloat($('#jumlah-' + urutan).val()) || 0;
 
-        var nominalDiskon = (harga * (diskon / 100)) * jumlah; // Hitung nominal diskon
+        var nominalDiskon = (harga * (diskon / 100)) * jumlah;
         var hargaSetelahDiskon = harga - (harga * (diskon / 100));
         var total = hargaSetelahDiskon * jumlah;
         var totalasli = harga * jumlah;
 
-        $('#nominal_diskon-' + urutan).val(nominalDiskon); // Format dua desimal
-
-        // Format total ke dalam format rupiah dan set nilai input total
+        $('#nominal_diskon-' + urutan).val(nominalDiskon);
         $('#total-' + urutan).val(total);
         $('#totalasli-' + urutan).val(totalasli);
-        // Hitung subtotal setiap kali total di baris berubah
         hitungSubTotal();
     }
 
-    // Fungsi untuk menghitung subtotal semua barang
     function hitungSubTotal() {
         var subTotal = 0;
         var subTotalAsli = 0;
@@ -853,70 +930,246 @@ function showCategoryModal(urutan) {
 
     function removeBan(params) {
         jumlah_ban = jumlah_ban - 1;
-        var tabel_pesanan = document.getElementById('tabel-pembelian');
-        var pembelian = document.getElementById('pembelian-' + params);
-        tabel_pesanan.removeChild(pembelian);
+        $('#pembelian-' + params).remove();
         if (jumlah_ban === 0) {
-            var item_pembelian = '<tr>';
-            item_pembelian += '<td class="text-center" colspan="5">- Barang Jadi belum ditambahkan -</td>';
-            item_pembelian += '</tr>';
-            $('#tabel-pembelian').html(item_pembelian);
+            $('#tabel-pembelian').html('<tr><td colspan="8" class="text-center">- Barang Jadi belum ditambahkan -</td></tr>');
         } else {
-            var urutan = document.querySelectorAll('#urutan');
-            for (let i = 0; i < urutan.length; i++) {
-                urutan[i].innerText = i + 1;
-            }
+            $('#tabel-pembelian tr').each(function(i) {
+                $(this).find('[id^=urutan-]').text(i + 1);
+            });
         }
         hitungSubTotal();
     }
 
     function itemPembelian(urutan, key, value = null) {
-    var produk_id = '';
-    var kode_lama = '';
-    var kode_produk = '';
-    var nama_produk = '';
-    var jumlah = '';
-    var diskon = '';
-    var nominal_diskon = '';
-    var harga = '';
-    var total = '';
-    var totalasli = '';
+        var produk_id = value ? value.produk_id : '';
+        var kode_lama = value ? value.kode_lama : '';
+        var kode_produk = value ? value.kode_produk : '';
+        var nama_produk = value ? value.nama_produk : '';
+        var jumlah = value ? value.jumlah : '';
+        var diskon = value ? value.diskon : '';
+        var nominal_diskon = value ? value.nominal_diskon : '';
+        var harga = value ? value.harga : '';
+        var total = value ? value.total : '';
+        var totalasli = value ? value.totalasli : '';
 
-    if (value !== null) {
-        produk_id = value.produk_id;
-        kode_produk = value.kode_produk;
-        kode_lama = value.kode_lama;
-        nama_produk = value.nama_produk;
-        jumlah = value.jumlah;
-        diskon = value.diskon;
-        nominal_diskon = value.nominal_diskon;
-        harga = value.harga;
-        total = value.total;
-        totalasli = value.totalasli;
-    }
+        var item_pembelian = `
+            <tr id="pembelian-${urutan}">
+                <td class="text-center" id="urutan-${urutan}">${urutan}</td>
+                <td hidden><input type="text" id="produk_id-${urutan}" name="produk_id[]" class="form-control" value="${produk_id}"></td>
+                <td><input type="text" readonly id="kode_lama-${urutan}" name="kode_lama[]" class="form-control" value="${kode_lama}"></td>
+                <td hidden><input type="text" readonly id="kode_produk-${urutan}" name="kode_produk[]" class="form-control" value="${kode_produk}"></td>
+                <td><input type="text" readonly id="nama_produk-${urutan}" name="nama_produk[]" class="form-control" value="${nama_produk}"></td>
+                <td><input type="number" id="jumlah-${urutan}" name="jumlah[]" class="form-control text-right" oninput="hitungTotal(${urutan})" value="${jumlah}"></td>
+                <td><input type="text" id="diskon-${urutan}" name="diskon[]" class="form-control text-right" oninput="hitungTotal(${urutan})" value="${diskon}"></td>
+                <td hidden><input type="text" readonly id="nominal_diskon-${urutan}" name="nominal_diskon[]" class="form-control text-right" value="${nominal_diskon}" hidden></td>
+                <td><input type="text" readonly id="harga-${urutan}" name="harga[]" class="form-control text-right" value="${harga}"></td>
+                <td><input type="text" readonly id="total-${urutan}" name="total[]" class="form-control text-right" value="${total}"></td>
+                            <td><input type="text" readonly id="totalasli-${urutan}" name="totalasli[]" class="form-control text-right" value="${totalasli}"></td>
 
-    var item_pembelian = '<tr id="pembelian-' + urutan + '" style="width:100%;">';
-    item_pembelian += '<td style="width: 5%; font-size:14px" class="text-center" id="urutan-' + urutan + '">' + urutan + '</td>';
-    item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="produk_id-' + urutan + '" name="produk_id[]" value="' + produk_id + '"></div></td>';
-    item_pembelian += '<td hidden style="width: 10%" onclick="showCategoryModal(' + urutan + ')" ><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
-    item_pembelian += '<td style="width: 10%" onclick="showCategoryModal(' + urutan + ')" ><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_lama-' + urutan + '" name="kode_lama[]" value="' + kode_lama + '"></div></td>';
-    item_pembelian += '<td style="width: 30%" onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
-    item_pembelian += '<td style="width: 10%"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
-    item_pembelian += '<td style="width: 10%"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" readonly id="diskon-' + urutan + '" name="diskon[]" value="' + diskon + '" oninput="hitungTotal(' + urutan + ')"></div></td>';
-    item_pembelian += '<td hidden style="width: 10%"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nominal_diskon-' + urutan + '" name="nominal_diskon[]" value="' + nominal_diskon + '"></div></td>';
-    item_pembelian += '<td style="width: 10%" onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="harga-' + urutan + '" name="harga[]" value="' + harga + '"></div></td>';
-    item_pembelian += '<td style="width: 10%" onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="total-' + urutan + '" name="total[]" value="' + total + '"></div></td>';
-    item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="totalasli-' + urutan + '" name="totalasli[]" value="' + totalasli + '"></div></td>';
-    item_pembelian += '<td style="width: 10%"><button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(' + urutan + ')"><i class="fas fa-plus"></i></button><button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' + urutan + ')"><i class="fas fa-trash"></i></button></td>';
-    item_pembelian += '</tr>';
-
-
+                <td style="width: 10%">
+                <button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(' + urutan + ')"><i class="fas fa-plus"></i></button>
+                <button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' + urutan + ')"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+        `;
         $('#tabel-pembelian').append(item_pembelian);
     }
+</script> --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                addPesanan();
+            }
+            if (event.key === 'F1') {
+                event.preventDefault();
+                var urutan = $('#tabel-pembelian tr').length;
+                showCategoryModal(urutan);
+            }
+        });
+    });
 
+    var data_pembelian = @json($penjualan->detailPenjualanProduk); // Ambil data dari controller
+    var jumlah_ban = 0;
+
+    if (data_pembelian != null) {
+        jumlah_ban = data_pembelian.length;
+        $('#tabel-pembelian').empty();
+        $.each(data_pembelian, function(key, value) {
+            itemPembelian(key + 1, key, value); // Menggunakan key + 1 untuk urutan
+        });
+    }
+
+    function showCategoryModal(urutan) {
+        var kategori = $('#kategori').val();
+
+        if (!kategori) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tipe Pelanggan Belum Dipilih!',
+                text: 'Silakan pilih tipe pelanggan terlebih dahulu sebelum memilih produk.',
+                confirmButtonText: 'OK'
+            });
+        } else {
+            $('#tableProduk').modal('show');
+            $('#tableProduk').attr('data-urutan', urutan); // Pastikan urutan diset sebelum modal ditampilkan
+        }
+    }
+
+    $(document).on('click', '.pilih-btn', function() {
+        var id = $(this).data('id');
+        var kode = $(this).data('kode');
+        var kodel = $(this).data('kodel');
+        var nama = $(this).data('nama');
+        var member = $(this).data('member');
+        var diskonmember = $(this).data('diskonmember');
+        var nonmember = $(this).data('nonmember');
+        var diskonnonmember = $(this).data('diskonnonmember');
+
+        // Logging data yang diambil untuk debugging
+        console.log('Selected Data:', {
+            id: id,
+            kode: kode,
+            kodel: kodel,
+            nama: nama,
+            member: member,
+            diskonmember: diskonmember,
+            nonmember: nonmember,
+            diskonnonmember: diskonnonmember
+        });
+
+        // Panggil fungsi untuk mengisi data ke tabel pembelian
+        getSelectedData(id, kode, kodel, nama, member, diskonmember, nonmember, diskonnonmember);
+    });
+
+    function getSelectedData(id, kode_produk, kode_lama, nama_produk, member, diskonmember, nonmember, diskonnonmember) {
+        var urutan = $('#tableProduk').attr('data-urutan');
+        var kategori = $('#kategori').val();
+        var harga = kategori === 'member' ? member : nonmember;
+        var diskon = kategori === 'member' ? diskonmember : diskonnonmember;
+
+        $('#produk_id-' + urutan).val(id);
+        $('#kode_lama-' + urutan).val(kode_lama);
+        $('#kode_produk-' + urutan).val(kode_produk);
+        $('#nama_produk-' + urutan).val(nama_produk);
+        $('#harga-' + urutan).val(harga);
+        $('#diskon-' + urutan).val(diskon);
+        $('#jumlah-' + urutan).val(1).focus();
+
+        // Hitung total setelah mengisi data
+        hitungTotal(urutan);
+        $('#tableProduk').modal('hide'); // Tutup modal setelah memilih produk
+    }
+
+    function hitungTotal(urutan) {
+        var harga = parseFloat($('#harga-' + urutan).val().replace(/[^0-9]/g, '')) || 0;
+        var diskon = parseFloat($('#diskon-' + urutan).val()) || 0;
+        var jumlah = parseFloat($('#jumlah-' + urutan).val()) || 0;
+
+        var nominalDiskon = (harga * (diskon / 100)) * jumlah;
+        var hargaSetelahDiskon = harga - (harga * (diskon / 100));
+        var total = hargaSetelahDiskon * jumlah;
+        var totalasli = harga * jumlah;
+
+        $('#nominal_diskon-' + urutan).val(nominalDiskon);
+        $('#total-' + urutan).val(total);
+        $('#totalasli-' + urutan).val(totalasli);
+        hitungSubTotal();
+    }
+
+    function hitungSubTotal() {
+        var subTotal = 0;
+        var subTotalAsli = 0;
+
+        $('[id^=total-]').each(function() {
+            var total = parseFloat($(this).val().replace(/[^0-9]/g, '')) || 0;
+            subTotal += total;
+        });
+
+        $('[id^=totalasli-]').each(function() {
+            var totalAsli = parseFloat($(this).val().replace(/[^0-9]/g, '')) || 0;
+            subTotalAsli += totalAsli;
+        });
+
+        $('#sub_total').val(formatRupiah(subTotal));
+        $('#sub_totalasli').val(formatRupiah(subTotalAsli));
+    }
+
+    function addPesanan() {
+        jumlah_ban++;
+        itemPembelian(jumlah_ban, jumlah_ban - 1); // Menambahkan item baru dengan urutan yang benar
+    }
+
+    function removeBan(params) {
+        $('#pembelian-' + params).remove();
+        jumlah_ban--;
+        if (jumlah_ban === 0) {
+            $('#tabel-pembelian').html('<tr><td colspan="8" class="text-center">- Barang Jadi belum ditambahkan -</td></tr>');
+        } else {
+            $('#tabel-pembelian tr').each(function(i) {
+                $(this).find('[id^=urutan-]').text(i + 1);
+            });
+        }
+        hitungSubTotal();
+    }
+
+    function itemPembelian(urutan, key, value = {}) {
+        var produk_id = value.produk_id || '';
+        var kode_lama = value.kode_lama || '';
+        var kode_produk = value.kode_produk || '';
+        var nama_produk = value.nama_produk || '';
+        var jumlah = value.jumlah || 1; // Default jumlah 1
+        var diskon = value.diskon || 0; // Default diskon 0
+        var nominal_diskon = value.nominal_diskon || 0; // Default nominal diskon 0
+        var harga = value.harga || 0; // Default harga 0
+        var total = value.total || 0; // Default total 0
+        var totalasli = value.totalasli || 0; // Default total asli 0
+
+        var item_pembelian = `
+            <tr id="pembelian-${urutan}">
+                <td class="text-center" id="urutan-${urutan}">${urutan}</td>
+                <td hidden><input type="text" id="produk_id-${urutan}" name="produk_id[]" class="form-control" value="${produk_id}"></td>
+                <td><input type="text" readonly id="kode_lama-${urutan}" name="kode_lama[]" class="form-control" value="${kode_lama}"></td>
+                <td hidden><input type="text" readonly id="kode_produk-${urutan}" name="kode_produk[]" class="form-control" value="${kode_produk}"></td>
+                <td><input type="text" readonly id="nama_produk-${urutan}" name="nama_produk[]" class="form-control" value="${nama_produk}"></td>
+                <td><input type="number" id="jumlah-${urutan}" name="jumlah[]" class="form-control text-right" oninput="hitungTotal(${urutan})" value="${jumlah}"></td>
+                <td><input type="text" id="diskon-${urutan}" name="diskon[]" class="form-control text-right" oninput="hitungTotal(${urutan})" value="${diskon}"></td>
+                <td hidden><input type="text" readonly id="nominal_diskon-${urutan}" name="nominal_diskon[]" class="form-control text-right" value="${nominal_diskon}" hidden></td>
+                <td><input type="text" readonly id="harga-${urutan}" name="harga[]" class="form-control text-right" value="${harga}"></td>
+                <td><input type="text" readonly id="total-${urutan}" name="total[]" class="form-control text-right" value="${total}"></td>
+                <td><input type="text" readonly id="totalasli-${urutan}" name="totalasli[]" class="form-control text-right" value="${totalasli}"></td>
+
+                <td style="width: 10%">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(${urutan})"><i class="fas fa-plus"></i></button>
+                    <button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(${urutan})"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+        `;
+        $('#tabel-pembelian').append(item_pembelian);
+    }
 </script>
 
 
+
+<script>
+    // Pastikan `detailProduk` dikirim dalam bentuk JSON
+    var data_pembelian = @json($penjualan);
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (data_pembelian.length > 0) {
+            $('#tabel-pembelian').empty();
+            var urutan = 0;
+
+            // Iterasi untuk setiap item dalam detail produk dan render ke tabel
+            data_pembelian.forEach(function(value, index) {
+                urutan += 1;
+                itemPembelian(urutan, index, value);
+            });
+        }
+    });
+</script>
 
     
 

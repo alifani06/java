@@ -233,7 +233,7 @@ class Laporan_setoranpenjualanslwController extends Controller
 
     
 
-    public function printReportsetorantgl(Request $request)
+    public function printReportsetoranslw(Request $request)
     {
         $status = $request->status;
         $tanggal_penjualan = $request->tanggal_penjualan;
@@ -278,7 +278,7 @@ class Laporan_setoranpenjualanslwController extends Controller
         $inquery = $query->with(['toko', 'detailpenjualanproduk.produk.klasifikasi'])->get();
 
         // Buat query terpisah untuk menghitung total penjualan kotor
-        $penjualan_kotor = Penjualanproduk::select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED)) as total'));
+        $penjualan_kotor = Penjualanproduk::select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_totalasli, "Rp", ""), ".", "") AS UNSIGNED)) as total'));
 
         // Filter berdasarkan kasir
         if ($kasir) {

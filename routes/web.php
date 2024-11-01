@@ -699,24 +699,24 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::resource('laporan_returbanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_returbanjaranController::class);
     Route::get('printReportreturbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_returbanjaranController::class, 'printReportreturbanjaran']);
 
-    Route::resource('laporan_historibanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class);
-    Route::get('barangMasukpesananbanjaran', [Laporan_historibanjaranController::class, 'barangMasukpesananbanjaran'])->name('barangMasukpesananbanjaran');
-    Route::get('barangKeluarbanjaran', [Laporan_historibanjaranController::class, 'barangKeluarbanjaran'])->name('barangKeluarbanjaran');
-    Route::get('barangKeluarRincibanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangKeluarRincibanjaran']);
-    Route::get('barangReturbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangReturbanjaran']);
-    Route::get('barangKeluarbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangKeluarbanjaran'])->name('barangKeluar');
-    Route::get('barangKeluarRincibanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangKeluarRincibanjaran'])->name('barangKeluarRinci');
-    Route::get('barangReturbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangReturbanjaran'])->name('barangRetur');
-    Route::get('/print-report', [Laporan_historibanjaranController::class, 'printReport'])->name('print.report');
-    Route::get('printLaporanBmbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBmbanjaran']);
-    Route::get('printLaporanBmpesananbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBmpesananbanjaran']);
-    Route::get('printLaporanBKbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBKbanjaran']);
-    Route::get('printLaporanBKrincibanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBKrincibanjaran']);
-    Route::get('printLaporanBRbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBRbanjaran']);
-    Route::get('printExcelBmbanjaran', [Laporan_historibanjaranController::class, 'exportExcel'])->name('printExcelBmbanjaran');
-    Route::get('printExcelBkbanjaran', [Laporan_historibanjaranController::class, 'exportExcelBK'])->name('printExcelBkbanjaran');
-    Route::get('printExcelBrbanjaran', [Laporan_historibanjaranController::class, 'exportExcelBR'])->name('printExcelBrbanjaran');
-    Route::get('/get-produk-by-klasifikasi/{id}', [Laporan_historibanjaranController::class, 'getByKlasifikasi'])->name('getProdukByKlasifikasi');
+    // Route::resource('laporan_historibanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class);
+    // Route::get('barangMasukpesananbanjaran', [Laporan_historibanjaranController::class, 'barangMasukpesananbanjaran'])->name('barangMasukpesananbanjaran');
+    // Route::get('barangKeluarbanjaran', [Laporan_historibanjaranController::class, 'barangKeluarbanjaran'])->name('barangKeluarbanjaran');
+    // Route::get('barangKeluarRincibanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangKeluarRincibanjaran']);
+    // Route::get('barangReturbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangReturbanjaran']);
+    // Route::get('barangKeluarbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangKeluarbanjaran'])->name('barangKeluar');
+    // Route::get('barangKeluarRincibanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangKeluarRincibanjaran'])->name('barangKeluarRinci');
+    // Route::get('barangReturbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangReturbanjaran'])->name('barangRetur');
+    // Route::get('/print-report', [Laporan_historibanjaranController::class, 'printReport'])->name('print.report');
+    // Route::get('printLaporanBmbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBmbanjaran']);
+    // Route::get('printLaporanBmpesananbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBmpesananbanjaran']);
+    // Route::get('printLaporanBKbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBKbanjaran']);
+    // Route::get('printLaporanBKrincibanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBKrincibanjaran']);
+    // Route::get('printLaporanBRbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBRbanjaran']);
+    // Route::get('printExcelBmbanjaran', [Laporan_historibanjaranController::class, 'exportExcel'])->name('printExcelBmbanjaran');
+    // Route::get('printExcelBkbanjaran', [Laporan_historibanjaranController::class, 'exportExcelBK'])->name('printExcelBkbanjaran');
+    // Route::get('printExcelBrbanjaran', [Laporan_historibanjaranController::class, 'exportExcelBR'])->name('printExcelBrbanjaran');
+    // Route::get('/get-produk-by-klasifikasi/{id}', [Laporan_historibanjaranController::class, 'getByKlasifikasi'])->name('getProdukByKlasifikasi');
 
 });
 
@@ -1379,7 +1379,7 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
 
 
     Route::resource('laporan_setorantokoslawi', \App\Http\Controllers\Toko_slawi\Laporan_setoranpenjualanslwController::class);
-    Route::get('printReportsetorslawi', [Laporan_setoranpenjualanslwController::class, 'printReportsetorantgl'])->name('laporan_setoranpenjualan.print');
+    Route::get('printReportsetoranslw', [Laporan_setoranpenjualanslwController::class, 'printReportsetoranslw'])->name('laporan_setoranpenjualan.print');
 
     Route::resource('inquery_depositslawi', \App\Http\Controllers\Toko_slawi\Inquery_depositslawiController::class);
 

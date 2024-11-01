@@ -462,11 +462,21 @@
             @endif
         
             @if(preg_replace('/[^0-9]/', '', $penjualan->sub_total) < preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli))
-                <div class="hemat" style="margin-top: 4;">
-                    <label style="font-size: 11px;">Anda mendapatkan diskon: </label>
-                    <span><strong>{{'Rp. ' .  number_format(preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli) - preg_replace('/[^0-9]/', '', $penjualan->sub_total), 0, ',', '.') }}</strong></span>
-                </div>
-            @endif
+            <div class="hemat" style="margin-top: 4;">
+                <label style="font-size: 11px;">Anda mendapatkan diskon: </label>
+                <span>
+                    <strong>
+                        {{ 'Rp. ' . number_format(
+                            preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli) - 
+                            preg_replace('/[^0-9]/', '', $penjualan->sub_total) + 
+                            (preg_replace('/[^0-9]/', '', $penjualan->total_fee) ?? 0), // Menggunakan ?? untuk memeriksa null
+                            0, ',', '.') 
+                        }}
+                    </strong>
+                    
+                </span>
+            </div>
+        @endif
             <div class="terimakasih">
                 <p>Untuk pemesanan, kritik dan saran hubungi 082136638004.</p>
             </div>
