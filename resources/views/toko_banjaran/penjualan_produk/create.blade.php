@@ -485,7 +485,7 @@
                 getSelectedDataPemesanan(nama, telp, alamat, kode, kode_lama);
             }
         }
-        </script>
+    </script>
         
         
   {{-- //pdf tab baru   --}}
