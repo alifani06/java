@@ -22,7 +22,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Penjualan Produk</h1>
+                    <h1 class="m-0">Laporan Penjualan Produk Rinci</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -69,7 +69,7 @@
                             </a>
                         </div> --}}
        
-                    <h3 class="card-title">Laporan Penjualan Produk</h3>
+                    <h3 class="card-title">Laporan Penjualan Produk Rinci</h3>
                 </div>
 
                 <!-- /.card-header -->
@@ -159,7 +159,8 @@
                                 </td>
                                 <td>
                                     {{ Str::startsWith($item->sub_total, 'Rp') ? $item->sub_total : 'Rp ' . number_format((float)$item->sub_total, 0, ',', '.') }}
-                                </td>                            </tr>
+                                </td>                            
+                            </tr>
                         @endforeach
                         <tr>
                             <td colspan="6" class="text-right"><strong>Grand Total</strong></td>
