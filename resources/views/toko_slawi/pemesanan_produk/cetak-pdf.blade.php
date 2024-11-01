@@ -296,12 +296,12 @@
                 <table style="font-size: 12px; width: 100%;">
                     <thead>
                         <tr>
-                            {{-- <th style="font-size: 9px; width: 10%;">Kode Produk</th> --}}
-                            <th style="font-size: 9px; width: 50%;">Nama Produk</th>
-                            <th style="font-size: 9px; width: 10%;">Jumlah</th>
-                            <th style="font-size: 9px; width: 15%;">Harga</th>
-                            <th style="font-size: 9px; width: 10%;">Diskon</th>
-                            <th style="font-size: 9px; width: 15%;">Total</th>
+                            {{-- <th style="font-size: 10px; width: 10%;">Kode Produk</th> --}}
+                            <th style="font-size: 10px; width: 50%;">Nama Produk</th>
+                            <th style="font-size: 10px; width: 10%;">Jumlah</th>
+                            <th style="font-size: 10px; width: 15%;">Harga</th>
+                            <th style="font-size: 10px; width: 10%;">Diskon</th>
+                            <th style="font-size: 10px; width: 15%;">Total</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -314,18 +314,18 @@
                            $nama_produk = wordwrap($detail->nama_produk, 15, "\n", true);
                        @endphp
                             <tr>
-                                {{-- <td style="font-size: 9px;">{{ $detail->kode_lama }}</td> --}}
-                                <td style="font-size: 9px; word-wrap: break-word; white-space: pre-line;">{{ $nama_produk }}</td>
-                                <td style="font-size: 9px; text-align: right">{{ $detail->jumlah }}</td>
-                                <td style="font-size: 9px; text-align: right">{{number_format($detail->harga, 0, ',', '.') }}</td>
-                                <td style="font-size: 9px; text-align: right">
+                                {{-- <td style="font-size: 10px;">{{ $detail->kode_lama }}</td> --}}
+                                <td style="font-size: 10px; word-wrap: break-word; white-space: pre-line;">{{ $nama_produk }}</td>
+                                <td style="font-size: 10px; text-align: right">{{ $detail->jumlah }}</td>
+                                <td style="font-size: 10px; text-align: right">{{number_format($detail->harga, 0, ',', '.') }}</td>
+                                <td style="font-size: 10px; text-align: right">
                                     @if ($detail->diskon > 0)
                                         {{ $detail->diskon }} %
                                     @else
                                         -
                                     @endif
                                 </td>
-                                <td style="font-size: 9px;">{{number_format($detail->total , 0, ',', '.')}}</td>
+                                <td style="font-size: 10px;">{{number_format($detail->total , 0, ',', '.')}}</td>
                             </tr>
                             @php
                                 // Validasi dan konversi data menjadi numerik
@@ -336,8 +336,8 @@
 
                         <tr>
                             @if($pemesanan->metode_id !== null)
-                                <td colspan="4" style="text-align: right; font-size: 9px;"><strong> Fee {{$pemesanan->metodepembayaran->nama_metode}} {{$pemesanan->metodepembayaran->fee}}%</strong></td>
-                                <td style="font-size: 9px; text-align: right;">
+                                <td colspan="4" style="text-align: right; font-size: 10px;"><strong> Fee {{$pemesanan->metodepembayaran->nama_metode}} {{$pemesanan->metodepembayaran->fee}}%</strong></td>
+                                <td style="font-size: 10px; text-align: right;">
                                     @php
                                         // Menghapus semua karakter kecuali angka
                                         $total_fee = preg_replace('/[^\d]/', '', $pemesanan->total_fee);
@@ -350,22 +350,22 @@
                         </tr>
                         @if($pemesanan->metode_id !== NULL)
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 9px;"><strong>No. </strong></td>
-                            <td style="font-size: 9px;">{{$pemesanan->keterangan}}</td>
+                            <td colspan="4" style="text-align: right; font-size: 10px;"><strong>No. </strong></td>
+                            <td style="font-size: 10px;">{{$pemesanan->keterangan}}</td>
                         </tr>
                         @endif
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 9px;"><strong>Total </strong></td>
-                            <td style="font-size: 9px; text-align: right;">{{number_format($pemesanan->sub_total, 0, ',', '.') }}</td>
+                            <td colspan="4" style="text-align: right; font-size: 10px;"><strong>Total </strong></td>
+                            <td style="font-size: 10px; text-align: right;">{{number_format($pemesanan->sub_total, 0, ',', '.') }}</td>
                             
                         </tr>
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 9px;"><strong>DP </strong></td>
-                            <td style="font-size: 9px; text-align: right;">{{number_format($dp->dp_pemesanan, 0, ',', '.') }}</td>
+                            <td colspan="4" style="text-align: right; font-size: 10px;"><strong>DP </strong></td>
+                            <td style="font-size: 10px; text-align: right;">{{number_format($dp->dp_pemesanan, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 9px;"><strong>Kekurangan  </strong></td>
-                            <td style="font-size: 9px; text-align: right;">{{number_format($dp->kekurangan_pemesanan, 0, ',', '.') }}</td>
+                            <td colspan="4" style="text-align: right; font-size: 10px;"><strong>Kekurangan  </strong></td>
+                            <td style="font-size: 10px; text-align: right;">{{number_format($dp->kekurangan_pemesanan, 0, ',', '.') }}</td>
                         </tr>
                     </tbody>
                     
@@ -388,7 +388,7 @@
                 <p>Untuk pemesanan, kritik dan saran Hubungi.082136638004</p>
             </div>
            
-            <div class="note" style="text-align: left; margin-top: -15px ; font-size:9px; font-style: italic" >
+            <div class="note" style="text-align: left; margin-top: -15px ; font-size:10px; font-style: italic" >
                 <p>Down Payment(DP) yang sudah masuk tidak bisa diambil / ditukar dengan uang tunai/cash</p><br> 
             </div>
             <div class="terimakasihd" style="text-align: center; margin-top: -30px" >
