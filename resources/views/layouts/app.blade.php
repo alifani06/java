@@ -54,7 +54,7 @@
 <body class="hold-transition sidebar-mini @if (request()->is('toko_banjaran/penjualan_produk*') ||
         // request()->is('admin/ban*') ||
         request()->is('toko_banjaran/pemesanan_produk*') ||
-        request()->is('admin/tagihan_ekspedisi*') ||
+        request()->is('toko_slawi/penjualan_produk*') ||
         request()->is('admin/faktur_ekspedisi*') ||
         request()->is('admin/inquery_fakturekspedisi*') ||
         request()->is('admin/tablememo*') ||
