@@ -156,7 +156,7 @@ public function unpost_penjualanproduk($id)
         return view('admin.inquery_penjualanproduk.update', compact('penjualan','produks','metodes'));
     }
 
-//     public function edit($id)
+//  public function edit($id)
 // {
 //     $produks = Produk::with(['tokobanjaran', 'stok_tokobanjaran'])->get();
 //     $metodes = Metodepembayaran::all();
