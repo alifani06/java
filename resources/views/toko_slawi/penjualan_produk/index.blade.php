@@ -107,7 +107,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        {{ number_format((float)$item->sub_total, 0, ',', '.') }}
+                                        {{ $item->sub_total }}
                                     </td>
                                     
 
