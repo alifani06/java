@@ -109,54 +109,55 @@
         </thead>
         <tbody style="font-size: 10px;">
             @php
-    $grandTotal = 0;
-    $grandTotalFee = 0;
-    $totalDeposit = 0;
-@endphp
-@foreach ($inquery as $item)
-    @php
-        // Bersihkan format "Rp" dan tanda titik dari sub_total, lalu konversi ke float
-        $sub_total = preg_replace('/[Rp.]/', '', $item->sub_total);
-        $sub_total = (float) $sub_total;
-        $grandTotal += $sub_total;
-
-        // Menghapus semua karakter kecuali angka dari total_fee, lalu konversi ke float
-        $total_fee = preg_replace('/[^\d]/', '', $item->total_fee);
-        $total_fee = (float) $total_fee;
-        $grandTotalFee += $total_fee;
-
-        // Menambahkan deposit jika ada
-        $deposit = $item->dppemesanan->dp_pemesanan ?? 0;
-        $totalDeposit += $deposit;
-    @endphp
-    <tr>
-        <td class="text-center">{{ $loop->iteration }}</td>
-        <td>{{ $item->kode_penjualan }}</td>
-        <td>{{ $item->kasir ?? '-' }}</td>
-        <td>
-            @if($item->kode_pelanggan)
-                {{ $item->kode_pelanggan }} / {{ $item->nama_pelanggan }}
-            @else
-                Non Member
-            @endif
-        </td>
-        <td>{{ $item->dppemesanan->kode_dppemesanan ?? '-' }}</td>
-        <td style="text-align: right">
-            {{ $deposit > 0 ? number_format($deposit, 0, ',', '.') : '-' }}
-        </td>
-        <td>{{ $item->metodepembayaran->nama_metode ?? 'Tunai' }}</td>
-        <td style="text-align: right">
-            @if ($total_fee == 0)
-                -
-            @else
-                {{ number_format($total_fee, 0, ',', '.') }}
-            @endif
-        </td>
-        <td>
-            {{ 'Rp ' . number_format($sub_total, 0, ',', '.') }}
-        </td>
-    </tr>
-@endforeach
+            $grandTotal = 0;
+            $grandTotalFee = 0;
+            $totalDeposit = 0;
+        @endphp
+        @foreach ($inquery as $item)
+            @php
+                // Menghapus semua karakter kecuali angka dari sub_total dan konversi ke float
+                $sub_total = preg_replace('/[^\d]/', '', $item->sub_total);
+                $sub_total = (float) $sub_total;
+                $grandTotal += $sub_total;
+        
+                // Menghapus semua karakter kecuali angka dari total_fee, lalu konversi ke float
+                $total_fee = preg_replace('/[^\d]/', '', $item->total_fee);
+                $total_fee = (float) $total_fee;
+                $grandTotalFee += $total_fee;
+        
+                // Menambahkan deposit jika ada
+                $deposit = $item->dppemesanan->dp_pemesanan ?? 0;
+                $totalDeposit += $deposit;
+            @endphp
+            <tr>
+                <td class="text-center">{{ $loop->iteration }}</td>
+                <td>{{ $item->kode_penjualan }}</td>
+                <td>{{ $item->kasir ?? '-' }}</td>
+                <td>
+                    @if($item->kode_pelanggan)
+                        {{ $item->kode_pelanggan }} / {{ $item->nama_pelanggan }}
+                    @else
+                        Non Member
+                    @endif
+                </td>
+                <td>{{ $item->dppemesanan->kode_dppemesanan ?? '-' }}</td>
+                <td style="text-align: right">
+                    {{ $deposit > 0 ? number_format($deposit, 0, ',', '.') : '-' }}
+                </td>
+                <td>{{ $item->metodepembayaran->nama_metode ?? 'Tunai' }}</td>
+                <td style="text-align: right">
+                    @if ($total_fee == 0)
+                        -
+                    @else
+                        {{ number_format($total_fee, 0, ',', '.') }}
+                    @endif
+                </td>
+                <td>
+                    {{ 'Rp ' . number_format($sub_total, 0, ',', '.') }}
+                </td>
+            </tr>
+        @endforeach
+        
 
         </tbody>
         
