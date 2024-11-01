@@ -135,8 +135,9 @@
                                     </td> --}}
 
                                     <td>
-                                        {{ number_format($item->sub_total, 0, ',', '.') }}
+                                        {{ Str::startsWith($item->sub_total, 'Rp') ? $item->sub_total : 'Rp ' . number_format((float)$item->sub_total, 0, ',', '.') }}
                                     </td>
+                                    
 
                                     <td class="text-center">
                                         @if ($item->status == 'posting')
