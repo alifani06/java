@@ -222,7 +222,7 @@ class Laporan_setoranpenjualanslwController extends Controller
     $produks = Produk::all();
     $tokos = Toko::all();
     $klasifikasis = Klasifikasi::all();
-    $kasirs = Penjualanproduk::select('kasir')->where('toko_id', 2)->distinct()->get();
+    $kasirs = Penjualanproduk::select('kasir')->where('toko_id', 3)->distinct()->get();
 
     return view('toko_slawi.laporan_setoranpenjualan.index', compact(
         'inquery', 'penjualan_kotor', 'diskon_penjualan', 'penjualan_bersih',
