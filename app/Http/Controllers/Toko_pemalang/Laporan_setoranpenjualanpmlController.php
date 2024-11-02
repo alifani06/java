@@ -96,7 +96,7 @@ class Laporan_setoranpenjualanpmlController extends Controller
     if ($kasir) {
         $queryPenjualanKotor->where('kasir', $kasir);
     } else {
-        $queryPenjualanKotor->where('toko_id', 3);
+        $queryPenjualanKotor->where('toko_id', 4);
     }
     
     // Terapkan filter berdasarkan tanggal penjualan
@@ -306,7 +306,7 @@ class Laporan_setoranpenjualanpmlController extends Controller
         if ($kasir) {
             $queryPenjualanKotor->where('kasir', $kasir);
         } else {
-            $queryPenjualanKotor->where('toko_id', 3);
+            $queryPenjualanKotor->where('toko_id', 4);
         }
         
         // Terapkan filter berdasarkan tanggal penjualan
