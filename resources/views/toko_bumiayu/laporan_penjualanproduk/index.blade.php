@@ -164,7 +164,7 @@
                         @endforeach
                         <tr>
                             <td colspan="6" class="text-right"><strong>Grand Total</strong></td>
-                            <td>{{ $grandTotal > 0 ? 'Rp. ' . number_format($grandTotal, 0, ',', '.') : 'Rp. 0' }}</td>
+                            <td>{{ $grandTotal > 0 ? 'Rp ' . number_format($grandTotal, 0, ',', '.') : 'Rp 0' }}</td>
                         </tr>
 
                         </tbody>
