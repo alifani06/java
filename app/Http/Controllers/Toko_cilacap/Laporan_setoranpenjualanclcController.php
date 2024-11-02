@@ -181,11 +181,11 @@ class Laporan_setoranpenjualanclcController extends Controller
         // Perhitungan total penjualan
         if ($metode_id == 1) {
             $totalPenjualan = $queryPenjualan
-                ->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED) - CAST(REPLACE(REPLACE(nominal_diskon, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
+                ->select(Penjualanproduk::raw('SUM(CAST(REGEXP_REPLACE(REPLACE(sub_totalasli, "Rp", ""), "[^0-9]", "") AS UNSIGNED) - CAST(REGEXP_REPLACE(REPLACE(nominal_diskon, "Rp", ""), "[^0-9]", "") AS UNSIGNED)) as total'))
                 ->value('total');
         } else {
             $totalPenjualan = $queryPenjualan
-                ->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
+                ->select(Penjualanproduk::raw('SUM(CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)) as total'))
                 ->value('total');
         }
     
@@ -385,11 +385,11 @@ class Laporan_setoranpenjualanclcController extends Controller
             // Perhitungan total penjualan
             if ($metode_id == 1) {
                 $totalPenjualan = $queryPenjualan
-                    ->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED) - CAST(REPLACE(REPLACE(nominal_diskon, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
+                    ->select(Penjualanproduk::raw('SUM(CAST(REGEXP_REPLACE(REPLACE(sub_totalasli, "Rp", ""), "[^0-9]", "") AS UNSIGNED) - CAST(REGEXP_REPLACE(REPLACE(nominal_diskon, "Rp", ""), "[^0-9]", "") AS UNSIGNED)) as total'))
                     ->value('total');
             } else {
                 $totalPenjualan = $queryPenjualan
-                    ->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
+                    ->select(Penjualanproduk::raw('SUM(CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)) as total'))
                     ->value('total');
             }
         

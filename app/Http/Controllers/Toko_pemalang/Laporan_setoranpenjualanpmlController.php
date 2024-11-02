@@ -167,15 +167,15 @@ class Laporan_setoranpenjualanpmlController extends Controller
 
     // Hitung total dari berbagai metode pembayaran
     $metodePembayaran = function($metode_id, $tanggal_penjualan = null, $tanggal_akhir = null) use ($kasir) {
-        // Query untuk Penjualanproduk
+        // Query untuk penjualan produk
         $queryPenjualan = Penjualanproduk::where('metode_id', $metode_id);
-
+    
         if ($kasir) {
             $queryPenjualan->where('kasir', $kasir);
         } else {
             $queryPenjualan->where('toko_id', 4);
         }
-
+    
         if ($tanggal_penjualan && $tanggal_akhir) {
             $queryPenjualan->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
         } elseif ($tanggal_penjualan) {
@@ -183,32 +183,40 @@ class Laporan_setoranpenjualanpmlController extends Controller
         } elseif ($tanggal_akhir) {
             $queryPenjualan->where('tanggal_penjualan', '<=', $tanggal_akhir);
         }
-
-        $totalPenjualan = $queryPenjualan
-            ->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
-            ->value('total');
-
-        $queryPemesanan = Pemesananproduk::where('metode_id', $metode_id);
-
-        if ($kasir) {
-            $queryPemesanan->where('kasir', $kasir);
+    
+        // Perhitungan total penjualan
+        if ($metode_id == 1) {
+            $totalPenjualan = $queryPenjualan
+                ->select(Penjualanproduk::raw('SUM(CAST(REGEXP_REPLACE(REPLACE(sub_totalasli, "Rp", ""), "[^0-9]", "") AS UNSIGNED) - CAST(REGEXP_REPLACE(REPLACE(nominal_diskon, "Rp", ""), "[^0-9]", "") AS UNSIGNED)) as total'))
+                ->value('total');
         } else {
-            $queryPemesanan->where('toko_id', 4);
+            $totalPenjualan = $queryPenjualan
+                ->select(Penjualanproduk::raw('SUM(CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)) as total'))
+                ->value('total');
         }
-
-        if ($tanggal_penjualan && $tanggal_akhir) {
-            $queryPemesanan->whereBetween('tanggal_pemesanan', [$tanggal_penjualan, $tanggal_akhir]);
-        } elseif ($tanggal_penjualan) {
-            $queryPemesanan->where('tanggal_pemesanan', '>=', $tanggal_penjualan);
-        } elseif ($tanggal_akhir) {
-            $queryPemesanan->where('tanggal_pemesanan', '<=', $tanggal_akhir);
-        }
-
-        $totalPemesanan = $queryPemesanan
-            ->select(Pemesananproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
-            ->value('total');
-
-        // Jumlahkan total dari Penjualanproduk dan Pemesananproduk
+    
+        // Query untuk pemesanan produk, namun menggunakan dp_pemesanan dari tabel dppemesanan
+        $queryPemesanan = Dppemesanan::whereHas('pemesananproduk', function ($q) use ($metode_id, $kasir, $tanggal_penjualan, $tanggal_akhir) {
+            $q->where('metode_id', $metode_id);
+    
+            if ($kasir) {
+                $q->where('kasir', $kasir);
+            } else {
+                $q->where('toko_id', 4);
+            }
+    
+            if ($tanggal_penjualan && $tanggal_akhir) {
+                $q->whereBetween('tanggal_pemesanan', [$tanggal_penjualan, $tanggal_akhir]);
+            } elseif ($tanggal_penjualan) {
+                $q->where('tanggal_pemesanan', '>=', $tanggal_penjualan);
+            } elseif ($tanggal_akhir) {
+                $q->where('tanggal_pemesanan', '<=', $tanggal_akhir);
+            }
+        });
+    
+        // Perhitungan total dp_pemesanan
+        $totalPemesanan = $queryPemesanan->sum('dp_pemesanan');
+    
         return $totalPenjualan + $totalPemesanan;
     };
 
@@ -377,15 +385,15 @@ class Laporan_setoranpenjualanpmlController extends Controller
         })->sum('dp_pemesanan');
 
         $metodePembayaran = function($metode_id, $tanggal_penjualan = null, $tanggal_akhir = null) use ($kasir) {
+            // Query untuk penjualan produk
             $queryPenjualan = Penjualanproduk::where('metode_id', $metode_id);
-
+        
             if ($kasir) {
                 $queryPenjualan->where('kasir', $kasir);
-            }else {
-                // Jika tidak memilih kasir, maka ambil data dengan toko_id = 4
+            } else {
                 $queryPenjualan->where('toko_id', 4);
             }
-
+        
             if ($tanggal_penjualan && $tanggal_akhir) {
                 $queryPenjualan->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
             } elseif ($tanggal_penjualan) {
@@ -393,54 +401,43 @@ class Laporan_setoranpenjualanpmlController extends Controller
             } elseif ($tanggal_akhir) {
                 $queryPenjualan->where('tanggal_penjualan', '<=', $tanggal_akhir);
             }
-
-            // Kondisi khusus untuk metode pembayaran mesin EDC (ID metode 4)
+        
+            // Perhitungan total penjualan
             if ($metode_id == 1) {
-                // Penjualanproduk untuk mesin EDC, sub_totalasli dikurangi nominal_diskon
                 $totalPenjualan = $queryPenjualan
-                    ->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED) - CAST(REPLACE(REPLACE(nominal_diskon, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
+                    ->select(Penjualanproduk::raw('SUM(CAST(REGEXP_REPLACE(REPLACE(sub_totalasli, "Rp", ""), "[^0-9]", "") AS UNSIGNED) - CAST(REGEXP_REPLACE(REPLACE(nominal_diskon, "Rp", ""), "[^0-9]", "") AS UNSIGNED)) as total'))
                     ->value('total');
             } else {
-                // Penjualanproduk untuk metode lainnya, hanya ambil dari sub_total
                 $totalPenjualan = $queryPenjualan
-                    ->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
+                    ->select(Penjualanproduk::raw('SUM(CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)) as total'))
                     ->value('total');
             }
-
-            // Query untuk Pemesananproduk
-            $queryPemesanan = Pemesananproduk::where('metode_id', $metode_id);
-
-            if ($kasir) {
-                $queryPemesanan->where('kasir', $kasir);
-            }else {
-                // Jika tidak memilih kasir, maka ambil data dengan toko_id = 4
-                $queryPemesanan->where('toko_id', 4);
-            }
-
-            if ($tanggal_penjualan && $tanggal_akhir) {
-                $queryPemesanan->whereBetween('tanggal_pemesanan', [$tanggal_penjualan, $tanggal_akhir]);
-            } elseif ($tanggal_penjualan) {
-                $queryPemesanan->where('tanggal_pemesanan', '>=', $tanggal_penjualan);
-            } elseif ($tanggal_akhir) {
-                $queryPemesanan->where('tanggal_pemesanan', '<=', $tanggal_akhir);
-            }
-
-
-
-            if($metode_id == 1){
-                $totalPemesanan = $queryPemesanan
-                ->select(Pemesananproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED) - CAST(REPLACE(REPLACE(nominal_diskon, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
-                ->value('total');
-            }else{
-
-                $totalPemesanan = $queryPemesanan
-                    ->select(Pemesananproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
-                    ->value('total');
-            }
-
-            // Jumlahkan total dari Penjualanproduk dan Pemesananproduk
+        
+            // Query untuk pemesanan produk, namun menggunakan dp_pemesanan dari tabel dppemesanan
+            $queryPemesanan = Dppemesanan::whereHas('pemesananproduk', function ($q) use ($metode_id, $kasir, $tanggal_penjualan, $tanggal_akhir) {
+                $q->where('metode_id', $metode_id);
+        
+                if ($kasir) {
+                    $q->where('kasir', $kasir);
+                } else {
+                    $q->where('toko_id', 4);
+                }
+        
+                if ($tanggal_penjualan && $tanggal_akhir) {
+                    $q->whereBetween('tanggal_pemesanan', [$tanggal_penjualan, $tanggal_akhir]);
+                } elseif ($tanggal_penjualan) {
+                    $q->where('tanggal_pemesanan', '>=', $tanggal_penjualan);
+                } elseif ($tanggal_akhir) {
+                    $q->where('tanggal_pemesanan', '<=', $tanggal_akhir);
+                }
+            });
+        
+            // Perhitungan total dp_pemesanan
+            $totalPemesanan = $queryPemesanan->sum('dp_pemesanan');
+        
             return $totalPenjualan + $totalPemesanan;
         };
+        
 
         $mesin_edc = $metodePembayaran(1, $tanggal_penjualan, $tanggal_akhir);
         $qris = $metodePembayaran(17, $tanggal_penjualan, $tanggal_akhir);

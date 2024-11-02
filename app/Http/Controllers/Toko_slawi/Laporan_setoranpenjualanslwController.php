@@ -169,7 +169,7 @@ $penjualan_kotor = $queryPenjualanKotor->value('total');
         if ($kasir) {
             $queryPenjualan->where('kasir', $kasir);
         } else {
-            $queryPenjualan->where('toko_id', 1);
+            $queryPenjualan->where('toko_id', 3);
         }
     
         if ($tanggal_penjualan && $tanggal_akhir) {
@@ -198,7 +198,7 @@ $penjualan_kotor = $queryPenjualanKotor->value('total');
             if ($kasir) {
                 $q->where('kasir', $kasir);
             } else {
-                $q->where('toko_id', 1);
+                $q->where('toko_id', 3);
             }
     
             if ($tanggal_penjualan && $tanggal_akhir) {
@@ -581,7 +581,7 @@ $penjualan_kotor = $queryPenjualanKotor->value('total');
                 if ($kasir) {
                     $q->where('kasir', $kasir);
                 } else {
-                    $q->where('toko_id', 1);
+                    $q->where('toko_id', 3);
                 }
         
                 if ($tanggal_penjualan && $tanggal_akhir) {
