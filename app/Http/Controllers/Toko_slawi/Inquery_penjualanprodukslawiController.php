@@ -87,6 +87,35 @@ class Inquery_penjualanprodukslawiController extends Controller
         return back()->with('success', 'Berhasil');
     }
 
+ 
+
+    public function show($id)
+    {   
+      // Retrieve the specific pemesanan by ID along with its details
+      $penjualan = Penjualanproduk::with('detailpenjualanproduk', 'toko')->findOrFail($id);
+    
+      // Retrieve all pelanggans (assuming you need this for the view)
+      $pelanggans = Pelanggan::all();
+      $tokos = $penjualan->toko;
+
+      // Pass the retrieved data to the view
+      return view('toko_slawi.inquery_penjualanproduk.show', compact('penjualan', 'pelanggans', 'tokos'));
+    }
+
+    public function cetakPdf($id)
+    {
+        $penjualan = Penjualanproduk::findOrFail($id);
+        $pelanggans = Pelanggan::all();
+        
+    
+        $tokos = $penjualan->toko;
+    
+        $pdf = FacadePdf::loadView('toko_slawi.inquery_penjualanproduk.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans'));
+        $pdf->setPaper('a4', 'portrait');
+    
+        return $pdf->stream('penjualan.pdf');
+    }
+
     public function unpost_penjualanproduk($id)
     {
         $item = Penjualanproduk::where('id', $id)->first();
@@ -119,33 +148,6 @@ class Inquery_penjualanprodukslawiController extends Controller
         }
     
         return back()->with('error', 'Gagal, data tidak ditemukan.');
-    }
-
-    public function show($id)
-    {   
-      // Retrieve the specific pemesanan by ID along with its details
-      $penjualan = Penjualanproduk::with('detailpenjualanproduk', 'toko')->findOrFail($id);
-    
-      // Retrieve all pelanggans (assuming you need this for the view)
-      $pelanggans = Pelanggan::all();
-      $tokos = $penjualan->toko;
-
-      // Pass the retrieved data to the view
-      return view('toko_slawi.inquery_penjualanproduk.show', compact('penjualan', 'pelanggans', 'tokos'));
-    }
-
-    public function cetakPdf($id)
-    {
-        $penjualan = Penjualanproduk::findOrFail($id);
-        $pelanggans = Pelanggan::all();
-        
-    
-        $tokos = $penjualan->toko;
-    
-        $pdf = FacadePdf::loadView('toko_slawi.inquery_penjualanproduk.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans'));
-        $pdf->setPaper('a4', 'portrait');
-    
-        return $pdf->stream('penjualan.pdf');
     }
 
     public function edit($id)

@@ -781,6 +781,8 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::get('inquery_penjualanproduktegal/unpost_penjualanproduk/{id}', [\App\Http\Controllers\Toko_tegal\Inquery_penjualanproduktegalController::class, 'unpost_penjualanproduk']);
     Route::get('inquery_penjualanproduktegal/posting_penjualanproduk/{id}', [\App\Http\Controllers\Toko_tegal\Inquery_penjualanproduktegalController::class, 'posting_penjualanproduk']);
     Route::get('/toko_tegal/inquery_penjualanproduk/cetak-pdf{id}', [Inquery_penjualanproduktegalController::class, 'cetakPdf'])->name('toko_tegal.inquery_penjualanproduk.cetak-pdf');
+    Route::post('/toko_tegal/inquery_penjualanproduktegal/{id}/update', [Inquery_penjualanproduktegalController::class, 'update'])->name('inquery_penjualanproduktegal.update');
+    Route::get('metodebayartegal/metode/{id}', [\App\Http\Controllers\Toko_tegal\Inquery_penjualanproduktegalController::class, 'metode']);
 
     Route::resource('laporan_penjualanproduk', \App\Http\Controllers\Toko_tegal\Laporan_penjualanprodukController::class);
     Route::get('printReport', [\App\Http\Controllers\Toko_tegal\Laporan_penjualanprodukController::class, 'printReport']);
@@ -948,6 +950,8 @@ Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {
     Route::get('inquery_penjualanprodukpemalang/unpost_penjualanproduk/{id}', [\App\Http\Controllers\Toko_pemalang\Inquery_penjualanprodukpemalangController::class, 'unpost_penjualanproduk']);
     Route::get('inquery_penjualanprodukpemalang/posting_penjualanproduk/{id}', [\App\Http\Controllers\Toko_pemalang\Inquery_penjualanprodukpemalangController::class, 'posting_penjualanproduk']);
     Route::get('/toko_pemalang/inquery_penjualanproduk/cetak-pdf{id}', [Inquery_penjualanprodukpemalangController::class, 'cetakPdf'])->name('toko_pemalang.inquery_penjualanproduk.cetak-pdf');
+    Route::post('/toko_pemalang/inquery_penjualanprodukpemalang/{id}/update', [Inquery_penjualanprodukpemalangController::class, 'update'])->name('inquery_penjualanprodukpemalang.update');
+    Route::get('metodebayarpemalang/metode/{id}', [\App\Http\Controllers\Toko_pemalang\Inquery_penjualanprodukpemalangController::class, 'metode']);
 
     Route::resource('laporan_penjualanproduk', \App\Http\Controllers\Toko_pemalang\Laporan_penjualanprodukController::class);
     Route::get('printReport', [\App\Http\Controllers\Toko_pemalang\Laporan_penjualanprodukController::class, 'printReport']);
@@ -1122,6 +1126,8 @@ Route::middleware('toko_bumiayu')->prefix('toko_bumiayu')->group(function () {
     Route::get('inquery_penjualanprodukbumiayu/unpost_penjualanproduk/{id}', [\App\Http\Controllers\Toko_bumiayu\Inquery_penjualanprodukbumiayuController::class, 'unpost_penjualanproduk']);
     Route::get('inquery_penjualanprodukbumiayu/posting_penjualanproduk/{id}', [\App\Http\Controllers\Toko_bumiayu\Inquery_penjualanprodukbumiayuController::class, 'posting_penjualanproduk']);
     Route::get('/toko_bumiayu/inquery_penjualanproduk/cetak-pdf{id}', [Inquery_penjualanprodukbumiayuController::class, 'cetakPdf'])->name('toko_bumiayu.inquery_penjualanproduk.cetak-pdf');
+    Route::post('/toko_bumiayu/inquery_penjualanprodukbumiayu/{id}/update', [Inquery_penjualanprodukbumiayuController::class, 'update'])->name('inquery_penjualanprodukbumiayu.update');
+    Route::get('metodebayarbumiayu/metode/{id}', [\App\Http\Controllers\Toko_bumiayu\Inquery_penjualanprodukbumiayuController::class, 'metode']);
 
     Route::resource('laporan_penjualanproduk', \App\Http\Controllers\Toko_bumiayu\Laporan_penjualanprodukController::class);
     Route::get('printReport', [\App\Http\Controllers\Toko_bumiayu\Laporan_penjualanprodukController::class, 'printReport']);
@@ -1464,6 +1470,8 @@ Route::middleware('toko_cilacap')->prefix('toko_cilacap')->group(function () {
     Route::get('inquery_penjualanprodukcilacap/unpost_penjualanproduk/{id}', [\App\Http\Controllers\Toko_cilacap\Inquery_penjualanprodukcilacapController::class, 'unpost_penjualanproduk']);
     Route::get('inquery_penjualanprodukcilacap/posting_penjualanproduk/{id}', [\App\Http\Controllers\Toko_cilacap\Inquery_penjualanprodukcilacapController::class, 'posting_penjualanproduk']);
     Route::get('/toko_cilacap/inquery_penjualanproduk/cetak-pdf{id}', [Inquery_penjualanprodukcilacapController::class, 'cetakPdf'])->name('toko_cilacap.inquery_penjualanproduk.cetak-pdf');
+    Route::post('/toko_cilacap/inquery_penjualanprodukcilacap/{id}/update', [Inquery_penjualanprodukcilacapController::class, 'update'])->name('inquery_penjualanprodukcilacap.update');
+    Route::get('metodebayarcilacap/metode/{id}', [\App\Http\Controllers\Toko_cilacap\Inquery_penjualanprodukcilacapController::class, 'metode']);
 
     Route::resource('laporan_penjualanproduk', \App\Http\Controllers\Toko_cilacap\Laporan_penjualanprodukController::class);
     Route::get('printReport', [\App\Http\Controllers\Toko_cilacap\Laporan_penjualanprodukController::class, 'printReport']);
