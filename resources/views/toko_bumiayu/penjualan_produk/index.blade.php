@@ -107,7 +107,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        {{ number_format((float)$item->sub_total, 0, ',', '.') }}
+                                        {{ Str::startsWith($item->sub_total, 'Rp') ? $item->sub_total : 'Rp ' . number_format((float)$item->sub_total, 0, ',', '.') }}
                                     </td>
                                     
 

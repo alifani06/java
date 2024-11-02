@@ -289,7 +289,7 @@
                 <div class="kasir">
                     <p>
                         <span style="min-width: 60px; display: inline-flex; align-items: center;">Kasir</span>
-                        <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</span>
+                        <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{$penjualan->kasir}}</span>
                     </p>
                 </div>
                 @if(!is_null($penjualan->nama_pelanggan))
