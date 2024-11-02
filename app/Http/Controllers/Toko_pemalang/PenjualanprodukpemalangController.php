@@ -382,7 +382,7 @@ class PenjualanprodukpemalangController extends Controller
                 'metode_id' => $request->metode_id === "tunai" ? null : $request->metode_id, // Simpan null jika metode adalah tunai
                 'total_fee' => $request->metode_id === "tunai" ? 0 : ($request->total_fee ?? 0), // Simpan 0 jika metode adalah tunai atau total_fee kosong
                 'keterangan' => $request->metode_id === "tunai" ? null : $request->keterangan, // Simpan null jika metode adalah tunai
-                'toko_id' => 3,
+                'toko_id' => 4,
                 'kasir' => ucfirst(auth()->user()->karyawan->nama_lengkap),
                 'kode_penjualan' => $this->kode(),
                 'qrcode_penjualan' => 'https://javabakery.id/penjualan/' . $this->kode(),

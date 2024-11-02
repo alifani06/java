@@ -58,13 +58,8 @@
                             <!-- Filter Toko -->
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="toko" name="toko_id">
-                                    {{-- <option value="">- Semua Toko -</option> --}}
                                     <option value="2" {{ Request::get('toko_id') == '2' ? 'selected' : '' }}>Toko Tegal</option>
-                                    {{-- <option value="2" {{ Request::get('toko_id') == '2' ? 'selected' : '' }}>Toko Tegal</option>
-                                    <option value="3" {{ Request::get('toko_id') == '3' ? 'selected' : '' }}>Toko Slawi</option>
-                                    <option value="4" {{ Request::get('toko_id') == '4' ? 'selected' : '' }}>Toko Pemalang</option>
-                                    <option value="5" {{ Request::get('toko_id') == '5' ? 'selected' : '' }}>Toko Bumiayu</option>
-                                    <option value="6" {{ Request::get('toko_id') == '6' ? 'selected' : '' }}>Toko Cilacap</option> --}}
+                                   
                                 </select>
                                 <label for="toko">(Pilih Toko)</label>
                             </div>
@@ -102,6 +97,9 @@
                                 </button>
                                 <button type="button" class="btn btn-primary btn-block" onclick="printReport(event)">
                                     <i class="fas fa-print"></i> Cetak
+                                </button>
+                                <button type="submit" class="btn btn-success btn-block" name="export" value="excel">
+                                    <i class="fas fa-file-excel"></i> Ekspor Excel
                                 </button>
                             </div>
                         </div>
