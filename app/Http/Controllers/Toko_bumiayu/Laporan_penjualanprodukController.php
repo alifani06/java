@@ -266,7 +266,7 @@ public function printReportglobal(Request $request)
 
     // Default toko_id ke 1 jika tidak ada yang dipilih
     if (!$toko_id) {
-        $toko_id = 1; // ID Toko Banjaran
+        $toko_id = 5; // ID Toko Banjaran
     }
 
     // Query dasar untuk mengambil data penjualan produk
