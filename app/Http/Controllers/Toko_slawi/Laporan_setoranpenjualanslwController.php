@@ -169,7 +169,7 @@ $penjualan_kotor = $queryPenjualanKotor->value('total');
         if ($kasir) {
             $queryPenjualan->where('kasir', $kasir);
         } else {
-            $queryPenjualan->where('toko_id', 3);
+            $queryPenjualan->where('toko_id', 1);
         }
     
         if ($tanggal_penjualan && $tanggal_akhir) {
@@ -183,11 +183,11 @@ $penjualan_kotor = $queryPenjualanKotor->value('total');
         // Perhitungan total penjualan
         if ($metode_id == 1) {
             $totalPenjualan = $queryPenjualan
-                ->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED) - CAST(REPLACE(REPLACE(nominal_diskon, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
+                ->select(Penjualanproduk::raw('SUM(CAST(REGEXP_REPLACE(REPLACE(sub_totalasli, "Rp", ""), "[^0-9]", "") AS UNSIGNED) - CAST(REGEXP_REPLACE(REPLACE(nominal_diskon, "Rp", ""), "[^0-9]", "") AS UNSIGNED)) as total'))
                 ->value('total');
         } else {
             $totalPenjualan = $queryPenjualan
-                ->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
+                ->select(Penjualanproduk::raw('SUM(CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)) as total'))
                 ->value('total');
         }
     
@@ -198,7 +198,7 @@ $penjualan_kotor = $queryPenjualanKotor->value('total');
             if ($kasir) {
                 $q->where('kasir', $kasir);
             } else {
-                $q->where('toko_id', 3);
+                $q->where('toko_id', 1);
             }
     
             if ($tanggal_penjualan && $tanggal_akhir) {
@@ -552,7 +552,7 @@ $penjualan_kotor = $queryPenjualanKotor->value('total');
             if ($kasir) {
                 $queryPenjualan->where('kasir', $kasir);
             } else {
-                $queryPenjualan->where('toko_id', 3);
+                $queryPenjualan->where('toko_id', 1);
             }
         
             if ($tanggal_penjualan && $tanggal_akhir) {
@@ -566,11 +566,11 @@ $penjualan_kotor = $queryPenjualanKotor->value('total');
             // Perhitungan total penjualan
             if ($metode_id == 1) {
                 $totalPenjualan = $queryPenjualan
-                    ->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED) - CAST(REPLACE(REPLACE(nominal_diskon, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
+                    ->select(Penjualanproduk::raw('SUM(CAST(REGEXP_REPLACE(REPLACE(sub_totalasli, "Rp", ""), "[^0-9]", "") AS UNSIGNED) - CAST(REGEXP_REPLACE(REPLACE(nominal_diskon, "Rp", ""), "[^0-9]", "") AS UNSIGNED)) as total'))
                     ->value('total');
             } else {
                 $totalPenjualan = $queryPenjualan
-                    ->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
+                    ->select(Penjualanproduk::raw('SUM(CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)) as total'))
                     ->value('total');
             }
         
@@ -581,7 +581,7 @@ $penjualan_kotor = $queryPenjualanKotor->value('total');
                 if ($kasir) {
                     $q->where('kasir', $kasir);
                 } else {
-                    $q->where('toko_id', 3);
+                    $q->where('toko_id', 1);
                 }
         
                 if ($tanggal_penjualan && $tanggal_akhir) {
