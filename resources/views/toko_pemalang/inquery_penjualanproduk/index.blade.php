@@ -153,8 +153,8 @@
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($item->status == 'unpost')
                                                
-                                                    <a class="dropdown-item posting-btn"
-                                                        data-memo-id="{{ $item->id }}">Posting</a>
+                                                    {{-- <a class="dropdown-item posting-btn"
+                                                        data-memo-id="{{ $item->id }}">Posting</a> --}}
                                              
                                                     <a class="dropdown-item"
                                                     href="{{ url('toko_pemalang/inquery_penjualanprodukpemalang/' . $item->id . '/edit') }}">Update</a>
@@ -168,8 +168,8 @@
                                                     </form>
                                             @endif
                                             @if ($item->status == 'posting')
-                                                    {{-- <a class="dropdown-item unpost-btn"
-                                                        data-memo-id="{{ $item->id }}">Unpost</a> --}}
+                                                    <a class="dropdown-item unpost-btn"
+                                                        data-memo-id="{{ $item->id }}">Unpost</a>
                                                     <a class="dropdown-item"
                                                     href="{{ url('/toko_pemalang/inquery_penjualanprodukpemalang/' . $item->id ) }}">Show</a>
                                             @endif
