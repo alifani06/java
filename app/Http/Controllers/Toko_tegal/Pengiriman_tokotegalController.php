@@ -161,9 +161,6 @@ class Pengiriman_tokotegalController extends Controller{
         return view('toko_tegal.pengiriman_tokotegal.show', compact('pengirimanBarangJadi', 'firstItem'));
     }
     
-    
-
-
     public function showpemesanan($id)
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
@@ -213,8 +210,6 @@ class Pengiriman_tokotegalController extends Controller{
         return $pdf->stream('surat_permintaan_produk.pdf');
     }
     
-
-
     public function printpemesanan($id)
     {
         // Ambil kode_pengiriman dari pengiriman_barangjadi berdasarkan id
@@ -239,38 +234,118 @@ class Pengiriman_tokotegalController extends Controller{
         return $pdf->stream('surat_permintaan_produk.pdf');
     }
 
+    // public function posting_pengiriman($id)
+    // {
+    //     $stok = Pengiriman_tokotegal::where('id', $id)->first();
+    //     if (!$stok) {
+    //         session()->flash('error', 'Data tidak ditemukan.');
+    //         return redirect()->back();
+    //     }
+    
+    //     $kodePengiriman = $stok->kode_pengiriman;
+    //     $pengirimanId = $stok->pengiriman_barangjadi_id;
+    //     $pengiriman = Pengiriman_barangjadi::find($pengirimanId);
+    
+    //     if (!$pengiriman) {
+    //         session()->flash('error', 'Data pengiriman tidak ditemukan.');
+    //         return redirect()->back();
+    //     }
+    
+    //     $productsInPengiriman = Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->get();
+    
+    //     foreach ($productsInPengiriman as $pengirimanItem) {
+    //         $detailStok = Detail_stokbarangjadi::where('produk_id', $pengirimanItem->produk_id)
+    //                         ->sum('stok');
+    
+    //         // Debug stok untuk memastikan kondisinya
+    //         if ($detailStok == 0) {
+    //             session()->flash('error', 'Stok tidak mencukupi untuk produk dengan ID: ' . $pengirimanItem->produk_id . ' (stok 0)');
+    //             return redirect()->back();
+    //         }
+    //     }
+    
+    //     // Lanjutkan jika stok cukup
+    //     foreach ($productsInPengiriman as $pengirimanItem) {
+    //         $detailStoks = Detail_stokbarangjadi::where('produk_id', $pengirimanItem->produk_id)
+    //                         ->orderBy('created_at')
+    //                         ->get();
+    //         $remaining = $pengirimanItem->jumlah;
+    
+    //         foreach ($detailStoks as $detailStok) {
+    //             if ($remaining > 0) {
+    //                 if ($detailStok->stok >= $remaining) {
+    //                     $detailStok->stok -= $remaining;
+    //                     $detailStok->save();
+    //                     $remaining = 0;
+    //                 } else {
+    //                     $remaining -= $detailStok->stok;
+    //                     $detailStok->stok = 0;
+    //                     $detailStok->save();
+    //                 }
+    //             } else {
+    //                 break;
+    //             }
+    //         }
+    
+    //         if ($remaining > 0) {
+    //             session()->flash('error', 'Stok tidak cukup untuk produk dengan ID: ' . $pengirimanItem->produk_id);
+    //             return redirect()->back();
+    //         }
+    
+    //         $stokToko = Stok_tokotegal::where('produk_id', $pengirimanItem->produk_id)->first();
+    //         if ($stokToko) {
+    //             $stokToko->jumlah += $pengirimanItem->jumlah;
+    //             $stokToko->save();
+    //         }
+    //     }
+    
+    //     Pengiriman_tokotegal::where('kode_pengiriman', $kodePengiriman)->update([
+    //         'status' => 'posting',
+    //         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+    //     ]);
+    
+    //     Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->update([
+    //         'status' => 'posting',
+    //         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+    //     ]);
+    
+    //     session()->flash('success', 'Berhasil mengubah status dan memperbarui stok.');
+    //     return redirect()->back();
+    // }
 
     public function posting_pengiriman($id)
     {
-        // Ambil data stok_tokobanjaran berdasarkan ID
         $stok = Pengiriman_tokotegal::where('id', $id)->first();
-
-        // Pastikan data ditemukan
         if (!$stok) {
-            return response()->json(['error' => 'Data tidak ditemukan.'], 404);
+            session()->flash('error', 'Data tidak ditemukan.');
+            return redirect()->back();
         }
 
-        // Ambil kode_pengiriman dan pengiriman_barangjadi_id dari stok yang diambil
         $kodePengiriman = $stok->kode_pengiriman;
         $pengirimanId = $stok->pengiriman_barangjadi_id;
-
-        // Ambil pengiriman terkait dari tabel pengiriman_barangjadi
         $pengiriman = Pengiriman_barangjadi::find($pengirimanId);
 
-        // Pastikan data pengiriman ditemukan
         if (!$pengiriman) {
-            return response()->json(['error' => 'Data pengiriman tidak ditemukan.'], 404);
+            session()->flash('error', 'Data pengiriman tidak ditemukan.');
+            return redirect()->back();
         }
 
-        // Ambil semua produk terkait dengan pengiriman
         $productsInPengiriman = Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->get();
 
         foreach ($productsInPengiriman as $pengirimanItem) {
-            // Ambil semua stok barang jadi untuk produk ini, urutkan dari yang tertua
-            $detailStoks = Detail_stokbarangjadi::where('produk_id', $pengirimanItem->produk_id)
-                            ->orderBy('created_at') // Menggunakan stok yang paling lama dahulu (FIFO)
-                            ->get();
+            $detailStok = Detail_stokbarangjadi::where('produk_id', $pengirimanItem->produk_id)
+                            ->sum('stok');
 
+            if ($detailStok <= 0) {
+                session()->flash('error', 'Stok tidak mencukupi untuk produk dengan ID: ' . $pengirimanItem->produk_id . ' (stok 0)');
+                return redirect()->back();
+            }
+        }
+
+        foreach ($productsInPengiriman as $pengirimanItem) {
+            $detailStoks = Detail_stokbarangjadi::where('produk_id', $pengirimanItem->produk_id)
+                            ->orderBy('created_at')
+                            ->get();
             $remaining = $pengirimanItem->jumlah;
 
             foreach ($detailStoks as $detailStok) {
@@ -278,23 +353,22 @@ class Pengiriman_tokotegalController extends Controller{
                     if ($detailStok->stok >= $remaining) {
                         $detailStok->stok -= $remaining;
                         $detailStok->save();
-                        $remaining = 0; // Pengurangan selesai
+                        $remaining = 0;
                     } else {
                         $remaining -= $detailStok->stok;
-                        $detailStok->stok = 0; // Stok ini habis
+                        $detailStok->stok = 0;
                         $detailStok->save();
                     }
                 } else {
-                    break; // Jika tidak ada sisa pengurangan, keluar dari loop
+                    break;
                 }
             }
 
-            // Jika stok masih kurang, return error
             if ($remaining > 0) {
-                return response()->json(['error' => 'Stok tidak cukup untuk produk dengan ID: ' . $pengirimanItem->produk_id], 400);
+                session()->flash('error', 'Stok tidak cukup untuk produk dengan ID: ' . $pengirimanItem->produk_id);
+                return redirect()->back();
             }
 
-            // Tambahkan jumlah ke stok_tokobanjarans
             $stokToko = Stok_tokotegal::where('produk_id', $pengirimanItem->produk_id)->first();
             if ($stokToko) {
                 $stokToko->jumlah += $pengirimanItem->jumlah;
@@ -302,19 +376,18 @@ class Pengiriman_tokotegalController extends Controller{
             }
         }
 
-        // Update status untuk semua stok_tokobanjaran dengan kode_pengiriman yang sama
         Pengiriman_tokotegal::where('kode_pengiriman', $kodePengiriman)->update([
             'status' => 'posting',
             'tanggal_terima' => Carbon::now('Asia/Jakarta'),
         ]);
 
-        // Update status untuk pengiriman_barangjadi
         Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->update([
             'status' => 'posting',
             'tanggal_terima' => Carbon::now('Asia/Jakarta'),
         ]);
 
-        return response()->json(['success' => 'Berhasil mengubah status dan memperbarui stok.']);
+        session()->flash('success', 'Berhasil mengubah status dan memperbarui stok.');
+        return redirect()->back();
     }
 
     public function unpost_pengiriman($id)
@@ -468,7 +541,6 @@ class Pengiriman_tokotegalController extends Controller{
         return response()->json(['success' => 'Berhasil mengubah status dan memperbarui stok.']);
     }
 
-  
     public function unpost_pengirimanpemesanan($id)
     {
         // Ambil data stok_tokobanjaran berdasarkan ID
