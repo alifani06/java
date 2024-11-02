@@ -136,7 +136,9 @@
                         @endphp
                         @foreach ($inquery as $item)
                             @php
-                                $grandTotal += floatval($item->sub_total); // Konversi ke float
+                                $sub_total = preg_replace('/[^\d]/', '', $item->sub_total);
+                                $sub_total = (float) $sub_total;
+                                $grandTotal += $sub_total; // Konversi ke float
                             @endphp
                             <tr class="dropdown"{{ $item->id }}>
                                 <td class="text-center">{{ $loop->iteration }}</td>
@@ -164,7 +166,7 @@
                         @endforeach
                         <tr>
                             <td colspan="6" class="text-right"><strong>Grand Total</strong></td>
-                            <td>{{ $grandTotal > 0 ? 'Rp ' . number_format($grandTotal, 0, ',', '.') : 'Rp 0' }}</td>
+                            <td>{{ 'Rp. ' . number_format($grandTotal, 0, ',', '.') }}</td>
                         </tr>
 
                         </tbody>

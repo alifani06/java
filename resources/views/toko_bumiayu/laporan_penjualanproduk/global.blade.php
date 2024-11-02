@@ -128,9 +128,11 @@
                             $grandTotal = 0;
                         @endphp
                         @foreach ($inquery as $item)
-                            @php
-                                $grandTotal += floatval($item->sub_total); // Konversi sub_total ke tipe float
-                            @endphp
+                        @php
+                            $sub_total = preg_replace('/[^\d]/', '', $item->sub_total);
+                            $sub_total = (float) $sub_total;
+                            $grandTotal += $sub_total; // Konversi ke float
+                        @endphp
                             <tr class="dropdown"{{ $item->id }}>
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $item->kode_penjualan }}</td>
