@@ -132,44 +132,42 @@
                         </thead>
                         <tbody>
                             @php
-                                $grandTotal = 0;
+                            $grandTotal = 0;
+                        @endphp
+                        @foreach ($inquery as $item)
+                            @php
+                                $grandTotal += floatval($item->sub_total); // Konversi ke float
                             @endphp
-                            @foreach ($inquery as $item)
-                                @php
-                                    // Menghapus "Rp " dan mengganti tanda titik dengan string kosong
-                                    $subTotal = floatval(str_replace(['Rp ', '.'], ['', ''], $item->sub_total)); 
-                                    $grandTotal += $subTotal; // Tambahkan sub_total ke grandTotal
-                                @endphp
-                                <tr class="dropdown"{{ $item->id }}>
-                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $item->kode_penjualan }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($item->tanggal_penjualan)->format('d/m/Y H:i') }}</td>
-                                    <td>{{ $item->kasir }}</td>
-                                    <td>
-                                        @if ($item->detailpenjualanproduk->isNotEmpty())
-                                            {{ $item->detailpenjualanproduk->pluck('produk.klasifikasi.nama')->implode(', ') }}
-                                        @else
-                                            tidak ada
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if ($item->detailpenjualanproduk->isNotEmpty())
-                                            {{ $item->detailpenjualanproduk->pluck('nama_produk')->implode(', ') }}
-                                        @else
-                                            tidak ada
-                                        @endif
-                                    </td>
-                                    <td>
-                                        {{ Str::startsWith($item->sub_total, 'Rp') ? $item->sub_total : 'Rp ' . number_format($subTotal, 0, ',', '.') }}
-                                    </td>                            
-                                </tr>
-                            @endforeach
-                            <tr>
-                                <td colspan="6" class="text-right"><strong>Grand Total</strong></td>
-                                <td>{{ 'Rp. ' . number_format($grandTotal, 0, ',', '.') }}</td>
+                            <tr class="dropdown"{{ $item->id }}>
+                                <td class="text-center">{{ $loop->iteration }}</td>
+                                <td>{{ $item->kode_penjualan }}</td>
+                                <td>{{ \Carbon\Carbon::parse($item->tanggal_penjualan)->format('d/m/Y H:i') }}</td>
+                                <td>{{ $item->kasir }}</td>
+                                <td>
+                                    @if ($item->detailpenjualanproduk->isNotEmpty())
+                                        {{ $item->detailpenjualanproduk->pluck('produk.klasifikasi.nama')->implode(', ') }}
+                                    @else
+                                        tidak ada
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($item->detailpenjualanproduk->isNotEmpty())
+                                        {{ $item->detailpenjualanproduk->pluck('nama_produk')->implode(', ') }}
+                                    @else
+                                        tidak ada
+                                    @endif
+                                </td>
+                                <td>
+                                    {{ Str::startsWith($item->sub_total, 'Rp') ? $item->sub_total : 'Rp ' . number_format((float)$item->sub_total, 0, ',', '.') }}
+                                </td>                            
                             </tr>
+                        @endforeach
+                        <tr>
+                            <td colspan="6" class="text-right"><strong>Grand Total</strong></td>
+                            <td>{{ $grandTotal > 0 ? 'Rp ' . number_format($grandTotal, 0, ',', '.') : 'Rp 0' }}</td>
+                        </tr>
+
                         </tbody>
-                        
                     </table>
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
