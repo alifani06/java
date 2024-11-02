@@ -204,7 +204,7 @@
                 <div class="kasir">
                     <p>
                         <span style="min-width: 100px; display: inline-flex; align-items: center;">Kasir</span>
-                        <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</span>
+                        <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $penjualan->kasir }}</span>
                     </p>
                 </div>
                 @if(!is_null($penjualan->nama_pelanggan))
@@ -280,17 +280,20 @@
                         
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total </strong></td>
-                            <td style="font-size: 8px; text-align: right;">{{number_format($penjualan->sub_total, 0, ',', '.') }}</td>
-                        </tr>
+                            <td>
+                                {{ Str::startsWith($penjualan->sub_total, 'Rp') ? $penjualan->sub_total : 'Rp ' . number_format((float)$penjualan->sub_total, 0, ',', '.') }}
+                            </td>                         </tr>
                         @if($penjualan->metode_id == Null)
                             <tr>
                                 <td colspan="5" style="text-align: right; font-size: 8px;"><strong> Bayar</strong></td>
-                                <td style="font-size: 8px;">{{ number_format($penjualan->bayar, 0, ',', '.') }}</td>
-                            </tr>
+                                <td>
+                                    {{ Str::startsWith($penjualan->bayar, 'Rp') ? $penjualan->bayar : 'Rp ' . number_format((float)$penjualan->bayar, 0, ',', '.') }}
+                                </td>                             </tr>
                             <tr>
                                 <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Kembali</strong></td>
-                                <td style="font-size: 8px;">{{ number_format($penjualan->kembali, 0, ',', '.') }}</td>
-                            </tr>
+                                <td>
+                                    {{ Str::startsWith($penjualan->kembali, 'Rp') ? $penjualan->kembali : 'Rp ' . number_format((float)$penjualan->kembali, 0, ',', '.') }}
+                                </td>                             </tr>
                         @elseif($penjualan->metode_bayar == 'mesinedc' || $penjualan->metode_bayar == 'gobiz')
                             
                         @endif
