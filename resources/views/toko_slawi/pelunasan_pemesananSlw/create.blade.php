@@ -610,7 +610,6 @@ function reIndexRows() {
     });
 }
 
-
     function updateGrandTotal() {
         var grandTotal = 0;
         $('.total').each(function() {
