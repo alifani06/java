@@ -157,7 +157,7 @@
                                                         data-memo-id="{{ $item->id }}">Posting</a>
                                              
                                                     <a class="dropdown-item"
-                                                    href="{{ url('toko_slawi/inquery_penjualanprodukpemalang/' . $item->id . '/edit') }}">Update</a>
+                                                    href="{{ url('toko_pemalang/inquery_penjualanprodukpemalang/' . $item->id . '/edit') }}">Update</a>
                                                 
                                                     <a class="dropdown-item"
                                                     href="{{ url('/toko_pemalang/inquery_penjualanprodukpemalang/' . $item->id ) }}">Show</a>
