@@ -14,12 +14,12 @@
             margin-left: 0;
             margin-top: 0;
             /* padding: 0; */
-            padding-right: 450px;
+            padding-right: 460px;
             font-size: 12px;
             background-color: #fff;
         }
             .container {
-            width: 65mm; /* Adjusted width */
+            width: 63mm; /* Adjusted width */
             margin: 0 auto;
             border: 1px solid white;
             padding: 5px;
@@ -171,7 +171,7 @@
         padding: 0;
     }
     .container {
-        width: 65mm; /* Sesuaikan dengan lebar kertas thermal */
+        width: 63mm; /* Sesuaikan dengan lebar kertas thermal */
         margin: 0 auto;
         border: none;
         padding: 0;
@@ -254,7 +254,7 @@
         border-bottom: 1px solid #0f0e0e;
     }
     @page {
-        size: 65mm auto; /* Sesuaikan dengan ukuran kertas thermal */
+        size: 63mm auto; /* Sesuaikan dengan ukuran kertas thermal */
         margin: 0mm; /* Set margin ke 0 untuk semua sisi */
     }
 }
@@ -289,7 +289,7 @@
                 <div class="kasir">
                     <p>
                         <span style="min-width: 60px; display: inline-flex; align-items: center;">Kasir</span>
-                        <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</span>
+                        <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{$penjualan->kasir }}</span>
                     </p>
                 </div>
                 @if(!is_null($penjualan->nama_pelanggan))
@@ -442,15 +442,7 @@
                         @endif
                     </tbody>
                 </table>
-                
-{{--
-                    @if($penjualan->metode_id !== NULL)
-                        <div style="text-align: right; font-size: 9px;">
-                            <strong>
-                                <span style="color: black;">No.</span><span style="color: white">lllllllllllllllllllll</span>
-                            </strong>{{ $penjualan->keterangan }}
-                        </div>
-                    @endif --}}
+
                 @endif
             </div>
         
@@ -482,7 +474,10 @@
                     {!! DNS2D::getBarcodeHTML($penjualan->qrcode_penjualan, 'QRCODE', 1.5, 1.5) !!}
                 </div>
             </div>  
-        </div> 
+        </div>
+        
+        
+        
     </body>
     </html>
     
