@@ -304,22 +304,28 @@ class Laporan_setoranpenjualanController extends Controller
         $inquery = $query->with(['toko', 'detailpenjualanproduk.produk.klasifikasi'])->get();
 
         // Buat query terpisah untuk menghitung total penjualan kotor
-        $penjualan_kotor = Penjualanproduk::select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED)) as total'));
-
-        // Filter berdasarkan kasir
+        $queryPenjualanKotor = Penjualanproduk::select(Penjualanproduk::raw(
+            'SUM(CAST(REGEXP_REPLACE(REPLACE(sub_totalasli, "Rp", ""), "[^0-9]", "") AS UNSIGNED)) as total'
+        ));
+        
+        // Terapkan filter berdasarkan kasir atau toko_id
         if ($kasir) {
-            $penjualan_kotor->where('kasir', $kasir);
-        }else {
-            // Jika tidak memilih kasir, maka ambil data dengan toko_id = 1
-            $penjualan_kotor->where('toko_id', 1);
+            $queryPenjualanKotor->where('kasir', $kasir);
+        } else {
+            $queryPenjualanKotor->where('toko_id', 1);
         }
-
-        // Filter tanggal
+        
+        // Terapkan filter berdasarkan tanggal penjualan
         if ($tanggal_penjualan && $tanggal_akhir) {
-            $penjualan_kotor->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+            $queryPenjualanKotor->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+        } elseif ($tanggal_penjualan) {
+            $queryPenjualanKotor->where('tanggal_penjualan', '>=', $tanggal_penjualan);
+        } elseif ($tanggal_akhir) {
+            $queryPenjualanKotor->where('tanggal_penjualan', '<=', $tanggal_akhir);
         }
-
-        $penjualan_kotor = $penjualan_kotor->value('total');
+        
+        // Ambil nilai total dari query penjualan kotor
+        $penjualan_kotor = $queryPenjualanKotor->value('total');
 
         // Hitung total diskon penjualan berdasarkan kasir dan tanggal_penjualan
         $diskon_penjualan = Detailpenjualanproduk::whereHas('penjualanproduk', function ($q) use ($tanggal_penjualan, $kasir) {
