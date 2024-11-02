@@ -537,59 +537,54 @@
     var currentEditingRow = null; // Variabel global untuk melacak baris yang sedang diedit
 
     function addRow() {
-        itemCounter++;
-        var isFirstRow = itemCounter === 1;
-        var newRow = '<tr id="row-' + (itemCounter + 1) + '"' + (isFirstRow ? ' style="display: none;"' : '') + '>' +
-            '<td style="width: 70px; font-size:14px" class="text-center urutan">' + (itemCounter + 2) + '</td>' +
-            '<td hidden>' + 
-            '   <input hidden style="font-size:14px" type="text" class="form-control produk_id" name="produk_id[]" id="produk_id_' + itemCounter + '" value="">' +
-            '</td>' +
-            '<td hidden>' + 
-            '   <input hidden style="font-size:14px" type="text" class="form-control kode_produk" name="kode_produk[]" id="kode_produk_' + itemCounter + '" value="">' +
-            '</td>' +
-            '<td hidden>' +
-            '   <input hidden style="font-size:14px" type="text" class="form-control diskon" name="diskon[]" id="diskon_' + itemCounter + '" value="">' +
-            '</td>' +
-            '<td onclick="showCategoryModal(' + itemCounter + ')">' +
-            '   <div class="form-group">' +
-            '       <input style="font-size:14px" type="text" class="form-control kode_lama" name="kode_lama[]" id="kode_lama_' + itemCounter + '" value="" readonly>' +
-            '   </div>' +
-            '</td>' +
-            '<td onclick="showCategoryModal(' + itemCounter + ')">' +
-            '   <div class="form-group">' +
-            '       <input style="font-size:14px" type="text" class="form-control nama_produk" name="nama_produk[]" id="nama_produk_' + itemCounter + '" value="" readonly>' +
-            '   </div>' +
-            '</td>' +
-            '<td onclick="showCategoryModal(' + itemCounter + ')">' +
-            '   <div class="form-group">' +
-            '       <input style="font-size:14px" type="text" class="form-control harga" name="harga[]" id="harga_' + itemCounter + '" value="" readonly>' +
-            '   </div>' +
-            '</td>' +
-            '<td>' +
-            '   <div class="form-group">' +
-            '       <input style="font-size:14px" type="number" class="form-control jumlah" name="jumlah[]" id="jumlah_' + itemCounter + '" value="" oninput="updateTotal(' + itemCounter + ')">' +
-            '   </div>' +
-            '</td>' +
-            '<td onclick="showCategoryModal(' + itemCounter + ')">' +
-            '   <div class="form-group">' +
-            '       <input style="font-size:14px" type="number" class="form-control total" name="total[]" id="total_' + itemCounter + '" value="" readonly>' +
-            '   </div>' +
-            '</td>' +
-            '<td>' +
-            '   <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(' + itemCounter + ')"><i class="fas fa-trash"></i></button>' +
-            '</td>' +
-            '</tr>';
+    itemCounter++;
+    var newRow = '<tr id="row-' + itemCounter + '">' +
+        '<td style="width: 70px; font-size:14px" class="text-center urutan">' + (itemCounter + 1) + '</td>' +
+        '<td hidden>' +
+        '   <input hidden style="font-size:14px" type="text" class="form-control produk_id" name="produk_id[]" id="produk_id_' + itemCounter + '" value="">' +
+        '</td>' +
+        '<td hidden>' +
+        '   <input hidden style="font-size:14px" type="text" class="form-control kode_produk" name="kode_produk[]" id="kode_produk_' + itemCounter + '" value="">' +
+        '</td>' +
+        '<td hidden>' +
+        '   <input hidden style="font-size:14px" type="text" class="form-control diskon" name="diskon[]" id="diskon_' + itemCounter + '" value="">' +
+        '</td>' +
+        '<td onclick="showCategoryModal(' + itemCounter + ')">' +
+        '   <div class="form-group">' +
+        '       <input style="font-size:14px" type="text" class="form-control kode_lama" name="kode_lama[]" id="kode_lama_' + itemCounter + '" value="" readonly>' +
+        '   </div>' +
+        '</td>' +
+        '<td onclick="showCategoryModal(' + itemCounter + ')">' +
+        '   <div class="form-group">' +
+        '       <input style="font-size:14px" type="text" class="form-control nama_produk" name="nama_produk[]" id="nama_produk_' + itemCounter + '" value="" readonly>' +
+        '   </div>' +
+        '</td>' +
+        '<td onclick="showCategoryModal(' + itemCounter + ')">' +
+        '   <div class="form-group">' +
+        '       <input style="font-size:14px" type="text" class="form-control harga" name="harga[]" id="harga_' + itemCounter + '" value="" readonly>' +
+        '   </div>' +
+        '</td>' +
+        '<td>' +
+        '   <div class="form-group">' +
+        '       <input style="font-size:14px" type="number" class="form-control jumlah" name="jumlah[]" id="jumlah_' + itemCounter + '" value="" oninput="updateTotal(' + itemCounter + ')">' +
+        '   </div>' +
+        '</td>' +
+        '<td>' +
+        '   <div class="form-group">' +
+        '       <input style="font-size:14px" type="number" class="form-control total" name="total[]" id="total_' + itemCounter + '" value="" readonly>' +
+        '   </div>' +
+        '</td>' +
+        '<td>' +
+        '   <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(' + itemCounter + ')"><i class="fas fa-trash"></i></button>' +
+        '</td>' +
+        '</tr>';
 
-        $('#tabel-pembelian').append(newRow);
-        reIndexRows();
+    $('#tabel-pembelian').append(newRow);
+    reIndexRows();
+    updateGrandTotal(); // Panggil untuk menghitung ulang subtotal setelah menambahkan row baru
+}
 
-        // Show the newly added row if it is not the first one
-        if (!isFirstRow) {
-            $('#row-' + (itemCounter + 1)).show();
-        }
-        updateGrandTotal(); // Panggil untuk menghitung ulang subtotal setelah menambahkan row baru
 
-    }
 
     function showCategoryModal(rowIndex) {
         currentEditingRow = rowIndex;  // Simpan indeks baris yang sedang diedit
@@ -597,23 +592,24 @@
     }
 
 
-
-    function reIndexRows() {
-        $('.urutan').each(function(index) {
-            $(this).text(index + 1);
-        });
-    }
-
-
     function updateTotal(rowId) {
-        var harga = parseFloat(document.getElementById('harga_' + rowId).value) || 0;
-        var jumlah = parseFloat(document.getElementById('jumlah_' + rowId).value) || 0;
-        var total = harga * jumlah;
+    // Mengambil harga dan jumlah dari elemen input
+    var harga = parseFloat(document.getElementById('harga_' + rowId).value) || 0;
+    var jumlah = parseFloat(document.getElementById('jumlah_' + rowId).value) || 0;
+    var total = harga * jumlah;
 
-        // Format total without decimal places
-        document.getElementById('total_' + rowId).value = Math.round(total);
-        updateGrandTotal(); // Hitung ulang subtotal setiap kali jumlah atau harga diubah
-    }
+    // Update total di input total
+    document.getElementById('total_' + rowId).value = Math.round(total);
+    updateGrandTotal(); // Hitung ulang subtotal setiap kali jumlah atau harga diubah
+}
+
+function reIndexRows() {
+    // Reindex untuk memperbarui nomor urutan
+    $('.urutan').each(function(index) {
+        $(this).text(index + 1);
+    });
+}
+
 
     function updateGrandTotal() {
         var grandTotal = 0;

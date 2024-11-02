@@ -437,9 +437,19 @@ class Laporan_stoktokotegalController extends Controller
             $selectedKlasifikasi = Klasifikasi::find($request->klasifikasi_id);
         }
     
-     // Cek apakah ada permintaan untuk ekspor Excel
+        // Cek apakah ada permintaan untuk ekspor Excel
         if ($request->has('export') && $request->export === 'excel') {
-            return Excel::download(new ProdukExport($produkWithStok), 'laporan_stoktoko.xlsx');
+            // Menentukan nama file sesuai dengan klasifikasi yang dipilih
+            $fileName = 'laporan_stoktoko';
+            if ($selectedKlasifikasi) {
+                // Menggunakan nama klasifikasi untuk nama file
+                $fileName = 'laporan_' . strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $selectedKlasifikasi->nama))) . '.xlsx';
+            } else {
+                $fileName .= '.xlsx';
+            }
+    
+            // Mengunduh file dengan nama yang ditentukan
+            return Excel::download(new ProdukExport($produkWithStok, $selectedKlasifikasi->nama ?? 'Semua Klasifikasi'), $fileName);
         }
 
     
