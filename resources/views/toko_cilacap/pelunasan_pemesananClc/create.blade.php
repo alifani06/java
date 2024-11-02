@@ -640,7 +640,7 @@ function updateGrandTotal() {
     var itemCounter = 0;
     function fetchDataByKode(kode) {
         $.ajax({
-            url: '{{ route("toko_slawi.penjualan_produk.fetchData") }}', // Adjust the route accordingly
+            url: '{{ route("toko_cilacap.penjualan_produk.fetchData") }}', // Adjust the route accordingly
             method: 'GET',
             data: { kode_pemesanan: kode },
             success: function(response) {
