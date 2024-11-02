@@ -86,9 +86,7 @@ class Laporan_setoranpenjualanslwController extends Controller
     // Ambil data penjualan produk
     $inquery = $query->with(['toko', 'detailpenjualanproduk.produk.klasifikasi'])->get();
 
-    // Buat query terpisah untuk menghitung total penjualan kotor
-// Buat query dasar untuk menghitung total penjualan kotor
-    // Buat query dasar untuk menghitung total penjualan kotor
+
 $queryPenjualanKotor = Penjualanproduk::select(Penjualanproduk::raw(
     'SUM(CAST(REGEXP_REPLACE(REPLACE(sub_totalasli, "Rp", ""), "[^0-9]", "") AS UNSIGNED)) as total'
 ));
