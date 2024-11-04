@@ -241,7 +241,7 @@ class Laporan_setoranpenjualanclcController extends Controller
 
     
 
-    public function printReportsetorantgl(Request $request)
+    public function printReportsetoranclc(Request $request)
     {
         $status = $request->status;
         $tanggal_penjualan = $request->tanggal_penjualan;
