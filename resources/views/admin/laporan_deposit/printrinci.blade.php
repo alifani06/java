@@ -299,4 +299,15 @@
 
 
 </body>
+
+<script>
+    if (isset($pdf)) {
+        $pdf->page_script(function ($pageNumber, $pageCount, $pdf) {
+            $font = $fontMetrics->getFont("Helvetica", "normal");
+            $size = 8;
+            $pdf->text(520, 820, "Page $pageNumber of $pageCount", $font, $size);
+        });
+    }
+</script>
+
 </html>
