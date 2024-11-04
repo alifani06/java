@@ -72,7 +72,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="float-right">
-                        <a href="{{ url('toko_tegal/permintaan_produk/create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url('toko_bumiayu/permintaan_produk/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> 
                         </a>
                     </div>
@@ -111,8 +111,8 @@
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     @if ($permintaan->status == 'unpost')
                                             {{-- <a class="dropdown-item posting-btn"data-memo-id="{{ $permintaan->id }}">Posting</a> --}}
-                                            {{-- <a class="dropdown-item" href="{{ url('toko_tegal/permintaan_produk/' . $permintaan->id . '/edit') }}">Update</a> --}}
-                                            <a class="dropdown-item" href="{{ url('toko_tegal/permintaan_produk/' . $permintaan->id) }}">Show</a>
+                                            {{-- <a class="dropdown-item" href="{{ url('toko_bumiayu/permintaan_produk/' . $permintaan->id . '/edit') }}">Update</a> --}}
+                                            <a class="dropdown-item" href="{{ url('toko_bumiayu/permintaan_produk/' . $permintaan->id) }}">Show</a>
                                             <form action="{{ url('toko_slawi/permintaan_produk/' . $permintaan->id) }}" method="POST" style="display: inline;">
                                                 @csrf
                                                 @method('DELETE')
@@ -121,7 +121,7 @@
                                             @endif
                                     @if ($permintaan->status == 'posting')
                                             {{-- <a class="dropdown-item unpost-btn" data-memo-id="{{ $permintaan->id }}">Unpost</a> --}}
-                                            <a class="dropdown-item" href="{{ url('toko_tegal/permintaan_produk/' . $permintaan->id) }}">Show</a>
+                                            <a class="dropdown-item" href="{{ url('toko_bumiayu/permintaan_produk/' . $permintaan->id) }}">Show</a>
                                     @endif
                                 </div>
                             </td>

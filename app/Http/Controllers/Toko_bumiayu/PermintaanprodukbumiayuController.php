@@ -47,7 +47,7 @@ class PermintaanprodukbumiayuController extends Controller{
     
         $permintaanProduks = PermintaanProduk::whereDate('created_at', $today)
             ->whereHas('detailpermintaanproduks', function($query) {
-                $query->where('toko_id', 1);  // Filter berdasarkan toko_id di detailpermintaanproduks
+                $query->where('toko_id', 5);  // Filter berdasarkan toko_id di detailpermintaanproduks
             })
             ->orderBy('created_at', 'desc')
             ->with('detailpermintaanproduks')  // Eager load detailpermintaanproduks untuk tampilan
@@ -86,7 +86,7 @@ class PermintaanprodukbumiayuController extends Controller{
             Detailpermintaanproduk::create([
                 'permintaanproduk_id' => $permintaanProduk->id,
                 'produk_id' => $produkId,
-                'toko_id' => '1', 
+                'toko_id' => '5', 
                 'jumlah' => $jumlah,
                 'status' => 'unpost',
                 'tanggal_permintaan' => Carbon::now('Asia/Jakarta'),
@@ -98,20 +98,30 @@ class PermintaanprodukbumiayuController extends Controller{
 }
 
     
-    public function kode()
-    {
-        $lastBarang = PermintaanProduk::latest()->first();
-        if (!$lastBarang) {
-            $num = 1;
-        } else {
-            $lastCode = $lastBarang->kode_permintaan;
-            $num = (int) substr($lastCode, strlen('PB')) + 1; // Updated the prefix
-        }
-        $formattedNum = sprintf("%06s", $num);
-        $prefix = 'PB';
-        $newCode = $prefix . $formattedNum;
-        return $newCode;
+public function kode()
+{
+    $prefix = 'JLF';
+    $year = date('y'); // Dua digit terakhir dari tahun
+    $monthDay = date('dm'); // Format bulan dan hari: MMDD
+
+    // Mengambil kode terakhir yang dibuat pada hari yang sama dengan prefix PBNJ
+    $lastBarang = Permintaanproduk::where('kode_permintaan', 'LIKE', $prefix . '%')
+                                  ->whereDate('tanggal_permintaan', Carbon::today())
+                                  ->orderBy('kode_permintaan', 'desc')
+                                  ->first();
+
+    if (!$lastBarang) {
+        $num = 1;
+    } else {
+        $lastCode = $lastBarang->kode_permintaan;
+        $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
+        $num = $lastNum + 1;
     }
+
+    $formattedNum = sprintf("%03d", $num); 
+    $newCode = $prefix . $monthDay . $year . $formattedNum;
+    return $newCode;
+}
 
 public function show($id)
 {

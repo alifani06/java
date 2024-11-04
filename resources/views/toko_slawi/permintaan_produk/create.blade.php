@@ -83,7 +83,7 @@
                 <div class="card-body">
                     
 
-                    <form action="{{ url('toko_tegal/permintaan_produk') }}" method="POST">
+                    <form action="{{ url('toko_slawi/permintaan_produk') }}" method="POST">
                         @csrf
                         <input type="hidden" name="toko_id" > <!-- Assuming $toko is passed from the controller -->
                         <div class="row">
