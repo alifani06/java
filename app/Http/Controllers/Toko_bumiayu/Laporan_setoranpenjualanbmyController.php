@@ -229,7 +229,7 @@ class Laporan_setoranpenjualanbmyController extends Controller
     $klasifikasis = Klasifikasi::all();
     $kasirs = Penjualanproduk::select('kasir')->where('toko_id', 5)->distinct()->get();
 
-    return view('toko_tegal.laporan_setoranpenjualan.index', compact(
+    return view('toko_bumiayu.laporan_setoranpenjualan.index', compact(
         'inquery', 'penjualan_kotor', 'diskon_penjualan', 'penjualan_bersih',
         'deposit_masuk', 'deposit_keluar', 'total_penjualan', 'produks', 'tokos',
         'klasifikasis', 'kasirs', 'mesin_edc', 'qris', 'gobiz', 'transfer','total_metode','total_setoran'
@@ -432,7 +432,7 @@ class Laporan_setoranpenjualanbmyController extends Controller
         $total_setoran = $total_penjualan - $total_metode;
 
         // Return PDF dengan data yang diperlukan
-        $pdf = FacadePdf::loadView('toko_tegal.laporan_setoranpenjualan.print', compact(
+        $pdf = FacadePdf::loadView('toko_bumiayu.laporan_setoranpenjualan.print', compact(
             'inquery',
             'kasir',
             'penjualan_kotor',
