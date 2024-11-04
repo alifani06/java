@@ -10,7 +10,6 @@ use App\Models\Toko;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Dompdf\Options;
-use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -701,51 +700,40 @@ public function printReportdeposit(Request $request)
 
         // Kirim data ke view cetak
         $pdf = FacadePdf::loadView('admin.laporan_deposit.printrinci', compact(
-    'inquery', 
-    'tokos', 
-    'status', 
-    'tanggal_kirim', 
-    'tanggal_akhir', 
-    'status_pelunasan', 
-    'toko_id', 
-    'totalDeposit', 
-    'totalFee', 
-    'subTotal', 
-    'formattedStartDate', 
-    'formattedEndDate',
-    'branchName'
-));
+            'inquery', 
+            'tokos', 
+            'status', 
+            'tanggal_kirim', 
+            'tanggal_akhir', 
+            'status_pelunasan', 
+            'toko_id', 
+            'totalDeposit', 
+            'totalFee', 
+            'subTotal', 
+            'formattedStartDate', 
+            'formattedEndDate',
+            'branchName'
+        ));
 
-if ($pdf) {
-    $dompdf = $pdf->getDomPDF();
-    if ($dompdf) {
+        // Menambahkan nomor halaman di kanan bawah
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF();
         $canvas = $dompdf->getCanvas();
-        if ($canvas) {
-            $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
-                $text = "Page $pageNumber of $pageCount";
-                $font = $fontMetrics->getFont('Arial', 'normal');
-                $size = 8;
+        $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+            $text = "Page $pageNumber of $pageCount";
+            $font = $fontMetrics->getFont('Arial', 'normal');
+            $size = 8;
 
-                // Menghitung lebar teks
-                $width = $fontMetrics->getTextWidth($text, $font, $size);
+            // Menghitung lebar teks
+            $width = $fontMetrics->getTextWidth($text, $font, $size);
 
-                // Mengatur koordinat X dan Y
-                $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
-                $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+            // Mengatur koordinat X dan Y
+            $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+            $y = $canvas->get_height() - 15; // 15 pixel dari bawah
 
-                // Menambahkan teks ke posisi yang ditentukan
-                $canvas->text($x, $y, $text, $font, $size);
-            });
-        } else {
-            // Tangani error di sini, misalnya dengan menampilkan pesan log
-            \Log::error('Canvas is null');
-        }
-    } else {
-        \Log::error('DomPDF is null');
-    }
-} else {
-    \Log::error('PDF is null');
-}
+            // Menambahkan teks ke posisi yang ditentukan
+            $canvas->text($x, $y, $text, $font, $size);
+        });
 
         // Output PDF ke browser
         return $pdf->stream('laporan_deposit.pdf');
