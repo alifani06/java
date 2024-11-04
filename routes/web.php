@@ -598,7 +598,7 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
 
     Route::resource('permintaan_produk', \App\Http\Controllers\Toko_banjaran\PermintaanprodukbanjaranController::class);
     Route::post('toko_banjaran/permintaan_produk', [PermintaanprodukbanjaranController::class, 'store']);
-    Route::get('toko_banjaran/permintaan_produk', [PermintaanprodukbanjaranController::class, 'show']);
+    Route::get('toko_banjaran/permintaan_produk/{id}', [PermintaanprodukbanjaranController::class, 'show'])->name('permintaan_produk.show');
     Route::get('/permintaan-produk/{id}/print', [PermintaanprodukbanjaranController::class, 'print'])->name('permintaan_produk.print');
     Route::get('permintaan_produk/unpost_permintaanproduk/{id}', [\App\Http\Controllers\Toko_banjaran\PermintaanprodukbanjaranController::class, 'unpost_permintaanproduk']);
     Route::get('permintaan_produk/posting_permintaanproduk/{id}', [\App\Http\Controllers\Toko_banjaran\PermintaanprodukbanjaranController::class, 'posting_permintaanproduk']);
@@ -791,7 +791,7 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
 
     Route::resource('permintaan_produk', \App\Http\Controllers\Toko_tegal\PermintaanproduktegalController::class);
     Route::post('toko_tegal/permintaan_produk', [PermintaanproduktegalController::class, 'store']);
-    Route::get('toko_tegal/permintaan_produk', [PermintaanproduktegalController::class, 'show']);
+    // Route::get('toko_tegal/permintaan_produk', [PermintaanproduktegalController::class, 'show']);
     Route::get('/permintaan-produk/{id}/print', [PermintaanproduktegalController::class, 'print'])->name('permintaan_produk.print');
     Route::get('permintaan_produk/unpost_permintaanproduk/{id}', [\App\Http\Controllers\Toko_tegal\PermintaanproduktegalController::class, 'unpost_permintaanproduk']);
     Route::get('permintaan_produk/posting_permintaanproduk/{id}', [\App\Http\Controllers\Toko_tegal\PermintaanproduktegalController::class, 'posting_permintaanproduk']);
@@ -960,7 +960,7 @@ Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {
 
     Route::resource('permintaan_produk', \App\Http\Controllers\Toko_pemalang\PermintaanprodukpemalangController::class);
     Route::post('toko_pemalang/permintaan_produk', [PermintaanprodukpemalangController::class, 'store']);
-    Route::get('toko_pemalang/permintaan_produk', [PermintaanprodukpemalangController::class, 'show']);
+    // Route::get('toko_pemalang/permintaan_produk', [PermintaanprodukpemalangController::class, 'show']);
     Route::get('/permintaan-produk/{id}/print', [PermintaanprodukpemalangController::class, 'print'])->name('permintaan_produk.print');
     Route::get('permintaan_produk/unpost_permintaanproduk/{id}', [\App\Http\Controllers\Toko_pemalang\PermintaanprodukpemalangController::class, 'unpost_permintaanproduk']);
     Route::get('permintaan_produk/posting_permintaanproduk/{id}', [\App\Http\Controllers\Toko_pemalang\PermintaanprodukpemalangController::class, 'posting_permintaanproduk']);
@@ -1136,7 +1136,7 @@ Route::middleware('toko_bumiayu')->prefix('toko_bumiayu')->group(function () {
 
     Route::resource('permintaan_produk', \App\Http\Controllers\Toko_bumiayu\PermintaanprodukbumiayuController::class);
     Route::post('toko_bumiayu/permintaan_produk', [PermintaanprodukbumiayuController::class, 'store']);
-    Route::get('toko_bumiayu/permintaan_produk', [PermintaanprodukbumiayuController::class, 'show']);
+    // Route::get('toko_bumiayu/permintaan_produk', [PermintaanprodukbumiayuController::class, 'show']);
     Route::get('/permintaan-produk/{id}/print', [PermintaanprodukbumiayuController::class, 'print'])->name('permintaan_produk.print');
     Route::get('permintaan_produk/unpost_permintaanproduk/{id}', [\App\Http\Controllers\Toko_bumiayu\PermintaanprodukbumiayuController::class, 'unpost_permintaanproduk']);
     Route::get('permintaan_produk/posting_permintaanproduk/{id}', [\App\Http\Controllers\Toko_bumiayu\PermintaanprodukbumiayuController::class, 'posting_permintaanproduk']);
@@ -1306,7 +1306,7 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
 
     Route::resource('permintaan_produk', \App\Http\Controllers\Toko_slawi\PermintaanprodukslawiController::class);
     Route::post('toko_slawi/permintaan_produk', [PermintaanprodukslawiController::class, 'store']);
-    Route::get('toko_slawi/permintaan_produk', [PermintaanprodukslawiController::class, 'show']);
+    // Route::get('toko_slawi/permintaan_produk', [PermintaanprodukslawiController::class, 'show']);
     Route::get('/permintaan-produk/{id}/print', [PermintaanprodukslawiController::class, 'print'])->name('permintaan_produk.print');
     Route::get('permintaan_produk/unpost_permintaanproduk/{id}', [\App\Http\Controllers\Toko_slawi\PermintaanprodukslawiController::class, 'unpost_permintaanproduk']);
     Route::get('permintaan_produk/posting_permintaanproduk/{id}', [\App\Http\Controllers\Toko_slawi\PermintaanprodukslawiController::class, 'posting_permintaanproduk']);
@@ -1480,7 +1480,7 @@ Route::middleware('toko_cilacap')->prefix('toko_cilacap')->group(function () {
 
     Route::resource('permintaan_produk', \App\Http\Controllers\Toko_cilacap\PermintaanprodukcilacapController::class);
     Route::post('toko_cilacap/permintaan_produk', [PermintaanprodukcilacapController::class, 'store']);
-    Route::get('toko_cilacap/permintaan_produk', [PermintaanprodukcilacapController::class, 'show']);
+    // Route::get('toko_cilacap/permintaan_produk', [PermintaanprodukcilacapController::class, 'show']);
     Route::get('/permintaan-produk/{id}/print', [PermintaanprodukcilacapController::class, 'print'])->name('permintaan_produk.print');
     Route::get('permintaan_produk/unpost_permintaanproduk/{id}', [\App\Http\Controllers\Toko_cilacap\PermintaanprodukcilacapController::class, 'unpost_permintaanproduk']);
     Route::get('permintaan_produk/posting_permintaanproduk/{id}', [\App\Http\Controllers\Toko_cilacap\PermintaanprodukcilacapController::class, 'posting_permintaanproduk']);
