@@ -103,6 +103,9 @@
                                 <button type="button" class="btn btn-primary btn-block" onclick="printReport(event)">
                                     <i class="fas fa-print"></i> Cetak
                                 </button>
+                                <button type="submit" class="btn btn-success btn-block" name="export" value="excel">
+                                    <i class="fas fa-file-excel"></i> Ekspor Excel
+                                </button>
                             </div>
                         </div>
                     </form>

@@ -46,6 +46,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Dompdf\Options;
+use App\Exports\ProdukExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 
@@ -219,8 +221,135 @@ class Laporan_stoktokopemalangController extends Controller
 
     
     
+    // public function printReport(Request $request)
+    // {
+    //     $klasifikasis = Klasifikasi::all();
+    //     $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);
+    
+    //     // Filter berdasarkan klasifikasi_id
+    //     if ($request->has('klasifikasi_id') && $request->klasifikasi_id) {
+    //         $produkQuery->where('klasifikasi_id', $request->klasifikasi_id);
+    //     }
+    
+    //     // Filter berdasarkan subklasifikasi_id
+    //     if ($request->has('subklasifikasi_id') && $request->subklasifikasi_id) {
+    //         $produkQuery->where('subklasifikasi_id', $request->subklasifikasi_id);
+    //     }
+    
+    //     $produk = $produkQuery->get();
+    
+    //     // Filter berdasarkan toko_id
+    //     $toko_id = $request->get('toko_id');
+    //     if ($toko_id == '1') {
+    //         $stok = Stok_tokobanjaran::with('produk')->get();
+    //         $tokoCabang = 'BANJARAN';
+    //     }
+    //     elseif ($toko_id == '2') {
+    //         $stok = Stok_tokotegal::with('produk')->get();
+    //         $tokoCabang = 'TEGAL';
+
+    //     }
+    //     elseif ($toko_id == '3') {
+    //         $stok = Stok_tokoslawi::with('produk')->get();
+    //         $tokoCabang = 'SLAWI';
+
+    //     } 
+    //     elseif ($toko_id == '4') {
+    //         $stok = Stok_tokopemalang::with('produk')->get();
+    //         $tokoCabang = 'PEMALANG';
+
+    //     }
+    //     elseif ($toko_id == '5') {
+    //         $stok = Stok_tokobumiayu::with('produk')->get();
+    //         $tokoCabang = 'BUMIAYU';
+
+    //     }
+    //     elseif ($toko_id == '6') {
+    //         $stok = Stok_tokocilacap::with('produk')->get();
+    //         $tokoCabang = 'CILACAP';
+
+    //     } else {
+    //         $stok = collect();
+    //     }
+    
+    //     $stokGrouped = $stok->groupBy('produk_id')->map(function ($group) {
+    //         $firstItem = $group->first();
+    //         $totalJumlah = $group->sum('jumlah');
+    //         $firstItem->jumlah = $totalJumlah;
+    //         return $firstItem;
+    //     })->values();
+    
+    //     $totalHarga = 0;
+    //     $totalStok = 0;
+    //     $totalSubTotal = 0;
+    
+    //     $produkWithStok = $produk->map(function ($item) use ($stokGrouped, &$totalHarga, &$totalStok, &$totalSubTotal) {
+    //         $stokItem = $stokGrouped->firstWhere('produk_id', $item->id);
+    //         $item->jumlah = $stokItem ? $stokItem->jumlah : 0;
+    //         $subTotal = $item->jumlah * $item->harga;
+    //         $item->subTotal = $subTotal;
+    //         $totalHarga += $item->harga * $item->jumlah;
+    //         $totalStok += $item->jumlah;
+    //         $totalSubTotal += $subTotal;
+    //         return $item;
+    //     });
+    
+    //     $subklasifikasis = $request->has('klasifikasi_id') 
+    //         ? SubKlasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get() 
+    //         : collect();
+    
+    //     // Inisialisasi DOMPDF
+    //     $options = new Options();
+    //     $options->set('isHtml5ParserEnabled', true);
+    //     $options->set('isRemoteEnabled', true);
+    
+    //     $dompdf = new Dompdf($options);
+    
+    //     // Memuat konten HTML dari view
+    //     $html = view('toko_pemalang.laporan_stoktokopemalang.print', [
+    //         'produkWithStok' => $produkWithStok,
+    //         'klasifikasis' => $klasifikasis,
+    //         'subklasifikasis' => $subklasifikasis,
+    //         'totalHarga' => $totalHarga,
+    //         'totalStok' => $totalStok,
+    //         'totalSubTotal' => $totalSubTotal,
+    //         'tokoCabang' => $tokoCabang, // Pass the cabang name
+
+    //     ])->render();
+    
+    //     $dompdf->loadHtml($html);
+    
+    //     // Set ukuran kertas dan orientasi
+    //     $dompdf->setPaper('A4', 'portrait');
+    
+    //     // Render PDF
+    //     $dompdf->render();
+    
+    //     // Menambahkan nomor halaman di kanan bawah
+    //     $canvas = $dompdf->getCanvas();
+    //     $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+    //         $text = "Page $pageNumber of $pageCount";
+    //         $font = $fontMetrics->getFont('Arial', 'normal');
+    //         $size = 10;
+    
+    //         // Menghitung lebar teks
+    //         $width = $fontMetrics->getTextWidth($text, $font, $size);
+    
+    //         // Mengatur koordinat X dan Y
+    //         $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+    //         $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+    
+    //         // Menambahkan teks ke posisi yang ditentukan
+    //         $canvas->text($x, $y, $text, $font, $size);
+    //     });
+    
+    //     // Output PDF ke browser
+    //     return $dompdf->stream('laporan_stoktoko.pdf', ['Attachment' => false]);
+    // }
+
     public function printReport(Request $request)
     {
+        // Ambil semua klasifikasi
         $klasifikasis = Klasifikasi::all();
         $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);
     
@@ -241,35 +370,26 @@ class Laporan_stoktokopemalangController extends Controller
         if ($toko_id == '1') {
             $stok = Stok_tokobanjaran::with('produk')->get();
             $tokoCabang = 'BANJARAN';
-        }
-        elseif ($toko_id == '2') {
+        } elseif ($toko_id == '2') {
             $stok = Stok_tokotegal::with('produk')->get();
             $tokoCabang = 'TEGAL';
-
-        }
-        elseif ($toko_id == '3') {
+        } elseif ($toko_id == '3') {
             $stok = Stok_tokoslawi::with('produk')->get();
             $tokoCabang = 'SLAWI';
-
-        } 
-        elseif ($toko_id == '4') {
+        } elseif ($toko_id == '4') {
             $stok = Stok_tokopemalang::with('produk')->get();
             $tokoCabang = 'PEMALANG';
-
-        }
-        elseif ($toko_id == '5') {
+        } elseif ($toko_id == '5') {
             $stok = Stok_tokobumiayu::with('produk')->get();
             $tokoCabang = 'BUMIAYU';
-
-        }
-        elseif ($toko_id == '6') {
+        } elseif ($toko_id == '6') {
             $stok = Stok_tokocilacap::with('produk')->get();
             $tokoCabang = 'CILACAP';
-
         } else {
             $stok = collect();
         }
     
+        // Mengelompokkan stok berdasarkan produk_id
         $stokGrouped = $stok->groupBy('produk_id')->map(function ($group) {
             $firstItem = $group->first();
             $totalJumlah = $group->sum('jumlah');
@@ -277,10 +397,12 @@ class Laporan_stoktokopemalangController extends Controller
             return $firstItem;
         })->values();
     
+        // Inisialisasi total
         $totalHarga = 0;
         $totalStok = 0;
         $totalSubTotal = 0;
     
+        // Menghitung total harga dan stok
         $produkWithStok = $produk->map(function ($item) use ($stokGrouped, &$totalHarga, &$totalStok, &$totalSubTotal) {
             $stokItem = $stokGrouped->firstWhere('produk_id', $item->id);
             $item->jumlah = $stokItem ? $stokItem->jumlah : 0;
@@ -292,11 +414,34 @@ class Laporan_stoktokopemalangController extends Controller
             return $item;
         });
     
+        // Mendapatkan subklasifikasi jika ada
         $subklasifikasis = $request->has('klasifikasi_id') 
             ? SubKlasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get() 
             : collect();
     
-        // Inisialisasi DOMPDF
+        // Mendapatkan nama klasifikasi yang dipilih
+        $selectedKlasifikasi = null;
+        if ($request->has('klasifikasi_id') && $request->klasifikasi_id) {
+            $selectedKlasifikasi = Klasifikasi::find($request->klasifikasi_id);
+        }
+    
+        // Cek apakah ada permintaan untuk ekspor Excel
+        if ($request->has('export') && $request->export === 'excel') {
+            // Menentukan nama file sesuai dengan klasifikasi yang dipilih
+            $fileName = 'laporan_stoktoko';
+            if ($selectedKlasifikasi) {
+                // Menggunakan nama klasifikasi untuk nama file
+                $fileName = 'laporan_' . strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $selectedKlasifikasi->nama))) . '.xlsx';
+            } else {
+                $fileName .= '.xlsx';
+            }
+    
+            // Mengunduh file dengan nama yang ditentukan
+            return Excel::download(new ProdukExport($produkWithStok, $selectedKlasifikasi->nama ?? 'Semua Klasifikasi'), $fileName);
+        }
+
+    
+        // Inisialisasi DOMPDF untuk cetak PDF
         $options = new Options();
         $options->set('isHtml5ParserEnabled', true);
         $options->set('isRemoteEnabled', true);
@@ -311,8 +456,8 @@ class Laporan_stoktokopemalangController extends Controller
             'totalHarga' => $totalHarga,
             'totalStok' => $totalStok,
             'totalSubTotal' => $totalSubTotal,
-            'tokoCabang' => $tokoCabang, // Pass the cabang name
-
+            'tokoCabang' => $tokoCabang,
+            'selectedKlasifikasi' => $selectedKlasifikasi 
         ])->render();
     
         $dompdf->loadHtml($html);
@@ -341,8 +486,14 @@ class Laporan_stoktokopemalangController extends Controller
             $canvas->text($x, $y, $text, $font, $size);
         });
     
-        // Output PDF ke browser
-        return $dompdf->stream('laporan_stoktoko.pdf', ['Attachment' => false]);
+        // Output PDF ke browser dengan nama file sesuai klasifikasi yang dipilih
+        $fileName = 'laporan_stoktoko';
+        if ($selectedKlasifikasi) {
+            // Menggunakan nama klasifikasi untuk nama file
+            $fileName = 'laporan_' . strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $selectedKlasifikasi->nama))) . '.pdf';
+        }
+    
+        return $dompdf->stream($fileName, ['Attachment' => false]);
     }
 
     public function printReportstokpesananpemalang(Request $request)
