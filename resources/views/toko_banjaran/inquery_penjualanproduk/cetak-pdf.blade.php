@@ -469,15 +469,16 @@
             <div class="terimakasihd" style="text-align: center; font-size: 12px; margin-top: -35px">
                 <p>Terimakasih atas kunjungannya</p><br> 
             </div>
-            <div class="qr" style="display: flex; justify-content: center; align-items: center; margin-top: -10px; margin-left: 100px">
+            <div style="text-align: left; font-size: 11px; margin-top: -35px; font-style: italic;">
+                <p>Re-print: {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('d M Y H:i') }}</p>
+            </div>
+            <div class="qr" style="display: flex; justify-content: center; align-items: center; margin-top: -5px; margin-left: 100px">
                 <div style="text-align: center;">
                     {!! DNS2D::getBarcodeHTML($penjualan->qrcode_penjualan, 'QRCODE', 1.5, 1.5) !!}
                 </div>
             </div>  
-        </div>
-        
-        
-        
+            
+        </div> 
     </body>
     </html>
     
