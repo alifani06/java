@@ -471,7 +471,6 @@
             </div>
             <div style="text-align: left; font-size: 11px; margin-top: -35px; font-style: italic;">
                 <p>Re-print: {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('d M Y H:i') }}</p>
-            
             </div>
             <div class="qr" style="display: flex; justify-content: center; align-items: center; margin-top: -5px; margin-left: 100px">
                 <div style="text-align: center;">
