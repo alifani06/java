@@ -338,16 +338,16 @@
                             @if($detail->kode_produk) <!-- Pengecekan jika kode_produk tidak null -->
                                 <tr>
                                     <td style="font-size: 10px;">{{ $detail->nama_produk }}</td>
-                                    <td style="font-size: 12px; text-align: right;">{{ $detail->jumlah }}</td>
-                                    <td style="font-size: 12px; text-align: right;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
-                                    <td style="font-size: 12px; text-align: right;">
+                                    <td style="font-size: 11px; text-align: right;">{{ $detail->jumlah }}</td>
+                                    <td style="font-size: 11px; text-align: right;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
+                                    <td style="font-size: 11px; text-align: right;">
                                         @if ($detail->diskon > 0)
                                             {{ $detail->diskon }} %
                                         @else
                                             -
                                         @endif
                                     </td>
-                                    <td style="font-size: 12px; text-align: right;">{{ number_format($detail->total, 0, ',', '.') }}</td>
+                                    <td style="font-size: 11px; text-align: right;">{{ number_format($detail->total, 0, ',', '.') }}</td>
                                 </tr>
                                 @php
                                     // Validasi dan konversi data menjadi numerik
@@ -358,24 +358,24 @@
                         @endforeach
                 
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 12px;"><strong>Total</strong></td>
-                            <td style="font-size: 12px;">{{ number_format($subtotal, 0, ',', '.') }}</td>
+                            <td colspan="4" style="text-align: right; font-size: 11px;"><strong>Total</strong></td>
+                            <td style="font-size: 11px;">{{ number_format($subtotal, 0, ',', '.') }}</td>
                         </tr>  
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 12px;"><strong>DP</strong></td>
-                            <td style="font-size: 12px; text-align: right;">{{ number_format($inquery->dppemesanan->dp_pemesanan, 0, ',', '.') }}</td>
+                            <td colspan="4" style="text-align: right; font-size: 11px;"><strong>DP</strong></td>
+                            <td style="font-size: 11px; text-align: right;">{{ number_format($inquery->dppemesanan->dp_pemesanan, 0, ',', '.') }}</td>
                         </tr>  
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 12px;"><strong>Kekurangan</strong></td>
-                            <td style="font-size: 12px; text-align: right;">
+                            <td colspan="4" style="text-align: right; font-size: 11px;"><strong>Kekurangan</strong></td>
+                            <td style="font-size: 11px; text-align: right;">
                                 {{ in_array($inquery->dppemesanan->kekurangan_pemesanan, [null, 0, 1]) ? '-' : number_format($inquery->dppemesanan->kekurangan_pemesanan, 0, ',', '.') }}
                             </td>
                         </tr> 
                         
                         @if($inquery->metode_id !== null)
                             <tr>
-                                <td colspan="4" style="text-align: right; font-size: 12px;"><strong>Fee {{ $inquery->metodepembayaran->nama_metode }} {{ $inquery->metodepembayaran->fee }}%</strong></td>
-                                <td style="font-size: 12px; text-align: right;">
+                                <td colspan="4" style="text-align: right; font-size: 11px;"><strong>Fee {{ $inquery->metodepembayaran->nama_metode }} {{ $inquery->metodepembayaran->fee }}%</strong></td>
+                                <td style="font-size: 11px; text-align: right;">
                                     @php
                                         // Menghapus semua karakter kecuali angka
                                         $total_fee = preg_replace('/[^\d]/', '', $inquery->total_fee);
@@ -387,14 +387,14 @@
                             </tr>
                         @endif
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 12px;"><strong>Bayar</strong></td>
-                            <td style="font-size: 12px; text-align: right;">
+                            <td colspan="4" style="text-align: right; font-size: 11px;"><strong>Bayar</strong></td>
+                            <td style="font-size: 11px; text-align: right;">
                                 {{ in_array($inquery->pelunasan, [null, 0, 1]) ? '-' : number_format($inquery->pelunasan, 0, ',', '.') }}
                             </td>
                         </tr> 
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 12px;"><strong>Kembali</strong></td>
-                            <td style="font-size: 12px; text-align: right;">
+                            <td colspan="4" style="text-align: right; font-size: 11px;"><strong>Kembali</strong></td>
+                            <td style="font-size: 11px; text-align: right;">
                                 {{ in_array($inquery->kembali, [null, 0, 1]) ? '-' : number_format($inquery->kembali, 0, ',', '.') }}
                             </td>
                         </tr> 
