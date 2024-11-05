@@ -261,7 +261,7 @@ class Inquery_penjualanprodukslawiController extends Controller
                 'total_fee' => $request->total_fee, 
                 'keterangan' => $request->keterangan, 
                 'toko_id' => $request->toko_id,
-                'kasir' => ucfirst(auth()->user()->karyawan->nama_lengkap),
+                'kasir' => $request->kasir,
                 'tanggal_penjualan' => $request->tanggal_penjualan ?? null,
                 'status' => 'posting',
                 'nominal_diskon' => $nominal_diskon, // Simpan total nominal diskon

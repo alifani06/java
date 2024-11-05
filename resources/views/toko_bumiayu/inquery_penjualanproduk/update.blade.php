@@ -285,7 +285,7 @@
                         </div>
                         <div class="col-md-5 mb-3">
                             <label for="kasir">Bagian Input :</label>
-                            <input type="text" class="form-control" readonly name="kasir" value="{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}">
+                            <input type="text" class="form-control" readonly name="kasir" value="{{$penjualan->kasir}}">
                         </div> 
                     </div>     
                 </div>

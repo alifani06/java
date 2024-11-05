@@ -285,7 +285,7 @@
                         </div>
                         <div class="col-md-5 mb-3">
                             <label for="kasir">Bagian Input :</label>
-                            <input type="text" class="form-control" readonly name="kasir" value="{{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}">
+                            <input type="text" class="form-control" readonly name="kasir" value="{{ $penjualan->kasir}}">
                         </div> 
                     </div>     
                 </div>
@@ -896,7 +896,7 @@
                 <td hidden><input type="text" readonly id="nominal_diskon-${urutan}" name="nominal_diskon[]" class="form-control text-right" value="${nominal_diskon}" hidden></td>
                 <td><input type="text" readonly id="harga-${urutan}" name="harga[]" class="form-control text-right" value="${harga}"></td>
                 <td><input type="text" readonly id="total-${urutan}" name="total[]" class="form-control text-right" value="${total}"></td>
-                <td><input type="text" readonly id="totalasli-${urutan}" name="totalasli[]" class="form-control text-right" value="${totalasli}"></td>
+                <td hidden><input type="text" readonly id="totalasli-${urutan}" name="totalasli[]" class="form-control text-right" value="${totalasli}" hidden></td>
 
                 <td style="width: 10%">
                     <button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(${urutan})"><i class="fas fa-plus"></i></button>
