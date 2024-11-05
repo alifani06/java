@@ -161,7 +161,7 @@
                                                 
                                                     <a class="dropdown-item"
                                                     href="{{ url('/toko_tegal/inquery_penjualanproduktegal/' . $item->id ) }}">Show</a>
-                                                    <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                                    <form action="{{ route('inquery_penjualanproduk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="dropdown-item">Delete</button>

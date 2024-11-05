@@ -954,7 +954,7 @@ class PenjualanproduktegalController extends Controller
 
                 // Mengembalikan stok untuk setiap produk yang dipesan
                 foreach ($detailPenjualanProduks as $detail) {
-                    DB::table('stok_tokobanjarans')
+                    DB::table('stok_tokotegals')
                         ->where('produk_id', $detail->produk_id)
                         ->increment('jumlah', $detail->jumlah);
                 }

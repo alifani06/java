@@ -298,6 +298,25 @@ class Inquery_penjualanproduktegalController extends Controller
         return redirect()->route('inquery_penjualanproduktegal.index')->with('success', 'Data penjualan berhasil diperbarui.');
     }
 
+    public function destroy($id)
+    {
+        // Cari data penjualanproduk berdasarkan ID
+        $penjualanproduk = Penjualanproduk::find($id);
+
+        // Jika data tidak ditemukan, kembalikan pesan error
+        if (!$penjualanproduk) {
+            return redirect()->back()->with('error', 'Data penjualan tidak ditemukan.');
+        }
+
+        // Hapus detail penjualan yang terkait dengan penjualanproduk
+        Detailpenjualanproduk::where('penjualanproduk_id', $penjualanproduk->id)->delete();
+
+        // Hapus data penjualanproduk
+        $penjualanproduk->delete();
+
+        return redirect()->route('inquery_penjualanproduktegal.index')->with('success', 'Data penjualan berhasil dihapus.');
+    }
+
     public function metode($id)
     {
         $metode = Metodepembayaran::where('id', $id)->first();
