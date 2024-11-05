@@ -477,7 +477,6 @@
                     {!! DNS2D::getBarcodeHTML($penjualan->qrcode_penjualan, 'QRCODE', 1.5, 1.5) !!}
                 </div>
             </div>  
-            
         </div> 
     </body>
     </html>
