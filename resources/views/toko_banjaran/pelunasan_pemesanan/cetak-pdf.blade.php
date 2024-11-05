@@ -402,7 +402,9 @@
                     </tbody>
                     <div class="catatan">
                         <label style="font-size: 9px;"><strong>Catatan:</strong></label>
-                        <p style="margin-top: 1px; font-size: 10px;">{!! nl2br(e($inquery->dppemesanan->pemesananproduk->catatan)) ?? '-' !!}</p>
+                        {{-- <p style="margin-top: 1px; font-size: 10px;">{!! nl2br(e($inquery->dppemesanan->pemesananproduk->catatan)) ?? '-' !!}</p> --}}
+                        <p style="margin-top: 2px; font-size: 10px;">{!! nl2br(e($inquery->dppemesanan->pemesananproduk->catatan)) ?? '-' !!}</p>
+
                     </div>
                 </table>   
             </div>
