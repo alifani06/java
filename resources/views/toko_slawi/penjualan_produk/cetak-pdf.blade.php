@@ -14,12 +14,12 @@
             margin-left: 0;
             margin-top: 0;
             /* padding: 0; */
-            padding-right: 460px;
-            font-size: 12px;
+            padding-right: 430px;
+            font-size: 10x;
             background-color: #fff;
         }
             .container {
-            width: 63mm; /* Adjusted width */
+            width: 65mm; /* Adjusted width */
             margin: 0 auto;
             border: 1px solid white;
             padding: 5px;
@@ -171,7 +171,7 @@
         padding: 0;
     }
     .container {
-        width: 63mm; /* Sesuaikan dengan lebar kertas thermal */
+        width: 65mm; /* Sesuaikan dengan lebar kertas thermal */
         margin: 0 auto;
         border: none;
         padding: 0;
@@ -254,7 +254,7 @@
         border-bottom: 1px solid #0f0e0e;
     }
     @page {
-        size: 63mm auto; /* Sesuaikan dengan ukuran kertas thermal */
+        size: 65mm auto; /* Sesuaikan dengan ukuran kertas thermal */
         margin: 0mm; /* Set margin ke 0 untuk semua sisi */
     }
 }
@@ -268,28 +268,28 @@
         <div class="header">
             <div class="text">
                 <h1>PT JAVA BAKERY FACTORY</h1>
-                <p>Cabang : {{ $tokos->nama_toko }}</p>
-                <p>{{ $tokos->alamat }}</p>
+               <p style="font-size: 10px;">Cabang : {{ $tokos->nama_toko }}</p>
+                <p style="font-size: 10px;">{{ $tokos->alamat }}</p>
             </div>
         </div>
         <hr class="divider">
         <hr class="divider">
         <div class="section">
             <h2>Struk penjualan</h2>
-            <p style="text-align: right; font-size: 9px; margin-bottom: 10px;">
+            <p style="text-align: right; font-size: 11px; margin-bottom: 10px;">
                 {{ \Carbon\Carbon::parse($penjualan->tanggal_penjualan)->locale('id')->translatedFormat('d F Y H:i') }}
             </p><br>
             <div class="detail-info">
                 <div class="penjualan">
                     <p>
                         <span style="min-width: 10px; display: inline-flex; align-items: center;">No penjualan</span>
-                        <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $penjualan->kode_penjualan }}</span>
+                        <span style="min-width: 50px; display: inline-flex; align-items: center; font-size: 11px;">: {{ $penjualan->kode_penjualan }}</span>
                     </p>
                 </div>
                 <div class="kasir">
                     <p>
                         <span style="min-width: 60px; display: inline-flex; align-items: center;">Kasir</span>
-                        <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ ucfirst(auth()->user()->karyawan->nama_lengkap) }}</span>
+                        <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $penjualan->kasir }}</span>
                     </p>
                 </div>
                 @if(!is_null($penjualan->nama_pelanggan))
@@ -315,11 +315,11 @@
                     <thead>
                         <tr>
                             {{-- <th style="font-size: 9px; width: 10%;">Kode</th> --}}
-                            <th style="font-size: 9px; width: 50%; text-align: left">Nama Produk</th>
-                            <th style="font-size: 9px; width: 10%;">Jumlah</th>
-                            <th style="font-size: 9px; width: 15%;">Harga</th>
-                            <th style="font-size: 9px; width: 10%;">Diskon</th>
-                            <th style="font-size: 9px; width: 15%;">Total</th>
+                            <th style="font-size: 10px; width: 50%; text-align: left">Nama Produk</th>
+                            <th style="font-size: 10px; width: 10%;">Jumlah</th>
+                            <th style="font-size: 10px; width: 15%;">Harga</th>
+                            <th style="font-size: 10px; width: 10%;">Diskon</th>
+                            <th style="font-size: 10px; width: 15%;">Total</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -332,22 +332,22 @@
                            $nama_produk = wordwrap($detail->nama_produk, 15, "\n", true);
                        @endphp
                        <tr>
-                           {{-- <td style="font-size: 9px;">{{ $detail->kode_lama }}</td> --}}
+                           {{-- <td style="font-size: 10px;">{{ $detail->kode_lama }}</td> --}}
                            
                            {{-- Tampilkan nama produk dengan pemotongan karakter --}}
-                           <td style="font-size: 9px; word-wrap: break-word; white-space: pre-line;">{{ $nama_produk }}</td>
+                           <td style="font-size: 10px; word-wrap: break-word; white-space: pre-line;">{{ $nama_produk }}</td>
                            
                            {{-- Kolom lainnya --}}
-                           <td style="font-size: 9px; text-align: right">{{ $detail->jumlah }}</td>
-                           <td style="font-size: 9px; text-align: right">{{ number_format($detail->harga, 0, ',', '.') }}</td>
-                           <td style="font-size: 9px; text-align: right">
+                           <td style="font-size: 11px; text-align: right">{{ $detail->jumlah }}</td>
+                           <td style="font-size: 11px; text-align: right">{{ number_format($detail->harga, 0, ',', '.') }}</td>
+                           <td style="font-size: 11px; text-align: right">
                                @if ($detail->diskon > 0)
                                    {{ $detail->diskon }}
                                @else
                                    -
                                @endif
                            </td>
-                           <td style="font-size: 9px; text-align: right;">{{ number_format($detail->total, 0, ',', '.') }}</td>
+                           <td style="font-size: 11px; text-align: right;">{{ number_format($detail->total, 0, ',', '.') }}</td>
                        </tr>
                        
                        @php
@@ -357,14 +357,14 @@
                    @endforeach
                         <tr>
                             @if($penjualan->metode_id !== null)
-                                <td colspan="4" style="text-align: right; font-size: 9px;">
+                                <td colspan="4" style="text-align: right; font-size: 11px;">
                                     <strong>
                                         Fee {{$penjualan->metodepembayaran->nama_metode}}</strong>
                                     @if($penjualan->total_fee != 0)
                                         {{$penjualan->metodepembayaran->fee}}% :
                                     @endif
                                 </td>
-                                <td style="font-size: 9px; text-align: right;">
+                                <td style="font-size: 11px; text-align: right;">
                                     @if($penjualan->total_fee != 0)
                                         @php
                                             $total_fee = preg_replace('/[^\d]/', '', $penjualan->total_fee);
@@ -377,22 +377,22 @@
                         </tr>
                         <tr>
                             @if($penjualan->metode_id !== NULL)
-                            <td colspan="4" style="text-align: right; font-size: 9px;">
+                            <td colspan="4" style="text-align: right; font-size: 11px;">
                                 <strong>
                                     <span style="color: black;">No.</span><span style="color: white">lllllllllllllllllllllllllll</span>
                                 </strong>
                                 </td>
-                                <td style="font-size: 9px; text-align: right;">{{ $penjualan->keterangan }}</td>
+                                <td style="font-size: 11px; text-align: right;">{{ $penjualan->keterangan }}</td>
 
                             @endif
                         </tr>
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 9px;">
+                            <td colspan="4" style="text-align: right; font-size: 11px;">
                                 <strong>
                                     <span style="color: black;">Total</span><span style="color: white;">lllllllllllllllllllllllll</span>
                                 </strong>
                             </td>
-                            <td style="font-size: 9px; text-align: right;">
+                            <td style="font-size: 11px; text-align: right;">
                                 @php
                                     // Mengambil nilai sub_total
                                     $subTotal = $penjualan->sub_total;
@@ -407,11 +407,11 @@
                         
                         @if($penjualan->metode_id == Null)
                             <tr>
-                                <td colspan="4" style="text-align: right; font-size: 9px;"> <strong>
+                                <td colspan="4" style="text-align: right; font-size: 11px;"> <strong>
                                     <span style="color: black;">Bayar</span><span style="color: white">lllllllllllllllllllllllll</span>
                                 </strong></td>
                                
-                                    <td style="font-size: 9px; text-align: right;">
+                                    <td style="font-size: 11px; text-align: right;">
                                         @php
                                             // Mengambil nilai sub_total
                                             $Bayar = $penjualan->bayar;
@@ -423,10 +423,10 @@
                                     </td>
                             </tr>
                             <tr>
-                                <td colspan="4" style="text-align: right; font-size: 9px;"> <strong>
+                                <td colspan="4" style="text-align: right; font-size: 11px;"> <strong>
                                     <span style="color: black;">Kembali</span><span style="color: white">lllllllllllllllllllll</span>
                                 </strong></td>
-                                <td style="font-size: 9px; text-align: right;">
+                                <td style="font-size: 11px; text-align: right;">
                                     @php
                                         // Mengambil nilai sub_total
                                         $Kembali = $penjualan->kembali;
@@ -443,14 +443,6 @@
                     </tbody>
                 </table>
                 
-{{--                     
-                    @if($penjualan->metode_id !== NULL)
-                        <div style="text-align: right; font-size: 9px;">
-                            <strong>
-                                <span style="color: black;">No.</span><span style="color: white">lllllllllllllllllllll</span>
-                            </strong>{{ $penjualan->keterangan }}
-                        </div>
-                    @endif --}}
                 @endif
             </div>
         
@@ -462,21 +454,11 @@
             @endif
         
             @if(preg_replace('/[^0-9]/', '', $penjualan->sub_total) < preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli))
-            <div class="hemat" style="margin-top: 4;">
-                <label style="font-size: 11px;">Anda mendapatkan diskon: </label>
-                <span>
-                    <strong>
-                        {{ 'Rp. ' . number_format(
-                            preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli) - 
-                            preg_replace('/[^0-9]/', '', $penjualan->sub_total) + 
-                            (preg_replace('/[^0-9]/', '', $penjualan->total_fee) ?? 0), // Menggunakan ?? untuk memeriksa null
-                            0, ',', '.') 
-                        }}
-                    </strong>
-                    
-                </span>
-            </div>
-        @endif
+                <div class="hemat" style="margin-top: 4;">
+                    <label style="font-size: 11px;">Anda mendapatkan diskon: </label>
+                    <span style="font-size: 11px;"><strong>{{'Rp. ' .  number_format(preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli) - preg_replace('/[^0-9]/', '', $penjualan->sub_total), 0, ',', '.') }}</strong></span>
+                </div>
+            @endif
             <div class="terimakasih">
                 <p>Untuk pemesanan, kritik dan saran hubungi 082136638004.</p>
             </div>
@@ -484,7 +466,7 @@
             <div class="terimakasihd" style="text-align: left; margin-top: -15px; font-size: 10px; font-style: italic">
                 <p>Barang yang sudah dibeli tidak bisa dikembalikan atau ditukar.</p><br> 
             </div>
-            <div class="terimakasihd" style="text-align: center; margin-top: -35px">
+            <div class="terimakasihd" style="text-align: center; font-size: 12px; margin-top: -35px">
                 <p>Terimakasih atas kunjungannya</p><br> 
             </div>
             <div class="qr" style="display: flex; justify-content: center; align-items: center; margin-top: -10px; margin-left: 100px">
