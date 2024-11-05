@@ -174,45 +174,4 @@
         });
     </script>
 
-{{-- <script>
-    $(document).ready(function() {
-        $('form').on('submit', function(e) {
-            e.preventDefault(); // Cegah form dari pengiriman standar
-
-            var form = $(this);
-            var url = form.attr('action');
-            var data = form.serialize(); // Ambil semua input form
-
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: data,
-                success: function(response) {
-                    if (response.status === 'success') {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: response.message,
-                            timer: 1000,
-                            showConfirmButton: false
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: 'Terjadi kesalahan: ' + response.message,
-                        });
-                    }
-                },
-                error: function(xhr) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: 'Terjadi kesalahan. Silakan coba lagi.',
-                    });
-                }
-            });
-        });
-    });
-</script> --}}
 @endsection

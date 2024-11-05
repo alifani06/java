@@ -817,6 +817,7 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::resource('stok_tokotegal', \App\Http\Controllers\Toko_tegal\Stok_tokotegalController::class);
     Route::delete('/toko_tegal/stok_tokotegal/deleteAll', [Stok_tokotegalController::class, 'deleteAll'])->name('stok_tokotegal.deleteAll');
     Route::post('toko_tegal/stok_tokotegal/import', [Stok_tokotegalController::class, 'import'])->name('stok_tokotegal.import');
+    Route::post('toko_tegal/stok_tokotegal/updateBatch', [Stok_tokotegalController::class, 'updateBatch'])->name('stok_tokotegal.updateBatch');
 
     Route::resource('stokpesanan_tokotegal', \App\Http\Controllers\Toko_tegal\Stokpesanan_tokotegalController::class);
     Route::delete('/toko_tegal/stokpesanan_tokotegal/deleteAll', [Stokpesanan_tokotegalController::class, 'deleteAll'])->name('stokpesanan_tokotegal.deleteAll');
