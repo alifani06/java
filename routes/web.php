@@ -377,7 +377,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/inquery_pengirimanbarangjadi/{id}/print', [Inquery_pengirimanbarangjadiController::class, 'print'])->name('inquery_pengirimanbarangjadi.print');
     Route::get('inquery_pengirimanbarangjadi/unpost_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Admin\Inquery_pengirimanbarangjadiController::class, 'unpost_pengirimanbarangjadi']);
     Route::get('inquery_pengirimanbarangjadi/posting_pengirimanbarangjadi/{id}', [\App\Http\Controllers\Admin\Inquery_pengirimanbarangjadiController::class, 'posting_pengirimanbarangjadi']);
-    Route::get('admin/inquery_pengirimanbarangjadi/{id}/cetak_barcode', [Inquery_pengirimanbarangjadiController::class, 'cetak_barcode'])->name('inquery_pengirimanbarangjadi.cetak_barcode');
+    Route::get('admin/inquery_pengirimanbarangjadi/{id}/{jumlah}/cetak_barcode', [Inquery_pengirimanbarangjadiController::class, 'cetak_barcode'])->name('inquery_pengirimanbarangjadi.cetak_barcode');
     Route::get('admin/inquery_pengirimanbarangjadi', [Inquery_pengirimanbarangjadiController::class, 'index'])->name('admin.inquery_pengirimanbarangjadi.index');
     Route::delete('inquery_pengirimanbarangjadi/deleteprodukpengiriman/{id}', [\App\Http\Controllers\Admin\Inquery_pengirimanbarangjadiController::class, 'deleteprodukpengiriman']);
     Route::post('/inquery_pengirimanbarangjadi/cetak_banyak_barcode', [Inquery_pengirimanbarangjadiController::class, 'cetak_banyak_barcode'])->name('inquery_pengirimanbarangjadi.cetak_banyak_barcode');

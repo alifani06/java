@@ -203,10 +203,11 @@
                                                     <td>{{ $detail->produk->nama_produk }}</td>
                                                     <td>{{ $detail->jumlah }}</td>
                                                     <td>
-                                                        <a href="{{ route('inquery_pengirimanbarangjadi.cetak_barcode', $detail->produk->id) }}" class="btn btn-primary btn-sm" target="_blank" onclick="openPrintDialog(event)">
+                                                        <a href="{{ route('inquery_pengirimanbarangjadi.cetak_barcode', ['id' => $detail->produk->id, 'jumlah' => $detail->jumlah]) }}" class="btn btn-primary btn-sm" target="_blank" onclick="openPrintDialog(event)">
                                                             <i class="fas fa-print"></i>
                                                         </a>
                                                     </td>
+                                                    
                                                 </tr>
                                                 @endforeach
                                             </tbody>
