@@ -145,6 +145,7 @@ class PengirimanbarangjadiController extends Controller{
                         'toko_id' => $tokoId,
                         'jumlah' => $jumlah,
                         'status' => 'unpost',
+                        'kode_produksi' => $kodeProduksi,
                         'tanggal_input' => $tanggalPengirimanDenganJam, // Simpan tanggal dengan jam yang sama
                     ]);
                     break;
@@ -156,6 +157,7 @@ class PengirimanbarangjadiController extends Controller{
                         'toko_id' => $tokoId,
                         'jumlah' => $jumlah,
                         'status' => 'unpost',
+                        'kode_produksi' => $kodeProduksi,
                         'tanggal_input' => $tanggalPengirimanDenganJam,  // Simpan tanggal dengan jam yang sama
                     ]);
                     break;
@@ -167,6 +169,7 @@ class PengirimanbarangjadiController extends Controller{
                          'toko_id' => $tokoId,
                          'jumlah' => $jumlah,
                          'status' => 'unpost',
+                            'kode_produksi' => $kodeProduksi,
                          'tanggal_input' => $tanggalPengirimanDenganJam,  // Simpan tanggal dengan jam yang sama
                      ]);
                      break;
@@ -178,6 +181,7 @@ class PengirimanbarangjadiController extends Controller{
                          'toko_id' => $tokoId,
                          'jumlah' => $jumlah,
                          'status' => 'unpost',
+                            'kode_produksi' => $kodeProduksi,
                          'tanggal_input' => $tanggalPengirimanDenganJam,  // Simpan tanggal dengan jam yang sama
                      ]);
                      break;
@@ -189,6 +193,7 @@ class PengirimanbarangjadiController extends Controller{
                          'toko_id' => $tokoId,
                          'jumlah' => $jumlah,
                          'status' => 'unpost',
+                            'kode_produksi' => $kodeProduksi,
                          'tanggal_input' => $tanggalPengirimanDenganJam,  // Simpan tanggal dengan jam yang sama
                      ]);
                     break;
@@ -200,6 +205,7 @@ class PengirimanbarangjadiController extends Controller{
                              'toko_id' => $tokoId,
                              'jumlah' => $jumlah,
                              'status' => 'unpost',
+                                'kode_produksi' => $kodeProduksi,
                              'tanggal_input' => $tanggalPengirimanDenganJam,  // Simpan tanggal dengan jam yang sama
                          ]);
                         break;

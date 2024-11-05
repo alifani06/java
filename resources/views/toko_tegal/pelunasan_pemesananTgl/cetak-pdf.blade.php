@@ -14,14 +14,14 @@
             margin-left: -5;
             margin-top: 0;
             /* padding: 0; */
-            padding-right: 460px;
+            padding-right: 430px;
             font-size: 10px;
             background-color: #fff;
         }
             .container {
             width: 65mm; /* Adjusted width */
             margin: 0 auto;
-            border: 1px solid #ddd;
+            border: 1px solid white;
             padding: 20px;
             background-color: #fff;
             box-shadow: 0px 0px 5px rgba(0,0,0,0.1);
@@ -146,12 +146,12 @@
         }
         .detail-info p strong {
             min-width: 130px; /* Sesuaikan dengan lebar maksimum label */
-            font-size: 9px;
+            font-size: 10px;
         }
         .detail-info p span {
             flex: 1;
             text-align: left;
-            font-size: 9px;
+            font-size: 10px;
             white-space: nowrap; /* Agar teks tidak pindah ke baris baru */
         }
         .pemesanan p span {
@@ -296,12 +296,12 @@
         <hr class="divider">
         <div class="section">
             <h2>Struk Pelunasan Pemesanan</h2>
-            <p style="text-align: right; font-size: 9px;">
+            <p style="text-align: right; font-size: 10px;">
                 {{ \Carbon\Carbon::parse($inquery->tanggal_pemesanan)->locale('id')->translatedFormat('d F Y H:i') }}
             </p><br>
             <div class="detail-info">
                 <div class="pemesanan">
-                    <p><span style="min-width: 50px; display: inline-flex; align-items: center;">No Penjualan</span>
+                    <p><span style="min-width: 70px; display: inline-flex; align-items: center;">No Penjualan</span>
                        <span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $inquery->kode_penjualan }}</span></p>
                 </div>
                 {{-- <div class="deposit">
@@ -310,11 +310,11 @@
                 </div> --}}
                 
                 <div class="kasir">
-                    <p><span style="min-width: 50px; display: inline-flex; align-items: center;">Kasir</span>
+                    <p><span style="min-width: 70px; display: inline-flex; align-items: center;">Kasir</span>
                         <span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $inquery->kasir }}</span></p>
                 </div>
                 <div class="pelanggan">
-                    <p><span style="min-width: 50px; display: inline-flex; align-items: center;">Pelanggan</span>
+                    <p><span style="min-width: 70px; display: inline-flex; align-items: center;">Pelanggan</span>
                         <span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $inquery->dppemesanan->pemesananproduk->nama_pelanggan }}</span></p>
                 </div>
 
@@ -338,16 +338,16 @@
                             @if($detail->kode_produk) <!-- Pengecekan jika kode_produk tidak null -->
                                 <tr>
                                     <td style="font-size: 9px;">{{ $detail->nama_produk }}</td>
-                                    <td style="font-size: 9px; text-align: right;">{{ $detail->jumlah }}</td>
-                                    <td style="font-size: 9px; text-align: right;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
-                                    <td style="font-size: 9px; text-align: right;">
+                                    <td style="font-size: 10px; text-align: right;">{{ $detail->jumlah }}</td>
+                                    <td style="font-size: 10px; text-align: right;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
+                                    <td style="font-size: 10px; text-align: right;">
                                         @if ($detail->diskon > 0)
                                             {{ $detail->diskon }} %
                                         @else
                                             -
                                         @endif
                                     </td>
-                                    <td style="font-size: 9px; text-align: right;">{{ number_format($detail->total, 0, ',', '.') }}</td>
+                                    <td style="font-size: 10px; text-align: right;">{{ number_format($detail->total, 0, ',', '.') }}</td>
                                 </tr>
                                 @php
                                     // Validasi dan konversi data menjadi numerik
@@ -358,24 +358,24 @@
                         @endforeach
                 
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 9px;"><strong>Total</strong></td>
-                            <td style="font-size: 9px;">{{ number_format($subtotal, 0, ',', '.') }}</td>
+                            <td colspan="4" style="text-align: right; font-size: 10px;"><strong>Total</strong></td>
+                            <td style="font-size: 10px;">{{ number_format($subtotal, 0, ',', '.') }}</td>
                         </tr>  
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 9px;"><strong>DP</strong></td>
-                            <td style="font-size: 9px; text-align: right;">{{ number_format($inquery->dppemesanan->dp_pemesanan, 0, ',', '.') }}</td>
+                            <td colspan="4" style="text-align: right; font-size: 10px;"><strong>DP</strong></td>
+                            <td style="font-size: 10px; text-align: right;">{{ number_format($inquery->dppemesanan->dp_pemesanan, 0, ',', '.') }}</td>
                         </tr>  
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 9px;"><strong>Kekurangan</strong></td>
-                            <td style="font-size: 9px; text-align: right;">
+                            <td colspan="4" style="text-align: right; font-size: 10px;"><strong>Kekurangan</strong></td>
+                            <td style="font-size: 10px; text-align: right;">
                                 {{ in_array($inquery->dppemesanan->kekurangan_pemesanan, [null, 0, 1]) ? '-' : number_format($inquery->dppemesanan->kekurangan_pemesanan, 0, ',', '.') }}
                             </td>
                         </tr> 
                         
                         @if($inquery->metode_id !== null)
                             <tr>
-                                <td colspan="4" style="text-align: right; font-size: 9px;"><strong>Fee {{ $inquery->metodepembayaran->nama_metode }} {{ $inquery->metodepembayaran->fee }}%</strong></td>
-                                <td style="font-size: 9px; text-align: right;">
+                                <td colspan="4" style="text-align: right; font-size: 10px;"><strong>Fee {{ $inquery->metodepembayaran->nama_metode }} {{ $inquery->metodepembayaran->fee }}%</strong></td>
+                                <td style="font-size: 10px; text-align: right;">
                                     @php
                                         // Menghapus semua karakter kecuali angka
                                         $total_fee = preg_replace('/[^\d]/', '', $inquery->total_fee);
@@ -387,14 +387,14 @@
                             </tr>
                         @endif
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 9px;"><strong>Bayar</strong></td>
-                            <td style="font-size: 9px; text-align: right;">
+                            <td colspan="4" style="text-align: right; font-size: 10px;"><strong>Bayar</strong></td>
+                            <td style="font-size: 10px; text-align: right;">
                                 {{ in_array($inquery->pelunasan, [null, 0, 1]) ? '-' : number_format($inquery->pelunasan, 0, ',', '.') }}
                             </td>
                         </tr> 
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 9px;"><strong>Kembali</strong></td>
-                            <td style="font-size: 9px; text-align: right;">
+                            <td colspan="4" style="text-align: right; font-size: 10px;"><strong>Kembali</strong></td>
+                            <td style="font-size: 10px; text-align: right;">
                                 {{ in_array($inquery->kembali, [null, 0, 1]) ? '-' : number_format($inquery->kembali, 0, ',', '.') }}
                             </td>
                         </tr> 
