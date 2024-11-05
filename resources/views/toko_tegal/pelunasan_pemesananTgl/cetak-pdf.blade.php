@@ -302,7 +302,7 @@
             <div class="detail-info">
                 <div class="pemesanan">
                     <p><span style="min-width: 70px; display: inline-flex; align-items: center;">No Penjualan</span>
-                       <span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $inquery->kode_penjualan }}</span></p>
+                       <span style="min-width: 100px; display: inline-flex; align-items: center; font-size: 11px;">: {{ $inquery->kode_penjualan }}</span></p>
                 </div>
                 {{-- <div class="deposit">
                     <p><span style="min-width: 100px; display: inline-flex; align-items: center;">No Deposit</span>
@@ -402,7 +402,7 @@
                     </tbody>
                     <div class="catatan">
                         <label style="font-size: 9px;"><strong>Catatan:</strong></label>
-                        <p style="margin-top: 1px; font-size: 9px;">{!! nl2br(e($inquery->dppemesanan->pemesananproduk->catatan)) ?? '-' !!}</p>
+                        <p style="margin-top: 1px; font-size: 10px;">{!! nl2br(e($inquery->dppemesanan->pemesananproduk->catatan)) ?? '-' !!}</p>
                     </div>
                 </table>   
             </div>
