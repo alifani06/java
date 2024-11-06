@@ -69,7 +69,7 @@
             @endif
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('permintaan.import') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('permintaan.importtegal') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
                             <label for="file_excel">Unggah File Excel</label>

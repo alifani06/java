@@ -249,6 +249,7 @@ public function destroy($id)
     return redirect()->route('permintaan_produk.index')->with('success', 'Permintaan produk dan detail terkait berhasil dihapus.');
 }
         
+
 // public function import(Request $request)
 // {
 //     // Validasi file upload
@@ -257,10 +258,15 @@ public function destroy($id)
 //     ]);
 
 //     // Import data dari file Excel
-//     Excel::import(new PermintaanImport, $request->file('file_excel'));
+//     $import = new PermintaanImport;
+//     Excel::import($import, $request->file('file_excel'));
 
-//     // Redirect dengan pesan sukses
-//     return redirect()->route('form.permintaan')->with('success', 'Data produk berhasil diimpor.');
+//     // Ambil ID permintaan produk yang terakhir diimpor
+//     $lastPermintaanProdukId = $import->getLastPermintaanProdukId();
+
+//     // Redirect ke halaman detail permintaan produk yang baru diimpor
+//     return redirect()->route('permintaan_produk.show', $lastPermintaanProdukId)
+//         ->with('success', 'Data produk berhasil diimpor.');
 // }
 
 public function import(Request $request)
@@ -274,12 +280,8 @@ public function import(Request $request)
     $import = new PermintaanImport;
     Excel::import($import, $request->file('file_excel'));
 
-    // Ambil ID permintaan produk yang terakhir diimpor
-    $lastPermintaanProdukId = $import->getLastPermintaanProdukId();
+    return redirect('toko_banjaran/permintaan_produk')->with('success', 'Berhasil menambahkan karyawan');
 
-    // Redirect ke halaman detail permintaan produk yang baru diimpor
-    return redirect()->route('permintaan_produk.show', $lastPermintaanProdukId)
-        ->with('success', 'Data produk berhasil diimpor.');
 }
 
 }

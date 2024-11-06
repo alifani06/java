@@ -34,6 +34,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\PermintaanImport;
+use App\Imports\PermintaanImportCilacap;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -263,7 +264,7 @@ public function destroy($id)
 //     return redirect()->route('form.permintaan')->with('success', 'Data produk berhasil diimpor.');
 // }
 
-public function import(Request $request)
+public function importcilacap(Request $request)
 {
     // Validasi file upload
     $request->validate([
@@ -271,15 +272,11 @@ public function import(Request $request)
     ]);
 
     // Import data dari file Excel
-    $import = new PermintaanImport;
+    $import = new PermintaanImportCilacap;
     Excel::import($import, $request->file('file_excel'));
 
-    // Ambil ID permintaan produk yang terakhir diimpor
-    $lastPermintaanProdukId = $import->getLastPermintaanProdukId();
+    return redirect('toko_cilacap/permintaan_produk')->with('success', 'Berhasil menambahkan permintaan produk');
 
-    // Redirect ke halaman detail permintaan produk yang baru diimpor
-    return redirect()->route('permintaan_produk.show', $lastPermintaanProdukId)
-        ->with('success', 'Data produk berhasil diimpor.');
 }
 
 }
