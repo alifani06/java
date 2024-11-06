@@ -14,7 +14,7 @@
             margin-left: 0;
             margin-top: 0;
             /* padding: 0; */
-            padding-right: 465px;
+            padding-right: 470px;
             font-size: 10x;
             background-color: #fff;
         }
