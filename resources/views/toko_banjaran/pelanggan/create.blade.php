@@ -50,9 +50,9 @@
                     <div class="row">
                     </div>
                     <div class="form-group  mb-3">
-                        <label for="kode_lama">Kode Pelanggan Lama</label>
-                        <input type="text" class="form-control" id="kode_lama" name="kode_lama"
-                            placeholder="Masukan kode pelanggan" value="{{ old('kode_lama') }}">
+                        <label for="kode_pelangganlama">Kode Pelanggan Lama</label>
+                        <input type="text" class="form-control" id="kode_pelangganlama" name="kode_pelangganlama"
+                            placeholder="Masukan kode pelanggan" value="{{ old('kode_pelangganlama') }}">
                     </div>
                         <div class="form-group  mb-3">
                             <label for="nama_pelanggan">Nama Pelanggan</label>
