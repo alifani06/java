@@ -323,4 +323,5 @@ class Inquery_penjualanproduktegalController extends Controller
 
         return json_decode($metode);
     }
+    
 }
