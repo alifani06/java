@@ -33,7 +33,7 @@ use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
-use App\Imports\PermintaanImport;
+use App\Imports\PermintaanImportTegal;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -271,7 +271,7 @@ public function import(Request $request)
     ]);
 
     // Import data dari file Excel
-    $import = new PermintaanImport;
+    $import = new PermintaanImportTegal;
     Excel::import($import, $request->file('file_excel'));
 
     // Ambil ID permintaan produk yang terakhir diimpor

@@ -96,7 +96,9 @@
                             <td class="text-center">{{ $loop->iteration }}</td>
                             <td>{{ $permintaan->kode_permintaan }}</td>
                             <td>{{ $permintaan->detailpermintaanproduks->first()->tanggal_permintaan ?? 'N/A' }}</td>
-                            <td>{{ $permintaan->detailpermintaanproduks->count() }}</td>
+                            <td>
+                                {{ $permintaan->detailpermintaanproduks->sum('jumlah') }}
+                            </td>
                             <td class="text-center">
                                 @if ($permintaan->status == 'posting')
                                     <button type="button" class="btn btn-success btn-sm">
