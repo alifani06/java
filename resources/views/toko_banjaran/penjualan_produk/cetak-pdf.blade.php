@@ -319,7 +319,7 @@
                             <th style="font-size: 10px; width: 10%;">Jumlah</th>
                             <th style="font-size: 10px; width: 15%;">Harga</th>
                             <th style="font-size: 10px; width: 10%;">Diskon</th>
-                            <th style="font-size: 10px; width: 15%;">Total</th>
+                            <th style="font-size: 10px; width: 15%; padding-left: 10px;">Total</th>
                         </tr>
                     </thead>
                     <tbody>
