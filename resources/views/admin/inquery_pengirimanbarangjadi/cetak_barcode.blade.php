@@ -87,7 +87,7 @@
                 <p class="bold-text">{{ $produk->kode_lama }}</p>
                 <p class="bold-text truncate">{{ $produk->nama_produk }}</p>
                 <p style="font-size: 9px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
-                <p class="bold-text">{{ $kodeProduksi ?? 'Kode produksi tidak tersedia' }}</p>
+                <p class="bold-text">{{ $kodeProduksi ?? '-' }}</p>
             </div>
         </div>
 
@@ -106,7 +106,7 @@
                 <p class="bold-text">{{ $produk->kode_lama }}</p>
                 <p class="bold-text truncate">{{ $produk->nama_produk }}</p>
                 <p style="font-size: 9px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
-                <p class="bold-text">{{ $kodeProduksi ?? 'Kode produksi tidak tersedia' }}</p>
+                <p class="bold-text">{{ $kodeProduksi ?? '-' }}</p>
             </div>
         </div>
 
@@ -125,7 +125,7 @@
                 <p class="bold-text">{{ $produk->kode_lama }}</p>
                 <p class="bold-text truncate">{{ $produk->nama_produk }}</p>
                 <p style="font-size: 9px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
-                <p class="bold-text">{{ $kodeProduksi ?? 'Kode produksi tidak tersedia' }}</p>
+                <p class="bold-text">{{ $kodeProduksi ?? '-' }}</p>
             </div>
         </div>
 
