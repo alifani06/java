@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use App\Models\Detailpermintaanproduk;
-use App\Models\PermintaanProduk;
+use App\Models\Permintaanproduk;
 use Carbon\Carbon;
 
 
