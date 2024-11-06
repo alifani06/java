@@ -361,8 +361,8 @@
                                     <strong>
                                         Fee {{$penjualan->metodepembayaran->nama_metode}}</strong>
                                     @if($penjualan->total_fee != 0)
-                                        {{$penjualan->metodepembayaran->fee}}% :
-                                    @endif
+                                        {{$penjualan->metodepembayaran->fee}}% 
+                                    @endif <span style="color: white">llllllllllllllllll</span>
                                 </td>
                                 <td style="font-size: 10px; text-align: right;">
                                     @if($penjualan->total_fee != 0)
@@ -379,7 +379,7 @@
                         <tr>
                             <td colspan="4" style="text-align: right; font-size: 10px;">
                                 <strong>
-                                    <span style="color: black;">Total</span><span style="color: white;"></span>
+                                    <span style="color: black;">Total</span><span style="color: white;">lllllllllllllllllllllllll</span>
                                 </strong>
                             </td>
                             <td style="font-size: 10px; text-align: right;">
@@ -438,7 +438,7 @@
                     @if($penjualan->metode_id !== NULL)
                     <tr>
                         <td style="font-size: 10px; word-wrap: break-word; text-align: right;">
-                         <strong> No. </strong> {{ $penjualan->keterangan }}
+                         <strong> No.<span style="color: white">llllllllllllllllll</span> </strong> {{ $penjualan->keterangan }}
                         </td>
                     </tr>
                     @endif
