@@ -338,16 +338,16 @@
                            <td style="font-size: 10px; word-wrap: break-word; white-space: pre-line;">{{ $nama_produk }}</td>
                            
                            {{-- Kolom lainnya --}}
-                           <td style="font-size: 11px; text-align: right">{{ $detail->jumlah }}</td>
-                           <td style="font-size: 11px; text-align: right">{{ number_format($detail->harga, 0, ',', '.') }}</td>
-                           <td style="font-size: 11px; text-align: right">
+                           <td style="font-size: 10px; text-align: right">{{ $detail->jumlah }}</td>
+                           <td style="font-size: 10px; text-align: right">{{ number_format($detail->harga, 0, ',', '.') }}</td>
+                           <td style="font-size: 10px; text-align: right">
                                @if ($detail->diskon > 0)
                                    {{ $detail->diskon }}
                                @else
                                    -
                                @endif
                            </td>
-                           <td style="font-size: 11px; text-align: right;">{{ number_format($detail->total, 0, ',', '.') }}</td>
+                           <td style="font-size: 10px; text-align: right;">{{ number_format($detail->total, 0, ',', '.') }}</td>
                        </tr>
                        
                        @php
@@ -357,14 +357,14 @@
                    @endforeach
                         <tr>
                             @if($penjualan->metode_id !== null)
-                                <td colspan="4" style="text-align: right; font-size: 11px;">
+                                <td colspan="4" style="text-align: right; font-size: 10px;">
                                     <strong>
                                         Fee {{$penjualan->metodepembayaran->nama_metode}}</strong>
                                     @if($penjualan->total_fee != 0)
                                         {{$penjualan->metodepembayaran->fee}}% :
                                     @endif
                                 </td>
-                                <td style="font-size: 11px; text-align: right;">
+                                <td style="font-size: 10px; text-align: right;">
                                     @if($penjualan->total_fee != 0)
                                         @php
                                             $total_fee = preg_replace('/[^\d]/', '', $penjualan->total_fee);
@@ -377,22 +377,22 @@
                         </tr>
                         <tr>
                             @if($penjualan->metode_id !== NULL)
-                            <td colspan="4" style="text-align: right; font-size: 11px;">
+                            <td colspan="4" style="text-align: right; font-size: 10px;">
                                 <strong>
                                     <span style="color: black;">No.</span><span style="color: white">lllllllllllllllllllllllllll</span>
                                 </strong>
                                 </td>
-                                <td style="font-size: 11px; text-align: right;">{{ $penjualan->keterangan }}</td>
+                                <td style="font-size: 10px; text-align: right;">{{ $penjualan->keterangan }}</td>
 
                             @endif
                         </tr>
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 11px;">
+                            <td colspan="4" style="text-align: right; font-size: 10px;">
                                 <strong>
                                     <span style="color: black;">Total</span><span style="color: white;">lllllllllllllllllllllllll</span>
                                 </strong>
                             </td>
-                            <td style="font-size: 11px; text-align: right;">
+                            <td style="font-size: 10px; text-align: right;">
                                 @php
                                     // Mengambil nilai sub_total
                                     $subTotal = $penjualan->sub_total;
@@ -407,11 +407,11 @@
                         
                         @if($penjualan->metode_id == Null)
                             <tr>
-                                <td colspan="4" style="text-align: right; font-size: 11px;"> <strong>
+                                <td colspan="4" style="text-align: right; font-size: 10px;"> <strong>
                                     <span style="color: black;">Bayar</span><span style="color: white">lllllllllllllllllllllllll</span>
                                 </strong></td>
                                
-                                    <td style="font-size: 11px; text-align: right;">
+                                    <td style="font-size: 10px; text-align: right;">
                                         @php
                                             // Mengambil nilai sub_total
                                             $Bayar = $penjualan->bayar;
@@ -423,10 +423,10 @@
                                     </td>
                             </tr>
                             <tr>
-                                <td colspan="4" style="text-align: right; font-size: 11px;"> <strong>
+                                <td colspan="4" style="text-align: right; font-size: 10px;"> <strong>
                                     <span style="color: black;">Kembali</span><span style="color: white">lllllllllllllllllllll</span>
                                 </strong></td>
-                                <td style="font-size: 11px; text-align: right;">
+                                <td style="font-size: 10px; text-align: right;">
                                     @php
                                         // Mengambil nilai sub_total
                                         $Kembali = $penjualan->kembali;
