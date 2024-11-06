@@ -329,7 +329,7 @@
                        @foreach($penjualan->detailpenjualanproduk as $detail)
                        @php
                            // Membagi nama produk menjadi array dengan panjang maksimum 7 karakter
-                           $nama_produk = wordwrap($detail->nama_produk, 8, "\n", true);
+                           $nama_produk = wordwrap($detail->nama_produk, 10, "\n", true);
                        @endphp
                        <tr>
                            {{-- <td style="font-size: 10px;">{{ $detail->kode_lama }}</td> --}}
