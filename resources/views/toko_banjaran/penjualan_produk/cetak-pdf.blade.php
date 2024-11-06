@@ -375,21 +375,11 @@
                                 </td>
                             @endif
                         </tr>
-                        <tr>
-                            @if($penjualan->metode_id !== NULL)
-                            <td colspan="4" style="text-align: right; font-size: 10px;">
-                                <strong>
-                                    <span style="color: black;">No.</span><span style="color: white">lllllllllllllllllllllllllll</span>
-                                </strong>
-                                </td>
-                                <td style="font-size: 10px; text-align: right;">{{ $penjualan->keterangan }}</td>
-
-                            @endif
-                        </tr>
+                       
                         <tr>
                             <td colspan="4" style="text-align: right; font-size: 10px;">
                                 <strong>
-                                    <span style="color: black;">Total</span><span style="color: white;">lllllllllllllllllllllllll</span>
+                                    <span style="color: black;">Total</span><span style="color: white;"></span>
                                 </strong>
                             </td>
                             <td style="font-size: 10px; text-align: right;">
@@ -440,8 +430,20 @@
                         @elseif($penjualan->metode_bayar == 'mesinedc' || $penjualan->metode_bayar == 'gobiz')
                             <!-- Logic tambahan jika diperlukan -->
                         @endif
+
+                        
                     </tbody>
                 </table>
+                <table style="width: 100%; font-size: 12px; text-align: right;">
+                    @if($penjualan->metode_id !== NULL)
+                    <tr>
+                        <td style="font-size: 10px; word-wrap: break-word; text-align: right;">
+                         <strong> No. </strong> {{ $penjualan->keterangan }}
+                        </td>
+                    </tr>
+                    @endif
+                </table>
+                
                 
                 @endif
             </div>
