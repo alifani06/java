@@ -269,7 +269,7 @@
             <div class="text">
                 <h1>PT JAVA BAKERY FACTORY</h1>
                <p style="font-size: 10px;">Cabang : {{ $tokos->nama_toko }}</p>
-                <p style="font-size: 10px;">{{ $tokos->alamat }}</p>
+                <p style="font-size: 9.5px;">{{ $tokos->alamat }}</p>
             </div>
         </div>
         <hr class="divider">
