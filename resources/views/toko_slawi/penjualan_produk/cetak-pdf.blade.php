@@ -282,20 +282,20 @@
             <div class="detail-info">
                 <div class="penjualan">
                     <p>
-                        <span style="min-width: 10px; display: inline-flex; align-items: center;">No penjualan</span>
+                        <span style="min-width: 10px; display: inline-flex; align-items: center; padding-left: 10px;">No penjualan</span>
                         <span style="min-width: 50px; display: inline-flex; align-items: center; font-size: 11px;">: {{ $penjualan->kode_penjualan }}</span>
                     </p>
                 </div>
                 <div class="kasir">
                     <p>
-                        <span style="min-width: 60px; display: inline-flex; align-items: center;">Kasir</span>
+                        <span style="min-width: 60px; display: inline-flex; align-items: center; padding-left: 10px;">Kasir</span>
                         <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $penjualan->kasir }}</span>
                     </p>
                 </div>
                 @if(!is_null($penjualan->nama_pelanggan))
                     <div class="pelanggan">
                         <p>
-                            <span style="min-width: 60px; display: inline-flex; align-items: center;">Pelanggan</span>
+                            <span style="min-width: 60px; display: inline-flex; align-items: center; padding-left: 10px;">Pelanggan</span>
                             <span style="min-width: 50px; display: inline-flex; align-items: center;">
                                 : 
                                 @if ($penjualan->kode_pelangganlama && $penjualan->nama_pelanggan)
