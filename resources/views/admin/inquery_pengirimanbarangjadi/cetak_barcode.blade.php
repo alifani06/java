@@ -67,8 +67,9 @@
 
 </head>
 
-<body>
+{{-- <body>
     <div>
+        
         <div class="box">
             <?php
             use BaconQrCode\Renderer\ImageRenderer;
@@ -163,6 +164,35 @@
       
         
     </div>
+</body> --}}
+
+<body>
+    @foreach (range(1, $detail->jumlah) as $i)
+    <div>
+        <div class="box">
+            <!-- Menampilkan gambar QR code -->
+            <img src="data:image/png;base64,{{ $qrcodeData }}" />
+        </div>
+        
+        <div class="text-container1">
+            <div class="text">
+                <p class="bold-text">{{ $produk->kode_lama }}</p>
+
+                @php
+                    // Membagi nama produk menjadi blok-blok yang berisi maksimal 12 karakter
+                    $chunks = str_split($produk->nama_produk, 15);
+                @endphp
+
+                @foreach ($chunks as $chunk)
+                    <p style="font-size: 6px;" class="bold-text truncate">{{ $chunk }}</p>
+                @endforeach
+
+                <p style="font-size: 7px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
+                <p class="bold-text">B5</p>
+            </div>
+        </div>
+    </div>
+    @endforeach
 </body>
 
 </html>
