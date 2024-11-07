@@ -38,7 +38,7 @@
         }
         .box2 {
             margin-left: 0px;
-            margin-top: 35px;
+            margin-top: 30px;
         }
         .text-container2 {
             position: relative;
