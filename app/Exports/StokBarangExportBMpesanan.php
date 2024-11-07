@@ -10,9 +10,10 @@ use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Illuminate\Http\Request;
 use App\Models\Pengiriman_barangjadi;
+use App\Models\Pengiriman_barangjadipesanan;
 use Carbon\Carbon;
 
-class StokBarangExportBM implements FromCollection, WithHeadings, WithMapping, WithTitle, WithCustomStartCell, ShouldAutoSize
+class StokBarangExportBMpesanan implements FromCollection, WithHeadings, WithMapping, WithTitle, WithCustomStartCell, ShouldAutoSize
 {
     protected $request;
     protected $counter;
@@ -35,7 +36,7 @@ class StokBarangExportBM implements FromCollection, WithHeadings, WithMapping, W
         $toko_id = 1;  // Set toko_id = 1 secara langsung
         $klasifikasi_id = $this->request->klasifikasi_id;
     
-        $query = Pengiriman_barangjadi::with('produk.klasifikasi')
+        $query = Pengiriman_barangjadipesanan::with('produk.klasifikasi')
             ->orderBy('tanggal_pengiriman', 'desc')
             ->when($status, function ($query, $status) {
                 return $query->where('status', $status);

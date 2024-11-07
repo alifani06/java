@@ -35,7 +35,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Barang Masuk (Stok)</h1>
+                    <h1 class="m-0">Laporan Barang Masuk (Semua)</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -77,7 +77,7 @@
                             <option value="retur" {{ old('kategori1') == 'retur' ? 'selected' : '' }}>Barang Retur</option>
                         </select>
                     </div>
-                    <h3 class="card-title">Laporan Barang Masuk (Stok)</h3>
+                    <h3 class="card-title">Laporan Barang Masuk (Semua)</h3>
                 </div>
                 
                 <div class="card-body">
@@ -90,7 +90,7 @@
                                     <option value="">- Pilih -</option>
                                     <option value="permintaan" {{ old('kategori2') == 'permintaan' ? 'selected' : '' }}>BM STOK</option>
                                     <option value="pemesanan" {{ old('kategori2') == 'pemesanan' ? 'selected' : '' }}>BM PEMESANAN</option>
-                                    <option value="semua" {{ old('kategori2') == 'semua' ? 'selected' : '' }}>SEUA BM </option>
+                                    <option value="semua" {{ old('kategori2') == 'semua' ? 'selected' : '' }}>SEMUA BM</option>
                                 </select>
                             </div>
                             <div hidden class="col-md-3 mb-3">
@@ -154,7 +154,7 @@
                                 <button type="button" class="btn btn-primary btn-block" onclick="printReport()">
                                     <i class="fas fa-print"></i> Cetak
                                 </button>
-                                <button type="button" class="btn btn-success btn-block" onclick="exportExcel()">
+                                <button type="button" class="btn btn-success btn-block" onclick="exportExcelBMsemua()">
                                     <i class="fas fa-file-excel"></i> Export Excel
                                 </button>
                             </div>
@@ -245,7 +245,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_banjaran/laporan_historibanjaran') }}";
+            form.action = "{{ route('barangMasuksemuabanjaran') }}";
             form.submit();
         }
 
@@ -261,19 +261,6 @@
             window.location.href = "{{ url('toko_banjaran/barangKeluarbanjaran') }}";
         }else if (selectedValue === 'retur') {
             window.location.href = "{{ url('toko_banjaran/barangReturbanjaran') }}";
-        }
-    });
-</script>
-<script>
-    document.getElementById('kategori2').addEventListener('change', function() {
-        var selectedValue = this.value;
-
-        if (selectedValue === 'permintaan') {
-            window.location.href = "{{ url('toko_banjaran/laporan_historibanjaran') }}";
-        } else if (selectedValue === 'pemesanan') {
-            window.location.href = "{{ route('barangMasukpesananbanjaran') }}"; 
-        }else if (selectedValue === 'semua') {
-            window.location.href = "{{ route('barangMasuksemuabanjaran') }}"; 
         }
     });
 </script>
@@ -299,18 +286,30 @@
         }
 
         const form = document.getElementById('form-action');
-        form.action = "{{ url('toko_banjaran/printLaporanBmbanjaran') }}";
+        form.action = "{{ url('toko_banjaran/printLaporanBmsemuabanjaran') }}";
         form.target = "_blank";
         form.submit();
     }
 </script>
+<script>
+    document.getElementById('kategori2').addEventListener('change', function() {
+        var selectedValue = this.value;
 
+        if (selectedValue === 'permintaan') {
+            window.location.href = "{{ url('toko_banjaran/laporan_historibanjaran') }}";
+        } else if (selectedValue === 'pemesanan') {
+            window.location.href = "{{ route('barangMasukpesananbanjaran') }}"; 
+        }else if (selectedValue === 'semua') {
+            window.location.href = "{{ route('barangMasuksemuabanjaran') }}"; 
+        }
+    });
+</script>
 
 
 <script>
-    function exportExcel() {
+    function exportExcelBMsemua() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printExcelBmbanjaran') }}";
+    form.action = "{{ url('toko_banjaran/printExcelBmsemuabanjaran') }}";
     form.target = "_blank";
     form.submit();
 }

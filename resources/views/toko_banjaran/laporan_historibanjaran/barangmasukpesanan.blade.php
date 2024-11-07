@@ -90,6 +90,7 @@
                                     <option value="">- Pilih -</option>
                                     <option value="permintaan" {{ old('kategori2') == 'permintaan' ? 'selected' : '' }}>BM STOK</option>
                                     <option value="pemesanan" {{ old('kategori2') == 'pemesanan' ? 'selected' : '' }}>BM PEMESANAN</option>
+                                    <option value="semua" {{ old('kategori2') == 'semua' ? 'selected' : '' }}>SEMUA BM</option>
                                 </select>
                             </div>
                             <div hidden class="col-md-3 mb-3">
@@ -153,7 +154,7 @@
                                 <button type="button" class="btn btn-primary btn-block" onclick="printReport()">
                                     <i class="fas fa-print"></i> Cetak
                                 </button>
-                                <button type="button" class="btn btn-success btn-block" onclick="exportExcel()">
+                                <button type="button" class="btn btn-success btn-block" onclick="exportExcelpesanan()">
                                     <i class="fas fa-file-excel"></i> Export Excel
                                 </button>
                             </div>
@@ -298,15 +299,17 @@
             window.location.href = "{{ url('toko_banjaran/laporan_historibanjaran') }}";
         } else if (selectedValue === 'pemesanan') {
             window.location.href = "{{ route('barangMasukpesananbanjaran') }}"; 
+        }else if (selectedValue === 'semua') {
+            window.location.href = "{{ route('barangMasuksemuabanjaran') }}"; 
         }
     });
 </script>
 
 
 <script>
-    function exportExcel() {
+    function exportExcelpesanan() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printExcelBmbanjaran') }}";
+    form.action = "{{ url('toko_banjaran/printExcelBmpesananbanjaran') }}";
     form.target = "_blank";
     form.submit();
 }
