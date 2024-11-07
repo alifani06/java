@@ -38,9 +38,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Dompdf\Options;
-
-
-
+use StokBarangJadiImport;
 
 class Stok_barangjadiController extends Controller{
 
@@ -335,14 +333,8 @@ public function posting_stokbarangjadi($id)
         
         public function import(Request $request)
         {
-            $request->validate([
-                'file' => 'required|mimes:xlsx,xls',
-            ]);
-    
-            Excel::import(new ProdukImport, $request->file('file'));
-    
-            // Redirect to the form with success message
-            return redirect()->route('form.produk')->with('success', 'Data produk berhasil diimpor.');
+            Excel::import(new StokBarangJadiImport, $request->file('file'));
+            return redirect('admin/stok_barangjadi')->with('success', 'Data berhasil diimpor');
         }
     
         public function formProduk()

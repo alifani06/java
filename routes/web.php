@@ -324,7 +324,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/stok_barangjadi/{id}/print', [Stok_barangjadiController::class, 'print'])->name('stok_barangjadi.print');
     Route::get('stok_barangjadi/unpost_stokbarangjadi/{id}', [\App\Http\Controllers\Admin\Stok_barangjadiController::class, 'unpost_stokbarangjadi']);
     Route::get('stok_barangjadi/posting_stokbarangjadi/{id}', [\App\Http\Controllers\Admin\Stok_barangjadiController::class, 'posting_stokbarangjadi']);
-   
+    Route::post('stok_barangjadi/import', [Stok_barangjadiController::class, 'import'])->name('stok_barangjadi.import');
+
     Route::resource('stok_hasilproduksi', \App\Http\Controllers\Admin\Stok_hasilproduksiController::class);
 
     Route::resource('inquery_stokbarangjadi', \App\Http\Controllers\Admin\Inquery_stokbarangjadiController::class);

@@ -255,7 +255,7 @@ public function printReportglobal(Request $request)
     }
 
     // Query dasar untuk mengambil data penjualan produk
-    $query = Penjualanproduk::with(['toko', 'detailpenjualanproduk', 'dppemesanan'])->orderBy('id', 'DESC');
+    $query = Penjualanproduk::with(['toko', 'detailpenjualanproduk', 'dppemesanan'])->orderBy('id', 'ASC');
 
     // Filter berdasarkan status
     if ($status) {

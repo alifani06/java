@@ -74,7 +74,8 @@
                 <div class="card-body">
                     <form action="{{ url('admin/stok_barangjadi') }}" method="POST">
                         @csrf
-
+                        {{-- <input type="file" name="file" required>
+                        <button type="submit">Import Data</button> --}}
                         <div class="form-group">
                             <label for="klasifikasi-select">Pilih Divisi:</label>
                             <select id="klasifikasi-select" class="form-control" name="klasifikasi_id">
