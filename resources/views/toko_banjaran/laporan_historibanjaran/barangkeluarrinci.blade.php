@@ -298,7 +298,7 @@
         }
 
     const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printLaporanBKrincibanjaran') }}";
+    form.action = "{{ url('toko_banjaran/printLaporanBKrincibanjaran') }}";
     form.target = "_blank";
     form.submit();
     }
@@ -307,7 +307,7 @@
 <script>
     function exportExcelBK() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printExcelBkbanjaran') }}";
+    form.action = "{{ url('toko_banjaran/printExcelBkbanjaran') }}";
     form.target = "_blank";
     form.submit();
 }

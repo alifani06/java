@@ -82,13 +82,8 @@
                                 </select>
                     
                                 <label style="margin-top:7px" for="status">Toko</label>
-                                <select class="select2bs4 select2-hidden-accessible" name="toko_id"
-                                    data-placeholder="Pilih Toko" style="width: 100%;" data-select2-id="23"
-                                    tabindex="-1" aria-hidden="true" id="toko_id">
-                                    <option value="">Toko Banjaran</option>
-                                    {{-- @foreach($tokos as $toko)
-                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
-                                    @endforeach --}}
+                                <select class="form-control" name="toko_id" id="toko_id" readonly>
+                                    <option value="1" selected>Toko Banjaran</option>
                                 </select>
                             </div>
                     

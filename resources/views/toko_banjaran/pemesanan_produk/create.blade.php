@@ -447,35 +447,6 @@
     </section>
 
     
-{{-- <script>
-        $(document).ready(function () {
-            // Set locale Moment.js ke bahasa Indonesia
-            moment.locale('id');
-            
-            // Inisialisasi datetimepicker
-            $('#reservationdatetime').datetimepicker({
-                format: 'DD/MM/YYYY HH:mm',
-                locale: 'id',  // Locale diatur di sini
-                icons: {
-                    time: 'fa fa-clock',
-                    date: 'fa fa-calendar',
-                    up: 'fa fa-arrow-up',
-                    down: 'fa fa-arrow-down',
-                    previous: 'fa fa-chevron-left',
-                    next: 'fa fa-chevron-right',
-                    today: 'fa fa-calendar-check-o',
-                    clear: 'fa fa-trash',
-                    close: 'fa fa-times'
-                }
-            });
-        
-            // Pastikan locale diterapkan ulang setelah inisialisasi datetimepicker
-            $('#reservationdatetime').datetimepicker('locale', 'id');  // Memaksa locale ke bahasa Indonesia
-        });
-</script> --}}
-    
-    
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 {{-- <script>
