@@ -93,7 +93,7 @@
         
                 <!-- Menampilkan setiap bagian nama produk dengan batasan 12 karakter per baris -->
                 @foreach ($chunks as $chunk)
-                    <p class="bold-text truncate">{{ $chunk }}</p>
+                    <p style="font-size: 6px;" class="bold-text truncate">{{ $chunk }}</p>
                 @endforeach
         
                 <p style="font-size: 7px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
@@ -122,7 +122,7 @@
         
                 <!-- Menampilkan setiap bagian nama produk dengan batasan 12 karakter per baris -->
                 @foreach ($chunks as $chunk)
-                    <p class="bold-text truncate">{{ $chunk }}</p>
+                    <p style="font-size: 6px;" class="bold-text truncate">{{ $chunk }}</p>
                 @endforeach
         
                 <p style="font-size: 7px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
