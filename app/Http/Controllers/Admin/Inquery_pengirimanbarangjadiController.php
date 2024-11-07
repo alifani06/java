@@ -635,64 +635,38 @@ public function update(Request $request, $id)
     //     return $pdf->stream('penjualan.pdf');
     // }
     public function cetak_barcode($id)
-{
-    // Ambil produk berdasarkan id
-    $produk = Produk::findOrFail($id); 
-
-    // Query untuk mengambil kode_produksi dari tabel pengiriman_barangjadi berdasarkan produk_id
-    $pengiriman = Pengiriman_barangjadi::where('produk_id', $id)->first();
-
-    // Jika data pengiriman ditemukan, ambil kode_produksinya
-    $kodeProduksi = $pengiriman ? $pengiriman->kode_produksi : null;
-
-    // Ambil data klasifikasi dan subklasifikasi
-    $klasifikasis = Klasifikasi::all();
-    $subklasifikasis = Subklasifikasi::all();
-
-    // Generate QR code data
-    $qrcode = new Writer(new ImageRenderer(new RendererStyle(50), new SvgImageBackEnd()));
-    $qrcodeData = base64_encode($qrcode->writeString($produk->qrcode_produk));
-
-    // Load view dengan data yang dibutuhkan, termasuk kode produksi dan QR code
-    $pdf = FacadePdf::loadView('admin.inquery_pengirimanbarangjadi.cetak_barcode', compact('produk', 'klasifikasis', 'subklasifikasis', 'kodeProduksi', 'qrcodeData'));
-
-    // Set ukuran kertas dan orientasi
-    $pdf->setPaper([0, 0, 612, 400], 'portrait'); 
-
-    // Stream PDF hasil cetak
-    return $pdf->stream('penjualan.pdf');
-}
-
-
-    // public function cetak_banyak_barcode(Request $request)
-    // {
-    //     // Ambil produk berdasarkan array id yang dipilih
-    //     $produkIds = $request->input('selected_items', []);
-    //     $produkList = Produk::whereIn('id', $produkIds)->get();
+    {
+        // Ambil produk berdasarkan id
+        $produk = Produk::findOrFail($id); 
     
-    //     // Ambil kode produksi untuk setiap produk dan generate QR code
-    //     $produkList->map(function($produk) {
-    //         $pengiriman = Pengiriman_barangjadi::where('produk_id', $produk->id)->first();
-    //         $produk->kode_produksi = $pengiriman ? $pengiriman->kode_produksi : null;
+        // Ambil data pengiriman termasuk 'jumlah' dari tabel pengiriman_barangjadi berdasarkan produk_id
+        $pengiriman = Pengiriman_barangjadi::where('produk_id', $id)->first();
     
-    //         // Generate QR code
-    //         $qrcode = new Writer(new ImageRenderer(new RendererStyle(60), new SvgImageBackEnd()));
-    //         $qrcodeData = $qrcode->writeString($produk->qrcode_produk);
+        // Jika data pengiriman ditemukan, ambil kode_produksi dan jumlah
+        $kodeProduksi = $pengiriman ? $pengiriman->kode_produksi : null;
+        $jumlah = $pengiriman ? $pengiriman->jumlah : 1; // Default 1 jika jumlah tidak ditemukan
     
-    //         // Encode the QR code to base64 for Blade
-    //         $produk->qrcode_base64 = base64_encode($qrcodeData);
-    //         return $produk;
-    //     });
+        dd($jumlah);
+        // Ambil data klasifikasi dan subklasifikasi
+        $klasifikasis = Klasifikasi::all();
+        $subklasifikasis = Subklasifikasi::all();
     
-    //     // Load view untuk cetak barcode
-    //     $pdf = FacadePdf::loadView('admin.inquery_pengirimanbarangjadi.cetak_banyak_barcode', compact('produkList'));
+        // Generate QR code data
+        $qrcode = new Writer(new ImageRenderer(new RendererStyle(50), new SvgImageBackEnd()));
+        $qrcodeData = base64_encode($qrcode->writeString($produk->qrcode_produk));
     
-    //     // Set ukuran kertas dan orientasi
-    //     $pdf->setPaper([0, 0, 612, 400], 'portrait'); 
+        // Load view dengan data yang dibutuhkan
+        $pdf = FacadePdf::loadView('admin.inquery_pengirimanbarangjadi.cetak_barcode', compact('produk', 'klasifikasis', 'subklasifikasis', 'kodeProduksi', 'qrcodeData', 'jumlah'));
     
-    //     // Stream PDF hasil cetak
-    //     return $pdf->stream('banyak_barcode.pdf');
-    // }
+        // Set ukuran kertas dan orientasi
+        $pdf->setPaper([0, 0, 612, 400], 'portrait'); 
+    
+        // Stream PDF hasil cetak
+        return $pdf->stream('penjualan.pdf');
+    }
+
+
+   
 
     public function cetak_banyak_barcode(Request $request)
     {

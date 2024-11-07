@@ -167,7 +167,7 @@
 </body> --}}
 
 <body>
-    @foreach (range(1, $detail->jumlah) as $i)
+    @foreach (range(1, $jumlah) as $i)
     <div>
         <div class="box">
             <!-- Menampilkan gambar QR code -->
@@ -179,7 +179,7 @@
                 <p class="bold-text">{{ $produk->kode_lama }}</p>
 
                 @php
-                    // Membagi nama produk menjadi blok-blok yang berisi maksimal 12 karakter
+                    // Membagi nama produk menjadi blok-blok yang berisi maksimal 15 karakter
                     $chunks = str_split($produk->nama_produk, 15);
                 @endphp
 
@@ -194,6 +194,8 @@
     </div>
     @endforeach
 </body>
+
+
 
 </html>
 

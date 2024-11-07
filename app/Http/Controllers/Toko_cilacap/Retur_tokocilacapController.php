@@ -154,7 +154,7 @@ class Retur_tokocilacapController extends Controller{
         Retur_tokocilacap::create([
             'kode_retur' => $kode,
             'produk_id' => $produk_id,
-            'toko_id' => '2',
+            'toko_id' => '6',
             'status' => 'unpost', // Ubah status menjadi posting
             'jumlah' => $jumlah_yang_dibutuhkan,
             'keterangan' => $keterangans[$index],
@@ -164,7 +164,7 @@ class Retur_tokocilacapController extends Controller{
         Retur_barangjadi::create([
             'kode_retur' => $kode,
             'produk_id' => $produk_id,
-            'toko_id' => '2',
+            'toko_id' => '6',
             'nama_produk' => $nama_produk_retur,
             'status' => 'unpost', // Ubah status menjadi posting
             'jumlah' => $jumlah_yang_dibutuhkan,
