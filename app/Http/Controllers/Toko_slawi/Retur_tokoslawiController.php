@@ -75,7 +75,7 @@ class Retur_tokoslawiController extends Controller{
     $klasifikasis = Klasifikasi::all();
 
     // Ambil stok dari tabel stok_tokobanjaran berdasarkan produk_id
-    $stokProduk = DB::table('stok_tokotegals')
+    $stokProduk = DB::table('stok_tokoslawis')
         ->select('produk_id', DB::raw('SUM(jumlah) as jumlah_stok'))
         ->groupBy('produk_id')
         ->pluck('jumlah_stok', 'produk_id');
