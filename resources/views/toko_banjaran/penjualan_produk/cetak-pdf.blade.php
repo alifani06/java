@@ -260,8 +260,6 @@
 }
 
     </style>
-
-    
 </head>
 <body>
     <div class="container">
@@ -314,7 +312,6 @@
                 <table style="font-size: 12px; width: 100%;">
                     <thead>
                         <tr>
-                            {{-- <th style="font-size: 9px; width: 10%;">Kode</th> --}}
                             <th style="font-size: 10px; width: 50%; text-align: left">Nama Produk</th>
                             <th style="font-size: 10px; width: 10%;">Jumlah</th>
                             <th style="font-size: 10px; width: 15%;">Harga</th>
@@ -326,114 +323,56 @@
                         @php
                             $subtotal = 0;
                         @endphp
-                       @foreach($penjualan->detailpenjualanproduk as $detail)
-                       @php
-                           // Membagi nama produk menjadi array dengan panjang maksimum 7 karakter
-                           $nama_produk = wordwrap($detail->nama_produk, 8, "\n", true);
-                       @endphp
-                       <tr>
-                           {{-- <td style="font-size: 10px;">{{ $detail->kode_lama }}</td> --}}
-                           
-                           {{-- Tampilkan nama produk dengan pemotongan karakter --}}
-                           <td style="font-size: 10px; word-wrap: break-word; white-space: pre-line;">{{ $nama_produk }}</td>
-                           
-                           {{-- Kolom lainnya --}}
-                           <td style="font-size: 10px; text-align: right">{{ $detail->jumlah }}</td>
-                           <td style="font-size: 10px; text-align: right">{{ number_format($detail->harga, 0, ',', '.') }}</td>
-                           <td style="font-size: 10px; text-align: right">
-                               @if ($detail->diskon > 0)
-                                   {{ $detail->diskon }}
-                               @else
-                                   -
-                               @endif
-                           </td>
-                           <td style="font-size: 10px; text-align: right;">{{ number_format($detail->total, 0, ',', '.') }}</td>
-                       </tr>
-                       
-                       @php
-                           $total = is_numeric($detail->total) ? $detail->total : 0;
-                           $subtotal += $total;
-                       @endphp
-                   @endforeach
+                        @foreach($penjualan->detailpenjualanproduk as $detail)
+                        {{-- @php
+                            $nama_produk = wordwrap($detail->nama_produk, 8, "\n", true);
+                        @endphp --}}
                         <tr>
-                            @if($penjualan->metode_id !== null)
-                                <td colspan="4" style="text-align: right; font-size: 10px;">
-                                    <strong>
-                                        Fee {{$penjualan->metodepembayaran->nama_metode}}</strong>
-                                    @if($penjualan->total_fee != 0)
-                                        {{$penjualan->metodepembayaran->fee}}% 
-                                    @endif <span style="color: white">llllllllllllllllll</span>
-                                </td>
-                                <td style="font-size: 10px; text-align: right;">
-                                    @if($penjualan->total_fee != 0)
-                                        @php
-                                            $total_fee = preg_replace('/[^\d]/', '', $penjualan->total_fee);
-                                            $total_fee = (float) $total_fee;
-                                        @endphp
-                                        {{ number_format($total_fee, 0, ',', '.') }}
-                                    @endif
-                                </td>
-                            @endif
+                            <!-- Row pertama untuk Nama Produk -->
+                            <td style="font-size: 10px; word-wrap: break-word; white-space: pre-line;" rowspan="2">
+                                {{ $detail->nama_produk }}
+                            </td>
+                
+                            <!-- Row pertama kosong untuk kolom lainnya -->
+                            <td style="font-size: 10px; text-align: right;" rowspan="1"></td>
+                            <td style="font-size: 10px; text-align: right;" rowspan="1"></td>
+                            <td style="font-size: 10px; text-align: right;" rowspan="1"></td>
+                            <td style="font-size: 10px; text-align: right;" rowspan="1"></td>
                         </tr>
-                       
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 10px;">
-                                <strong>
-                                    <span style="color: black;">Total</span><span style="color: white;">lllllllllllllllllllllllll</span>
-                                </strong>
+                            <!-- Row kedua untuk detail kolom lainnya -->
+                            <td style="font-size: 10px; text-align: right">{{ $detail->jumlah }}</td>
+                            <td style="font-size: 10px; text-align: right">{{ number_format($detail->harga, 0, ',', '.') }}</td>
+                            <td style="font-size: 10px; text-align: right">
+                                @if ($detail->diskon > 0)
+                                    {{ $detail->diskon }}
+                                @else
+                                    -
+                                @endif
                             </td>
                             <td style="font-size: 10px; text-align: right;">
-                                @php
-                                    // Mengambil nilai sub_total
-                                    $subTotal = $penjualan->sub_total;
-                        
-                                    // Menghapus karakter "Rp" dan mengonversi string menjadi angka
-                                    $numericValue = str_replace(['Rp',  ' '], '', $subTotal);
-                                @endphp
-                                {{ $numericValue }}
+                                {{ number_format($detail->total, 0, ',', '.') }}
                             </td>
                         </tr>
-                        
-                        
-                        @if($penjualan->metode_id == Null)
-                            <tr>
-                                <td colspan="4" style="text-align: right; font-size: 10px;"> <strong>
-                                    <span style="color: black;">Bayar</span><span style="color: white">lllllllllllllllllllllllll</span>
-                                </strong></td>
-                               
-                                    <td style="font-size: 10px; text-align: right;">
-                                        @php
-                                            // Mengambil nilai sub_total
-                                            $Bayar = $penjualan->bayar;
-                                
-                                            // Menghapus karakter "Rp" dan mengonversi string menjadi angka
-                                            $numericValue = str_replace(['Rp',  ' '], '', $Bayar);
-                                        @endphp
-                                        {{ $numericValue }}
-                                    </td>
-                            </tr>
-                            <tr>
-                                <td colspan="4" style="text-align: right; font-size: 10px;"> <strong>
-                                    <span style="color: black;">Kembali</span><span style="color: white">lllllllllllllllllllll</span>
-                                </strong></td>
-                                <td style="font-size: 10px; text-align: right;">
-                                    @php
-                                        // Mengambil nilai sub_total
-                                        $Kembali = $penjualan->kembali;
-                            
-                                        // Menghapus karakter "Rp" dan mengonversi string menjadi angka
-                                        $numericValue = str_replace(['Rp',  ' '], '', $Kembali);
-                                    @endphp
-                                    {{ $numericValue }}
-                                </td>
-                            </tr>
-                        @elseif($penjualan->metode_bayar == 'mesinedc' || $penjualan->metode_bayar == 'gobiz')
-                            <!-- Logic tambahan jika diperlukan -->
-                        @endif
-
-                        
+                
+                        @php
+                            $total = is_numeric($detail->total) ? $detail->total : 0;
+                            $subtotal += $total;
+                        @endphp
+                        @endforeach
+                
+                        <!-- Bagian Footer -->
+                        <tr>
+                            <td colspan="4" style="text-align: right; font-size: 10px;">
+                                <strong>Total</strong>
+                            </td>
+                            <td style="font-size: 10px; text-align: right;">
+                                {{ number_format($subtotal, 0, ',', '.') }}
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
+                
                 <table style="width: 100%; font-size: 12px; text-align: right;">
                     @if($penjualan->metode_id !== NULL)
                     <tr>

@@ -82,12 +82,22 @@
             echo '<img src="data:image/png;base64,' . base64_encode($qrcodeData) . '" />';
             ?>
         </div>
-        <div class="text-container">
+        <div class="text-container1">
             <div class="text">
                 <p class="bold-text">{{ $produk->kode_lama }}</p>
-                <p class="bold-text truncate">{{ $produk->nama_produk }}</p>
-                <p style="font-size: 9px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
-                <p class="bold-text">B4</p>
+        
+                @php
+                    // Membagi nama produk menjadi blok-blok yang berisi maksimal 12 karakter
+                    $chunks = str_split($produk->nama_produk, 15);
+                @endphp
+        
+                <!-- Menampilkan setiap bagian nama produk dengan batasan 12 karakter per baris -->
+                @foreach ($chunks as $chunk)
+                    <p class="bold-text truncate">{{ $chunk }}</p>
+                @endforeach
+        
+                <p style="font-size: 7px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
+                <p class="bold-text">B5</p>
             </div>
         </div>
 
@@ -104,11 +114,22 @@
         <div class="text-container1">
             <div class="text">
                 <p class="bold-text">{{ $produk->kode_lama }}</p>
-                <p class="bold-text truncate">{{ $produk->nama_produk }}</p>
-                <p style="font-size: 9px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
-                <p class="bold-text">B4</p>
+        
+                @php
+                    // Membagi nama produk menjadi blok-blok yang berisi maksimal 12 karakter
+                    $chunks = str_split($produk->nama_produk, 15);
+                @endphp
+        
+                <!-- Menampilkan setiap bagian nama produk dengan batasan 12 karakter per baris -->
+                @foreach ($chunks as $chunk)
+                    <p class="bold-text truncate">{{ $chunk }}</p>
+                @endforeach
+        
+                <p style="font-size: 7px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
+                <p class="bold-text">B5</p>
             </div>
         </div>
+        
 
         <div class="box2">
             <?php
@@ -120,12 +141,22 @@
             echo '<img src="data:image/png;base64,' . base64_encode($qrcodeData) . '" />';
             ?>
         </div>
-        <div class="text-container2">
+        <div class="text-container1">
             <div class="text">
                 <p class="bold-text">{{ $produk->kode_lama }}</p>
-                <p class="bold-text truncate">{{ $produk->nama_produk }}</p>
-                <p style="font-size: 9px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
-                <p class="bold-text">B4</p>
+        
+                @php
+                    // Membagi nama produk menjadi blok-blok yang berisi maksimal 12 karakter
+                    $chunks = str_split($produk->nama_produk, 15);
+                @endphp
+        
+                <!-- Menampilkan setiap bagian nama produk dengan batasan 12 karakter per baris -->
+                @foreach ($chunks as $chunk)
+                    <p style="font-size: 6px;" class="bold-text truncate">{{ $chunk }}</p>
+                @endforeach
+        
+                <p style="font-size: 7px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
+                <p class="bold-text">B5</p>
             </div>
         </div>
 
