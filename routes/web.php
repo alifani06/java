@@ -718,8 +718,8 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('printLaporanBKrincibanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBKrincibanjaran']);
     Route::get('printExcelBkbanjaran', [Laporan_historibanjaranController::class, 'exportExcelBK'])->name('printExcelBkbanjaran');
     
-    Route::get('barangReturbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangReturbanjaran']);
-    Route::get('barangReturbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangReturbanjaran'])->name('barangRetur');
+    // Route::get('barangReturbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangReturbanjaran']);
+    Route::get('barangReturbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangReturbanjaran'])->name('barangReturbanjaran');
     Route::get('/print-report', [Laporan_historibanjaranController::class, 'printReport'])->name('print.report');
     Route::get('printLaporanBRbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBRbanjaran']);
     Route::get('printExcelBrbanjaran', [Laporan_historibanjaranController::class, 'exportExcelBR'])->name('printExcelBrbanjaran');

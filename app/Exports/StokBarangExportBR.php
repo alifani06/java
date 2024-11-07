@@ -31,8 +31,10 @@ class StokBarangExportBR implements FromCollection, WithHeadings, WithMapping, W
         $status = $this->request->status;
         $tanggal_retur = $this->request->tanggal_retur;
         $tanggal_akhir = $this->request->tanggal_akhir;
-        $toko_id = $this->request->toko_id;
         $klasifikasi_id = $this->request->klasifikasi_id;
+
+        // Tetapkan toko_id menjadi 1
+        $toko_id = 1;
 
         // Query dasar untuk mengambil data Retur_barangjadi
         $query = Retur_barangjadi::with('produk.klasifikasi')
@@ -40,9 +42,7 @@ class StokBarangExportBR implements FromCollection, WithHeadings, WithMapping, W
             ->when($status, function ($query, $status) {
                 return $query->where('status', $status);
             })
-            ->when($toko_id, function ($query, $toko_id) {
-                return $query->where('toko_id', $toko_id);
-            })
+            ->where('toko_id', $toko_id) // Pastikan hanya data dengan toko_id = 1 yang diambil
             ->when($klasifikasi_id, function ($query, $klasifikasi_id) {
                 return $query->whereHas('produk', function ($q) use ($klasifikasi_id) {
                     return $q->where('klasifikasi_id', $klasifikasi_id);

@@ -206,11 +206,11 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'masuk') {
-            window.location.href = "{{ url('admin/laporan_historibanjaran') }}";
+            window.location.href = "{{ url('toko_banjaran/laporan_historibanjaran') }}";
         } else if (selectedValue === 'keluar') {
-            window.location.href = "{{ url('admin/barangKeluarbanjaran') }}";
+            window.location.href = "{{ url('toko_banjaran/barangKeluarbanjaran') }}";
         }else if (selectedValue === 'retur') {
-            window.location.href = "{{ url('admin/barangReturbanjaran') }}";
+            window.location.href = "{{ url('toko_banjaran/barangReturbanjaran') }}";
         }
     });
 </script>
@@ -236,7 +236,7 @@
         }
 
         const form = document.getElementById('form-action');
-        form.action = "{{ url('admin/printLaporanBRbanjaran') }}";
+        form.action = "{{ url('toko_banjaran/printLaporanBRbanjaran') }}";
         form.target = "_blank";
         form.submit();
     }
@@ -246,7 +246,7 @@
 <script>
     function exportExcelBR() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('admin/printExcelBrbanjaran') }}";
+    form.action = "{{ url('toko_banjaran/printExcelBrbanjaran') }}";
     form.target = "_blank";
     form.submit();
 }
