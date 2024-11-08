@@ -345,11 +345,11 @@
                     </div>
 
                     <div class="card-footer text-right mt-3">
-                        <button type="reset" class="btn btn-secondary" id="btnReset">Reset</button>
-                        <button type="" class="btn btn-primary" id="simpanButton">Simpan</button>
+                        <button type="button" class="btn btn-primary" id="simpanButton" onclick="handleSave()">Simpan</button>
                         <div id="loading" style="display: none;">
                             <i class="fas fa-spinner fa-spin"></i> Sedang Menyimpan...
                         </div>
+                        
                     </div>
             </form>
         </div>
@@ -359,6 +359,16 @@
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+{{-- <script>
+    function handleSave() {
+    // Sembunyikan tombol simpan dan tampilkan loading
+    document.getElementById('simpanButton').style.display = 'none';
+    document.getElementById('loading').style.display = 'inline-block';
+
+    // Submit form setelah menyembunyikan tombol
+    document.getElementById('penjualanForm').submit();
+}
+</script> --}}
 
 <script>
     function checkCustomerType() {
@@ -377,7 +387,7 @@
     }
 </script>
 
-<script>
+{{-- <script>
     $(document).ready(function() {
         $('#simpanButton').on('click', function(event) {
             event.preventDefault(); // Mencegah aksi default tombol
@@ -441,7 +451,96 @@
             });
         });
     });
+</script> --}}
+
+<script>
+    $(document).ready(function() {
+        // Jalankan handleSave saat tombol "Simpan" diklik
+        $('#simpanButton').on('click', function(event) {
+            event.preventDefault(); // Mencegah aksi default tombol
+            handleSave(); // Panggil fungsi handleSave saat tombol simpan diklik
+        });
+
+        // Jalankan handleSave saat tombol Enter ditekan di input "bayar"
+        $('#bayar').on('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Mencegah aksi default tombol Enter
+                handleSave(); // Panggil fungsi handleSave
+            }
+        });
+
+        function handleSave() {
+            var bayar = parseInt($('#bayar').val().replace(/[^\d]/g, '')) || 0; // Ambil nilai bayar tanpa format dan ubah menjadi integer
+            var subTotal = parseInt($('#sub_total').val().replace(/[^\d]/g, '')) || 0; // Ambil nilai sub total tanpa format dan ubah menjadi integer
+
+            if (!bayar) {
+                // Tampilkan SweetAlert jika input bayar kosong
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: 'Silakan masukkan jumlah uang bayar terlebih dahulu.',
+                    confirmButtonText: 'OK'
+                });
+            } else if (bayar < subTotal) {
+                // Tampilkan SweetAlert jika uang bayar kurang dari sub total
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Uang Bayar Kurang',
+                    text: 'Jumlah uang bayar kurang dari total yang harus dibayar.',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                // Sembunyikan tombol simpan dan tampilkan loading
+                $('#simpanButton').hide();
+                $('#loading').show();
+
+                // Lanjutkan ke proses simpan dengan submit form secara manual
+                $('#penjualanForm').submit(); 
+            }
+        }
+
+        // Proses submit form menggunakan AJAX
+        $('#penjualanForm').on('submit', function(event) {
+            event.preventDefault(); // Mencegah pengiriman form default
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.pdfUrl) {
+                        // Membuka URL di tab baru
+                        window.open(response.pdfUrl, '_blank');
+                    }
+                    if (response.success) {
+                        // Tampilkan pesan sukses menggunakan SweetAlert2
+                        Swal.fire({
+                            title: 'Sukses!',
+                            text: response.success,
+                            icon: 'success',
+                            confirmButtonText: 'OK',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Lakukan refresh halaman setelah menekan OK
+                                location.reload(); // Ini akan merefresh seluruh halaman
+                            }
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    // Tangani error jika diperlukan
+                    console.log(xhr.responseText);
+                },
+                complete: function() {
+                    // Tampilkan kembali tombol simpan dan sembunyikan loading jika terjadi error atau selesai
+                    $('#simpanButton').show();
+                    $('#loading').hide();
+                }
+            });
+        });
+    });
 </script>
+
 
 
 <script>

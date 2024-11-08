@@ -23,6 +23,7 @@
 
         /* Menjaga format dan ukuran setiap barcode sesuai cetakan */
         .box {
+            width: 30%; /* Lebar setiap barcode */
             margin-left: 0px;
             margin-top: 0px;
         }
@@ -33,17 +34,17 @@
         }
 
         .barcode-second {
-            margin-top: 35px; /* Set margin-top lebih besar untuk barcode kedua */
+            margin-top: 40px; /* Set margin-top lebih besar untuk barcode kedua */
         }
 
         .barcode-third {
-            margin-top: 35px; /* Set margin-top lebih besar untuk barcode ketiga */
+            margin-top: 46px; /* Set margin-top lebih besar untuk barcode ketiga */
         }
 
         .text-container {
             position: relative;
             margin-right: 760px;
-            margin-left: 2px;
+            margin-left: 6px;
             margin-top: 4px;
             transform: rotate(90deg);
         }
