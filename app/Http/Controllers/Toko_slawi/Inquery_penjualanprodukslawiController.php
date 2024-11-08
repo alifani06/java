@@ -308,4 +308,26 @@ class Inquery_penjualanprodukslawiController extends Controller
             return json_decode($metode);
         }
         
+
+        public function destroy($id)
+        {
+            try {
+                // Temukan data penjualanproduk berdasarkan ID
+                $penjualanproduk = Penjualanproduk::findOrFail($id);
+        
+                // Hapus detail penjualanproduk yang terkait dengan penjualanproduk_id
+                Detailpenjualanproduk::where('penjualanproduk_id', $id)->delete();
+        
+                // Hapus data penjualanproduk
+                $penjualanproduk->delete();
+        
+                return redirect()->route('toko_slawi.inquery_penjualanproduk.index')
+                                 ->with('success', 'Data penjualan dan detailnya berhasil dihapus.');
+            } catch (\Exception $e) {
+                return redirect()->route('toko_slawi.inquery_penjualanproduk.index')
+                                 ->with('error', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());
+            }
+        }
+        
+    
 }

@@ -300,22 +300,25 @@ class Inquery_penjualanproduktegalController extends Controller
 
     public function destroy($id)
     {
-        // Cari data penjualanproduk berdasarkan ID
-        $penjualanproduk = Penjualanproduk::find($id);
-
-        // Jika data tidak ditemukan, kembalikan pesan error
-        if (!$penjualanproduk) {
-            return redirect()->back()->with('error', 'Data penjualan tidak ditemukan.');
+        try {
+            // Temukan data penjualanproduk berdasarkan ID
+            $penjualanproduk = Penjualanproduk::findOrFail($id);
+    
+            // Hapus detail penjualanproduk yang terkait dengan penjualanproduk_id
+            Detailpenjualanproduk::where('penjualanproduk_id', $id)->delete();
+    
+            // Hapus data penjualanproduk
+            $penjualanproduk->delete();
+    
+            return redirect()->route('toko_tegal.inquery_penjualanproduk.index')
+                             ->with('success', 'Data penjualan dan detailnya berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('toko_tegal.inquery_penjualanproduk.index')
+                             ->with('error', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());
         }
-
-        // Hapus detail penjualan yang terkait dengan penjualanproduk
-        Detailpenjualanproduk::where('penjualanproduk_id', $penjualanproduk->id)->delete();
-
-        // Hapus data penjualanproduk
-        $penjualanproduk->delete();
-
-        return redirect()->route('inquery_penjualanproduktegal.index')->with('success', 'Data penjualan berhasil dihapus.');
     }
+    
+
 
     public function metode($id)
     {

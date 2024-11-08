@@ -33,6 +33,7 @@ use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Illuminate\Support\Facades\DB;
 
 
 
@@ -298,6 +299,26 @@ class Inquery_penjualanprodukbanjaranController extends Controller
         }
     
         return redirect()->route('inquery_penjualanprodukbanjaran.index')->with('success', 'Data penjualan berhasil diperbarui.');
+    }
+    
+    public function destroy($id)
+    {
+        try {
+            // Temukan data penjualanproduk berdasarkan ID
+            $penjualanproduk = Penjualanproduk::findOrFail($id);
+    
+            // Hapus detail penjualanproduk yang terkait dengan penjualanproduk_id
+            Detailpenjualanproduk::where('penjualanproduk_id', $id)->delete();
+    
+            // Hapus data penjualanproduk
+            $penjualanproduk->delete();
+    
+            return redirect()->route('toko_banjaran.inquery_penjualanproduk.index')
+                             ->with('success', 'Data penjualan dan detailnya berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('toko_banjaran.inquery_penjualanproduk.index')
+                             ->with('error', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());
+        }
     }
     
 

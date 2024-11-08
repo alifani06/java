@@ -126,13 +126,7 @@
                                             Non Member
                                         @endif
                                     </td>
-                                    {{-- <td>
-                                        @if ($item->detailpenjualanproduk->isNotEmpty())
-                                            {{ $item->detailpenjualanproduk->pluck('nama_produk')->implode(', ') }}
-                                        @else
-                                            tidak ada
-                                        @endif
-                                    </td> --}}
+             
 
                                     <td>
                                         {{ Str::startsWith($item->sub_total, 'Rp') ? $item->sub_total : 'Rp ' . number_format((float)$item->sub_total, 0, ',', '.') }}
@@ -145,37 +139,31 @@
                                             </button>
                                         @endif
                                         @if ($item->status == 'unpost')
-                                        <button type="button" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-times"></i>
-                                        </button>
+                                            <button type="button" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-times"></i>
+                                            </button>
                                         @endif
-                                     
+                                    
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($item->status == 'unpost')
-                                               
-                                                    <a class="dropdown-item posting-btn"
-                                                        data-memo-id="{{ $item->id }}">Posting</a>
-                                             
-                                                    <a class="dropdown-item"
-                                                    href="{{ url('toko_banjaran/inquery_penjualanprodukbanjaran/' . $item->id . '/edit') }}">Update</a>
-                                                
-                                                    <a class="dropdown-item"
-                                                    href="{{ url('/toko_banjaran/inquery_penjualanprodukbanjaran/' . $item->id ) }}">Show</a>
-                                                    <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="dropdown-item">Delete</button>
-                                                    </form>
+                                                <a class="dropdown-item posting-btn" data-memo-id="{{ $item->id }}">Posting</a>
+                                                <a class="dropdown-item" href="{{ url('toko_banjaran/inquery_penjualanprodukbanjaran/' . $item->id . '/edit') }}">Update</a>
+                                                <a class="dropdown-item" href="{{ url('/toko_banjaran/inquery_penjualanprodukbanjaran/' . $item->id ) }}">Show</a>
+                                                <form action="{{ route('toko_banjaran.inquery_penjualanproduk.destroy', $item->id) }}" method="POST" style="display: inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                                        Delete
+                                                    </button>
+                                                </form>
                                             @endif
                                             @if ($item->status == 'posting')
-                                                    <a class="dropdown-item unpost-btn"
-                                                        data-memo-id="{{ $item->id }}">Unpost</a>
-                                                    <a class="dropdown-item"
-                                                    href="{{ url('/toko_banjaran/inquery_penjualanprodukbanjaran/' . $item->id ) }}">Show</a>
+                                                <a class="dropdown-item unpost-btn" data-memo-id="{{ $item->id }}">Unpost</a>
+                                                <a class="dropdown-item" href="{{ url('/toko_banjaran/inquery_penjualanprodukbanjaran/' . $item->id ) }}">Show</a>
                                             @endif
-                                           
                                         </div>
                                     </td>
+                                    
                                 </tr>
                             @endforeach
                         </tbody>
