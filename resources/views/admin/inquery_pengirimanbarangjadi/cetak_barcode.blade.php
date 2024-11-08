@@ -37,7 +37,7 @@
         }
 
         .barcode-third {
-            margin-top: 30px; /* Set margin-top lebih besar untuk barcode ketiga */
+            margin-top: 35px; /* Set margin-top lebih besar untuk barcode ketiga */
         }
 
         .text-container {
@@ -74,7 +74,7 @@
 
 <body>
     @foreach (range(1, $jumlah) as $i)
-        @if ($i % 3 == 1)
+        @if ($i % 3 == 1) <!-- Baris baru dimulai setelah barcode pertama dalam grup 3 -->
             <div class="row">
         @endif
 
@@ -108,17 +108,18 @@
             </div>
         </div>
 
-        @if ($i % 3 == 0 || $i == $jumlah) <!-- Tutup baris setelah setiap 3 barcode -->
-            </div>
-            @if ($i % 3 == 0) <!-- Tambahkan pemisah halaman setelah setiap 3 barcode -->
-                <div class="page-break"></div>
+        @if ($i % 3 == 0) <!-- Tutup baris setelah setiap 3 barcode -->
+            </div> <!-- Menutup baris -->
+            @if ($i != $jumlah) <!-- Jangan menambahkan pemisah halaman untuk barcode terakhir -->
+                <div class="page-break"></div> <!-- Pemisah halaman hanya setelah setiap 3 barcode -->
             @endif
             @if ($i != $jumlah) <!-- Jangan mulai baris baru jika sudah barcode terakhir -->
                 <div class="row">
             @endif
+        @elseif ($i == $jumlah) <!-- Jika sudah barcode terakhir, pastikan baris terakhir ditutup tanpa pemisah halaman -->
+            </div> <!-- Menutup baris terakhir -->
         @endif
     @endforeach
 </body>
 
 </html>
-
