@@ -67,7 +67,7 @@
 
 </head>
 
-{{-- <body>
+<body>
     <div>
         
         <div class="box">
@@ -164,9 +164,9 @@
       
         
     </div>
-</body> --}}
+</body>
 
-<body>
+{{-- <body>
     @foreach (range(1, $jumlah) as $i)
     <div>
         <div class="box">
@@ -193,7 +193,7 @@
         </div>
     </div>
     @endforeach
-</body>
+</body> --}}
 
 
 
