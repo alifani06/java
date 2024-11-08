@@ -98,7 +98,7 @@
                 @endforeach
         
                 <p style="font-size: 7px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
-                <p class="bold-text">B5</p>
+                <p class="bold-text">B6</p>
             </div>
         </div>
 
@@ -127,7 +127,7 @@
                 @endforeach
         
                 <p style="font-size: 7px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
-                <p class="bold-text">B5</p>
+                <p class="bold-text">B6</p>
             </div>
         </div>
         
@@ -157,7 +157,7 @@
                 @endforeach
         
                 <p style="font-size: 7px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
-                <p class="bold-text">B5</p>
+                <p class="bold-text">B6</p>
             </div>
         </div>
 
