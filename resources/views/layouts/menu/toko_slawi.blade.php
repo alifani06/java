@@ -368,6 +368,7 @@
     request()->is('toko_slawi/laporan_setorantokoslawi*')||
     request()->is('toko_slawi/laporan_setorantunaislawi*')||
     request()->is('toko_slawi/laporan_depositslawi*')||
+    request()->is('toko_slawi/laporan_historislawi*')||
     request()->is('toko_slawi/laporan_pengirimanbarangjadi*')
     // request()->is('toko_slawi/input*')
   
@@ -386,6 +387,7 @@
         request()->is('toko_slawi/laporan_setorantokoslawi*')|| 
         request()->is('toko_slawi/laporan_setorantunaislawi*')|| 
         request()->is('toko_slawi/laporan_depositslawi*')|| 
+        request()->is('toko_slawi/laporan_historislawi*')|| 
         request()->is('toko_slawi/laporan_spengirimanarangjadi*') 
         // request()->is('toko_slawi/input*')
       
@@ -494,6 +496,15 @@
                     class="nav-link {{ request()->is('toko_slawi/laporan_depositslawi*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                     <p style="font-size: 13px;">Laporan Depsit</p>
+                </a>
+            </li>
+            {{-- @endif --}}
+            {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+              <li class="nav-item">
+                <a href="{{ url('toko_slawi/laporan_historislawi') }}"
+                    class="nav-link {{ request()->is('toko_slawi/laporan_historislawi*') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                    <p style="font-size: 13px;">Laporan Histori Slawi</p>
                 </a>
             </li>
             {{-- @endif --}}

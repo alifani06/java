@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Toko_banjaran;
+namespace App\Http\Controllers\Toko_slawi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -37,134 +37,83 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\StokBarangExport;
 use App\Exports\StokBarangExportBM;
 use App\Exports\StokBarangExportBMpesanan;
+use App\Exports\StokBarangExportBMpesananSlawi;
 use App\Exports\StokBarangExportBMsemua;
+use App\Exports\StokBarangExportBMsemuaSlawi;
+use App\Exports\StokBarangExportBMSlawi;
 use App\Exports\StokBarangExportBR;
 use App\Exports\StokBarangExportExcelSemua;
 use App\Exports\StokBarangExportSemua;
 use Illuminate\Support\Facades\DB;
 
 
-class Laporan_historibanjaranController extends Controller
+class Laporan_historislawiController extends Controller
 {
 
-    // public function index(Request $request)
-    // {
-    //     $tanggal_pengiriman = $request->tanggal_pengiriman;
-    //     $tanggal_akhir = $request->tanggal_akhir;
-    //     $toko_id = $request->toko_id ?? 1; 
-    //     $klasifikasi_id = $request->klasifikasi_id;
-    //     $produk_id = $request->produk_id;
-
-    //     // Ambil data toko dan produk untuk dropdown
-    //     $tokos = Toko::all();
-    //     $klasifikasis = Klasifikasi::all();
-    //     $produks = Produk::all();
-
-    //     // Query dasar dengan kondisi status posting
-    //     $query = Pengiriman_barangjadi::join('produks', 'pengiriman_barangjadis.produk_id', '=', 'produks.id')
-    //         ->join('klasifikasis', 'produks.klasifikasi_id', '=', 'klasifikasis.id')
-    //         ->select('pengiriman_barangjadis.*', 'produks.kode_lama')
-    //         ->with('produk.klasifikasi')
-    //         ->where('pengiriman_barangjadis.status', 'posting'); // Tampilkan hanya status "posting"
-
-    //     // Filter berdasarkan toko_id
-    //     $query->where('pengiriman_barangjadis.toko_id', $toko_id);
-
-    //     // Jika produk dipilih, abaikan klasifikasi
-    //     if ($produk_id) {
-    //         $query->where('pengiriman_barangjadis.produk_id', $produk_id);
-    //     } else {
-    //         // Filter klasifikasi hanya jika produk tidak dipilih
-    //         if ($klasifikasi_id) {
-    //             $query->where('produks.klasifikasi_id', $klasifikasi_id);
-    //         }
-    //     }
-
-    //     // Filter berdasarkan tanggal pengiriman
-    //     if ($tanggal_pengiriman && $tanggal_akhir) {
-    //         $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
-    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //         $query->whereBetween('pengiriman_barangjadis.tanggal_pengiriman', [$tanggal_pengiriman, $tanggal_akhir]);
-    //     } elseif ($tanggal_pengiriman) {
-    //         $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
-    //         $query->where('pengiriman_barangjadis.tanggal_pengiriman', '>=', $tanggal_pengiriman);
-    //     } elseif ($tanggal_akhir) {
-    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //         $query->where('pengiriman_barangjadis.tanggal_pengiriman', '<=', $tanggal_akhir);
-    //     } else {
-    //         // Tampilkan data hari ini jika tidak ada filter tanggal
-    //         $query->whereDate('pengiriman_barangjadis.tanggal_pengiriman', Carbon::today());
-    //     }
-
-    //     // Ambil data dan urutkan berdasarkan kode_lama
-    //     $stokBarangJadi = $query->orderBy('produks.kode_lama', 'asc')->get();
-
-    //     // Kirim data ke view
-    //     return view('toko_banjaran.laporan_historibanjaran.index', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'produks'));
-    // }
+   
     public function index(Request $request)
-{
-    $tanggal_pengiriman = $request->tanggal_pengiriman;
-    $tanggal_akhir = $request->tanggal_akhir;
-    $toko_id = 1;  // Tetapkan toko_id langsung menjadi 1
-    $klasifikasi_id = $request->klasifikasi_id;
-    $produk_id = $request->produk_id;
+    {
+        $tanggal_pengiriman = $request->tanggal_pengiriman;
+        $tanggal_akhir = $request->tanggal_akhir;
+        $toko_id = 3;  // Tetapkan toko_id langsung menjadi 1
+        $klasifikasi_id = $request->klasifikasi_id;
+        $produk_id = $request->produk_id;
 
-    // Ambil data toko dan produk untuk dropdown
-    $tokos = Toko::all();
-    $klasifikasis = Klasifikasi::all();
-    $produks = Produk::all();
+        // Ambil data toko dan produk untuk dropdown
+        $tokos = Toko::all();
+        $klasifikasis = Klasifikasi::all();
+        $produks = Produk::all();
 
-    // Query dasar dengan kondisi status posting
-    $query = Pengiriman_barangjadi::join('produks', 'pengiriman_barangjadis.produk_id', '=', 'produks.id')
-        ->join('klasifikasis', 'produks.klasifikasi_id', '=', 'klasifikasis.id')
-        ->select('pengiriman_barangjadis.*', 'produks.kode_lama')
-        ->with('produk.klasifikasi')
-        ->where('pengiriman_barangjadis.status', 'posting'); // Tampilkan hanya status "posting"
+        // Query dasar dengan kondisi status posting
+        $query = Pengiriman_barangjadi::join('produks', 'pengiriman_barangjadis.produk_id', '=', 'produks.id')
+            ->join('klasifikasis', 'produks.klasifikasi_id', '=', 'klasifikasis.id')
+            ->select('pengiriman_barangjadis.*', 'produks.kode_lama')
+            ->with('produk.klasifikasi')
+            ->where('pengiriman_barangjadis.status', 'posting'); // Tampilkan hanya status "posting"
 
-    // Pastikan hanya data dengan toko_id 1
-    $query->where('pengiriman_barangjadis.toko_id', $toko_id);
+        // Pastikan hanya data dengan toko_id 1
+        $query->where('pengiriman_barangjadis.toko_id', $toko_id);
 
-    // Jika produk dipilih, abaikan klasifikasi
-    if ($produk_id) {
-        $query->where('pengiriman_barangjadis.produk_id', $produk_id);
-    } else {
-        // Filter klasifikasi hanya jika produk tidak dipilih
-        if ($klasifikasi_id) {
-            $query->where('produks.klasifikasi_id', $klasifikasi_id);
+        // Jika produk dipilih, abaikan klasifikasi
+        if ($produk_id) {
+            $query->where('pengiriman_barangjadis.produk_id', $produk_id);
+        } else {
+            // Filter klasifikasi hanya jika produk tidak dipilih
+            if ($klasifikasi_id) {
+                $query->where('produks.klasifikasi_id', $klasifikasi_id);
+            }
         }
+
+        // Filter berdasarkan tanggal pengiriman
+        if ($tanggal_pengiriman && $tanggal_akhir) {
+            $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $query->whereBetween('pengiriman_barangjadis.tanggal_pengiriman', [$tanggal_pengiriman, $tanggal_akhir]);
+        } elseif ($tanggal_pengiriman) {
+            $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
+            $query->where('pengiriman_barangjadis.tanggal_pengiriman', '>=', $tanggal_pengiriman);
+        } elseif ($tanggal_akhir) {
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $query->where('pengiriman_barangjadis.tanggal_pengiriman', '<=', $tanggal_akhir);
+        } else {
+            // Tampilkan data hari ini jika tidak ada filter tanggal
+            $query->whereDate('pengiriman_barangjadis.tanggal_pengiriman', Carbon::today());
+        }
+
+        // Ambil data dan urutkan berdasarkan kode_lama
+        $stokBarangJadi = $query->orderBy('produks.kode_lama', 'asc')->get();
+
+        // Kirim data ke view
+        return view('toko_slawi.laporan_historislawi.index', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'produks'));
     }
 
-    // Filter berdasarkan tanggal pengiriman
-    if ($tanggal_pengiriman && $tanggal_akhir) {
-        $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
-        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-        $query->whereBetween('pengiriman_barangjadis.tanggal_pengiriman', [$tanggal_pengiriman, $tanggal_akhir]);
-    } elseif ($tanggal_pengiriman) {
-        $tanggal_pengiriman = Carbon::parse($tanggal_pengiriman)->startOfDay();
-        $query->where('pengiriman_barangjadis.tanggal_pengiriman', '>=', $tanggal_pengiriman);
-    } elseif ($tanggal_akhir) {
-        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-        $query->where('pengiriman_barangjadis.tanggal_pengiriman', '<=', $tanggal_akhir);
-    } else {
-        // Tampilkan data hari ini jika tidak ada filter tanggal
-        $query->whereDate('pengiriman_barangjadis.tanggal_pengiriman', Carbon::today());
-    }
 
-    // Ambil data dan urutkan berdasarkan kode_lama
-    $stokBarangJadi = $query->orderBy('produks.kode_lama', 'asc')->get();
-
-    // Kirim data ke view
-    return view('toko_banjaran.laporan_historibanjaran.index', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'produks'));
-}
-
-
-public function barangMasukpesananbanjaran(Request $request)
+public function barangMasukpesananslawi(Request $request)
 {
     $status = $request->status;
     $tanggal_pengiriman = $request->tanggal_pengiriman;
     $tanggal_akhir = $request->tanggal_akhir;
-    $toko_id = 1;  // Tetapkan toko_id langsung menjadi 1
+    $toko_id = 3;  // Tetapkan toko_id langsung menjadi 1
     $klasifikasi_id = $request->klasifikasi_id;
     $produk_id = $request->produk_id; // Pastikan ini sesuai dengan name di form
 
@@ -218,10 +167,10 @@ public function barangMasukpesananbanjaran(Request $request)
     $stokBarangJadi = $query->orderBy('produks.kode_lama', 'asc')->get();
 
     // Kirim data ke view
-    return view('toko_banjaran.laporan_historibanjaran.barangmasukpesanan', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'produks'));
+    return view('toko_slawi.laporan_historislawi.barangmasukpesanan', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'produks'));
 }
 
-    public function barangMasuksemuabanjaran(Request $request)
+    public function barangMasuksemuaslawi(Request $request)
 {
     $status = $request->status;
     $tanggal_pengiriman = $request->tanggal_pengiriman;
@@ -253,8 +202,8 @@ public function barangMasukpesananbanjaran(Request $request)
     }
 
     // Toko_id 1
-    $query1->where('pengiriman_barangjadis.toko_id', 1);
-    $query2->where('pengiriman_barangjadipesanans.toko_id', 1);
+    $query1->where('pengiriman_barangjadis.toko_id', 3);
+    $query2->where('pengiriman_barangjadipesanans.toko_id', 3);
 
     // Jika produk dipilih, abaikan klasifikasi
     if ($produk_id) {
@@ -292,11 +241,11 @@ public function barangMasukpesananbanjaran(Request $request)
     $stokBarangJadi = $query1->union($query2)->orderBy('kode_lama', 'asc')->get();
 
     // Kirim data ke view
-    return view('toko_banjaran.laporan_historibanjaran.barangmasuksemua', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'produks'));
+    return view('toko_slawi.laporan_historislawi.barangmasuksemua', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'produks'));
 }
 
 
-public function barangKeluarbanjaran(Request $request)
+public function barangKeluarslawi(Request $request)
 {
     $status = $request->status;
     $tanggal_penjualan = $request->tanggal_penjualan;
@@ -306,7 +255,7 @@ public function barangKeluarbanjaran(Request $request)
 
     // Query dasar untuk mengambil data penjualan produk dengan toko_id tetap 1
     $inquery = Penjualanproduk::with('detailPenjualanProduk.produk')
-        ->where('toko_id', 1) // Membatasi data hanya untuk toko_id = 1
+        ->where('toko_id', 3) // Membatasi data hanya untuk toko_id = 1
         ->when($status, function ($query, $status) {
             return $query->where('status', $status);
         })
@@ -381,7 +330,7 @@ public function barangKeluarbanjaran(Request $request)
     $klasifikasis = Klasifikasi::all();
     $produks = Produk::all(); // Ambil semua produk untuk dropdown
 
-    return view('toko_banjaran.laporan_historibanjaran.barangkeluar', [
+    return view('toko_slawi.laporan_historislawi.barangkeluar', [
         'finalResults' => $finalResults,
         'tokos' => $tokos,
         'produks' => $produks,
@@ -391,97 +340,8 @@ public function barangKeluarbanjaran(Request $request)
 
 
 
-    // public function barangKeluarRincibanjaran(Request $request)
-    // {
-    //     $status = $request->status;
-    //     $tanggal_penjualan = $request->tanggal_penjualan;
-    //     $tanggal_akhir = $request->tanggal_akhir;
-    //     $toko_id = $request->toko_id;
-    //     $klasifikasi_id = $request->klasifikasi_id;
-    //     $produk_id = $request->produk; // Tambahkan filter produk
-
-    //     // Query dasar untuk mengambil data penjualan produk
-    //     $inquery = Penjualanproduk::with('detailPenjualanProduk.produk')
-    //         ->when($status, function ($query, $status) {
-    //             return $query->where('status', $status);
-    //         })
-    //         ->when($toko_id, function ($query, $toko_id) {
-    //             return $query->where('toko_id', $toko_id);
-    //         })
-    //         ->when($tanggal_penjualan && $tanggal_akhir, function ($query) use ($tanggal_penjualan, $tanggal_akhir) {
-    //             $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //             return $query->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
-    //         })
-    //         ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
-    //             $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-    //             return $query->where('tanggal_penjualan', '>=', $tanggal_penjualan);
-    //         })
-    //         ->when($tanggal_akhir, function ($query, $tanggal_akhir) {
-    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //             return $query->where('tanggal_penjualan', '<=', $tanggal_akhir);
-    //         });
-
-    //     // Ambil data penjualan
-    //     $inquery = $inquery->get();
-
-    //     // Gabungkan hasil berdasarkan produk_id
-    //     $finalResults = [];
-
-    //     foreach ($inquery as $penjualan) {
-    //         foreach ($penjualan->detailPenjualanProduk as $detail) {
-    //             // Pastikan produk tidak null sebelum mengakses properti
-    //             if ($detail->produk) {
-    //                 // Filter ulang berdasarkan klasifikasi_id jika diperlukan
-    //                 if ($klasifikasi_id && $detail->produk->klasifikasi_id != $klasifikasi_id) {
-    //                     continue; // Lewati produk yang tidak sesuai dengan klasifikasi
-    //                 }
-
-    //                 // Filter ulang berdasarkan produk_id jika diperlukan
-    //                 if ($produk_id && $detail->produk_id != $produk_id) {
-    //                     continue; // Lewati produk yang tidak sesuai dengan filter
-    //                 }
-
-    //                 $key = $detail->produk_id;
-
-    //                 if (!isset($finalResults[$key])) {
-    //                     $finalResults[$key] = [
-    //                         'tanggal_penjualan' => $penjualan->tanggal_penjualan,
-    //                         'kode_lama' => $detail->produk->kode_lama,
-    //                         'nama_produk' => $detail->produk->nama_produk,
-    //                         'harga' => $detail->produk->harga,
-    //                         'jumlah' => 0,
-    //                         'diskon' => 0,
-    //                         'total' => 0,
-    //                     ];
-    //                 }
-
-    //                 // Jumlahkan jumlah dan total
-    //                 $finalResults[$key]['jumlah'] += $detail->jumlah;
-    //                 $finalResults[$key]['total'] += $detail->total;
-
-    //                 // Hitung diskon 10% dari jumlah * harga
-    //                 if ($detail->diskon > 0) {
-    //                     $diskonPerItem = $detail->harga * 0.10; // Diskon per unit
-    //                     $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     // Ambil semua data toko dan klasifikasi untuk dropdown
-    //     $tokos = Toko::all();
-    //     $klasifikasis = Klasifikasi::all();
-    //     $produks = Produk::all(); // Ambil semua produk untuk dropdown
-
-    //     return view('toko_banjaran.laporan_historibanjaran.barangkeluarrinci', [
-    //         'finalResults' => $finalResults,
-    //         'tokos' => $tokos,
-    //         'produks' => $produks,
-    //         'klasifikasis' => $klasifikasis,
-    //     ]);
-    // }
-    public function barangKeluarRincibanjaran(Request $request)
+   
+    public function barangKeluarRincislawi(Request $request)
     {
         $status = $request->status;
         $tanggal_penjualan = $request->tanggal_penjualan;
@@ -490,7 +350,7 @@ public function barangKeluarbanjaran(Request $request)
         $produk_id = $request->produk; // Tambahkan filter produk
     
         // Tetapkan toko_id menjadi 1
-        $toko_id = 1;
+        $toko_id = 3;
     
         // Query dasar untuk mengambil data penjualan produk
         $inquery = Penjualanproduk::with('detailPenjualanProduk.produk')
@@ -566,7 +426,7 @@ public function barangKeluarbanjaran(Request $request)
         $klasifikasis = Klasifikasi::all();
         $produks = Produk::all(); // Ambil semua produk untuk dropdown
     
-        return view('toko_banjaran.laporan_historibanjaran.barangkeluarrinci', [
+        return view('toko_slawi.laporan_historislawi.barangkeluarrinci', [
             'finalResults' => $finalResults,
             'tokos' => $tokos,
             'produks' => $produks,
@@ -575,7 +435,7 @@ public function barangKeluarbanjaran(Request $request)
     }
     
     
-    public function barangReturbanjaran(Request $request)
+    public function barangReturslawi(Request $request)
     {
         $status = $request->status;
         $tanggal_retur = $request->tanggal_retur;
@@ -583,7 +443,7 @@ public function barangKeluarbanjaran(Request $request)
         $klasifikasi_id = $request->klasifikasi_id;
     
         // Tetapkan toko_id menjadi 1
-        $toko_id = 1;
+        $toko_id = 3;
     
         // Query dasar
         $query = Retur_barangjadi::with('produk.klasifikasi');
@@ -635,11 +495,11 @@ public function barangKeluarbanjaran(Request $request)
         $tokos = Toko::all();
         $klasifikasis = Klasifikasi::all();
     
-        return view('toko_banjaran.laporan_historibanjaran.barangretur', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'totalJumlah', 'grandTotal'));
+        return view('toko_slawi.laporan_historislawi.barangretur', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'totalJumlah', 'grandTotal'));
     }
     
     
-    public function printLaporanBmbanjaran(Request $request)
+    public function printLaporanBmslawi(Request $request)
     {
         // Ambil parameter filter dari request
         $status = $request->status;
@@ -653,7 +513,7 @@ public function barangKeluarbanjaran(Request $request)
         $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : 'N/A';
         
         // Nama toko default
-        $branchName = 'Toko Banjaran'; // Mengganti dengan nama toko yang sesuai
+        $branchName = 'Toko Slawi'; // Mengganti dengan nama toko yang sesuai
     
         // Query dasar untuk mengambil data Pengiriman_barangjadi
         $query = Pengiriman_barangjadi::join('produks', 'pengiriman_barangjadis.produk_id', '=', 'produks.id')
@@ -667,7 +527,7 @@ public function barangKeluarbanjaran(Request $request)
         }
     
         // **Filter khusus untuk toko_id = 1**
-        $query->where('toko_id', 1);
+        $query->where('toko_id', 3);
     
         // Jika produk dipilih, abaikan klasifikasi dan filter berdasarkan produk
         if ($produk_id) {
@@ -712,7 +572,7 @@ public function barangKeluarbanjaran(Request $request)
         });
     
         // Memuat konten HTML dari view
-        $pdf = FacadePdf::loadView('toko_banjaran.laporan_historibanjaran.printbm', [
+        $pdf = FacadePdf::loadView('toko_slawi.laporan_historislawi.printbm', [
             'groupedData' => $groupedData,
             'startDate' => $formattedStartDate,
             'endDate' => $formattedEndDate,
@@ -744,7 +604,7 @@ public function barangKeluarbanjaran(Request $request)
     }
     
 
-    public function printLaporanBmpesananbanjaran(Request $request)
+    public function printLaporanBmpesananslawi(Request $request)
     {
         // Ambil parameter filter dari request
         $status = $request->status;
@@ -758,14 +618,14 @@ public function barangKeluarbanjaran(Request $request)
         $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : 'N/A';
         
         // Nama toko tetap 'Toko Slawi'
-        $branchName = 'Toko Banjaran';
+        $branchName = 'Toko Slawi';
        
         // Query dasar untuk mengambil data Pengiriman_barangjadi
         $query = Pengiriman_barangjadipesanan::join('produks', 'pengiriman_barangjadipesanans.produk_id', '=', 'produks.id')
             ->join('klasifikasis', 'produks.klasifikasi_id', '=', 'klasifikasis.id')
             ->select('pengiriman_barangjadipesanans.*', 'produks.kode_lama', 'produks.nama_produk', 'produks.harga')
             ->with('produk.klasifikasi')
-            ->where('toko_id', 1); // Toko ID statis menjadi 3
+            ->where('toko_id', 3); // Toko ID statis menjadi 3
     
         // Filter berdasarkan status
         if ($status) {
@@ -815,7 +675,7 @@ public function barangKeluarbanjaran(Request $request)
         });
     
         // Memuat konten HTML dari view
-        $pdf = FacadePdf::loadView('toko_banjaran.laporan_historibanjaran.printbmpesanan', [
+        $pdf = FacadePdf::loadView('toko_slawi.laporan_historislawi.printbmpesanan', [
             'groupedData' => $groupedData,
             'startDate' => $formattedStartDate,
             'endDate' => $formattedEndDate,
@@ -847,13 +707,13 @@ public function barangKeluarbanjaran(Request $request)
     }
     
 
-    public function printLaporanBmsemuabanjaran(Request $request)
+    public function printLaporanBmsemuaslawi(Request $request)
     {
         // Ambil parameter filter dari request
         $status = $request->status;
         $tanggal_pengiriman = $request->tanggal_pengiriman;
         $tanggal_akhir = $request->tanggal_akhir;
-        $toko_id = 1; // Tetapkan toko_id langsung menjadi 1
+        $toko_id = 3; // Tetapkan toko_id langsung menjadi 1
         $klasifikasi_id = $request->klasifikasi_id; // Ambil filter klasifikasi_id dari request
         $produk_id = $request->produk_id; // Ambil filter produk_id dari request
     
@@ -937,7 +797,7 @@ public function barangKeluarbanjaran(Request $request)
         });
     
         // Memuat konten HTML dari view
-        $pdf = FacadePdf::loadView('toko_banjaran.laporan_historibanjaran.printbmsemua', [
+        $pdf = FacadePdf::loadView('toko_slawi.laporan_historislawi.printbmsemua', [
             'groupedData' => $groupedData,
             'startDate' => $formattedStartDate,
             'endDate' => $formattedEndDate,
@@ -970,7 +830,7 @@ public function barangKeluarbanjaran(Request $request)
     
     
 
-    public function printLaporanBKbanjaran(Request $request)
+    public function printLaporanBKslawi(Request $request)
 {
     // Ambil parameter filter dari request
     $status = $request->status;
@@ -1084,7 +944,7 @@ public function barangKeluarbanjaran(Request $request)
     $endDate = $tanggal_akhir;
 
     // Menggunakan Barryvdh\DomPDF\Facade\Pdf untuk memuat dan menghasilkan PDF
-    $pdf = FacadePdf::loadView('toko_banjaran.laporan_historibanjaran.printbk', [
+    $pdf = FacadePdf::loadView('toko_slawi.laporan_historislawi.printbk', [
         'finalResults' => $finalResults,
         'startDate' => $startDate,
         'endDate' => $endDate,
@@ -1121,7 +981,7 @@ public function barangKeluarbanjaran(Request $request)
     
 
 
-    public function printLaporanBKrincibanjaran(Request $request)
+    public function printLaporanBKrincislawi(Request $request)
 {
     // Ambil parameter filter dari request
     $status = $request->status;
@@ -1215,7 +1075,7 @@ public function barangKeluarbanjaran(Request $request)
     $endDate = $tanggal_akhir;
 
     // Menggunakan Barryvdh\DomPDF\Facade\Pdf untuk memuat dan menghasilkan PDF
-    $pdf = FacadePdf::loadView('toko_banjaran.laporan_historibanjaran.printbkrinci', [
+    $pdf = FacadePdf::loadView('toko_slawi.laporan_historislawi.printbkrinci', [
         'finalResults' => $finalResults,
         'startDate' => $startDate,
         'endDate' => $endDate,
@@ -1237,100 +1097,8 @@ public function barangKeluarbanjaran(Request $request)
 
 
    
-    // public function printLaporanBRbanjaran(Request $request)
-    // {
-    //     // Ambil parameter filter dari request
-    //     $status = $request->status;
-    //     $tanggal_retur = $request->tanggal_retur;
-    //     $tanggal_akhir = $request->tanggal_akhir;
-    //     $toko_id = $request->toko_id;
-    //     $klasifikasi_id = $request->klasifikasi_id;
-
-    //     // Format tanggal untuk tampilan
-    //     $formattedStartDate = $tanggal_retur ? Carbon::parse($tanggal_retur)->format('d-m-Y') : 'N/A';
-    //     $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : 'N/A';
-
-    //     // Ambil nama toko berdasarkan ID
-    //     $branchName = 'Semua Toko'; // Default jika tidak ada filter toko
-    //     if ($toko_id) {
-    //         $toko = Toko::find($toko_id);
-    //         $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
-    //     }
-
-    //     // Query dasar untuk mengambil data Retur_barangjadi
-    //     $query = Retur_barangjadi::with('produk.klasifikasi')
-    //         ->join('produks', 'produks.id', '=', 'retur_barangjadis.produk_id') // Join with 'produks'
-    //         ->orderBy('produks.kode_lama', 'asc') // Order by 'kode_lama'
-    //         ->orderBy('retur_barangjadis.tanggal_retur', 'desc'); // Then order by 'tanggal_retur'
-
-    //     // Filter berdasarkan status
-    //     if ($status) {
-    //         $query->where('retur_barangjadis.status', $status);
-    //     }
-
-    //     // Filter berdasarkan toko_id
-    //     if ($toko_id) {
-    //         $query->where('retur_barangjadis.toko_id', $toko_id);
-    //     }
-
-    //     // Filter berdasarkan klasifikasi_id
-    //     if ($klasifikasi_id) {
-    //         $query->whereHas('produk', function ($q) use ($klasifikasi_id) {
-    //             $q->where('klasifikasi_id', $klasifikasi_id);
-    //         });
-    //     }
-
-    //     // Filter berdasarkan tanggal retur
-    //     if ($tanggal_retur && $tanggal_akhir) {
-    //         $tanggal_retur = Carbon::parse($tanggal_retur)->startOfDay();
-    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //         $query->whereBetween('retur_barangjadis.tanggal_retur', [$tanggal_retur, $tanggal_akhir]);
-    //     } elseif ($tanggal_retur) {
-    //         $tanggal_retur = Carbon::parse($tanggal_retur)->startOfDay();
-    //         $query->where('retur_barangjadis.tanggal_retur', '>=', $tanggal_retur);
-    //     } elseif ($tanggal_akhir) {
-    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //         $query->where('retur_barangjadis.tanggal_retur', '<=', $tanggal_akhir);
-    //     } else {
-    //         // Jika tidak ada filter tanggal, tampilkan data untuk hari ini
-    //         $query->whereDate('retur_barangjadis.tanggal_retur', Carbon::today());
-    //     }
-
-    //     // Eksekusi query dan dapatkan hasilnya
-    //     $stokBarangJadi = $query->select('retur_barangjadis.*') // Select only 'retur_barangjadi' fields
-    //         ->get()
-    //         ->groupBy('kode_retur');
-
-    //     // Hitung total jumlah dan grand total
-    //     $totalJumlah = 0;
-    //     $grandTotal = 0;
-
-    //     foreach ($stokBarangJadi as $returGroup) {
-    //         foreach ($returGroup as $retur) {
-    //             $totalJumlah += $retur->jumlah;
-    //             $grandTotal += $retur->jumlah * $retur->produk->harga;
-    //         }
-    //     }
-
-    //     // Menggunakan FacadePdf untuk menghasilkan PDF
-    //     $pdf = FacadePdf::loadView('toko_banjaran.laporan_historibanjaran.printbr', [
-    //         'stokBarangJadi' => $stokBarangJadi,
-    //         'startDate' => $formattedStartDate,
-    //         'endDate' => $formattedEndDate,
-    //         'branchName' => $branchName,
-    //         'totalJumlah' => $totalJumlah,
-    //         'grandTotal' => $grandTotal,
-    //     ]);
-
-    //     // Menambahkan nomor halaman di kanan bawah
-    //     $pdf->setPaper('A4', 'portrait')
-    //         ->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])
-    //         ->setOption('footer-right', 'Halaman [page] dari [topage]');
-
-    //     // Output PDF ke browser
-    //     return $pdf->stream('laporan_barangretur.pdf', ['Attachment' => false]);
-    // }
-    public function printLaporanBRbanjaran(Request $request)
+    
+    public function printLaporanBRslawi(Request $request)
 {
     // Ambil parameter filter dari request
     $status = $request->status;
@@ -1339,7 +1107,7 @@ public function barangKeluarbanjaran(Request $request)
     $klasifikasi_id = $request->klasifikasi_id;
 
     // Tetapkan toko_id menjadi 1
-    $toko_id = 1;
+    $toko_id = 3;
 
     // Format tanggal untuk tampilan
     $formattedStartDate = $tanggal_retur ? Carbon::parse($tanggal_retur)->format('d-m-Y') : 'N/A';
@@ -1404,7 +1172,7 @@ public function barangKeluarbanjaran(Request $request)
     }
 
     // Menggunakan FacadePdf untuk menghasilkan PDF
-    $pdf = FacadePdf::loadView('toko_banjaran.laporan_historibanjaran.printbr', [
+    $pdf = FacadePdf::loadView('toko_slawi.laporan_historislawi.printbr', [
         'stokBarangJadi' => $stokBarangJadi,
         'startDate' => $formattedStartDate,
         'endDate' => $formattedEndDate,
@@ -1428,19 +1196,19 @@ public function barangKeluarbanjaran(Request $request)
         return Excel::download(new StokBarangExport($request), 'BK.xlsx');
     }
 
-    public function exportExcel(Request $request)
+    public function exportExcelslawi(Request $request)
     {
-        return Excel::download(new StokBarangExportBM($request), 'BM.xlsx');
+        return Excel::download(new StokBarangExportBMSlawi($request), 'BM.xlsx');
     }
 
-    public function exportExcelBMpesanan(Request $request)
+    public function exportExcelBMpesananslawi(Request $request)
     {
-        return Excel::download(new StokBarangExportBMpesanan($request), 'BM.xlsx');
+        return Excel::download(new StokBarangExportBMpesananSlawi($request), 'BM.xlsx');
     }
 
-    public function exportExcelBMsemua(Request $request)
+    public function exportExcelBMsemuaslawi(Request $request)
     {
-        return Excel::download(new StokBarangExportBMsemua($request), 'BM.xlsx');
+        return Excel::download(new StokBarangExportBMsemuaSlawi($request), 'BM.xlsx');
     }
 
     public function exportExcelBR(Request $request)

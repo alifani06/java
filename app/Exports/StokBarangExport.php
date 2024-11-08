@@ -278,7 +278,7 @@ class StokBarangExport implements FromCollection, WithHeadings, WithMapping, Wit
         return [
             ['LAPORAN BARANG KELUAR'], // Judul di baris pertama
             [], // Kosongkan baris kedua
-            ['No', 'Tanggal Penjualan', 'Kode Produk', 'Nama Produk', 'Harga', 'Jumlah', 'Diskon', 'Total', 'Penjualan Kotor', 'Penjualan Bersih'] // Header tabel
+            ['No', 'Tanggal Penjualan', 'Kode Produk', 'Nama Produk', 'Harga', 'Jumlah', 'Diskon', 'Penjualan Kotor', 'Penjualan Bersih'] // Header tabel
         ];
     }
 
@@ -292,7 +292,7 @@ class StokBarangExport implements FromCollection, WithHeadings, WithMapping, Wit
             $row['harga'],
             $row['jumlah'],
             $row['diskon'],
-            $row['total'],
+            // $row['total'],
             $row['penjualan_kotor'], // Tambahkan penjualan kotor ke mapping
             $row['penjualan_bersih'], // Tambahkan penjualan bersih ke mapping
         ];
