@@ -91,7 +91,7 @@ class Inquery_depositbumiayuController extends Controller
         $inquery = $inquery->get();
     
         // Kirim data ke view
-        return view('toko_banjaran.inquery_deposit.index', compact('inquery'));
+        return view('toko_bumiayu.inquery_deposit.index', compact('inquery'));
     }
     
     
