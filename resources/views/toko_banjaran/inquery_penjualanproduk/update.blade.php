@@ -39,7 +39,7 @@
                     <div class="row mb-3 align-items-center" id="tanggalPenjualanRow">
                         <div class="col-md-6 mb-3">
                             <label for="tanggal_penjualan">Tanggal Penjualan</label>
-                            <input type="date" name="tanggal_penjualan" class="form-control" id="tanggal_penjualan" value="{{ $penjualan->tanggal_penjualan ? date('Y-m-d', strtotime($penjualan->tanggal_penjualan)) : '' }}">
+                            <input type="text" name="tanggal_penjualan" class="form-control" id="tanggal_penjualan" value="{{ $penjualan->tanggal_penjualan }}" readonly>
                         </div>
                     </div>
             
@@ -95,7 +95,7 @@
                                     <th style="font-size:14px">Nama Produk</th>
                                     <th style="font-size:14px">Jumlah</th>
                                     <th style="font-size:14px">Diskon</th>
-                                    <th hidden style="font-size:14px">Nomminal Diskon</th>
+                                    <th hidden style="font-size:14px">Nominal Diskon</th>
                                     <th style="font-size:14px">Harga</th>
                                     <th style="font-size:14px">Total</th>
                                     <th style="font-size:14px; text-align:center">Opsi</th>
