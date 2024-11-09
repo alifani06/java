@@ -38,7 +38,7 @@
         }
 
         .barcode-third {
-            margin-top: 46px; /* Set margin-top lebih besar untuk barcode ketiga */
+            margin-top: 40px; /* Set margin-top lebih besar untuk barcode ketiga */
         }
 
         .text-container {
@@ -104,7 +104,7 @@
                     @endforeach
 
                     <p style="font-size: 7px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
-                    <p class="bold-text">B6</p>
+                    <p class="bold-text">C1</p>
                 </div>
             </div>
         </div>
