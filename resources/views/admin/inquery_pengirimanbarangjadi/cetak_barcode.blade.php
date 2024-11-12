@@ -104,7 +104,7 @@
                     @endforeach
 
                     <p style="font-size: 7px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
-                    <p class="bold-text">{{ $produk->kode_produksi }}</p>
+                    <p class="bold-text">{{ $kodeProduksi}}</p>
                 </div>
             </div>
         </div>
