@@ -382,8 +382,9 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('admin/inquery_pengirimanbarangjadi/{id}/{jumlah}/cetak_barcode', [Inquery_pengirimanbarangjadiController::class, 'cetak_barcode'])->name('inquery_pengirimanbarangjadi.cetak_barcode');
     Route::get('admin/inquery_pengirimanbarangjadi', [Inquery_pengirimanbarangjadiController::class, 'index'])->name('admin.inquery_pengirimanbarangjadi.index');
     Route::delete('inquery_pengirimanbarangjadi/deleteprodukpengiriman/{id}', [\App\Http\Controllers\Admin\Inquery_pengirimanbarangjadiController::class, 'deleteprodukpengiriman']);
-    Route::post('/inquery_pengirimanbarangjadi/cetak_banyak_barcode', [Inquery_pengirimanbarangjadiController::class, 'cetak_banyak_barcode'])->name('inquery_pengirimanbarangjadi.cetak_banyak_barcode');
     Route::get('/admin/inquery_pengirimanbarangjadi/print_qr/{id}', [Inquery_pengirimanbarangjadiController::class, 'showPrintQr'])->name('inquery_pengirimanbarangjadi.print_qr');
+    Route::post('admin/inquery_pengirimanbarangjadi/cetak_banyak_barcode', [Inquery_pengirimanbarangjadiController::class, 'cetakBanyakBarcode'])->name('inquery_pengirimanbarangjadi.cetak_banyak_barcode');
+    Route::get('admin/inquery_pengirimanbarangjadi/cetak_semua_barcode/{stokBarangJadiId}', [Inquery_pengirimanbarangjadiController::class, 'cetakSemuaBarcode'])->name('inquery_pengirimanbarangjadi.cetak_semua_barcode');
 
     Route::resource('inquery_pengirimanpesanan', \App\Http\Controllers\Admin\Inquery_pengirimanpesananController::class);
     Route::get('/inquery_pengirimanpesanan/{id}/print', [Inquery_pengirimanpesananController::class, 'print'])->name('inquery_pengirimanpesanan.print');

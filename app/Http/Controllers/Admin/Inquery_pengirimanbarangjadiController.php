@@ -50,6 +50,8 @@ use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Writer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 
 
 
@@ -669,46 +671,8 @@ public function update(Request $request, $id)
     
 
 
-   
-
-    public function cetak_banyak_barcode(Request $request)
-    {
-        // Ambil produk berdasarkan array id yang dipilih
-        $produkIds = $request->input('selected_items', []);
-        $produkList = Produk::whereIn('id', $produkIds)->get();
     
-        // Koleksi untuk menyimpan produk yang akan dicetak
-        $outputProdukList = collect(); 
     
-        // Ambil jumlah pengiriman untuk setiap produk
-        $jumlahPengiriman = Pengiriman_barangjadi::select('produk_id', DB::raw('SUM(jumlah) as total'))
-            ->whereIn('produk_id', $produkIds)
-            ->groupBy('produk_id')
-            ->pluck('total', 'produk_id');
-    
-        // Proses setiap produk
-        $produkList->each(function($produk) use ($outputProdukList, $jumlahPengiriman) {
-            $produk->jumlah = $jumlahPengiriman->get($produk->id, 0); // Dapatkan jumlah atau 0 jika tidak ada
-            $pengiriman = Pengiriman_barangjadi::where('produk_id', $produk->id)->first();
-            $produk->kode_produksi = $pengiriman ? $pengiriman->kode_produksi : null;
-    
-            // Ulangi sesuai jumlah produk
-            for ($i = 0; $i < $produk->jumlah; $i++) {
-                // Generate QR code
-                $qrcode = new Writer(new ImageRenderer(new RendererStyle(60), new SvgImageBackEnd()));
-                $qrcodeData = $qrcode->writeString($produk->qrcode_produk);
-                
-                // Encode the QR code to base64 for Blade
-                $produk->qrcode_base64 = base64_encode($qrcodeData);
-                
-                // Clone produk untuk output dan simpan di koleksi
-                $outputProdukList->push(clone $produk);
-            }
-        });
-    
-        // Kembali ke view dengan mengirimkan produkList
-        return view('admin.inquery_pengirimanbarangjadi.cetak_banyak_barcode', compact('outputProdukList'));
-    }
     
     
 

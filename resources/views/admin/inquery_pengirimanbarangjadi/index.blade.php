@@ -146,35 +146,28 @@
                                         </button>
                                     @endif
                                     @if ($firstItem->status == 'unpost')
-                                    <button type="button" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-times"></i>
-                                    </button>
+                                        <button type="button" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-times"></i>
+                                        </button>
                                     @endif
-                                 
+
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         @if ($firstItem->status == 'unpost')
-                                                <a class="dropdown-item"
-                                                href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
-                                               
-                                                <a class="dropdown-item"
-                                                href="{{ url('/admin/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
-
-                                                <a class="dropdown-item"
-                                                href="{{ route('inquery_pengirimanbarangjadi.print_qr', $firstItem->id) }}">Print QR</a>
-
-                                                @endif
-                                        @if ($firstItem->status == 'posting')
-                                                <a class="dropdown-item unpost-btn"
-                                                    data-memo-id="{{ $firstItem->id }}">Unpost</a>
-                                                <a class="dropdown-item"
-                                                href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
+                                            <a class="dropdown-item" href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
+                                            <a class="dropdown-item" href="{{ url('/admin/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
+                                            <a class="dropdown-item" href="{{ route('inquery_pengirimanbarangjadi.print_qr', $firstItem->id) }}">Print QR</a>
                                         @endif
-                                       
+                                        @if ($firstItem->status == 'posting')
+                                            <a class="dropdown-item unpost-btn" data-memo-id="{{ $firstItem->id }}">Unpost</a>
+                                            <a class="dropdown-item" href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
+                                        @endif
                                     </div>
+                                
+                                 
                                 </td>
+                                
                             </tr>
-                            <form id="form-cetak-banyak" method="POST" action="{{ route('inquery_pengirimanbarangjadi.cetak_banyak_barcode') }}" target="_blank">
-                                @csrf
+                         
                                 <tr class="permintaan-details" id="details-{{ $firstItem->id }}" style="display: none;">
                                     <td colspan="5">
                                         <table class="table table-bordered" style="font-size: 13px;">
@@ -182,7 +175,6 @@
                                                 <tr>
                                                     <th>
                                                         No
-                                                        <input type="checkbox" id="select-all"> <!-- Checkbox untuk menandai semua row -->
                                                     </th>
                                                     <th>Divisi</th>
                                                     <th>Kode Produk</th>
@@ -196,7 +188,6 @@
                                                 <tr>
                                                     <td>
                                                         {{ $loop->iteration }}
-                                                        <input type="checkbox" name="selected_items[]" value="{{ $detail->produk->id }}" class="row-checkbox">
                                                     </td>
                                                     <td>{{ $detail->produk->klasifikasi->nama }}</td>
                                                     <td>{{ $detail->produk->kode_lama }}</td>
@@ -209,6 +200,7 @@
                                                     </td>
                                                     
                                                 </tr>
+                                                
                                                 @endforeach
                                             </tbody>
                                         </table>
@@ -216,7 +208,6 @@
                                 </tr>
                             
                                 {{-- <button type="button" class="btn btn-primary" id="cetak-terpilih">Cetak Terpilih</button> --}}
-                            </form>
                             
                      
                         @endforeach

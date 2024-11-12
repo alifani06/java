@@ -157,13 +157,11 @@
                                 <div class="row mb-3 align-items-center">
                                     <div class="col-md-6">
                                         <label for="tanggal_kirim">Tanggal Pengambilan:</label>
-                                        <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
+                                        <div class="input-group date" id="tanggal_kirim_date" data-target-input="nearest">
                                             <input type="text" id="tanggal_kirim" name="tanggal_kirim"
-                                                   class="form-control datetimepicker-input"
-                                                   data-target="#reservationdatetime"
-                                                   value="{{ old('tanggal_kirim') }}" 
-                                                   placeholder="DD/MM/YYYY HH:mm">
-                                            <div class="input-group-append" data-target="#reservationdatetime" data-toggle="datetimepicker">
+                                                class="form-control datetimepicker-input" data-target="#tanggal_kirim_date"
+                                                value="{{ old('tanggal_kirim') }}" placeholder="DD/MM/YYYY">
+                                            <div class="input-group-append" data-target="#tanggal_kirim_date" data-toggle="datetimepicker">
                                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                             </div>
                                         </div>
@@ -171,8 +169,23 @@
                                             <div class="text-danger">{{ $errors->first('tanggal_kirim') }}</div>
                                         @endif
                                     </div>
+                                    <div class="col-md-6">
+                                        <label for="waktu_kirim">Waktu Pengambilan:</label>
+                                        <div class="input-group date" id="waktu_kirim_time" data-target-input="nearest">
+                                            <input type="text" id="waktu_kirim" name="waktu_kirim"
+                                                class="form-control datetimepicker-input" data-target="#waktu_kirim_time"
+                                                value="{{ old('waktu_kirim') }}" placeholder="HH:mm">
+                                            <div class="input-group-append" data-target="#waktu_kirim_time" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                                            </div>
+                                        </div>
+                                        @if ($errors->has('waktu_kirim'))
+                                            <div class="text-danger">{{ $errors->first('waktu_kirim') }}</div>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -449,49 +462,8 @@
     
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 {{-- <script>
-    $(document).ready(function() {
-        $('#pemesananForm').submit(function(event) {
-            event.preventDefault(); // Mencegah pengiriman form default
-
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function(response) {
-                    if (response.pdfUrl) {
-                        // Membuka URL di tab baru
-                        window.open(response.pdfUrl, '_blank');
-                    }
-                    if (response.success) {
-                        // Tampilkan pesan sukses menggunakan SweetAlert2
-                        Swal.fire({
-                            title: 'Sukses!',
-                            text: response.success,
-                            icon: 'success',
-                            confirmButtonText: 'OK',
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                // Lakukan refresh halaman setelah menekan OK
-                                location.reload(); // Ini akan merefresh seluruh halaman
-                            }
-                        });
-                    }
-                },
-                error: function(xhr) {
-                    // Tangani error jika diperlukan
-                    console.log(xhr.responseText);
-                }
-            });
-        });
-
-        // Menyimpan nilai default untuk setiap elemen form ketika halaman dimuat
-        $('#pemesananForm').find('input[type="text"], input[type="number"], textarea, select').each(function() {
-            $(this).data('default-value', $(this).val());
-        });
-    });
-</script> --}}
-<script>
     $(document).ready(function() {
         // Set locale Moment.js ke bahasa Indonesia
         moment.locale('id');
@@ -566,7 +538,83 @@
             $(this).data('default-value', $(this).val());
         });
     });
+</script> --}}
+<script>
+    $(document).ready(function() {
+    // Set locale Moment.js ke bahasa Indonesia
+    moment.locale('id');
+
+    // Inisialisasi datetimepicker untuk tanggal
+    $('#tanggal_kirim_date').datetimepicker({
+        format: 'DD/MM/YYYY',
+        locale: 'id',
+        icons: {
+            date: 'fa fa-calendar',
+        }
+    });
+
+    // Inisialisasi datetimepicker untuk waktu
+        $('#waktu_kirim_time').datetimepicker({
+        format: 'HH:mm',  // Pastikan hanya waktu yang ditampilkan
+        locale: 'id',
+        icons: {
+            time: 'fa fa-clock',
+        },
+        useCurrent: false  // Menjaga agar input tidak dipengaruhi waktu saat ini
+    });
+
+
+    $('#pemesananForm').submit(function(event) {
+        event.preventDefault(); // Mencegah pengiriman form default
+
+        // Pastikan tanggal dan waktu diisi
+        if (!$('#tanggal_kirim').val() || !$('#waktu_kirim').val()) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Tanggal dan waktu pengambilan harus diisi!',
+                icon: 'error',
+                confirmButtonText: 'OK',
+            });
+            return; // Stop the submission
+        }
+
+        // Gabungkan tanggal dan waktu
+        var tanggal_kirim = $('#tanggal_kirim').val() + ' ' + $('#waktu_kirim').val();
+        
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: $(this).serialize() + '&tanggal_kirim=' + tanggal_kirim, // Kirim tanggal dan waktu
+            success: function(response) {
+                if (response.pdfUrl) {
+                    // Membuka URL di tab baru
+                    window.open(response.pdfUrl, '_blank');
+                }
+                if (response.success) {
+                    // Tampilkan pesan sukses menggunakan SweetAlert2
+                    Swal.fire({
+                        title: 'Sukses!',
+                        text: response.success,
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Lakukan refresh halaman setelah menekan OK
+                            location.reload();
+                        }
+                    });
+                }
+            },
+            error: function(xhr) {
+                // Tangani error jika diperlukan
+                console.log(xhr.responseText);
+            }
+        });
+    });
+});
+
 </script>
+
 <script>
      function getData1() {
         var metodeId = document.getElementById('nama_metode').value;

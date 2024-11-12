@@ -33,6 +33,7 @@ class Pemesananproduk extends Model
         'telp_penerima',
         'alamat_penerima',
         'tanggal_kirim',
+        'waktu_kirim',
         'toko_id',
         'status',
         'kasir',
