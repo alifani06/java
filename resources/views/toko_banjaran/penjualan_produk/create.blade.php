@@ -363,11 +363,19 @@
 <script>
     function checkCustomerType() {
         var kategori = document.getElementById("kategori").value;
+        var namaPelanggan = document.getElementById("nama_pelanggan").value;
 
         if (kategori === "") {
             Swal.fire({
                 title: 'Pilih Tipe Pelanggan',
                 text: 'Silakan pilih tipe pelanggan terlebih dahulu!',
+                icon: 'warning',
+                confirmButtonText: 'Ok'
+            });
+        } else if (kategori === "member" && namaPelanggan === "") {
+            Swal.fire({
+                title: 'Masukan Nama Pelanggan',
+                text: 'Silakan masukan nama pelanggan untuk tipe member!',
                 icon: 'warning',
                 confirmButtonText: 'Ok'
             });
@@ -471,7 +479,6 @@
         $('#kategori').change(function() {
             var tipePelanggan = $(this).val(); 
             updatePrices(tipePelanggan); 
-            updatePurchaseTablePrices(tipePelanggan); 
         });
 
         function updatePrices(tipePelanggan) {
@@ -482,33 +489,14 @@
                 var diskonNonMember = parseFloat($(this).find('.non_diskon_bnjr').text()) || 0;
 
                 if (tipePelanggan === 'member') {
+                    // Update harga dan diskon member
                     $(this).find('.member_harga_bnjr').text(hargaMember); 
                     $(this).find('.member_diskon_bnjr').text(diskonMember); 
                 } else if (tipePelanggan === 'nonmember') {
-                    $(this).find('.non_harga_bnjr').text(hargaNonMember); 
-                    $(this).find('.non_diskon_bnjr').text(diskonNonMember); 
+                    // Update harga dan diskon non-member
+                    $(this).find('.non_harga_bnjr').text(hargaNonMember); // Harga non-member
+                    $(this).find('.non_diskon_bnjr').text(diskonNonMember); // Diskon non-member
                 }
-            });
-        }
-
-        function updatePurchaseTablePrices(tipePelanggan) {
-            $('#tabel-pembelian-body tr').each(function() {
-                var harga, diskon;
-                
-                if (tipePelanggan === 'member') {
-                    harga = parseFloat($(this).find('input[name="harga[]"]').closest('tr').find('.member_harga_bnjr').text()) || 0;
-                    diskon = parseFloat($(this).find('input[name="diskon[]"]').closest('tr').find('.member_diskon_bnjr').text()) || 0;
-                } else if (tipePelanggan === 'nonmember') {
-                    harga = parseFloat($(this).find('input[name="harga[]"]').closest('tr').find('.non_harga_bnjr').text()) || 0;
-                    diskon = parseFloat($(this).find('input[name="diskon[]"]').closest('tr').find('.non_diskon_bnjr').text()) || 0;
-                }
-
-                // Update harga dan diskon di tabel pembelian
-                $(this).find('input[name="harga[]"]').val(harga);
-                $(this).find('input[name="diskon[]"]').val(diskon);
-
-                var jumlah = parseInt($(this).find('.jumlah').val()) || 1;
-                updateTotalAndDiscount($(this), harga, diskon, jumlah);
             });
         }
 
@@ -657,37 +645,40 @@
     }
 
     function updateTotalAndDiscount(row, harga, diskon, jumlah) {
-            var nominal_diskon = (harga * (diskon / 100)) * jumlah;
-            var totalPerItem = (harga - (harga * (diskon / 100))) * jumlah;
-            var totalAsli = harga * jumlah;
+        var nominal_diskon = (harga * (diskon / 100)) * jumlah;
+        var totalPerItem = (harga - (harga * (diskon / 100))) * jumlah;
+        var totalAsli = harga * jumlah;
 
-            row.find('.total').find('input').val(totalPerItem);
-            row.find('.nominal_diskon').find('input').val(nominal_diskon);
-            row.find('.totalasli').find('input').val(totalAsli);
+        row.find('.total').find('input').val(totalPerItem);
+        row.find('.nominal_diskon').find('input').val(nominal_diskon);
+        row.find('.totalasli').find('input').val(totalAsli);
 
-            calculateTotal();
-        }
+        calculateTotal();
+    }
 
         function calculateTotal() {
             var subtotal = 0;
-            var subtotalAsli = 0;
+            var subtotalAsli = 0; // Inisialisasi subtotal asli
             $('#tabel-pembelian-body tr').each(function() {
-                var jumlah = parseInt($(this).find('.jumlah').val()) || 0;
-                var hargaSatuan = parseFloat($(this).find('input[name="harga[]"]').val()) || 0;
-                var diskon = parseFloat($(this).find('input[name="diskon[]"]').val()) || 0;
+                var jumlah = parseInt($(this).find('.jumlah').val()) || 0; // Ambil jumlah dari input
+                var hargaSatuan = parseFloat($(this).find('input[name="harga[]"]').val()) || 0; // Ambil harga dari input harga[]
+                var diskon = parseFloat($(this).find('input[name="diskon[]"]').val()) || 0; // Ambil diskon dari kolom yang tepat
 
+                // Hitung subtotal berdasarkan jumlah dan diskon
                 var totalPerItem = (hargaSatuan - (hargaSatuan * (diskon / 100))) * jumlah; 
-                subtotal += totalPerItem;
-                subtotalAsli += hargaSatuan * jumlah;
+                subtotal += totalPerItem; // Tambahkan ke subtotal yang mempertimbangkan diskon
+
+                // Hitung subtotal asli
+                subtotalAsli += hargaSatuan * jumlah; // Tambahkan ke subtotal asli
             });
 
             var formattedSubtotal = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(subtotal);
             var formattedSubtotalAsli = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(subtotalAsli);
 
             $('#sub_total').val(formattedSubtotal);
-            $('#sub_totalasli').val(formattedSubtotalAsli);
+            $('#sub_totalasli').val(formattedSubtotalAsli); // Simpan subtotal asli dengan format
 
-            calculateKembali();
+            calculateKembali(); // Panggil fungsi untuk menghitung kembali
         }
 
 
