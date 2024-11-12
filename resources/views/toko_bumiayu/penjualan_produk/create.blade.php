@@ -362,11 +362,19 @@
 <script>
     function checkCustomerType() {
         var kategori = document.getElementById("kategori").value;
+        var namaPelanggan = document.getElementById("nama_pelanggan").value;
 
         if (kategori === "") {
             Swal.fire({
                 title: 'Pilih Tipe Pelanggan',
                 text: 'Silakan pilih tipe pelanggan terlebih dahulu!',
+                icon: 'warning',
+                confirmButtonText: 'Ok'
+            });
+        } else if (kategori === "member" && namaPelanggan === "") {
+            Swal.fire({
+                title: 'Masukan Nama Pelanggan',
+                text: 'Silakan masukan nama pelanggan untuk tipe member!',
                 icon: 'warning',
                 confirmButtonText: 'Ok'
             });
