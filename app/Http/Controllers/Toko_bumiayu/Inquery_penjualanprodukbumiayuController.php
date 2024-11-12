@@ -40,38 +40,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 class Inquery_penjualanprodukbumiayuController extends Controller
 {
 
-    // public function index(Request $request)
-    // {
-    //     $status = $request->status;
-    //     $tanggal_penjualan = $request->tanggal_penjualan;
-    //     $tanggal_akhir = $request->tanggal_akhir;
-
-    //     $inquery = Penjualanproduk::query();
-
-    //     if ($status) {
-    //         $inquery->where('status', $status);
-    //     }
-
-    //     if ($tanggal_penjualan && $tanggal_akhir) {
-    //         $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //         $inquery->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
-    //     } elseif ($tanggal_penjualan) {
-    //         $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-    //         $inquery->where('tanggal_penjualan', '>=', $tanggal_penjualan);
-    //     } elseif ($tanggal_akhir) {
-    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //         $inquery->where('tanggal_penjualan', '<=', $tanggal_akhir);
-    //     } else {
-    //         // Jika tidak ada filter tanggal hari ini
-    //         $inquery->whereDate('tanggal_penjualan', Carbon::today());
-    //     }
-
-    //     $inquery->orderBy('id', 'DESC');
-    //     $inquery = $inquery->get();
-
-    //     return view('toko_bumiayu.inquery_penjualanproduk.index', compact('inquery'));
-    // }
+   
     public function index(Request $request)
     {
         $status = $request->status;
@@ -337,6 +306,26 @@ class Inquery_penjualanprodukbumiayuController extends Controller
     
             return json_decode($metode);
         }
+       
         
+        public function destroy($id)
+    {
+        try {
+            // Temukan data penjualanproduk berdasarkan ID
+            $penjualanproduk = Penjualanproduk::findOrFail($id);
+    
+            // Hapus detail penjualanproduk yang terkait dengan penjualanproduk_id
+            Detailpenjualanproduk::where('penjualanproduk_id', $id)->delete();
+    
+            // Hapus data penjualanproduk
+            $penjualanproduk->delete();
+    
+            return redirect()->route('toko_bumiayu.inquery_penjualanproduk.index')
+                             ->with('success', 'Data penjualan dan detailnya berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('toko_bumiayu.inquery_penjualanproduk.index')
+                             ->with('error', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());
+        }
+    }
 
 }

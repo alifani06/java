@@ -1142,6 +1142,8 @@ Route::middleware('toko_bumiayu')->prefix('toko_bumiayu')->group(function () {
     Route::get('/toko_bumiayu/inquery_penjualanproduk/cetak-pdf{id}', [Inquery_penjualanprodukbumiayuController::class, 'cetakPdf'])->name('toko_bumiayu.inquery_penjualanproduk.cetak-pdf');
     Route::post('/toko_bumiayu/inquery_penjualanprodukbumiayu/{id}/update', [Inquery_penjualanprodukbumiayuController::class, 'update'])->name('inquery_penjualanprodukbumiayu.update');
     Route::get('metodebayarbumiayu/metode/{id}', [\App\Http\Controllers\Toko_bumiayu\Inquery_penjualanprodukbumiayuController::class, 'metode']);
+    Route::delete('/toko_bumiayu/inquery_penjualanproduk/{id}', [Inquery_penjualanprodukbumiayuController::class, 'destroy'])
+    ->name('toko_bumiayu.inquery_penjualanproduk.destroy');
 
     Route::resource('laporan_penjualanproduk', \App\Http\Controllers\Toko_bumiayu\Laporan_penjualanprodukController::class);
     Route::get('printReport', [\App\Http\Controllers\Toko_bumiayu\Laporan_penjualanprodukController::class, 'printReport']);
@@ -1511,6 +1513,8 @@ Route::middleware('toko_cilacap')->prefix('toko_cilacap')->group(function () {
     Route::get('/toko_cilacap/inquery_penjualanproduk/cetak-pdf{id}', [Inquery_penjualanprodukcilacapController::class, 'cetakPdf'])->name('toko_cilacap.inquery_penjualanproduk.cetak-pdf');
     Route::post('/toko_cilacap/inquery_penjualanprodukcilacap/{id}/update', [Inquery_penjualanprodukcilacapController::class, 'update'])->name('inquery_penjualanprodukcilacap.update');
     Route::get('metodebayarcilacap/metode/{id}', [\App\Http\Controllers\Toko_cilacap\Inquery_penjualanprodukcilacapController::class, 'metode']);
+    Route::delete('/toko_cilacap/inquery_penjualanproduk/{id}', [Inquery_penjualanprodukcilacapController::class, 'destroy'])
+    ->name('toko_cilacap.inquery_penjualanproduk.destroy');
 
     Route::resource('laporan_penjualanproduk', \App\Http\Controllers\Toko_cilacap\Laporan_penjualanprodukController::class);
     Route::get('printReport', [\App\Http\Controllers\Toko_cilacap\Laporan_penjualanprodukController::class, 'printReport']);
