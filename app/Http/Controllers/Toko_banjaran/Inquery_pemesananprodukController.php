@@ -22,6 +22,7 @@ use App\Models\Detailpemesananproduk;
 use App\Models\Detailtokoslawi;
 use App\Models\Input;
 use App\Models\Karyawan;
+use App\Models\Metodepembayaran;
 use App\Models\Pemesananproduk;
 use Carbon\Carbon;
 use App\Models\Toko;
@@ -35,66 +36,61 @@ class Inquery_pemesananprodukController extends Controller
 {
 
     public function index(Request $request)
+    {
+        $status = $request->status;
+        $tanggal_pemesanan = $request->tanggal_pemesanan;
+        $tanggal_akhir = $request->tanggal_akhir;
 
-{
-    $status = $request->status;
-    $tanggal_pemesanan = $request->tanggal_pemesanan;
-    $tanggal_akhir = $request->tanggal_akhir;
+        $inquery = Pemesananproduk::with('toko')->where('toko_id', 1); // Menambah filter toko_id = 1
 
-    $inquery = Pemesananproduk::with('toko')->where('toko_id', 1); // Menambah filter toko_id = 1
+        if ($status) {
+            $inquery->where('status', $status);
+        }
 
-    if ($status) {
-        $inquery->where('status', $status);
+        if ($tanggal_pemesanan && $tanggal_akhir) {
+            $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $inquery->whereBetween('tanggal_pemesanan', [$tanggal_pemesanan, $tanggal_akhir]);
+        } elseif ($tanggal_pemesanan) {
+            $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
+            $inquery->where('tanggal_pemesanan', '>=', $tanggal_pemesanan);
+        } elseif ($tanggal_akhir) {
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $inquery->where('tanggal_pemesanan', '<=', $tanggal_akhir);
+        } else {
+            // Jika tidak ada filter tanggal hari ini
+            $inquery->whereDate('tanggal_pemesanan', Carbon::today());
+        }
+
+        $inquery->orderBy('id', 'DESC');
+        $inquery = $inquery->get();
+
+        return view('toko_banjaran.inquery_pemesananproduk.index', compact('inquery'));
     }
 
-    if ($tanggal_pemesanan && $tanggal_akhir) {
-        $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
-        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-        $inquery->whereBetween('tanggal_pemesanan', [$tanggal_pemesanan, $tanggal_akhir]);
-    } elseif ($tanggal_pemesanan) {
-        $tanggal_pemesanan = Carbon::parse($tanggal_pemesanan)->startOfDay();
-        $inquery->where('tanggal_pemesanan', '>=', $tanggal_pemesanan);
-    } elseif ($tanggal_akhir) {
-        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-        $inquery->where('tanggal_pemesanan', '<=', $tanggal_akhir);
-    } else {
-        // Jika tidak ada filter tanggal hari ini
-        $inquery->whereDate('tanggal_pemesanan', Carbon::today());
+    public function unpost_pemesananproduk($id)
+    {
+        $item = Pemesananproduk::where('id', $id)->first();
+
+        
+            // Update status deposit_driver menjadi 'posting'
+            $item->update([
+                'status' => 'unpost'
+            ]);
+        return back()->with('success', 'Berhasil');
     }
 
-    $inquery->orderBy('id', 'DESC');
-    $inquery = $inquery->get();
+    public function posting_pemesananproduk($id)
+    {
+        $item = Pemesananproduk::where('id', $id)->first();
 
-    return view('toko_banjaran.inquery_pemesananproduk.index', compact('inquery'));
-}
-
-public function unpost_pemesananproduk($id)
-{
-    $item = Pemesananproduk::where('id', $id)->first();
-
-    
-        // Update status deposit_driver menjadi 'posting'
-        $item->update([
-            'status' => 'unpost'
-        ]);
-    return back()->with('success', 'Berhasil');
-}
-
-public function posting_pemesananproduk($id)
-{
-    $item = Pemesananproduk::where('id', $id)->first();
-
-    
-        // Update status deposit_driver menjadi 'posting'
-        $item->update([
-            'status' => 'posting'
-        ]);
-    return back()->with('success', 'Berhasil');
-}
-
-
-
-
+        
+            // Update status deposit_driver menjadi 'posting'
+            $item->update([
+                'status' => 'posting'
+            ]);
+        return back()->with('success', 'Berhasil');
+    }
 
     public function create()
     {
@@ -105,9 +101,9 @@ public function posting_pemesananproduk($id)
  
     
     public function store(Request $request)
-{
+    {
 
-}
+    }
 
 
 
@@ -116,20 +112,40 @@ public function posting_pemesananproduk($id)
         //
     }
 
-    public function edit($id)
-        {
-            $pelanggans = Pelanggan::all();
-            $tokoslawis = Tokoslawi::all();
-            $tokos = Toko::all();
+    // public function edit($id)
+    //     {
+    //         $pelanggans = Pelanggan::all();
+    //         $tokoslawis = Tokoslawi::all();
+    //         $tokos = Toko::all();
         
-            $produks = Produk::with('tokoslawi')->get();
-            $inquery = Pemesananproduk::with('detailpemesananproduk')->where('id', $id)->first();
-            $selectedTokoId = $inquery->toko_id; // ID toko yang dipilih
+    //         $produks = Produk::with('tokoslawi')->get();
+    //         $inquery = Pemesananproduk::with('detailpemesananproduk')->where('id', $id)->first();
+    //         $selectedTokoId = $inquery->toko_id; // ID toko yang dipilih
 
-            return view('toko_slawi.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
-        }
+    //         return view('toko_slawi.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks' ,'selectedTokoId'));
+    //     }
+    public function edit($id)
+    {
+        // Mengambil semua data yang diperlukan
+        $pelanggans = Pelanggan::all();
+        $tokoslawis = Tokoslawi::all();
+        $tokos = Toko::all();
+        $produks = Produk::with('tokobanjaran')->get();
+            
+        // Mengambil data pemesananproduk dengan detailpemesananproduk dan dppemesanans yang terkait
+        $inquery = Pemesananproduk::with(['detailpemesananproduk', 'dppemesanans'])->findOrFail($id);
+            
+            
+        // ID toko yang dipilih
+        $selectedTokoId = $inquery->toko_id;
         
-        public function update(Request $request, $id)
+        $metodes = Metodepembayaran::all();
+        
+        // Mengembalikan view dengan data yang diperlukan
+        return view('toko_banjaran.inquery_pemesananproduk.update', compact('inquery', 'tokos', 'pelanggans', 'tokoslawis', 'produks', 'selectedTokoId', 'metodes'));
+    }
+        
+    public function update(Request $request, $id)
         {
             // Validasi pelanggan
             $validasi_pelanggan = Validator::make(
