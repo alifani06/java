@@ -794,48 +794,46 @@
     });
 </script>
 
-
-
-    
-
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var kategoriSelect = document.getElementById('kategori');
-        var namaPelangganRow = document.getElementById('namaPelangganRow');
-        var telpRow = document.getElementById('telpRow');
-        var alamatRow = document.getElementById('alamatRow');
-        var kodePelangganRow = document.getElementById('kodePelangganRow'); 
-        var namaPelangganInput = document.getElementById('nama_pelanggan');
-        
-        kategoriSelect.addEventListener('change', function() {
-            if (kategoriSelect.value === 'member') {
-
-                kodePelangganRow.hidden = false; 
-                namaPelangganInput.readOnly = true; 
-                namaPelangganRow.style.display = 'block'; 
-                telpRow.hidden = true; 
-                alamatRow.hidden = true; 
-            } else if (kategoriSelect.value === 'nonmember') {
-
-                kodePelangganRow.hidden = true; 
-                namaPelangganInput.readOnly = false; 
-                namaPelangganRow.style.display = 'none'; 
-                telpRow.hidden = true; 
-                alamatRow.hidden = true; 
-            } else {
-                namaPelangganRow.style.display = 'none'; 
-                telpRow.hidden = true; 
-                alamatRow.hidden = true; 
-                kodePelangganRow.hidden = true; 
-            }
-        });
-
-        if (kategoriSelect.value === 'nonmember') {
+   document.addEventListener('DOMContentLoaded', function() {
+    var kategoriSelect = document.getElementById('kategori');
+    var namaPelangganRow = document.getElementById('namaPelangganRow');
+    var telpRow = document.getElementById('telpRow');
+    var alamatRow = document.getElementById('alamatRow');
+    var kodePelangganRow = document.getElementById('kodePelangganRow'); 
+    var namaPelangganInput = document.getElementById('nama_pelanggan');
+    
+    kategoriSelect.addEventListener('change', function() {
+        if (kategoriSelect.value === 'member') {
+            kodePelangganRow.hidden = false; 
+            namaPelangganInput.readOnly = true; 
+            namaPelangganRow.style.display = 'block'; 
+            telpRow.hidden = true; 
+            alamatRow.hidden = true; 
+        } else if (kategoriSelect.value === 'nonmember') {
+            kodePelangganRow.hidden = true; 
+            namaPelangganInput.readOnly = false; 
             namaPelangganRow.style.display = 'none'; 
             telpRow.hidden = true; 
             alamatRow.hidden = true; 
+            namaPelangganInput.value = ''; // Mengosongkan nama pelanggan saat diubah ke nonmember
+        } else {
+            namaPelangganRow.style.display = 'none'; 
+            telpRow.hidden = true; 
+            alamatRow.hidden = true; 
+            kodePelangganRow.hidden = true; 
         }
     });
+
+    // Set kondisi awal sesuai tipe pelanggan
+    if (kategoriSelect.value === 'nonmember') {
+        namaPelangganRow.style.display = 'none'; 
+        telpRow.hidden = true; 
+        alamatRow.hidden = true; 
+        namaPelangganInput.value = ''; // Mengosongkan nama pelanggan saat diubah ke nonmember
+    }
+});
+
 </script>
 
 <script>

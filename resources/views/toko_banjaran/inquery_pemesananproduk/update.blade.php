@@ -61,7 +61,7 @@
                     @endforeach
                 </div>
             @endif
-            <form action="{{ url('toko_banjaran/pemesanan_produk/' . $inquery->id) }}" method="post" autocomplete="off">
+            <form action="{{ url('toko_banjaran/inquery_pemesananproduk/' . $inquery->id) }}" method="post" autocomplete="off">
                 @csrf
                 @method('put')
                 <div class="container">
@@ -424,7 +424,82 @@
         </div>
  
     </section>
-
+    <script>
+        $(document).ready(function() {
+            // Set locale Moment.js ke bahasa Indonesia
+            moment.locale('id');
+    
+            // Inisialisasi datetimepicker
+            $('#reservationdatetime').datetimepicker({
+                format: 'DD/MM/YYYY HH:mm',
+                locale: 'id',
+                icons: {
+                    time: 'fa fa-clock',
+                    date: 'fa fa-calendar',
+                    up: 'fa fa-arrow-up',
+                    down: 'fa fa-arrow-down',
+                    previous: 'fa fa-chevron-left',
+                    next: 'fa fa-chevron-right',
+                    today: 'fa fa-calendar-check-o',
+                    clear: 'fa fa-trash',
+                    close: 'fa fa-times'
+                }
+            });
+    
+            // Pastikan locale diterapkan ulang setelah inisialisasi datetimepicker
+            $('#reservationdatetime').datetimepicker('locale', 'id');
+    
+            $('#pemesananForm').submit(function(event) {
+                event.preventDefault(); // Mencegah pengiriman form default
+    
+                // Check if tanggal_kirim is filled
+                if (!$('#tanggal_kirim').val()) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Tanggal pengambilan harus diisi!',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                    });
+                    return; // Stop the submission
+                }
+    
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        if (response.pdfUrl) {
+                            // Membuka URL di tab baru
+                            window.open(response.pdfUrl, '_blank');
+                        }
+                        if (response.success) {
+                            // Tampilkan pesan sukses menggunakan SweetAlert2
+                            Swal.fire({
+                                title: 'Sukses!',
+                                text: response.success,
+                                icon: 'success',
+                                confirmButtonText: 'OK',
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // Lakukan refresh halaman setelah menekan OK
+                                    location.reload(); // Ini akan merefresh seluruh halaman
+                                }
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        // Tangani error jika diperlukan
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+    
+            // Menyimpan nilai default untuk setiap elemen form ketika halaman dimuat
+            $('#pemesananForm').find('input[type="text"], input[type="number"], textarea, select').each(function() {
+                $(this).data('default-value', $(this).val());
+            });
+        });
+    </script>
 
 <script>
     var isPaymentMethodChanged = false;
