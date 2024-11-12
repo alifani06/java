@@ -637,13 +637,15 @@ public function update(Request $request, $id)
 
 
     //baru
-    public function cetak_barcode($id)
+    public function cetak_barcode($id, $kode_pengiriman)
     {
         // Ambil produk berdasarkan id
         $produk = Produk::findOrFail($id); 
     
-        // Ambil data pengiriman termasuk 'jumlah' dan 'kode_produksi' dari tabel pengiriman_barangjadi berdasarkan produk_id
-        $pengiriman = Pengiriman_barangjadi::where('produk_id', $id)->first();
+        // Ambil data pengiriman berdasarkan produk_id dan kode_pengiriman tertentu
+        $pengiriman = Pengiriman_barangjadi::where('produk_id', $id)
+                        ->where('kode_pengiriman', $kode_pengiriman)
+                        ->first();
     
         // Jika data pengiriman ditemukan, ambil kode_produksi dan jumlah
         $jumlah = $pengiriman ? $pengiriman->jumlah : 1; // Default 1 jika jumlah tidak ditemukan
@@ -666,6 +668,7 @@ public function update(Request $request, $id)
         // Stream PDF hasil cetak
         return $pdf->stream('penjualan.pdf');
     }
+    
     
 
 
