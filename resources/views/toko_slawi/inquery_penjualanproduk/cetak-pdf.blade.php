@@ -424,13 +424,17 @@
                                 @php
                                     // Mengambil nilai sub_total
                                     $subTotal = $penjualan->sub_total;
-                        
+                            
                                     // Menghapus karakter "Rp" dan mengonversi string menjadi angka
                                     $numericValue = str_replace(['Rp',  ' '], '', $subTotal);
+                            
+                                    // Menampilkan nilai dengan pemisah ribuan
+                                    $formattedValue = number_format($numericValue, 0, ',', '.');
                                 @endphp
-                                {{ $numericValue }}
+                                {{ $formattedValue }}
                             </td>
                         </tr>
+                        
                         
                         
                         @if($penjualan->metode_id == Null)
@@ -446,8 +450,11 @@
                                 
                                             // Menghapus karakter "Rp" dan mengonversi string menjadi angka
                                             $numericValue = str_replace(['Rp',  ' '], '', $Bayar);
+
+                                            // Menampilkan nilai dengan pemisah ribuan
+                                            $formattedValue = number_format($numericValue, 0, ',', '.');
                                         @endphp
-                                        {{ $numericValue }}
+                                        {{ $formattedValue }}
                                     </td>
                             </tr>
                             <tr>
@@ -461,8 +468,11 @@
                             
                                         // Menghapus karakter "Rp" dan mengonversi string menjadi angka
                                         $numericValue = str_replace(['Rp',  ' '], '', $Kembali);
+
+                                        $formattedValue = number_format($numericValue, 0, ',', '.');
+
                                     @endphp
-                                    {{ $numericValue }}
+                                    {{ $formattedValue }}
                                 </td>
                             </tr>
                         @elseif($penjualan->metode_bayar == 'mesinedc' || $penjualan->metode_bayar == 'gobiz')
@@ -470,12 +480,6 @@
                         @endif
                     </tbody>
                 </table>
-                
-                
-                
-                
-                
-                
                 
                 <table style="width: 100%; font-size: 12px; text-align: right;">
                     @if($penjualan->metode_id !== NULL)
