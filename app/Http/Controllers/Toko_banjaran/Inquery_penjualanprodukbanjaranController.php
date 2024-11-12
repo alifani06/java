@@ -321,5 +321,10 @@ class Inquery_penjualanprodukbanjaranController extends Controller
         }
     }
     
+    public function metode($id)
+    {
+        $metode = Metodepembayaran::where('id', $id)->first();
 
+        return json_decode($metode);
+    }
 }

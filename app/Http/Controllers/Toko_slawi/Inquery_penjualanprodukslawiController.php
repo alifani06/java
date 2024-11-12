@@ -301,13 +301,6 @@ class Inquery_penjualanprodukslawiController extends Controller
             return redirect()->route('inquery_penjualanprodukslawi.index')->with('success', 'Data penjualan berhasil diperbarui.');
         }
 
-        public function metode($id)
-        {
-            $metode = Metodepembayaran::where('id', $id)->first();
-    
-            return json_decode($metode);
-        }
-        
 
         public function destroy($id)
         {
@@ -327,6 +320,13 @@ class Inquery_penjualanprodukslawiController extends Controller
                 return redirect()->route('toko_slawi.inquery_penjualanproduk.index')
                                  ->with('error', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());
             }
+        }
+
+        public function metode($id)
+        {
+            $metode = Metodepembayaran::where('id', $id)->first();
+    
+            return json_decode($metode);
         }
         
     

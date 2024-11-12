@@ -361,7 +361,7 @@
                 changeRow.style.display = 'block';
             } else if (metodeId) {
                 $.ajax({
-                    url: "{{ url('tokopemalang/metodebayarpemalang/metode') }}" + "/" + metodeId,
+                    url: "{{ url('toko_pemalang/metodebayarpemalang/metode') }}" + "/" + metodeId,
                     type: "GET",
                     dataType: "json",
                     success: function(response) {

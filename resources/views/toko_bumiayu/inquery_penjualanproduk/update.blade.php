@@ -361,7 +361,7 @@
                 changeRow.style.display = 'block';
             } else if (metodeId) {
                 $.ajax({
-                    url: "{{ url('tokobumiayu/metodebayarbumiayu/metode') }}" + "/" + metodeId,
+                    url: "{{ url('toko_bumiayu/metodebayarbumiayu/metode') }}" + "/" + metodeId,
                     type: "GET",
                     dataType: "json",
                     success: function(response) {

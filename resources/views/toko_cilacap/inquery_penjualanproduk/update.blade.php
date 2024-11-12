@@ -361,7 +361,7 @@
                 changeRow.style.display = 'block';
             } else if (metodeId) {
                 $.ajax({
-                    url: "{{ url('tokocilacap/metodebayarslawi/metode') }}" + "/" + metodeId,
+                    url: "{{ url('toko_cilacap/metodebayarslawi/metode') }}" + "/" + metodeId,
                     type: "GET",
                     dataType: "json",
                     success: function(response) {
