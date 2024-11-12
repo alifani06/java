@@ -359,16 +359,6 @@
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-{{-- <script>
-    function handleSave() {
-    // Sembunyikan tombol simpan dan tampilkan loading
-    document.getElementById('simpanButton').style.display = 'none';
-    document.getElementById('loading').style.display = 'inline-block';
-
-    // Submit form setelah menyembunyikan tombol
-    document.getElementById('penjualanForm').submit();
-}
-</script> --}}
 
 <script>
     function checkCustomerType() {
@@ -387,71 +377,6 @@
     }
 </script>
 
-{{-- <script>
-    $(document).ready(function() {
-        $('#simpanButton').on('click', function(event) {
-            event.preventDefault(); // Mencegah aksi default tombol
-            var bayar = parseInt($('#bayar').val().replace(/[^\d]/g, '')) || 0; // Ambil nilai bayar tanpa format dan ubah menjadi integer
-            var subTotal = parseInt($('#sub_total').val().replace(/[^\d]/g, '')) || 0; // Ambil nilai sub total tanpa format dan ubah menjadi integer
-
-            if (!bayar) {
-                // Tampilkan SweetAlert jika input bayar kosong
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Perhatian',
-                    text: 'Silakan masukkan jumlah uang bayar terlebih dahulu.',
-                    confirmButtonText: 'OK'
-                });
-            } else if (bayar < subTotal) {
-                // Tampilkan SweetAlert jika uang bayar kurang dari sub total
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Uang Bayar Kurang',
-                    text: 'Jumlah uang bayar kurang dari total yang harus dibayar.',
-                    confirmButtonText: 'OK'
-                });
-            } else {
-                // Lanjutkan ke proses simpan dengan submit form secara manual
-                $('#penjualanForm').submit(); 
-            }
-        });
-
-        // Proses submit form menggunakan AJAX
-        $('#penjualanForm').on('submit', function(event) {
-            event.preventDefault(); // Mencegah pengiriman form default
-
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function(response) {
-                    if (response.pdfUrl) {
-                        // Membuka URL di tab baru
-                        window.open(response.pdfUrl, '_blank');
-                    }
-                    if (response.success) {
-                        // Tampilkan pesan sukses menggunakan SweetAlert2
-                        Swal.fire({
-                            title: 'Sukses!',
-                            text: response.success,
-                            icon: 'success',
-                            confirmButtonText: 'OK',
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                // Lakukan refresh halaman setelah menekan OK
-                                location.reload(); // Ini akan merefresh seluruh halaman
-                            }
-                        });
-                    }
-                },
-                error: function(xhr) {
-                    // Tangani error jika diperlukan
-                    console.log(xhr.responseText);
-                }
-            });
-        });
-    });
-</script> --}}
 
 <script>
     $(document).ready(function() {
@@ -541,13 +466,12 @@
     });
 </script>
 
-
-
 <script>
     $(document).ready(function() {
         $('#kategori').change(function() {
             var tipePelanggan = $(this).val(); 
             updatePrices(tipePelanggan); 
+            updatePurchaseTablePrices(tipePelanggan); 
         });
 
         function updatePrices(tipePelanggan) {
@@ -558,14 +482,33 @@
                 var diskonNonMember = parseFloat($(this).find('.non_diskon_bnjr').text()) || 0;
 
                 if (tipePelanggan === 'member') {
-                    // Update harga dan diskon member
                     $(this).find('.member_harga_bnjr').text(hargaMember); 
                     $(this).find('.member_diskon_bnjr').text(diskonMember); 
                 } else if (tipePelanggan === 'nonmember') {
-                    // Update harga dan diskon non-member
-                    $(this).find('.non_harga_bnjr').text(hargaNonMember); // Harga non-member
-                    $(this).find('.non_diskon_bnjr').text(diskonNonMember); // Diskon non-member
+                    $(this).find('.non_harga_bnjr').text(hargaNonMember); 
+                    $(this).find('.non_diskon_bnjr').text(diskonNonMember); 
                 }
+            });
+        }
+
+        function updatePurchaseTablePrices(tipePelanggan) {
+            $('#tabel-pembelian-body tr').each(function() {
+                var harga, diskon;
+                
+                if (tipePelanggan === 'member') {
+                    harga = parseFloat($(this).find('input[name="harga[]"]').closest('tr').find('.member_harga_bnjr').text()) || 0;
+                    diskon = parseFloat($(this).find('input[name="diskon[]"]').closest('tr').find('.member_diskon_bnjr').text()) || 0;
+                } else if (tipePelanggan === 'nonmember') {
+                    harga = parseFloat($(this).find('input[name="harga[]"]').closest('tr').find('.non_harga_bnjr').text()) || 0;
+                    diskon = parseFloat($(this).find('input[name="diskon[]"]').closest('tr').find('.non_diskon_bnjr').text()) || 0;
+                }
+
+                // Update harga dan diskon di tabel pembelian
+                $(this).find('input[name="harga[]"]').val(harga);
+                $(this).find('input[name="diskon[]"]').val(diskon);
+
+                var jumlah = parseInt($(this).find('.jumlah').val()) || 1;
+                updateTotalAndDiscount($(this), harga, diskon, jumlah);
             });
         }
 
@@ -714,40 +657,37 @@
     }
 
     function updateTotalAndDiscount(row, harga, diskon, jumlah) {
-        var nominal_diskon = (harga * (diskon / 100)) * jumlah;
-        var totalPerItem = (harga - (harga * (diskon / 100))) * jumlah;
-        var totalAsli = harga * jumlah;
+            var nominal_diskon = (harga * (diskon / 100)) * jumlah;
+            var totalPerItem = (harga - (harga * (diskon / 100))) * jumlah;
+            var totalAsli = harga * jumlah;
 
-        row.find('.total').find('input').val(totalPerItem);
-        row.find('.nominal_diskon').find('input').val(nominal_diskon);
-        row.find('.totalasli').find('input').val(totalAsli);
+            row.find('.total').find('input').val(totalPerItem);
+            row.find('.nominal_diskon').find('input').val(nominal_diskon);
+            row.find('.totalasli').find('input').val(totalAsli);
 
-        calculateTotal();
-    }
+            calculateTotal();
+        }
 
         function calculateTotal() {
             var subtotal = 0;
-            var subtotalAsli = 0; // Inisialisasi subtotal asli
+            var subtotalAsli = 0;
             $('#tabel-pembelian-body tr').each(function() {
-                var jumlah = parseInt($(this).find('.jumlah').val()) || 0; // Ambil jumlah dari input
-                var hargaSatuan = parseFloat($(this).find('input[name="harga[]"]').val()) || 0; // Ambil harga dari input harga[]
-                var diskon = parseFloat($(this).find('input[name="diskon[]"]').val()) || 0; // Ambil diskon dari kolom yang tepat
+                var jumlah = parseInt($(this).find('.jumlah').val()) || 0;
+                var hargaSatuan = parseFloat($(this).find('input[name="harga[]"]').val()) || 0;
+                var diskon = parseFloat($(this).find('input[name="diskon[]"]').val()) || 0;
 
-                // Hitung subtotal berdasarkan jumlah dan diskon
                 var totalPerItem = (hargaSatuan - (hargaSatuan * (diskon / 100))) * jumlah; 
-                subtotal += totalPerItem; // Tambahkan ke subtotal yang mempertimbangkan diskon
-
-                // Hitung subtotal asli
-                subtotalAsli += hargaSatuan * jumlah; // Tambahkan ke subtotal asli
+                subtotal += totalPerItem;
+                subtotalAsli += hargaSatuan * jumlah;
             });
 
             var formattedSubtotal = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(subtotal);
             var formattedSubtotalAsli = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(subtotalAsli);
 
             $('#sub_total').val(formattedSubtotal);
-            $('#sub_totalasli').val(formattedSubtotalAsli); // Simpan subtotal asli dengan format
+            $('#sub_totalasli').val(formattedSubtotalAsli);
 
-            calculateKembali(); // Panggil fungsi untuk menghitung kembali
+            calculateKembali();
         }
 
 
@@ -999,7 +939,7 @@
         }
         calculateKembali();
     }
-});
+    });
 
 </script>
 

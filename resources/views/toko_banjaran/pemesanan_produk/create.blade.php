@@ -539,81 +539,92 @@
         });
     });
 </script> --}}
+
+
 <script>
     $(document).ready(function() {
-    // Set locale Moment.js ke bahasa Indonesia
-    moment.locale('id');
+        // Set locale Moment.js ke bahasa Indonesia sebelum inisialisasi datetimepicker
+        moment.locale('id'); // Pastikan moment.js locale diatur ke Indonesia
 
-    // Inisialisasi datetimepicker untuk tanggal
-    $('#tanggal_kirim_date').datetimepicker({
-        format: 'DD/MM/YYYY',
-        locale: 'id',
-        icons: {
-            date: 'fa fa-calendar',
-        }
-    });
-
-    // Inisialisasi datetimepicker untuk waktu
-        $('#waktu_kirim_time').datetimepicker({
-        format: 'HH:mm',  // Pastikan hanya waktu yang ditampilkan
-        locale: 'id',
-        icons: {
-            time: 'fa fa-clock',
-        },
-        useCurrent: false  // Menjaga agar input tidak dipengaruhi waktu saat ini
-    });
-
-
-    $('#pemesananForm').submit(function(event) {
-        event.preventDefault(); // Mencegah pengiriman form default
-
-        // Pastikan tanggal dan waktu diisi
-        if (!$('#tanggal_kirim').val() || !$('#waktu_kirim').val()) {
-            Swal.fire({
-                title: 'Error!',
-                text: 'Tanggal dan waktu pengambilan harus diisi!',
-                icon: 'error',
-                confirmButtonText: 'OK',
-            });
-            return; // Stop the submission
-        }
-
-        // Gabungkan tanggal dan waktu
-        var tanggal_kirim = $('#tanggal_kirim').val() + ' ' + $('#waktu_kirim').val();
-        
-        $.ajax({
-            url: $(this).attr('action'),
-            type: 'POST',
-            data: $(this).serialize() + '&tanggal_kirim=' + tanggal_kirim, // Kirim tanggal dan waktu
-            success: function(response) {
-                if (response.pdfUrl) {
-                    // Membuka URL di tab baru
-                    window.open(response.pdfUrl, '_blank');
-                }
-                if (response.success) {
-                    // Tampilkan pesan sukses menggunakan SweetAlert2
-                    Swal.fire({
-                        title: 'Sukses!',
-                        text: response.success,
-                        icon: 'success',
-                        confirmButtonText: 'OK',
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Lakukan refresh halaman setelah menekan OK
-                            location.reload();
-                        }
-                    });
-                }
-            },
-            error: function(xhr) {
-                // Tangani error jika diperlukan
-                console.log(xhr.responseText);
+        // Inisialisasi datetimepicker untuk tanggal
+        $('#tanggal_kirim_date').datetimepicker({
+            format: 'DD/MM/YYYY',
+            locale: 'id', // Pastikan locale Indonesia diterapkan
+            icons: {
+                date: 'fa fa-calendar',
             }
         });
-    });
-});
 
+        // Inisialisasi datetimepicker untuk waktu
+        $('#waktu_kirim_time').datetimepicker({
+            format: 'HH:mm',  // Pastikan hanya waktu yang ditampilkan
+            locale: 'id', // Pastikan locale Indonesia diterapkan
+            icons: {
+                time: 'fa fa-clock',
+            },
+            useCurrent: false  // Jangan set waktu saat ini secara otomatis
+        });
+
+        // Cegah masalah locale yang tidak ter-set dengan benar dengan memaksa locale setelah inisialisasi
+        $('#tanggal_kirim_date').on('dp.change', function() {
+            $(this).data("DateTimePicker").locale('id');
+        });
+        
+        $('#waktu_kirim_time').on('dp.change', function() {
+            $(this).data("DateTimePicker").locale('id');
+        });
+
+        $('#pemesananForm').submit(function(event) {
+            event.preventDefault(); // Mencegah pengiriman form default
+
+            // Pastikan tanggal dan waktu diisi
+            if (!$('#tanggal_kirim').val() || !$('#waktu_kirim').val()) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Tanggal dan waktu pengambilan harus diisi!',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+                return; // Stop the submission
+            }
+
+            // Gabungkan tanggal dan waktu
+            var tanggal_kirim = $('#tanggal_kirim').val() + ' ' + $('#waktu_kirim').val();
+            
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize() + '&tanggal_kirim=' + tanggal_kirim, // Kirim tanggal dan waktu
+                success: function(response) {
+                    if (response.pdfUrl) {
+                        // Membuka URL di tab baru
+                        window.open(response.pdfUrl, '_blank');
+                    }
+                    if (response.success) {
+                        // Tampilkan pesan sukses menggunakan SweetAlert2
+                        Swal.fire({
+                            title: 'Sukses!',
+                            text: response.success,
+                            icon: 'success',
+                            confirmButtonText: 'OK',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Lakukan refresh halaman setelah menekan OK
+                                location.reload();
+                            }
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    // Tangani error jika diperlukan
+                    console.log(xhr.responseText);
+                }
+            });
+        });
+    });
 </script>
+
+
 
 <script>
      function getData1() {
