@@ -79,7 +79,7 @@ public function store(Request $request)
                 'produk_id' => $produkId,
                 'klasifikasi_id' => $request->input('klasifikasi_id'),
                 'stok' => $stok,
-                'status' => 'unpost',
+                'status' => 'posting',
                 'kode_input' => $kode,
                 'tanggal_input' => Carbon::now('Asia/Jakarta'),
             ]);
@@ -87,7 +87,7 @@ public function store(Request $request)
             // Check if a record with the same produk_id and klasifikasi_id exists in Detail_stokbarangjadi
             $existingDetail = Detail_stokbarangjadi::where('produk_id', $produkId)
                 ->where('klasifikasi_id', $request->input('klasifikasi_id'))
-                ->where('status', 'unpost')
+                ->where('status', 'posting')
                 ->first();
 
             if ($existingDetail) {
@@ -101,7 +101,7 @@ public function store(Request $request)
                     'produk_id' => $produkId,
                     'klasifikasi_id' => $request->input('klasifikasi_id'),
                     'stok' => $stok,
-                    'status' => 'unpost',
+                    'status' => 'posting',
                     'kode_input' => $kode,
                     'tanggal_input' => Carbon::now('Asia/Jakarta'),
                 ];
