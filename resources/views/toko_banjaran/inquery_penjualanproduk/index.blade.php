@@ -146,7 +146,7 @@
                                     
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($item->status == 'unpost')
-                                                <a class="dropdown-item posting-btn" data-memo-id="{{ $item->id }}">Posting</a>
+                                                {{-- <a class="dropdown-item posting-btn" data-memo-id="{{ $item->id }}">Posting</a> --}}
                                                 <a class="dropdown-item" href="{{ url('toko_banjaran/inquery_penjualanprodukbanjaran/' . $item->id . '/edit') }}">Update</a>
                                                 <a class="dropdown-item" href="{{ url('/toko_banjaran/inquery_penjualanprodukbanjaran/' . $item->id ) }}">Show</a>
                                                 <form action="{{ route('toko_banjaran.inquery_penjualanproduk.destroy', $item->id) }}" method="POST" style="display: inline;">

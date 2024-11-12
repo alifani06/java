@@ -154,8 +154,8 @@
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($item->status == 'unpost')
                                                
-                                                    <a class="dropdown-item posting-btn"
-                                                        data-memo-id="{{ $item->id }}">Posting</a>
+                                                    {{-- <a class="dropdown-item posting-btn"
+                                                        data-memo-id="{{ $item->id }}">Posting</a> --}}
                                              
                                                     <a class="dropdown-item"
                                                         href="{{ url('toko_slawi/inquery_penjualanprodukslawi/' . $item->id . '/edit') }}">Update</a>
