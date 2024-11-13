@@ -272,7 +272,7 @@
                                                         <th>Kode Produk</th>
                                                         <th>Produk</th>
                                                         <th>Jumlah</th>
-                                                        <th>Cetak</th>
+                                                        {{-- <th>Cetak</th> --}}
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -287,11 +287,11 @@
                                                             <td>{{ $detail->produk->kode_lama }}</td>
                                                             <td>{{ $detail->produk->nama_produk }}</td>
                                                             <td>{{ $detail->jumlah }}</td>
-                                                            <td>
+                                                            {{-- <td>
                                                                 <a href="{{ route('inquery_pengirimanbarangjadi.cetak_barcode', ['id' => $detail->produk->id, 'jumlah' => $detail->jumlah]) }}" class="btn btn-primary btn-sm" target="_blank" onclick="openPrintDialog(event)">
                                                                     <i class="fas fa-print"></i>
                                                                 </a>
-                                                            </td>
+                                                            </td> --}}
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
