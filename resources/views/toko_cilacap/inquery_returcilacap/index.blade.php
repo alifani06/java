@@ -228,7 +228,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_cilacap/inquery_returbanjaran') }}";
+            form.action = "{{ url('toko_cilacap/inquery_returcilacap') }}";
             form.submit();
         }
 

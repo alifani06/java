@@ -100,9 +100,13 @@ class Retur_tokocilacapController extends Controller{
     ]);
 
     $kode = $this->kode();
+    $tanggalPengiriman = $request->input('tanggal_input'); // Ambil tanggal pengiriman dari input
+
     $produk_ids = $request->input('produk_id');
     $jumlahs = $request->input('jumlah');
     $keterangans = $request->input('keterangan');
+
+    $tanggalPengirimanDenganJam = Carbon::parse($tanggalPengiriman)->setTime(now()->hour, now()->minute);
 
     foreach ($produk_ids as $index => $produk_id) {
         $jumlah_yang_dibutuhkan = $jumlahs[$index];
@@ -158,7 +162,7 @@ class Retur_tokocilacapController extends Controller{
             'status' => 'unpost', // Ubah status menjadi posting
             'jumlah' => $jumlah_yang_dibutuhkan,
             'keterangan' => $keterangans[$index],
-            'tanggal_input' => Carbon::now('Asia/Jakarta'),
+            'tanggal_input' => $tanggalPengirimanDenganJam,
         ]);
 
         Retur_barangjadi::create([
@@ -169,7 +173,7 @@ class Retur_tokocilacapController extends Controller{
             'status' => 'unpost', // Ubah status menjadi posting
             'jumlah' => $jumlah_yang_dibutuhkan,
             'keterangan' => $keterangans[$index],
-            'tanggal_retur' => Carbon::now('Asia/Jakarta'),
+            'tanggal_retur' => $tanggalPengirimanDenganJam,
         ]);
     }
 
