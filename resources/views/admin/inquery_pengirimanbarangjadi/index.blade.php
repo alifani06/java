@@ -115,7 +115,7 @@
                         </div>
                     </form>
                     
-                    <table id="datatables66" class="table table-bordered" style="font-size: 13px">
+                    {{-- <table id="datatables66" class="table table-bordered" style="font-size: 13px">
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
@@ -205,14 +205,104 @@
                                             </tbody>
                                         </table>
                                     </td>
-                                </tr>
-                            
-                                {{-- <button type="button" class="btn btn-primary" id="cetak-terpilih">Cetak Terpilih</button> --}}
-                            
+                                </tr>                            
                      
                         @endforeach
                         </tbody>
-                    </table>              
+                    </table>   --}}
+                    <form action="{{ route('inquery_pengirimanbarangjadi.cetakSemuaBarcode') }}" method="POST" target="_blank">
+                        @csrf
+                
+                        <!-- Tombol Select All dan Submit -->
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-secondary" onclick="toggleSelectAll()">Select All</button>
+                            <button type="submit" class="btn btn-primary">Cetak Barcode Terpilih</button>
+                        </div>
+                
+                        <!-- Tabel Utama -->
+                        <table id="datatables66" class="table table-bordered" style="font-size: 13px">
+                            <thead>
+                                <tr>
+                                    <th class="text-center"><input type="checkbox" id="select-all" onclick="toggleSelectAll()"></th>
+                                    <th class="text-center">No</th>
+                                    <th>Kode Pengiriman</th>
+                                    <th>Cabang</th>
+                                    <th>Tanggal Pengiriman</th>
+                                    <th>Tanggal Terima</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($stokBarangJadi as $kodeInput => $stokBarangJadiItems)
+                                    @php
+                                        $firstItem = $stokBarangJadiItems->first();
+                                    @endphp
+                                    <tr class="dropdown" data-permintaan-id="{{ $firstItem->id }}">
+                                        <td class="text-center">
+                                            <!-- Checkbox untuk Select All -->
+                                            <input type="checkbox" class="product-checkbox" onclick="toggleCheckboxes()" data-id="{{ $firstItem->id }}">
+                                        </td>
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td>{{ $firstItem->kode_pengiriman }}</td>
+                                        <td>{{ $firstItem->toko->nama_toko ?? 'Toko Tidak Ditemukan' }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_pengiriman)->format('d/m/Y H:i') }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') }}</td>
+                                        <td class="text-center">
+                                            @if ($firstItem->status == 'posting')
+                                                <button type="button" class="btn btn-success btn-sm">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            @else
+                                                <button type="button" class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            @endif
+                                        </td>
+                                    </tr>
+                
+                                    <!-- Detail Produk -->
+                                    <tr class="permintaan-details" id="details-{{ $firstItem->id }}" style="display: none;">
+                                        <td colspan="7">
+                                            <table class="table table-bordered" style="font-size: 13px;">
+                                                <thead>
+                                                    <tr>
+                                                        <th><input type="checkbox" class="product-checkbox" data-id="{{ $firstItem->id }}"></th>
+                                                        <th>No</th>
+                                                        <th>Divisi</th>
+                                                        <th>Kode Produk</th>
+                                                        <th>Produk</th>
+                                                        <th>Jumlah</th>
+                                                        <th>Cetak</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($stokBarangJadiItems as $detail)
+                                                        <tr>
+                                                            <td>
+                                                                <!-- Checkbox untuk produk tertentu -->
+                                                                <input type="checkbox" name="produk_ids[]" value="{{ $detail->produk->id }}" class="product-checkbox" data-id="{{ $detail->produk->id }}">
+                                                            </td>
+                                                            <td>{{ $loop->iteration }}</td>
+                                                            <td>{{ $detail->produk->klasifikasi->nama }}</td>
+                                                            <td>{{ $detail->produk->kode_lama }}</td>
+                                                            <td>{{ $detail->produk->nama_produk }}</td>
+                                                            <td>{{ $detail->jumlah }}</td>
+                                                            <td>
+                                                                <a href="{{ route('inquery_pengirimanbarangjadi.cetak_barcode', ['id' => $detail->produk->id, 'jumlah' => $detail->jumlah]) }}" class="btn btn-primary btn-sm" target="_blank" onclick="openPrintDialog(event)">
+                                                                    <i class="fas fa-print"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </form>
+                    
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
                         aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">
@@ -231,6 +321,22 @@
         </div>
     </section>
     
+    <script>
+        function toggleSelectAll() {
+            const checkboxes = document.querySelectorAll('.product-checkbox');
+            const selectAllCheckbox = document.getElementById('select-all');
+            const isChecked = selectAllCheckbox.checked;
+
+            checkboxes.forEach(checkbox => checkbox.checked = isChecked);
+        }
+
+        function toggleCheckboxes() {
+            const selectAllCheckbox = document.getElementById('select-all');
+            const productCheckboxes = document.querySelectorAll('.product-checkbox');
+            selectAllCheckbox.checked = Array.from(productCheckboxes).every(checkbox => checkbox.checked);
+        }
+    </script>
+
     <script>
         document.getElementById('select-all').addEventListener('click', function(event) {
             const checkboxes = document.querySelectorAll('.row-checkbox');

@@ -23,7 +23,7 @@
 
         /* Menjaga format dan ukuran setiap barcode sesuai cetakan */
         .box {
-            width: 30%; /* Lebar setiap barcode */
+            width: 50%; /* Lebar setiap barcode */
             margin-left: 0px;
             margin-top: 0px;
         }
@@ -34,11 +34,11 @@
         }
 
         .barcode-second {
-            margin-top: 40px; /* Set margin-top lebih besar untuk barcode kedua */
+            margin-top: 50px; /* Set margin-top lebih besar untuk barcode kedua */
         }
 
         .barcode-third {
-            margin-top: 40px; /* Set margin-top lebih besar untuk barcode ketiga */
+            margin-top: 50px; /* Set margin-top lebih besar untuk barcode ketiga */
         }
 
         .text-container {
@@ -73,7 +73,7 @@
 
 </head>
 
-<body>
+{{-- <body>
     @foreach (range(1, $jumlah) as $i)
         @if ($i % 3 == 1) <!-- Baris baru dimulai setelah barcode pertama dalam grup 3 -->
             <div class="row">
@@ -121,6 +121,68 @@
             </div> <!-- Menutup baris terakhir -->
         @endif
     @endforeach
+</body> --}}
+
+<body>
+    @foreach ($dataProduk as $produkData)
+        {{-- Mengulangi cetakan sesuai jumlah yang diminta untuk setiap produk --}}
+        @for ($i = 1; $i <= $produkData['jumlah']; $i++)
+            
+            {{-- Mulai baris baru setiap 3 item --}}
+            @if (($i - 1) % 3 == 0)
+                <div class="row">
+            @endif
+
+            <div class="box
+                @if ($i % 3 == 1) barcode-first 
+                @elseif ($i % 3 == 2) barcode-second 
+                @elseif ($i % 3 == 0) barcode-third @endif">
+                
+                <img src="data:image/png;base64,{{ $produkData['qrcodeData'] }}" />
+            </div>
+            
+            <div class="text-container
+                @if ($i % 3 == 1) barcode-first 
+                @elseif ($i % 3 == 2) barcode-second 
+                @elseif ($i % 3 == 0) barcode-third @endif">
+                
+                <div class="text">
+                    <p class="bold-text">{{ $produkData['produk']->kode_lama }}</p>
+
+                    @php
+                        // Membagi nama produk ke dalam potongan teks agar tidak terlalu panjang
+                        $chunks = str_split($produkData['produk']->nama_produk, 15);
+                    @endphp
+
+                    @foreach ($chunks as $chunk)
+                        <p style="font-size: 6px;" class="bold-text truncate">{{ $chunk }}</p>
+                    @endforeach
+
+                    <p style="font-size: 7px;" class="bold-text">Rp. {{ number_format($produkData['produk']->harga, 0, ',', '.') }}</p>
+                    <p class="bold-text">C3</p>
+                </div>
+            </div>
+
+            {{-- Tutup baris setiap 3 item atau jika sudah mencapai jumlah produk --}}
+            @if ($i % 3 == 0 || $i == $produkData['jumlah'])
+                </div> <!-- Menutup baris -->
+            @endif
+
+            {{-- Tambahkan page break setelah setiap 3 produk --}}
+            @if ($i % 3 == 0 && $i != $produkData['jumlah'])
+                <div class="page-break"></div> <!-- Memaksa pindah halaman setelah 3 produk -->
+            @endif
+
+            {{-- Tambahkan page break setelah produk terakhir --}}
+            @if ($i == $produkData['jumlah'] && !$loop->last)
+                <div class="page-break"></div> <!-- Memaksa pindah halaman setelah produk terakhir -->
+            @endif
+        @endfor
+    @endforeach
 </body>
+
+
+
+
 
 </html>

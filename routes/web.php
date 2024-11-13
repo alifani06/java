@@ -385,6 +385,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/admin/inquery_pengirimanbarangjadi/print_qr/{id}', [Inquery_pengirimanbarangjadiController::class, 'showPrintQr'])->name('inquery_pengirimanbarangjadi.print_qr');
     Route::post('admin/inquery_pengirimanbarangjadi/cetak_banyak_barcode', [Inquery_pengirimanbarangjadiController::class, 'cetakBanyakBarcode'])->name('inquery_pengirimanbarangjadi.cetak_banyak_barcode');
     Route::get('admin/inquery_pengirimanbarangjadi/cetak_semua_barcode/{stokBarangJadiId}', [Inquery_pengirimanbarangjadiController::class, 'cetakSemuaBarcode'])->name('inquery_pengirimanbarangjadi.cetak_semua_barcode');
+    Route::post('/admin/inquery_pengirimanbarangjadi/cetakSemuaBarcode', [Inquery_pengirimanbarangjadiController::class, 'cetakSemuaBarcode'])->name('inquery_pengirimanbarangjadi.cetakSemuaBarcode');
 
     Route::resource('inquery_pengirimanpesanan', \App\Http\Controllers\Admin\Inquery_pengirimanpesananController::class);
     Route::get('/inquery_pengirimanpesanan/{id}/print', [Inquery_pengirimanpesananController::class, 'print'])->name('inquery_pengirimanpesanan.print');
