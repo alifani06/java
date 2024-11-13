@@ -668,16 +668,7 @@ public function update(Request $request, $id)
         // Stream PDF hasil cetak
         return $pdf->stream('penjualan.pdf');
     }
-    
 
-
-    
-    
-    
-    
-
-
-    
     public function deleteprodukpengiriman($id)
     {
         // Temukan item berdasarkan ID
@@ -702,7 +693,6 @@ public function update(Request $request, $id)
         return response()->json(['message' => 'Produk berhasil dihapus dari pengiriman.']);
     }
 
-    
     public function cetakSemuaBarcode(Request $request)
     {
         // Ambil ID produk yang dipilih
@@ -733,6 +723,18 @@ public function update(Request $request, $id)
         
         return $pdf->stream('barcode_semua_produk.pdf');
     }
+
+    
+    
+    
+
+
+
+
+
+    
+    
+
 
 
 }

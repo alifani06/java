@@ -73,62 +73,11 @@
 
 </head>
 
-{{-- <body>
-    @foreach (range(1, $jumlah) as $i)
-        @if ($i % 3 == 1) <!-- Baris baru dimulai setelah barcode pertama dalam grup 3 -->
-            <div class="row">
-        @endif
-
-        <div>
-            <div class="box
-                @if ($i % 3 == 1) barcode-first 
-                @elseif ($i % 3 == 2) barcode-second 
-                @elseif ($i % 3 == 0) barcode-third @endif">
-                <!-- Menampilkan gambar QR code -->
-                <img src="data:image/png;base64,{{ $qrcodeData }}" />
-            </div>
-            
-            <div class="text-container
-                @if ($i % 3 == 2) barcode-second 
-                @elseif ($i % 3 == 0) barcode-third @endif">
-                <div class="text">
-                    <p class="bold-text">{{ $produk->kode_lama }}</p>
-
-                    @php
-                        // Membagi nama produk menjadi blok-blok yang berisi maksimal 15 karakter
-                        $chunks = str_split($produk->nama_produk, 15);
-                    @endphp
-
-                    @foreach ($chunks as $chunk)
-                        <p style="font-size: 6px;" class="bold-text truncate">{{ $chunk }}</p>
-                    @endforeach
-
-                    <p style="font-size: 7px;" class="bold-text">Rp. {{ number_format($produk->harga, 0, ',', '.') }}</p>
-                    <p class="bold-text">C3</p>
-                </div>
-            </div>
-        </div>
-
-        @if ($i % 3 == 0) <!-- Tutup baris setelah setiap 3 barcode -->
-            </div> <!-- Menutup baris -->
-            @if ($i != $jumlah) <!-- Jangan menambahkan pemisah halaman untuk barcode terakhir -->
-                <div class="page-break"></div> <!-- Pemisah halaman hanya setelah setiap 3 barcode -->
-            @endif
-            @if ($i != $jumlah) <!-- Jangan mulai baris baru jika sudah barcode terakhir -->
-                <div class="row">
-            @endif
-        @elseif ($i == $jumlah) <!-- Jika sudah barcode terakhir, pastikan baris terakhir ditutup tanpa pemisah halaman -->
-            </div> <!-- Menutup baris terakhir -->
-        @endif
-    @endforeach
-</body> --}}
 
 <body>
     @foreach ($dataProduk as $produkData)
-        {{-- Mengulangi cetakan sesuai jumlah yang diminta untuk setiap produk --}}
         @for ($i = 1; $i <= $produkData['jumlah']; $i++)
             
-            {{-- Mulai baris baru setiap 3 item --}}
             @if (($i - 1) % 3 == 0)
                 <div class="row">
             @endif
@@ -159,27 +108,26 @@
                     @endforeach
 
                     <p style="font-size: 7px;" class="bold-text">Rp. {{ number_format($produkData['produk']->harga, 0, ',', '.') }}</p>
-                    <p class="bold-text">C4</p>
+                    <p class="bold-text">C5</p>
                 </div>
             </div>
 
-            {{-- Tutup baris setiap 3 item atau jika sudah mencapai jumlah produk --}}
             @if ($i % 3 == 0 || $i == $produkData['jumlah'])
                 </div> <!-- Menutup baris -->
             @endif
 
-            {{-- Tambahkan page break setelah setiap 3 produk --}}
             @if ($i % 3 == 0 && $i != $produkData['jumlah'])
                 <div class="page-break"></div> <!-- Memaksa pindah halaman setelah 3 produk -->
             @endif
 
-            {{-- Tambahkan page break setelah produk terakhir --}}
             @if ($i == $produkData['jumlah'] && !$loop->last)
                 <div class="page-break"></div> <!-- Memaksa pindah halaman setelah produk terakhir -->
             @endif
         @endfor
     @endforeach
 </body>
+
+
 
 
 
