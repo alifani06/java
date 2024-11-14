@@ -693,46 +693,68 @@ public function update(Request $request, $id)
         return response()->json(['message' => 'Produk berhasil dihapus dari pengiriman.']);
     }
 
+    // public function cetakSemuaBarcode(Request $request)
+    // {
+    //     // Ambil ID produk yang dipilih
+    //     $produkIds = $request->input('produk_ids'); 
+
+    //     // Ambil data produk yang sesuai dengan ID yang dipilih
+    //     $produks = Produk::whereIn('id', $produkIds)->get();
+
+    //     // Ambil data klasifikasi, subklasifikasi, dan pengiriman_barangjadi untuk setiap produk
+    //     $dataProduk = $produks->map(function ($produk) {
+    //         $pengiriman = Pengiriman_barangjadi::where('produk_id', $produk->id)->first();
+    //         $jumlah = $pengiriman ? $pengiriman->jumlah : 1;
+            
+    //         $qrcode = new Writer(new ImageRenderer(new RendererStyle(50), new SvgImageBackEnd()));
+    //         $qrcodeData = base64_encode($qrcode->writeString($produk->qrcode_produk));
+
+    //         return [
+    //             'produk' => $produk,
+    //             'jumlah' => $jumlah,
+    //             'kodeProduksi' => $pengiriman->kode_produksi ?? null,
+    //             'qrcodeData' => $qrcodeData,
+    //         ];
+    //     });
+
+    //     // Mengirim kumpulan data produk ke view
+    //     $pdf = FacadePdf::loadView('admin.inquery_pengirimanbarangjadi.cetak_barcode', compact('dataProduk'));
+    //     $pdf->setPaper([0, 0, 612, 400], 'portrait');
+        
+    //     return $pdf->stream('barcode_semua_produk.pdf');
+    // }
+
     public function cetakSemuaBarcode(Request $request)
     {
-        // Ambil ID produk yang dipilih
-        $produkIds = $request->input('produk_ids'); 
-
-        // Ambil data produk yang sesuai dengan ID yang dipilih
-        $produks = Produk::whereIn('id', $produkIds)->get();
-
-        // Ambil data klasifikasi, subklasifikasi, dan pengiriman_barangjadi untuk setiap produk
-        $dataProduk = $produks->map(function ($produk) {
-            $pengiriman = Pengiriman_barangjadi::where('produk_id', $produk->id)->first();
-            $jumlah = $pengiriman ? $pengiriman->jumlah : 1;
-            
+        $selectedProducts = json_decode($request->input('selected_products'), true);
+    
+        $dataProduk = collect($selectedProducts)->map(function ($item) {
+            // Cari produk dan data pengiriman berdasarkan produk_id dan kode_pengiriman
+            $produk = Produk::find($item['produk_id']);
+            $pengiriman = Pengiriman_barangjadi::where('produk_id', $item['produk_id'])
+                ->where('kode_pengiriman', $item['kode_pengiriman'])
+                ->first();
+    
+            if (!$produk || !$pengiriman) {
+                return null;
+            }
+    
             $qrcode = new Writer(new ImageRenderer(new RendererStyle(50), new SvgImageBackEnd()));
             $qrcodeData = base64_encode($qrcode->writeString($produk->qrcode_produk));
-
+    
             return [
                 'produk' => $produk,
-                'jumlah' => $jumlah,
-                'kodeProduksi' => $pengiriman->kode_produksi ?? null,
+                'jumlah' => $pengiriman->jumlah,
+                'kodeProduksi' => $pengiriman->kode_produksi,
                 'qrcodeData' => $qrcodeData,
             ];
-        });
-
-        // Mengirim kumpulan data produk ke view
+        })->filter(); // Filter out any null results
+    
         $pdf = FacadePdf::loadView('admin.inquery_pengirimanbarangjadi.cetak_barcode', compact('dataProduk'));
         $pdf->setPaper([0, 0, 612, 400], 'portrait');
-        
+    
         return $pdf->stream('barcode_semua_produk.pdf');
     }
-
-    
-    
-    
-
-
-
-
-
-    
     
 
 

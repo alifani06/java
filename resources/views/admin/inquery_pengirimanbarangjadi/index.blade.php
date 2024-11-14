@@ -120,15 +120,14 @@
                 
                         <!-- Tombol Select All dan Submit -->
                         <div class="mb-3">
-                            <button type="button" class="btn btn-secondary" onclick="toggleSelectAll()">Select All</button>
                             <button type="submit" class="btn btn-primary">Cetak Barcode Terpilih</button>
                         </div>
                 
                         <!-- Tabel Utama -->
-                        {{-- <table id="datatables66" class="table table-bordered" style="font-size: 13px">
+                        <table id="datatables66" class="table table-bordered" style="font-size: 13px">
                             <thead>
                                 <tr>
-                                    <th class="text-center"><input type="checkbox" id="select-all" onclick="toggleSelectAll()"></th>
+                                    <th class="text-center">Select All</th>
                                     <th class="text-center">No</th>
                                     <th>No. Pengiriman</th>
                                     <th>Cabang</th>
@@ -144,8 +143,7 @@
                                     @endphp
                                     <tr class="dropdown" data-permintaan-id="{{ $firstItem->id }}">
                                         <td class="text-center">
-                                            <!-- Checkbox untuk Select All -->
-                                            <input type="checkbox" class="product-checkbox" onclick="toggleCheckboxes()" data-id="{{ $firstItem->id }}">
+                                            <input type="checkbox" class="pengiriman-checkbox" data-id="{{ $firstItem->id }}" onclick="toggleSelectAllPengiriman({{ $firstItem->id }})">
                                         </td>
                                         <td class="text-center">{{ $loop->iteration }}</td>
                                         <td>{{ $firstItem->kode_pengiriman }}</td>
@@ -153,16 +151,31 @@
                                         <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_pengiriman)->format('d/m/Y H:i') }}</td>
                                         <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') }}</td>
                                         <td class="text-center">
-                                            @if ($firstItem->status == 'posting')
-                                                <button type="button" class="btn btn-success btn-sm">
-                                                    <i class="fas fa-check"></i>
-                                                </button>
-                                            @else
-                                                <button type="button" class="btn btn-danger btn-sm">
-                                                    <i class="fas fa-times"></i>
-                                                </button>
+                                        @if ($firstItem->status == 'posting')
+                                            <button type="button" class="btn btn-success btn-sm">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        @endif
+                                        @if ($firstItem->status == 'unpost')
+                                            <button type="button" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        @endif
+    
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            @if ($firstItem->status == 'unpost')
+                                                <a class="dropdown-item" href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a>
+                                                <a class="dropdown-item" href="{{ url('/admin/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
+                                                <a class="dropdown-item" href="{{ route('inquery_pengirimanbarangjadi.print_qr', $firstItem->id) }}">Print QR</a>
                                             @endif
-                                        </td>
+                                            @if ($firstItem->status == 'posting')
+                                                <a class="dropdown-item unpost-btn" data-memo-id="{{ $firstItem->id }}">Unpost</a>
+                                                <a class="dropdown-item" href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id ) }}">Show</a>
+                                            @endif
+                                        </div>
+                                    
+                                     
+                                    </td>
                                     </tr>
                 
                                     <!-- Detail Produk -->
@@ -183,10 +196,9 @@
                                                     @foreach ($stokBarangJadiItems as $detail)
                                                         <tr>
                                                             <td>
-
-                                                            <input type="checkbox" name="produk_ids[]" value="{{ $detail->produk->id }}" class="product-checkbox" data-id="{{ $detail->produk->id }}">
-                                                            
+                                                                <input type="checkbox" name="produk_ids[]" value="{{ $detail->produk->id }}" data-id="{{ $firstItem->id }}" data-kode_pengiriman="{{ $detail->kode_pengiriman }}" class="product-checkbox" onclick="updateSelectedProducts()">
                                                             </td>
+                                                            
                                                             <td>{{ $loop->iteration }}</td>
                                                             <td>{{ $detail->produk->klasifikasi->nama }}</td>
                                                             <td>{{ $detail->produk->kode_lama }}</td>
@@ -201,9 +213,12 @@
                                     </tr>
                                 @endforeach
                             </tbody>
-                        </table> --}}
+                        </table>
+                        <input type="hidden" id="selected-products" name="selected_products">
 
-                        <table id="datatables66" class="table table-bordered" style="font-size: 13px">
+                    </form>
+                    
+                        {{-- <table id="datatables66" class="table table-bordered" style="font-size: 13px">
                             <thead>
                                 <tr>
                                     <th class="text-center">No</th>
@@ -294,15 +309,9 @@
                                             </table>
                                         </td>
                                     </tr>
-                                
-                                    {{-- <button type="button" class="btn btn-primary" id="cetak-terpilih">Cetak Terpilih</button> --}}
-                                
-                         
                             @endforeach
                             </tbody>
-                        </table> 
-                    </form>
-                    
+                        </table>  --}}
 
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
@@ -322,7 +331,7 @@
         </div>
     </section>
     
-    <script>
+    {{-- <script>
         function toggleSelectAll() {
             const checkboxes = document.querySelectorAll('.product-checkbox');
             const selectAllCheckbox = document.getElementById('select-all');
@@ -332,12 +341,41 @@
         }
 
         function toggleCheckboxes() {
-            const selectAllCheckbox = document.getElementById('select-all');
-            const productCheckboxes = document.querySelectorAll('.product-checkbox');
-            selectAllCheckbox.checked = Array.from(productCheckboxes).every(checkbox => checkbox.checked);
+        const selectedProducts = [];
+        document.querySelectorAll('.product-checkbox:checked').forEach((checkbox) => {
+            selectedProducts.push({
+                produk_id: checkbox.value,
+                kode_pengiriman: checkbox.getAttribute('data-kode_pengiriman')
+            });
+        });
+        document.getElementById('selected-products').value = JSON.stringify(selectedProducts);
+     }
+
+    </script> --}}
+    <script>
+        // Function to handle 'select-all' behavior for each pengiriman row
+        function toggleSelectAllPengiriman(id) {
+            const checkboxes = document.querySelectorAll(`.product-checkbox[data-id="${id}"]`);
+            const mainCheckbox = document.querySelector(`.pengiriman-checkbox[data-id="${id}"]`);
+            const isChecked = mainCheckbox.checked;
+    
+            checkboxes.forEach(checkbox => checkbox.checked = isChecked);
+            updateSelectedProducts();
+        }
+    
+        // Function to collect selected products based on their pengiriman row
+        function updateSelectedProducts() {
+            const selectedProducts = [];
+            document.querySelectorAll('.product-checkbox:checked').forEach((checkbox) => {
+                selectedProducts.push({
+                    produk_id: checkbox.value,
+                    kode_pengiriman: checkbox.getAttribute('data-kode_pengiriman')
+                });
+            });
+            document.getElementById('selected-products').value = JSON.stringify(selectedProducts);
         }
     </script>
-
+    
     <script>
         document.getElementById('select-all').addEventListener('click', function(event) {
             const checkboxes = document.querySelectorAll('.row-checkbox');

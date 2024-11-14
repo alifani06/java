@@ -127,10 +127,4 @@
     @endforeach
 </body>
 
-
-
-
-
-
-
 </html>
