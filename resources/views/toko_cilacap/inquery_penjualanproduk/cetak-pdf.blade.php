@@ -293,26 +293,29 @@
                     </p>
                 </div>
                 @if(!is_null($penjualan->nama_pelanggan))
-                    <div class="pelanggan">
-                        <p>
-                            <span style="min-width: 60px; display: inline-flex; align-items: center; padding-left: 10px;">Pelanggan</span>
-                            <span style="min-width: 50px; display: inline-flex; align-items: center; font-size: 10px;">
-                                : 
-                                @if ($penjualan->kode_pelangganlama && $penjualan->nama_pelanggan)
-                                    @php
-                                        // Memecah nama_pelanggan menjadi array suku kata
-                                        $namaArray = explode(' ', $penjualan->nama_pelanggan);
-                                        // Mengambil dua suku kata pertama
-                                        $namaSingkat = implode(' ', array_slice($namaArray, 0, 2));
-                                    @endphp
-                                    {{ $penjualan->kode_pelangganlama }} / {{ $namaSingkat }}
-                                @else
-                                    non member
-                                @endif
-                            </span>
-                        </p>
-                    </div>
-                @endif
+        <div class="pelanggan">
+            <p>
+                <span style="min-width: 60px; display: inline-flex; align-items: center; padding-left: 10px;">Pelanggan</span>
+                <span style="min-width: 50px; display: inline-flex; align-items: center; font-size: 10px;">
+                    : 
+                    @if (($penjualan->kode_pelangganlama || $penjualan->kode_pelanggan) && $penjualan->nama_pelanggan)
+                        @php
+                            // Memecah nama_pelanggan menjadi array suku kata
+                            $namaArray = explode(' ', $penjualan->nama_pelanggan);
+                            // Mengambil dua suku kata pertama
+                            $namaSingkat = implode(' ', array_slice($namaArray, 0, 2));
+                            // Menggunakan kode_pelangganlama jika ada, jika tidak gunakan kode_pelanggan
+                            $kodePelanggan = $penjualan->kode_pelangganlama ?? $penjualan->kode_pelanggan;
+                        @endphp
+                        {{ $kodePelanggan }} / {{ $namaSingkat }}
+                    @else
+                        non member
+                    @endif
+                </span>
+            </p>
+        </div>
+    @endif
+
 
         
                 @if($penjualan->detailpenjualanproduk->isEmpty())
@@ -366,33 +369,7 @@
                         @endphp
                         @endforeach
                 
-                        <!-- Bagian Footer -->
-                        {{-- <tr>
-                            <td colspan="4" style="text-align: right; font-size: 10px; padding: 5px;">
-                                <strong>Sub Total</strong>
-                            </td>
-                            <td style="font-size: 10px; text-align: right;">
-                                {{ number_format($subtotal, 0, ',', '.') }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="text-align: right; font-size: 10px; padding: 5px;">
-                                <strong>Diskon</strong>
-                            </td>
-                            <td style="font-size: 10px; text-align: right; padding: 5px;">
-                                {{ number_format($penjualan->total_diskon, 0, ',', '.') }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="text-align: right; font-size: 10px; padding: 5px;">
-                                <strong>Bayar</strong>
-                            </td>
-                            <td style="font-size: 10px; text-align: right; padding: 5px;">
-                                {{ number_format($subtotal - $penjualan->total_diskon, 0, ',', '.') }}
-                            </td>
-                        </tr>
-                         --}}
-
+    
                          <tr>
                             @if($penjualan->metode_id !== null)
                                 <td colspan="4" style="text-align: right; font-size: 10px; padding: 5px;">
@@ -424,17 +401,13 @@
                                 @php
                                     // Mengambil nilai sub_total
                                     $subTotal = $penjualan->sub_total;
-                            
+                        
                                     // Menghapus karakter "Rp" dan mengonversi string menjadi angka
                                     $numericValue = str_replace(['Rp',  ' '], '', $subTotal);
-                            
-                                    // Menampilkan nilai dengan pemisah ribuan
-                                    $formattedValue = number_format($numericValue, 0, ',', '.');
                                 @endphp
-                                {{ $formattedValue }}
+                                {{ $numericValue }}
                             </td>
                         </tr>
-                        
                         
                         
                         @if($penjualan->metode_id == Null)
@@ -450,11 +423,8 @@
                                 
                                             // Menghapus karakter "Rp" dan mengonversi string menjadi angka
                                             $numericValue = str_replace(['Rp',  ' '], '', $Bayar);
-
-                                            // Menampilkan nilai dengan pemisah ribuan
-                                            $formattedValue = number_format($numericValue, 0, ',', '.');
                                         @endphp
-                                        {{ $formattedValue }}
+                                        {{ $numericValue }}
                                     </td>
                             </tr>
                             <tr>
@@ -468,11 +438,8 @@
                             
                                         // Menghapus karakter "Rp" dan mengonversi string menjadi angka
                                         $numericValue = str_replace(['Rp',  ' '], '', $Kembali);
-
-                                        $formattedValue = number_format($numericValue, 0, ',', '.');
-
                                     @endphp
-                                    {{ $formattedValue }}
+                                    {{ $numericValue }}
                                 </td>
                             </tr>
                         @elseif($penjualan->metode_bayar == 'mesinedc' || $penjualan->metode_bayar == 'gobiz')
@@ -480,12 +447,6 @@
                         @endif
                     </tbody>
                 </table>
-                
-                
-                
-                
-                
-                
                 
                 <table style="width: 100%; font-size: 12px; text-align: right;">
                     @if($penjualan->metode_id !== NULL)
