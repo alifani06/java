@@ -480,9 +480,9 @@
                 <p style="font-size: 14px; display: inline-block;">
                     Inquery Permintaan Produk
                 </p>
-                @if($unpostCountPermintaanProduk > 0)
+                {{-- @if($unpostCountPermintaanProduk > 0)
                     <span class="badge badge-warning" style="margin-left: 5px;">{{ $unpostCountPermintaanProduk }}</span>
-                @endif
+                @endif --}}
             </a>
         </li>
         {{-- @endif --}}
@@ -505,9 +505,9 @@
                 <p style="font-size: 14px; display: inline-block;">
                     Inquery Pengiriman Barang
                 </p>
-                @if($unpostCountPengirimanBarangJadi > 0)
+                {{-- @if($unpostCountPengirimanBarangJadi > 0)
                     <span class="badge badge-warning" style="margin-left: 5px;">{{ $unpostCountPengirimanBarangJadi }}</span>
-                @endif
+                @endif --}}
             </a>
         </li>
         {{-- @endif --}}
