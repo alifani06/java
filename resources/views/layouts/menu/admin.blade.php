@@ -221,8 +221,9 @@
 
 <li
     class="nav-item {{ request()->is('admin/pemesanan_produk*') ||
-    request()->is('admin/penjualan_produk*') ||
-    request()->is('admin/hargajual*') || 
+    request()->is('admin/penjualan_produk*')||
+    request()->is('admin/penjualan_toko*')||
+    request()->is('admin/hargajual*')|| 
     request()->is('admin/stok_barangjadi*')||  
     request()->is('admin/permintaan_produk*')|| 
     request()->is('admin/pengiriman_barangjadi*')|| 
@@ -239,7 +240,8 @@
         : '' }}">
     <a href="#"
         class="nav-link {{ request()->is('admin/pemesanan_produk*') ||
-        request()->is('admin/penjualan_produk*') ||
+        request()->is('admin/penjualan_produk*')||
+        request()->is('admin/penjualan_toko*')||
         request()->is('admin/hargajual*') || 
         request()->is('admin/stok_barangjadi*')||  
         request()->is('admin/permintaan_produk*')||  
@@ -274,15 +276,22 @@
         {{-- @endif --}}
 
         {{-- @if (auth()->check() && auth()->user()->menu['penjualan produk']) --}}
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a href="{{ url('admin/penjualan_produk') }}"
                 class="nav-link {{ request()->is('admin/penjualan_produk*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Penjualan Produk</p>
             </a>
-        </li>
+        </li> --}}
         {{-- @endif --}}
 
+        <li class="nav-item">
+            <a href="{{ url('admin/penjualan_toko') }}"
+                class="nav-link {{ request()->is('admin/penjualan_toko*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Penjualan Toko</p>
+            </a>
+        </li>
 
         {{-- @if (auth()->check() && auth()->user()->menu['harga jual']) --}}
         <li class="nav-item">
