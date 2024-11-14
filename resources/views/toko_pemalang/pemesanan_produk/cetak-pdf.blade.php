@@ -293,18 +293,17 @@
                 @if($pemesanan->detailpemesananproduk->isEmpty())
                     <p>Tidak ada detail pemesanan produk.</p>
                 @else
-                <table style="font-size: 12px; width: 100%;">
+                <table style="font-size: 12px; width: 100%; padding-left: 10px;">
                     <thead>
                         <tr>
-                            {{-- <th style="font-size: 9px; width: 10%;">Kode Produk</th> --}}
-                            <th style="font-size: 10px; width: 50%;">Nama Produk</th>
-                            <th style="font-size: 10px; width: 10%;">Jumlah</th>
-                            <th style="font-size: 10px; width: 15%;">Harga</th>
-                            <th style="font-size: 10px; width: 10%;">Diskon</th>
-                            <th style="font-size: 10px; width: 15%;">Total</th>
+                            <th style="font-size: 10px; width: 35%; text-align: left">Nama Produk</th>
+                            <th style="font-size: 10px; width: 20%; text-align: left">Jml</th>
+                            <th style="font-size: 10px; width: 25%; text-align: left">Harga</th>
+                            <th style="font-size: 10px; width: 10%;">Disk</th>
+                            <th style="font-size: 10px; width: 15%; padding-left: 10px;">Total</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    {{-- <tbody>
                         @php
                             $subtotal = 0;
                         @endphp
@@ -314,7 +313,6 @@
                            $nama_produk = wordwrap($detail->nama_produk, 15, "\n", true);
                        @endphp
                             <tr>
-                                {{-- <td style="font-size: 10px;">{{ $detail->kode_lama }}</td> --}}
                                 <td style="font-size: 10px; word-wrap: break-word; white-space: pre-line;">{{ $nama_produk }}</td>
                                 <td style="font-size: 11px; text-align: right">{{ $detail->jumlah }}</td>
                                 <td style="font-size: 11px; text-align: right">{{number_format($detail->harga, 0, ',', '.') }}</td>
@@ -367,16 +365,95 @@
                             <td colspan="4" style="text-align: right; font-size: 11px;"><strong>Kekurangan  </strong></td>
                             <td style="font-size: 11px; text-align: right;">{{number_format($dp->kekurangan_pemesanan, 0, ',', '.') }}</td>
                         </tr>
+                    </tbody> --}}
+                    <tbody>
+                        @php
+                            $subtotal = 0;
+                        @endphp
+                        @foreach($pemesanan->detailpemesananproduk as $detail)
+                        
+                        <tr>
+                            <!-- Baris pertama untuk Nama Produk dengan pembungkusan teks -->
+                            <td style="font-size: 10px; white-space: normal; overflow: hidden; text-overflow: ellipsis;" colspan="5">
+                                {{ $detail->nama_produk }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <!-- Baris kedua untuk Kode Produk dan tanda panah dengan padding-top untuk jarak -->
+                            <td style="font-size: 9px; color: black; padding-top: 2px;">
+                                {{ $detail->kode_lama }} ->
+                            </td>
+                            <!-- Baris kedua untuk detail kolom lainnya dengan padding-top untuk jarak -->
+                            <td style="font-size: 10px; text-align: left; padding-top: 2px;">{{ $detail->jumlah }}</td>
+                            <td style="font-size: 10px; text-align: left; padding-top: 2px;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
+                            <td style="font-size: 10px; text-align: right; padding-top: 2px;">
+                                @if ($detail->diskon > 0)
+                                    {{ $detail->diskon }}
+                                @else
+                                    -
+                                @endif
+                            </td>
+                            <td style="font-size: 10px; text-align: right; padding-top: 2px;">
+                                {{ number_format($detail->total, 0, ',', '.') }}
+                            </td>
+                        </tr>
+                
+                        @php
+                            $total = is_numeric($detail->total) ? $detail->total : 0;
+                            $subtotal += $total;
+                        @endphp
+                        @endforeach
+
+                        <tr>
+                            @if($pemesanan->metode_id !== null)
+                                <td colspan="4" style="text-align: right; font-size: 11px;"><strong> Fee {{$pemesanan->metodepembayaran->nama_metode}} {{$pemesanan->metodepembayaran->fee}}%</strong></td>
+                                <td style="font-size: 11px; text-align: right;">
+                                    @php
+                                        // Menghapus semua karakter kecuali angka
+                                        $total_fee = preg_replace('/[^\d]/', '', $pemesanan->total_fee);
+                                        // Konversi ke tipe float
+                                        $total_fee = (float) $total_fee;
+                                    @endphp
+                                    {{ number_format($total_fee, 0, ',', '.') }}
+                                </td>
+                            @endif
+                        </tr>
+                        {{-- @if($pemesanan->metode_id !== NULL)
+                        <tr>
+                            <td colspan="4" style="text-align: right; font-size: 11px;"><strong>No. </strong></td>
+                            <td style="font-size: 11px;">{{$pemesanan->keterangan}}</td>
+                        </tr>
+                        @endif --}}
+                        <tr>
+                            <td colspan="4" style="text-align: right; font-size: 11px;"><strong>Total </strong></td>
+                            <td style="font-size: 11px; text-align: right;">{{number_format($pemesanan->sub_total, 0, ',', '.') }}</td>
+                            
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: right; font-size: 11px;"><strong>DP </strong></td>
+                            <td style="font-size: 11px; text-align: right;">{{number_format($dp->dp_pemesanan, 0, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: right; font-size: 11px;"><strong>Kekurangan  </strong></td>
+                            <td style="font-size: 11px; text-align: right;">{{number_format($dp->kekurangan_pemesanan, 0, ',', '.') }}</td>
+                        </tr>
                     </tbody>
-                    
                 </table>
                 @endif
+                <table style="width: 100%; font-size: 12px; text-align: right;">
+                    @if($pemesanan->metode_id !== NULL)
+                    <tr>
+                        <td style="font-size: 10px; word-wrap: break-word; text-align: right;">
+                         <strong> No.<span style="color: white">llllllllllllllllll</span> </strong> {{ $pemesanan->keterangan }}
+                        </td>
+                    </tr>
+                    @endif
+                </table>
             </div>
  
             <div class="catatan">
                 <label>Catatan:</label>
                 <p style="margin-top: 2px; font-size: 10px;">{!! nl2br(e($pemesanan->catatan)) ?? '-' !!}</p>
-                {{-- {!! nl2br(e($catatan)) !!} --}}
             </div>
             @if(preg_replace('/[^0-9]/', '', $pemesanan->sub_total) < preg_replace('/[^0-9]/', '', $pemesanan->sub_totalasli))
             <div class="hemat">
