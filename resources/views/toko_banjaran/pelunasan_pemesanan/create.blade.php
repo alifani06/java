@@ -336,36 +336,7 @@
                                     </tr>
                                 @endif
                             @endforeach
-                            {{-- @foreach ($dppemesanans as $return)
-                                @if (is_null($return->pelunasan))
-                                    <tr style="font-size: 14px" 
-                                    onclick="checkTanggalKirim(
-                                        '{{ $return->pemesananproduk ? $return->pemesananproduk->tanggal_kirim : '0000-00-00' }}',
-                                        '{{ $return->id }}',
-                                        '{{ $return->pemesananproduk ? $return->pemesananproduk->kode_pemesanan : 'No Data' }}',
-                                        '{{ $return->dp_pemesanan }}'
-                                    )">
-                                        <td class="text-center">{{ $loop->iteration }}</td>
-                                        <td>{{ $return->kode_dppemesanan }}</td>
-                                        <td>{{ $return->pemesananproduk ? $return->pemesananproduk->kode_pemesanan : 'No Data' }}</td>
-                                        <td>{{ $return->pemesananproduk ? $return->pemesananproduk->nama_pelanggan : 'No Data' }}</td>
-                                        <td>{{ $return->pemesananproduk ? $return->pemesananproduk->tanggal_kirim : 'No Data' }}</td>
-                                        <td>{{ number_format($return->dp_pemesanan, 0, ',', '.') }}</td>
-                                        <td class="text-center">
-                                            <button type="button" class="btn btn-primary btn-sm"
-                                                onclick="checkTanggalKirim(
-                                                '{{ $return->pemesananproduk ? $return->pemesananproduk->tanggal_kirim : '0000-00-00' }}',
-                                                '{{ $return->id }}',
-                                                '{{ $return->pemesananproduk ? $return->pemesananproduk->kode_pemesanan : 'No Data' }}',
-                                                '{{ $return->dp_pemesanan }}'
-                                            )">
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endif
-                            @endforeach --}}
-
+                            
 
                             </tbody>
                         </table>
@@ -483,49 +454,6 @@
         }
     }
 </script>
-
-{{-- <script>
-    $(document).ready(function() {
-        $('#pelunasanForm').submit(function(event) {
-            event.preventDefault(); // Mencegah pengiriman form default
-
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function(response) {
-                    if (response.pdfUrl) {
-                        // Membuka URL di tab baru
-                        window.open(response.pdfUrl, '_blank');
-                    }
-                    if (response.success) {
-                        // Tampilkan pesan sukses menggunakan SweetAlert2
-                        Swal.fire({
-                            title: 'Sukses!',
-                            text: response.success,
-                            icon: 'success',
-                            confirmButtonText: 'OK',
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                // Lakukan refresh halaman setelah menekan OK
-                                location.reload(); // Ini akan merefresh seluruh halaman
-                            }
-                        });
-                    }
-                },
-                error: function(xhr) {
-                    // Tangani error jika diperlukan
-                    console.log(xhr.responseText);
-                }
-            });
-        });
-
-        // Menyimpan nilai default untuk setiap elemen form ketika halaman dimuat
-        $('#pelunasanForm').find('input[type="text"], input[type="number"], textarea, select').each(function() {
-            $(this).data('default-value', $(this).val());
-        });
-    });
-</script> --}}
 
 <script>
     var itemCounter = 0;
@@ -662,7 +590,7 @@ function addRow() {
         '</td>' +
         '<td>' +
         '   <div class="form-group">' +
-        '       <input style="font-size:14px" type="number" class="form-control jumlah" name="jumlah[]" id="jumlah_' + itemCounter + '" value="" oninput="updateTotal(' + itemCounter + ')">' +
+        '       <input style="font-size:14px" type="number" class="form-control jumlah" name="jumlah[]" id="jumlah_' + itemCounter + '"  value="1" min="1" oninput="updateTotal(' + itemCounter + ')">' +
         '   </div>' +
         '</td>' +
         '<td onclick="showCategoryModal(' + itemCounter + ')">' +
@@ -698,25 +626,6 @@ function reIndexRows() {
 }
 
 
-
-    // function fetchProductData(rowId) {
-    //     var kodeLama = document.getElementById('kode_lama_' + rowId).value;
-    //     $.ajax({
-    //         url: '{{ route("toko_banjaran.penjualan_produk.fetchProductData") }}', // Sesuaikan dengan rute Anda
-    //         method: 'GET',
-    //         data: { kode_lama: kodeLama },
-    //         success: function(response) {
-    //             document.getElementById('produk_id_' + rowId).value = response.produk_id;
-    //             document.getElementById('kode_produk_' + rowId).value = response.kode_produk;
-    //             document.getElementById('nama_produk_' + rowId).value = response.nama_produk;
-    //             document.getElementById('harga_' + rowId).value = response.harga;
-    //             updateTotal(rowId);
-    //         },
-    //         error: function(xhr) {
-    //             alert('Data tidak ditemukan.');
-    //         }
-    //     });
-    // }
 
     function updateTotal(rowId) {
     var harga = parseFloat(document.getElementById('harga_' + rowId).value) || 0;
@@ -960,6 +869,8 @@ function updateGrandTotal() {
         };
     @endif
 </script>
+
+
 
 
 @endsection

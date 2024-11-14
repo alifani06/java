@@ -771,7 +771,7 @@ function updateGrandTotal() {
             '</td>' +
             '<td>' +
             '   <div class="form-group">' +
-            '       <input style="font-size:14px" type="number" class="form-control jumlah" name="jumlah[]" id="jumlah_' + itemCounter + '" value="" oninput="updateTotal(' + itemCounter + ')">' +
+            '       <input style="font-size:14px" type="number" class="form-control jumlah" name="jumlah[]" id="jumlah_' + itemCounter + '" value="1" min="1" oninput="updateTotal(' + itemCounter + ')">' +
             '   </div>' +
             '</td>' +
             '<td onclick="showCategoryModal(' + itemCounter + ')">' +
