@@ -342,7 +342,7 @@
                         </tr>
                         <tr>
                             <!-- Baris kedua untuk Kode Produk dan tanda panah dengan padding-top untuk jarak -->
-                            <td style="font-size: 9px; color: white; padding-top: 2px;">
+                            <td style="font-size: 9px; color: black; padding-top: 2px;">
                                 {{ $detail->kode_lama }} ->
                             </td>
                             <!-- Baris kedua untuk detail kolom lainnya dengan padding-top untuk jarak -->
