@@ -369,33 +369,7 @@
                         @endphp
                         @endforeach
                 
-                        <!-- Bagian Footer -->
-                        {{-- <tr>
-                            <td colspan="4" style="text-align: right; font-size: 10px; padding: 5px;">
-                                <strong>Sub Total</strong>
-                            </td>
-                            <td style="font-size: 10px; text-align: right;">
-                                {{ number_format($subtotal, 0, ',', '.') }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="text-align: right; font-size: 10px; padding: 5px;">
-                                <strong>Diskon</strong>
-                            </td>
-                            <td style="font-size: 10px; text-align: right; padding: 5px;">
-                                {{ number_format($penjualan->total_diskon, 0, ',', '.') }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="text-align: right; font-size: 10px; padding: 5px;">
-                                <strong>Bayar</strong>
-                            </td>
-                            <td style="font-size: 10px; text-align: right; padding: 5px;">
-                                {{ number_format($subtotal - $penjualan->total_diskon, 0, ',', '.') }}
-                            </td>
-                        </tr>
-                         --}}
-
+    
                          <tr>
                             @if($penjualan->metode_id !== null)
                                 <td colspan="4" style="text-align: right; font-size: 10px; padding: 5px;">
@@ -473,12 +447,6 @@
                         @endif
                     </tbody>
                 </table>
-                
-                
-                
-                
-                
-                
                 
                 <table style="width: 100%; font-size: 12px; text-align: right;">
                     @if($penjualan->metode_id !== NULL)
