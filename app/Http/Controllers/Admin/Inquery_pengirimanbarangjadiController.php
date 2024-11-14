@@ -610,34 +610,6 @@ public function update(Request $request, $id)
             return view('admin.permintaan_produk.form', compact('klasifikasis', 'importedData'));
     }
 
-
-//lawas
-    // public function cetak_barcode($id)
-    // {
-    //     // Ambil produk berdasarkan id
-    //     $produk = Produk::findOrFail($id); 
-
-    //     // Query untuk mengambil kode_produksi dari tabel pengiriman_barangjadi berdasarkan produk_id
-    //     $pengiriman = Pengiriman_barangjadi::where('produk_id', $id)->first();
-
-    //     // Jika data pengiriman ditemukan, ambil kode_produksinya
-    //     $kodeProduksi = $pengiriman ? $pengiriman->kode_produksi : null;
-
-    //     // Ambil data klasifikasi dan subklasifikasi
-    //     $klasifikasis = Klasifikasi::all();
-    //     $subklasifikasis = Subklasifikasi::all();
-
-    //     // Load view dengan data yang dibutuhkan, termasuk kode produksi
-    //     $pdf = FacadePdf::loadView('admin.inquery_pengirimanbarangjadi.cetak_barcode', compact('produk', 'klasifikasis', 'subklasifikasis', 'kodeProduksi'));
-
-    //     // Set ukuran kertas dan orientasi
-    //     $pdf->setPaper([0, 0, 612, 400], 'portrait'); 
-
-    //     // Stream PDF hasil cetak
-    //     return $pdf->stream('penjualan.pdf');
-    // }
-
-
     //baru
     public function cetak_barcode($id)
     {
@@ -692,37 +664,6 @@ public function update(Request $request, $id)
 
         return response()->json(['message' => 'Produk berhasil dihapus dari pengiriman.']);
     }
-
-    // public function cetakSemuaBarcode(Request $request)
-    // {
-    //     // Ambil ID produk yang dipilih
-    //     $produkIds = $request->input('produk_ids'); 
-
-    //     // Ambil data produk yang sesuai dengan ID yang dipilih
-    //     $produks = Produk::whereIn('id', $produkIds)->get();
-
-    //     // Ambil data klasifikasi, subklasifikasi, dan pengiriman_barangjadi untuk setiap produk
-    //     $dataProduk = $produks->map(function ($produk) {
-    //         $pengiriman = Pengiriman_barangjadi::where('produk_id', $produk->id)->first();
-    //         $jumlah = $pengiriman ? $pengiriman->jumlah : 1;
-            
-    //         $qrcode = new Writer(new ImageRenderer(new RendererStyle(50), new SvgImageBackEnd()));
-    //         $qrcodeData = base64_encode($qrcode->writeString($produk->qrcode_produk));
-
-    //         return [
-    //             'produk' => $produk,
-    //             'jumlah' => $jumlah,
-    //             'kodeProduksi' => $pengiriman->kode_produksi ?? null,
-    //             'qrcodeData' => $qrcodeData,
-    //         ];
-    //     });
-
-    //     // Mengirim kumpulan data produk ke view
-    //     $pdf = FacadePdf::loadView('admin.inquery_pengirimanbarangjadi.cetak_barcode', compact('dataProduk'));
-    //     $pdf->setPaper([0, 0, 612, 400], 'portrait');
-        
-    //     return $pdf->stream('barcode_semua_produk.pdf');
-    // }
 
     public function cetakSemuaBarcode(Request $request)
     {

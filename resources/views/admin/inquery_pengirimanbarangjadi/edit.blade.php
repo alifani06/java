@@ -12,8 +12,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        {{-- <li class="breadcrumb-item"><a href="{{ url('admin/return_ekspedisi') }}">Pengiriman Barang Jadi</a></li> --}}
-                        {{-- <li class="breadcrumb-item active">Tambah</li> --}}
+     
                     </ol>
                 </div>
             </div>
@@ -158,9 +157,7 @@
                                             
                                         </tr>
                                     @endforeach
-                                </tbody>
-                                
-                                
+                                </tbody>  
                                 
                             </table>
                         </div>
@@ -251,8 +248,6 @@
         }
         document.getElementById("searchInputrutes").addEventListener("input", filterTablefaktur);
     </script>
-
-    
 
 
     <script>
@@ -419,4 +414,5 @@
 
     </script>
     
+  
 @endsection
