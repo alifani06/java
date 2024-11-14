@@ -14,12 +14,12 @@
             margin-left: 0;
             margin-top: 0;
             /* padding: 0; */
-            padding-right: 460px;
-            font-size: 12px;
+            padding-right: 465px;
+            font-size: 10px;
             background-color: white;
         }
             .container {
-            width: 60mm; /* Adjusted width */
+            width: 65mm; /* Adjusted width */
             margin: 0 auto;
             border: 1px solid white;
             padding: 5px;
@@ -170,7 +170,7 @@
         padding: 0;
     }
     .container {
-        width: 60mm; /* Sesuaikan dengan lebar kertas thermal */
+        width: 65mm; /* Sesuaikan dengan lebar kertas thermal */
         margin: 0 auto;
         border: none;
         padding: 0;
@@ -237,7 +237,7 @@
         border-bottom: 1px solid #0f0e0e;
     }
     @page {
-        size: 60mm auto; /* Sesuaikan dengan ukuran kertas thermal */
+        size: 65mm auto; /* Sesuaikan dengan ukuran kertas thermal */
         margin: 0mm; /* Set margin ke 0 untuk semua sisi */
     }
 }
@@ -249,21 +249,21 @@
         <div class="header">
             <div class="text">
                 <h1>PT JAVA BAKERY FACTORY</h1>
-                <p>Cabang : {{ $tokos->nama_toko }}</p>
-                <p>{{ $tokos->alamat }}</p>
+                <p style="font-size: 10px;">Cabang : {{ $tokos->nama_toko }}</p>
+                <p style="font-size: 10px;">{{ $tokos->alamat }}</p>
             </div>
         </div>
         <hr class="divider">
         <hr class="divider">
         <div class="section">
             <h2>Struk Pemesanan</h2>
-            <p style="text-align: right; font-size: 9px;">
+            <p style="text-align: right; font-size: 11px;">
                 {{ \Carbon\Carbon::parse($pemesanan->tanggal_pemesanan)->locale('id')->translatedFormat('d F Y H:i') }}
             </p><br>
             <div class="detail-info">
                 <div class="pemesanan">
                     <p><span style="min-width: 50px; display: inline-flex; align-items: center;">No Pemesanan</span>
-                       <span style="min-width: 100px; display: inline-flex; align-items: center;">: {{ $pemesanan->kode_pemesanan }}</span></p>
+                       <span style="min-width: 100px; display: inline-flex; align-items: center; font-size: 11px;">: {{ $pemesanan->kode_pemesanan }}</span></p>
                 </div>
                 <div class="kasir">
                     <p><span style="min-width: 69px; display: inline-flex; align-items: center;">Kasir</span>
@@ -285,7 +285,7 @@
                     </div>
                     <div class="alamat">
                         <p><span style="min-width: 69px; display: inline-flex; align-items: center;">Tanggal Ambil</span>
-                            <span style="min-width: 100px; display: inline-flex; align-items: center;"><span>: {{ \Carbon\Carbon::parse($pemesanan->tanggal_kirim)->locale('id')->translatedFormat('d F Y H:i') }}
+                            <span style="min-width: 100px; display: inline-flex; align-items: center; font-size: 11px;"><span>: {{ \Carbon\Carbon::parse($pemesanan->tanggal_kirim)->locale('id')->translatedFormat('d F Y H:i') }}
                         </span></p>
                     </div>
 
@@ -296,7 +296,7 @@
                 <table style="font-size: 12px; width: 100%;">
                     <thead>
                         <tr>
-                            {{-- <th style="font-size: 10px; width: 10%;">Kode Produk</th> --}}
+                            {{-- <th style="font-size: 9px; width: 10%;">Kode Produk</th> --}}
                             <th style="font-size: 10px; width: 50%;">Nama Produk</th>
                             <th style="font-size: 10px; width: 10%;">Jumlah</th>
                             <th style="font-size: 10px; width: 15%;">Harga</th>
@@ -316,16 +316,16 @@
                             <tr>
                                 {{-- <td style="font-size: 10px;">{{ $detail->kode_lama }}</td> --}}
                                 <td style="font-size: 10px; word-wrap: break-word; white-space: pre-line;">{{ $nama_produk }}</td>
-                                <td style="font-size: 10px; text-align: right">{{ $detail->jumlah }}</td>
-                                <td style="font-size: 10px; text-align: right">{{number_format($detail->harga, 0, ',', '.') }}</td>
-                                <td style="font-size: 10px; text-align: right">
+                                <td style="font-size: 11px; text-align: right">{{ $detail->jumlah }}</td>
+                                <td style="font-size: 11px; text-align: right">{{number_format($detail->harga, 0, ',', '.') }}</td>
+                                <td style="font-size: 11px; text-align: right">
                                     @if ($detail->diskon > 0)
                                         {{ $detail->diskon }} %
                                     @else
                                         -
                                     @endif
                                 </td>
-                                <td style="font-size: 10px;">{{number_format($detail->total , 0, ',', '.')}}</td>
+                                <td style="font-size: 11px;">{{number_format($detail->total , 0, ',', '.')}}</td>
                             </tr>
                             @php
                                 // Validasi dan konversi data menjadi numerik
@@ -336,8 +336,8 @@
 
                         <tr>
                             @if($pemesanan->metode_id !== null)
-                                <td colspan="4" style="text-align: right; font-size: 10px;"><strong> Fee {{$pemesanan->metodepembayaran->nama_metode}} {{$pemesanan->metodepembayaran->fee}}%</strong></td>
-                                <td style="font-size: 10px; text-align: right;">
+                                <td colspan="4" style="text-align: right; font-size: 11px;"><strong> Fee {{$pemesanan->metodepembayaran->nama_metode}} {{$pemesanan->metodepembayaran->fee}}%</strong></td>
+                                <td style="font-size: 11px; text-align: right;">
                                     @php
                                         // Menghapus semua karakter kecuali angka
                                         $total_fee = preg_replace('/[^\d]/', '', $pemesanan->total_fee);
@@ -350,22 +350,22 @@
                         </tr>
                         @if($pemesanan->metode_id !== NULL)
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 10px;"><strong>No. </strong></td>
-                            <td style="font-size: 10px;">{{$pemesanan->keterangan}}</td>
+                            <td colspan="4" style="text-align: right; font-size: 11px;"><strong>No. </strong></td>
+                            <td style="font-size: 11px;">{{$pemesanan->keterangan}}</td>
                         </tr>
                         @endif
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 10px;"><strong>Total </strong></td>
-                            <td style="font-size: 10px; text-align: right;">{{number_format($pemesanan->sub_total, 0, ',', '.') }}</td>
+                            <td colspan="4" style="text-align: right; font-size: 11px;"><strong>Total </strong></td>
+                            <td style="font-size: 11px; text-align: right;">{{number_format($pemesanan->sub_total, 0, ',', '.') }}</td>
                             
                         </tr>
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 10px;"><strong>DP </strong></td>
-                            <td style="font-size: 10px; text-align: right;">{{number_format($dp->dp_pemesanan, 0, ',', '.') }}</td>
+                            <td colspan="4" style="text-align: right; font-size: 11px;"><strong>DP </strong></td>
+                            <td style="font-size: 11px; text-align: right;">{{number_format($dp->dp_pemesanan, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
-                            <td colspan="4" style="text-align: right; font-size: 10px;"><strong>Kekurangan  </strong></td>
-                            <td style="font-size: 10px; text-align: right;">{{number_format($dp->kekurangan_pemesanan, 0, ',', '.') }}</td>
+                            <td colspan="4" style="text-align: right; font-size: 11px;"><strong>Kekurangan  </strong></td>
+                            <td style="font-size: 11px; text-align: right;">{{number_format($dp->kekurangan_pemesanan, 0, ',', '.') }}</td>
                         </tr>
                     </tbody>
                     
@@ -375,7 +375,7 @@
  
             <div class="catatan">
                 <label>Catatan:</label>
-                <p style="margin-top: 2px;">{!! nl2br(e($pemesanan->catatan)) ?? '-' !!}</p>
+                <p style="margin-top: 2px; font-size: 10px;">{!! nl2br(e($pemesanan->catatan)) ?? '-' !!}</p>
                 {{-- {!! nl2br(e($catatan)) !!} --}}
             </div>
             @if(preg_replace('/[^0-9]/', '', $pemesanan->sub_total) < preg_replace('/[^0-9]/', '', $pemesanan->sub_totalasli))
@@ -385,10 +385,10 @@
             </div>
             @endif
             <div class="terimakasih">
-                <p>Untuk pemesanan, kritik dan saran Hubungi.082136638004</p>
+                <p>Untuk pemesanan, kritik dan saran Hubungi.082136638003</p>
             </div>
            
-            <div class="note" style="text-align: left; margin-top: -15px ; font-size:10px; font-style: italic" >
+            <div class="note" style="text-align: left; margin-top: -15px ; font-size:9px; font-style: italic" >
                 <p>Down Payment(DP) yang sudah masuk tidak bisa diambil / ditukar dengan uang tunai/cash</p><br> 
             </div>
             <div class="terimakasihd" style="text-align: center; margin-top: -30px" >
