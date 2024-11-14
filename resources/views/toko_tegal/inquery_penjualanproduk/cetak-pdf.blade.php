@@ -293,26 +293,29 @@
                     </p>
                 </div>
                 @if(!is_null($penjualan->nama_pelanggan))
-                    <div class="pelanggan">
-                        <p>
-                            <span style="min-width: 60px; display: inline-flex; align-items: center; padding-left: 10px;">Pelanggan</span>
-                            <span style="min-width: 50px; display: inline-flex; align-items: center; font-size: 10px;">
-                                : 
-                                @if ($penjualan->kode_pelangganlama && $penjualan->nama_pelanggan)
-                                    @php
-                                        // Memecah nama_pelanggan menjadi array suku kata
-                                        $namaArray = explode(' ', $penjualan->nama_pelanggan);
-                                        // Mengambil dua suku kata pertama
-                                        $namaSingkat = implode(' ', array_slice($namaArray, 0, 2));
-                                    @endphp
-                                    {{ $penjualan->kode_pelangganlama }} / {{ $namaSingkat }}
-                                @else
-                                    non member
-                                @endif
-                            </span>
-                        </p>
-                    </div>
-                @endif
+        <div class="pelanggan">
+            <p>
+                <span style="min-width: 60px; display: inline-flex; align-items: center; padding-left: 10px;">Pelanggan</span>
+                <span style="min-width: 50px; display: inline-flex; align-items: center; font-size: 10px;">
+                    : 
+                    @if (($penjualan->kode_pelangganlama || $penjualan->kode_pelanggan) && $penjualan->nama_pelanggan)
+                        @php
+                            // Memecah nama_pelanggan menjadi array suku kata
+                            $namaArray = explode(' ', $penjualan->nama_pelanggan);
+                            // Mengambil dua suku kata pertama
+                            $namaSingkat = implode(' ', array_slice($namaArray, 0, 2));
+                            // Menggunakan kode_pelangganlama jika ada, jika tidak gunakan kode_pelanggan
+                            $kodePelanggan = $penjualan->kode_pelangganlama ?? $penjualan->kode_pelanggan;
+                        @endphp
+                        {{ $kodePelanggan }} / {{ $namaSingkat }}
+                    @else
+                        non member
+                    @endif
+                </span>
+            </p>
+        </div>
+    @endif
+
 
         
                 @if($penjualan->detailpenjualanproduk->isEmpty())
