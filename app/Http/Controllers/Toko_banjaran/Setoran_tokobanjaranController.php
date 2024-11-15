@@ -180,18 +180,17 @@ class Setoran_tokobanjaranController extends Controller
     
         // Query untuk menghitung penjualan kotor
         $penjualan_kotor = Penjualanproduk::whereDate('tanggal_penjualan', $tanggalPenjualan)
-            ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED)'));
+            ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_totalasli, "Rp ", ""), ".", "") AS UNSIGNED)'));
     
-        // Query untuk menghitung diskon penjualan dari detailpenjualanproduks
+        // Menghitung diskon penjualan
         $diskon_penjualan = Detailpenjualanproduk::whereHas('penjualanproduk', function ($q) use ($tanggalPenjualan) {
             $q->whereDate('tanggal_penjualan', $tanggalPenjualan);
         })->get()->sum(function ($detail) {
-            // Menghitung total diskon
-            $harga = (float)str_replace(['Rp.', '.'], '', $detail->harga); // Hapus "Rp." dan "." dari harga
+            $harga = (float)str_replace(['Rp.', '.'], '', $detail->harga);
             $jumlah = $detail->jumlah;
-            $diskon = $detail->diskon / 100; // Ubah diskon persen menjadi desimal
+            $diskon = $detail->diskon / 100;
     
-            return $harga * $jumlah * $diskon; // Hitung diskon
+            return $harga * $jumlah * $diskon;
         });
     
         // Hitung penjualan bersih
@@ -207,7 +206,7 @@ class Setoran_tokobanjaranController extends Controller
             $q->whereDate('tanggal_pemesanan', $tanggalPenjualan);
         })->sum('dp_pemesanan');
     
-        // Hitung total dari berbagai metode pembayaran
+        // Hitung total metode pembayaran
         $mesin_edc = Penjualanproduk::where('metode_id', 1)
             ->whereDate('tanggal_penjualan', $tanggalPenjualan)
             ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
@@ -229,7 +228,7 @@ class Setoran_tokobanjaranController extends Controller
         $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
         $total_setoran = $total_penjualan - $total_metode;
     
-        // Kembalikan hasil dalam format JSON untuk diproses di frontend
+        // Return response dalam format JSON
         return response()->json([
             'penjualan_kotor' => number_format($penjualan_kotor, 0, ',', '.'),
             'diskon_penjualan' => number_format($diskon_penjualan, 0, ',', '.'),
@@ -245,6 +244,7 @@ class Setoran_tokobanjaranController extends Controller
             'total_setoran' => number_format($total_setoran, 0, ',', '.'),
         ]);
     }
+    
 
 
     public function store(Request $request)

@@ -298,30 +298,31 @@
     
             if (tanggalPenjualan) {
                 $.ajax({
-                    url: "{{ route('getdata') }}",
-                    type: "POST",
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        tanggal_penjualan: tanggalPenjualan
-                    },
-                    success: function(response) {
-                    // Populate form fields with response data
-                    $('#penjualan_kotor').val(response.penjualan_kotor);
-                    $('#diskon_penjualan').val(response.diskon_penjualan);
-                    $('#penjualan_bersih').val(response.penjualan_bersih);
-                    $('#deposit_keluar').val(response.deposit_keluar);
-                    $('#deposit_masuk').val(response.deposit_masuk);
-                    $('#mesin_edc').val(response.mesin_edc);
-                    $('#qris').val(response.qris);
-                    $('#gobiz').val(response.gobiz);
-                    $('#transfer').val(response.transfer);
-                    $('#total_penjualan').val(response.total_penjualan);
-                    $('#total_setoran').val(response.total_setoran);
-                },
-                    error: function (xhr) {
-                        console.log(xhr.responseText); // Debugging
-                    }
-                });
+    url: "{{ url('toko_banjaran/get-penjualan-kotor') }}", // Gunakan URL yang sesuai
+    type: "POST",
+    data: {
+        _token: '{{ csrf_token() }}',
+        tanggal_penjualan: tanggalPenjualan
+    },
+    success: function(response) {
+        // Populate form fields with response data
+        $('#penjualan_kotor').val(response.penjualan_kotor);
+        $('#diskon_penjualan').val(response.diskon_penjualan);
+        $('#penjualan_bersih').val(response.penjualan_bersih);
+        $('#deposit_keluar').val(response.deposit_keluar);
+        $('#deposit_masuk').val(response.deposit_masuk);
+        $('#mesin_edc').val(response.mesin_edc);
+        $('#qris').val(response.qris);
+        $('#gobiz').val(response.gobiz);
+        $('#transfer').val(response.transfer);
+        $('#total_penjualan').val(response.total_penjualan);
+        $('#total_setoran').val(response.total_setoran);
+    },
+    error: function (xhr) {
+        console.log(xhr.responseText); // Debugging
+    }
+});
+
             }
         });
     });

@@ -288,8 +288,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     // Route::get('metodebayar/metode/{id}', [\App\Http\Controllers\Admin\PenjualanprodukController::class, 'metode']);
 
     Route::resource('penjualan_toko', \App\Http\Controllers\Admin\PenjualantokoController::class);
-    Route::post('/get-penjualan-kotor', [PenjualantokoController::class, 'getdata'])->name('getdata');
-    Route::get('/penjualan_toko/getdata', [PenjualanTokoController::class, 'getdata'])->name('penjualan_toko.getdata');
+
+
 
 
 
