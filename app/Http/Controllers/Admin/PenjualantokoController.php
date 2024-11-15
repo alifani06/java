@@ -69,6 +69,105 @@ class PenjualantokoController extends Controller
 
 
 
+    // public function create(Request $request) {
+    //     $tanggal_penjualan = $request->tanggal_penjualan;
+    //     $tanggal_akhir = $request->tanggal_akhir;
+    //     $toko_id = $request->toko_id;
+    //     $produk_id = $request->produk;
+    //     $klasifikasi_id = $request->klasifikasi_id;
+    
+    //     // Query dasar untuk mengambil data penjualan produk sesuai toko yang dipilih
+    //     $inquery = Penjualanproduk::with('detailPenjualanProduk.produk')
+    //         ->when($toko_id, function ($query, $toko_id) {
+    //             return $query->where('toko_id', $toko_id);
+    //         })
+    //         ->when($tanggal_penjualan && $tanggal_akhir, function ($query) use ($tanggal_penjualan, $tanggal_akhir) {
+    //             $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //             return $query->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+    //         })
+    //         ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
+    //             $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+    //             return $query->where('tanggal_penjualan', '>=', $tanggal_penjualan);
+    //         })
+    //         ->when($tanggal_akhir, function ($query, $tanggal_akhir) {
+    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //             return $query->where('tanggal_penjualan', '<=', $tanggal_akhir);
+    //         });
+    
+    //     // Ambil data penjualan
+    //     $inquery = $inquery->get();
+    
+    //     // Gabungkan hasil berdasarkan produk_id
+    //     $finalResults = [];
+    
+    //     foreach ($inquery as $penjualan) {
+    //         foreach ($penjualan->detailPenjualanProduk as $detail) {
+    //             $produk = $detail->produk;
+    
+    //             // Pastikan produk tidak null sebelum mengakses properti
+    //             if ($produk) {
+    //                 // Filter produk berdasarkan klasifikasi jika klasifikasi_id dipilih
+    //                 if ($klasifikasi_id && $produk->klasifikasi_id != $klasifikasi_id) {
+    //                     continue; // Lewati produk yang tidak sesuai dengan klasifikasi
+    //                 }
+    
+    //                 // Filter ulang berdasarkan produk_id jika diperlukan
+    //                 if ($produk_id && $produk->id != $produk_id) {
+    //                     continue; // Lewati produk yang tidak sesuai dengan filter
+    //                 }
+    
+    //                 $key = $produk->id; // Menggunakan ID produk sebagai key
+    
+    //                 if (!isset($finalResults[$key])) {
+    //                     $finalResults[$key] = [
+    //                         'tanggal_penjualan' => $penjualan->tanggal_penjualan,
+    //                         'kode_lama' => $produk->kode_lama,
+    //                         'nama_produk' => $produk->nama_produk,
+    //                         'harga' => $produk->harga,
+    //                         'jumlah' => 0,
+    //                         'diskon' => 0,
+    //                         'total' => 0,
+    //                         'penjualan_kotor' => 0,
+    //                         'penjualan_bersih' => 0,
+    //                     ];
+    //                 }
+    
+    //                 // Jumlahkan jumlah dan total
+    //                 $finalResults[$key]['jumlah'] += $detail->jumlah;
+    //                 $finalResults[$key]['penjualan_kotor'] += $detail->jumlah * $produk->harga;
+    //                 $finalResults[$key]['total'] += $detail->total;
+    
+    //                 // Hitung diskon 10% dari jumlah * harga
+    //                 if ($detail->diskon > 0) {
+    //                     $diskonPerItem = $produk->harga * 0.10;
+    //                     $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
+    //                 }
+    
+    //                 // Kalkulasi penjualan bersih (penjualan kotor - diskon)
+    //                 $finalResults[$key]['penjualan_bersih'] = $finalResults[$key]['penjualan_kotor'] - $finalResults[$key]['diskon'];
+    //             }
+    //         }
+    //     }
+    
+    //     // Mengurutkan finalResults berdasarkan kode_lama
+    //     uasort($finalResults, function ($a, $b) {
+    //         return strcmp($a['kode_lama'], $b['kode_lama']);
+    //     });
+    
+    //     // Ambil semua data toko, klasifikasi, dan produk untuk dropdown
+    //     $tokos = Toko::all();
+    //     $klasifikasis = Klasifikasi::all();
+    //     $produks = Produk::all();
+    
+    //     return view('admin.penjualan_toko.create', [
+    //         'finalResults' => $finalResults,
+    //         'tokos' => $tokos,
+    //         'produks' => $produks,
+    //         'klasifikasis' => $klasifikasis,
+    //     ]);
+    // }
+
     public function create(Request $request) {
         $tanggal_penjualan = $request->tanggal_penjualan;
         $tanggal_akhir = $request->tanggal_akhir;
@@ -76,84 +175,91 @@ class PenjualantokoController extends Controller
         $produk_id = $request->produk;
         $klasifikasi_id = $request->klasifikasi_id;
     
-        // Query dasar untuk mengambil data penjualan produk sesuai toko yang dipilih
-        $inquery = Penjualanproduk::with('detailPenjualanProduk.produk')
-            ->when($toko_id, function ($query, $toko_id) {
-                return $query->where('toko_id', $toko_id);
-            })
-            ->when($tanggal_penjualan && $tanggal_akhir, function ($query) use ($tanggal_penjualan, $tanggal_akhir) {
-                $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-                return $query->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
-            })
-            ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
-                $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-                return $query->where('tanggal_penjualan', '>=', $tanggal_penjualan);
-            })
-            ->when($tanggal_akhir, function ($query, $tanggal_akhir) {
-                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-                return $query->where('tanggal_penjualan', '<=', $tanggal_akhir);
-            });
+        // Cek jika toko_id atau tanggal_penjualan/tanggal_akhir tidak dipilih
+        if (!$toko_id || (!$tanggal_penjualan && !$tanggal_akhir)) {
+            // Kirim data kosong jika belum ada filter yang dipilih
+            $finalResults = [];
+            $message = "Silakan pilih tanggal dan toko terlebih dahulu untuk melihat data.";
+        } else {
+            // Query dasar untuk mengambil data penjualan produk sesuai toko yang dipilih
+            $inquery = Penjualanproduk::with('detailPenjualanProduk.produk')
+                ->when($toko_id, function ($query, $toko_id) {
+                    return $query->where('toko_id', $toko_id);
+                })
+                ->when($tanggal_penjualan && $tanggal_akhir, function ($query) use ($tanggal_penjualan, $tanggal_akhir) {
+                    $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+                    $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+                    return $query->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+                })
+                ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
+                    $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+                    return $query->where('tanggal_penjualan', '>=', $tanggal_penjualan);
+                })
+                ->when($tanggal_akhir, function ($query, $tanggal_akhir) {
+                    $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+                    return $query->where('tanggal_penjualan', '<=', $tanggal_akhir);
+                });
     
-        // Ambil data penjualan
-        $inquery = $inquery->get();
+            // Ambil data penjualan
+            $inquery = $inquery->get();
     
-        // Gabungkan hasil berdasarkan produk_id
-        $finalResults = [];
+            // Gabungkan hasil berdasarkan produk_id
+            $finalResults = [];
     
-        foreach ($inquery as $penjualan) {
-            foreach ($penjualan->detailPenjualanProduk as $detail) {
-                $produk = $detail->produk;
+            foreach ($inquery as $penjualan) {
+                foreach ($penjualan->detailPenjualanProduk as $detail) {
+                    $produk = $detail->produk;
     
-                // Pastikan produk tidak null sebelum mengakses properti
-                if ($produk) {
-                    // Filter produk berdasarkan klasifikasi jika klasifikasi_id dipilih
-                    if ($klasifikasi_id && $produk->klasifikasi_id != $klasifikasi_id) {
-                        continue; // Lewati produk yang tidak sesuai dengan klasifikasi
+                    // Pastikan produk tidak null sebelum mengakses properti
+                    if ($produk) {
+                        // Filter produk berdasarkan klasifikasi jika klasifikasi_id dipilih
+                        if ($klasifikasi_id && $produk->klasifikasi_id != $klasifikasi_id) {
+                            continue; // Lewati produk yang tidak sesuai dengan klasifikasi
+                        }
+    
+                        // Filter ulang berdasarkan produk_id jika diperlukan
+                        if ($produk_id && $produk->id != $produk_id) {
+                            continue; // Lewati produk yang tidak sesuai dengan filter
+                        }
+    
+                        $key = $produk->id; // Menggunakan ID produk sebagai key
+    
+                        if (!isset($finalResults[$key])) {
+                            $finalResults[$key] = [
+                                'tanggal_penjualan' => $penjualan->tanggal_penjualan,
+                                'kode_lama' => $produk->kode_lama,
+                                'nama_produk' => $produk->nama_produk,
+                                'harga' => $produk->harga,
+                                'jumlah' => 0,
+                                'diskon' => 0,
+                                'total' => 0,
+                                'penjualan_kotor' => 0,
+                                'penjualan_bersih' => 0,
+                            ];
+                        }
+    
+                        // Jumlahkan jumlah dan total
+                        $finalResults[$key]['jumlah'] += $detail->jumlah;
+                        $finalResults[$key]['penjualan_kotor'] += $detail->jumlah * $produk->harga;
+                        $finalResults[$key]['total'] += $detail->total;
+    
+                        // Hitung diskon 10% dari jumlah * harga
+                        if ($detail->diskon > 0) {
+                            $diskonPerItem = $produk->harga * 0.10;
+                            $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
+                        }
+    
+                        // Kalkulasi penjualan bersih (penjualan kotor - diskon)
+                        $finalResults[$key]['penjualan_bersih'] = $finalResults[$key]['penjualan_kotor'] - $finalResults[$key]['diskon'];
                     }
-    
-                    // Filter ulang berdasarkan produk_id jika diperlukan
-                    if ($produk_id && $produk->id != $produk_id) {
-                        continue; // Lewati produk yang tidak sesuai dengan filter
-                    }
-    
-                    $key = $produk->id; // Menggunakan ID produk sebagai key
-    
-                    if (!isset($finalResults[$key])) {
-                        $finalResults[$key] = [
-                            'tanggal_penjualan' => $penjualan->tanggal_penjualan,
-                            'kode_lama' => $produk->kode_lama,
-                            'nama_produk' => $produk->nama_produk,
-                            'harga' => $produk->harga,
-                            'jumlah' => 0,
-                            'diskon' => 0,
-                            'total' => 0,
-                            'penjualan_kotor' => 0,
-                            'penjualan_bersih' => 0,
-                        ];
-                    }
-    
-                    // Jumlahkan jumlah dan total
-                    $finalResults[$key]['jumlah'] += $detail->jumlah;
-                    $finalResults[$key]['penjualan_kotor'] += $detail->jumlah * $produk->harga;
-                    $finalResults[$key]['total'] += $detail->total;
-    
-                    // Hitung diskon 10% dari jumlah * harga
-                    if ($detail->diskon > 0) {
-                        $diskonPerItem = $produk->harga * 0.10;
-                        $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
-                    }
-    
-                    // Kalkulasi penjualan bersih (penjualan kotor - diskon)
-                    $finalResults[$key]['penjualan_bersih'] = $finalResults[$key]['penjualan_kotor'] - $finalResults[$key]['diskon'];
                 }
             }
-        }
     
-        // Mengurutkan finalResults berdasarkan kode_lama
-        uasort($finalResults, function ($a, $b) {
-            return strcmp($a['kode_lama'], $b['kode_lama']);
-        });
+            // Mengurutkan finalResults berdasarkan kode_lama
+            uasort($finalResults, function ($a, $b) {
+                return strcmp($a['kode_lama'], $b['kode_lama']);
+            });
+        }
     
         // Ambil semua data toko, klasifikasi, dan produk untuk dropdown
         $tokos = Toko::all();
@@ -165,8 +271,10 @@ class PenjualantokoController extends Controller
             'tokos' => $tokos,
             'produks' => $produks,
             'klasifikasis' => $klasifikasis,
+            'message' => $message ?? null, // Menambahkan pesan ke view jika tidak ada filter
         ]);
     }
+    
     
     
 
