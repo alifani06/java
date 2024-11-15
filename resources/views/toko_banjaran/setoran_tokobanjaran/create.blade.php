@@ -255,7 +255,7 @@
             if (parts.length > 2) {
                 return 0; // Mengembalikan 0 jika terdapat lebih dari satu titik
             }
-    
+
             return parseFloat(number) || 0;
         }
     
