@@ -63,35 +63,52 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
-                        <thead class="">
+                    <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 10px">
+                        <thead>
                             <tr>
-                                {{-- <th> <input type="checkbox" name="" id="select_all_ids"></th> --}}
                                 <th class="text-center">No</th>
-                                <th>Kode penjualan</th>
-                                <th>Tanggal</th>
-                                <th>Kasir</th>
-                                <th>Pelanggan</th>
-                                <th>Pembayaran</th>
-                                <th>Total</th>
-                                <th class="text-center" width="20">Opsi</th>
+                                <th>Tanggal Setoran</th> 
+                                <th>Cabang</th> 
+                                <th>Penjualan Kotor</th>
+                                <th>Diskon Penjualan</th>
+                                <th>Penjualan Bersih</th>
+                                <th>Deposit Keluar</th>
+                                <th>Deposit Masuk</th>
+                                <th>Total Penjualan</th>
+                                <th>Mesin EDC</th>
+                                <th>Gobiz</th>
+                                <th>Transfer</th>
+                                <th>Qris</th>
+                                <th>Total Setoran</th>
+                                <th>Noiminal Setoran</th>
+                                <th>Plus Minus</th>
                             </tr>
                         </thead>
-         
+                        <tbody>
+                            @foreach ($setoranPenjualans as $index => $setoran)
+                            <tr>
+                                <td class="text-center">{{ $index + 1 }}</td>
+                                <td>{{ $setoran->tanggal_setoran ? \Carbon\Carbon::parse($setoran->tanggal_setoran)->format('d-m-Y') : '-' }}</td> <!-- Menampilkan Tanggal Setoran -->
+                                <td>{{ $setoran->toko->nama_toko }}</td>
+                                <td>{{ $setoran->penjualan_kotor }}</td>
+                                <td>{{ $setoran->diskon_penjualan }}</td>
+                                <td>{{ $setoran->penjualan_bersih }}</td>
+                                <td>{{ $setoran->deposit_keluar }}</td>
+                                <td>{{ $setoran->deposit_masuk }}</td>
+                                <td>{{ $setoran->total_penjualan }}</td>
+                                <td>{{ $setoran->mesin_edc ?? '0' }}</td>
+                                <td>{{ $setoran->gobiz ?? '0' }}</td>
+                                <td>{{ $setoran->transfer ?? '0' }}</td>
+                                <td>{{ $setoran->qris ?? '0' }}</td>
+                                <td>{{ $setoran->total_setoran }}</td>
+                                <td>{{ $setoran->nominal_setoran }}</td>
+                                <td>{{ $setoran->plusminus }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
                     </table>
 
-                    <!-- Modal Loading -->
-                    <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
-                        aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-body text-center">
-                                    <i class="fas fa-spinner fa-spin fa-3x text-primary"></i>
-                                    <h4 class="mt-2">Sedang Menyimpan...</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
                 <!-- /.card-body -->
             </div>

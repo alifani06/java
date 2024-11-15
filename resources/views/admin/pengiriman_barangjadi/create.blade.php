@@ -87,164 +87,106 @@
                     
                         <div class="row">
                             <div class="col-md-12 mb-3">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <div class="col-md-3 mb-3">
-                                            <select class="custom-select form-control" id="toko" name="toko_id">
-                                                <option value="">- Pilih Toko -</option>
-                                                @foreach ($tokos as $toko)
-                                                    <option value="{{ $toko->id }}" {{ old('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <label for="toko">Pilih Toko</label>
+                                        <select class="custom-select form-control" id="toko" name="toko_id">
+                                            <option value="">- Pilih -</option>
+                                            @foreach ($tokos as $toko)
+                                                <option value="{{ $toko->id }}" {{ old('toko_id') == $toko->id ? 'selected' : '' }}>
+                                                    {{ $toko->nama_toko }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="tanggal_pengiriman">Tanggal Pengiriman:</label>
+                                        <input type="date" class="form-control" id="tanggal_pengiriman" name="tanggal_pengiriman" value="{{ old('tanggal_pengiriman') }}">
+                                    </div>
+                                </div>
+                        
+                                <div class="form-group">
+                                    <label for="kode_produksi">Kode Produksi:</label>
+                                    <div>
+                                        @foreach (['A', 'B', 'C', 'D', 'E'] as $huruf)
+                                            <input type="checkbox" name="kode_produksi[]" value="{{ $huruf }}"> {{ $huruf }}
+                                        @endforeach
+                                    </div>
+                                    <div>
+                                        @for ($i = 1; $i <= 7; $i++)
+                                            <input type="checkbox" name="kode_produksi[]" value="{{ $i }}"> {{ $i }}
+                                        @endfor
+                                    </div>
+                                </div>
+                        
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <select id="klasifikasi-select" class="form-control" name="klasifikasi_id">
+                                                <option value="">-- Pilih Divisi --</option>
+                                                @foreach ($klasifikasis as $klasifikasi)
+                                                    <option value="{{ $klasifikasi->id }}">{{ $klasifikasi->nama }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="col-md-3 mb-3">
-                                            <label for="tanggal_pengiriman">Tanggal Pengiriman:</label>
-                                            <input type="date" class="form-control" id="tanggal_pengiriman" name="tanggal_pengiriman" value="{{ old('tanggal_pengiriman') }}">
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="kode_produksi">Kode Produksi:</label>
-                                            <div>
-                                                @foreach (['A', 'B', 'C', 'D', 'E'] as $huruf)
-                                                    <input type="checkbox" name="kode_produksi[]" value="{{ $huruf }}"> {{ $huruf }}
-                                                @endforeach
-                                            </div>
-                                            <div>
-                                                @for ($i = 1; $i <= 7; $i++)
-                                                    <input type="checkbox" name="kode_produksi[]" value="{{ $i }}"> {{ $i }}
-                                                @endfor
-                                            </div>
-                                        </div>
-                                    </thead>
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h3 class="card-title"><span></span></h3>
-                                            <div class="float-right">
-                                                <button type="button" class="btn btn-primary btn-sm" onclick="addPesanan()">
-                                                    <i class="fas fa-plus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div class="card-body">
-                                           
-                                            <div class="row">
-                                                <div class="col">
-                                                    <table class="table table-bordered table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th style="font-size:14px" class="text-center">No</th>
-                                                                <th style="font-size:14px">Kode Produk</th>
-                                                                <th style="font-size:14px">Nama Produk</th>
-                                                                <th style="font-size:14px">Jumlah</th>
-                                                                <th style="font-size:14px; text-align:center">Opsi</th>
+                        
+                                        <div class="row">
+                                            <div class="col-md-12 mb-3">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Detail Produk
+                                                            {{-- <input type="text" id="searchInput" class="form-control" placeholder="Cari berdasarkan kode produk..." style="margin-bottom: 10px;"></th> --}}
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($klasifikasis as $klasifikasi)
+                                                            <tr class="produk-table" id="produk-table-{{ $klasifikasi->id }}">
+                                                                <td colspan="1">
+                                                                    <table class="table table-bordered" style="font-size: 13px;">
+                                                                        <div class="col-sm-12 text-right">
+                                                                            <input type="text" id="searchInput" class="form-control" placeholder="Cari produk..." style="display: inline-block; width: auto; margin-bottom: 10px;">
+                                                                        </div>
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>No</th>
+                                                                                <th>Kode Produk</th>
+                                                                                <th>Produk</th>
+                                                                                <th>Jumlah</th>   
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @foreach ($klasifikasi->produks as $produk)
+                                                                                <tr class="produk-row">
+                                                                                    <td class="text-center">{{ $loop->iteration }}</td>
+                                                                                    <td class="kode-lama">{{ $produk->kode_lama }}</td>
+                                                                                    <td class="nama-produk">{{ $produk->nama_produk }}</td>
+                                                                                    <td>
+                                                                                        <input type="number" class="form-control" id="produk-{{ $produk->id }}" name="produk[{{ $produk->id }}][jumlah]" min="0" style="width: 100px; height: 30px;">
+                                                                                    </td>
+                                                                                </tr>
+                                                                            @endforeach
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
                                                             </tr>
-                                                        </thead>
-                                                        <tbody id="tabel-pembelian">
-                                                            @if(old('produk_id'))
-                                                                @foreach(old('produk_id') as $key => $produkId)
-                                                                    <tr id="pembelian-{{ $key }}">
-                                                                        <td style="width: 70px; font-size:14px" class="text-center" id="urutan-{{ $key }}">{{ $key + 1 }}</td>
-                                                                        <td hidden>
-                                                                            <div class="form-group">
-                                                                                <input type="text" class="form-control" id="produk_id-{{ $key }}" name="produk_id[]" value="{{ $produkId }}">
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div class="form-group">
-                                                                                <input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-{{ $key }}" name="kode_produk[]" value="{{ old('kode_produk')[$key] ?? '' }}">
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div class="form-group">
-                                                                                <input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-{{ $key }}" name="nama_produk[]" value="{{ old('nama_produk')[$key] ?? '' }}">
-                                                                            </div>
-                                                                        </td>
-                                                                        <td style="width: 150px">
-                                                                            <div class="form-group">
-                                                                                <input type="number" class="form-control" style="font-size:14px" id="jumlah-{{ $key }}" name="jumlah[]" value="{{ old('jumlah')[$key] ?? '' }}" oninput="hitungTotal({{ $key }})" onkeydown="handleEnter(event, {{ $key }})">
-                                                                            </div>
-                                                                        </td>
-                                                                        <td style="width: 100px">
-                                                                            <button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal({{ $key }})"><i class="fas fa-plus"></i></button>
-                                                                            <button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan({{ $key }})"><i class="fas fa-trash"></i></button>
-                                                                        </td>
-                                                                    </tr>
-                                                                @endforeach
-                                                            @endif
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="form-group text-right">
-                                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
-                                </table>
-                            </div>
-                        </div>
-                    </form>
-                    
-
-                        <div class="modal fade" id="tableProduk" data-backdrop="static">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title">Data Stok Barang Jadi</h4>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="col-sm-12 text-right">
-                                            <input type="text" id="searchProduk" class="form-control" placeholder="Cari produk..." style="display: inline-block; width: auto; margin-bottom: 10px;">
+                                    <div class="card-body">
+                                        <div class="form-group text-right">
+                                            <button type="submit" class="btn btn-primary">Simpan</button>
                                         </div>
-                                        <table id="tableproduk" class="table table-bordered table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th class="text-center">No</th>
-                                                    <th>Kode Produk</th>
-                                                    <th>Kode Lama</th>
-                                                    <th>Nama Produk</th>
-                                                    <th>Stok</th>
-                                                    <th>Opsi</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($uniqueStokBarangjadi as $item)
-                                                    <tr class="pilih-btn"
-                                                        data-id="{{ $item->produk->id }}"
-                                                        data-kode="{{ $item->produk->kode_produk }}"
-                                                        data-nama="{{ $item->produk->nama_produk }}">
-                                                        
-                                                        <td class="text-center">{{ $loop->iteration }}</td>
-                                                        <td>{{ $item->produk ? $item->produk->kode_produk : 'N/A' }}</td>
-                                                        <td>{{ $item->produk ? $item->produk->kode_lama : 'N/A' }}</td>
-                                                        <td>{{ $item->produk ? $item->produk->nama_produk : 'N/A' }}</td>
-                                                        <td>{{ $item['stok'] }}</td>
-                                                        <td class="text-center">
-                                                            <button type="button" class="btn btn-primary btn-sm pilih-btn"
-                                                                    data-id="{{ $item->produk->id }}"
-                                                                    data-kode="{{ $item->produk->kode_produk }}"
-                                                                    data-nama="{{ $item->produk->nama_produk }}">
-                                                                <i class="fas fa-plus"></i>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         
-                        
+                    </form>
 
-                    
-             
                     <!-- Modal Loading -->
                     <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
                         aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">
@@ -262,42 +204,86 @@
             </div>
         </div>
     </section>
-<script>
+    <script>
+        $(document).ready(function() {
+            $('#klasifikasi-select').change(function() {
+                var klasifikasiId = $(this).val();
+                $('.produk-table').hide(); // Hide all produk tables
+                if (klasifikasiId) {
+                    $('#produk-table-' + klasifikasiId).show(); // Show the selected produk table
+                }
+            });
 
-document.addEventListener('DOMContentLoaded', function() {
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // Mencegah aksi default dari tombol Enter
-                addPesanan(); // Memanggil addPesanan saat tombol Enter ditekan
-            }
-            if (event.key === 'F1') { // Misalnya, F1 untuk menampilkan modal produk
-                event.preventDefault(); // Mencegah aksi default dari tombol F1
-                var urutan = $('#tabel-pembelian tr').length; // Ambil urutan terakhir atau default
-                showCategoryModal(urutan); // Menampilkan modal produk
-            }
+            // Handle Enter key press on input fields
+            $('input[type="number"]').on('keypress', function(e) {
+                if (e.which == 13) { // Enter key pressed
+                    e.preventDefault(); // Prevent form submission
+                    var inputs = $('input[type="number"]');
+                    var index = inputs.index(this);
+                    
+                    if (index + 1 < inputs.length) {
+                        $(inputs[index + 1]).focus();
+                    }
+                }
+            });
+        });
+    </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('keyup', function() {
+            var searchValue = searchInput.value.toLowerCase();
+            var produkRows = document.querySelectorAll('.produk-row');
+            
+            produkRows.forEach(function(row) {
+                var kodeLama = row.querySelector('.kode-lama').textContent.toLowerCase();
+                var namaProduk = row.querySelector('.nama-produk').textContent.toLowerCase();
+                if ( namaProduk.includes(searchValue)|| kodeLama.includes(searchValue))  {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         });
     });
-    // Event listener untuk input pencarian
-    $("#searchProduk").on("keyup", function(e) {
-           if (e.key === "Enter") {
-               e.preventDefault(); // Mencegah submit default
-               var value = $(this).val().toLowerCase();
-               var visibleRow = $("#tableproduk tbody tr:visible").first();
-   
-               if (visibleRow.length) {
-                   var id = visibleRow.data('id');
-                   var kode = visibleRow.data('kode');
-                   var nama = visibleRow.data('nama');
-   
-                   getSelectedData(id, kode, nama);
-               }
-           } else {
-               var value = $(this).val().toLowerCase();
-               $("#tableproduk tbody tr").filter(function() {
-                   $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-               });
-           }
-       });
+</script>
+
+{{-- <script>
+    document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Mencegah aksi default dari tombol Enter
+                    addPesanan(); // Memanggil addPesanan saat tombol Enter ditekan
+                }
+                if (event.key === 'F1') { // Misalnya, F1 untuk menampilkan modal produk
+                    event.preventDefault(); // Mencegah aksi default dari tombol F1
+                    var urutan = $('#tabel-pembelian tr').length; // Ambil urutan terakhir atau default
+                    showCategoryModal(urutan); // Menampilkan modal produk
+                }
+            });
+        });
+        // Event listener untuk input pencarian
+        $("#searchProduk").on("keyup", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault(); // Mencegah submit default
+                var value = $(this).val().toLowerCase();
+                var visibleRow = $("#tableproduk tbody tr:visible").first();
+    
+                if (visibleRow.length) {
+                    var id = visibleRow.data('id');
+                    var kode = visibleRow.data('kode');
+                    var nama = visibleRow.data('nama');
+    
+                    getSelectedData(id, kode, nama);
+                }
+            } else {
+                var value = $(this).val().toLowerCase();
+                $("#tableproduk tbody tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            }
+        });
 
 </script>
    
@@ -410,5 +396,6 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = "{{ route('admin.pengiriman_barangjadipesanan.create') }}"; 
         }
     });
-</script>
+</script> --}}
+
 @endsection

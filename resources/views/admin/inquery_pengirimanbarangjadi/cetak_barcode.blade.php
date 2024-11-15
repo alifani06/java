@@ -108,7 +108,7 @@
                     @endforeach
 
                     <p style="font-size: 7px;" class="bold-text">Rp. {{ number_format($produkData['produk']->harga, 0, ',', '.') }}</p>
-                    <p class="bold-text">C5</p>
+                    <p class="bold-text">C7</p>
                 </div>
             </div>
 
