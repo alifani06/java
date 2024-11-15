@@ -35,6 +35,7 @@ use App\Http\Controllers\Admin\PemusnahanbarangjadiController;
 use App\Http\Controllers\Admin\Pengiriman_tokoslawiController;
 use App\Http\Controllers\Admin\PengirimanbarangjadiController;
 use App\Http\Controllers\Admin\PengirimanbarangjadipesananController;
+use App\Http\Controllers\Admin\PenjualantokoController;
 use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\Admin\Setoran_pelunasanController;
 use App\Http\Controllers\Admin\Stok_barangjadiController;
@@ -287,6 +288,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     // Route::get('metodebayar/metode/{id}', [\App\Http\Controllers\Admin\PenjualanprodukController::class, 'metode']);
 
     Route::resource('penjualan_toko', \App\Http\Controllers\Admin\PenjualantokoController::class);
+    Route::post('/get-penjualan-kotor', [PenjualantokoController::class, 'getdata'])->name('getdata');
+    Route::get('/penjualan_toko/getdata', [PenjualanTokoController::class, 'getdata'])->name('penjualan_toko.getdata');
 
 
 

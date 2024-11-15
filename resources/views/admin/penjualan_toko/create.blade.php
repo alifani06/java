@@ -1,219 +1,380 @@
-@extends('layouts.app')
+    @extends('layouts.app')
 
-@section('title', 'Laporan BK')
-
-@section('content')
-    <div id="loadingSpinner" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
-        <i class="fas fa-spinner fa-spin" style="font-size: 3rem;"></i>
-    </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            setTimeout(function() {
-                document.getElementById("loadingSpinner").style.display = "none";
-                document.getElementById("mainContent").style.display = "block";
-                document.getElementById("mainContentSection").style.display = "block";
-            }, 10); // Adjust the delay time as needed
-        });
-    </script>
-    <!-- Content Header (Page header) -->
-    <div class="content-header" style="display: none;" id="mainContent">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Penjualan Toko</h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Penjualan Toko</li>
-                    </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
-
-    <!-- Main content -->
-    <section class="content" style="display: none;" id="mainContentSection">
-        <div class="container-fluid">
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <h5>
-                        <i class="icon fas fa-check"></i> Success!
-                    </h5>
+    @section('title', 'Tambah Setoran')
+    
+    @section('content')
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Penjualan Toko</h1>
+                    </div><!-- /.col -->
+    
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+    
+        <section class="content">
+            <div class="container-fluid">
+                @if (session('success'))
+                <div class="alert alert-success">
                     {{ session('success') }}
                 </div>
             @endif
+            
             @if (session('error'))
-                <div class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <h5>
-                        <i class="icon fas fa-ban"></i> Error!
-                    </h5>
+                <div class="alert alert-danger">
                     {{ session('error') }}
                 </div>
             @endif
-            <div class="card"> 
-                <div class="card-body">
-                    <form method="GET" id="form-action">
-                        <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
-                                    value="{{ Request::get('tanggal_penjualan') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_penjualan">(Dari Tanggal)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
-                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_akhir">(Sampai Tanggal)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="toko" name="toko_id">
-                                    <option value="">- Semua Toko -</option>
-                                    @foreach ($tokos as $toko)
-                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="toko">(Pilih Toko)</label>
-                            </div>
-                            
-                            
-                            <div class="col-md-3 mb-3">
-                                <button type="submit" class="btn btn-outline-primary btn-block">
-                                    <i class="fas fa-search"></i> Cari
-                                </button>
-                               
-                            </div>
+        
+    
+                <form id="setoranForm" action="{{ url('admin/penjualan_toko') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+                    @csrf
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
+                                        value="{{ Request::get('tanggal_penjualan') }}" max="{{ date('Y-m-d') }}" />
+                                    <label for="tanggal_penjualan">(Dari Tanggal)</label>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
+                                        value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
+                                    <label for="tanggal_akhir">(Sampai Tanggal)</label>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <select class="custom-select form-control" id="toko" name="toko_id">
+                                        <option value="">- Semua Toko -</option>
+                                        @foreach ($tokos as $toko)
+                                            <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="toko">(Pilih Toko)</label>
+                                </div>
+                                
+                                
+                                <div class="col-md-3 mb-3">
+                                    <button type="submit" class="btn btn-outline-primary btn-block">
+                                        <i class="fas fa-search"></i> Cari
+                                    </button>
+                                
+                                </div>
+                            </div>                   
                         </div>
-                    </form>
-            
-                    <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">                        <thead >
-                        <tr>
-                            <th>No</th>
-                            {{-- <th>Tanggal Penjualan</th> --}}
-                            <th style="text-align: center">Kode Produk</th>
-                            <th style="text-align: center; width: 200px;">Nama Produk</th> <!-- Lebar diperbesar -->
-                            <th style="text-align: center">Jumlah</th>
-                            <th style="text-align: center">Harga Satuan</th>
-                            <th style="text-align: center">Penjualan Kotor</th>
-                            <th style="text-align: center">Diskon</th>
-                            <th style="text-align: center">Penjualan Bersih</th>
-                        </tr>
-                        
-                        </thead>
-                        <tbody>
-                            @php $no = 1; @endphp
-                            @foreach ($finalResults as $produk)
-                                <tr>
-                                    <td class="text-center">{{ $no++ }}</td>
-                                    {{-- <td>{{ \Carbon\Carbon::parse($produk['tanggal_penjualan'])->translatedFormat('d F Y') }}</td> --}}
-                                    <td>{{ $produk['kode_lama'] }}</td>
-                                    <td>{{ $produk['nama_produk'] }}</td>
-                                    <td style="text-align: right">{{ $produk['jumlah'] }}</td>
-                                    <td style="text-align: right">{{ number_format($produk['harga'], 0, ',', '.') }}</td>
-                                    <td style="text-align: right">{{ number_format($produk['penjualan_kotor'], 0, ',', '.') }}</td>
-                                    <td style="text-align: right">{{ number_format($produk['diskon'], 0, ',', '.') }}</td>
-                                    <td style="text-align: right">{{ number_format($produk['penjualan_bersih'], 0, ',', '.') }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                        <tfoot>
-                            @php
-                                $totalJumlah = collect($finalResults)->sum('jumlah');
-                                $grandTotal = collect($finalResults)->sum('penjualan_bersih');
-                                $totalDiskon = collect($finalResults)->sum('diskon');
-                                $totalKotor = collect($finalResults)->sum('penjualan_kotor');
-                            @endphp
-                            <tr>
-                                <th colspan="3">Total</th>
-                                <th style="text-align: right">{{ $totalJumlah }}</th>
-                                <th></th>
-                                <th style="text-align: right">{{ number_format($totalKotor, 0, ',', '.') }}</th>
-                                <th style="text-align: right">{{ number_format($totalDiskon, 0, ',', '.') }}</th>
-                                <th style="text-align: right">{{ number_format($grandTotal, 0, ',', '.') }}</th>
-                            </tr>
-                        </tfoot>
-                    </table>
-                    
-                    
-                    
-                    
-                    <!-- Modal Loading -->
-                    <div class="modal fade" id="modal-loading" tabindex="-1" role="dialog"
-                        aria-labelledby="modal-loading-label" aria-hidden="true" data-backdrop="static">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-body text-center">
-                                    <i class="fas fa-spinner fa-spin fa-3x text-primary"></i>
-                                    <h4 class="mt-2">Sedang Menyimpan...</h4>
+                
+                        <div class="card-body">
+                            <!-- Tempat untuk menampilkan Penjualan Kotor -->
+                            <div class="form-group row mb-3">
+                                <label for="penjualan_kotor" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Penjualan Kotor</a>
+                                </label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="penjualan_kotor" name="penjualan_kotor" placeholder="" >
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.card-body -->
+    
+                            <!-- Diskon Penjualan -->
+                            <div class="form-group row mb-3">
+                                <label for="diskon_penjualan" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Diskon Penjualan</a>
+                                </label>                            
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="diskon_penjualan" name="diskon_penjualan" >
+                                </div>
+                            </div>
+    
+                                <div class="col-sm-3 offset-sm-3">
+                                    <hr style="border: 1px solid #000;"> <!-- Ubah nilai 2px sesuai ketebalan yang diinginkan -->
+                                </div>
+                        
+                            <!-- Penjualan Bersih -->
+                            <div class="form-group row mb-3">
+                                <label for="penjualan_bersih" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Penjualan Bersih</a>
+                                </label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="penjualan_bersih" name="penjualan_bersih" >
+                                </div>
+                            </div>
+    
+                            <div class="form-group row mb-3">
+                                <label for="deposit_keluar" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Deposit Keluar</a>
+                                </label>                            
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="deposit_keluar" name="deposit_keluar" >
+                                </div>
+                            </div>
+    
+                            <div class="form-group row mb-3">
+                                <label for="deposit_masuk" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Deposit Masuk</a>
+                                </label>                            
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="deposit_masuk" name="deposit_masuk" >
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-3 offset-sm-3">
+                                <hr style="border: 1px solid #000;"> <!-- Ubah nilai 2px sesuai ketebalan yang diinginkan -->
+                            </div>
+    
+                            <div class="form-group row mb-3">
+                                <label for="total_penjualan" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Total Penjualan</a>
+                                </label>                            
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="total_penjualan" name="total_penjualan" >
+                                </div>
+                            </div>
+    
+                            <div class="form-group row mb-3">
+                                <label for="mesin_edc" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Mesin EDC</a>
+                                </label>                            
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="mesin_edc" name="mesin_edc" >
+                                </div>
+                            </div>
+    
+                            <div class="form-group row mb-3">
+                                <label for="qris" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">QRIS</a>
+                                </label>                            
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="qris" name="qris" >
+                                </div>
+                            </div>
+    
+                            <div class="form-group row mb-3">
+                                <label for="gobiz" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Gobiz</a>
+                                </label>                            
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="gobiz" name="gobiz" >
+                                </div>
+                            </div>
+    
+                            <div class="form-group row mb-3">
+                                <label for="transfer" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">transfer</a>
+                                </label>                            
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="transfer" name="transfer" >
+                                </div>
+                            </div>
+    
+                            <div class="col-sm-3 offset-sm-3">
+                                <hr style="border: 1px solid #000;"> <!-- Ubah nilai 2px sesuai ketebalan yang diinginkan -->
+                            </div>
+    
+                            <div class="form-group row mb-3">
+                                <label for="total_setoran" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Total Setoran</a>
+                                </label>                            
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="total_setoran" name="total_setoran" >
+                                </div>
+                            </div>
+    
+                            <div class="col-sm-3 offset-sm-3">
+                                <hr style="border: 1px solid #000;"> <!-- Ubah nilai 2px sesuai ketebalan yang diinginkan -->
+                            </div>
+    
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="tambahInputCheckbox">
+                                <label class="form-check-label" for="tambahInputCheckbox">2 x setoran</label>
+                            </div>
+                            <div class="form-group row mb-3" id="row1">
+                                <div class="col-sm-3">
+                                    <input class="form-control" id="tanggal_setoran" name="tanggal_setoran" type="date" value="{{ Request::get('tanggal_setoran') }}" />
+                                </div>  
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="nominal_setoran" name="nominal_setoran" oninput="formatNumber(this); updatePlusMinus();">
+                                </div>
+                            </div>
+                            
+                            <!-- Tempat tambahan input ketika checkbox di centang -->
+                            <div id="extraRows"></div>
+                            
+                            <div class="form-group row mb-3">
+                                <label for="plusminus" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">+/-</a>
+                                </label>                             
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="plusminus" name="plusminus"> 
+                                </div>
+                            </div>
+                            
+                        </div>       
+                        </div>   
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                </form>
+
             </div>
-        </div>
-    </section>
+            
+        </section>
+  
+        
 
-
-
-    <script>
-        function filterProduk() {
-            var klasifikasiId = document.getElementById('klasifikasi').value;
-            var produkSelect = document.getElementById('produk');
-            var produkOptions = produkSelect.options;
+        
     
-            // Reset produk display first
-            for (var i = 0; i < produkOptions.length; i++) {
-                produkOptions[i].style.display = "none"; // Hide all options
+        <script>
+            document.getElementById('setoranForm').addEventListener('submit', function(e) {
+                e.preventDefault(); // Mencegah pengiriman form default
+            
+                let formData = new FormData(this);
+            
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.url) {
+                        window.open(data.url, '_blank');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        </script>
+        
+        <script>
+            document.getElementById('tambahInputCheckbox').addEventListener('change', function() {
+                const extraRowsContainer = document.getElementById('extraRows');
+                
+                if (this.checked) {
+                    // Buat elemen input tambahan
+                    const newRow1 = document.createElement('div');
+                    newRow1.className = 'form-group row mb-3';
+                    newRow1.innerHTML = `
+                        <div class="col-sm-3">
+                            <input class="form-control" name="tanggal_setoran2" type="date">
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" name="nominal_setoran2" oninput="formatNumber(this); updatePlusMinus();">
+                        </div>
+                    `;
+        
+                    // Tambahkan kedua row ke container
+                    extraRowsContainer.appendChild(newRow1);
+                } else {
+                    // Hapus semua input tambahan jika checkbox di-uncheck
+                    extraRowsContainer.innerHTML = '';
+                }
+            });
+        
+            // Fungsi untuk menghapus format angka
+            function unformatNumber(number) {
+                // Hapus semua titik dan ganti koma dengan titik
+                number = number.replace(/\./g, '').replace(',', '.');
+                
+                // Cek jika ada lebih dari satu titik setelah dihapus
+                const parts = number.split('.');
+                if (parts.length > 2) {
+                    return 0; // Mengembalikan 0 jika terdapat lebih dari satu titik
+                }
+        
+                return parseFloat(number) || 0;
             }
-    
-            // Show options based on klasifikasiId
-            for (var i = 0; i < produkOptions.length; i++) {
-                var option = produkOptions[i];
-                // Tampilkan semua produk jika klasifikasiId tidak dipilih
-                if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
-                    option.style.display = "block"; // Show relevant options
+        
+            // Fungsi untuk memformat angka dengan pemisah ribuan
+            function formatNumber(input) {
+                let value = input.value.replace(/\./g, ''); // Hapus titik sebelumnya
+                if (!isNaN(value) && value !== "") {
+                    input.value = new Intl.NumberFormat('id-ID').format(value);
                 }
             }
-    
-            // Reset the selected value of the product select box
-            produkSelect.selectedIndex = 0;
-        }
-    </script>
-    
-
-    <!-- /.card -->
-    <script>
-        var tanggalAwal = document.getElementById('tanggal_penjualan');
-        var tanggalAkhir = document.getElementById('tanggal_akhir');
-    
-        tanggalAwal.addEventListener('change', function() {
-            if (this.value == "") {
-                tanggalAkhir.readOnly = true;
-            } else {
-                tanggalAkhir.readOnly = false;
-                var today = new Date().toISOString().split('T')[0];
-                tanggalAkhir.value = today;
-                tanggalAkhir.setAttribute('min', this.value);
+        
+            // Fungsi untuk menghitung nilai plus/minus
+            function updatePlusMinus() {
+                const totalSetoran = unformatNumber(document.getElementById('total_setoran').value);
+                let totalNominalSetoran = 0;
+        
+                // Ambil semua input nominal_setoran dan hitung totalnya
+                const nominalInputs = document.querySelectorAll('input[name^="nominal_setoran"]');
+                nominalInputs.forEach(input => {
+                    totalNominalSetoran += unformatNumber(input.value);
+                });
+        
+                // Hitung selisih antara total setoran dan total nominal setoran
+                const plusMinus = totalNominalSetoran - totalSetoran;
+        
+                // Update nilai plusminus dengan format yang benar
+                document.getElementById('plusminus').value = new Intl.NumberFormat('id-ID').format(plusMinus);
             }
-        });
+        </script>
+        
+        
+    <!-- Tambahkan script JQuery untuk Ajax -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
-        function cari() {
-            var form = document.getElementById('form-action');
-            form.action = "{{ url('admin/penjualan_toko') }}";
-        form.submit();
-     }
+    
+    <script>
+        $(document).ready(function () {
+            $('#tanggal_penjualan').on('change', function () {
+                var tanggalPenjualan = $(this).val();
+        
+                if (tanggalPenjualan) {
+                    $.ajax({
+                        url: "{{ route('getdata') }}",
+                        type: "POST",
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            tanggal_penjualan: tanggalPenjualan
+                        },
+                        success: function(response) {
+                        // Populate form fields with response data
+                        $('#penjualan_kotor').val(response.penjualan_kotor);
+                        $('#diskon_penjualan').val(response.diskon_penjualan);
+                        $('#penjualan_bersih').val(response.penjualan_bersih);
+                        $('#deposit_keluar').val(response.deposit_keluar);
+                        $('#deposit_masuk').val(response.deposit_masuk);
+                        $('#mesin_edc').val(response.mesin_edc);
+                        $('#qris').val(response.qris);
+                        $('#gobiz').val(response.gobiz);
+                        $('#transfer').val(response.transfer);
+                        $('#total_penjualan').val(response.total_penjualan);
+                        $('#total_setoran').val(response.total_setoran);
+                    },
+                        error: function (xhr) {
+                            console.log(xhr.responseText); // Debugging
+                        }
+                    });
+                }
+            });
+        });
     </script>
-
-
-
-
-
-
-
-
-
-@endsection
+    
+    
+    
+    <script>
+        $(document).ready(function() {
+            // Tambahkan event listener pada tombol "Simpan"
+            $('#btnSimpan').click(function() {
+                // Sembunyikan tombol "Simpan" dan "Reset", serta tampilkan elemen loading
+                $(this).hide();
+                $('#btnReset').hide(); // Tambahkan id "btnReset" pada tombol "Reset"
+                $('#loading').show();
+    
+                // Lakukan pengiriman formulir
+                $('form').submit();
+            });
+        });
+    </script>
+    
+    
+    @endsection
+    
+    
+    
