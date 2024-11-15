@@ -69,27 +69,7 @@ class PelunasanpemesananController extends Controller
         return json_decode($metode);
     }
 
-    // public function create()
-    // {
-
-    //     $barangs = Barang::all();
-    //     $pelanggans = Pelanggan::all();
-    //     $details = Detailbarangjadi::all();
-    //     $tokoslawis = Tokoslawi::all();
-    //     $tokos = Toko::all();
-    //     $dppemesanans = Dppemesanan::all();
-    //     $pemesananproduks = Pemesananproduk::all();
-    //     $metodes = Metodepembayaran::all();
-    
-    //     $produks = Produk::with(['tokobanjaran', 'klasifikasi'])
-    //     ->whereHas('klasifikasi', function($query) {
-    //         $query->whereIn('nama', ['FREE MAINAN', 'FREE PACKAGING', 'BAKERY']);
-    //     })
-    //     ->get();
-    //     $kategoriPelanggan = 'member';
-    
-    //     return view('toko_banjaran.pelunasan_pemesanan.create', compact('barangs', 'tokos', 'produks', 'details', 'tokoslawis', 'pelanggans', 'kategoriPelanggan','dppemesanans','pemesananproduks','metodes'));
-    // }
+   
     public function create()
     {
         $barangs = Barang::all();
