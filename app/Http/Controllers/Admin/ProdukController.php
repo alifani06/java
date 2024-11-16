@@ -234,23 +234,23 @@ class ProdukController extends Controller
     ]);
 
 
-    // Stok_tokobumiayu::create([
-    //     'produk_id' => $produk->id,
-    //     'jumlah' => 0,
-    // ]);
-    // Stokpesanan_tokobumiayu::create([
-    //     'produk_id' => $produk->id,
-    //     'jumlah' => 0
-    // ]);
+    Stok_tokobumiayu::create([
+        'produk_id' => $produk->id,
+        'jumlah' => 0,
+    ]);
+    Stokpesanan_tokobumiayu::create([
+        'produk_id' => $produk->id,
+        'jumlah' => 0
+    ]);
 
-    // Stok_tokocilacap::create([
-    //     'produk_id' => $produk->id,
-    //     'jumlah' => 0,
-    // ]);
-    // Stokpesanan_tokocilacap::create([
-    //     'produk_id' => $produk->id,
-    //     'jumlah' => 0
-    // ]);
+    Stok_tokocilacap::create([
+        'produk_id' => $produk->id,
+        'jumlah' => 0,
+    ]);
+    Stokpesanan_tokocilacap::create([
+        'produk_id' => $produk->id,
+        'jumlah' => 0
+    ]);
 
     return redirect('admin/produk')->with('success', 'Berhasil menambahkan produk');
 }
