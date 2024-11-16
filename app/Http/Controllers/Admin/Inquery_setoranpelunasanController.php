@@ -447,56 +447,37 @@ class Inquery_setoranpelunasanController extends Controller
         ));
     }
 
-    // public function updateStatus(Request $request)
-    // {
-    //     // Ambil id setoran dari request
-    //     $setoran_id = $request->input('id');
-
-    //     // Cari setoran_penjualan berdasarkan id
-    //     $setoran = Setoran_penjualan::find($setoran_id);
-
-    //     if ($setoran) {
-    //         // Update status menjadi 'posting'
-    //         $setoran->status = 'posting';
-    //         $setoran->save();
-
-    //         // Redirect atau response dengan pesan sukses
-    //         return redirect()->route('inquery_setoranpelunasan.index')->with('success', 'Sukses');
-    //     }
-
-    //     // Jika setoran tidak ditemukan
-    //     return redirect()->back()->with('error', 'Setoran tidak ditemukan');
-    // }
+    
     
     public function updateStatus(Request $request)
-{
-    // Ambil id setoran dari request
-    $setoran_id = $request->input('id');
+    {
+        // Ambil id setoran dari request
+        $setoran_id = $request->input('id');
 
-    // Cari setoran_penjualan berdasarkan id
-    $setoran = Setoran_penjualan::find($setoran_id);
+        // Cari setoran_penjualan berdasarkan id
+        $setoran = Setoran_penjualan::find($setoran_id);
 
-    if ($setoran) {
-        // Update status menjadi 'posting'
-        $setoran->status = 'posting';
+        if ($setoran) {
+            // Update status menjadi 'posting'
+            $setoran->status = 'posting';
 
-        // Update nilai nominal_setoran, nominal_setoran2, tanggal_setoran, dan tanggal_setoran2
-        $setoran->plusminus = $request->input('plusminus');
-        $setoran->nominal_setoran = $request->input('nominal_setoran');
-        $setoran->nominal_setoran2 = $request->input('nominal_setoran2');
-        $setoran->tanggal_setoran = $request->input('tanggal_setoran');
-        $setoran->tanggal_setoran2 = $request->input('tanggal_setoran2');
+            // Update nilai nominal_setoran, nominal_setoran2, tanggal_setoran, dan tanggal_setoran2
+            $setoran->plusminus = $request->input('plusminus');
+            $setoran->nominal_setoran = $request->input('nominal_setoran');
+            $setoran->nominal_setoran2 = $request->input('nominal_setoran2');
+            $setoran->tanggal_setoran = $request->input('tanggal_setoran');
+            $setoran->tanggal_setoran2 = $request->input('tanggal_setoran2');
 
-        // Simpan perubahan ke database
-        $setoran->save();
+            // Simpan perubahan ke database
+            $setoran->save();
 
-        // Redirect atau response dengan pesan sukses
-        return redirect()->route('inquery_setoranpelunasan.index')->with('success', 'Sukses');
+            // Redirect atau response dengan pesan sukses
+            return redirect()->route('inquery_setoranpelunasan.index')->with('success', 'Sukses');
+        }
+
+        // Jika setoran tidak ditemukan
+        return redirect()->back()->with('error', 'Setoran tidak ditemukan');
     }
-
-    // Jika setoran tidak ditemukan
-    return redirect()->back()->with('error', 'Setoran tidak ditemukan');
-}
 
     
 

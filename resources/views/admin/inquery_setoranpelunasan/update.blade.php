@@ -66,7 +66,8 @@
                                 </div>
                                 <div class="col-sm-3">
                                     <input readonly type="text" class="form-control" id="penjualan_kotor" name="penjualan_kotor" 
-                                    value="{{ old('penjualan_kotor', $setoranPenjualan->penjualan_kotor) }}">
+                                    value="{{ old('penjualan_kotor', number_format($setoranPenjualan->penjualan_kotor, 0, ',', '.')) }}"
+>
                                 </div>
                                
                                 <div class="col-sm-1">
@@ -85,7 +86,7 @@
                                 </div>                            
                                 <div class="col-sm-3">
                                     <input readonly type="text" class="form-control" id="diskon_penjualan" name="diskon_penjualan"
-                                    value="{{ old('diskon_penjualan', $setoranPenjualan->diskon_penjualan) }}" >
+                                    value="{{ old('diskon_penjualan', number_format($setoranPenjualan->diskon_penjualan, 0, ',', '.')) }}" >
                                 </div>
                                 <div class="col-sm-1">
                                     <button type="button" class="btn btn-success d-none" id="btn_diskon_penjualan">
@@ -107,7 +108,7 @@
                                 </div>                            
                                 <div class="col-sm-3">
                                         <input readonly type="text" class="form-control" id="penjualan_bersih" name="penjualan_bersih"
-                                        value="{{ old('penjualan_bersih', $setoranPenjualan->penjualan_bersih) }}" >
+                                        value="{{ old('penjualan_bersih', number_format($setoranPenjualan->penjualan_bersih, 0, ',', '.')) }}" >
                                 </div>
                                 <div class="col-sm-1">
                                         <button type="button" class="btn btn-success d-none" id="btn_penjualan_bersih">
@@ -124,8 +125,8 @@
                                         <input type="checkbox" class="form-check-input custom-checkbox" id="check_deposit_keluar" onchange="toggleGreenCheck('deposit_keluar')">
                                     </div>                            
                                     <div class="col-sm-3">
-                                        <input readonly type="text" class="form-control" id="deposit_keluar" name="deposit_keluar" 
-                                        value="{{ old('deposit_keluar', $setoranPenjualan->deposit_keluar) }}">
+                                        <input readonly type="text" class="form-control" id="deposit_keluar" name="deposit_keluar"    
+                                        value="{{ old('deposit_keluar', number_format($setoranPenjualan->deposit_keluar, 0, ',', '.')) }}">
                                     </div>
                                     <div class="col-sm-1">
                                         <button type="button" class="btn btn-success d-none" id="btn_deposit_keluar">
@@ -143,7 +144,7 @@
                                     </div>                            
                                     <div class="col-sm-3">
                                         <input readonly type="text" class="form-control" id="deposit_masuk" name="deposit_masuk"
-                                        value="{{ old('deposit_masuk', $setoranPenjualan->deposit_masuk) }}" >
+                                        value="{{ old('deposit_masuk', number_format($setoranPenjualan->deposit_masuk, 0, ',', '.')) }}" >
                                     </div>
                                     <div class="col-sm-1">
                                         <button type="button" class="btn btn-success d-none" id="btn_deposit_masuk">
@@ -165,7 +166,7 @@
                                     </div>                            
                                     <div class="col-sm-3">
                                         <input readonly type="text" class="form-control" id="total_penjualan" name="total_penjualan"
-                                        value="{{ old('total_penjualan', $setoranPenjualan->total_penjualan) }}" >
+                                        value="{{ old('total_penjualan', number_format($setoranPenjualan->total_penjualan, 0, ',', '.')) }}" >
                                     </div>
                                     <div class="col-sm-1">
                                         <button type="button" class="btn btn-success d-none" id="btn_total_penjualan">
@@ -183,7 +184,7 @@
                                     </div>                            
                                     <div class="col-sm-3">
                                         <input readonly type="text" class="form-control" id="mesin_edc" name="mesin_edc"
-                                        value="{{ old('mesin_edc', $setoranPenjualan->mesin_edc) }}" >
+                                        value="{{ old('mesin_edc', number_format($setoranPenjualan->mesin_edc, 0, ',', '.')) }}" >
                                     </div>
                                     <div class="col-sm-1">
                                         <button type="button" class="btn btn-success d-none" id="btn_mesin_edc">
@@ -201,7 +202,8 @@
                                     </div>                            
                                     <div class="col-sm-3">
                                         <input readonly type="text" class="form-control" id="qris" name="qris"
-                                        value="{{ old('qris', $setoranPenjualan->qris) }}" >
+                                        
+                                        value="{{ old('qris', number_format($setoranPenjualan->qris, 0, ',', '.')) }}" >
                                     </div>
                                     <div class="col-sm-1">
                                         <button type="button" class="btn btn-success d-none" id="btn_qris">
@@ -218,8 +220,8 @@
                                         <input type="checkbox" class="form-check-input custom-checkbox" id="check_gobiz" onchange="toggleGreenCheck('gobiz')">
                                     </div>                            
                                     <div class="col-sm-3">
-                                        <input readonly type="text" class="form-control" id="gobiz" name="gobiz" 
-                                        value="{{ old('gobiz', $setoranPenjualan->gobiz) }}">
+                                        <input readonly type="text" class="form-control" id="gobiz" name="gobiz"
+                                        value="{{ old('gobiz', number_format($setoranPenjualan->gobiz, 0, ',', '.')) }}">
                                     </div>
                                     <div class="col-sm-1">
                                         <button type="button" class="btn btn-success d-none" id="btn_gobiz">
@@ -237,7 +239,7 @@
                                     </div>                            
                                     <div class="col-sm-3">
                                         <input readonly type="text" class="form-control" id="transfer" name="transfer"
-                                        value="{{ old('transfer', $setoranPenjualan->transfer) }}" >
+                                        value="{{ old('transfer', number_format($setoranPenjualan->transfer, 0, ',', '.')) }}" >
                                     </div>
                                     <div class="col-sm-1">
                                         <button type="button" class="btn btn-success d-none" id="btn_transfer">
@@ -259,8 +261,8 @@
                                     <input type="checkbox" class="form-check-input custom-checkbox" id="check_total_setoran" onchange="toggleGreenCheck('total_setoran')">
                                 </div>                            
                                 <div class="col-sm-3">
-                                    <input readonly type="text" class="form-control" id="total_setoran" name="total_setoran" 
-                                    value="{{ old('total_setoran', $setoranPenjualan->total_setoran) }}">
+                                    <input readonly type="text" class="form-control" id="total_setoran" name="total_setoran"
+                                    value="{{ old('total_setoran', number_format($setoranPenjualan->total_setoran, 0, ',', '.')) }}">
                                 </div>
                                 <div class="col-sm-1">
                                     <button type="button" class="btn btn-success d-none" id="btn_total_setoran">
@@ -297,7 +299,7 @@
                                 </div>                            
                                 <div class="col-sm-3">
                                     <input type="text" class="form-control" id="nominal_setoran" name="nominal_setoran" 
-                                    value="{{ old('nominal_setoran', $setoranPenjualan->nominal_setoran) }}">
+                                    value="{{ old('nominal_setoran', number_format($setoranPenjualan->nominal_setoran, 0, ',', '.')) }}">
                                 </div>
                                 <div class="col-sm-1">
                                     <button type="button" class="btn btn-success d-none" id="btn_nominal_setoran">
@@ -321,8 +323,8 @@
                                     <input type="checkbox" class="form-check-input custom-checkbox" id="check_nominal_setoran2" onchange="toggleGreenCheck('nominal_setoran2')">
                                 </div>                            
                                 <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="nominal_setoran2" name="nominal_setoran2" 
-                                    value="{{ old('nominal_setoran2', $setoranPenjualan->nominal_setoran2) }}">
+                                    <input type="text" class="form-control" id="nominal_setoran2" name="nominal_setoran2"
+                                    value="{{ old('nominal_setoran2', number_format($setoranPenjualan->nominal_setoran2, 0, ',', '.')) }}">
                                 </div>
                                 <div class="col-sm-1">
                                     <button type="button" class="btn btn-success d-none" id="btn_nominal_setoran2">
@@ -342,7 +344,7 @@
                                 </div>                            
                                 <div class="col-sm-3">
                                     <input type="text" class="form-control" id="plusminus" name="plusminus"
-                                    value="{{ old('plusminus', $setoranPenjualan->plusminus) }}" >
+                                    value="{{ old('plusminus', number_format($setoranPenjualan->plusminus, 0, ',', '.')) }}" >
                                 </div>
                                 <div class="col-sm-1">
                                     <button type="button" class="btn btn-success d-none" id="btn_plusminus">

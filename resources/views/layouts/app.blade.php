@@ -56,6 +56,7 @@
         request()->is('toko_banjaran/pemesanan_produk*') ||
         request()->is('toko_slawi/penjualan_produk*') ||
         request()->is('admin/penjualan_toko*') ||
+        request()->is('admin/inquery_setoranpelunasan*') ||
         request()->is('admin/inquery_fakturekspedisi*') ||
         request()->is('admin/tablememo*') ||
         request()->is('admin/tablefaktur*') ||

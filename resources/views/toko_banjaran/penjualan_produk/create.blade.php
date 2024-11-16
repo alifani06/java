@@ -126,7 +126,6 @@
                                 <textarea placeholder="" type="text" class="form-control" id="alamat" name="alamat">{{ old('alamat') }}</textarea>
                             </div>
                         </div>
-                
                     </div>
                 </div>
                 
@@ -384,6 +383,7 @@
         }
     }
 </script>
+
 
 
 <script>

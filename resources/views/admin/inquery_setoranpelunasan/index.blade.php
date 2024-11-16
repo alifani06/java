@@ -97,13 +97,16 @@
                             </div>
                         </div>
                     </form>
-
+                    @php
+                    $hasNominalSetoran2 = $setoranPenjualans->contains(fn($item) => $item->nominal_setoran2 !== null);
+                    @endphp
+                
                     <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
                         <thead>
-
                             <tr>
                                 <th class="text-center">No</th>
                                 <th>Tanggal Setoran</th> 
+                                <th>Cabang</th>
                                 <th>Penjualan Kotor</th>
                                 <th>Diskon Penjualan</th>
                                 <th>Penjualan Bersih</th>
@@ -115,79 +118,77 @@
                                 <th>Transfer</th>
                                 <th>Qris</th>
                                 <th>Total Setoran</th>
-                                <th>Noiminal Setoran</th>
-                                
-                                @foreach ($setoranPenjualans as $index => $item)
-                                    @if($item->nominal_setoran2 !== null) <!-- Kondisi untuk memeriksa nilai nominal_setoran2 -->
-                                    <th>Noiminal Setoran 2</th>
-                                    @endif
-                                @endforeach
-
+                                <th>Nominal Setoran</th>
+                                @if($hasNominalSetoran2)
+                                    <th>Nominal Setoran 2</th>
+                                @endif
                                 <th>Plus Minus</th>
                                 <th class="text-center" width="20">Opsi</th>
-
                             </tr>
                         </thead>
+                        
                         <tbody>
                             @foreach ($setoranPenjualans as $index => $item)
 
-                            <tr class="dropdown"{{ $item->id }}>
+                            <tr class="dropdown" {{ $item->id }}>
                                 <td class="text-center">{{ $index + 1 }}</td>
-                                <td>{{ $item->tanggal_setoran ? \Carbon\Carbon::parse($item->tanggal_setoran)->format('d-m-Y') : '-' }}</td> <!-- Menampilkan Tanggal item -->
-                                <td>{{ $item->penjualan_kotor }}</td>
-                                <td>{{ $item->diskon_penjualan }}</td>
-                                <td>{{ $item->penjualan_bersih }}</td>
-                                <td>{{ $item->deposit_keluar }}</td>
-                                <td>{{ $item->deposit_masuk }}</td>
-                                <td>{{ $item->total_penjualan }}</td>
-                                <td>{{ $item->mesin_edc ?? '0' }}</td>
-                                <td>{{ $item->gobiz ?? '0' }}</td>
-                                <td>{{ $item->transfer ?? '0' }}</td>
-                                <td>{{ $item->qris ?? '0' }}</td>
-                                <td>{{ $item->total_setoran }}</td>
-                                <td>{{ $item->nominal_setoran }}</td>
-                                
-                                @if($item->nominal_setoran2 !== null) <!-- Kondisi untuk memeriksa nilai nominal_setoran2 -->
-                                <td>{{ $item->nominal_setoran2 }}</td>
+                                <td>{{ $item->tanggal_setoran ? \Carbon\Carbon::parse($item->tanggal_setoran)->format('d-m-Y') : '-' }}</td>
+                                <td>{{ $item->toko->nama_toko }}</td>
+                                <td>{{ number_format($item->penjualan_kotor, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->diskon_penjualan, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->penjualan_bersih, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->deposit_keluar, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->deposit_masuk, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->total_penjualan, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->mesin_edc ?? 0, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->gobiz ?? 0, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->transfer ?? 0, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->qris ?? 0, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->total_setoran, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->nominal_setoran, 0, ',', '.') }}</td>
+                            
+                                @if($item->nominal_setoran2 !== null)
+                                    <td>{{ number_format($item->nominal_setoran2, 0, ',', '.') }}</td>
                                 @endif
-
-                                <td>{{ $item->plusminus }}</td>
-                        
-                                    <td class="text-center">
-                                        @if ($item->status == 'posting')
-                                            <button type="button" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
-                                        @endif
-                                        @if ($item->status == 'unpost')
+                            
+                            
+                                <td>{{ number_format($item->plusminus, 0, ',', '.') }}</td>
+                            
+                                <td class="text-center">
+                                    @if ($item->status == 'posting')
+                                        <button type="button" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    @endif
+                                    @if ($item->status == 'unpost')
                                         <button type="button" class="btn btn-danger btn-sm">
                                             <i class="fas fa-times"></i>
                                         </button>
-                                        @endif
-                                        @if ($item->status == 'approve')
+                                    @endif
+                                    @if ($item->status == 'approve')
                                         <button type="button" class="btn btn-success btn-sm">
                                             <i class="fas fa-check"></i>
                                         </button>
+                                    @endif
+                            
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        @if ($item->status == 'unpost')
+                                            <a class="dropdown-item posting-btn" data-memo-id="{{ $item->id }}">Posting</a>
+                                            <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.print', $item->id) }}" target="_blank">Print</a>
+                                            <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.edit', $item->id) }}">Pelunasan</a>
                                         @endif
-                                     
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            @if ($item->status == 'unpost')
-                                                <a class="dropdown-item posting-btn" data-memo-id="{{ $item->id }}">Posting</a>
-                                                <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.print', $item->id) }}" target="_blank">Print</a>
-                                                <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.edit', $item->id) }}">Pelunasan</a>
-                                            @endif
-                                            @if ($item->status == 'posting')
-                                                <a class="dropdown-item unpost-btn" data-memo-id="{{ $item->id }}">Unpost</a>
-                                                {{-- <a class="dropdown-item approve-btn" data-memo-id="{{ $item->id }}">Approve</a> --}}
-                                                <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.print', $item->id) }}" target="_blank">Print</a>
-                                            @endif
-                                            @if ($item->status == 'approve')
-                                                <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.print', $item->id) }}" target="_blank">Print</a>
-                                            @endif
-                                        </div>
-                                        
-                                    </td>
-                                </tr>
+                                        @if ($item->status == 'posting')
+                                            <a class="dropdown-item unpost-btn" data-memo-id="{{ $item->id }}">Unpost</a>
+                                            {{-- <a class="dropdown-item approve-btn" data-memo-id="{{ $item->id }}">Approve</a> --}}
+                                            <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.print', $item->id) }}" target="_blank">Print</a>
+                                        @endif
+                                        @if ($item->status == 'approve')
+                                            <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.print', $item->id) }}" target="_blank">Print</a>
+                                        @endif
+                                    </div>
+                                </td>
+                            </tr>
+                            
                             @endforeach
                         </tbody>
                     </table>
