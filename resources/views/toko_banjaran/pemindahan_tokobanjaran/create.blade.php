@@ -113,6 +113,10 @@
                                     </div>
                                 </table>
                             </div>
+                             
+                        <div class="form-group text-right">
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
                         </div>
 
                         <div class="modal fade" id="tableProduk" data-backdrop="static">
@@ -156,10 +160,7 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="form-group text-right">
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                        </div>
+                       
                     </form>
                     
              

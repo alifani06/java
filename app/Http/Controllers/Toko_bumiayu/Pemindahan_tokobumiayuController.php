@@ -45,6 +45,8 @@ use App\Imports\ProdukImport;
 use App\Models\Pemindahan_tokobanjaran;
 use App\Models\Pemindahan_tokobumiayu;
 use App\Models\Pemindahan_tokobumiayumasuk;
+use App\Models\Pemindahan_tokocilacapmasuk;
+use App\Models\Pemindahan_tokopemalangmasuk;
 use App\Models\Retur_barnagjadi;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -70,6 +72,125 @@ public function create()
     return view('toko_bumiayu.pemindahan_tokobumiayu.create', compact('produks', 'tokos'));
 }
 
+
+// public function store(Request $request)
+// {
+//     $request->validate([
+//         'produk_id' => 'required|array',
+//         'produk_id.*' => 'exists:produks,id',
+//         'jumlah' => 'required|array',
+//         'jumlah.*' => 'integer|min:1',
+//         'keterangan' => 'required|array',
+//         'keterangan.*' => 'string',
+//     ]);
+
+//     $kode = $this->kode();
+//     $produk_ids = $request->input('produk_id');
+//     $jumlahs = $request->input('jumlah');
+//     $keterangans = $request->input('keterangan');
+
+//     foreach ($produk_ids as $index => $produk_id) {
+//         // Simpan ke tabel pemindahan_tokoslawi
+//         Pemindahan_tokobumiayu::create([
+//             'kode_pemindahan' => $kode,
+//             'produk_id' => $produk_id,
+//             'toko_id' => '5',  // Ganti sesuai dengan toko tujuan
+//             'status' => 'unpost',
+//             'jumlah' => $jumlahs[$index],
+//             'keterangan' => $keterangans[$index],
+//             'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//         ]);
+
+//         // Simpan ke tabel pemindahan_barangjadis
+//         Pemindahan_barangjadi::create([
+//             'kode_pemindahan' => $kode,
+//             'produk_id' => $produk_id,
+//             'toko_id' => '5',  // Ganti sesuai dengan toko tujuan
+//             'status' => 'unpost',
+//             'jumlah' => $jumlahs[$index],
+//             'keterangan' => $keterangans[$index],
+//             'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//         ]);
+
+//         // Simpan ke tabel berdasarkan keterangan
+//         switch ($keterangans[$index]) {
+//             case 'BANJARAN':
+//                 Pemindahan_tokobanjaranmasuk::create([
+//                     'kode_pemindahan' => $kode,
+//                     'produk_id' => $produk_id,
+//                     'toko_id' => '1',  // Ganti sesuai dengan ID toko BANJARAN
+//                     'status' => 'unpost',
+//                     'jumlah' => $jumlahs[$index],
+//                     'keterangan' => $keterangans[$index],
+//                     'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//                 ]);
+//                 break;
+//             case 'TEGAL':
+//                 Pemindahan_tokotegalmasuk::create([
+//                     'kode_pemindahan' => $kode,
+//                     'produk_id' => $produk_id,
+//                     'toko_id' => '1',  // Ganti sesuai dengan ID toko TEGAL
+//                     'status' => 'unpost',
+//                     'jumlah' => $jumlahs[$index],
+//                     'keterangan' => $keterangans[$index],
+//                     'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//                 ]);
+//                 break;
+//                 case 'SLAWI':
+//                     Pemindahan_tokoslawimasuk::create([
+//                         'kode_pemindahan' => $kode,
+//                         'produk_id' => $produk_id,
+//                         'toko_id' => '1',  // Ganti sesuai dengan ID toko TEGAL
+//                         'status' => 'unpost',
+//                         'jumlah' => $jumlahs[$index],
+//                         'keterangan' => $keterangans[$index],
+//                         'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//                     ]);
+//                     break;
+//                 case 'BUMIAYU':
+//                     Pemindahan_tokobumiayumasuk::create([
+//                         'kode_pemindahan' => $kode,
+//                         'produk_id' => $produk_id,
+//                         'toko_id' => '5',  // Ganti sesuai dengan ID toko TEGAL
+//                         'status' => 'unpost',
+//                         'jumlah' => $jumlahs[$index],
+//                         'keterangan' => $keterangans[$index],
+//                         'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//                     ]);
+//                     break;
+//             // Tambahkan kasus lain jika ada toko lain yang perlu ditangani
+//             default:
+//                 // Tidak melakukan apa-apa jika keterangan tidak cocok
+//                 break;
+//         }
+//     }
+
+//     return redirect()->route('pemindahan_tokobumiayu.index')->with('success', 'Data pemindahan barang berhasil disimpan.');
+// }
+
+// public function kode()
+// {
+//     $prefix = 'OBMY';
+//     $year = date('y'); // Dua digit terakhir dari tahun
+//     $date = date('dm'); // Format bulan dan hari: MMDD
+
+//     // Mengambil kode retur terakhir yang dibuat pada hari yang sama
+//     $lastBarang = Pemindahan_tokobumiayu::whereDate('tanggal_input', Carbon::today())
+//                                   ->orderBy('kode_pemindahan', 'desc')
+//                                   ->first();
+
+//     if (!$lastBarang) {
+//         $num = 1;
+//     } else {
+//         $lastCode = $lastBarang->kode_pemindahan;
+//         $lastNum = (int) substr($lastCode, strlen($prefix . $date . $year )); // Mengambil urutan terakhir
+//         $num = $lastNum + 1;
+//     }
+
+//     $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
+//     $newCode = $prefix . $date . $year . $formattedNum;
+//     return $newCode;
+// }
 
 public function store(Request $request)
 {
@@ -116,7 +237,7 @@ public function store(Request $request)
                 Pemindahan_tokobanjaranmasuk::create([
                     'kode_pemindahan' => $kode,
                     'produk_id' => $produk_id,
-                    'toko_id' => '1',  // Ganti sesuai dengan ID toko BANJARAN
+                    'toko_id' => '5',  // Ganti sesuai dengan ID toko BANJARAN
                     'status' => 'unpost',
                     'jumlah' => $jumlahs[$index],
                     'keterangan' => $keterangans[$index],
@@ -127,7 +248,7 @@ public function store(Request $request)
                 Pemindahan_tokotegalmasuk::create([
                     'kode_pemindahan' => $kode,
                     'produk_id' => $produk_id,
-                    'toko_id' => '1',  // Ganti sesuai dengan ID toko TEGAL
+                    'toko_id' => '5',  // Ganti sesuai dengan ID toko TEGAL
                     'status' => 'unpost',
                     'jumlah' => $jumlahs[$index],
                     'keterangan' => $keterangans[$index],
@@ -138,17 +259,6 @@ public function store(Request $request)
                     Pemindahan_tokoslawimasuk::create([
                         'kode_pemindahan' => $kode,
                         'produk_id' => $produk_id,
-                        'toko_id' => '1',  // Ganti sesuai dengan ID toko TEGAL
-                        'status' => 'unpost',
-                        'jumlah' => $jumlahs[$index],
-                        'keterangan' => $keterangans[$index],
-                        'tanggal_input' => Carbon::now('Asia/Jakarta'),
-                    ]);
-                    break;
-                case 'BUMIAYU':
-                    Pemindahan_tokobumiayumasuk::create([
-                        'kode_pemindahan' => $kode,
-                        'produk_id' => $produk_id,
                         'toko_id' => '5',  // Ganti sesuai dengan ID toko TEGAL
                         'status' => 'unpost',
                         'jumlah' => $jumlahs[$index],
@@ -156,8 +266,41 @@ public function store(Request $request)
                         'tanggal_input' => Carbon::now('Asia/Jakarta'),
                     ]);
                     break;
-            // Tambahkan kasus lain jika ada toko lain yang perlu ditangani
-            default:
+                    case 'PEMALANG':
+                        Pemindahan_tokopemalangmasuk::create([
+                            'kode_pemindahan' => $kode,
+                            'produk_id' => $produk_id,
+                            'toko_id' => '5',  // Ganti sesuai dengan ID toko TEGAL
+                            'status' => 'unpost',
+                            'jumlah' => $jumlahs[$index],
+                            'keterangan' => $keterangans[$index],
+                            'tanggal_input' => Carbon::now('Asia/Jakarta'),
+                        ]);
+                    break;
+                    case 'BUMMIAYU':
+                        Pemindahan_tokobumiayumasuk::create([
+                            'kode_pemindahan' => $kode,
+                            'produk_id' => $produk_id,
+                            'toko_id' => '5',  // Ganti sesuai dengan ID toko TEGAL
+                            'status' => 'unpost',
+                            'jumlah' => $jumlahs[$index],
+                            'keterangan' => $keterangans[$index],
+                            'tanggal_input' => Carbon::now('Asia/Jakarta'),
+                        ]);
+                    break;
+                    case 'CILACAP':
+                        Pemindahan_tokocilacapmasuk::create([
+                            'kode_pemindahan' => $kode,
+                            'produk_id' => $produk_id,
+                            'toko_id' => '5',  // Ganti sesuai dengan ID toko TEGAL
+                            'status' => 'unpost',
+                            'jumlah' => $jumlahs[$index],
+                            'keterangan' => $keterangans[$index],
+                            'tanggal_input' => Carbon::now('Asia/Jakarta'),
+                        ]);
+                    break;            
+                        
+                        default:
                 // Tidak melakukan apa-apa jika keterangan tidak cocok
                 break;
         }
@@ -166,11 +309,9 @@ public function store(Request $request)
     return redirect()->route('pemindahan_tokobumiayu.index')->with('success', 'Data pemindahan barang berhasil disimpan.');
 }
 
-
-
 public function kode()
 {
-    $prefix = 'OBMY';
+    $prefix = 'FOF';
     $year = date('y'); // Dua digit terakhir dari tahun
     $date = date('dm'); // Format bulan dan hari: MMDD
 
@@ -183,12 +324,12 @@ public function kode()
         $num = 1;
     } else {
         $lastCode = $lastBarang->kode_pemindahan;
-        $lastNum = (int) substr($lastCode, strlen($prefix . $date . $year )); // Mengambil urutan terakhir
+        $lastNum = (int) substr($lastCode, strlen($prefix  . $date . $year)); // Mengambil urutan terakhir
         $num = $lastNum + 1;
     }
 
     $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
-    $newCode = $prefix . $date . $year . $formattedNum;
+    $newCode = $prefix  . $date . $year . $formattedNum;
     return $newCode;
 }
 

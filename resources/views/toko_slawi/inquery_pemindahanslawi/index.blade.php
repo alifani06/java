@@ -101,8 +101,8 @@
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
-                                <th>Kode Pemindahan</th>
-                                <th>Tanggal Pengiriman</th>
+                                <th>No. Pemindahan</th>
+                                <th>Tanggal Oper</th>
                                 <th>Tanggal Terima</th>
                                 <th>Dari</th>
                                 <th>Ke</th>
@@ -140,7 +140,7 @@
                                         </button>
                                     @endif
                 
-                                    @if($firstItem->toko_id == 1)
+                                    @if($firstItem->toko_id == 3)
                                     <button type="button" class="btn btn-info btn-sm">
                                         <i class="fas fa-arrow-right"></i>
                                     </button>
@@ -150,7 +150,7 @@
                                     </button>
                                 @endif
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        @if ($firstItem->status == 'unpost' && $firstItem->toko_id != 1)
+                                        @if ($firstItem->status == 'unpost' && $firstItem->toko_id != 3)
                                             <a class="dropdown-item posting-btn" data-memo-id="{{ $firstItem->id }}">Posting</a>
                                         @endif
                 

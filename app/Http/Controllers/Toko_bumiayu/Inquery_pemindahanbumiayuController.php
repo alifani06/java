@@ -45,8 +45,12 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Pemindahan_tokobumiayu;
 use App\Models\Pemindahan_tokobumiayumasuk;
+use App\Models\Pemindahan_tokocilacap;
+use App\Models\Pemindahan_tokopemalang;
 use App\Models\Retur_barnagjadi;
 use App\Models\Stok_tokobumiayu;
+use App\Models\Stok_tokocilacap;
+use App\Models\Stok_tokopemalang;
 use Maatwebsite\Excel\Facades\Excel;
 
 class Inquery_pemindahanbumiayuController extends Controller{
@@ -100,121 +104,284 @@ class Inquery_pemindahanbumiayuController extends Controller{
 
 
 
-public function posting_pemindahan($id)
-{
-    // Temukan data pemindahan berdasarkan ID
-    $pemindahan = Pemindahan_tokobumiayumasuk::findOrFail($id);
+// public function posting_pemindahan($id)
+// {
+//     // Temukan data pemindahan berdasarkan ID
+//     $pemindahan = Pemindahan_tokobumiayumasuk::findOrFail($id);
 
-    // Cek apakah status saat ini adalah 'unpost'
-    if ($pemindahan->status == 'unpost') {
-        // Update status dan tanggal terima pada tabel pemindahan_tokoslawi
-        $pemindahan->update([
-            'status' => 'posting',
-            'tanggal_terima' => Carbon::now('Asia/Jakarta'),
-        ]);
+//     // Cek apakah status saat ini adalah 'unpost'
+//     if ($pemindahan->status == 'unpost') {
+//         // Update status dan tanggal terima pada tabel pemindahan_tokoslawi
+//         $pemindahan->update([
+//             'status' => 'posting',
+//             'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+//         ]);
     
-        // Update status dan tanggal terima pada tabel pemindahan_barangjadis
-        Pemindahan_barangjadi::where('kode_pemindahan', $pemindahan->kode_pemindahan)
-            ->update([
-                'status' => 'posting',
-                'tanggal_terima' => Carbon::now('Asia/Jakarta'),
-            ]);
+//         // Update status dan tanggal terima pada tabel pemindahan_barangjadis
+//         Pemindahan_barangjadi::where('kode_pemindahan', $pemindahan->kode_pemindahan)
+//             ->update([
+//                 'status' => 'posting',
+//                 'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+//             ]);
 
-        // Update status dan tanggal terima pada tabel pemindahan_tokoslawimasuks
-        Pemindahan_tokobumiayumasuk::where('kode_pemindahan', $pemindahan->kode_pemindahan)
-            ->update([
-                'status' => 'posting',
-                'tanggal_terima' => Carbon::now('Asia/Jakarta'),
-            ]);
+//         // Update status dan tanggal terima pada tabel pemindahan_tokoslawimasuks
+//         Pemindahan_tokobumiayumasuk::where('kode_pemindahan', $pemindahan->kode_pemindahan)
+//             ->update([
+//                 'status' => 'posting',
+//                 'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+//             ]);
 
-        // Logika tambahan berdasarkan toko_id
-        switch ($pemindahan->toko_id) {
-            case 1: // Jika toko_id = 1, update pemindahan_tokobanjaran dan stok_tokobanjaran
-                Pemindahan_tokobanjaran::where('kode_pemindahan', $pemindahan->kode_pemindahan)
-                    ->update([
-                        'status' => 'posting',
-                        'tanggal_terima' => Carbon::now('Asia/Jakarta'),
-                    ]);
+//         // Logika tambahan berdasarkan toko_id
+//         switch ($pemindahan->toko_id) {
+//             case 1: // Jika toko_id = 1, update pemindahan_tokobanjaran dan stok_tokobanjaran
+//                 Pemindahan_tokobanjaran::where('kode_pemindahan', $pemindahan->kode_pemindahan)
+//                     ->update([
+//                         'status' => 'posting',
+//                         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+//                     ]);
 
-                $stok_banjaran = Stok_tokobanjaran::where('produk_id', $pemindahan->produk_id)
-                    ->where('jumlah', '>', 0)
-                    ->orderBy('jumlah', 'asc')
-                    ->get();
+//                 $stok_banjaran = Stok_tokobanjaran::where('produk_id', $pemindahan->produk_id)
+//                     ->where('jumlah', '>', 0)
+//                     ->orderBy('jumlah', 'asc')
+//                     ->get();
 
-                $this->kurangiStok($stok_banjaran, $pemindahan->jumlah);
-                break;
+//                 $this->kurangiStok($stok_banjaran, $pemindahan->jumlah);
+//                 break;
 
-            case 2: // Jika toko_id = 2, update pemindahan_tokotegal dan stok_tokotegal
-                Pemindahan_tokotegal::where('kode_pemindahan', $pemindahan->kode_pemindahan)
-                    ->update([
-                        'status' => 'posting',
-                        'tanggal_terima' => Carbon::now('Asia/Jakarta'),
-                    ]);
+//             case 2: // Jika toko_id = 2, update pemindahan_tokotegal dan stok_tokotegal
+//                 Pemindahan_tokotegal::where('kode_pemindahan', $pemindahan->kode_pemindahan)
+//                     ->update([
+//                         'status' => 'posting',
+//                         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+//                     ]);
 
-                $stok_tegal = Stok_tokotegal::where('produk_id', $pemindahan->produk_id)
-                    ->where('jumlah', '>', 0)
-                    ->orderBy('jumlah', 'asc')
-                    ->get();
+//                 $stok_tegal = Stok_tokotegal::where('produk_id', $pemindahan->produk_id)
+//                     ->where('jumlah', '>', 0)
+//                     ->orderBy('jumlah', 'asc')
+//                     ->get();
 
-                $this->kurangiStok($stok_tegal, $pemindahan->jumlah);
-                break;
+//                 $this->kurangiStok($stok_tegal, $pemindahan->jumlah);
+//                 break;
 
-            case 3: // Jika toko_id = 3, update pemindahan_tokoslawi
-                Pemindahan_tokoslawi::where('kode_pemindahan', $pemindahan->kode_pemindahan)
-                    ->update([
-                        'status' => 'posting',
-                        'tanggal_terima' => Carbon::now('Asia/Jakarta'),
-                    ]);
+//             case 3: // Jika toko_id = 3, update pemindahan_tokoslawi
+//                 Pemindahan_tokoslawi::where('kode_pemindahan', $pemindahan->kode_pemindahan)
+//                     ->update([
+//                         'status' => 'posting',
+//                         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+//                     ]);
                 
+//                     $stok_slawi = Stok_tokoslawi::where('produk_id', $pemindahan->produk_id)
+//                     ->where('jumlah', '>', 0)
+//                     ->orderBy('jumlah', 'asc')
+//                     ->get();
+
+//                 $this->kurangiStok($stok_slawi, $pemindahan->jumlah);
+//                 break;
+//             case 4: // Jika toko_id = 3, update pemindahan_tokoslawi
+//                 Pemindahan_tokobumiayu::where('kode_pemindahan', $pemindahan->kode_pemindahan)
+//                     ->update([
+//                         'status' => 'posting',
+//                         'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+//                     ]);
+                
+//                     $stok_slawi = Stok_tokobumiayu::where('produk_id', $pemindahan->produk_id)
+//                     ->where('jumlah', '>', 0)
+//                     ->orderBy('jumlah', 'asc')
+//                     ->get();
+
+//                 $this->kurangiStok($stok_slawi, $pemindahan->jumlah);
+//                 break;
+
+//             // Tambahkan case tambahan jika ada toko lain yang perlu diupdate
+//         }
+
+//         return redirect()->route('pemindahan_tokoumiayu.index')->with('success', 'Status berhasil diubah menjadi posting, stok telah diperbarui, dan tanggal terima telah disimpan.');
+//     }
+
+//     return redirect()->route('pemindahan_tokobumiayu.index')->with('error', 'Status pemindahan tidak valid untuk diubah.');
+// }
+
+// private function kurangiStok($stok_items, $jumlah_yang_dibutuhkan)
+// {
+//     foreach ($stok_items as $stok) {
+//         if ($jumlah_yang_dibutuhkan <= 0) {
+//             break;
+//         }
+
+//         if ($stok->jumlah >= $jumlah_yang_dibutuhkan) {
+//             $stok->jumlah -= $jumlah_yang_dibutuhkan;
+//             $stok->save();
+//             $jumlah_yang_dibutuhkan = 0;
+//         } else {
+//             $jumlah_yang_dibutuhkan -= $stok->jumlah;
+//             $stok->jumlah = 0;
+//             $stok->save();
+//         }
+//     }
+// }
+
+    public function posting_pemindahan($id)
+    {
+        // Temukan data pemindahan berdasarkan ID
+        $pemindahan = Pemindahan_tokobumiayumasuk::findOrFail($id);
+
+        // Cek apakah status saat ini adalah 'unpost'
+        if ($pemindahan->status == 'unpost') {
+            // Update status dan tanggal terima pada tabel pemindahan_tokoslawimasuk
+            $pemindahan->update([
+                'status' => 'posting',
+                'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+            ]);
+
+            // Update status dan tanggal terima pada tabel pemindahan_barangjadis
+            Pemindahan_barangjadi::where('kode_pemindahan', $pemindahan->kode_pemindahan)
+                ->update([
+                    'status' => 'posting',
+                    'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+                ]);
+
+            // Update status dan tanggal terima pada tabel pemindahan_tokoslawimasuks
+            Pemindahan_tokobumiayumasuk::where('kode_pemindahan', $pemindahan->kode_pemindahan)
+                ->update([
+                    'status' => 'posting',
+                    'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+                ]);
+                
+                $stok_slawi = Stok_tokobumiayu::where('produk_id', $pemindahan->produk_id)->first();
+
+                if ($stok_slawi) {
+                    // Jika stok sudah ada, tambahkan jumlah
+                    $stok_slawi->jumlah += $pemindahan->jumlah;
+                    $stok_slawi->save();
+                } else {
+                    // Jika stok belum ada, buat entri baru
+                    Stok_tokobumiayu::create([
+                        'produk_id' => $pemindahan->produk_id,
+                        'jumlah' => $pemindahan->jumlah,
+                    ]);
+                }
+
+            // Logika tambahan berdasarkan toko_id
+            switch ($pemindahan->toko_id) {
+                case 1: // Jika toko_id = 1, update pemindahan_tokobanjaran dan stok_tokobanjaran
+                    Pemindahan_tokobanjaran::where('kode_pemindahan', $pemindahan->kode_pemindahan)
+                        ->update([
+                            'status' => 'posting',
+                            'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+                        ]);
+
+                    $stok_banjaran = Stok_tokobanjaran::where('produk_id', $pemindahan->produk_id)
+                        ->where('jumlah', '>', 0)
+                        ->orderBy('jumlah', 'asc')
+                        ->get();
+
+                    $this->kurangiStok($stok_banjaran, $pemindahan->jumlah);
+                    break;
+
+                case 2: // Jika toko_id = 2, update pemindahan_tokotegal dan stok_tokotegal
+                    Pemindahan_tokotegal::where('kode_pemindahan', $pemindahan->kode_pemindahan)
+                        ->update([
+                            'status' => 'posting',
+                            'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+                        ]);
+
+                    $stok_tegal = Stok_tokotegal::where('produk_id', $pemindahan->produk_id)
+                        ->where('jumlah', '>', 0)
+                        ->orderBy('jumlah', 'asc')
+                        ->get();
+
+                    $this->kurangiStok($stok_tegal, $pemindahan->jumlah);
+                    break;
+
+                case 3: // Jika toko_id = 3, update pemindahan_tokoslawi dan tambahkan stok pada stok_tokoslawi
+                    Pemindahan_tokoslawi::where('kode_pemindahan', $pemindahan->kode_pemindahan)
+                        ->update([
+                            'status' => 'posting',
+                            'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+                        ]);
+
+                    // Tambahkan stok pada tabel stok_tokoslawi
                     $stok_slawi = Stok_tokoslawi::where('produk_id', $pemindahan->produk_id)
-                    ->where('jumlah', '>', 0)
-                    ->orderBy('jumlah', 'asc')
-                    ->get();
+                        ->where('jumlah', '>', 0)
+                        ->orderBy('jumlah', 'asc')
+                        ->get();
 
-                $this->kurangiStok($stok_slawi, $pemindahan->jumlah);
-                break;
-            case 4: // Jika toko_id = 3, update pemindahan_tokoslawi
-                Pemindahan_tokobumiayu::where('kode_pemindahan', $pemindahan->kode_pemindahan)
-                    ->update([
-                        'status' => 'posting',
-                        'tanggal_terima' => Carbon::now('Asia/Jakarta'),
-                    ]);
+                    $this->kurangiStok($stok_slawi, $pemindahan->jumlah);
+                    break;
+
+                case 4: // Jika toko_id = 3, update pemindahan_tokoslawi dan tambahkan stok pada stok_tokoslawi
+                        Pemindahan_tokopemalang::where('kode_pemindahan', $pemindahan->kode_pemindahan)
+                            ->update([
+                                'status' => 'posting',
+                                'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+                            ]);
+        
+                        // Tambahkan stok pada tabel stok_tokoslawi
+                        $stok_pemalang = Stok_tokopemalang::where('produk_id', $pemindahan->produk_id)
+                            ->where('jumlah', '>', 0)
+                            ->orderBy('jumlah', 'asc')
+                            ->get();
+        
+                        $this->kurangiStok($stok_pemalang, $pemindahan->jumlah);
+                        break;
+
+                        case 5: // Jika toko_id = 3, update pemindahan_tokoslawi dan tambahkan stok pada stok_tokoslawi
+                            Pemindahan_tokobumiayu::where('kode_pemindahan', $pemindahan->kode_pemindahan)
+                                ->update([
+                                    'status' => 'posting',
+                                    'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+                                ]);
+            
+                            // Tambahkan stok pada tabel stok_tokoslawi
+                            $stok_bumiayu = Stok_tokobumiayu::where('produk_id', $pemindahan->produk_id)
+                                ->where('jumlah', '>', 0)
+                                ->orderBy('jumlah', 'asc')
+                                ->get();
+            
+                            $this->kurangiStok($stok_bumiayu, $pemindahan->jumlah);
+                            break;
+
+                            case 6: // Jika toko_id = 3, update pemindahan_tokoslawi dan tambahkan stok pada stok_tokoslawi
+                                Pemindahan_tokocilacap::where('kode_pemindahan', $pemindahan->kode_pemindahan)
+                                    ->update([
+                                        'status' => 'posting',
+                                        'tanggal_terima' => Carbon::now('Asia/Jakarta'),
+                                    ]);
                 
-                    $stok_slawi = Stok_tokobumiayu::where('produk_id', $pemindahan->produk_id)
-                    ->where('jumlah', '>', 0)
-                    ->orderBy('jumlah', 'asc')
-                    ->get();
+                                // Tambahkan stok pada tabel stok_tokoslawi
+                                $stok_cilacap = Stok_tokocilacap::where('produk_id', $pemindahan->produk_id)
+                                    ->where('jumlah', '>', 0)
+                                    ->orderBy('jumlah', 'asc')
+                                    ->get();
+                
+                                $this->kurangiStok($stok_cilacap, $pemindahan->jumlah);
+                                break;
+                    }
 
-                $this->kurangiStok($stok_slawi, $pemindahan->jumlah);
+            return redirect()->route('pemindahan_tokobumiayu.index')->with('success', 'Status berhasil diubah menjadi posting, stok telah diperbarui, dan tanggal terima telah disimpan.');
+        }
+
+        return redirect()->route('pemindahan_tokobumiayu.index')->with('error', 'Status pemindahan tidak valid untuk diubah.');
+    }
+
+    private function kurangiStok($stok_items, $jumlah_yang_dibutuhkan)
+    {
+        foreach ($stok_items as $stok) {
+            if ($jumlah_yang_dibutuhkan <= 0) {
                 break;
+            }
 
-            // Tambahkan case tambahan jika ada toko lain yang perlu diupdate
-        }
-
-        return redirect()->route('pemindahan_tokoumiayu.index')->with('success', 'Status berhasil diubah menjadi posting, stok telah diperbarui, dan tanggal terima telah disimpan.');
-    }
-
-    return redirect()->route('pemindahan_tokobumiayu.index')->with('error', 'Status pemindahan tidak valid untuk diubah.');
-}
-
-private function kurangiStok($stok_items, $jumlah_yang_dibutuhkan)
-{
-    foreach ($stok_items as $stok) {
-        if ($jumlah_yang_dibutuhkan <= 0) {
-            break;
-        }
-
-        if ($stok->jumlah >= $jumlah_yang_dibutuhkan) {
-            $stok->jumlah -= $jumlah_yang_dibutuhkan;
-            $stok->save();
-            $jumlah_yang_dibutuhkan = 0;
-        } else {
-            $jumlah_yang_dibutuhkan -= $stok->jumlah;
-            $stok->jumlah = 0;
-            $stok->save();
+            if ($stok->jumlah >= $jumlah_yang_dibutuhkan) {
+                $stok->jumlah -= $jumlah_yang_dibutuhkan;
+                $stok->save();
+                $jumlah_yang_dibutuhkan = 0;
+            } else {
+                $jumlah_yang_dibutuhkan -= $stok->jumlah;
+                $stok->jumlah = 0;
+                $stok->save();
+            }
         }
     }
-}
 
 
 public function show($id)
