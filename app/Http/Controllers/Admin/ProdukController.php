@@ -25,10 +25,12 @@ use App\Imports\ProdukImport;
 use App\Models\Stok_tokobumiayu;
 use App\Models\Stok_tokocilacap;
 use App\Models\Stok_tokopemalang;
+use App\Models\Stok_tokoslawi;
 use App\Models\Stok_tokotegal;
 use App\Models\Stokpesanan_tokobumiayu;
 use App\Models\Stokpesanan_tokocilacap;
 use App\Models\Stokpesanan_tokopemalang;
+use App\Models\Stokpesanan_tokoslawi;
 use App\Models\Stokpesanan_tokotegal;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
@@ -219,6 +221,15 @@ class ProdukController extends Controller
     ]);
 
     Stokpesanan_tokotegal::create([
+        'produk_id' => $produk->id,
+        'jumlah' => 0
+    ]);
+    Stok_tokoslawi::create([
+        'produk_id' => $produk->id,
+        'jumlah' => 0,
+    ]);
+
+    Stokpesanan_tokoslawi::create([
         'produk_id' => $produk->id,
         'jumlah' => 0
     ]);
