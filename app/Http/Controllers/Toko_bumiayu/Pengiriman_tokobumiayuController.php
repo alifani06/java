@@ -420,56 +420,84 @@ class Pengiriman_tokobumiayuController extends Controller{
         return response()->json(['success' => 'Berhasil mengubah status dan memperbarui stok.']);
     }
     
-
-
-
-
-public function unpost_pengiriman($id)
-        {
-            // Ambil data stok_tokoslawi berdasarkan ID
-    $stok = Stok_tokobumiayu::where('id', $id)->first();
-
-    // Pastikan data ditemukan
-    if (!$stok) {
-        return response()->json(['error' => 'Data tidak ditemukan.'], 404);
-    }
-
-    // Ambil kode_pengiriman dari stok yang diambil
-    $kodePengiriman = $stok->kode_pengiriman;
-    
-    // Ambil pengiriman_barangjadi_id dari stok yang diambil
-    $pengirimanId = $stok->pengiriman_barangjadi_id;
-
-    // Update status untuk semua stok_tokoslawi dengan kode_pengiriman yang sama
-    Stok_tokobumiayu::where('kode_pengiriman', $kodePengiriman)->update([
-        'status' => 'unpost'
-    ]);
-
-    // Update status untuk pengiriman_barangjadi berdasarkan pengiriman_barangjadi_id
-    Pengiriman_barangjadi::where('id', $pengirimanId)->update([
-        'status' => 'unpost'
-    ]);
-
-    return response()->json(['success' => 'Berhasil mengubah status di stok_tokoslawi dan pengiriman_barangjadi.']);
-        }
-
-   
-
-    public function unpost(Request $request, $id)
+    public function unpost_pengiriman($id)
     {
-        $permintaan = Detailpermintaanproduk::find($id);
-    
-        if ($permintaan) {
-            $permintaan->status = 'posting';
-            $permintaan->save();
-    
-            return response()->json(['success' => true]);
+        // Ambil data stok_tokobanjaran berdasarkan ID
+        $stok = Pengiriman_tokobumiayu::where('id', $id)->first();
+
+        // Pastikan data ditemukan
+        if (!$stok) {
+            return response()->json(['error' => 'Data tidak ditemukan.'], 404);
         }
-    
-        return response()->json(['success' => false], 404);
+
+        // Ambil kode_pengiriman dan pengiriman_barangjadi_id dari stok yang diambil
+        $kodePengiriman = $stok->kode_pengiriman;
+        $pengirimanId = $stok->pengiriman_barangjadi_id;
+
+        // Ambil pengiriman terkait dari tabel pengiriman_barangjadi
+        $pengiriman = Pengiriman_barangjadi::find($pengirimanId);
+
+        // Pastikan data pengiriman ditemukan
+        if (!$pengiriman) {
+            return response()->json(['error' => 'Data pengiriman tidak ditemukan.'], 404);
+        }
+
+        // Ambil semua produk terkait dengan pengiriman
+        $productsInPengiriman = Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->get();
+
+        foreach ($productsInPengiriman as $pengirimanItem) {
+            // Ambil stok yang ada di stok_tokobanjaran untuk produk ini
+            $stokToko = Stok_tokobumiayu::where('produk_id', $pengirimanItem->produk_id)->first();
+            
+            if ($stokToko) {
+                // Mengurangi jumlah pada stok_tokobanjaran sesuai jumlah pengiriman
+                $stokToko->jumlah -= $pengirimanItem->jumlah;
+
+                // Jika jumlah stok menjadi negatif, kembalikan error
+                if ($stokToko->jumlah < 0) {
+                    return response()->json(['error' => 'Stok tidak cukup untuk mengurangi jumlah produk dengan ID: ' . $pengirimanItem->produk_id], 400);
+                }
+
+                $stokToko->save();
+            }
+
+            // Ambil semua detail stok barang jadi untuk produk ini, urutkan dari yang paling baru
+            $detailStoks = Detail_stokbarangjadi::where('produk_id', $pengirimanItem->produk_id)
+                            ->orderBy('created_at', 'desc') // Menggunakan stok yang paling baru dahulu (LIFO)
+                            ->get();
+
+            $remaining = $pengirimanItem->jumlah;
+
+            foreach ($detailStoks as $detailStok) {
+                if ($remaining > 0) {
+                    $detailStok->stok += $remaining; // Mengembalikan jumlah ke detail_stokbarangjadi
+                    $detailStok->save();
+                    $remaining = 0; // Pengembalian selesai
+                } else {
+                    break; // Jika tidak ada sisa pengembalian, keluar dari loop
+                }
+            }
+        }
+
+        // Update status untuk semua stok_tokobanjaran dengan kode_pengiriman yang sama
+        Pengiriman_tokobumiayu::where('kode_pengiriman', $kodePengiriman)->update([
+            'status' => 'unpost',
+            'tanggal_terima' => null, // Reset tanggal terima
+        ]);
+
+        // Update status untuk pengiriman_barangjadi
+        Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->update([
+            'status' => 'unpost',
+            'tanggal_terima' => null, // Reset tanggal terima
+        ]);
+
+        return response()->json(['success' => 'Berhasil mengubah status menjadi unpost dan memperbarui stok.']);
     }
-    
-    
+
+
+
+
+
 
     public function edit($id)
     {
