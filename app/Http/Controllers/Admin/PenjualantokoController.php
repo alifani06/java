@@ -37,28 +37,25 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
-class PenjualantokoController extends Controller
-{
+class PenjualantokoController extends Controller{
+
     public function index(Request $request)
-{
-    // Ambil parameter tanggal dari request
-    $tanggalPenjualan = $request->input('tanggal_penjualan');
-    $tanggalAkhir = $request->input('tanggal_akhir');
+    {
+        // Ambil parameter tanggal dari request
+        $tanggalPenjualan = $request->input('tanggal_penjualan');
+        $tanggalAkhir = $request->input('tanggal_akhir');
 
-    // Ambil semua data setoran penjualan dengan filter tanggal (jika ada)
-    $setoranPenjualans = Setoran_penjualan::when($tanggalPenjualan, function ($query) use ($tanggalPenjualan, $tanggalAkhir) {
-            return $query->whereDate('tanggal_setoran', '>=', $tanggalPenjualan)
-                         ->whereDate('tanggal_setoran', '<=', $tanggalAkhir ?? $tanggalPenjualan);
-        })
-        ->orderBy('id', 'DESC')
-        ->get();
+        // Ambil semua data setoran penjualan dengan filter tanggal (jika ada)
+        $setoranPenjualans = Setoran_penjualan::when($tanggalPenjualan, function ($query) use ($tanggalPenjualan, $tanggalAkhir) {
+                return $query->whereDate('tanggal_setoran', '>=', $tanggalPenjualan)
+                            ->whereDate('tanggal_setoran', '<=', $tanggalAkhir ?? $tanggalPenjualan);
+            })
+            ->orderBy('id', 'DESC')
+            ->get();
 
-    // Kirim data ke view
-    return view('admin.penjualan_toko.index', compact('setoranPenjualans'));
-}
-
-    
-
+        // Kirim data ke view
+        return view('admin.penjualan_toko.index', compact('setoranPenjualans'));
+    }
 
 
     public function create(Request $request)
@@ -177,83 +174,6 @@ class PenjualantokoController extends Controller
         ));
     }
 
-    // public function getdata(Request $request)
-    // {
-    //     // Validasi input tanggal
-    //     $request->validate([
-    //         'tanggal_penjualan' => 'required|date',
-    //     ]);
-    
-    //     // Ambil tanggal dari request
-    //     $tanggalPenjualan = $request->input('tanggal_penjualan');
-    
-    //     // Query untuk menghitung penjualan kotor
-    //     $penjualan_kotor = Penjualanproduk::whereDate('tanggal_penjualan', $tanggalPenjualan)
-    //         ->sum(Penjualanproduk::raw('CAST(REGEXP_REPLACE(REPLACE(sub_totalasli, "Rp", ""), "[^0-9]", "") AS UNSIGNED)'));
-    
-    //     // Menghitung diskon penjualan
-    //     $diskon_penjualan = Detailpenjualanproduk::whereHas('penjualanproduk', function ($q) use ($tanggalPenjualan) {
-    //         $q->whereDate('tanggal_penjualan', $tanggalPenjualan);
-    //     })->get()->sum(function ($detail) {
-    //         $harga = (float)str_replace(['Rp.', '.'], '', $detail->harga);
-    //         $jumlah = $detail->jumlah;
-    //         $diskon = $detail->diskon / 100;
-    
-    //         return $harga * $jumlah * $diskon;
-    //     });
-    
-    //     // Hitung penjualan bersih
-    //     $penjualan_bersih = $penjualan_kotor - $diskon_penjualan;
-    
-    //     // Hitung total deposit keluar
-    //     $deposit_keluar = Dppemesanan::whereHas('penjualanproduk', function ($q) use ($tanggalPenjualan) {
-    //         $q->whereDate('tanggal_penjualan', $tanggalPenjualan);
-    //     })->sum('dp_pemesanan');
-    
-    //     // Hitung total deposit masuk
-    //     $deposit_masuk = Dppemesanan::whereHas('pemesananproduk', function ($q) use ($tanggalPenjualan) {
-    //         $q->whereDate('tanggal_pemesanan', $tanggalPenjualan);
-    //     })->sum('dp_pemesanan');
-    
-    //     // Hitung total metode pembayaran
-    //     $mesin_edc = Penjualanproduk::where('metode_id', 1)
-    //         ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-    //         ->sum(Penjualanproduk::raw('CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)'));
-    
-    //     $qris = Penjualanproduk::where('metode_id', 17)
-    //         ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-    //         ->sum(Penjualanproduk::raw('CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)'));
-    
-    //     $gobiz = Penjualanproduk::where('metode_id', 2)
-    //         ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-    //         ->sum(Penjualanproduk::raw('CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)'));
-    
-    //     $transfer = Penjualanproduk::where('metode_id', 3)
-    //         ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-    //         ->sum(Penjualanproduk::raw('CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)'));
-    
-    //     // Hitung total penjualan
-    //     $total_penjualan = $penjualan_bersih - ($deposit_keluar - $deposit_masuk);
-    //     $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
-    //     $total_setoran = $total_penjualan - $total_metode;
-    
-    //     // Return response dalam format JSON
-    //     return response()->json([
-    //         'penjualan_kotor' => number_format($penjualan_kotor, 0, ',', '.'),
-    //         'diskon_penjualan' => number_format($diskon_penjualan, 0, ',', '.'),
-    //         'penjualan_bersih' => number_format($penjualan_bersih, 0, ',', '.'),
-    //         'deposit_keluar' => number_format($deposit_keluar, 0, ',', '.'),
-    //         'deposit_masuk' => number_format($deposit_masuk, 0, ',', '.'),
-    //         'mesin_edc' => number_format($mesin_edc, 0, ',', '.'),
-    //         'qris' => number_format($qris, 0, ',', '.'),
-    //         'gobiz' => number_format($gobiz, 0, ',', '.'),
-    //         'transfer' => number_format($transfer, 0, ',', '.'),
-    //         'total_penjualan' => number_format($total_penjualan, 0, ',', '.'),
-    //         'total_metode' => number_format($total_metode, 0, ',', '.'),
-    //         'total_setoran' => number_format($total_setoran, 0, ',', '.'),
-    //     ]);
-    // }
-    
     public function getdata(Request $request)
     {
         // Validasi input tanggal
@@ -355,9 +275,6 @@ class PenjualantokoController extends Controller
             'total_setoran' => number_format($total_setoran, 0, ',', '.'),
         ]);
     }
-    
-
-   
 
     // public function store(Request $request)
     // {
@@ -382,25 +299,30 @@ class PenjualantokoController extends Controller
     //         return redirect()->back()->withErrors($validator)->withInput();
     //     }
 
-    //     // Simpan data ke database dan ambil ID dari data yang baru disimpan
+    //     // Fungsi untuk menghilangkan format angka
+    //     $removeFormat = function ($value) {
+    //         return (int)str_replace(['.', ','], '', $value); // Hilangkan titik dan koma
+    //     };
+
+    //     // Simpan data ke database
     //     $setoranPenjualan = Setoran_penjualan::create([
     //         'tanggal_penjualan' => $request->tanggal_penjualan,
-    //         'penjualan_kotor' => $request->penjualan_kotor,
-    //         'diskon_penjualan' => $request->diskon_penjualan,
-    //         'penjualan_bersih' => $request->penjualan_bersih,
-    //         'deposit_keluar' => $request->deposit_keluar,
-    //         'deposit_masuk' => $request->deposit_masuk,
-    //         'total_penjualan' => $request->total_penjualan,
-    //         'mesin_edc' => $request->mesin_edc,
-    //         'qris' => $request->qris,
-    //         'gobiz' => $request->gobiz,
-    //         'transfer' => $request->transfer,
-    //         'total_setoran' => $request->total_setoran,
+    //         'penjualan_kotor' => $removeFormat($request->penjualan_kotor),
+    //         'diskon_penjualan' => $removeFormat($request->diskon_penjualan),
+    //         'penjualan_bersih' => $removeFormat($request->penjualan_bersih),
+    //         'deposit_keluar' => $removeFormat($request->deposit_keluar),
+    //         'deposit_masuk' => $removeFormat($request->deposit_masuk),
+    //         'total_penjualan' => $removeFormat($request->total_penjualan),
+    //         'mesin_edc' => $removeFormat($request->mesin_edc),
+    //         'qris' => $removeFormat($request->qris),
+    //         'gobiz' => $removeFormat($request->gobiz),
+    //         'transfer' => $removeFormat($request->transfer),
+    //         'total_setoran' => $removeFormat($request->total_setoran),
     //         'tanggal_setoran' => $request->tanggal_setoran,
     //         'tanggal_setoran2' => $request->tanggal_setoran2,
-    //         'nominal_setoran' => $request->nominal_setoran,
-    //         'nominal_setoran2' => $request->nominal_setoran2,
-    //         'plusminus' => $request->plusminus,
+    //         'nominal_setoran' => $removeFormat($request->nominal_setoran),
+    //         'nominal_setoran2' => $removeFormat($request->nominal_setoran2),
+    //         'plusminus' => $removeFormat($request->plusminus),
     //         'toko_id' => $request->toko_id, // Ambil nilai toko_id dari request
     //         'status' => 'unpost',
     //     ]);
@@ -439,7 +361,7 @@ class PenjualantokoController extends Controller
     };
 
     // Simpan data ke database
-    $setoranPenjualan = Setoran_penjualan::create([
+    Setoran_penjualan::create([
         'tanggal_penjualan' => $request->tanggal_penjualan,
         'penjualan_kotor' => $removeFormat($request->penjualan_kotor),
         'diskon_penjualan' => $removeFormat($request->diskon_penjualan),
@@ -461,10 +383,10 @@ class PenjualantokoController extends Controller
         'status' => 'unpost',
     ]);
 
-    return response()->json([
-        'url' => route('inquery_setorantunai.print', $setoranPenjualan->id)
-    ]);
+    // Redirect ke halaman index dengan pesan sukses
+    return redirect()->route('penjualan_toko.index')->with('success', 'Data berhasil disimpan!');
 }
+
 
 
 

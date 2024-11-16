@@ -207,7 +207,7 @@
     </section>
 
 
-    <script>
+    {{-- <script>
         document.getElementById('setoranForm').addEventListener('submit', function(e) {
             e.preventDefault(); // Mencegah pengiriman form default
         
@@ -231,7 +231,7 @@
                 console.error('Error:', error);
             });
         });
-    </script>
+    </script> --}}
     
     <script>
         document.getElementById('tambahInputCheckbox').addEventListener('change', function() {
