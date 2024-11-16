@@ -384,7 +384,7 @@
    
        $('#tabel-pembelian').append(item_pembelian);
    }
-   </script>
+   </script> --}}
 
 <script>
     document.getElementById('kategori1').addEventListener('change', function() {
@@ -396,6 +396,6 @@
             window.location.href = "{{ route('admin.pengiriman_barangjadipesanan.create') }}"; 
         }
     });
-</script> --}}
+</script>
 
 @endsection
