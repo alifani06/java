@@ -26,15 +26,16 @@ class ProdukExport implements FromCollection, WithHeadings, WithStyles, WithTitl
     {
         return $this->produkWithStok->map(function ($produk, $index) {
             return [
-                'no' => $index + 1, // Menambahkan nomor urut
-                'kode_produk' => $produk->kode_lama ?? '-', // Default jika kode produk kosong
-                'nama_produk' => $produk->nama_produk ?? '-', // Default jika nama produk kosong
-                'stok' => $produk->jumlah ?? 0, // Default 0 jika stok kosong
-                'harga_jual' => $produk->harga ?? 0, // Default 0 jika harga kosong
-                'subtotal' => $produk->subTotal ?? 0, // Default 0 jika subtotal kosong
+                'no' => $index + 1, 
+                'kode_produk' => $produk->kode_lama ?? '-', 
+                'nama_produk' => $produk->nama_produk ?? '-',
+                'stok' => $produk->jumlah ?? 0,
+                'harga_jual' => $produk->harga ?? 0, 
+                'subtotal' => $produk->subTotal ?? 0, 
             ];
-        })->push($this->totalRow()); // Menambahkan baris total
+        })->push($this->totalRow()); 
     }
+
 
 
     public function headings(): array

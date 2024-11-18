@@ -37,42 +37,86 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
 
+
 class Inquery_penjualanproduktegalController extends Controller
 {
 
    
+    // public function index(Request $request)
+    // {
+    //     $status = $request->status;
+    //     $tanggal_penjualan = $request->tanggal_penjualan;
+    //     $tanggal_akhir = $request->tanggal_akhir;
+    
+    //     $inquery = Penjualanproduk::query() ->where('toko_id', 2);;
+    
+    //     if ($status) {
+    //         $inquery->where('status', $status);
+    //     }
+    
+    //     if ($tanggal_penjualan && $tanggal_akhir) {
+    //         $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //         $inquery->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+    //     } elseif ($tanggal_penjualan) {
+    //         $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+    //         $inquery->where('tanggal_penjualan', '>=', $tanggal_penjualan);
+    //     } elseif ($tanggal_akhir) {
+    //         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //         $inquery->where('tanggal_penjualan', '<=', $tanggal_akhir);
+    //     } else {
+    //         // Jika tidak ada filter tanggal, filter berdasarkan hari ini
+    //         $inquery->whereDate('tanggal_penjualan', Carbon::today());
+    //     }
+    
+    //     $inquery->orderBy('id', 'DESC');
+    //     $inquery = $inquery->get();
+    
+    //     return view('toko_tegal.inquery_penjualanproduk.index', compact('inquery'));
+    // }
+
+
     public function index(Request $request)
-    {
-        $status = $request->status;
-        $tanggal_penjualan = $request->tanggal_penjualan;
-        $tanggal_akhir = $request->tanggal_akhir;
-    
-        $inquery = Penjualanproduk::query() ->where('toko_id', 2);;
-    
-        if ($status) {
-            $inquery->where('status', $status);
-        }
-    
-        if ($tanggal_penjualan && $tanggal_akhir) {
-            $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-            $inquery->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
-        } elseif ($tanggal_penjualan) {
-            $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-            $inquery->where('tanggal_penjualan', '>=', $tanggal_penjualan);
-        } elseif ($tanggal_akhir) {
-            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-            $inquery->where('tanggal_penjualan', '<=', $tanggal_akhir);
-        } else {
-            // Jika tidak ada filter tanggal, filter berdasarkan hari ini
-            $inquery->whereDate('tanggal_penjualan', Carbon::today());
-        }
-    
-        $inquery->orderBy('id', 'DESC');
-        $inquery = $inquery->get();
-    
-        return view('toko_tegal.inquery_penjualanproduk.index', compact('inquery'));
+{
+    $status = $request->status;
+    $tanggal_penjualan = $request->tanggal_penjualan;
+    $tanggal_akhir = $request->tanggal_akhir;
+    $metode_bayar = $request->metode_bayar; // Ganti dari metode_bayar ke metode_bayar
+
+    $metodes = MetodePembayaran::all(); // Ambil semua metode pembayaran
+
+    $inquery = Penjualanproduk::with('metodePembayaran')->where('toko_id', 2);
+
+    if ($status) {
+        $inquery->where('status', $status);
     }
+
+    if ($tanggal_penjualan && $tanggal_akhir) {
+        $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+        $inquery->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+    } elseif ($tanggal_penjualan) {
+        $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+        $inquery->where('tanggal_penjualan', '>=', $tanggal_penjualan);
+    } elseif ($tanggal_akhir) {
+        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+        $inquery->where('tanggal_penjualan', '<=', $tanggal_akhir);
+    } else {
+        $inquery->whereDate('tanggal_penjualan', Carbon::today());
+    }
+
+    if ($metode_bayar) {
+        $inquery->where('metode_id', $metode_bayar); // Pastikan kolom ini sesuai dengan database
+    }
+
+    $inquery->orderBy('id', 'DESC');
+    $inquery = $inquery->get();
+
+    return view('toko_tegal.inquery_penjualanproduk.index', compact('inquery', 'metodes'));
+}
+
+    
+
     
 
     public function posting_penjualanproduk($id)

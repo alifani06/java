@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Tambah Setoran')
+@section('title', 'Penjualan Toko')
 
 @section('content')
     <!-- Content Header (Page header) -->
@@ -38,7 +38,7 @@
                         <div class="row">
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
-                                    value="{{ Request::get('tanggal_penjualan') }}" />
+                                    value="{{ Request::get('tanggal_penjualan') }}" onchange="updateLink()" />
                             </div>
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="toko" name="toko_id">
@@ -53,6 +53,7 @@
                             </div>
                         </div>
                     </div>
+                    
                     
                     <div class="card-body">
                         <!-- Tempat untuk menampilkan Penjualan Kotor -->
@@ -205,7 +206,7 @@
         </div>
         
     </section>
-    <script>
+    {{-- <script>
         function updateLink() {
             const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
             const baseUrl = "{{ route('print.penjualan.kotor') }}"; // Menggunakan route Laravel
@@ -221,7 +222,35 @@
             // Update href link
             document.getElementById('penjualan_kotor_link').href = url.toString();
         }
+    </script> --}}
+
+    <script>
+        function updateLink() {
+    const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
+    const tokoId = document.getElementById('toko').value; // Ambil nilai toko yang dipilih
+    const baseUrl = "{{ route('print.penjualan.kotor') }}"; // URL base dari route Laravel
+
+    const url = new URL(baseUrl);
+
+    // Tambahkan parameter tanggal_penjualan dan toko_id ke URL
+    if (tanggalPenjualan) {
+        url.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+    } else {
+        url.searchParams.delete('tanggal_penjualan');
+    }
+
+    if (tokoId) {
+        url.searchParams.set('toko_id', tokoId);
+    } else {
+        url.searchParams.delete('toko_id');
+    }
+
+    // Update href link
+    document.getElementById('penjualan_kotor_link').href = url.toString();
+}
+
     </script>
+    
 
     {{-- <script>
         document.getElementById('setoranForm').addEventListener('submit', function(e) {

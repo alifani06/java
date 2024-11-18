@@ -9,7 +9,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            setTimeout(function() {
+            setTimeout(function() { 
                 document.getElementById("loadingSpinner").style.display = "none";
                 document.getElementById("mainContent").style.display = "block";
                 document.getElementById("mainContentSection").style.display = "block";
@@ -61,7 +61,7 @@
                 <!-- /.card-header -->
                  
                 <div class="card-body">
-                    <form method="GET" id="form-action">
+                    {{-- <form method="GET" id="form-action">
                         <div class="row">
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="status" name="status">
@@ -87,10 +87,49 @@
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    </form> --}}
                     
+                    <form method="GET" id="form-action">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="status" name="status">
+                                    <option value="">- Semua Status -</option>
+                                    <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
+                                    <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
+                                </select>
+                                <label for="status">(Pilih Status)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
+                                    value="{{ Request::get('tanggal_penjualan') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_penjualan">(Dari Tanggal)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
+                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_akhir">(Sampai Tanggal)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="metode_bayar" name="metode_bayar">
+                                    <option value="">- Semua Metode -</option>
+                                    @foreach ($metodes as $metode)
+                                        <option value="{{ $metode->id }}" 
+                                            {{ Request::get('metode_bayar') == $metode->id ? 'selected' : '' }}>
+                                            {{ $metode->nama_metode }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                
+                                <label for="metode_bayar">(Pilih Metode Pembayaran)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
+                                    <i class="fas fa-search"></i> Cari
+                                </button>
+                            </div>
+                        </div>
+                    </form>
 
-                   
                     <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
                         <thead class="">
                             <tr>
@@ -100,7 +139,7 @@
                                 <th>Tanggal penjualan</th>
                                 <th>Kasir</th>
                                 <th>Pelanggan</th>
-                          
+                                <th>Pembayaran</th>
                                 <th>Total</th>
                                 <th class="text-center" width="20">Opsi</th>
                             </tr>
@@ -124,6 +163,13 @@
                                             {{ $item->kode_pelanggan }} / {{ $item->nama_pelanggan }}
                                         @else
                                             Non Member
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($item->metodePembayaran)
+                                            {{ $item->metodePembayaran->nama_metode }}
+                                        @else
+                                            Tunai
                                         @endif
                                     </td>
                                     {{-- <td>

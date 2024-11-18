@@ -1591,7 +1591,6 @@ Route::middleware('toko_cilacap')->prefix('toko_cilacap')->group(function () {
     Route::get('inquery_returcilacap/posting_retur/{id}', [\App\Http\Controllers\Toko_cilacap\Inquery_returcilacapController::class, 'posting_retur']);
     Route::get('/inquery_returcilacap/{id}/print', [Inquery_returcilacapController::class, 'print'])->name('inquery_returcilacap.print');
 
-
     Route::resource('pemindahan_tokocilacap', \App\Http\Controllers\Toko_cilacap\Pemindahan_tokocilacapController::class);
 
     Route::resource('inquery_pemindahancilacap', \App\Http\Controllers\Toko_cilacap\Inquery_pemindahancilacapController::class);
