@@ -92,19 +92,19 @@
                             <tr>
                                 <td class="text-center">{{ $index + 1 }}</td>
                                 <td>{{ $setoran->tanggal_setoran ? \Carbon\Carbon::parse($setoran->tanggal_setoran)->format('d-m-Y') : '-' }}</td> <!-- Menampilkan Tanggal Setoran -->
-                                <td>{{ $setoran->penjualan_kotor }}</td>
-                                <td>{{ $setoran->diskon_penjualan }}</td>
-                                <td>{{ $setoran->penjualan_bersih }}</td>
-                                <td>{{ $setoran->deposit_keluar }}</td>
-                                <td>{{ $setoran->deposit_masuk }}</td>
-                                <td>{{ $setoran->total_penjualan }}</td>
-                                <td>{{ $setoran->mesin_edc ?? '0' }}</td>
-                                <td>{{ $setoran->gobiz ?? '0' }}</td>
-                                <td>{{ $setoran->transfer ?? '0' }}</td>
-                                <td>{{ $setoran->qris ?? '0' }}</td>
-                                <td>{{ $setoran->total_setoran }}</td>
-                                <td>{{ $setoran->nominal_setoran }}</td>
-                                <td>{{ $setoran->plusminus }}</td>
+                                <td>{{ number_format($setoran->penjualan_kotor, 0, ',', '.') }}</td>
+                                <td>{{ number_format($setoran->diskon_penjualan, 0, ',', '.') }}</td>
+                                <td>{{ number_format($setoran->penjualan_bersih, 0, ',', '.') }}</td>
+                                <td>{{ number_format($setoran->deposit_keluar, 0, ',', '.') }}</td>
+                                <td>{{ number_format($setoran->deposit_masuk, 0, ',', '.') }}</td>
+                                <td>{{ number_format($setoran->total_penjualan, 0, ',', '.') }}</td>
+                                <td>{{ number_format($setoran->mesin_edc ?? 0, 0, ',', '.') }}</td>
+                                <td>{{ number_format($setoran->gobiz ?? 0, 0, ',', '.') }}</td>
+                                <td>{{ number_format($setoran->transfer ?? 0, 0, ',', '.') }}</td>
+                                <td>{{ number_format($setoran->qris ?? 0, 0, ',', '.') }}</td>
+                                <td>{{ number_format($setoran->total_setoran, 0, ',', '.') }}</td>
+                                <td>{{ number_format($setoran->nominal_setoran, 0, ',', '.') }}</td>
+                                <td>{{ number_format($setoran->plusminus, 0, ',', '.') }}</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -131,71 +131,6 @@
         </div>
     </section>
 
-    <!-- /.card -->
-    <script>
-        var tanggalAwal = document.getElementById('tanggal_penjualan');
-        var tanggalAkhir = document.getElementById('tanggal_akhir');
-        if (tanggalAwal.value == "") {
-            tanggalAkhir.readOnly = true;
-        }
-        tanggalAwal.addEventListener('change', function() {
-            if (this.value == "") {
-                tanggalAkhir.readOnly = true;
-            } else {
-                tanggalAkhir.readOnly = false;
-            };
-            tanggalAkhir.value = "";
-            var today = new Date().toISOString().split('T')[0];
-            tanggalAkhir.value = today;
-            tanggalAkhir.setAttribute('min', this.value);
-        });
-        var form = document.getElementById('form-action')
+   
 
-        function cari() {
-            form.action = "{{ url('toko_slawi/laporan_setorantokobanjaran') }}";
-            form.submit();
-        }
-    </script>
-
-<script>
-    function printReport() {
-    const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_slawi/printReportsetoran') }}";
-    form.target = "_blank";
-    form.submit();
-}
-
-</script>
-
-<script>
-    document.getElementById('kategori1').addEventListener('change', function() {
-        var selectedValue = this.value;
-
-        if (selectedValue === 'global') {
-            window.location.href = "{{ url('toko_slawi/indexglobal') }}";
-        } else if (selectedValue === 'rinci') {
-            window.location.href = "{{ url('toko_slawi/laporan_penjualanproduk') }}";
-        }
-    });
-</script>
-
-<script>
-    function filterProduk() {
-        var klasifikasiId = document.getElementById('klasifikasi').value;
-        var produkSelect = document.getElementById('produk');
-        var produkOptions = produkSelect.options;
-    
-        for (var i = 0; i < produkOptions.length; i++) {
-            var option = produkOptions[i];
-            if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
-                option.style.display = "block";
-            } else {
-                option.style.display = "none";
-            }
-        }
-    
-        // Reset the selected value of the product select box
-        produkSelect.selectedIndex = 0;
-    }
-    </script>
 @endsection

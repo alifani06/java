@@ -111,7 +111,7 @@
     request()->is('toko_banjaran/pengiriman_barangjadi*')|| 
     request()->is('toko_banjaran/return_barangjadi*')|| 
     request()->is('toko_banjaran/pelunasan_pemesanan*')|| 
-    request()->is('toko_banjaran/setoran_tokobanajran*')|| 
+    request()->is('toko_banjaran/setoran_tokobanjaran*')|| 
     request()->is('toko_banjaran/pemindahan_tokobanjaran*') 
     // request()->is('toko_banjaran/input*')
   
@@ -126,7 +126,7 @@
         request()->is('toko_banjaran/pengiriman_barangjadi*')||  
         request()->is('toko_banjaran/retur_barangjadi*')||  
         request()->is('toko_banjaran/pelunasan_pemesanan*')||  
-        request()->is('toko_banjaran/setoran_tokobanajran*')||  
+        request()->is('toko_banjaran/setoran_tokobanjaran*')||  
         request()->is('toko_banjaran/pemindahan_tokobanjaran*')  
         // request()->is('toko_banjaran/input*')
       

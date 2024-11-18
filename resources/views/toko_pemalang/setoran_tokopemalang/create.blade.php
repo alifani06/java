@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Tambah Setoran')
+@section('title', 'Penjualan Toko')
 
 @section('content')
     <!-- Content Header (Page header) -->
@@ -8,7 +8,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Setoran Tunai Penjualan</h1>
+                    <h1 class="m-0">Penjualan Toko</h1>
                 </div><!-- /.col -->
 
             </div><!-- /.row -->
@@ -31,21 +31,34 @@
         @endif
     
 
-            <form id="setoranForm" action="{{ url('toko_banjaran/setoran_tokobanjaran') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form id="setoranForm" action="{{ url('toko_pemalang/setoran_tokopemalang') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <div class="card">
-                    <div class="card-header">
-                        <div class="col-md-3 mb-3">
-                            <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
-                                value="{{ Request::get('tanggal_penjualan') }}" />
-                        </div>                    
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
+                                    value="{{ Request::get('tanggal_penjualan') }}" onchange="updateLink()" />
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="toko" name="toko_id" >
+                                    <option value="4" selected>PEMALANG</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-3 mb-3">
+                                <button type="button" id="btnCari" class="btn btn-outline-primary">Cari</button>
+                            </div>
+                        </div>
                     </div>
-            
+                    
+                    
+                    
                     <div class="card-body">
                         <!-- Tempat untuk menampilkan Penjualan Kotor -->
                         <div class="form-group row mb-3">
                             <label for="penjualan_kotor" class="col-sm-3 col-form-label">
-                                <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Penjualan Kotor</a>
+                                <a id="penjualan_kotor_link" href="{{ route('print.penjualan.kotor') }}" target="_blank" class="text-decoration-none">Penjualan Kotor</a>
                             </label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="penjualan_kotor" name="penjualan_kotor" placeholder="" >
@@ -192,33 +205,37 @@
         </div>
         
     </section>
-
+   
 
     <script>
-        document.getElementById('setoranForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Mencegah pengiriman form default
-        
-            let formData = new FormData(this);
-        
-            fetch(this.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.url) {
-                    window.open(data.url, '_blank');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
+        function updateLink() {
+    const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
+    const tokoId = document.getElementById('toko').value; // Ambil nilai toko yang dipilih
+    const baseUrl = "{{ route('print.penjualan.kotor') }}"; // URL base dari route Laravel
+
+    const url = new URL(baseUrl);
+
+    // Tambahkan parameter tanggal_penjualan dan toko_id ke URL
+    if (tanggalPenjualan) {
+        url.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+    } else {
+        url.searchParams.delete('tanggal_penjualan');
+    }
+
+    if (tokoId) {
+        url.searchParams.set('toko_id', tokoId);
+    } else {
+        url.searchParams.delete('toko_id');
+    }
+
+    // Update href link
+    document.getElementById('penjualan_kotor_link').href = url.toString();
+}
+
     </script>
+    
+
+   
     
     <script>
         document.getElementById('tambahInputCheckbox').addEventListener('change', function() {
@@ -255,7 +272,7 @@
             if (parts.length > 2) {
                 return 0; // Mengembalikan 0 jika terdapat lebih dari satu titik
             }
-    
+
             return parseFloat(number) || 0;
         }
     
@@ -293,35 +310,39 @@
 
 <script>
     $(document).ready(function () {
-        $('#tanggal_penjualan').on('change', function () {
-            var tanggalPenjualan = $(this).val();
-    
+        $('#btnCari').on('click', function () {
+            var tanggalPenjualan = $('#tanggal_penjualan').val();
+            var tokoId = $('#toko').val();
+
             if (tanggalPenjualan) {
                 $.ajax({
-                    url: "{{ route('getdata') }}",
+                    url: "{{ url('toko_pemalang/get-penjualanpemalang') }}", // Sesuaikan URL sesuai dengan rute Anda
                     type: "POST",
                     data: {
                         _token: '{{ csrf_token() }}',
-                        tanggal_penjualan: tanggalPenjualan
+                        tanggal_penjualan: tanggalPenjualan,
+                        toko_id: tokoId
                     },
                     success: function(response) {
-                    // Populate form fields with response data
-                    $('#penjualan_kotor').val(response.penjualan_kotor);
-                    $('#diskon_penjualan').val(response.diskon_penjualan);
-                    $('#penjualan_bersih').val(response.penjualan_bersih);
-                    $('#deposit_keluar').val(response.deposit_keluar);
-                    $('#deposit_masuk').val(response.deposit_masuk);
-                    $('#mesin_edc').val(response.mesin_edc);
-                    $('#qris').val(response.qris);
-                    $('#gobiz').val(response.gobiz);
-                    $('#transfer').val(response.transfer);
-                    $('#total_penjualan').val(response.total_penjualan);
-                    $('#total_setoran').val(response.total_setoran);
-                },
+                        // Isi field-form dengan data dari respons
+                        $('#penjualan_kotor').val(response.penjualan_kotor);
+                        $('#diskon_penjualan').val(response.diskon_penjualan);
+                        $('#penjualan_bersih').val(response.penjualan_bersih);
+                        $('#deposit_keluar').val(response.deposit_keluar);
+                        $('#deposit_masuk').val(response.deposit_masuk);
+                        $('#mesin_edc').val(response.mesin_edc);
+                        $('#qris').val(response.qris);
+                        $('#gobiz').val(response.gobiz);
+                        $('#transfer').val(response.transfer);
+                        $('#total_penjualan').val(response.total_penjualan);
+                        $('#total_setoran').val(response.total_setoran);
+                    },
                     error: function (xhr) {
-                        console.log(xhr.responseText); // Debugging
+                        console.log(xhr.responseText); // Untuk debugging
                     }
                 });
+            } else {
+                alert("Silakan pilih tanggal penjualan terlebih dahulu.");
             }
         });
     });

@@ -693,8 +693,9 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('printpengirimantokobanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_pengirimantokobanjaranController::class, 'printReport']);
 
     Route::resource('setoran_tokobanjaran', \App\Http\Controllers\Toko_banjaran\Setoran_tokobanjaranController::class);
-    Route::post('/get-penjualan-kotor', [Setoran_tokobanjaranController::class, 'getdata'])->name('getdata');
+    // Route::post('/get-penjualan-kotor', [Setoran_tokobanjaranController::class, 'getdata'])->name('getdata');
     Route::post('toko_banjaran/setoran_tokobanjaran', [Setoran_tokobanjaranController::class, 'store'])->name('setoran.store');
+    Route::post('/get-penjualanbanjaran', [Setoran_tokobanjaranController::class, 'getdata'])->name('getdata');
 
 
     Route::resource('laporan_setorantokobanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_setoranpenjualanController::class);
@@ -889,8 +890,9 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::get('printpengirimantokotegal', [\App\Http\Controllers\Toko_tegal\Laporan_pengirimantokotegalController::class, 'printReport']);
 
     Route::resource('setoran_tokotegal', \App\Http\Controllers\Toko_tegal\Setoran_tokotegalController::class);
-    Route::post('/get-penjualan-kotor', [Setoran_tokotegalController::class, 'getdata'])->name('getdata');
-    Route::post('toko_tegal/setoran_tokobanjaran', [Setoran_tokotegalController::class, 'store'])->name('setoran.store');
+    // Route::post('/get-penjualan-kotor', [Setoran_tokotegalController::class, 'getdata'])->name('getdata');
+    Route::post('toko_tegal/setoran_tokotegal', [Setoran_tokotegalController::class, 'store'])->name('setoran.store');
+    Route::post('/get-penjualantegal', [Setoran_tokotegalController::class, 'getdata'])->name('getdata');
 
 
     Route::resource('laporan_setorantokotegal', \App\Http\Controllers\Toko_tegal\Laporan_setoranpenjualantglController::class);
@@ -1066,9 +1068,10 @@ Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {
     Route::resource('laporan_pengirimantokopemalang', \App\Http\Controllers\Toko_pemalang\Laporan_pengirimantokopemalangController::class);
     Route::get('printpengirimantokopemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_pengirimantokopemalangController::class, 'printReport']);
 
-    Route::resource('setoran_toko', \App\Http\Controllers\Toko_pemalang\Setoran_tokopemalangController::class);
-    Route::post('/get-penjualan-kotor', [Setoran_tokopemalangController::class, 'getdata'])->name('getdata');
-    Route::post('toko_banjaran/setoran_toko', [Setoran_tokopemalangController::class, 'store'])->name('setoran.store');
+    Route::resource('setoran_tokopemalang', \App\Http\Controllers\Toko_pemalang\Setoran_tokopemalangController::class);
+    // Route::post('/get-penjualan-kotor', [Setoran_tokopemalangController::class, 'getdata'])->name('getdata');
+    Route::post('toko_pemalang/setoran_tokopemalang', [Setoran_tokopemalangController::class, 'store'])->name('setoran.store');
+    Route::post('/get-penjualanpemalang', [Setoran_tokopemalangController::class, 'getdata'])->name('getdata');
 
 
     Route::resource('laporan_setorantokopemalang', \App\Http\Controllers\Toko_pemalang\Laporan_setoranpenjualanpmlController::class);
@@ -1241,8 +1244,9 @@ Route::middleware('toko_bumiayu')->prefix('toko_bumiayu')->group(function () {
     Route::get('printpengirimantokobumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_pengirimantokobumiayuController::class, 'printReport']);
 
     Route::resource('setoran_tokobumiayu', \App\Http\Controllers\Toko_bumiayu\Setoran_tokobumiayuController::class);
-    Route::post('/get-penjualan-kotor', [Setoran_tokobumiayuController::class, 'getdata'])->name('getdata');
+    // Route::post('/get-penjualan-kotor', [Setoran_tokobumiayuController::class, 'getdata'])->name('getdata');
     Route::post('toko_bumiayu/setoran_tokobumiayu', [Setoran_tokobumiayuController::class, 'store'])->name('setoran.store');
+    Route::post('/get-penjualanbumiayu', [Setoran_tokobumiayuController::class, 'getdata'])->name('getdata');
 
 
     Route::resource('laporan_setorantokobumiayu', \App\Http\Controllers\Toko_bumiayu\Laporan_setoranpenjualanbmyController::class);
@@ -1418,8 +1422,9 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
     Route::get('printpengirimantokoslawi', [\App\Http\Controllers\Toko_slawi\Laporan_pengirimantokoslawiController::class, 'printReport']);
 
     Route::resource('setoran_tokoslawi', \App\Http\Controllers\Toko_slawi\Setoran_tokoslawiController::class);
-    Route::post('/get-penjualan-kotor', [Setoran_tokoslawiController::class, 'getdata'])->name('getdata');
+    // Route::post('/get-penjualan-kotor', [Setoran_tokoslawiController::class, 'getdata'])->name('getdata');
     Route::post('toko_slawi/setoran_tokoslawi', [Setoran_tokoslawiController::class, 'store'])->name('setoran.store');
+    Route::post('/get-penjualanslawi', [Setoran_tokoslawiController::class, 'getdata'])->name('getdata');
 
 
     Route::resource('laporan_setorantokoslawi', \App\Http\Controllers\Toko_slawi\Laporan_setoranpenjualanslwController::class);
@@ -1612,8 +1617,9 @@ Route::middleware('toko_cilacap')->prefix('toko_cilacap')->group(function () {
     Route::get('printpengirimantokocilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_pengirimantokocilacapController::class, 'printReport']);
 
     Route::resource('setoran_tokocilacap', \App\Http\Controllers\Toko_cilacap\Setoran_tokocilacapController::class);
-    Route::post('/get-penjualan-kotor', [Setoran_tokocilacapController::class, 'getdata'])->name('getdata');
+    // Route::post('/get-penjualan-kotor', [Setoran_tokocilacapController::class, 'getdata'])->name('getdata');
     Route::post('toko_cilacap/setoran_tokocilacap', [Setoran_tokocilacapController::class, 'store'])->name('setoran.store');
+    Route::post('/get-penjualancilacap', [Setoran_tokocilacapController::class, 'getdata'])->name('getdata');
 
 
     Route::resource('laporan_setorantokocilacap', \App\Http\Controllers\Toko_cilacap\Laporan_setoranpenjualanclcController::class);

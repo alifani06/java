@@ -113,6 +113,7 @@
     request()->is('toko_bumiayu/permintaan_produk*')|| 
     request()->is('toko_bumiayu/pengiriman_barangjadi*')|| 
     request()->is('toko_bumiayu/return_barangjadi*')|| 
+    request()->is('toko_bumiayu/setoran_tokobumiayu*')|| 
     request()->is('toko_bumiayu/pelunasan_pemesananBmy*')|| 
     request()->is('toko_bumiayu/pemindahan_tokobumiayu*') 
     // request()->is('toko_bumiayu/input*')
@@ -127,6 +128,7 @@
         request()->is('toko_bumiayu/permintaan_produk*')||  
         request()->is('toko_bumiayu/pengiriman_barangjadi*')||  
         request()->is('toko_bumiayu/retur_barangjadi*')||  
+        request()->is('toko_bumiayusetoran_tokobumiayu*')||  
         request()->is('toko_bumiayu/pelunasan_pemesananBmy*')||  
         request()->is('toko_bumiayu/pemindahan_tokobumiayu*')  
         // request()->is('toko_bumiayu/input*')
@@ -211,6 +213,16 @@
             </a>
         </li>
         {{-- @endif --}}
+
+         {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+         <li class="nav-item">
+            <a href="{{ url('toko_bumiayu/setoran_tokobumiayu') }}"
+                class="nav-link {{ request()->is('toko_bumiayu/setoran_tokobumiayu*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Setoran Tunai Penjualan</p>
+            </a>
+        </li>
+        {{-- @endif --}}
     </ul>
 </li>
 
@@ -224,6 +236,7 @@
     request()->is('toko_bumiayu/pengiriman_tokobumiayu*')|| 
     request()->is('toko_bumiayu/inquery_pemindahanbumiayu*')|| 
     request()->is('toko_bumiayu/inquery_depositbumiayu*')|| 
+    request()->is('toko_bumiayu/inquery_dsetorantunaibumiayu*')|| 
     request()->is('toko_bumiayu/inquery_pengirimanbarangjadi*') 
     // request()->is('toko_bumiayu/input*')
   
@@ -239,6 +252,7 @@
         request()->is('toko_bumiayu/pengiriman_tokobumiayu*')||
         request()->is('toko_bumiayu/inquery_pemindahanbumiayu*')||
         request()->is('toko_bumiayu/inquery_depositbumiayu*')||
+        request()->is('toko_bumiayu/inquery_setorantunaitbumiayu*')||
         request()->is('toko_bumiayu/inquerypengirimanbarangjadi*')
         // request()->is('toko_bumiayu/input*')
       
@@ -330,6 +344,16 @@
             </a>
         </li>
         {{-- @endif --}}
+
+            {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+            <li class="nav-item">
+                <a href="{{ url('toko_bumiayu/inquery_setorantunaibumiayu') }}"
+                    class="nav-link {{ request()->is('toko_bumiayu/inquery_setorantunaibumiayu*') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                    <p style="font-size: 14px;">Inquery Setotan Tunai</p>
+                </a>
+            </li>
+            {{-- @endif --}}
 
     </ul>
 </li>

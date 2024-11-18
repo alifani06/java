@@ -45,12 +45,14 @@ class Setoran_tokobanjaranController extends Controller
 
     public function index(Request $request)
     {
-        // Ambil semua data setoran penjualan
-        $setoranPenjualans = Setoran_penjualan::orderBy('id', 'DESC')->get();
+        $setoranPenjualans = Setoran_penjualan::where('toko_id', 1)
+            ->orderBy('id', 'DESC')
+            ->get();
     
         // Kirim data ke view
         return view('toko_banjaran.setoran_tokobanjaran.index', compact('setoranPenjualans'));
     }
+    
     
     public function create(Request $request)
     {
@@ -168,6 +170,83 @@ class Setoran_tokobanjaranController extends Controller
         ));
     }
 
+    // public function getdata(Request $request)
+    // {
+    //     // Validasi input tanggal
+    //     $request->validate([
+    //         'tanggal_penjualan' => 'required|date',
+    //     ]);
+    
+    //     // Ambil tanggal dari request
+    //     $tanggalPenjualan = $request->input('tanggal_penjualan');
+    
+    //     // Query untuk menghitung penjualan kotor
+    //     $penjualan_kotor = Penjualanproduk::whereDate('tanggal_penjualan', $tanggalPenjualan)
+    //         ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_totalasli, "Rp ", ""), ".", "") AS UNSIGNED)'));
+    
+    //     // Menghitung diskon penjualan
+    //     $diskon_penjualan = Detailpenjualanproduk::whereHas('penjualanproduk', function ($q) use ($tanggalPenjualan) {
+    //         $q->whereDate('tanggal_penjualan', $tanggalPenjualan);
+    //     })->get()->sum(function ($detail) {
+    //         $harga = (float)str_replace(['Rp.', '.'], '', $detail->harga);
+    //         $jumlah = $detail->jumlah;
+    //         $diskon = $detail->diskon / 100;
+    
+    //         return $harga * $jumlah * $diskon;
+    //     });
+    
+    //     // Hitung penjualan bersih
+    //     $penjualan_bersih = $penjualan_kotor - $diskon_penjualan;
+    
+    //     // Hitung total deposit keluar
+    //     $deposit_keluar = Dppemesanan::whereHas('penjualanproduk', function ($q) use ($tanggalPenjualan) {
+    //         $q->whereDate('tanggal_penjualan', $tanggalPenjualan);
+    //     })->sum('dp_pemesanan');
+    
+    //     // Hitung total deposit masuk
+    //     $deposit_masuk = Dppemesanan::whereHas('pemesananproduk', function ($q) use ($tanggalPenjualan) {
+    //         $q->whereDate('tanggal_pemesanan', $tanggalPenjualan);
+    //     })->sum('dp_pemesanan');
+    
+    //     // Hitung total metode pembayaran
+    //     $mesin_edc = Penjualanproduk::where('metode_id', 1)
+    //         ->whereDate('tanggal_penjualan', $tanggalPenjualan)
+    //         ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
+    
+    //     $qris = Penjualanproduk::where('metode_id', 17)
+    //         ->whereDate('tanggal_penjualan', $tanggalPenjualan)
+    //         ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
+    
+    //     $gobiz = Penjualanproduk::where('metode_id', 2)
+    //         ->whereDate('tanggal_penjualan', $tanggalPenjualan)
+    //         ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
+    
+    //     $transfer = Penjualanproduk::where('metode_id', 3)
+    //         ->whereDate('tanggal_penjualan', $tanggalPenjualan)
+    //         ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
+    
+    //     // Hitung total penjualan
+    //     $total_penjualan = $penjualan_bersih - ($deposit_keluar - $deposit_masuk);
+    //     $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
+    //     $total_setoran = $total_penjualan - $total_metode;
+    
+    //     // Return response dalam format JSON
+    //     return response()->json([
+    //         'penjualan_kotor' => number_format($penjualan_kotor, 0, ',', '.'),
+    //         'diskon_penjualan' => number_format($diskon_penjualan, 0, ',', '.'),
+    //         'penjualan_bersih' => number_format($penjualan_bersih, 0, ',', '.'),
+    //         'deposit_keluar' => number_format($deposit_keluar, 0, ',', '.'),
+    //         'deposit_masuk' => number_format($deposit_masuk, 0, ',', '.'),
+    //         'mesin_edc' => number_format($mesin_edc, 0, ',', '.'),
+    //         'qris' => number_format($qris, 0, ',', '.'),
+    //         'gobiz' => number_format($gobiz, 0, ',', '.'),
+    //         'transfer' => number_format($transfer, 0, ',', '.'),
+    //         'total_penjualan' => number_format($total_penjualan, 0, ',', '.'),
+    //         'total_metode' => number_format($total_metode, 0, ',', '.'),
+    //         'total_setoran' => number_format($total_setoran, 0, ',', '.'),
+    //     ]);
+    // }
+
     public function getdata(Request $request)
     {
         // Validasi input tanggal
@@ -175,16 +254,24 @@ class Setoran_tokobanjaranController extends Controller
             'tanggal_penjualan' => 'required|date',
         ]);
     
-        // Ambil tanggal dari request
+        // Ambil tanggal dan toko_id dari request
         $tanggalPenjualan = $request->input('tanggal_penjualan');
+        $tokoId = $request->input('toko_id');
     
-        // Query untuk menghitung penjualan kotor
-        $penjualan_kotor = Penjualanproduk::whereDate('tanggal_penjualan', $tanggalPenjualan)
-            ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_totalasli, "Rp ", ""), ".", "") AS UNSIGNED)'));
+        // Query untuk menghitung penjualan kotor dengan filter toko
+        $query = Penjualanproduk::whereDate('tanggal_penjualan', $tanggalPenjualan);
+        if ($tokoId) {
+            $query->where('toko_id', $tokoId);
+        }
+    
+        $penjualan_kotor = $query->sum(Penjualanproduk::raw('CAST(REGEXP_REPLACE(REPLACE(sub_totalasli, "Rp", ""), "[^0-9]", "") AS UNSIGNED)'));
     
         // Menghitung diskon penjualan
-        $diskon_penjualan = Detailpenjualanproduk::whereHas('penjualanproduk', function ($q) use ($tanggalPenjualan) {
+        $diskon_penjualan = Detailpenjualanproduk::whereHas('penjualanproduk', function ($q) use ($tanggalPenjualan, $tokoId) {
             $q->whereDate('tanggal_penjualan', $tanggalPenjualan);
+            if ($tokoId) {
+                $q->where('toko_id', $tokoId);
+            }
         })->get()->sum(function ($detail) {
             $harga = (float)str_replace(['Rp.', '.'], '', $detail->harga);
             $jumlah = $detail->jumlah;
@@ -197,38 +284,55 @@ class Setoran_tokobanjaranController extends Controller
         $penjualan_bersih = $penjualan_kotor - $diskon_penjualan;
     
         // Hitung total deposit keluar
-        $deposit_keluar = Dppemesanan::whereHas('penjualanproduk', function ($q) use ($tanggalPenjualan) {
+        $deposit_keluar = Dppemesanan::whereHas('penjualanproduk', function ($q) use ($tanggalPenjualan, $tokoId) {
             $q->whereDate('tanggal_penjualan', $tanggalPenjualan);
+            if ($tokoId) {
+                $q->where('toko_id', $tokoId);
+            }
         })->sum('dp_pemesanan');
     
         // Hitung total deposit masuk
-        $deposit_masuk = Dppemesanan::whereHas('pemesananproduk', function ($q) use ($tanggalPenjualan) {
+        $deposit_masuk = Dppemesanan::whereHas('pemesananproduk', function ($q) use ($tanggalPenjualan, $tokoId) {
             $q->whereDate('tanggal_pemesanan', $tanggalPenjualan);
+            if ($tokoId) {
+                $q->where('toko_id', $tokoId);
+            }
         })->sum('dp_pemesanan');
     
-        // Hitung total metode pembayaran
+        // Hitung total metode pembayaran dengan filter toko
         $mesin_edc = Penjualanproduk::where('metode_id', 1)
             ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-            ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
+            ->when($tokoId, function ($q) use ($tokoId) {
+                $q->where('toko_id', $tokoId);
+            })
+            ->sum(Penjualanproduk::raw('CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)'));
     
         $qris = Penjualanproduk::where('metode_id', 17)
             ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-            ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
+            ->when($tokoId, function ($q) use ($tokoId) {
+                $q->where('toko_id', $tokoId);
+            })
+            ->sum(Penjualanproduk::raw('CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)'));
     
         $gobiz = Penjualanproduk::where('metode_id', 2)
             ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-            ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
+            ->when($tokoId, function ($q) use ($tokoId) {
+                $q->where('toko_id', $tokoId);
+            })
+            ->sum(Penjualanproduk::raw('CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)'));
     
         $transfer = Penjualanproduk::where('metode_id', 3)
             ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-            ->sum(Penjualanproduk::raw('CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)'));
+            ->when($tokoId, function ($q) use ($tokoId) {
+                $q->where('toko_id', $tokoId);
+            })
+            ->sum(Penjualanproduk::raw('CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)'));
     
         // Hitung total penjualan
         $total_penjualan = $penjualan_bersih - ($deposit_keluar - $deposit_masuk);
         $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
         $total_setoran = $total_penjualan - $total_metode;
     
-        // Return response dalam format JSON
         return response()->json([
             'penjualan_kotor' => number_format($penjualan_kotor, 0, ',', '.'),
             'diskon_penjualan' => number_format($diskon_penjualan, 0, ',', '.'),
@@ -246,7 +350,6 @@ class Setoran_tokobanjaranController extends Controller
     }
     
 
-
     public function store(Request $request)
     {
         // Validasi input dengan custom error messages
@@ -255,28 +358,29 @@ class Setoran_tokobanjaranController extends Controller
             'total_setoran' => 'required',
             'tanggal_setoran' => 'required|date',
             'nominal_setoran' => 'required',
-
+            'toko_id' => 'required|exists:tokos,id', // Validasi bahwa toko_id harus ada di tabel tokos
         ], [
             // Custom error messages
             'tanggal_penjualan.required' => 'Tanggal penjualan tidak boleh kosong.',
-            
             'total_setoran.required' => 'Total setoran tidak boleh kosong.',
             'tanggal_setoran.required' => 'Tanggal setoran tidak boleh kosong.',
             'nominal_setoran.required' => 'Nominal setoran tidak boleh kosong.',
-
+            'toko_id.required' => 'Toko harus dipilih.',
+            'toko_id.exists' => 'Toko yang dipilih tidak valid.',
         ]);
-
+    
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
+    
         // Fungsi untuk menghilangkan format angka
         $removeFormat = function ($value) {
             return (int)str_replace(['.', ','], '', $value); // Hilangkan titik dan koma
         };
-
-        // Simpan data ke database dan ambil ID dari data yang baru disimpan
-        $setoranPenjualan = Setoran_penjualan::create([
+    
+        // Simpan data ke database
+        Setoran_penjualan::create([
+            'tanggal_penjualan' => $request->tanggal_penjualan,
             'penjualan_kotor' => $removeFormat($request->penjualan_kotor),
             'diskon_penjualan' => $removeFormat($request->diskon_penjualan),
             'penjualan_bersih' => $removeFormat($request->penjualan_bersih),
@@ -293,13 +397,12 @@ class Setoran_tokobanjaranController extends Controller
             'nominal_setoran' => $removeFormat($request->nominal_setoran),
             'nominal_setoran2' => $removeFormat($request->nominal_setoran2),
             'plusminus' => $removeFormat($request->plusminus),
-            'toko_id' => 1, 
+            'toko_id' => 1, // Ambil nilai toko_id dari request
             'status' => 'unpost',
         ]);
-
-        return response()->json([
-            'url' => route('inquery_setorantunai.print', $setoranPenjualan->id)
-        ]);
+    
+        // Redirect ke halaman index dengan pesan sukses
+        return redirect()->route('setoran_tokobanjaran.index')->with('success', 'Data berhasil disimpan!');
     }
     
     
