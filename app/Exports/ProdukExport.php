@@ -27,60 +27,69 @@ class ProdukExport implements FromCollection, WithHeadings, WithStyles, WithTitl
         return $this->produkWithStok->map(function ($produk, $index) {
             return [
                 'no' => $index + 1, // Menambahkan nomor urut
-                'kode_produk' => $produk->kode_lama,
-                'nama_produk' => $produk->nama_produk,
-                'stok' => $produk->jumlah ?? 0, // Tampilkan 0 jika stok kosong
-                'harga_jual' => $produk->harga ?? 0,
-                'subtotal' => $produk->subTotal ?? 0,
+                'kode_produk' => $produk->kode_lama ?? '-', // Default jika kode produk kosong
+                'nama_produk' => $produk->nama_produk ?? '-', // Default jika nama produk kosong
+                'stok' => $produk->jumlah ?? 0, // Default 0 jika stok kosong
+                'harga_jual' => $produk->harga ?? 0, // Default 0 jika harga kosong
+                'subtotal' => $produk->subTotal ?? 0, // Default 0 jika subtotal kosong
             ];
         })->push($this->totalRow()); // Menambahkan baris total
     }
 
+
     public function headings(): array
-{
-    return [
-        ['PT JAVABAKERY FACTORY'],               // Baris pertama untuk judul
-        ['Klasifikasi: ' . $this->namaKlasifikasi],  // Baris kedua untuk nama klasifikasi
-        [], // Baris kosong untuk spasi
-        ['No', 'Kode Produk', 'Nama Produk', 'Stok', 'Harga Jual', 'Sub Total'], // Header tabel
-    ];
-}
+    {
+        // Mendapatkan tanggal dan waktu sekarang
+        $currentDateTime = now()->format('d-m-Y H:i:s');
+    
+        return [
+            ['PT JAVABAKERY FACTORY'],                    // Baris pertama untuk judul
+            ['Divisi: ' . $this->namaKlasifikasi],  // Baris kedua untuk nama klasifikasi
+            ['Tanggal: ' . $currentDateTime],            // Baris ketiga untuk tanggal dan waktu
+            [], // Baris kosong untuk spasi
+            ['No', 'Kode Produk', 'Nama Produk', 'Stok', 'Harga Jual', 'Sub Total'], // Header tabel
+        ];
+    }
+    
+    public function styles(Worksheet $sheet)
+    {
+        // Menggabungkan sel untuk setiap baris judul
+        $sheet->mergeCells('A1:F1'); // Merge untuk baris judul
+        $sheet->mergeCells('A2:F2'); // Merge untuk baris klasifikasi
+        $sheet->mergeCells('A3:F3'); // Merge untuk baris tanggal
 
-public function styles(Worksheet $sheet)
-{
-    // Mengatur gaya untuk judul dan klasifikasi
-    $sheet->mergeCells('A1:F1'); // Merge untuk judul
-    $sheet->mergeCells('A2:F2'); // Merge untuk klasifikasi
+        // Set nilai untuk judul, klasifikasi, dan tanggal
+        $sheet->setCellValue('A1', 'PT JAVABAKERY FACTORY'); // Judul
+        $sheet->setCellValue('A2', 'Divisi: ' . $this->namaKlasifikasi); // Klasifikasi
+        $sheet->setCellValue('A3', 'Tanggal: ' . now()->format('d-m-Y H:i:s')); // Tanggal
 
-    $sheet->setCellValue('A1', 'PT JAVABAKERY FACTORY'); // Set judul
-    $sheet->setCellValue('A2', 'Klasifikasi: ' . $this->namaKlasifikasi); // Set klasifikasi
+        // Mengatur gaya font dan alignment
+        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14); // Judul besar dan tebal
+        $sheet->getStyle('A2')->getFont()->setBold(true); // Klasifikasi tebal
+        $sheet->getStyle('A3')->getFont()->setItalic(true); // Tanggal miring
+        $sheet->getStyle('A1:F3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER); // Rata tengah
 
-    // Mengatur font dan alignment untuk judul dan klasifikasi
-    $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
-    $sheet->getStyle('A2')->getFont()->setBold(true);
-    $sheet->getStyle('A1:F2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER); // Rata tengah
+        // Mengatur gaya header tabel
+        $sheet->getStyle('A5:F5')->getFont()->setBold(true); // Header tabel bold
+        $sheet->getStyle('A5:F5')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER); // Header tabel rata tengah
 
-    // Mengatur alignment dan gaya untuk header tabel
-    $sheet->getStyle('A4:F4')->getFont()->setBold(true); // Header bold
-    $sheet->getStyle('A:F')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT); // Semua kolom rata kanan
+        // Format angka dengan titik pemisah ribuan
+        $sheet->getStyle('D6:D' . $sheet->getHighestRow())->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('E6:E' . $sheet->getHighestRow())->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('F6:F' . $sheet->getHighestRow())->getNumberFormat()->setFormatCode('#,##0');
 
-    // Mengatur alignment kiri untuk kolom kode produk dan nama produk
-    $sheet->getStyle('B')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-    $sheet->getStyle('C')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        // Mengatur lebar kolom
+        $sheet->getColumnDimension('A')->setWidth(5);  // Kolom No
+        $sheet->getColumnDimension('B')->setWidth(15); // Kolom Kode Produk
+        $sheet->getColumnDimension('C')->setWidth(30); // Kolom Nama Produk
+        $sheet->getColumnDimension('D')->setWidth(10); // Kolom Stok
+        $sheet->getColumnDimension('E')->setWidth(15); // Kolom Harga Jual
+        $sheet->getColumnDimension('F')->setWidth(15); // Kolom Sub Total
 
-    // Format angka dengan titik sebagai pemisah ribuan untuk harga jual dan subtotal
-    $sheet->getStyle('D5:D' . $sheet->getHighestRow())->getNumberFormat()->setFormatCode('#,##0');
-    $sheet->getStyle('E5:E' . $sheet->getHighestRow())->getNumberFormat()->setFormatCode('#,##0');
-    $sheet->getStyle('F5:F' . $sheet->getHighestRow())->getNumberFormat()->setFormatCode('#,##0');
-
-    // Mengatur lebar kolom
-    $sheet->getColumnDimension('A')->setWidth(5);
-    $sheet->getColumnDimension('B')->setWidth(15);
-    $sheet->getColumnDimension('C')->setWidth(30);
-    $sheet->getColumnDimension('D')->setWidth(10);
-    $sheet->getColumnDimension('E')->setWidth(15);
-    $sheet->getColumnDimension('F')->setWidth(15);
-}
+        // Menambahkan gaya bold untuk baris total (tergantung baris total pada sheet)
+        $lastRow = $sheet->getHighestRow();  // Menentukan baris terakhir
+        $sheet->getStyle("D{$lastRow}:F{$lastRow}")->getFont()->setBold(true); // Bold untuk kolom stok dan subtotal pada baris total
+    }
 
     protected function totalRow()
     {
