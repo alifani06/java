@@ -95,7 +95,8 @@
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
-                                <th>Tanggal Setoran</th> <!-- Tambahkan kolom tanggal setoran -->
+                                <th>Tanggal Setoran</th> 
+                                <th>Cabang</th> 
                                 <th>Penjualan Kotor</th>
                                 <th>Diskon Penjualan</th>
                                 <th>Penjualan Bersih</th>

@@ -323,18 +323,23 @@ class Inquery_penjualantokoController extends Controller
         return redirect()->back()->with('success', 'Data berhasil disimpan.');
     }
 
-    
+
     public function print($id)
-    {
-        // Ambil data setoran penjualan berdasarkan id yang dipilih
-        $setoranPenjualans = Setoran_penjualan::findOrFail($id);
+{
+    // Ambil data setoran penjualan berdasarkan id yang dipilih
+    $setoranPenjualans = Setoran_penjualan::with('toko')->findOrFail($id);
 
-        // Load view untuk PDF dan kirimkan data
-        $pdf = FacadePdf::loadView('admin.inquery_penjualantoko.print', compact('setoranPenjualans'));
+    // Pastikan data toko terkait tersedia
+    $cabang = $setoranPenjualans->toko->nama_toko?? 'Cabang Tidak Diketahui';
+    $alamat = $setoranPenjualans->toko->alamat?? 'Cabang Tidak Diketahui';
 
-        // Return PDF stream agar langsung bisa ditampilkan
-        return $pdf->stream('setoran_penjualan.pdf');
-    }
+    // Load view untuk PDF dan kirimkan data
+    $pdf = FacadePdf::loadView('admin.inquery_penjualantoko.print', compact('setoranPenjualans', 'cabang','alamat'));
+
+    // Return PDF stream agar langsung bisa ditampilkan
+    return $pdf->stream('setoran_penjualan.pdf');
+}
+
 
     
 

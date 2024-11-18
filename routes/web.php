@@ -711,7 +711,7 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('printReportsaldo', [\App\Http\Controllers\Toko_banjaran\Laporan_depositbanjaranController::class, 'printReportsaldo']);
     
     Route::resource('inquery_setorantunaibanjaran', \App\Http\Controllers\Toko_banjaran\Inquery_setorantunaibanjaranController::class);
-    Route::get('/toko_banjaran/inquery_setorantunai/{id}/print', [Inquery_setorantunaibanjaranController::class, 'print'])->name('inquery_setorantunai.print');
+    Route::get('/toko_banjaran/inquery_setorantunaibanjaran/{id}/print', [Inquery_setorantunaibanjaranController::class, 'print'])->name('inquery_setorantunaibanjaran.print');
 
     Route::resource('laporan_setorantunaibanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_setorantunaibanjaranController::class);
 
@@ -907,7 +907,7 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::get('printReportsaldo', [\App\Http\Controllers\Toko_tegal\Laporan_deposittegalController::class, 'printReportsaldo']);
     
     Route::resource('inquery_setorantunaibanjaran', \App\Http\Controllers\Toko_tegal\Inquery_setorantunaitegalController::class);
-    Route::get('/toko_banjaran/inquery_setorantunai/{id}/print', [Inquery_setorantunaitegalController::class, 'print'])->name('inquery_setorantunai.print');
+    Route::get('/toko_banjaran/inquery_setorantunaitegal/{id}/print', [Inquery_setorantunaitegalController::class, 'print'])->name('inquery_setorantunaitegal.print');
 
     Route::resource('laporan_setorantunaitegal', \App\Http\Controllers\Toko_tegal\Laporan_setorantunaitegalController::class);
 
@@ -1085,7 +1085,7 @@ Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {
     Route::get('printReportsaldo', [\App\Http\Controllers\Toko_pemalang\Laporan_depositpemalangController::class, 'printReportsaldo']);
     
     Route::resource('inquery_setorantunaipemalang', \App\Http\Controllers\Toko_pemalang\Inquery_setorantunaipemalangController::class);
-    Route::get('/toko_pemalang/inquery_setorantunai/{id}/print', [Inquery_setorantunaipemalangController::class, 'print'])->name('inquery_setorantunai.print');
+    Route::get('/toko_pemalang/inquery_setorantunaipemalang/{id}/print', [Inquery_setorantunaipemalangController::class, 'print'])->name('inquery_setorantunaipemalang.print');
 
     Route::resource('laporan_setorantunaipemalang', \App\Http\Controllers\Toko_pemalang\Laporan_setorantunaipemalangController::class);
 
@@ -1259,7 +1259,7 @@ Route::middleware('toko_bumiayu')->prefix('toko_bumiayu')->group(function () {
     Route::get('printReportsaldo', [\App\Http\Controllers\Toko_bumiayu\Laporan_depositbumiayuController::class, 'printReportsaldo']);
     
     Route::resource('inquery_setorantunaibumiayu', \App\Http\Controllers\Toko_bumiayu\Inquery_setorantunaibumiayuController::class);
-    Route::get('/toko_bumiayu/inquery_setorantunai/{id}/print', [Inquery_setorantunaibumiayuController::class, 'print'])->name('inquery_setorantunai.print');
+    Route::get('/toko_bumiayu/inquery_setorantunaibumiayu/{id}/print', [Inquery_setorantunaibumiayuController::class, 'print'])->name('inquery_setorantunaibumiayu.print');
 
     Route::resource('laporan_setorantunaibumiayu', \App\Http\Controllers\Toko_bumiayu\Laporan_setorantunaibumiayuController::class);
 
@@ -1436,7 +1436,7 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
     Route::get('printReportsaldo', [\App\Http\Controllers\Toko_slawi\Laporan_depositslawiController::class, 'printReportsaldo']);
     
     Route::resource('inquery_setorantunaislawi', \App\Http\Controllers\Toko_slawi\Inquery_setorantunaislawiController::class);
-    Route::get('/toko_slawi/inquery_setorantunai/{id}/print', [Inquery_setorantunaislawiController::class, 'print'])->name('inquery_setorantunai.print');
+    Route::get('/toko_slawi/inquery_setorantunaislawi/{id}/print', [Inquery_setorantunaislawiController::class, 'print'])->name('inquery_setorantunaislawi.print');
 
     Route::resource('laporan_setorantunaislawi', \App\Http\Controllers\Toko_slawi\Laporan_setorantunaislawiController::class);
 
@@ -1630,7 +1630,7 @@ Route::middleware('toko_cilacap')->prefix('toko_cilacap')->group(function () {
     Route::get('printReportsaldo', [\App\Http\Controllers\Toko_cilacap\Laporan_depositcilacapController::class, 'printReportsaldo']);
     
     Route::resource('inquery_setorantunaicilacap', \App\Http\Controllers\Toko_cilacap\Inquery_setorantunaicilacapController::class);
-    Route::get('/toko_cilacap/inquery_setorantunai/{id}/print', [Inquery_setorantunaicilacapController::class, 'print'])->name('inquery_setorantunai.print');
+    Route::get('/toko_cilacap/inquery_setorantunaicilacap/{id}/print', [Inquery_setorantunaicilacapController::class, 'print'])->name('inquery_setorantunaicilacap.print');
 
     Route::resource('laporan_setorantunaicilacap', \App\Http\Controllers\Toko_cilacap\Laporan_setorantunaicilacapController::class);
 

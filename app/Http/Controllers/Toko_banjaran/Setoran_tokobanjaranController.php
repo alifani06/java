@@ -270,26 +270,30 @@ class Setoran_tokobanjaranController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        // Fungsi untuk menghilangkan format angka
+        $removeFormat = function ($value) {
+            return (int)str_replace(['.', ','], '', $value); // Hilangkan titik dan koma
+        };
+
         // Simpan data ke database dan ambil ID dari data yang baru disimpan
         $setoranPenjualan = Setoran_penjualan::create([
-            'tanggal_penjualan' => $request->tanggal_penjualan,
-            'penjualan_kotor' => $request->penjualan_kotor,
-            'diskon_penjualan' => $request->diskon_penjualan,
-            'penjualan_bersih' => $request->penjualan_bersih,
-            'deposit_keluar' => $request->deposit_keluar,
-            'deposit_masuk' => $request->deposit_masuk,
-            'total_penjualan' => $request->total_penjualan,
-            'mesin_edc' => $request->mesin_edc,
-            'qris' => $request->qris,
-            'gobiz' => $request->gobiz,
-            'transfer' => $request->transfer,
-            'total_setoran' => $request->total_setoran,
+            'penjualan_kotor' => $removeFormat($request->penjualan_kotor),
+            'diskon_penjualan' => $removeFormat($request->diskon_penjualan),
+            'penjualan_bersih' => $removeFormat($request->penjualan_bersih),
+            'deposit_keluar' => $removeFormat($request->deposit_keluar),
+            'deposit_masuk' => $removeFormat($request->deposit_masuk),
+            'total_penjualan' => $removeFormat($request->total_penjualan),
+            'mesin_edc' => $removeFormat($request->mesin_edc),
+            'qris' => $removeFormat($request->qris),
+            'gobiz' => $removeFormat($request->gobiz),
+            'transfer' => $removeFormat($request->transfer),
+            'total_setoran' => $removeFormat($request->total_setoran),
             'tanggal_setoran' => $request->tanggal_setoran,
             'tanggal_setoran2' => $request->tanggal_setoran2,
-            'nominal_setoran' => $request->nominal_setoran,
-            'nominal_setoran2' => $request->nominal_setoran2,
-            'plusminus' => $request->plusminus,
-            'toko_id' => 1, // Menyimpan toko_id dengan nilai 1
+            'nominal_setoran' => $removeFormat($request->nominal_setoran),
+            'nominal_setoran2' => $removeFormat($request->nominal_setoran2),
+            'plusminus' => $removeFormat($request->plusminus),
+            'toko_id' => 1, 
             'status' => 'unpost',
         ]);
 
