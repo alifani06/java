@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\Inquery_pengirimanbarangjadiController;
 use App\Http\Controllers\Admin\Inquery_pengirimanbarangjadipesananController;
 use App\Http\Controllers\Admin\Inquery_pengirimanpesananController;
 use App\Http\Controllers\Admin\Inquery_penjualanprodukController;
+use App\Http\Controllers\Admin\Inquery_penjualantokoController;
 use App\Http\Controllers\Admin\Inquery_returbarangjadiController;
 use App\Http\Controllers\Admin\Inquery_setoranpelunasanController;
 use App\Http\Controllers\Admin\Inquery_stokbarangjadiController;
@@ -289,7 +290,10 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::resource('penjualan_toko', \App\Http\Controllers\Admin\PenjualantokoController::class);
     Route::post('/get-penjualan', [PenjualantokoController::class, 'getdata'])->name('getdata');
+    Route::get('/print-penjualan-kotor', [PenjualantokoController::class, 'printPenjualanKotor'])->name('print.penjualan.kotor');
 
+    Route::resource('inquery_penjualantoko', \App\Http\Controllers\Admin\Inquery_penjualantokoController::class);
+    Route::get('/admin/inquery_penjualantoko/{id}/print', [Inquery_penjualantokoController::class, 'print'])->name('inquery_penjualantoko.print');
 
 
 

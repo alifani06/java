@@ -388,6 +388,108 @@ class PenjualantokoController extends Controller{
 }
 
 
+public function printPenjualanKotor(Request $request) 
+{
+    // Ambil parameter tanggal_penjualan dari request
+    $tanggal_penjualan = $request->get('tanggal_penjualan'); // Menggunakan query string
 
+    // Pastikan tanggal_penjualan tidak null
+    if (!$tanggal_penjualan) {
+        return redirect()->back()->with('error', 'Tanggal penjualan tidak boleh kosong.');
+    }
+
+    // Ambil filter lain seperti status, toko_id, dll.
+    $status = $request->get('status');
+    $toko_id = $request->get('toko_id');
+    $produk_id = $request->get('produk');
+
+    // Query data penjualan
+    $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+        ->when($status, function ($query, $status) {
+            return $query->where('status', $status);
+        })
+        ->when($toko_id, function ($query, $toko_id) {
+            return $query->where('toko_id', $toko_id);
+        })
+        ->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan)->startOfDay()) // Pastikan menggunakan whereDate
+        ->orderBy('tanggal_penjualan', 'desc');
+
+    $inquery = $query->get();
+
+    // Gabungkan hasil berdasarkan produk_id
+    $finalResults = [];
+    
+    foreach ($inquery as $penjualan) {
+        foreach ($penjualan->detailPenjualanProduk as $detail) {
+            $produk = $detail->produk;
+
+            // Pastikan produk tidak null sebelum mengakses properti dan cocok dengan filter produk_id
+            if ($produk && (!$produk_id || $produk->id == $produk_id)) {
+                $key = $produk->id; // Menggunakan ID produk sebagai key
+
+                if (!isset($finalResults[$key])) {
+                    $finalResults[$key] = [
+                        'tanggal_penjualan' => $penjualan->tanggal_penjualan,
+                        'kode_lama' => $produk->kode_lama,
+                        'nama_produk' => $produk->nama_produk,
+                        'harga' => $produk->harga,
+                        'jumlah' => 0,
+                        'diskon' => 0,
+                        'total' => 0,
+                        'penjualan_kotor' => 0,
+                        'penjualan_bersih' => 0,
+                    ];
+                }
+
+                // Jumlahkan jumlah dan total
+                $finalResults[$key]['jumlah'] += $detail->jumlah;
+                $finalResults[$key]['penjualan_kotor'] += $detail->jumlah * $produk->harga;
+                $finalResults[$key]['total'] += $detail->total;
+
+                // Hitung diskon 10% dari jumlah * harga
+                if ($detail->diskon > 0) {
+                    $diskonPerItem = $produk->harga * 0.10; // Diskon per unit
+                    $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
+                }
+
+                // Kalkulasi penjualan bersih (penjualan kotor - diskon)
+                $finalResults[$key]['penjualan_bersih'] = $finalResults[$key]['penjualan_kotor'] - $finalResults[$key]['diskon'];
+            }
+        }
+    }
+
+    // Mengurutkan finalResults berdasarkan kode_lama
+    uasort($finalResults, function ($a, $b) {
+        return strcmp($a['kode_lama'], $b['kode_lama']);
+    });
+
+    // Ambil data untuk filter
+    $tokos = Toko::all(); // Model untuk tabel toko
+    $klasifikasis = Klasifikasi::all(); // Model untuk tabel klasifikasi
+    $produks = Produk::all(); // Model untuk tabel produk
+
+    // Dapatkan nama toko berdasarkan toko_id
+    $branchName = 'Semua Toko';
+    if ($toko_id) {
+        $toko = Toko::find($toko_id);
+        $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+    }
+
+    // Pass raw dates ke view
+    $startDate = $tanggal_penjualan;
+
+    // Menggunakan Barryvdh\DomPDF\Facade\Pdf untuk memuat dan menghasilkan PDF
+    $pdf = FacadePdf::loadView('admin.penjualan_toko.printpenjualankotor', [
+        'finalResults' => $finalResults,
+        'startDate' => $startDate,
+        'branchName' => $branchName,
+        'tokos' => $tokos,
+        'produks' => $produks, // Tambahkan data produk
+        'klasifikasis' => $klasifikasis,
+    ]);
+
+    // Output PDF ke browser
+    return $pdf->stream('laporan_penjualan_produk.pdf');
+}
 
 }

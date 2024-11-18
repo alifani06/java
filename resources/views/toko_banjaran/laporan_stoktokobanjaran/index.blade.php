@@ -105,7 +105,7 @@
                                     <i class="fas fa-print"></i> Cetak
                                 </button>
                                 <button type="submit" class="btn btn-success btn-block" name="export" value="excel">
-                                    <i class="fas fa-file-excel"></i> Ekspor Excel
+                                    <i class="fas fa-file-excel"></i> Export Excel
                                 </button>
                             </div>
                         </div>
@@ -153,15 +153,16 @@
         </div>
     </section>
     
-    <script>
-    function printReport() {
+<script>
+    function printReport()
+    {
         if (event) event.preventDefault();
-    const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printstoktokobanjaran') }}";
-    form.target = "_blank";
-    form.submit();
-}
-    </script>
+        const form = document.getElementById('form-action');
+        form.action = "{{ url('toko_banjaran/printstoktokobanjaran') }}";
+        form.target = "_blank";
+        form.submit();
+    }
+</script>
 
 <script>
     function filterSubKlasifikasi() {

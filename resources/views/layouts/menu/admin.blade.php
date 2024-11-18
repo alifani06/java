@@ -419,6 +419,7 @@
     request()->is('admin/inquery_hasilpenjualan*')|| 
     request()->is('admin/inquery_setoranpelunasan*')|| 
     request()->is('admin/inquery_hasilproduksi*')|| 
+    request()->is('admin/inquery_penjualantoko*')|| 
     request()->is('admin/inquery_estimasiproduksi')  
     // request()->is('admin/input*')
   
@@ -437,6 +438,7 @@
         request()->is('admin/inquery_hasilpenjualan*')||
         request()->is('admin/inquery_setoranpelunasan*')||
         request()->is('admin/inquery_hasilproduksi*')||
+        request()->is('admin/inquery_penjualantoko*')||
         request()->is('admin/inquery_estimasiproduksi*') 
         // request()->is('admin/input*')
       
@@ -461,12 +463,22 @@
         </li>
         {{-- @endif --}}
 
-        {{-- @if (auth()->check() && auth()->user()->menu['inquery penjualanproduk']) --}}
+        {{-- @if (auth()->check() && auth()->user()->menu['inquery penjualanproduk'])
         <li class="nav-item">
             <a href="{{ url('admin/inquery_penjualanproduk') }}"
                 class="nav-link {{ request()->is('admin/inquery_penjualanproduk*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Inquery Penjualan Produk</p>
+            </a>
+        </li>
+        @endif --}}
+
+        {{-- @if (auth()->check() && auth()->user()->menu['inquery penjualanproduk']) --}}
+        <li class="nav-item">
+            <a href="{{ url('admin/inquery_penjualantoko') }}"
+                class="nav-link {{ request()->is('admin/inquery_penjualantoko*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Inquery Penjualan Toko</p>
             </a>
         </li>
         {{-- @endif --}}

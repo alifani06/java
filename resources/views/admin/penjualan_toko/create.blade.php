@@ -58,7 +58,7 @@
                         <!-- Tempat untuk menampilkan Penjualan Kotor -->
                         <div class="form-group row mb-3">
                             <label for="penjualan_kotor" class="col-sm-3 col-form-label">
-                                <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Penjualan Kotor</a>
+                                <a id="penjualan_kotor_link" href="{{ route('print.penjualan.kotor') }}" target="_blank" class="text-decoration-none">Penjualan Kotor</a>
                             </label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="penjualan_kotor" name="penjualan_kotor" placeholder="" >
@@ -205,7 +205,23 @@
         </div>
         
     </section>
-
+    <script>
+        function updateLink() {
+            const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
+            const baseUrl = "{{ route('print.penjualan.kotor') }}"; // Menggunakan route Laravel
+            const url = new URL(baseUrl);
+    
+            // Tambahkan parameter tanggal_penjualan ke URL
+            if (tanggalPenjualan) {
+                url.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+            } else {
+                url.searchParams.delete('tanggal_penjualan'); // Hapus jika tidak ada tanggal
+            }
+    
+            // Update href link
+            document.getElementById('penjualan_kotor_link').href = url.toString();
+        }
+    </script>
 
     {{-- <script>
         document.getElementById('setoranForm').addEventListener('submit', function(e) {
