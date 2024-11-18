@@ -682,6 +682,7 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
 
     Route::resource('laporan_stoktokobanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_stoktokobanjaranController::class);
     Route::get('printstoktokobanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_stoktokobanjaranController::class, 'printReport']);
+    Route::get('printexcelstoktokobanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_stoktokobanjaranController::class, 'exportExcel']);
     Route::get('stoktokopesananbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_stoktokobanjaranController::class, 'stoktokopesananbanjaran']);
     Route::get('printstoktokopesananbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_stoktokobanjaranController::class, 'printReportstokpesananbanjaran']);
     Route::get('semuastoktokobanjaran', [Laporan_stoktokobanjaranController::class, 'semuaStokTokoBanjaran'])->name('laporan.semuaStokTokoBanjaran');
@@ -878,6 +879,7 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
 
     Route::resource('laporan_stoktokotegal', \App\Http\Controllers\Toko_tegal\Laporan_stoktokotegalController::class);
     Route::get('printstoktokotegal', [\App\Http\Controllers\Toko_tegal\Laporan_stoktokotegalController::class, 'printReport']);
+    Route::get('printexcelstoktokotegal', [\App\Http\Controllers\Toko_tegal\Laporan_stoktokotegalController::class, 'exportExcel']);
     Route::get('stoktokopesanantegal', [\App\Http\Controllers\Toko_tegal\Laporan_stoktokotegalController::class, 'stoktokopesanantegal']);
     Route::get('printstoktokopesanantegal', [\App\Http\Controllers\Toko_tegal\Laporan_stoktokotegalController::class, 'printReportstokpesanantegal']);
     Route::get('semuastoktokotegal', [Laporan_stoktokotegalController::class, 'semuaStokTokoTegal'])->name('laporan.semuaStokTokoTegal');
@@ -1054,6 +1056,7 @@ Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {
 
     Route::resource('laporan_stoktokopemalang', \App\Http\Controllers\Toko_pemalang\Laporan_stoktokopemalangController::class);
     Route::get('printstoktokopemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_stoktokopemalangController::class, 'printReport']);
+    Route::get('printexcelstoktokopemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_stoktokopemalangController::class, 'exportExcel']);
     Route::get('stoktokopesananpemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_stoktokopemalangController::class, 'stoktokopesananpemalang']);
     Route::get('printstoktokopesananpemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_stoktokopemalangController::class, 'printReportstokpesananpemalang']);
     Route::get('semuastoktokopemalang', [Laporan_stoktokopemalangController::class, 'semuaStokTokoPemalang'])->name('laporan.semuaStokTokopemalang');
@@ -1228,6 +1231,7 @@ Route::middleware('toko_bumiayu')->prefix('toko_bumiayu')->group(function () {
 
     Route::resource('laporan_stoktokobumiayu', \App\Http\Controllers\Toko_bumiayu\Laporan_stoktokobumiayuController::class);
     Route::get('printstoktokobumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_stoktokobumiayuController::class, 'printReport']);
+    Route::get('printexcelstoktokobumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_stoktokobumiayuController::class, 'exportExcel']);
     Route::get('stoktokopesananbumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_stoktokobumiayuController::class, 'stoktokopesananbumiayu']);
     Route::get('printstoktokopesananbumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_stoktokobumiayuController::class, 'printReportstokpesananbumiayu']);
     Route::get('semuastoktokobumiayu', [Laporan_stoktokobumiayuController::class, 'semuaStokTokoBumiayu'])->name('laporan.semuaStokTokoBumiayu');
@@ -1404,6 +1408,7 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
 
     Route::resource('laporan_stoktokoslawi', \App\Http\Controllers\Toko_slawi\Laporan_stoktokoslawiController::class);
     Route::get('printstoktokoslawi', [\App\Http\Controllers\Toko_slawi\Laporan_stoktokoslawiController::class, 'printReport']);
+    Route::get('printexcelstoktokoslawi', [\App\Http\Controllers\Toko_slawi\Laporan_stoktokoslawiController::class, 'exportExcel']);
     Route::get('stoktokopesananslawi', [\App\Http\Controllers\Toko_slawi\Laporan_stoktokoslawiController::class, 'stoktokopesananslawi']);
     Route::get('printstoktokopesananslawi', [\App\Http\Controllers\Toko_slawi\Laporan_stoktokoslawiController::class, 'printReportstokpesananslawi']);
     Route::get('semuastoktokoslawi', [Laporan_stoktokoslawiController::class, 'semuaStokTokoSlawi'])->name('laporan.semuaStokTokoSlawi');
@@ -1598,6 +1603,7 @@ Route::middleware('toko_cilacap')->prefix('toko_cilacap')->group(function () {
 
     Route::resource('laporan_stoktokocilacap', \App\Http\Controllers\Toko_cilacap\Laporan_stoktokocilacapController::class);
     Route::get('printstoktokocilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_stoktokocilacapController::class, 'printReport']);
+    Route::get('printexcelstoktokocilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_stoktokocilacapController::class, 'exportExcel']);
     Route::get('stoktokopesanancilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_stoktokocilacapController::class, 'stoktokopesanancilacap']);
     Route::get('printstoktokopesanancilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_stoktokocilacapController::class, 'printReportstokpesanantegal']);
     Route::get('semuastoktokocilacap', [Laporan_stoktokocilacapController::class, 'semuaStokTokoCilacap'])->name('laporan.semuaStokTokoCilacap');

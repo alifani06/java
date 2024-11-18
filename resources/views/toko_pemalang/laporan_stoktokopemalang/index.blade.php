@@ -104,8 +104,8 @@
                                 <button type="button" class="btn btn-primary btn-block" onclick="printReport(event)">
                                     <i class="fas fa-print"></i> Cetak
                                 </button>
-                                <button type="submit" class="btn btn-success btn-block" name="export" value="excel">
-                                    <i class="fas fa-file-excel"></i> Ekspor Excel
+                                <button type="button" class="btn btn-success btn-block" onclick="printExcel(event)">
+                                    <i class="fas fa-print"></i> Ekspor Excel
                                 </button>
                             </div>
                         </div>
@@ -153,7 +153,7 @@
         </div>
     </section>
     
-    <script>
+<script>
     function printReport() {
         if (event) event.preventDefault();
     const form = document.getElementById('form-action');
@@ -161,7 +161,17 @@
     form.target = "_blank";
     form.submit();
 }
-    </script>
+</script>
+
+<script>
+    function printExcel() {
+        if (event) event.preventDefault();
+    const form = document.getElementById('form-action');
+    form.action = "{{ url('toko_pemalang/printexcelstoktokopemalang') }}";
+    form.target = "_blank";
+    form.submit();
+    }
+</script>
 
 <script>
     function filterSubKlasifikasi() {
