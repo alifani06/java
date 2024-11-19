@@ -47,17 +47,18 @@ class Inquery_setorantunaibanjaranController extends Controller
         $tanggalPenjualan = $request->input('tanggal_setoran');
         $tanggalAkhir = $request->input('tanggal_akhir');
     
-        // Ambil semua data setoran penjualan dengan filter tanggal jika ada
-        $setoranPenjualans = Setoran_penjualan::when($tanggalPenjualan, function ($query) use ($tanggalPenjualan, $tanggalAkhir) {
-            return $query->whereDate('tanggal_setoran', '>=', $tanggalPenjualan)
-                         ->whereDate('tanggal_setoran', '<=', $tanggalAkhir ?? $tanggalPenjualan);
-        })
-        ->orderBy('id', 'DESC')
-        ->get();
+        $setoranPenjualans = Setoran_penjualan::where('toko_id', 1)
+            ->when($tanggalPenjualan, function ($query) use ($tanggalPenjualan, $tanggalAkhir) {
+                return $query->whereDate('tanggal_setoran', '>=', $tanggalPenjualan)
+                             ->whereDate('tanggal_setoran', '<=', $tanggalAkhir ?? $tanggalPenjualan);
+            })
+            ->orderBy('id', 'DESC')
+            ->get();
     
         // Kirim data ke view
         return view('toko_banjaran.inquery_setorantunai.index', compact('setoranPenjualans'));
     }
+    
     
     
     public function create(Request $request)

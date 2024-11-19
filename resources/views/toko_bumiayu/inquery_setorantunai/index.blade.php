@@ -118,20 +118,19 @@
                             <tr class="dropdown"{{ $item->id }}>
                                 <td class="text-center">{{ $index + 1 }}</td>
                                 <td>{{ $item->tanggal_setoran ? \Carbon\Carbon::parse($item->tanggal_setoran)->format('d-m-Y') : '-' }}</td> <!-- Menampilkan Tanggal item -->
-                                <td>{{ $item->penjualan_kotor }}</td>
-                                <td>{{ $item->diskon_penjualan }}</td>
-                                <td>{{ $item->penjualan_bersih }}</td>
-                                <td>{{ $item->deposit_keluar }}</td>
-                                <td>{{ $item->deposit_masuk }}</td>
-                                <td>{{ $item->total_penjualan }}</td>
-                                <td>{{ $item->mesin_edc ?? '0' }}</td>
-                                <td>{{ $item->gobiz ?? '0' }}</td>
-                                <td>{{ $item->transfer ?? '0' }}</td>
-                                <td>{{ $item->qris ?? '0' }}</td>
-                                <td>{{ $item->total_setoran }}</td>
-                                <td>{{ $item->nominal_setoran }}</td>
-                                <td>{{ $item->plusminus }}</td>
-                        
+                                <td>{{ number_format($item->penjualan_kotor, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->diskon_penjualan, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->penjualan_bersih, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->deposit_keluar, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->deposit_masuk, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->total_penjualan, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->mesin_edc ?? 0, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->gobiz ?? 0, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->transfer ?? 0, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->qris ?? 0, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->total_setoran, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->nominal_setoran, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->plusminus, 0, ',', '.') }}</td>
                                     <td class="text-center">
                                         @if ($item->status == 'posting')
                                             <button type="button" class="btn btn-warning btn-sm">
@@ -151,11 +150,11 @@
                                      
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($item->status == 'unpost')
-                                            <a class="dropdown-item" href="{{ route('inquery_setorantunai.print', $item->id) }}" target="_blank">Print</a>
+                                            <a class="dropdown-item" href="{{ route('inquery_setorantunaibumiayu.print', $item->id) }}" target="_blank">Print</a>
                                                  
                                             @endif
                                             @if ($item->status == 'posting')
-                                                    <a class="dropdown-item" href="{{ route('inquery_setorantunai.print', $item->id) }}" target="_blank">Print</a>
+                                                    <a class="dropdown-item" href="{{ route('inquery_setorantunaibumiayu.print', $item->id) }}" target="_blank">Print</a>
                                                     @endif
                                            
                                         </div>
@@ -201,7 +200,7 @@
         var form = document.getElementById('form-action');
     
         function cari() {
-            form.action = "{{ url('toko_bumiayu/inquery_setorantunaibumiayu') }}";
+            form.action = "{{ url('tokoibumiayu/inquery_setorantunaibumiayu') }}";
             form.submit();
         }
     </script>
