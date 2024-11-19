@@ -294,7 +294,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::resource('inquery_penjualantoko', \App\Http\Controllers\Admin\Inquery_penjualantokoController::class);
     Route::get('/admin/inquery_penjualantoko/{id}/print', [Inquery_penjualantokoController::class, 'print'])->name('inquery_penjualantoko.print');
-
+    Route::get('inquery_penjualantoko/unpost_penjualantoko/{id}', [\App\Http\Controllers\Admin\Inquery_penjualantokoController::class, 'unpost_penjualantoko']);
+    Route::get('inquery_penjualantoko/posting_penjualantoko/{id}', [\App\Http\Controllers\Admin\Inquery_penjualantokoController::class, 'posting_penjualantoko']);
 
 
 

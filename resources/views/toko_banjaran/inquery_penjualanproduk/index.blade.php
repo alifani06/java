@@ -133,6 +133,11 @@
                                     </td>
 
                                     <td class="text-center">
+                                        @if ($item->status == 'selesai')
+                                            <button type="button" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-file-invoice"></i>
+                                            </button>
+                                        @endif
                                         @if ($item->status == 'posting')
                                             <button type="button" class="btn btn-success btn-sm">
                                                 <i class="fas fa-check"></i>
@@ -160,6 +165,10 @@
                                             @if ($item->status == 'posting')
                                                 <a class="dropdown-item unpost-btn" data-memo-id="{{ $item->id }}">Unpost</a>
                                                 <a class="dropdown-item" href="{{ url('/toko_banjaran/inquery_penjualanprodukbanjaran/' . $item->id ) }}">Show</a>
+                                            @endif
+                                            @if ($item->status == 'selesai')
+                                                <a class="dropdown-item" style="font-size: 12px;">No. Faktur Penjualan Toko</a>
+                                                <a class="dropdown-item">-</a>
                                             @endif
                                         </div>
                                     </td>

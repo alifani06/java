@@ -447,6 +447,64 @@ class Inquery_penjualantokoController extends Controller
         return $pdf->stream('laporan_penjualan_produk.pdf');
     }
 
+
+
+    public function unpost_penjualantoko($id)
+    {
+        // Ambil data setoran_penjualan berdasarkan ID
+        $setoranPenjualan = Setoran_penjualan::where('id', $id)->first();
+    
+        if ($setoranPenjualan) {
+            // Update status pada setoran_penjualan menjadi 'unpost'
+            $setoranPenjualan->update([
+                'status' => 'unpost',
+            ]);
+    
+            // Update status pada penjualanproduk
+            $affectedRows = Penjualanproduk::where('toko_id', $setoranPenjualan->toko_id)
+                ->whereDate('tanggal_penjualan', $setoranPenjualan->tanggal_penjualan) // Gunakan whereDate
+                ->update(['status' => 'posting']);
+    
+            // Periksa apakah data berhasil diperbarui
+            if ($affectedRows > 0) {
+                return back()->with('success', 'Status berhasil diubah menjadi unpost, dan status penjualanproduk diubah menjadi posting.');
+            } else {
+                return back()->with('error', 'Tidak ada data penjualanproduk yang sesuai untuk diperbarui.');
+            }
+        }
+    
+        return back()->with('error', 'Data setoran tidak ditemukan.');
+    }
+    
+    public function posting_penjualantoko($id)
+    {
+        // Ambil data setoran_penjualan berdasarkan ID
+        $setoranPenjualan = Setoran_penjualan::where('id', $id)->first();
+    
+        if ($setoranPenjualan) {
+            // Update status pada setoran_penjualan menjadi 'unpost'
+            $setoranPenjualan->update([
+                'status' => 'posting',
+            ]);
+    
+            // Update status pada penjualanproduk
+            $affectedRows = Penjualanproduk::where('toko_id', $setoranPenjualan->toko_id)
+                ->whereDate('tanggal_penjualan', $setoranPenjualan->tanggal_penjualan) // Gunakan whereDate
+                ->update(['status' => 'selesai']);
+    
+            // Periksa apakah data berhasil diperbarui
+            if ($affectedRows > 0) {
+                return back()->with('success', 'Status berhasil diubah menjadi unpost, dan status penjualanproduk diubah menjadi posting.');
+            } else {
+                return back()->with('error', 'Tidak ada data penjualanproduk yang sesuai untuk diperbarui.');
+            }
+        }
+    
+        return back()->with('error', 'Data setoran tidak ditemukan.');
+    }
+
+    
+
     }
 
     

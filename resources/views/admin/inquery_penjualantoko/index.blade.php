@@ -136,8 +136,8 @@
                         
                                     <td class="text-center">
                                         @if ($item->status == 'posting')
-                                            <button type="button" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-minus"></i>
+                                            <button type="button" class="btn btn-success btn-sm">
+                                                <i class="fas fa-check"></i>
                                             </button>
                                         @endif
                                         @if ($item->status == 'unpost')
@@ -153,12 +153,14 @@
                                      
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($item->status == 'unpost')
-                                            <a class="dropdown-item" href="{{ route('inquery_penjualantoko.print', $item->id) }}" target="_blank">Print</a>
-                                                 
+                                            <a class="dropdown-item posting-btn" data-memo-id="{{ $item->id }}">Posting</a>
+                                                <a class="dropdown-item" href="{{ route('inquery_penjualantoko.print', $item->id) }}" target="_blank">Print</a>  
                                             @endif
+
                                             @if ($item->status == 'posting')
-                                                    <a class="dropdown-item" href="{{ route('inquery_penjualantoko.print', $item->id) }}" target="_blank">Print</a>
-                                                    @endif
+                                                <a class="dropdown-item unpost-btn" data-memo-id="{{ $item->id }}">Unpost</a>
+                                                <a class="dropdown-item" href="{{ route('inquery_penjualantoko.print', $item->id) }}" target="_blank">Print</a>
+                                            @endif
                                            
                                         </div>
                                     </td>
@@ -265,4 +267,86 @@
         });
     </script>
 
+
+<script>
+    $(document).ready(function() {
+        $('.unpost-btn').click(function() {
+            var memoId = $(this).data('memo-id');
+            $(this).addClass('disabled');
+
+            // Tampilkan modal loading saat permintaan AJAX diproses
+            $('#modal-loading').modal('show');
+
+            // Kirim permintaan AJAX untuk melakukan unpost
+            $.ajax({
+                url: "{{ url('admin/inquery_penjualantoko/unpost_penjualantoko/') }}/" + memoId,
+                type: 'GET',
+                data: {
+                    id: memoId
+                },
+                success: function(response) {
+                    // Sembunyikan modal loading setelah permintaan selesai
+                    $('#modal-loading').modal('hide');
+
+                    // Tampilkan pesan sukses atau lakukan tindakan lain sesuai kebutuhan
+                    console.log(response);
+
+                    // Tutup modal setelah berhasil unpost
+                    $('#modal-posting-' + memoId).modal('hide');
+
+                    // Reload the page to refresh the table
+                    location.reload();
+                },
+                error: function(error) {
+                    // Sembunyikan modal loading setelah permintaan selesai
+                    $('#modal-loading').modal('hide');
+
+                    // Tampilkan pesan error atau lakukan tindakan lain sesuai kebutuhan
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
+{{-- posting memo --}}
+<script>
+    $(document).ready(function() {
+        $('.posting-btn').click(function() {
+            var memoId = $(this).data('memo-id');
+            $(this).addClass('disabled');
+
+            // Tampilkan modal loading saat permintaan AJAX diproses
+            $('#modal-loading').modal('show');
+
+            // Kirim permintaan AJAX untuk melakukan posting
+            $.ajax({
+                url: "{{ url('admin/inquery_penjualantoko/posting_penjualantoko/') }}/" + memoId,
+                type: 'GET',
+                data: {
+                    id: memoId
+                },
+                success: function(response) {
+                    // Sembunyikan modal loading setelah permintaan selesai
+                    $('#modal-loading').modal('hide');
+
+                    // Tampilkan pesan sukses atau lakukan tindakan lain sesuai kebutuhan
+                    console.log(response);
+
+                    // Tutup modal setelah berhasil posting
+                    $('#modal-posting-' + memoId).modal('hide');
+
+                    // Reload the page to refresh the table
+                    location.reload();
+                },
+                error: function(error) {
+                    // Sembunyikan modal loading setelah permintaan selesai
+                    $('#modal-loading').modal('hide');
+
+                    // Tampilkan pesan error atau lakukan tindakan lain sesuai kebutuhan
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
 @endsection

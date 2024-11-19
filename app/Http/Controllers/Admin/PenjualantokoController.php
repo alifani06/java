@@ -383,7 +383,7 @@ class PenjualantokoController extends Controller{
             'nominal_setoran2' => $removeFormat($request->nominal_setoran2),
             'plusminus' => $removeFormat($request->plusminus),
             'toko_id' => $request->toko_id, // Ambil nilai toko_id dari request
-            'status' => 'unpost',
+            'status' => 'posting',
             'no_fakturpenjualantoko' => $this->kode($request->toko_id), // Generate kode berdasarkan toko_id
         ]);
     

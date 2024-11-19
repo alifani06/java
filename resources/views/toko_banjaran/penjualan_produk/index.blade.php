@@ -117,18 +117,16 @@
                                                 <i class="fas fa-check"></i>
                                             </button>
                                         @endif
+                                        @if ($item->status == 'selesai')
+                                            <button type="button" class="btn btn-success btn-sm">
+                                                <i class="fas fa-file-invoice"></i>
+                                            </button>
+                                        @endif
                                         @if ($item->status == 'unpost')
                                         <button type="button" class="btn btn-danger btn-sm">
                                             <i class="fas fa-times"></i>
                                         </button>
-                                        {{-- <form action="{{ route('penjualan_produk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="btn btn-danger btn-sm mt-2">
-                                                <i class="fas fa-trash-alt"></i> 
-                                            </button>
-                                        </form> --}}
+                                       
                                         @endif
                                      
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
