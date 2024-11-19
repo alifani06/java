@@ -68,6 +68,7 @@
                             <tr>
                                 <th class="text-center">No</th>
                                 <th>Tanggal Setoran</th> 
+                                <th>No. Faktur</th> 
                                 <th>Cabang</th> 
                                 <th>Penjualan Kotor</th>
                                 <th>Diskon Penjualan</th>
@@ -89,6 +90,7 @@
                             <tr>
                                 <td class="text-center">{{ $index + 1 }}</td>
                                 <td>{{ $setoran->tanggal_setoran ? \Carbon\Carbon::parse($setoran->tanggal_setoran)->format('d-m-Y') : '-' }}</td> <!-- Menampilkan Tanggal Setoran -->
+                                <td>{{ $setoran->no_fakturpenjualantoko }}</td>
                                 <td>{{ $setoran->toko->nama_toko }}</td>
                                 <td>{{ number_format($setoran->penjualan_kotor, 0, ',', '.') }}</td>
                                 <td>{{ number_format($setoran->diskon_penjualan, 0, ',', '.') }}</td>

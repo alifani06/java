@@ -278,86 +278,162 @@ class PenjualantokoController extends Controller{
 
 
 
+    // public function store(Request $request)
+    // {
+    //     // Validasi input dengan custom error messages
+    //     $validator = Validator::make($request->all(), [
+    //         'tanggal_penjualan' => 'required|date',
+    //         'total_setoran' => 'required',
+    //         'tanggal_setoran' => 'required|date',
+    //         'nominal_setoran' => 'required',
+    //         'toko_id' => 'required|exists:tokos,id', // Validasi bahwa toko_id harus ada di tabel tokos
+    //     ], [
+    //         // Custom error messages
+    //         'tanggal_penjualan.required' => 'Tanggal penjualan tidak boleh kosong.',
+    //         'total_setoran.required' => 'Total setoran tidak boleh kosong.',
+    //         'tanggal_setoran.required' => 'Tanggal setoran tidak boleh kosong.',
+    //         'nominal_setoran.required' => 'Nominal setoran tidak boleh kosong.',
+    //         'toko_id.required' => 'Toko harus dipilih.',
+    //         'toko_id.exists' => 'Toko yang dipilih tidak valid.',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return redirect()->back()->withErrors($validator)->withInput();
+    //     }
+
+    //     // Fungsi untuk menghilangkan format angka
+    //     $removeFormat = function ($value) {
+    //         return (int)str_replace(['.', ','], '', $value); // Hilangkan titik dan koma
+    //     };
+
+    //     // Simpan data ke database
+    //     Setoran_penjualan::create([
+    //         'tanggal_penjualan' => $request->tanggal_penjualan,
+    //         'penjualan_kotor' => $removeFormat($request->penjualan_kotor),
+    //         'diskon_penjualan' => $removeFormat($request->diskon_penjualan),
+    //         'penjualan_bersih' => $removeFormat($request->penjualan_bersih),
+    //         'deposit_keluar' => $removeFormat($request->deposit_keluar),
+    //         'deposit_masuk' => $removeFormat($request->deposit_masuk),
+    //         'total_penjualan' => $removeFormat($request->total_penjualan),
+    //         'mesin_edc' => $removeFormat($request->mesin_edc),
+    //         'qris' => $removeFormat($request->qris),
+    //         'gobiz' => $removeFormat($request->gobiz),
+    //         'transfer' => $removeFormat($request->transfer),
+    //         'total_setoran' => $removeFormat($request->total_setoran),
+    //         'tanggal_setoran' => $request->tanggal_setoran,
+    //         'tanggal_setoran2' => $request->tanggal_setoran2,
+    //         'nominal_setoran' => $removeFormat($request->nominal_setoran),
+    //         'nominal_setoran2' => $removeFormat($request->nominal_setoran2),
+    //         'plusminus' => $removeFormat($request->plusminus),
+    //         'toko_id' => $request->toko_id, // Ambil nilai toko_id dari request
+    //         'status' => 'unpost',
+    //         'no_fakturpenjualantoko' => $this->kode($request->toko_id), // Generate kode berdasarkan toko_id
+
+    //     ]);
+
+    //     // Redirect ke halaman index dengan pesan sukses
+    //     return redirect()->route('penjualan_toko.index')->with('success', 'Data berhasil disimpan!');
+    // }
+
     public function store(Request $request)
-{
-    // Validasi input dengan custom error messages
-    $validator = Validator::make($request->all(), [
-        'tanggal_penjualan' => 'required|date',
-        'total_setoran' => 'required',
-        'tanggal_setoran' => 'required|date',
-        'nominal_setoran' => 'required',
-        'toko_id' => 'required|exists:tokos,id', // Validasi bahwa toko_id harus ada di tabel tokos
-    ], [
-        // Custom error messages
-        'tanggal_penjualan.required' => 'Tanggal penjualan tidak boleh kosong.',
-        'total_setoran.required' => 'Total setoran tidak boleh kosong.',
-        'tanggal_setoran.required' => 'Tanggal setoran tidak boleh kosong.',
-        'nominal_setoran.required' => 'Nominal setoran tidak boleh kosong.',
-        'toko_id.required' => 'Toko harus dipilih.',
-        'toko_id.exists' => 'Toko yang dipilih tidak valid.',
-    ]);
-
-    if ($validator->fails()) {
-        return redirect()->back()->withErrors($validator)->withInput();
+    {
+        // Validasi input dengan custom error messages
+        $validator = Validator::make($request->all(), [
+            'tanggal_penjualan' => 'required|date',
+            'total_setoran' => 'required',
+            'tanggal_setoran' => 'required|date',
+            'nominal_setoran' => 'required',
+            'toko_id' => 'required|exists:tokos,id', // Validasi bahwa toko_id harus ada di tabel tokos
+        ], [
+            // Custom error messages
+            'tanggal_penjualan.required' => 'Tanggal penjualan tidak boleh kosong.',
+            'total_setoran.required' => 'Total setoran tidak boleh kosong.',
+            'tanggal_setoran.required' => 'Tanggal setoran tidak boleh kosong.',
+            'nominal_setoran.required' => 'Nominal setoran tidak boleh kosong.',
+            'toko_id.required' => 'Toko harus dipilih.',
+            'toko_id.exists' => 'Toko yang dipilih tidak valid.',
+        ]);
+    
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+    
+        // Fungsi untuk menghilangkan format angka
+        $removeFormat = function ($value) {
+            return (int)str_replace(['.', ','], '', $value); // Hilangkan titik dan koma
+        };
+    
+        // Simpan data ke database
+        $setoran = Setoran_penjualan::create([
+            'tanggal_penjualan' => $request->tanggal_penjualan,
+            'penjualan_kotor' => $removeFormat($request->penjualan_kotor),
+            'diskon_penjualan' => $removeFormat($request->diskon_penjualan),
+            'penjualan_bersih' => $removeFormat($request->penjualan_bersih),
+            'deposit_keluar' => $removeFormat($request->deposit_keluar),
+            'deposit_masuk' => $removeFormat($request->deposit_masuk),
+            'total_penjualan' => $removeFormat($request->total_penjualan),
+            'mesin_edc' => $removeFormat($request->mesin_edc),
+            'qris' => $removeFormat($request->qris),
+            'gobiz' => $removeFormat($request->gobiz),
+            'transfer' => $removeFormat($request->transfer),
+            'total_setoran' => $removeFormat($request->total_setoran),
+            'tanggal_setoran' => $request->tanggal_setoran,
+            'tanggal_setoran2' => $request->tanggal_setoran2,
+            'nominal_setoran' => $removeFormat($request->nominal_setoran),
+            'nominal_setoran2' => $removeFormat($request->nominal_setoran2),
+            'plusminus' => $removeFormat($request->plusminus),
+            'toko_id' => $request->toko_id, // Ambil nilai toko_id dari request
+            'status' => 'unpost',
+            'no_fakturpenjualantoko' => $this->kode($request->toko_id), // Generate kode berdasarkan toko_id
+        ]);
+    
+        // Update status penjualanproduk menjadi 'selesai' berdasarkan toko_id dan tanggal_penjualan
+        Penjualanproduk::where('toko_id', $request->toko_id)
+            ->whereDate('tanggal_penjualan', $request->tanggal_penjualan)
+            ->update(['status' => 'selesai']);
+    
+        // Redirect ke halaman index dengan pesan sukses
+        return redirect()->route('penjualan_toko.index')->with('success', 'Data berhasil disimpan dan status penjualan berhasil diperbarui!');
     }
+    
 
-    // Fungsi untuk menghilangkan format angka
-    $removeFormat = function ($value) {
-        return (int)str_replace(['.', ','], '', $value); // Hilangkan titik dan koma
-    };
 
-    // Simpan data ke database
-    Setoran_penjualan::create([
-        'tanggal_penjualan' => $request->tanggal_penjualan,
-        'penjualan_kotor' => $removeFormat($request->penjualan_kotor),
-        'diskon_penjualan' => $removeFormat($request->diskon_penjualan),
-        'penjualan_bersih' => $removeFormat($request->penjualan_bersih),
-        'deposit_keluar' => $removeFormat($request->deposit_keluar),
-        'deposit_masuk' => $removeFormat($request->deposit_masuk),
-        'total_penjualan' => $removeFormat($request->total_penjualan),
-        'mesin_edc' => $removeFormat($request->mesin_edc),
-        'qris' => $removeFormat($request->qris),
-        'gobiz' => $removeFormat($request->gobiz),
-        'transfer' => $removeFormat($request->transfer),
-        'total_setoran' => $removeFormat($request->total_setoran),
-        'tanggal_setoran' => $request->tanggal_setoran,
-        'tanggal_setoran2' => $request->tanggal_setoran2,
-        'nominal_setoran' => $removeFormat($request->nominal_setoran),
-        'nominal_setoran2' => $removeFormat($request->nominal_setoran2),
-        'plusminus' => $removeFormat($request->plusminus),
-        'toko_id' => $request->toko_id, // Ambil nilai toko_id dari request
-        'status' => 'unpost',
-        'no_fakturpenjualantoko' => $this->kode(),
-
-    ]);
-
-    // Redirect ke halaman index dengan pesan sukses
-    return redirect()->route('penjualan_toko.index')->with('success', 'Data berhasil disimpan!');
-}
-
-public function kode()
-{
-    $prefix = 'FPA';
-    $year = date('y'); 
-    $monthDay = date('dm'); 
-
-    $lastBarang = Setoran_penjualan::where('no_fakturpenjualantoko', 'LIKE', $prefix . '%')
-                                ->whereDate('tanggal_penjualan', Carbon::today())
-                                ->orderBy('no_fakturpenjualantoko', 'desc')
-                                ->first();
-
-    if (!$lastBarang) {
-        $num = 1;
-    } else {
-        $lastCode = $lastBarang->no_fakturpenjualantoko;
-        $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
-        $num = $lastNum + 1;
+    public function kode($toko_id)
+    {
+        // Tentukan prefix berdasarkan toko_id
+        $prefix = match($toko_id) {
+            1 => 'FTC',
+            2 => 'FTD',
+            3 => 'FTB',
+            4 => 'FTE',
+            5 => 'FTF',
+            6 => 'FTG',
+            default => 'FTA', 
+        };
+    
+        $year = date('y'); 
+        $monthDay = date('dm'); 
+    
+        // Ambil data terakhir berdasarkan prefix dan tanggal hari ini
+        $lastBarang = Setoran_penjualan::where('no_fakturpenjualantoko', 'LIKE', $prefix . $monthDay . $year . '%')
+                                    ->orderBy('no_fakturpenjualantoko', 'desc')
+                                    ->first();
+    
+        // Tentukan urutan berikutnya
+        if (!$lastBarang) {
+            $num = 1;
+        } else {
+            $lastCode = $lastBarang->no_fakturpenjualantoko;
+            $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil nomor urutan terakhir
+            $num = $lastNum + 1;
+        }
+    
+        $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
+        $newCode = $prefix . $monthDay . $year . $formattedNum;
+        return $newCode;
     }
+    
 
-    $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
-    $newCode = $prefix . $monthDay . $year . $formattedNum;
-    return $newCode;
-}
 
 public function printPenjualanKotor(Request $request)
 {
