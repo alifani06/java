@@ -514,83 +514,239 @@ class PenjualantokoController extends Controller{
     // }
 
     public function printPenjualanKotor(Request $request)
-{
-    // Ambil parameter tanggal_penjualan dan toko_id dari request
-    $tanggal_penjualan = $request->get('tanggal_penjualan'); // Menggunakan query string
-    $toko_id = $request->get('toko_id'); // Mengambil toko_id dari query string
+    {
+        // Ambil parameter tanggal_penjualan dan toko_id dari request
+        $tanggal_penjualan = $request->get('tanggal_penjualan'); // Menggunakan query string
+        $toko_id = $request->get('toko_id'); // Mengambil toko_id dari query string
 
-    // Pastikan tanggal_penjualan tidak null
-    if (!$tanggal_penjualan) {
-        return redirect()->back()->with('error', 'Tanggal penjualan tidak boleh kosong.');
-    }
+        // Pastikan tanggal_penjualan tidak null
+        if (!$tanggal_penjualan) {
+            return redirect()->back()->with('error', 'Tanggal penjualan tidak boleh kosong.');
+        }
 
-    // Query data penjualan
-    $query = Penjualanproduk::with('detailPenjualanProduk.produk')
-        ->when($toko_id, function ($query, $toko_id) {
-            return $query->where('toko_id', $toko_id); // Filter berdasarkan toko_id
-        })
-        ->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan)->startOfDay()) // Filter berdasarkan tanggal
-        ->orderBy('tanggal_penjualan', 'desc'); // Urutkan berdasarkan tanggal
+        // Query data penjualan
+        $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id); // Filter berdasarkan toko_id
+            })
+            ->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan)->startOfDay()) // Filter berdasarkan tanggal
+            ->orderBy('tanggal_penjualan', 'desc'); // Urutkan berdasarkan tanggal
 
-    $inquery = $query->get();
+        $inquery = $query->get();
 
-    // Gabungkan hasil berdasarkan produk_id
-    $finalResults = [];
-    foreach ($inquery as $penjualan) {
-        foreach ($penjualan->detailPenjualanProduk as $detail) {
-            $produk = $detail->produk;
+        // Gabungkan hasil berdasarkan produk_id
+        $finalResults = [];
+        foreach ($inquery as $penjualan) {
+            foreach ($penjualan->detailPenjualanProduk as $detail) {
+                $produk = $detail->produk;
 
-            if ($produk) {
-                $key = $produk->id; // Menggunakan ID produk sebagai key
-                if (!isset($finalResults[$key])) {
-                    $finalResults[$key] = [
-                        'tanggal_penjualan' => $penjualan->tanggal_penjualan,
-                        'kode_lama' => $produk->kode_lama,
-                        'nama_produk' => $produk->nama_produk,
-                        'harga' => $produk->harga,
-                        'jumlah' => 0,
-                        'diskon' => 0,
-                        'total' => 0,
-                        'penjualan_kotor' => 0,
-                        'penjualan_bersih' => 0,
-                    ];
+                if ($produk) {
+                    $key = $produk->id; // Menggunakan ID produk sebagai key
+                    if (!isset($finalResults[$key])) {
+                        $finalResults[$key] = [
+                            'tanggal_penjualan' => $penjualan->tanggal_penjualan,
+                            'kode_lama' => $produk->kode_lama,
+                            'nama_produk' => $produk->nama_produk,
+                            'harga' => $produk->harga,
+                            'jumlah' => 0,
+                            'diskon' => 0,
+                            'total' => 0,
+                            'penjualan_kotor' => 0,
+                            'penjualan_bersih' => 0,
+                        ];
+                    }
+
+                    $finalResults[$key]['jumlah'] += $detail->jumlah;
+                    $finalResults[$key]['penjualan_kotor'] += $detail->jumlah * $produk->harga;
+                    $finalResults[$key]['total'] += $detail->total;
+
+                    if ($detail->diskon > 0) {
+                        $diskonPerItem = $produk->harga * 0.10;
+                        $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
+                    }
+
+                    $finalResults[$key]['penjualan_bersih'] = $finalResults[$key]['penjualan_kotor'] - $finalResults[$key]['diskon'];
                 }
-
-                $finalResults[$key]['jumlah'] += $detail->jumlah;
-                $finalResults[$key]['penjualan_kotor'] += $detail->jumlah * $produk->harga;
-                $finalResults[$key]['total'] += $detail->total;
-
-                if ($detail->diskon > 0) {
-                    $diskonPerItem = $produk->harga * 0.10;
-                    $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
-                }
-
-                $finalResults[$key]['penjualan_bersih'] = $finalResults[$key]['penjualan_kotor'] - $finalResults[$key]['diskon'];
             }
         }
+
+        // Mengurutkan finalResults berdasarkan kode_lama
+        uasort($finalResults, function ($a, $b) {
+            return strcmp($a['kode_lama'], $b['kode_lama']);
+        });
+
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+
+        // Menggunakan Barryvdh\DomPDF\Facade\Pdf untuk memuat dan menghasilkan PDF
+        $pdf = FacadePdf::loadView('admin.penjualan_toko.printpenjualantoko', [
+            'finalResults' => $finalResults,
+            'startDate' => $tanggal_penjualan,
+            'branchName' => $branchName,
+        ]);
+
+        return $pdf->stream('laporan_penjualan_produk.pdf');
     }
 
-    // Mengurutkan finalResults berdasarkan kode_lama
-    uasort($finalResults, function ($a, $b) {
-        return strcmp($a['kode_lama'], $b['kode_lama']);
-    });
 
-    $branchName = 'Semua Toko';
-    if ($toko_id) {
-        $toko = Toko::find($toko_id);
-        $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+    public function printPenjualanDiskon(Request $request)
+    {
+        // Ambil parameter tanggal_penjualan dan toko_id dari request
+        $tanggal_penjualan = $request->get('tanggal_penjualan'); // Menggunakan query string
+        $toko_id = $request->get('toko_id'); // Mengambil toko_id dari query string
+
+        // Pastikan tanggal_penjualan tidak null
+        if (!$tanggal_penjualan) {
+            return redirect()->back()->with('error', 'Tanggal penjualan tidak boleh kosong.');
+        }
+
+        // Query data penjualan
+        $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id); // Filter berdasarkan toko_id
+            })
+            ->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan)->startOfDay()) // Filter berdasarkan tanggal
+            ->orderBy('tanggal_penjualan', 'desc'); // Urutkan berdasarkan tanggal
+
+        $inquery = $query->get();
+
+        // Gabungkan hasil berdasarkan produk_id
+        $finalResults = [];
+        foreach ($inquery as $penjualan) {
+            foreach ($penjualan->detailPenjualanProduk as $detail) {
+                $produk = $detail->produk;
+
+                if ($produk) {
+                    $key = $produk->id; // Menggunakan ID produk sebagai key
+                    if (!isset($finalResults[$key])) {
+                        $finalResults[$key] = [
+                            'tanggal_penjualan' => $penjualan->tanggal_penjualan,
+                            'kode_lama' => $produk->kode_lama,
+                            'nama_produk' => $produk->nama_produk,
+                            'harga' => $produk->harga,
+                            'jumlah' => 0,
+                            'diskon' => 0,
+                            'total' => 0,
+                            'penjualan_kotor' => 0,
+                            'penjualan_bersih' => 0,
+                        ];
+                    }
+
+                    $finalResults[$key]['jumlah'] += $detail->jumlah;
+                    $finalResults[$key]['penjualan_kotor'] += $detail->jumlah * $produk->harga;
+                    $finalResults[$key]['total'] += $detail->total;
+
+                    if ($detail->diskon > 0) {
+                        $diskonPerItem = $produk->harga * 0.10;
+                        $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
+                    }
+
+                    $finalResults[$key]['penjualan_bersih'] = $finalResults[$key]['penjualan_kotor'] - $finalResults[$key]['diskon'];
+                }
+            }
+        }
+
+        // Mengurutkan finalResults berdasarkan kode_lama
+        uasort($finalResults, function ($a, $b) {
+            return strcmp($a['kode_lama'], $b['kode_lama']);
+        });
+
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+
+        // Menggunakan Barryvdh\DomPDF\Facade\Pdf untuk memuat dan menghasilkan PDF
+        $pdf = FacadePdf::loadView('admin.penjualan_toko.printpenjualantoko', [
+            'finalResults' => $finalResults,
+            'startDate' => $tanggal_penjualan,
+            'branchName' => $branchName,
+        ]);
+
+        return $pdf->stream('laporan_penjualan_produk.pdf');
     }
 
-    // Menggunakan Barryvdh\DomPDF\Facade\Pdf untuk memuat dan menghasilkan PDF
-    $pdf = FacadePdf::loadView('admin.penjualan_toko.printpenjualantoko', [
-        'finalResults' => $finalResults,
-        'startDate' => $tanggal_penjualan,
-        'branchName' => $branchName,
-    ]);
 
-    return $pdf->stream('laporan_penjualan_produk.pdf');
-}
+    public function printPenjualanBersih(Request $request)
+    {
+        // Ambil parameter tanggal_penjualan dan toko_id dari request
+        $tanggal_penjualan = $request->get('tanggal_penjualan'); // Menggunakan query string
+        $toko_id = $request->get('toko_id'); // Mengambil toko_id dari query string
 
+        // Pastikan tanggal_penjualan tidak null
+        if (!$tanggal_penjualan) {
+            return redirect()->back()->with('error', 'Tanggal penjualan tidak boleh kosong.');
+        }
 
+        // Query data penjualan
+        $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id); // Filter berdasarkan toko_id
+            })
+            ->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan)->startOfDay()) // Filter berdasarkan tanggal
+            ->orderBy('tanggal_penjualan', 'desc'); // Urutkan berdasarkan tanggal
+
+        $inquery = $query->get();
+
+        // Gabungkan hasil berdasarkan produk_id
+        $finalResults = [];
+        foreach ($inquery as $penjualan) {
+            foreach ($penjualan->detailPenjualanProduk as $detail) {
+                $produk = $detail->produk;
+
+                if ($produk) {
+                    $key = $produk->id; // Menggunakan ID produk sebagai key
+                    if (!isset($finalResults[$key])) {
+                        $finalResults[$key] = [
+                            'tanggal_penjualan' => $penjualan->tanggal_penjualan,
+                            'kode_lama' => $produk->kode_lama,
+                            'nama_produk' => $produk->nama_produk,
+                            'harga' => $produk->harga,
+                            'jumlah' => 0,
+                            'diskon' => 0,
+                            'total' => 0,
+                            'penjualan_kotor' => 0,
+                            'penjualan_bersih' => 0,
+                        ];
+                    }
+
+                    $finalResults[$key]['jumlah'] += $detail->jumlah;
+                    $finalResults[$key]['penjualan_kotor'] += $detail->jumlah * $produk->harga;
+                    $finalResults[$key]['total'] += $detail->total;
+
+                    if ($detail->diskon > 0) {
+                        $diskonPerItem = $produk->harga * 0.10;
+                        $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
+                    }
+
+                    $finalResults[$key]['penjualan_bersih'] = $finalResults[$key]['penjualan_kotor'] - $finalResults[$key]['diskon'];
+                }
+            }
+        }
+
+        // Mengurutkan finalResults berdasarkan kode_lama
+        uasort($finalResults, function ($a, $b) {
+            return strcmp($a['kode_lama'], $b['kode_lama']);
+        });
+
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+
+        // Menggunakan Barryvdh\DomPDF\Facade\Pdf untuk memuat dan menghasilkan PDF
+        $pdf = FacadePdf::loadView('admin.penjualan_toko.printpenjualantoko', [
+            'finalResults' => $finalResults,
+            'startDate' => $tanggal_penjualan,
+            'branchName' => $branchName,
+        ]);
+
+        return $pdf->stream('laporan_penjualan_produk.pdf');
+    }
 
 }

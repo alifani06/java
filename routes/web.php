@@ -291,6 +291,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('penjualan_toko', \App\Http\Controllers\Admin\PenjualantokoController::class);
     Route::post('/get-penjualan', [PenjualantokoController::class, 'getdata'])->name('getdata');
     Route::get('/print-penjualantoko-kotor', [PenjualantokoController::class, 'printPenjualanKotor'])->name('print.penjualantoko.kotor');
+    Route::get('/print-penjualantoko-diskon', [PenjualantokoController::class, 'printPenjualanDiskon'])->name('print.penjualantoko.diskon');
+    Route::get('/print-penjualantoko-bersih', [PenjualantokoController::class, 'printPenjualanBersih'])->name('print.penjualantoko.bersih');
 
     Route::resource('inquery_penjualantoko', \App\Http\Controllers\Admin\Inquery_penjualantokoController::class);
     Route::get('/admin/inquery_penjualantoko/{id}/print', [Inquery_penjualantokoController::class, 'print'])->name('inquery_penjualantoko.print');

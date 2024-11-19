@@ -60,7 +60,7 @@
                         <!-- Tempat untuk menampilkan Penjualan Kotor -->
                         <div class="form-group row mb-3">
                             <label for="penjualan_kotor" class="col-sm-3 col-form-label">
-                                <a id="penjualan_kotor_link" href="{{ route('print.penjualan.kotor') }}" target="_blank" class="text-decoration-none">Penjualan Kotor</a>
+                                <a id="penjualan_kotor_link" href="{{ route('print.penjualantoko.kotor') }}" target="_blank" class="text-decoration-none">Penjualan Kotor</a>
                             </label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="penjualan_kotor" name="penjualan_kotor" placeholder="" >
@@ -70,7 +70,7 @@
                         <!-- Diskon Penjualan -->
                         <div class="form-group row mb-3">
                             <label for="diskon_penjualan" class="col-sm-3 col-form-label">
-                                <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Diskon Penjualan</a>
+                                <a id="diskon_penjualan_link" href="{{ route('print.penjualantoko.diskon') }}" target="_blank" class="text-decoration-none">Diskon Penjualan</a>
                             </label>                            
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="diskon_penjualan" name="diskon_penjualan" >
@@ -84,7 +84,7 @@
                         <!-- Penjualan Bersih -->
                         <div class="form-group row mb-3">
                             <label for="penjualan_bersih" class="col-sm-3 col-form-label">
-                                <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Penjualan Bersih</a>
+                                <a id="penjualan_bersih_link" href="{{ route('print.penjualantoko.bersih') }}" target="_blank" class="text-decoration-none">Penjualan Bersih</a>
                             </label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="penjualan_bersih" name="penjualan_bersih" >
@@ -205,62 +205,89 @@
                     <button type="submit" class="btn btn-primary">Simpan</button>
             </form>
         </div>
-        
+        <!-- Modal -->
+<div class="modal fade" id="penjualanKotorModal" tabindex="-1" role="dialog" aria-labelledby="penjualanKotorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="penjualanKotorModalLabel">Pilih Jenis Penjualan Kotor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Silakan pilih jenis laporan yang ingin ditampilkan:</p>
+                <div class="d-flex justify-content-around">
+                    <a href="#" id="barangKeluarLink" class="btn btn-primary">Barang Keluar</a>
+                    <a href="#" id="fakturPenjualanLink" class="btn btn-secondary">Faktur Penjualan</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
     </section>
+
 
     <script>
         function updateLink() {
-        const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
-        const tokoId = document.getElementById('toko').value; // Ambil nilai toko yang dipilih
-        const baseUrl = "{{ route('print.penjualantoko.kotor') }}"; // URL base dari route Laravel
+            const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
+            const tokoId = document.getElementById('toko').value; 
+    
+            // Base URLs untuk penjualan kotor dan diskon penjualan
+            const baseUrlPenjualanKotor = "{{ route('print.penjualantoko.kotor') }}";
+            const baseUrlDiskonPenjualan = "{{ route('print.penjualantoko.diskon') }}";
+            const baseUrlPenjualanBersih = "{{ route('print.penjualantoko.bersih') }}";
+    
+            // Perbarui link untuk Penjualan Kotor
+            const urlPenjualanKotor = new URL(baseUrlPenjualanKotor);
+            if (tanggalPenjualan) {
+                urlPenjualanKotor.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+            } else {
+                urlPenjualanKotor.searchParams.delete('tanggal_penjualan');
+            }
+    
+            if (tokoId) {
+                urlPenjualanKotor.searchParams.set('toko_id', tokoId);
+            } else {
+                urlPenjualanKotor.searchParams.delete('toko_id');
+            }
+            document.getElementById('penjualan_kotor_link').href = urlPenjualanKotor.toString();
+    
+            // Perbarui link untuk Diskon Penjualan
+            const urlDiskonPenjualan = new URL(baseUrlDiskonPenjualan);
+            if (tanggalPenjualan) {
+                urlDiskonPenjualan.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+            } else {
+                urlDiskonPenjualan.searchParams.delete('tanggal_penjualan');
+            }
+    
+            if (tokoId) {
+                urlDiskonPenjualan.searchParams.set('toko_id', tokoId);
+            } else {
+                urlDiskonPenjualan.searchParams.delete('toko_id');
+            }
+            document.getElementById('diskon_penjualan_link').href = urlDiskonPenjualan.toString();
 
-        const url = new URL(baseUrl);
-
-        // Tambahkan parameter tanggal_penjualan dan toko_id ke URL
-        if (tanggalPenjualan) {
-            url.searchParams.set('tanggal_penjualan', tanggalPenjualan);
-        } else {
-            url.searchParams.delete('tanggal_penjualan');
+            // Perbarui link untuk Penjualan Bersih
+            const urlPenjualanBersih = new URL(baseUrlPenjualanBersih);
+            if (tanggalPenjualan) {
+                urlPenjualanBersih.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+            } else {
+                urlPenjualanBersih.searchParams.delete('tanggal_penjualan');
+            }
+    
+            if (tokoId) {
+                urlPenjualanBersih.searchParams.set('toko_id', tokoId);
+            } else {
+                urlPenjualanBersih.searchParams.delete('toko_id');
+            }
+            document.getElementById('penjualan_bersih_link').href = urlPenjualanBersih.toString();
         }
 
-        if (tokoId) {
-            url.searchParams.set('toko_id', tokoId);
-        } else {
-            url.searchParams.delete('toko_id');
-        }
-
-        // Update href link
-        document.getElementById('penjualan_kotor_link').href = url.toString();
-    }
 
     </script>
     
-
-    {{-- <script>
-        document.getElementById('setoranForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Mencegah pengiriman form default
-        
-            let formData = new FormData(this);
-        
-            fetch(this.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.url) {
-                    window.open(data.url, '_blank');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-    </script> --}}
     
     <script>
         document.getElementById('tambahInputCheckbox').addEventListener('change', function() {
