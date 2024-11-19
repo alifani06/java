@@ -660,4 +660,60 @@ class Laporan_stoktokoslawiController extends Controller
         return Excel::download(new ProdukExport($produkWithStok, $selectedKlasifikasi->nama ?? 'Semua Klasifikasi'), $fileName);
     }
     
+
+    public function exportExcelsemua(Request $request)
+    {
+        $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);
+
+        // Filter berdasarkan klasifikasi_id
+        if ($request->has('klasifikasi_id') && $request->klasifikasi_id) {
+            $produkQuery->where('klasifikasi_id', $request->klasifikasi_id);
+        }
+
+        // Filter berdasarkan subklasifikasi_id
+        if ($request->has('subklasifikasi_id') && $request->subklasifikasi_id) {
+            $produkQuery->where('subklasifikasi_id', $request->subklasifikasi_id);
+        }
+
+        $produk = $produkQuery->get();
+
+        // Mengambil stok dari Stok_tokobanjaran dan Stokpesanan_tokobanjaran
+        $stokToko = Stok_tokoslawi::with('produk')->get();
+        $stokPesanan = Stokpesanan_tokoslawi::with('produk')->get();
+
+        // Gabungkan stok dan kelompokkan berdasarkan produk_id
+        $stokCombined = $stokToko->concat($stokPesanan)
+            ->groupBy('produk_id')
+            ->map(function ($group) {
+                $firstItem = $group->first(); // Mengambil item pertama sebagai dasar
+                $totalJumlah = $group->sum('jumlah'); // Menjumlahkan stok
+                $firstItem->jumlah = $totalJumlah; // Memperbarui jumlah
+                return $firstItem;
+            })->values();
+
+        // Menghitung total harga dan stok
+        $produkWithStok = $produk->map(function ($item) use ($stokCombined) {
+            $stokItem = $stokCombined->firstWhere('produk_id', $item->id);
+            $item->jumlah = $stokItem ? $stokItem->jumlah : 0;
+            $item->subTotal = $item->jumlah * $item->harga;
+            return $item;
+        });
+
+        // Mendapatkan nama klasifikasi yang dipilih
+        $selectedKlasifikasi = null;
+        if ($request->has('klasifikasi_id') && $request->klasifikasi_id) {
+            $selectedKlasifikasi = Klasifikasi::find($request->klasifikasi_id);
+        }
+
+        // Menentukan nama file
+        $fileName = 'laporan_stoktoko';
+        if ($selectedKlasifikasi) {
+            $fileName = 'laporan_' . strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $selectedKlasifikasi->nama))) . '.xlsx';
+        } else {
+            $fileName .= '.xlsx';
+        }
+
+        // Mengunduh file Excel
+        return Excel::download(new ProdukExport($produkWithStok, $selectedKlasifikasi->nama ?? 'Semua Klasifikasi'), $fileName);
+    }
 }

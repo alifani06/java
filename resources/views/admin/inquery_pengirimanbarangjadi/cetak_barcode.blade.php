@@ -87,7 +87,7 @@
                 @elseif ($i % 3 == 2) barcode-second 
                 @elseif ($i % 3 == 0) barcode-third @endif">
                 
-                <img src="data:image/png;base64,{{ $produkData['qrcodeData'] }}" />
+                <img src="data:image/png;base64,{{ $produkData['qrcodeData'] }}" alt="QR Code Produk" />
             </div>
             
             <div class="text-container
@@ -97,19 +97,30 @@
                 
                 <div class="text">
                     <p class="bold-text">{{ $produkData['produk']->kode_lama }}</p>
-
+                
                     @php
                         // Membagi nama produk ke dalam potongan teks agar tidak terlalu panjang
                         $chunks = str_split($produkData['produk']->nama_produk, 15);
                     @endphp
-
+                
                     @foreach ($chunks as $chunk)
                         <p style="font-size: 6px;" class="bold-text truncate">{{ $chunk }}</p>
                     @endforeach
-
+                
                     <p style="font-size: 7px;" class="bold-text">Rp. {{ number_format($produkData['produk']->harga, 0, ',', '.') }}</p>
-                    <p class="bold-text">D1</p>
+                
+                    <p class="bold-text">
+                        @if (is_array($produkData['kodeProduksi']))
+                            @foreach ($produkData['kodeProduksi'] as $kode)
+                                {{ $kode }}<br>
+                            @endforeach
+                        @else
+                            {{ $produkData['kodeProduksi'] }}
+                        @endif
+                    </p>
+                    
                 </div>
+                
             </div>
 
             @if ($i % 3 == 0 || $i == $produkData['jumlah'])
@@ -126,5 +137,6 @@
         @endfor
     @endforeach
 </body>
+
 
 </html>

@@ -99,6 +99,9 @@
                                 <button type="button" class="btn btn-primary btn-block" onclick="printReport(event)">
                                     <i class="fas fa-print"></i> Cetak
                                 </button>
+                                <button type="button" class="btn btn-success btn-block" onclick="printExcel(event)">
+                                    <i class="fas fa-print"></i> Ekspor Excel
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -151,6 +154,16 @@
         if (event) event.preventDefault();
     const form = document.getElementById('form-action');
     form.action = "{{ url('toko_bumiayu/printsemuastoktokobumiayu') }}";
+    form.target = "_blank";
+    form.submit();
+}
+    </script>
+
+<script>
+    function printExcel() {
+        if (event) event.preventDefault();
+    const form = document.getElementById('form-action');
+    form.action = "{{ url('toko_bumiayu/printexcelsemuabumiayu') }}";
     form.target = "_blank";
     form.submit();
 }

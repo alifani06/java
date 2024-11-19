@@ -611,35 +611,76 @@ public function update(Request $request, $id)
     }
 
     //baru
+    // public function cetak_barcode($id)
+    // {
+    //     // Ambil produk berdasarkan id
+    //     $produk = Produk::findOrFail($id); 
+    
+    //     // Ambil data pengiriman termasuk 'jumlah' dan 'kode_produksi' dari tabel pengiriman_barangjadi berdasarkan produk_id
+    //     $pengiriman = Pengiriman_barangjadi::where('produk_id', $id)->first();
+    
+    //     // Jika data pengiriman ditemukan, ambil kode_produksi dan jumlah
+    //     $jumlah = $pengiriman ? $pengiriman->jumlah : 1; // Default 1 jika jumlah tidak ditemukan
+    
+    //     // Ambil data klasifikasi dan subklasifikasi
+    //     $klasifikasis = Klasifikasi::all();
+    //     $subklasifikasis = Subklasifikasi::all();
+    
+    //     // Generate QR code data
+    //     $qrcode = new Writer(new ImageRenderer(new RendererStyle(50), new SvgImageBackEnd()));
+    //     $qrcodeData = base64_encode($qrcode->writeString($produk->qrcode_produk));
+    
+    //     // Load view dengan data yang dibutuhkan
+    //     $pdf = FacadePdf::loadView('admin.inquery_pengirimanbarangjadi.cetak_barcode', compact('produk', 'klasifikasis', 'subklasifikasis','qrcodeData', 'jumlah'));
+    
+    //     // Set ukuran kertas dan orientasi
+    //     $pdf->setPaper([0, 0, 612, 400], 'portrait'); 
+    
+    //     // Stream PDF hasil cetak
+    //     return $pdf->stream('penjualan.pdf');
+    // }
+
     public function cetak_barcode($id)
-    {
-        // Ambil produk berdasarkan id
-        $produk = Produk::findOrFail($id); 
-    
-        // Ambil data pengiriman termasuk 'jumlah' dan 'kode_produksi' dari tabel pengiriman_barangjadi berdasarkan produk_id
-        $pengiriman = Pengiriman_barangjadi::where('produk_id', $id)->first();
-    
-        // Jika data pengiriman ditemukan, ambil kode_produksi dan jumlah
-        $jumlah = $pengiriman ? $pengiriman->jumlah : 1; // Default 1 jika jumlah tidak ditemukan
-        $kodeProduksi = $pengiriman ? $pengiriman->kode_produksi : null; // Ambil kode_produksi jika ada
-    
-        // Ambil data klasifikasi dan subklasifikasi
-        $klasifikasis = Klasifikasi::all();
-        $subklasifikasis = Subklasifikasi::all();
-    
-        // Generate QR code data
-        $qrcode = new Writer(new ImageRenderer(new RendererStyle(50), new SvgImageBackEnd()));
-        $qrcodeData = base64_encode($qrcode->writeString($produk->qrcode_produk));
-    
-        // Load view dengan data yang dibutuhkan
-        $pdf = FacadePdf::loadView('admin.inquery_pengirimanbarangjadi.cetak_barcode', compact('produk', 'klasifikasis', 'subklasifikasis', 'kodeProduksi', 'qrcodeData', 'jumlah'));
-    
-        // Set ukuran kertas dan orientasi
-        $pdf->setPaper([0, 0, 612, 400], 'portrait'); 
-    
-        // Stream PDF hasil cetak
-        return $pdf->stream('penjualan.pdf');
-    }
+{
+    // Ambil produk berdasarkan id
+    $produk = Produk::findOrFail($id);
+
+    // Ambil semua data pengiriman yang terkait dengan produk_id
+    $pengiriman = Pengiriman_barangjadi::where('produk_id', $id)->get();
+
+    // Jika data pengiriman ditemukan, ambil jumlah dan kode_produksi
+    // Default: jumlah = 1, kode_produksi = 'Tidak ada'
+    $jumlah = $pengiriman->sum('jumlah');
+    $kodeProduksi = $pengiriman->pluck('kode_produksi')->toArray(); // Pastikan ini array
+
+    // Ambil data klasifikasi dan subklasifikasi
+    $klasifikasis = Klasifikasi::all();
+    $subklasifikasis = Subklasifikasi::all();
+
+    // Generate QR code data
+    $qrcode = new Writer(new ImageRenderer(new RendererStyle(50), new SvgImageBackEnd()));
+    $qrcodeData = base64_encode($qrcode->writeString($produk->qrcode_produk));
+
+    $dataProduk = [
+        [
+            'produk' => $produk, // Objek Produk
+            'qrcodeData' => $qrcodeData, // Data QR Code
+            'jumlah' => $jumlah, // Total jumlah barcode yang ingin dicetak
+            'kodeProduksi' => $kodeProduksi, // Array kode produksi
+        ]
+    ];
+    // Load view dengan data yang dibutuhkan
+    $pdf = FacadePdf::loadView('admin.inquery_pengirimanbarangjadi.cetak_barcode', compact(
+        'dataProduk'
+    ));
+
+    // Set ukuran kertas dan orientasi
+    $pdf->setPaper([0, 0, 612, 400], 'portrait');
+
+    // Stream PDF hasil cetak
+    return $pdf->stream('penjualan.pdf');
+}
+
 
     public function deleteprodukpengiriman($id)
     {
