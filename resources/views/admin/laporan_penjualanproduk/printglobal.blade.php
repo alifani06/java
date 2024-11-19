@@ -124,15 +124,19 @@
             @endphp
             @foreach ($inquery as $item)
                 @php
-                    $grandTotal += $item->sub_total;
-    
-                    // Menghapus semua karakter kecuali angka dari fee
-                    $total_fee = preg_replace('/[^\d]/', '', $item->total_fee);
+                    // Konversi sub_total ke angka murni
+                    $sub_total = preg_replace('/[^\d]/', '', $item->sub_total); 
+                    $sub_total = (float) $sub_total; // Pastikan nilai float
+                    $grandTotal += $sub_total;
+        
+                    // Konversi total_fee ke angka murni
+                    $total_fee = preg_replace('/[^\d]/', '', $item->total_fee ?? 0);
                     $total_fee = (float) $total_fee;
                     $grandTotalFee += $total_fee;
-    
-                    // Menambahkan deposit jika ada
+        
+                    // Mengambil nilai deposit jika ada
                     $deposit = $item->dppemesanan->dp_pemesanan ?? 0;
+                    $deposit = (float) preg_replace('/[^\d]/', '', $deposit);
                     $totalDeposit += $deposit;
                 @endphp
                 <tr>
@@ -148,7 +152,7 @@
                     </td>
                     <td>{{ $item->dppemesanan->kode_dppemesanan ?? '-' }}</td>
                     <td style="text-align: right">
-                        {{ $deposit > 0 ?  number_format($deposit, 0, ',', '.') : '-' }}
+                        {{ $deposit > 0 ? number_format($deposit, 0, ',', '.') : '-' }}
                     </td>
                     <td>{{ $item->metodepembayaran->nama_metode ?? 'Tunai' }}</td>
                     <td style="text-align: right">
@@ -158,10 +162,13 @@
                             {{ number_format($total_fee, 0, ',', '.') }}
                         @endif
                     </td>
-                    <td style="text-align: right">{{ number_format($item->sub_total, 0, ',', '.') }}</td>
+                    <td style="text-align: right">
+                        {{ number_format($sub_total, 0, ',', '.') }}
+                    </td>
                 </tr>
             @endforeach
         </tbody>
+        
     </table>
     
     <!-- Tabel total penjualan fee, total deposit, dan grand total -->

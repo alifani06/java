@@ -161,37 +161,48 @@
         </tr>
     </thead>
     <tbody>
-        @php $subTotal = 0; @endphp
+        @php
+            $subTotal = 0;
+            $grandTotalFee = 0;
+            $grandTotal = 0;
+        @endphp
         @foreach ($items as $item)
             @foreach ($item->detailpenjualanproduk as $detail)
                 @php
-                    $totalForDetail = $detail->jumlah * $detail->harga;
+                    // Pastikan jumlah dan harga bertipe angka
+                    $jumlah = (float) $detail->jumlah;
+                    $harga = (float) preg_replace('/[^\d]/', '', $detail->harga);
+    
+                    // Hitung total per detail
+                    $totalForDetail = $jumlah * $harga;
                     $subTotal += $totalForDetail;
-                    $diskon = floatval($detail->diskon);
+    
+                    // Pastikan diskon bertipe angka
+                    $diskon = (float) preg_replace('/[^\d]/', '', $detail->diskon ?? 0);
                 @endphp
                 <tr>
                     <td class="text-center">{{ $globalCounter++ }}</td>
                     <td>{{ $detail->kode_lama }}</td>
                     <td>{{ $detail->nama_produk }}</td>
-                    <td>{{ $detail->jumlah }}</td>
-                    <td>{{ number_format($detail->harga, 0, ',', '.') }}</td>
-                    <td>{{ $detail->diskon }}</td>
+                    <td>{{ $jumlah }}</td>
+                    <td>{{ number_format($harga, 0, ',', '.') }}</td>
+                    <td>{{ number_format($diskon, 0, ',', '.') }}</td>
                     <td>{{ 'Rp. ' . number_format($totalForDetail, 0, ',', '.') }}</td>
                 </tr>
             @endforeach
         @endforeach
-
+    
         <tr>
             <td colspan="6" class="text-right"><strong>Sub Total</strong></td>
-            <td>{{'Rp. ' .  number_format($subTotal, 0, ',', '.') }}</td>
+            <td>{{ 'Rp. ' . number_format($subTotal, 0, ',', '.') }}</td>
         </tr>
         <tr>
-            @if($item->metode_id !== null)
-            <td colspan="6" class="text-right"><strong>Fee {{$item->metodepembayaran->fee}}%</strong></td>
+            @if ($item->metode_id !== null)
+            <td colspan="6" class="text-right"><strong>Fee {{ $item->metodepembayaran->fee }}%</strong></td>
             <td>
                 @php
-                    $total_fee = preg_replace('/[^\d]/', '', $item->total_fee);
-                    $total_fee = (float) $total_fee;
+                    // Pastikan total_fee bertipe angka
+                    $total_fee = (float) preg_replace('/[^\d]/', '', $item->total_fee ?? 0);
                     $grandTotalFee += $total_fee;
                 @endphp
                 {{ 'Rp. ' . number_format($total_fee, 0, ',', '.') }}
@@ -206,23 +217,25 @@
             <td colspan="6" class="text-right"><strong>Total Bayar</strong></td>
             <td>
                 @php
-                    $totalBayar = $item->sub_total;
+                    // Pastikan sub_total bertipe angka
+                    $totalBayar = (float) preg_replace('/[^\d]/', '', $item->sub_total ?? 0);
                     $grandTotal += $totalBayar;
                 @endphp
                 {{ 'Rp. ' . number_format($totalBayar, 0, ',', '.') }}
             </td>
         </tr>
-        @if($item->metode_id == Null)
+        @if ($item->metode_id == null)
         <tr>
             <td colspan="6" class="text-right"><strong>Uang Bayar</strong></td>
-            <td>{{ 'Rp. ' . number_format($item->bayar, 0, ',', '.') }}</td>
+            <td>{{ 'Rp. ' . number_format((float) preg_replace('/[^\d]/', '', $item->bayar ?? 0), 0, ',', '.') }}</td>
         </tr>
         <tr>
             <td colspan="6" class="text-right"><strong>Kembali</strong></td>
-            <td>{{ 'Rp. ' . number_format($item->kembali, 0, ',', '.') }}</td>
+            <td>{{ 'Rp. ' . number_format((float) preg_replace('/[^\d]/', '', $item->kembali ?? 0), 0, ',', '.') }}</td>
         </tr>
         @endif
     </tbody>
+    
 </table>
 
         </div>
