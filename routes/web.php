@@ -1050,7 +1050,7 @@ Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {
     Route::get('/inquery_returpemalang/{id}/print', [Inquery_returpemalangController::class, 'print'])->name('inquery_returpemalang.print');
 
 
-    Route::resource('pemindahan_tokobanjaran', \App\Http\Controllers\Toko_pemalang\Pemindahan_tokopemalangController::class);
+    Route::resource('pemindahan_tokopemalang', \App\Http\Controllers\Toko_pemalang\Pemindahan_tokopemalangController::class);
 
     Route::resource('inquery_pemindahanpemalang', \App\Http\Controllers\Toko_pemalang\Inquery_pemindahanpemalangController::class);
     Route::get('inquery_pemindahanpemalang/posting_pemindahan/{id}', [\App\Http\Controllers\Toko_pemalang\Inquery_pemindahanpemalangController::class, 'posting_pemindahan']);

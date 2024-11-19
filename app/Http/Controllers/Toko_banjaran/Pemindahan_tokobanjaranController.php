@@ -158,7 +158,7 @@ public function store(Request $request)
                             'tanggal_input' => Carbon::now('Asia/Jakarta'),
                         ]);
                     break;
-                    case 'BUMMIAYU':
+                    case 'BUMIAYU':
                         Pemindahan_tokobumiayumasuk::create([
                             'kode_pemindahan' => $kode,
                             'produk_id' => $produk_id,

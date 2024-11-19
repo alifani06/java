@@ -36,6 +36,7 @@ class Setoran_penjualan extends Model
         'plusminus',
         'toko_id',
         'status',
+        'no_fakturpenjualantoko',
     ];
     
 
