@@ -398,7 +398,7 @@
             <a href="{{ url('admin/setoran_pelunasan') }}"
                 class="nav-link {{ request()->is('admin/setoran_pelunasan*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
-                <p style="font-size: 14px;">Setoran Pelunasan</p>
+                <p style="font-size: 14px;">Pelunasan Penjualan</p>
             </a>
         </li>
         {{-- @endif --}}

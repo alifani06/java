@@ -41,12 +41,13 @@
                                     value="{{ Request::get('tanggal_penjualan') }}" onchange="updateLink()" />
                             </div>
                             <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="toko" name="toko_id">
+                                <select class="custom-select form-control" id="toko" name="toko_id" onchange="updateLink()">
                                     <option value="">- Semua Toko -</option>
                                     @foreach ($tokos as $toko)
                                         <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
                                     @endforeach
                                 </select>
+                                
                             </div>
                             <div class="col-md-3 mb-3">
                                 <button type="button" id="btnCari" class="btn btn-outline-primary">Cari</button>
@@ -206,48 +207,31 @@
         </div>
         
     </section>
-    {{-- <script>
-        function updateLink() {
-            const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
-            const baseUrl = "{{ route('print.penjualan.kotor') }}"; // Menggunakan route Laravel
-            const url = new URL(baseUrl);
-    
-            // Tambahkan parameter tanggal_penjualan ke URL
-            if (tanggalPenjualan) {
-                url.searchParams.set('tanggal_penjualan', tanggalPenjualan);
-            } else {
-                url.searchParams.delete('tanggal_penjualan'); // Hapus jika tidak ada tanggal
-            }
-    
-            // Update href link
-            document.getElementById('penjualan_kotor_link').href = url.toString();
-        }
-    </script> --}}
 
     <script>
         function updateLink() {
-    const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
-    const tokoId = document.getElementById('toko').value; // Ambil nilai toko yang dipilih
-    const baseUrl = "{{ route('print.penjualan.kotor') }}"; // URL base dari route Laravel
+        const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
+        const tokoId = document.getElementById('toko').value; // Ambil nilai toko yang dipilih
+        const baseUrl = "{{ route('print.penjualantoko.kotor') }}"; // URL base dari route Laravel
 
-    const url = new URL(baseUrl);
+        const url = new URL(baseUrl);
 
-    // Tambahkan parameter tanggal_penjualan dan toko_id ke URL
-    if (tanggalPenjualan) {
-        url.searchParams.set('tanggal_penjualan', tanggalPenjualan);
-    } else {
-        url.searchParams.delete('tanggal_penjualan');
+        // Tambahkan parameter tanggal_penjualan dan toko_id ke URL
+        if (tanggalPenjualan) {
+            url.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+        } else {
+            url.searchParams.delete('tanggal_penjualan');
+        }
+
+        if (tokoId) {
+            url.searchParams.set('toko_id', tokoId);
+        } else {
+            url.searchParams.delete('toko_id');
+        }
+
+        // Update href link
+        document.getElementById('penjualan_kotor_link').href = url.toString();
     }
-
-    if (tokoId) {
-        url.searchParams.set('toko_id', tokoId);
-    } else {
-        url.searchParams.delete('toko_id');
-    }
-
-    // Update href link
-    document.getElementById('penjualan_kotor_link').href = url.toString();
-}
 
     </script>
     
