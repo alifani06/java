@@ -432,86 +432,6 @@ class PenjualantokoController extends Controller{
         $newCode = $prefix . $monthDay . $year . $formattedNum;
         return $newCode;
     }
-    
-
-
-    // public function printPenjualanKotor(Request $request)
-    // {
-    //     // Ambil parameter tanggal_penjualan dan toko_id dari request
-    //     $tanggal_penjualan = $request->get('tanggal_penjualan'); // Menggunakan query string
-    //     $toko_id = $request->get('toko_id'); // Mengambil toko_id dari query string
-
-    //     // Pastikan tanggal_penjualan tidak null
-    //     if (!$tanggal_penjualan) {
-    //         return redirect()->back()->with('error', 'Tanggal penjualan tidak boleh kosong.');
-    //     }
-
-    //     // Query data penjualan
-    //     $query = Penjualanproduk::with('detailPenjualanProduk.produk')
-    //         ->when($toko_id, function ($query, $toko_id) {
-    //             return $query->where('toko_id', $toko_id); // Filter berdasarkan toko_id
-    //         })
-    //         ->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan)->startOfDay())
-    //         ->orderBy('tanggal_penjualan', 'desc');
-
-    //     $inquery = $query->get();
-
-    //     // Gabungkan hasil berdasarkan produk_id
-    //     $finalResults = [];
-    //     foreach ($inquery as $penjualan) {
-    //         foreach ($penjualan->detailPenjualanProduk as $detail) {
-    //             $produk = $detail->produk;
-
-    //             if ($produk) {
-    //                 $key = $produk->id; // Menggunakan ID produk sebagai key
-    //                 if (!isset($finalResults[$key])) {
-    //                     $finalResults[$key] = [
-    //                         'tanggal_penjualan' => $penjualan->tanggal_penjualan,
-    //                         'kode_lama' => $produk->kode_lama,
-    //                         'nama_produk' => $produk->nama_produk,
-    //                         'harga' => $produk->harga,
-    //                         'jumlah' => 0,
-    //                         'diskon' => 0,
-    //                         'total' => 0,
-    //                         'penjualan_kotor' => 0,
-    //                         'penjualan_bersih' => 0,
-    //                     ];
-    //                 }
-
-    //                 $finalResults[$key]['jumlah'] += $detail->jumlah;
-    //                 $finalResults[$key]['penjualan_kotor'] += $detail->jumlah * $produk->harga;
-    //                 $finalResults[$key]['total'] += $detail->total;
-
-    //                 if ($detail->diskon > 0) {
-    //                     $diskonPerItem = $produk->harga * 0.10;
-    //                     $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
-    //                 }
-
-    //                 $finalResults[$key]['penjualan_bersih'] = $finalResults[$key]['penjualan_kotor'] - $finalResults[$key]['diskon'];
-    //             }
-    //         }
-    //     }
-
-    //     // Mengurutkan finalResults berdasarkan kode_lama
-    //     uasort($finalResults, function ($a, $b) {
-    //         return strcmp($a['kode_lama'], $b['kode_lama']);
-    //     });
-
-    //     $branchName = 'Semua Toko';
-    //     if ($toko_id) {
-    //         $toko = Toko::find($toko_id);
-    //         $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
-    //     }
-
-    //     // Menggunakan Barryvdh\DomPDF\Facade\Pdf untuk memuat dan menghasilkan PDF
-    //     $pdf = FacadePdf::loadView('admin.penjualan_toko.printpenjualantoko', [
-    //         'finalResults' => $finalResults,
-    //         'startDate' => $tanggal_penjualan,
-    //         'branchName' => $branchName,
-    //     ]);
-
-    //     return $pdf->stream('laporan_penjualan_produk.pdf');
-    // }
 
     public function printPenjualanKotor(Request $request)
     {
@@ -592,6 +512,245 @@ class PenjualantokoController extends Controller{
     }
 
 
+    public function printFakturPenjualan(Request $request)
+    {
+        $tanggal_penjualan = $request->get('tanggal_penjualan');
+        $toko_id = $request->get('toko_id');
+    
+        // Query data berdasarkan filter
+        $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
+                return $query->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan));
+            })
+            ->orderBy('tanggal_penjualan', 'desc');
+    
+        $inquery = $query->get();
+    
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+    
+        // Set periode tanggal (hanya satu tanggal)
+        $startDate = $tanggal_penjualan; 
+        $endDate = null; // Tidak ada tanggal akhir karena hanya satu tanggal
+    
+        // Buat PDF
+        $pdf = FacadePdf::loadView('admin.penjualan_toko.printfakturpenjualantoko', [
+            'inquery' => $inquery,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'branchName' => $branchName,
+        ]);
+    
+        return $pdf->stream('faktur_penjualan.pdf');
+    }
+
+    public function printFakturPenjualanMesinedc(Request $request)
+    {
+        $tanggal_penjualan = $request->get('tanggal_penjualan');
+        $toko_id = $request->get('toko_id');
+    
+        // Query data berdasarkan filter
+        $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+            ->where('metode_id', 1) // Tambahkan filter untuk metode_id = 1
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
+                return $query->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan));
+            })
+            ->orderBy('tanggal_penjualan', 'desc');
+    
+        $inquery = $query->get();
+    
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+    
+        // Set periode tanggal (hanya satu tanggal)
+        $startDate = $tanggal_penjualan; 
+        $endDate = null; // Tidak ada tanggal akhir karena hanya satu tanggal
+    
+        // Buat PDF
+        $pdf = FacadePdf::loadView('admin.penjualan_toko.printfakturpenjualantoko', [
+            'inquery' => $inquery,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'branchName' => $branchName,
+        ]);
+    
+        return $pdf->stream('faktur_penjualan.pdf');
+    }
+
+    public function printFakturPenjualanQris(Request $request)
+    {
+        $tanggal_penjualan = $request->get('tanggal_penjualan');
+        $toko_id = $request->get('toko_id');
+    
+        // Query data berdasarkan filter
+        $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+            ->where('metode_id', 17) // Tambahkan filter untuk metode_id = 1
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
+                return $query->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan));
+            })
+            ->orderBy('tanggal_penjualan', 'desc');
+    
+        $inquery = $query->get();
+    
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+    
+        // Set periode tanggal (hanya satu tanggal)
+        $startDate = $tanggal_penjualan; 
+        $endDate = null; // Tidak ada tanggal akhir karena hanya satu tanggal
+    
+        // Buat PDF
+        $pdf = FacadePdf::loadView('admin.penjualan_toko.printfakturpenjualantoko', [
+            'inquery' => $inquery,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'branchName' => $branchName,
+        ]);
+    
+        return $pdf->stream('faktur_penjualan.pdf');
+    }
+
+    public function printFakturPenjualanTransfer(Request $request)
+    {
+        $tanggal_penjualan = $request->get('tanggal_penjualan');
+        $toko_id = $request->get('toko_id');
+    
+        // Query data berdasarkan filter
+        $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+            ->where('metode_id', 3) // Tambahkan filter untuk metode_id = 1
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
+                return $query->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan));
+            })
+            ->orderBy('tanggal_penjualan', 'desc');
+    
+        $inquery = $query->get();
+    
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+    
+        // Set periode tanggal (hanya satu tanggal)
+        $startDate = $tanggal_penjualan; 
+        $endDate = null; // Tidak ada tanggal akhir karena hanya satu tanggal
+    
+        // Buat PDF
+        $pdf = FacadePdf::loadView('admin.penjualan_toko.printfakturpenjualantoko', [
+            'inquery' => $inquery,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'branchName' => $branchName,
+        ]);
+    
+        return $pdf->stream('faktur_penjualan.pdf');
+    }
+
+    public function printFakturPenjualanGobiz(Request $request)
+    {
+        $tanggal_penjualan = $request->get('tanggal_penjualan');
+        $toko_id = $request->get('toko_id');
+    
+        // Query data berdasarkan filter
+        $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+            ->where('metode_id', 2) // Tambahkan filter untuk metode_id = 1
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
+                return $query->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan));
+            })
+            ->orderBy('tanggal_penjualan', 'desc');
+    
+        $inquery = $query->get();
+    
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+    
+        // Set periode tanggal (hanya satu tanggal)
+        $startDate = $tanggal_penjualan; 
+        $endDate = null; // Tidak ada tanggal akhir karena hanya satu tanggal
+    
+        // Buat PDF
+        $pdf = FacadePdf::loadView('admin.penjualan_toko.printfakturpenjualantoko', [
+            'inquery' => $inquery,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'branchName' => $branchName,
+        ]);
+    
+        return $pdf->stream('faktur_penjualan.pdf');
+    }
+    
+
+    public function printFakturdepositMasuk(Request $request)
+    {
+        $tanggal_penjualan = $request->get('tanggal_penjualan');
+        $toko_id = $request->get('toko_id');
+    
+        // Jika tanggal_penjualan tidak diisi, gunakan tanggal_pemesanan sebagai fallback
+        $tanggal_pemesanan = $tanggal_penjualan ?: $request->get('tanggal_pemesanan');
+    
+        // Query data berdasarkan filter
+        $query = Pemesananproduk::with('detailpemesananproduk.produk')
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->when($tanggal_pemesanan, function ($query, $tanggal_pemesanan) {
+                return $query->whereDate('tanggal_pemesanan', Carbon::parse($tanggal_pemesanan));
+            })
+            ->orderBy('tanggal_pemesanan', 'desc');
+    
+        $inquery = $query->get();
+    
+        // Menentukan nama cabang/toko
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+    
+        // Set periode tanggal
+        $startDate = $tanggal_pemesanan; // Menggunakan tanggal_pemesanan sebagai pengganti tanggal_penjualan
+        $endDate = null; // Tidak ada rentang akhir karena hanya satu tanggal
+    
+        // Buat PDF
+        $pdf = FacadePdf::loadView('admin.penjualan_toko.printfakturdepositmasuktoko', [
+            'inquery' => $inquery,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'branchName' => $branchName,
+        ]);
+    
+        return $pdf->stream('faktur_penjualan.pdf');
+    }
+    
+    
+    
     public function printPenjualanDiskon(Request $request)
     {
         // Ambil parameter tanggal_penjualan dan toko_id dari request

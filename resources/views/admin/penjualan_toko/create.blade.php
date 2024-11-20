@@ -38,16 +38,15 @@
                         <div class="row">
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
-                                    value="{{ Request::get('tanggal_penjualan') }}" onchange="updateLink()" />
+                                    value="{{ Request::get('tanggal_penjualan') }}" onchange="updateModalLink()" />
                             </div>
                             <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="toko" name="toko_id" onchange="updateLink()">
+                                <select class="custom-select form-control" id="toko" name="toko_id" onchange="updateModalLink()">
                                     <option value="">- Semua Toko -</option>
                                     @foreach ($tokos as $toko)
                                         <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
                                     @endforeach
                                 </select>
-                                
                             </div>
                             <div class="col-md-3 mb-3">
                                 <button type="button" id="btnCari" class="btn btn-outline-primary">Cari</button>
@@ -60,19 +59,17 @@
                         <!-- Tempat untuk menampilkan Penjualan Kotor -->
                         <div class="form-group row mb-3">
                             <label for="penjualan_kotor" class="col-sm-3 col-form-label">
-                                {{-- <a id="penjualan_kotor_link" href="{{ route('print.penjualantoko.kotor') }}" target="_blank" class="text-decoration-none">Penjualan Kotor</a> --}}
                                 <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Penjualan Kotor</a>
-
                             </label>
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="penjualan_kotor" name="penjualan_kotor" placeholder="" >
+                                <input type="text" class="form-control" id="penjualan_kotor" name="penjualan_kotor" placeholder="">
                             </div>
                         </div>
 
                         <!-- Diskon Penjualan -->
                         <div class="form-group row mb-3">
                             <label for="diskon_penjualan" class="col-sm-3 col-form-label">
-                                <a id="diskon_penjualan_link" href="{{ route('print.penjualantoko.diskon') }}" target="_blank" class="text-decoration-none">Diskon Penjualan</a>
+                                <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Diskon Penjualan</a>
                             </label>                            
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="diskon_penjualan" name="diskon_penjualan" >
@@ -86,7 +83,7 @@
                         <!-- Penjualan Bersih -->
                         <div class="form-group row mb-3">
                             <label for="penjualan_bersih" class="col-sm-3 col-form-label">
-                                <a id="penjualan_bersih_link" href="{{ route('print.penjualantoko.bersih') }}" target="_blank" class="text-decoration-none">Penjualan Bersih</a>
+                                <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Penjualan Bersih</a>
                             </label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="penjualan_bersih" name="penjualan_bersih" >
@@ -104,7 +101,7 @@
 
                         <div class="form-group row mb-3">
                             <label for="deposit_masuk" class="col-sm-3 col-form-label">
-                                <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Deposit Masuk</a>
+                                <a id="deposit_masuk_link" href="#" data-toggle="modal" data-target="#depositMasukModal" class="text-decoration-none">Deposit Masuk</a>
                             </label>                            
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="deposit_masuk" name="deposit_masuk" >
@@ -117,7 +114,7 @@
 
                         <div class="form-group row mb-3">
                             <label for="total_penjualan" class="col-sm-3 col-form-label">
-                                <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Total Penjualan</a>
+                                <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Penjualan Bersih</a>
                             </label>                            
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="total_penjualan" name="total_penjualan" >
@@ -126,7 +123,7 @@
 
                         <div class="form-group row mb-3">
                             <label for="mesin_edc" class="col-sm-3 col-form-label">
-                                <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Mesin EDC</a>
+                                <a id="penjualan_mesinedc_link" href="#" data-toggle="modal" data-target="#penjualanMesinedcModal" class="text-decoration-none">Mesin EDC</a>
                             </label>                            
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="mesin_edc" name="mesin_edc" >
@@ -135,7 +132,7 @@
 
                         <div class="form-group row mb-3">
                             <label for="qris" class="col-sm-3 col-form-label">
-                                <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">QRIS</a>
+                                <a id="penjualan_qris_link" href="#" data-toggle="modal" data-target="#penjualanQrisModal" class="text-decoration-none">Qris</a>
                             </label>                            
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="qris" name="qris" >
@@ -144,7 +141,7 @@
 
                         <div class="form-group row mb-3">
                             <label for="gobiz" class="col-sm-3 col-form-label">
-                                <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Gobiz</a>
+                                <a id="penjualan_gobiz_link" href="#" data-toggle="modal" data-target="#penjualanGobizModal" class="text-decoration-none">Gobiz</a>
                             </label>                            
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="gobiz" name="gobiz" >
@@ -153,7 +150,7 @@
 
                         <div class="form-group row mb-3">
                             <label for="transfer" class="col-sm-3 col-form-label">
-                                <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">transfer</a>
+                                <a id="penjualan_transfer_link" href="#" data-toggle="modal" data-target="#penjualanTransferModal" class="text-decoration-none">Transfer</a>
                             </label>                            
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="transfer" name="transfer" >
@@ -204,132 +201,275 @@
                         
                     </div>       
                     </div>   
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-
-                    
+                    <button type="submit" class="btn btn-primary">Simpan</button>        
             </form>
         </div>
-<!-- Modal -->
-<div class="modal fade" id="penjualanKotorModal" tabindex="-1" role="dialog" aria-labelledby="penjualanKotorModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="penjualanKotorModalLabel">Pilih Jenis Penjualan Kotor</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Silakan pilih jenis laporan yang ingin ditampilkan:</p>
-                <div class="d-flex justify-content-around">
-                    <!-- Tautan akan diupdate sesuai tanggal dan toko -->
-                    <a href="{{ route('print.penjualantoko.kotor') }}" id="penjualan_kotor_link_modal" class="btn btn-primary">Barang Keluar</a>
-                    <a href="#" id="fakturPenjualanLink" class="btn btn-secondary">Faktur Penjualan</a>
+        <!-- Modal -->
+        <div class="modal fade" id="penjualanKotorModal" tabindex="-1" role="dialog" aria-labelledby="penjualanKotorModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="penjualanKotorModalLabel">Pilih</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {{-- <p>Silakan pilih jenis laporan yang ingin ditampilkan:</p> --}}
+                        <div class="d-flex justify-content-around">
+                            <a href="{{ route('print.penjualantoko.kotor') }}" 
+                            id="penjualan_kotor_link_modal" 
+                            class="btn btn-primary" 
+                            target="_blank">Barang Keluar</a>
+
+                            <a href="{{ route('print.fakturpenjualantoko') }}" 
+                            id="faktur_penjualan_link_modal" 
+                            class="btn btn-secondary"
+                            target="_blank">Faktur Penjualan</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
+        <div class="modal fade" id="depositMasukModal" tabindex="-1" role="dialog" aria-labelledby="depositMasukModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="depositMasukModalLabel">Pilih</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {{-- <p>Silakan pilih jenis laporan yang ingin ditampilkan:</p> --}}
+                        <div class="d-flex justify-content-around">
+                            {{-- <a href="{{ route('print.penjualantoko.kotor') }}" 
+                            id="penjualan_kotor_link_modal" 
+                            class="btn btn-primary" 
+                            target="_blank">Barang Keluar</a> --}}
 
+                            <a href="{{ route('print.fakturdepositmasuktoko') }}" 
+                            id="faktur_deposit_masuk_link_modal" 
+                            class="btn btn-secondary"
+                            target="_blank">Faktur Deposit</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="penjualanMesinedcModal" tabindex="-1" role="dialog" aria-labelledby="penjualanMesinedcModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="penjualanMesinedcModalLabel">Pilih</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="d-flex justify-content-around">
+                            <a href="{{ route('print.fakturpenjualanmesinedc') }}" 
+                            id="penjualan_mesinedc_link_modal" 
+                            class="btn btn-secondary"
+                            target="_blank">Faktur Penjualan</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="penjualanQrisModal" tabindex="-1" role="dialog" aria-labelledby="penjualanQrisModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="penjualanQrisModalLabel">Pilih</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="d-flex justify-content-around">
+                            <a href="{{ route('print.fakturpenjualanqris') }}" 
+                            id="penjualan_qris_link_modal" 
+                            class="btn btn-secondary"
+                            target="_blank">Faktur Penjualan</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="penjualanTransferModal" tabindex="-1" role="dialog" aria-labelledby="penjualanTransferModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="penjualanTransferModalLabel">Pilih</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="d-flex justify-content-around">
+                            <a href="{{ route('print.fakturpenjualantransfer') }}" 
+                            id="penjualan_transfer_link_modal" 
+                            class="btn btn-secondary"
+                            target="_blank">Faktur Penjualan</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="penjualanGobizModal" tabindex="-1" role="dialog" aria-labelledby="penjualanGobizModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="penjualanGobizModalLabel">Pilih</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="d-flex justify-content-around">
+                            <a href="{{ route('print.fakturpenjualangobiz') }}" 
+                            id="penjualan_gobiz_link_modal" 
+                            class="btn btn-secondary"
+                            target="_blank">Faktur Penjualan</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     
     </section>
 
+    <script>
+        // Fungsi untuk memperbarui URL link di dalam modal
+        function updateModalLink() {
+            const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
+            const tokoId = document.getElementById('toko').value;
+    
+            // Base URL untuk Barang Keluar (link di dalam modal)
+            const baseUrlBarangKeluar = "{{ route('print.penjualantoko.kotor') }}";
+            const baseUrlFakturPenjualan = "{{ route('print.fakturpenjualantoko') }}"; // Perbaikan nama variabel
+            const baseUrlFakturDeposit = "{{ route('print.fakturdepositmasuktoko') }}"; // Perbaikan nama variabel
+            const baseUrlFakturPenjualanMesinedc = "{{ route('print.fakturpenjualanmesinedc') }}"; // Perbaikan nama variabel
+            const baseUrlFakturPenjualanQris = "{{ route('print.fakturpenjualanqris') }}"; // Perbaikan nama variabel
+            const baseUrlFakturPenjualanTransfer = "{{ route('print.fakturpenjualantransfer') }}"; // Perbaikan nama variabel
+            const baseUrlFakturPenjualanGobiz = "{{ route('print.fakturpenjualangobiz') }}"; // Perbaikan nama variabel
+
+    
+            // Perbarui URL untuk Barang Keluar
+            const urlBarangKeluar = new URL(baseUrlBarangKeluar, window.location.origin);
+            if (tanggalPenjualan) {
+                urlBarangKeluar.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+            }
+            if (tokoId) {
+                urlBarangKeluar.searchParams.set('toko_id', tokoId);
+            }
+            document.getElementById('penjualan_kotor_link_modal').href = urlBarangKeluar.toString();
+    
+            // Perbarui URL untuk Faktur Penjualan
+            const urlFakturPenjualan = new URL(baseUrlFakturPenjualan, window.location.origin); // Perbaikan nama variabel
+            if (tanggalPenjualan) {
+                urlFakturPenjualan.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+            }
+            if (tokoId) {
+                urlFakturPenjualan.searchParams.set('toko_id', tokoId);
+            }
+            document.getElementById('faktur_penjualan_link_modal').href = urlFakturPenjualan.toString();
+
+            const urlFakturDeposit = new URL(baseUrlFakturDeposit, window.location.origin); // Perbaikan nama variabel
+            if (tanggalPenjualan) {
+                urlFakturDeposit.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+            }
+            if (tokoId) {
+                urlFakturDeposit.searchParams.set('toko_id', tokoId);
+            }
+            document.getElementById('faktur_deposit_masuk_link_modal').href = urlFakturDeposit.toString();
+
+            const urlFakturPenjualanMesinedc = new URL(baseUrlFakturPenjualanMesinedc, window.location.origin);
+            if (tanggalPenjualan) {
+                urlFakturPenjualanMesinedc.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+            }
+            if (tokoId) {
+                urlFakturPenjualanMesinedc.searchParams.set('toko_id', tokoId);
+            }
+            document.getElementById('penjualan_mesinedc_link_modal').href = urlFakturPenjualanMesinedc.toString();
+
+            const urlFakturPenjualanQris = new URL(baseUrlFakturPenjualanQris, window.location.origin);
+            if (tanggalPenjualan) {
+                urlFakturPenjualanQris.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+            }
+            if (tokoId) {
+                urlFakturPenjualanQris.searchParams.set('toko_id', tokoId);
+            }
+            document.getElementById('penjualan_qris_link_modal').href = urlFakturPenjualanQris.toString();
+
+            const urlFakturPenjualanTransfer = new URL(baseUrlFakturPenjualanTransfer, window.location.origin);
+            if (tanggalPenjualan) {
+                urlFakturPenjualanTransfer.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+            }
+            if (tokoId) {
+                urlFakturPenjualanTransfer.searchParams.set('toko_id', tokoId);
+            }
+            document.getElementById('penjualan_transfer_link_modal').href = urlFakturPenjualanTransfer.toString();
+
+            const urlFakturPenjualanGobiz = new URL(baseUrlFakturPenjualanGobiz, window.location.origin);
+            if (tanggalPenjualan) {
+                urlFakturPenjualanGobiz.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+            }
+            if (tokoId) {
+                urlFakturPenjualanGobiz.searchParams.set('toko_id', tokoId);
+            }
+            document.getElementById('penjualan_gobiz_link_modal').href = urlFakturPenjualanGobiz.toString();
+
+        }
+    
+        // Pastikan modal dipicu dengan tautan yang benar saat ditampilkan
+        $('#penjualanKotorModal').on('show.bs.modal', function () {
+            updateModalLink(); // Panggil fungsi untuk memperbarui link di dalam modal
+        });
+    
+        // Inisialisasi pertama
+        document.addEventListener("DOMContentLoaded", function () {
+            updateModalLink();
+        });
+    </script>
 
     {{-- <script>
-        function updateLink() {
+        // Fungsi untuk memperbarui URL link di dalam modal
+        function updateModalLink() {
             const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
-            const tokoId = document.getElementById('toko').value; 
-    
-            // Base URLs untuk penjualan kotor dan diskon penjualan
-            const baseUrlPenjualanKotor = "{{ route('print.penjualantoko.kotor') }}";
-            const baseUrlDiskonPenjualan = "{{ route('print.penjualantoko.diskon') }}";
-            const baseUrlPenjualanBersih = "{{ route('print.penjualantoko.bersih') }}";
-    
-            // Perbarui link untuk Penjualan Kotor
-            const urlPenjualanKotor = new URL(baseUrlPenjualanKotor);
-            if (tanggalPenjualan) {
-                urlPenjualanKotor.searchParams.set('tanggal_penjualan', tanggalPenjualan);
-            } else {
-                urlPenjualanKotor.searchParams.delete('tanggal_penjualan');
-            }
-    
-            if (tokoId) {
-                urlPenjualanKotor.searchParams.set('toko_id', tokoId);
-            } else {
-                urlPenjualanKotor.searchParams.delete('toko_id');
-            }
-            document.getElementById('penjualan_kotor_link').href = urlPenjualanKotor.toString();
-    
-            // Perbarui link untuk Diskon Penjualan
-            const urlDiskonPenjualan = new URL(baseUrlDiskonPenjualan);
-            if (tanggalPenjualan) {
-                urlDiskonPenjualan.searchParams.set('tanggal_penjualan', tanggalPenjualan);
-            } else {
-                urlDiskonPenjualan.searchParams.delete('tanggal_penjualan');
-            }
-    
-            if (tokoId) {
-                urlDiskonPenjualan.searchParams.set('toko_id', tokoId);
-            } else {
-                urlDiskonPenjualan.searchParams.delete('toko_id');
-            }
-            document.getElementById('diskon_penjualan_link').href = urlDiskonPenjualan.toString();
+            const tokoId = document.getElementById('toko').value;
 
-            // Perbarui link untuk Penjualan Bersih
-            const urlPenjualanBersih = new URL(baseUrlPenjualanBersih);
+            // Base URL untuk Barang Keluar (link di dalam modal)
+            const baseUrlFakturDeposit = "{{ route('print.fakturdepositmasuktoko') }}"; // Perbaikan nama variabel
+
+            // Perbarui URL untuk Faktur Penjualan
+            const urlFakturDeposit = new URL(baseUrlFakturDeposit, window.location.origin); // Perbaikan nama variabel
             if (tanggalPenjualan) {
-                urlPenjualanBersih.searchParams.set('tanggal_penjualan', tanggalPenjualan);
-            } else {
-                urlPenjualanBersih.searchParams.delete('tanggal_penjualan');
+                urlFakturDeposit.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
-    
             if (tokoId) {
-                urlPenjualanBersih.searchParams.set('toko_id', tokoId);
-            } else {
-                urlPenjualanBersih.searchParams.delete('toko_id');
+                urlFakturDeposit.searchParams.set('toko_id', tokoId);
             }
-            document.getElementById('penjualan_bersih_link').href = urlPenjualanBersih.toString();
+            document.getElementById('faktur_deposit_masuk_link_modal').href = urlFakturDeposit.toString();
         }
 
+        // Pastikan modal dipicu dengan tautan yang benar saat ditampilkan
+        $('#depositMasukModal').on('show.bs.modal', function () {
+            updateModalLink(); // Panggil fungsi untuk memperbarui link di dalam modal
+        });
 
+        // Inisialisasi pertama
+        document.addEventListener("DOMContentLoaded", function () {
+            updateModalLink();
+        });
     </script> --}}
     
-    <script>
-$('#penjualanKotorModal').on('show.bs.modal', function () {
-    updateModalLink();  // Panggil fungsi untuk memperbarui link di dalam modal
-});
-
-// Fungsi untuk memperbarui URL link di dalam modal
-function updateModalLink() {
-    const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
-    const tokoId = document.getElementById('toko').value;
-
-    // Base URL untuk Barang Keluar (link di dalam modal)
-    const baseUrlBarangKeluar = "{{ route('print.penjualantoko.kotor') }}";
-
-    // Perbarui URL untuk Barang Keluar
-    const urlBarangKeluar = new URL(baseUrlBarangKeluar);
-
-    // Jika ada tanggal_penjualan, tambahkan ke URL
-    if (tanggalPenjualan) {
-        urlBarangKeluar.searchParams.set('tanggal_penjualan', tanggalPenjualan);
-    } else {
-        urlBarangKeluar.searchParams.delete('tanggal_penjualan');
-    }
-
-    // Jika ada toko_id, tambahkan ke URL
-    if (tokoId) {
-        urlBarangKeluar.searchParams.set('toko_id', tokoId);
-    } else {
-        urlBarangKeluar.searchParams.delete('toko_id');
-    }
-
-    // Perbarui href dari link Barang Keluar di dalam modal
-    document.getElementById('penjualan_kotor_link_modal').href = urlBarangKeluar.toString();
-}
-
-    </script>
     
     
     <script>
