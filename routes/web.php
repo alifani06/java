@@ -888,6 +888,7 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::get('printexcelstoktokotegal', [\App\Http\Controllers\Toko_tegal\Laporan_stoktokotegalController::class, 'exportExcel']);
     Route::get('stoktokopesanantegal', [\App\Http\Controllers\Toko_tegal\Laporan_stoktokotegalController::class, 'stoktokopesanantegal']);
     Route::get('printstoktokopesanantegal', [\App\Http\Controllers\Toko_tegal\Laporan_stoktokotegalController::class, 'printReportstokpesanantegal']);
+    Route::get('printexcelstokpesanantegal', [\App\Http\Controllers\Toko_tegal\Laporan_stoktokotegalController::class, 'exportExcelpesanan']);
     Route::get('semuastoktokotegal', [Laporan_stoktokotegalController::class, 'semuaStokTokoTegal'])->name('laporan.semuaStokTokoTegal');
     Route::get('printsemuastoktokotegal', [\App\Http\Controllers\Toko_tegal\Laporan_stoktokotegalController::class, 'printReportsemuastoktegal']);
     Route::get('printexcelsemuategal', [\App\Http\Controllers\Toko_tegal\Laporan_stoktokotegalController::class, 'exportExcelsemua']);

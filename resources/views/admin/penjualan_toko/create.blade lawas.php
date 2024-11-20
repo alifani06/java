@@ -60,9 +60,7 @@
                         <!-- Tempat untuk menampilkan Penjualan Kotor -->
                         <div class="form-group row mb-3">
                             <label for="penjualan_kotor" class="col-sm-3 col-form-label">
-                                {{-- <a id="penjualan_kotor_link" href="{{ route('print.penjualantoko.kotor') }}" target="_blank" class="text-decoration-none">Penjualan Kotor</a> --}}
-                                <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Penjualan Kotor</a>
-
+                                <a id="penjualan_kotor_link" href="{{ route('print.penjualantoko.kotor') }}" target="_blank" class="text-decoration-none">Penjualan Kotor</a>
                             </label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="penjualan_kotor" name="penjualan_kotor" placeholder="" >
@@ -209,34 +207,13 @@
                     
             </form>
         </div>
-<!-- Modal -->
-<div class="modal fade" id="penjualanKotorModal" tabindex="-1" role="dialog" aria-labelledby="penjualanKotorModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="penjualanKotorModalLabel">Pilih Jenis Penjualan Kotor</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Silakan pilih jenis laporan yang ingin ditampilkan:</p>
-                <div class="d-flex justify-content-around">
-                    <!-- Tautan akan diupdate sesuai tanggal dan toko -->
-                    <a href="{{ route('print.penjualantoko.kotor') }}" id="penjualan_kotor_link_modal" class="btn btn-primary">Barang Keluar</a>
-                    <a href="#" id="fakturPenjualanLink" class="btn btn-secondary">Faktur Penjualan</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
+        <!-- Modal -->
 
     
     </section>
 
 
-    {{-- <script>
+    <script>
         function updateLink() {
             const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
             const tokoId = document.getElementById('toko').value; 
@@ -292,42 +269,6 @@
             document.getElementById('penjualan_bersih_link').href = urlPenjualanBersih.toString();
         }
 
-
-    </script> --}}
-    
-    <script>
-$('#penjualanKotorModal').on('show.bs.modal', function () {
-    updateModalLink();  // Panggil fungsi untuk memperbarui link di dalam modal
-});
-
-// Fungsi untuk memperbarui URL link di dalam modal
-function updateModalLink() {
-    const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
-    const tokoId = document.getElementById('toko').value;
-
-    // Base URL untuk Barang Keluar (link di dalam modal)
-    const baseUrlBarangKeluar = "{{ route('print.penjualantoko.kotor') }}";
-
-    // Perbarui URL untuk Barang Keluar
-    const urlBarangKeluar = new URL(baseUrlBarangKeluar);
-
-    // Jika ada tanggal_penjualan, tambahkan ke URL
-    if (tanggalPenjualan) {
-        urlBarangKeluar.searchParams.set('tanggal_penjualan', tanggalPenjualan);
-    } else {
-        urlBarangKeluar.searchParams.delete('tanggal_penjualan');
-    }
-
-    // Jika ada toko_id, tambahkan ke URL
-    if (tokoId) {
-        urlBarangKeluar.searchParams.set('toko_id', tokoId);
-    } else {
-        urlBarangKeluar.searchParams.delete('toko_id');
-    }
-
-    // Perbarui href dari link Barang Keluar di dalam modal
-    document.getElementById('penjualan_kotor_link_modal').href = urlBarangKeluar.toString();
-}
 
     </script>
     
