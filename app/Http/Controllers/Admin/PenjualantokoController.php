@@ -1022,10 +1022,24 @@ class PenjualantokoController extends Controller{
         $pelanggans = Pelanggan::all();
         $tokos = $penjualan->toko;
     
-        $pdf = FacadePdf::loadView('toko_banjaran.penjualan_produk.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans'));
+        $pdf = FacadePdf::loadView('admin.penjualan_toko.detail', compact('penjualan', 'tokos', 'pelanggans'));
         $pdf->setPaper('a4', 'portrait');
     
         return $pdf->stream('penjualan.pdf');
+    }
+
+    public function show1($id)
+    {
+        $pemesanan = Pemesananproduk::findOrFail($id);
+        $pelanggans = Pelanggan::all();
+        
+        $dp = $pemesanan->dppemesanan;
+        $tokos = $pemesanan->toko;
+    
+        $pdf = FacadePdf::loadView('admin.penjualan_toko.detailpemesanan', compact('pemesanan', 'tokos', 'pelanggans','dp'));
+        $pdf->setPaper('a4', 'portrait');
+    
+        return $pdf->stream('pemesanan.pdf');
     }
 
 
