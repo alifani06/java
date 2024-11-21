@@ -50,7 +50,7 @@ class PenjualantokoController extends Controller{
                 return $query->whereDate('tanggal_setoran', '>=', $tanggalPenjualan)
                             ->whereDate('tanggal_setoran', '<=', $tanggalAkhir ?? $tanggalPenjualan);
             })
-            ->orderBy('id', 'DESC')
+            ->orderBy('id', 'asc')
             ->get();
 
         // Kirim data ke view
@@ -411,7 +411,7 @@ class PenjualantokoController extends Controller{
     
         // Ambil data terakhir berdasarkan prefix dan tanggal hari ini
         $lastBarang = Setoran_penjualan::where('no_fakturpenjualantoko', 'LIKE', $prefix . $monthDay . $year . '%')
-                                    ->orderBy('no_fakturpenjualantoko', 'desc')
+                                    ->orderBy('no_fakturpenjualantoko', 'asc')
                                     ->first();
     
         // Tentukan urutan berikutnya
@@ -446,7 +446,7 @@ class PenjualantokoController extends Controller{
     //             return $query->where('toko_id', $toko_id); // Filter berdasarkan toko_id
     //         })
     //         ->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan)->startOfDay()) // Filter berdasarkan tanggal
-    //         ->orderBy('tanggal_penjualan', 'desc'); // Urutkan berdasarkan tanggal
+    //         ->orderBy('tanggal_penjualan', 'asc'); // Urutkan berdasarkan tanggal
 
     //     $inquery = $query->get();
 
@@ -525,7 +525,7 @@ class PenjualantokoController extends Controller{
                 return $query->where('toko_id', $toko_id); // Filter berdasarkan toko_id
             })
             ->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan)->startOfDay()) // Filter berdasarkan tanggal
-            ->orderBy('tanggal_penjualan', 'desc'); // Urutkan berdasarkan tanggal
+            ->orderBy('tanggal_penjualan', 'asc'); // Urutkan berdasarkan tanggal
 
         $inquery = $query->get();
 
@@ -599,7 +599,7 @@ class PenjualantokoController extends Controller{
     //         ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
     //             return $query->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan));
     //         })
-    //         ->orderBy('tanggal_penjualan', 'desc');
+    //         ->orderBy('tanggal_penjualan', 'asc');
     
     //     $inquery = $query->get();
     
@@ -637,7 +637,7 @@ class PenjualantokoController extends Controller{
             ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
                 return $query->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan));
             })
-            ->orderBy('tanggal_penjualan', 'desc');
+            ->orderBy('tanggal_penjualan', 'asc');
     
         $inquery = $query->get();
     
@@ -676,7 +676,7 @@ class PenjualantokoController extends Controller{
             ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
                 return $query->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan));
             })
-            ->orderBy('tanggal_penjualan', 'desc');
+            ->orderBy('tanggal_penjualan', 'asc');
     
         $inquery = $query->get();
     
@@ -715,7 +715,7 @@ class PenjualantokoController extends Controller{
             ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
                 return $query->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan));
             })
-            ->orderBy('tanggal_penjualan', 'desc');
+            ->orderBy('tanggal_penjualan', 'asc');
     
         $inquery = $query->get();
     
@@ -754,7 +754,7 @@ class PenjualantokoController extends Controller{
             ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
                 return $query->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan));
             })
-            ->orderBy('tanggal_penjualan', 'desc');
+            ->orderBy('tanggal_penjualan', 'asc');
     
         $inquery = $query->get();
     
@@ -793,7 +793,7 @@ class PenjualantokoController extends Controller{
             ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
                 return $query->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan));
             })
-            ->orderBy('tanggal_penjualan', 'desc');
+            ->orderBy('tanggal_penjualan', 'asc');
     
         $inquery = $query->get();
     
@@ -834,7 +834,7 @@ class PenjualantokoController extends Controller{
             ->when($tanggal_pemesanan, function ($query, $tanggal_pemesanan) {
                 return $query->whereDate('tanggal_pemesanan', Carbon::parse($tanggal_pemesanan));
             })
-            ->orderBy('tanggal_pemesanan', 'desc');
+            ->orderBy('tanggal_pemesanan', 'asc');
     
         $inquery = $query->get();
     
@@ -877,7 +877,7 @@ class PenjualantokoController extends Controller{
                 return $query->where('toko_id', $toko_id); // Filter berdasarkan toko_id
             })
             ->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan)->startOfDay()) // Filter berdasarkan tanggal
-            ->orderBy('tanggal_penjualan', 'desc'); // Urutkan berdasarkan tanggal
+            ->orderBy('tanggal_penjualan', 'asc'); // Urutkan berdasarkan tanggal
 
         $inquery = $query->get();
 
@@ -955,7 +955,7 @@ class PenjualantokoController extends Controller{
                 return $query->where('toko_id', $toko_id); // Filter berdasarkan toko_id
             })
             ->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan)->startOfDay()) // Filter berdasarkan tanggal
-            ->orderBy('tanggal_penjualan', 'desc'); // Urutkan berdasarkan tanggal
+            ->orderBy('tanggal_penjualan', 'asc'); // Urutkan berdasarkan tanggal
 
         $inquery = $query->get();
 
