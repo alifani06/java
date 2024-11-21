@@ -39,6 +39,8 @@
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
                                     value="{{ Request::get('tanggal_penjualan') }}" onchange="updateModalLink()" />
+                                    <label for="tanggal_penjualan">(Tanggal Penjualan)</label>
+
                             </div>
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="toko" name="toko_id" onchange="updateModalLink()">
@@ -47,6 +49,8 @@
                                         <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
                                     @endforeach
                                 </select>
+                                <label for="toko_id">(Pilih Toko)</label>
+
                             </div>
                             <div class="col-md-3 mb-3">
                                 <button type="button" id="btnCari" class="btn btn-outline-primary">Cari</button>
@@ -114,7 +118,7 @@
 
                         <div class="form-group row mb-3">
                             <label for="total_penjualan" class="col-sm-3 col-form-label">
-                                <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Penjualan Bersih</a>
+                                <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Total Penjualan</a>
                             </label>                            
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="total_penjualan" name="total_penjualan" >

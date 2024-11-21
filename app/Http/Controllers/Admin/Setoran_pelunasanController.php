@@ -52,11 +52,13 @@ class Setoran_pelunasanController extends Controller
 
     public function create(Request $request)
     {
+        $tokos = Toko::all();
+
         // Ambil satu record terbaru dari Setoran_penjualan
         $setoranPenjualans = Setoran_penjualan::orderBy('id', 'DESC')->first();
     
         // Kirim data ke view
-        return view('admin.setoran_pelunasan.create', compact('setoranPenjualans'));
+        return view('admin.setoran_pelunasan.create', compact('setoranPenjualans','tokos'));
     }
     
     
@@ -66,21 +68,31 @@ class Setoran_pelunasanController extends Controller
    
     public function getdata1(Request $request)
     {
-        // Validasi input tanggal
+        // Validasi input
         $request->validate([
             'tanggal_penjualan' => 'required|date',
+            'toko_id' => 'nullable|exists:tokos,id' // Validasi toko_id
         ]);
-
-        // Ambil tanggal dari request
+    
+        // Ambil parameter dari request
         $tanggalPenjualan = $request->input('tanggal_penjualan');
-        
-        // Query untuk mengambil data dari tabel setoran_penjualan berdasarkan tanggal
-        $setoranPenjualan = Setoran_penjualan::whereDate('tanggal_penjualan', $tanggalPenjualan)->first();
-        
+        $tokoId = $request->input('toko_id');
+    
+        // Query untuk mengambil data dari tabel setoran_penjualan
+        $query = Setoran_penjualan::whereDate('tanggal_penjualan', $tanggalPenjualan);
+    
+        // Filter berdasarkan toko_id jika diberikan
+        if ($tokoId) {
+            $query->where('toko_id', $tokoId);
+        }
+    
+        // Ambil data pertama yang ditemukan
+        $setoranPenjualan = $query->first();
+    
         // Jika tidak ada data yang ditemukan, kembalikan respons default
         if (!$setoranPenjualan) {
             return response()->json([
-                'id' => null, // ID setoran_penjualan
+                'id' => null,
                 'penjualan_kotor' => 0,
                 'diskon_penjualan' => 0,
                 'penjualan_bersih' => 0,
@@ -97,91 +109,111 @@ class Setoran_pelunasanController extends Controller
                 'plusminus' => 0,
             ]);
         }
-
+    
         // Kembalikan hasil dari setoran_penjualan dalam format JSON
         return response()->json([
-            'id' => $setoranPenjualan->id, // Ambil ID
-            'penjualan_kotor' => $setoranPenjualan->penjualan_kotor,
-            'diskon_penjualan' => $setoranPenjualan->diskon_penjualan,
-            'penjualan_bersih' => $setoranPenjualan->penjualan_bersih,
-            'deposit_keluar' => $setoranPenjualan->deposit_keluar,
-            'deposit_masuk' => $setoranPenjualan->deposit_masuk,
-            'mesin_edc' => $setoranPenjualan->mesin_edc,
-            'qris' => $setoranPenjualan->qris,
-            'gobiz' => $setoranPenjualan->gobiz,
-            'transfer' => $setoranPenjualan->transfer,
-            'total_penjualan' => $setoranPenjualan->total_penjualan,
-            'total_setoran' => $setoranPenjualan->total_setoran,
-            'nominal_setoran' => $setoranPenjualan->nominal_setoran,
-            'nominal_setoran2' => $setoranPenjualan->nominal_setoran2,
-            'plusminus' => $setoranPenjualan->plusminus,
+            'id' => $setoranPenjualan->id,
+            'tanggal_penjualan' => $setoranPenjualan->tanggal_penjualan,
+            'penjualan_kotor' => number_format($setoranPenjualan->penjualan_kotor, 0, ',', '.'),
+            'diskon_penjualan' => number_format($setoranPenjualan->diskon_penjualan, 0, ',', '.'),
+            'penjualan_bersih' => number_format($setoranPenjualan->penjualan_bersih, 0, ',', '.'),
+            'deposit_keluar' => number_format($setoranPenjualan->deposit_keluar, 0, ',', '.'),
+            'deposit_masuk' => number_format($setoranPenjualan->deposit_masuk, 0, ',', '.'),
+            'mesin_edc' => number_format($setoranPenjualan->mesin_edc, 0, ',', '.'),
+            'qris' => number_format($setoranPenjualan->qris, 0, ',', '.'),
+            'gobiz' => number_format($setoranPenjualan->gobiz, 0, ',', '.'),
+            'transfer' => number_format($setoranPenjualan->transfer, 0, ',', '.'),
+            'total_penjualan' => number_format($setoranPenjualan->total_penjualan, 0, ',', '.'),
+            'total_setoran' => number_format($setoranPenjualan->total_setoran, 0, ',', '.'),
+            'nominal_setoran' => number_format($setoranPenjualan->nominal_setoran, 0, ',', '.'),
+            'nominal_setoran2' => number_format($setoranPenjualan->nominal_setoran2, 0, ',', '.'),
+            'plusminus' => number_format($setoranPenjualan->plusminus, 0, ',', '.'),
         ]);
     }
+    
 
 
     
 
-    public function store(Request $request)
-    {
-        // Validasi data
-        $request->validate([
-            'penjualan_kotor' => 'required|numeric',
-            'diskon_penjualan' => 'required|numeric',
-            'penjualan_bersih' => 'required|numeric',
-            'deposit_keluar' => 'required|numeric',
-            'deposit_masuk' => 'required|numeric',
-            'total_penjualan' => 'required|numeric',
-            'mesin_edc' => 'required|numeric',
-            'qris' => 'required|numeric',
-            'gobiz' => 'required|numeric',
-            'transfer' => 'required|numeric',
-            'tanggal_penjualan' => 'required|date',
-        ]);
+    // public function store(Request $request)
+    // {
+    //     // Validasi data
+    //     $request->validate([
+    //         'penjualan_kotor' => 'required|numeric',
+    //         'diskon_penjualan' => 'required|numeric',
+    //         'penjualan_bersih' => 'required|numeric',
+    //         'deposit_keluar' => 'required|numeric',
+    //         'deposit_masuk' => 'required|numeric',
+    //         'total_penjualan' => 'required|numeric',
+    //         'mesin_edc' => 'required|numeric',
+    //         'qris' => 'required|numeric',
+    //         'gobiz' => 'required|numeric',
+    //         'transfer' => 'required|numeric',
+    //         'tanggal_penjualan' => 'required|date',
+    //     ]);
 
-        // Simpan data ke database
-        $setoranPelunasan = new Setoran_penjualan();
-        $setoranPelunasan->penjualan_kotor = $request->penjualan_kotor;
-        $setoranPelunasan->diskon_penjualan = $request->diskon_penjualan;
-        $setoranPelunasan->penjualan_bersih = $request->penjualan_bersih;
-        $setoranPelunasan->deposit_keluar = $request->deposit_keluar;
-        $setoranPelunasan->deposit_masuk = $request->deposit_masuk;
-        $setoranPelunasan->total_penjualan = $request->total_penjualan;
-        $setoranPelunasan->mesin_edc = $request->mesin_edc;
-        $setoranPelunasan->qris = $request->qris;
-        $setoranPelunasan->gobiz = $request->gobiz;
-        $setoranPelunasan->transfer = $request->transfer;
-        $setoranPelunasan->tanggal_penjualan = $request->tanggal_penjualan;
-        $setoranPelunasan->total_setoran = $request->total_setoran;
-        $setoranPelunasan->nominal_setoran = $request->nominal_setoran;
-        $setoranPelunasan->plusminus = $request->plusminus;
-        $setoranPelunasan->status = 'posting';
-        $setoranPelunasan->save();
+    //     // Simpan data ke database
+    //     $setoranPelunasan = new Setoran_penjualan();
+    //     $setoranPelunasan->penjualan_kotor = $request->penjualan_kotor;
+    //     $setoranPelunasan->diskon_penjualan = $request->diskon_penjualan;
+    //     $setoranPelunasan->penjualan_bersih = $request->penjualan_bersih;
+    //     $setoranPelunasan->deposit_keluar = $request->deposit_keluar;
+    //     $setoranPelunasan->deposit_masuk = $request->deposit_masuk;
+    //     $setoranPelunasan->total_penjualan = $request->total_penjualan;
+    //     $setoranPelunasan->mesin_edc = $request->mesin_edc;
+    //     $setoranPelunasan->qris = $request->qris;
+    //     $setoranPelunasan->gobiz = $request->gobiz;
+    //     $setoranPelunasan->transfer = $request->transfer;
+    //     $setoranPelunasan->tanggal_penjualan = $request->tanggal_penjualan;
+    //     $setoranPelunasan->total_setoran = $request->total_setoran;
+    //     $setoranPelunasan->nominal_setoran = $request->nominal_setoran;
+    //     $setoranPelunasan->plusminus = $request->plusminus;
+    //     $setoranPelunasan->status = 'posting';
+    //     $setoranPelunasan->save();
 
-        // Redirect ke halaman lain atau berikan pesan sukses
-        return redirect()->back()->with('success', 'Data berhasil disimpan!');
-    }
+    //     // Redirect ke halaman lain atau berikan pesan sukses
+    //     return redirect()->back()->with('success', 'Data berhasil disimpan!');
+    // }
 
+ 
 
     public function updateStatus(Request $request)
     {
         // Ambil id setoran dari request
         $setoran_id = $request->input('id');
-
+    
         // Cari setoran_penjualan berdasarkan id
         $setoran = Setoran_penjualan::find($setoran_id);
-
+    
         if ($setoran) {
-            // Update status menjadi 'posting'
-            $setoran->status = 'posting';
+            // Hapus format number sebelum menyimpan
+            $penjualan_kotor = str_replace('.', '', $request->input('penjualan_kotor'));
+            $diskon_penjualan = str_replace('.', '', $request->input('diskon_penjualan'));
+            $penjualan_bersih = str_replace('.', '', $request->input('penjualan_bersih'));
+            $total_penjualan = str_replace('.', '', $request->input('total_penjualan'));
+            $deposit_keluar = str_replace('.', '', $request->input('deposit_keluar'));
+            $deposit_masuk = str_replace('.', '', $request->input('deposit_masuk'));
+    
+            // Update field berdasarkan input yang sudah dihapus format number-nya
+            $setoran->penjualan_kotor = $penjualan_kotor;
+            $setoran->diskon_penjualan = $diskon_penjualan;
+            $setoran->penjualan_bersih = $penjualan_bersih;
+            $setoran->total_penjualan = $total_penjualan;
+            $setoran->deposit_keluar = $deposit_keluar;
+            $setoran->deposit_masuk = $deposit_masuk;
+            $setoran->status = 'posting'; // Contoh pengubahan status
             $setoran->save();
-
-            // Redirect atau response dengan pesan sukses
-            return redirect()->route('setoran_pelunasan.index')->with('success', 'Berhasil');
+    
+            // Redirect dengan pesan sukses
+            return redirect()->route('setoran_pelunasan.index')->with('success', 'Data berhasil disimpan');
         }
-
+    
         // Jika setoran tidak ditemukan
         return redirect()->back()->with('error', 'Setoran tidak ditemukan');
     }
+    
+    
+    
     
 
     public function printPenjualanKotor(Request $request) 

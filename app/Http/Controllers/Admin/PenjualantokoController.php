@@ -275,9 +275,6 @@ class PenjualantokoController extends Controller{
             'total_setoran' => number_format($total_setoran, 0, ',', '.'),
         ]);
     }
-
-
-
     // public function store(Request $request)
     // {
     //     // Validasi input dengan custom error messages
@@ -395,8 +392,6 @@ class PenjualantokoController extends Controller{
         // Redirect ke halaman index dengan pesan sukses
         return redirect()->route('penjualan_toko.index')->with('success', 'Data berhasil disimpan dan status penjualan berhasil diperbarui!');
     }
-    
-
 
     public function kode($toko_id)
     {
@@ -705,7 +700,6 @@ class PenjualantokoController extends Controller{
     
         return $pdf->stream('faktur_penjualan.pdf');
     }
-    
 
     public function printFakturdepositMasuk(Request $request)
     {
@@ -748,9 +742,7 @@ class PenjualantokoController extends Controller{
     
         return $pdf->stream('faktur_penjualan.pdf');
     }
-    
-    
-    
+      
     public function printPenjualanDiskon(Request $request)
     {
         // Ambil parameter tanggal_penjualan dan toko_id dari request
@@ -828,7 +820,6 @@ class PenjualantokoController extends Controller{
 
         return $pdf->stream('laporan_penjualan_produk.pdf');
     }
-
 
     public function printPenjualanBersih(Request $request)
     {

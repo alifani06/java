@@ -518,7 +518,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     
 
     Route::resource('setoran_pelunasan', \App\Http\Controllers\Admin\Setoran_pelunasanController::class);
-    Route::post('/get-penjualan-kotor', [Setoran_pelunasanController::class, 'getdata1'])->name('getdata1');
+    Route::post('/get-penjualan1', [Setoran_pelunasanController::class, 'getdata1'])->name('getdata1');
     Route::get('/print-penjualan-kotor', [Setoran_pelunasanController::class, 'printPenjualanKotor'])->name('print.penjualan.kotor');
     Route::get('/print-diskon-penjualan', [Setoran_pelunasanController::class, 'printDiskonPenjualan'])->name('print.diskon.penjualan');
     Route::get('/print-deposit-keluar', [Setoran_pelunasanController::class, 'printDepositKeluar'])->name('print.deposit.keluar');
