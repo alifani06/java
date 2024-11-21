@@ -72,7 +72,7 @@
                                 <th style="text-align: center">Total Penjualan</th>
                             </tr>
                         </thead>
-                        <tbody style="font-size: 10px;">
+                        <tbody style="font-size: 12px;">
                             @php
                                 $grandTotal = 0;
                                 $grandTotalFee = 0;
@@ -97,7 +97,11 @@
                                 @endphp
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $item->kode_penjualan }}</td>
+                                    <td class="text-center">
+                                        <a href="{{ route('penjualanproduk.detail', ['id' => $item->id]) }}" target="_blank">
+                                            {{ $item->kode_penjualan }}
+                                        </a>
+                                    </td>
                                     <td>{{ $item->kasir ?? '-' }}</td>
                                     <td>
                                         @if($item->kode_pelanggan)

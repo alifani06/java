@@ -585,7 +585,7 @@ class PenjualantokoController extends Controller{
     }
 
 
-//dengan PDF
+    //dengan PDF
     // public function printFakturPenjualan(Request $request)
     // {
     //     $tanggal_penjualan = $request->get('tanggal_penjualan');
@@ -1015,5 +1015,18 @@ class PenjualantokoController extends Controller{
 
         return $pdf->stream('laporan_penjualan_produk.pdf');
     }
+
+    public function show($id)
+    {
+        $penjualan = Penjualanproduk::with('toko', 'metodepembayaran')->findOrFail($id); // Eager load relasi
+        $pelanggans = Pelanggan::all();
+        $tokos = $penjualan->toko;
+    
+        $pdf = FacadePdf::loadView('toko_banjaran.penjualan_produk.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans'));
+        $pdf->setPaper('a4', 'portrait');
+    
+        return $pdf->stream('penjualan.pdf');
+    }
+
 
 }

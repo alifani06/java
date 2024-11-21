@@ -299,6 +299,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/print-fakturdepositmasuktoko', [PenjualantokoController::class, 'printFakturdepositMasuk'])->name('print.fakturdepositmasuktoko');
     Route::get('/print-penjualantoko-diskon', [PenjualantokoController::class, 'printPenjualanDiskon'])->name('print.penjualantoko.diskon');
     Route::get('/print-penjualantoko-bersih', [PenjualantokoController::class, 'printPenjualanBersih'])->name('print.penjualantoko.bersih');
+    Route::get('penjualanproduk/detail/{id}', [PenjualantokoController::class, 'show'])->name('penjualanproduk.detail');
 
     Route::resource('inquery_penjualantoko', \App\Http\Controllers\Admin\Inquery_penjualantokoController::class);
     Route::get('/admin/inquery_penjualantoko/{id}/print', [Inquery_penjualantokoController::class, 'print'])->name('inquery_penjualantoko.print');
