@@ -543,39 +543,6 @@
         });
     </script>
 
-    {{-- <script>
-        // Fungsi untuk memperbarui URL link di dalam modal
-        function updateModalLink() {
-            const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
-            const tokoId = document.getElementById('toko').value;
-
-            // Base URL untuk Barang Keluar (link di dalam modal)
-            const baseUrlFakturDeposit = "{{ route('print.fakturdepositmasuktoko') }}"; // Perbaikan nama variabel
-
-            // Perbarui URL untuk Faktur Penjualan
-            const urlFakturDeposit = new URL(baseUrlFakturDeposit, window.location.origin); // Perbaikan nama variabel
-            if (tanggalPenjualan) {
-                urlFakturDeposit.searchParams.set('tanggal_penjualan', tanggalPenjualan);
-            }
-            if (tokoId) {
-                urlFakturDeposit.searchParams.set('toko_id', tokoId);
-            }
-            document.getElementById('faktur_deposit_masuk_link_modal').href = urlFakturDeposit.toString();
-        }
-
-        // Pastikan modal dipicu dengan tautan yang benar saat ditampilkan
-        $('#depositMasukModal').on('show.bs.modal', function () {
-            updateModalLink(); // Panggil fungsi untuk memperbarui link di dalam modal
-        });
-
-        // Inisialisasi pertama
-        document.addEventListener("DOMContentLoaded", function () {
-            updateModalLink();
-        });
-    </script> --}}
-    
-    
-    
     <script>
         document.getElementById('tambahInputCheckbox').addEventListener('change', function() {
             const extraRowsContainer = document.getElementById('extraRows');

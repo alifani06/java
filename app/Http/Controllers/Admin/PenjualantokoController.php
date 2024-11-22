@@ -503,40 +503,40 @@ class PenjualantokoController extends Controller{
     }
 
     public function kode($toko_id)
-{
-    // Tentukan prefix berdasarkan toko_id
-    $prefix = match($toko_id) {
-        1 => 'FTC', // Contoh toko 1 dengan prefix FTC
-        2 => 'FTD', // Contoh toko 2 dengan prefix FTD
-        3 => 'FTB', // Contoh toko 3 dengan prefix FTB
-        4 => 'FTE', // Contoh toko 4 dengan prefix FTE
-        5 => 'FTF', // Contoh toko 5 dengan prefix FTF
-        6 => 'FTG', // Contoh toko 6 dengan prefix FTG
-        default => 'FTA', // Prefix default
-    };
+    {
+        // Tentukan prefix berdasarkan toko_id
+        $prefix = match($toko_id) {
+            1 => 'FTC', // Contoh toko 1 dengan prefix FTC
+            2 => 'FTD', // Contoh toko 2 dengan prefix FTD
+            3 => 'FTB', // Contoh toko 3 dengan prefix FTB
+            4 => 'FTE', // Contoh toko 4 dengan prefix FTE
+            5 => 'FTF', // Contoh toko 5 dengan prefix FTF
+            6 => 'FTG', // Contoh toko 6 dengan prefix FTG
+            default => 'FTA', // Prefix default
+        };
 
-    $year = date('y'); // Tahun dua digit
-    $monthDay = date('dm'); // Bulan dan tanggal
+        $year = date('y'); // Tahun dua digit
+        $monthDay = date('dm'); // Bulan dan tanggal
 
-    // Cari kode terakhir berdasarkan prefix dan tanggal
-    $lastBarang = Setoran_penjualan::where('no_fakturpenjualantoko', 'LIKE', $prefix . $monthDay . $year . '%')
-                                    ->orderBy('no_fakturpenjualantoko', 'desc') // Urutkan dari yang terbaru
-                                    ->first();
+        // Cari kode terakhir berdasarkan prefix dan tanggal
+        $lastBarang = Setoran_penjualan::where('no_fakturpenjualantoko', 'LIKE', $prefix . $monthDay . $year . '%')
+                                        ->orderBy('no_fakturpenjualantoko', 'desc') // Urutkan dari yang terbaru
+                                        ->first();
 
-    // Tentukan urutan berikutnya
-    if (!$lastBarang) {
-        $num = 1; // Jika belum ada kode, mulai dari 1
-    } else {
-        $lastCode = $lastBarang->no_fakturpenjualantoko;
-        $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Ambil nomor urut terakhir
-        $num = $lastNum + 1; // Tambahkan 1 untuk nomor urut berikutnya
+        // Tentukan urutan berikutnya
+        if (!$lastBarang) {
+            $num = 1; // Jika belum ada kode, mulai dari 1
+        } else {
+            $lastCode = $lastBarang->no_fakturpenjualantoko;
+            $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Ambil nomor urut terakhir
+            $num = $lastNum + 1; // Tambahkan 1 untuk nomor urut berikutnya
+        }
+
+        $formattedNum = sprintf("%04d", $num); // Format menjadi 4 digit
+        $newCode = $prefix . $monthDay . $year . $formattedNum;
+
+        return $newCode;
     }
-
-    $formattedNum = sprintf("%04d", $num); // Format menjadi 4 digit
-    $newCode = $prefix . $monthDay . $year . $formattedNum;
-
-    return $newCode;
-}
 
     //dengan PDF
     // public function printPenjualanKotor(Request $request)

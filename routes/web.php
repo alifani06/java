@@ -718,10 +718,25 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('printpengirimantokobanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_pengirimantokobanjaranController::class, 'printReport']);
 
     Route::resource('setoran_tokobanjaran', \App\Http\Controllers\Toko_banjaran\Setoran_tokobanjaranController::class);
-    // Route::post('/get-penjualan-kotor', [Setoran_tokobanjaranController::class, 'getdata'])->name('getdata');
     Route::post('toko_banjaran/setoran_tokobanjaran', [Setoran_tokobanjaranController::class, 'store'])->name('setoran.store');
-    Route::post('/get-penjualanbanjaran', [Setoran_tokobanjaranController::class, 'getdata'])->name('getdata');
-
+    Route::post('/get-penjualanbanjaran', [Setoran_tokobanjaranController::class, 'getdatabanjaran'])->name('getdatabanjaran');
+    Route::get('/print-penjualantoko-kotorbnj', [Setoran_tokobanjaranController::class, 'printPenjualanKotorbnj'])->name('print.penjualantoko.kotorbnj');
+    Route::get('/print-fakturpenjualantokobnj', [Setoran_tokobanjaranController::class, 'printFakturpenjualanbnj'])->name('print.fakturpenjualantokobnj');
+    Route::get('/print-fakturpenjualanmesinedcbnj', [Setoran_tokobanjaranController::class, 'printFakturpenjualanMesinedcbnj'])->name('print.fakturpenjualanmesinedcbnj');
+    Route::get('/print-fakturpemesananmesinedcbnj', [Setoran_tokobanjaranController::class, 'printFakturpemesananMesinedcbnj'])->name('print.fakturpemesananmesinedcbnj');
+    Route::get('/print-fakturpenjualanqrisbnj', [Setoran_tokobanjaranController::class, 'printFakturpenjualanQrisbnj'])->name('print.fakturpenjualanqrisbnj');
+    Route::get('/print-fakturpemesananqrisbnj', [Setoran_tokobanjaranController::class, 'printFakturpemesananQrisbnj'])->name('print.fakturpemesananqrisbnj');
+    Route::get('/print-fakturpenjualantransferbnj', [Setoran_tokobanjaranController::class, 'printFakturpenjualanTransferbnj'])->name('print.fakturpenjualantransferbnj');
+    Route::get('/print-fakturpemesanantransferbnj', [Setoran_tokobanjaranController::class, 'printFakturpemesananTransferbnj'])->name('print.fakturpemesanantransferbnj');
+    Route::get('/print-fakturpenjualangobizbnj', [Setoran_tokobanjaranController::class, 'printFakturpenjualanGobizbnj'])->name('print.fakturpenjualangobizbnj');
+    Route::get('/print-fakturpemesanangobizbnj', [Setoran_tokobanjaranController::class, 'printFakturpemesananGobizbnj'])->name('print.fakturpemesanangobizbnj');
+    Route::get('/print-fakturdepositmasuktokobnj', [Setoran_tokobanjaranController::class, 'printFakturdepositMasukbnj'])->name('print.fakturdepositmasuktokobnj');
+    Route::get('/print-fakturdepositkeluartokobnj', [Setoran_tokobanjaranController::class, 'printFakturdepositKeluarbnj'])->name('print.fakturdepositkeluartokobnj');
+    Route::get('/print-penjualantoko-diskonbnj', [Setoran_tokobanjaranController::class, 'printPenjualanDiskonbnj'])->name('print.penjualantoko.diskonbnj');
+    Route::get('/print-penjualantoko-bersihbnj', [Setoran_tokobanjaranController::class, 'printPenjualanBersihbnj'])->name('print.penjualantoko.bersihbnj');
+    Route::get('penjualanprodukbnj/detail/{id}', [Setoran_tokobanjaranController::class, 'show'])->name('penjualanprodukbnj.detail');
+    Route::get('penjualanprodukbnj/detaildepositkeluar/{id}', [Setoran_tokobanjaranController::class, 'show2'])->name('penjualanprodukbnj.detaildepositkeluar');
+    Route::get('pemesananprodukbnj/detail/{id}', [Setoran_tokobanjaranController::class, 'show1'])->name('pemesananprodukbnj.detailpemesanan');
 
     Route::resource('laporan_setorantokobanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_setoranpenjualanController::class);
     Route::get('printReportsetoran', [Laporan_setoranpenjualanController::class, 'printReportsetoran'])->name('laporan_setoranpenjualan.print');
