@@ -82,6 +82,7 @@
                                 <th>Qris</th>
                                 <th>Total Setoran</th>
                                 <th>Noiminal Setoran</th>
+                                <th>Noiminal Setoran 2</th>
                                 <th>Plus Minus</th>
                             </tr>
                         </thead>
@@ -104,22 +105,17 @@
                                 <td>{{ number_format($setoran->qris ?? 0, 0, ',', '.') }}</td>
                                 <td>{{ number_format($setoran->total_setoran, 0, ',', '.') }}</td>
                                 <td>{{ number_format($setoran->nominal_setoran, 0, ',', '.') }}</td>
+                                <td>{{ number_format($setoran->nominal_setoran2, 0, ',', '.') }}</td>
                                 <td>{{ number_format($setoran->plusminus, 0, ',', '.') }}</td>
                             </tr>
                             @endforeach
                         </tbody>
-                        
-                    </table>
-
-                    
+                    </table> 
                 </div>
                 <!-- /.card-body -->
             </div>
         </div>
     </section>
-
-
-    <!-- /.card -->
     <script>
         var tanggalAwal = document.getElementById('tanggal_awal');
         var tanggalAkhir = document.getElementById('tanggal_akhir');

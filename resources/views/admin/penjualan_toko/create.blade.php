@@ -60,6 +60,9 @@
                     
                     
                     <div class="card-body">
+
+                        {{-- <input type="text" id="toko_id" name="toko_id" class="form-control" /> --}}
+
                         <!-- Tempat untuk menampilkan Penjualan Kotor -->
                         <div class="form-group row mb-3">
                             <label for="penjualan_kotor" class="col-sm-3 col-form-label">
