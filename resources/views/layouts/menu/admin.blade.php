@@ -629,6 +629,7 @@
     request()->is('admin/laporan_stoktoko*')||
     request()->is('admin/laporan_penjualantoko*')||
     request()->is('admin/laporan_hasilpenjualan*')||
+    request()->is('admin/laporan_pelunasanpenjualan*')||
     request()->is('admin/laporan_estimasiproduksi*')
     // request()->is('admin/input*')
   
@@ -648,6 +649,7 @@
         request()->is('admin/laporan_stoktoko*')|| 
         request()->is('admin/laporan_penjualantoko*')|| 
         request()->is('admin/laporan_hasilpenjualan*')|| 
+        request()->is('admin/laporan_pelunasanpenjualan*')|| 
         request()->is('admin/laporan_estimasiproduksi*') 
         // request()->is('admin/input*')
       
@@ -800,6 +802,16 @@
                 </a>
             </li>
         {{-- @endif --}}
+
+        {{-- @if (auth()->check() && auth()->user()->menu['laporan hasilpenjualan']) --}}
+        <li class="nav-item">
+            <a href="{{ url('admin/laporan_setoranpelunasan') }}"
+                class="nav-link {{ request()->is('admin/laporan_setoranpelunasan*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                <p style="font-size: 14px;">Laporan Pelunasan Penjualan</p>
+            </a>
+        </li>
+    {{-- @endif --}}
     </ul>
 </li>
 

@@ -63,14 +63,7 @@
                 <div class="card-body">
                     <form method="GET" id="form-action">
                         <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="status" name="status">
-                                    <option value="">- Semua Status -</option>
-                                    <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
-                                    <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
-                                </select>
-                                <label for="status">(Pilih Status)</label>
-                            </div>
+                            
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="toko" name="toko_id">
                                     <option value="">- Semua Toko -</option>
