@@ -67,6 +67,7 @@
                                 <th style="text-align: center">Nama Pelanggan</th>
                                 <th style="text-align: center">Metode Pembayaran</th>
                                 <th style="text-align: center">Fee Pemesanan</th>
+                                <th style="text-align: center">Total Deposit</th>
                                 <th style="text-align: center">Total Pemesanan</th>
                             </tr>
                         </thead>
@@ -74,6 +75,8 @@
                             @php
                                 $grandTotal = 0;
                                 $grandTotalFee = 0;
+                                $grandTotalDp = 0; 
+
                             @endphp
                             @foreach ($inquery as $item)
                                 @php
@@ -86,6 +89,9 @@
                                     $total_fee = preg_replace('/[^\d]/', '', $item->total_fee ?? 0);
                                     $total_fee = (float) $total_fee;
                                     $grandTotalFee += $total_fee;
+
+                                    $dp_pemesanan = $item->dppemesanan->dp_pemesanan ?? 0; 
+                                    $grandTotalDp += $dp_pemesanan; 
                                 @endphp
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
@@ -111,6 +117,13 @@
                                         @endif
                                     </td>
                                     <td style="text-align: right">
+                                        @php
+                                            $dp_pemesanan = $item->dppemesanan->dp_pemesanan ?? 0; // Default ke 0 jika tidak ada data
+                                        @endphp
+                                        {{ number_format($dp_pemesanan, 0, ',', '.') }}
+                                    </td>
+                                    
+                                    <td style="text-align: right">
                                         {{ number_format($sub_total, 0, ',', '.') }}
                                     </td>
                                 </tr>
@@ -120,6 +133,7 @@
                             <tr>
                                 <th colspan="5" class="text-center">Total</th>
                                 <th style="text-align: right">{{ number_format($grandTotalFee, 0, ',', '.') }}</th>
+                                <th style="text-align: right">{{ number_format($grandTotalDp, 0, ',', '.') }}</th> 
                                 <th style="text-align: right">{{ number_format($grandTotal, 0, ',', '.') }}</th>
                             </tr>
                         </tfoot>
