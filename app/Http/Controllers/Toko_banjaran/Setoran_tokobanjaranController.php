@@ -240,44 +240,50 @@ class Setoran_tokobanjaranController extends Controller
             }
         })->sum('dp_pemesanan');
 
-        // Fungsi untuk menghitung total metode pembayaran
-        $metodePembayaran = function ($metode_id) use ($tanggalPenjualan, $tokoId) {
+        $metodePembayaran = function ($metode_id, $tanggalPenjualan) use ($tokoId) {
             // Query untuk penjualan produk
             $queryPenjualan = Penjualanproduk::where('metode_id', $metode_id)
                 ->whereDate('tanggal_penjualan', $tanggalPenjualan);
-
+    
             if ($tokoId) {
                 $queryPenjualan->where('toko_id', $tokoId);
             }
-
-            $totalPenjualan = $queryPenjualan->select(Penjualanproduk::raw(
-                'SUM(CAST(REGEXP_REPLACE(REPLACE(sub_totalasli, "Rp", ""), "[^0-9]", "") AS UNSIGNED)) as total'
-            ))->value('total');
-
+    
+            // Perhitungan total penjualan
+            if ($metode_id == 1) {
+                $totalPenjualan = $queryPenjualan->select(Penjualanproduk::raw(
+                    'SUM(CAST(REGEXP_REPLACE(REPLACE(sub_totalasli, "Rp", ""), "[^0-9]", "") AS UNSIGNED) - CAST(REGEXP_REPLACE(REPLACE(nominal_diskon, "Rp", ""), "[^0-9]", "") AS UNSIGNED)) as total'
+                ))->value('total');
+            } else {
+                $totalPenjualan = $queryPenjualan->select(Penjualanproduk::raw(
+                    'SUM(CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)) as total'
+                ))->value('total');
+            }
+    
             // Query untuk dp pemesanan
             $totalPemesanan = Dppemesanan::whereHas('pemesananproduk', function ($q) use ($metode_id, $tanggalPenjualan, $tokoId) {
                 $q->where('metode_id', $metode_id)
                     ->whereDate('tanggal_pemesanan', $tanggalPenjualan);
-
+    
                 if ($tokoId) {
                     $q->where('toko_id', $tokoId);
                 }
             })->sum('dp_pemesanan');
-
+    
             return $totalPenjualan + $totalPemesanan;
         };
-
+    
         // Panggil metodePembayaran dengan metode_id yang relevan
-        $mesin_edc = $metodePembayaran(1);
-        $qris = $metodePembayaran(17);
-        $gobiz = $metodePembayaran(2);
-        $transfer = $metodePembayaran(3);
-
+        $mesin_edc = $metodePembayaran(1, $tanggalPenjualan);
+        $qris = $metodePembayaran(17, $tanggalPenjualan);
+        $gobiz = $metodePembayaran(2, $tanggalPenjualan);
+        $transfer = $metodePembayaran(3, $tanggalPenjualan);
+    
         // Hitung total penjualan
         $total_penjualan = $penjualan_bersih - ($deposit_keluar - $deposit_masuk);
         $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
         $total_setoran = $total_penjualan - $total_metode;
-
+    
         return response()->json([
             'penjualan_kotor' => number_format($penjualan_kotor, 0, ',', '.'),
             'diskon_penjualan' => number_format($diskon_penjualan, 0, ',', '.'),
@@ -293,6 +299,7 @@ class Setoran_tokobanjaranController extends Controller
             'total_setoran' => number_format($total_setoran, 0, ',', '.'),
         ]);
     }
+    
 
     public function printPenjualanKotorbnj(Request $request)
     {
