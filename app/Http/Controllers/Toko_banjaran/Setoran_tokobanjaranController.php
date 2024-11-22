@@ -780,7 +780,7 @@ class Setoran_tokobanjaranController extends Controller
         $tanggal_pemesanan = $tanggal_penjualan ?: $request->get('tanggal_pemesanan');
     
         // Query data berdasarkan filter
-        $query = Pemesananproduk::with('detailpemesananproduk.produk')
+        $query = Pemesananproduk::with(['detailpemesananproduk.produk', 'dppemesanan'])
             ->when($toko_id, function ($query, $toko_id) {
                 return $query->where('toko_id', $toko_id);
             })
@@ -788,8 +788,9 @@ class Setoran_tokobanjaranController extends Controller
                 return $query->whereDate('tanggal_pemesanan', Carbon::parse($tanggal_pemesanan));
             })
             ->orderBy('tanggal_pemesanan', 'asc');
-    
+
         $inquery = $query->get();
+
     
         // Menentukan nama cabang/toko
         $branchName = 'Semua Toko';

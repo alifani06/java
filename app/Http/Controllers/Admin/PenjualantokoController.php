@@ -1144,7 +1144,7 @@ class PenjualantokoController extends Controller{
         $tanggal_pemesanan = $tanggal_penjualan ?: $request->get('tanggal_pemesanan');
     
         // Query data berdasarkan filter
-        $query = Pemesananproduk::with('detailpemesananproduk.produk')
+        $query = Pemesananproduk::with(['detailpemesananproduk.produk', 'dppemesanan'])
             ->when($toko_id, function ($query, $toko_id) {
                 return $query->where('toko_id', $toko_id);
             })
@@ -1152,8 +1152,9 @@ class PenjualantokoController extends Controller{
                 return $query->whereDate('tanggal_pemesanan', Carbon::parse($tanggal_pemesanan));
             })
             ->orderBy('tanggal_pemesanan', 'asc');
-    
+
         $inquery = $query->get();
+
     
         // Menentukan nama cabang/toko
         $branchName = 'Semua Toko';
@@ -1176,6 +1177,51 @@ class PenjualantokoController extends Controller{
     
         return $pdf->stream('faktur_penjualan.pdf');
     }
+
+    // public function printFakturdepositMasuk(Request $request)
+    // {
+    //     $tanggal_penjualan = $request->get('tanggal_penjualan');
+    //     $toko_id = $request->get('toko_id');
+    
+    //     // Jika tanggal_penjualan tidak diisi, gunakan tanggal_pemesanan sebagai fallback
+    //     $tanggal_pemesanan = $tanggal_penjualan ?: $request->get('tanggal_pemesanan');
+    
+    //     // Query data berdasarkan filter untuk Dppemesanan terkait Pemesananproduk
+    //     $inquery = Dppemesanan::with('pemesananproduk') // Memastikan ada relasi dengan pemesananproduk
+    //         ->when($toko_id, function ($query, $toko_id) {
+    //             return $query->whereHas('pemesananproduk', function ($q) use ($toko_id) {
+    //                 $q->where('toko_id', $toko_id);
+    //             });
+    //         })
+    //         ->when($tanggal_pemesanan, function ($query, $tanggal_pemesanan) {
+    //             return $query->whereHas('pemesananproduk', function ($q) use ($tanggal_pemesanan) {
+    //                 $q->whereDate('tanggal_pemesanan', Carbon::parse($tanggal_pemesanan));
+    //             });
+    //         })
+    //         ->orderBy(Pemesananproduk::select('tanggal_pemesanan')->whereColumn('id', 'pemesananproduk_id')->orderBy('tanggal_pemesanan', 'asc')) // Mengurutkan berdasarkan tanggal_pemesanan di tabel pemesananproduk
+    //         ->get();
+    
+    //     // Menentukan nama cabang/toko
+    //     $branchName = 'Semua Toko';
+    //     if ($toko_id) {
+    //         $toko = Toko::find($toko_id);
+    //         $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+    //     }
+    
+    //     // Set periode tanggal
+    //     $startDate = $tanggal_pemesanan; // Menggunakan tanggal_pemesanan sebagai pengganti tanggal_penjualan
+    //     $endDate = null; // Tidak ada rentang akhir karena hanya satu tanggal
+    
+    //     // Buat PDF
+    //     return view('admin.penjualan_toko.printfakturdepositmasuktoko', [
+    //         'inquery' => $inquery,
+    //         'startDate' => $startDate,
+    //         'endDate' => $endDate,
+    //         'branchName' => $branchName,
+    //     ]);
+    // }
+    
+
       
     public function printPenjualanDiskon(Request $request)
     {
