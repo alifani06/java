@@ -317,6 +317,9 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('printReportpenjualanToko', [\App\Http\Controllers\Admin\Laporan_penjualantokoController::class, 'printReportpenjualanToko']);
 
 
+    Route::resource('laporan_setoranpelunasan', \App\Http\Controllers\Admin\Laporan_setoranpelunasanController::class);
+    Route::get('printReportpelunasanToko', [\App\Http\Controllers\Admin\Laporan_setoranpelunasanController::class, 'printReportpelunasanToko']);
+
 
     Route::resource('inquery_penjualanproduk', \App\Http\Controllers\Admin\Inquery_penjualanprodukController::class);
     Route::get('/admin/inquery_penjualanproduk', [Inquery_penjualanprodukController::class, 'index'])->name('admin.inquery_penjualanproduk.index');
