@@ -769,6 +769,48 @@ class Setoran_tokobanjaranController extends Controller
         return $pdf->stream('faktur_penjualan.pdf');
     }
 
+    // public function printFakturdepositMasukbnj(Request $request)
+    // {
+    //     $tanggal_penjualan = $request->get('tanggal_penjualan');
+    //     $toko_id = $request->get('toko_id');
+    
+    //     // Jika tanggal_penjualan tidak diisi, gunakan tanggal_pemesanan sebagai fallback
+    //     $tanggal_pemesanan = $tanggal_penjualan ?: $request->get('tanggal_pemesanan');
+    
+    //     // Query data berdasarkan filter
+    //     $query = Pemesananproduk::with(['detailpemesananproduk.produk', 'dppemesanan'])
+    //         ->when($toko_id, function ($query, $toko_id) {
+    //             return $query->where('toko_id', $toko_id);
+    //         })
+    //         ->when($tanggal_pemesanan, function ($query, $tanggal_pemesanan) {
+    //             return $query->whereDate('tanggal_pemesanan', Carbon::parse($tanggal_pemesanan));
+    //         })
+    //         ->orderBy('tanggal_pemesanan', 'asc');
+
+    //     $inquery = $query->get();
+
+    
+    //     // Menentukan nama cabang/toko
+    //     $branchName = 'Semua Toko';
+    //     if ($toko_id) {
+    //         $toko = Toko::find($toko_id);
+    //         $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+    //     }
+    
+    //     // Set periode tanggal
+    //     $startDate = $tanggal_pemesanan; // Menggunakan tanggal_pemesanan sebagai pengganti tanggal_penjualan
+    //     $endDate = null; // Tidak ada rentang akhir karena hanya satu tanggal
+    
+    //     // Buat PDF
+    //     return view('toko_banjaran.setoran_tokobanjaran.printfakturdepositmasuktoko', [
+    //         'inquery' => $inquery,
+    //         'startDate' => $startDate,
+    //         'endDate' => $endDate,
+    //         'branchName' => $branchName,
+    //     ]);
+    
+    //     return $pdf->stream('faktur_penjualan.pdf');
+    // }
     public function printFakturdepositMasukbnj(Request $request)
     {
         $tanggal_penjualan = $request->get('tanggal_penjualan');
