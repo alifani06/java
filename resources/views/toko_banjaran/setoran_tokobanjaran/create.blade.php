@@ -39,26 +39,19 @@
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
                                     value="{{ Request::get('tanggal_penjualan') }}" onchange="updateModalLink()" />
-                                    <label for="tanggal_penjualan">(Tanggal Penjualan)</label>
-
+                                <label for="tanggal_penjualan">(Tanggal Penjualan)</label>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="toko" name="toko_id" onchange="updateModalLink()">
-                                    <option value="">- Semua Toko -</option>
-                                    @foreach ($tokos as $toko)
-                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
-                                    @endforeach
+                                <select class="custom-select form-control" id="toko" name="toko_id" readonly>
+                                    <option value="1" selected>BANJARAN</option>
                                 </select>
-                                <label for="toko_id">(Pilih Toko)</label>
-
+                                <label for="toko_id">(Toko)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <button type="button" id="btnCari" class="btn btn-outline-primary">Cari</button>
                             </div>
                         </div>
                     </div>
-                    
-                    
                     <div class="card-body">
 
                         {{-- <input type="text" id="toko_id" name="toko_id" class="form-control" /> --}}

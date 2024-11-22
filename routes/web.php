@@ -1466,11 +1466,29 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
     Route::resource('laporan_pengirimantokoslawi', \App\Http\Controllers\Toko_slawi\Laporan_pengirimantokoslawiController::class);
     Route::get('printpengirimantokoslawi', [\App\Http\Controllers\Toko_slawi\Laporan_pengirimantokoslawiController::class, 'printReport']);
 
+    // Route::resource('setoran_tokoslawi', \App\Http\Controllers\Toko_slawi\Setoran_tokoslawiController::class);
+    // Route::post('toko_slawi/setoran_tokoslawi', [Setoran_tokoslawiController::class, 'store'])->name('setoran.store');
+    // Route::post('/get-penjualanslawi', [Setoran_tokoslawiController::class, 'getdata'])->name('getdata');
     Route::resource('setoran_tokoslawi', \App\Http\Controllers\Toko_slawi\Setoran_tokoslawiController::class);
-    // Route::post('/get-penjualan-kotor', [Setoran_tokoslawiController::class, 'getdata'])->name('getdata');
     Route::post('toko_slawi/setoran_tokoslawi', [Setoran_tokoslawiController::class, 'store'])->name('setoran.store');
-    Route::post('/get-penjualanslawi', [Setoran_tokoslawiController::class, 'getdata'])->name('getdata');
-
+    Route::post('/get-penjualanslawi', [Setoran_tokoslawiController::class, 'getdataslawi'])->name('getdataslawi');
+    Route::get('/print-penjualantoko-kotorslw', [Setoran_tokoslawiController::class, 'printPenjualanKotorslw'])->name('print.penjualantoko.kotorslw');
+    Route::get('/print-fakturpenjualantokoslw', [Setoran_tokoslawiController::class, 'printFakturpenjualanslw'])->name('print.fakturpenjualantokoslw');
+    Route::get('/print-fakturpenjualanmesinedcslw', [Setoran_tokoslawiController::class, 'printFakturpenjualanMesinedcslw'])->name('print.fakturpenjualanmesinedcslw');
+    Route::get('/print-fakturpemesananmesinedcslw', [Setoran_tokoslawiController::class, 'printFakturpemesananMesinedcslw'])->name('print.fakturpemesananmesinedcslw');
+    Route::get('/print-fakturpenjualanqrisslw', [Setoran_tokoslawiController::class, 'printFakturpenjualanQrisslw'])->name('print.fakturpenjualanqrisslw');
+    Route::get('/print-fakturpemesananqrisslw', [Setoran_tokoslawiController::class, 'printFakturpemesananQrisslw'])->name('print.fakturpemesananqrisslw');
+    Route::get('/print-fakturpenjualantransferslw', [Setoran_tokoslawiController::class, 'printFakturpenjualanTransferslw'])->name('print.fakturpenjualantransferslw');
+    Route::get('/print-fakturpemesanantransferslw', [Setoran_tokoslawiController::class, 'printFakturpemesananTransferslw'])->name('print.fakturpemesanantransferslw');
+    Route::get('/print-fakturpenjualangobizslw', [Setoran_tokoslawiController::class, 'printFakturpenjualanGobizslw'])->name('print.fakturpenjualangobizslw');
+    Route::get('/print-fakturpemesanangobizslw', [Setoran_tokoslawiController::class, 'printFakturpemesananGobizslw'])->name('print.fakturpemesanangobizslw');
+    Route::get('/print-fakturdepositmasuktokoslw', [Setoran_tokoslawiController::class, 'printFakturdepositMasukslw'])->name('print.fakturdepositmasuktokoslw');
+    Route::get('/print-fakturdepositkeluartokoslw', [Setoran_tokoslawiController::class, 'printFakturdepositKeluarslw'])->name('print.fakturdepositkeluartokoslw');
+    Route::get('/print-penjualantoko-diskonslw', [Setoran_tokoslawiController::class, 'printPenjualanDiskonslw'])->name('print.penjualantoko.diskonslw');
+    Route::get('/print-penjualantoko-bersihslw', [Setoran_tokoslawiController::class, 'printPenjualanBersihslw'])->name('print.penjualantoko.bersihslw');
+    Route::get('penjualanprodukslw/detail/{id}', [Setoran_tokoslawiController::class, 'show'])->name('penjualanprodukslw.detail');
+    Route::get('penjualanprodukslw/detaildepositkeluar/{id}', [Setoran_tokoslawiController::class, 'show2'])->name('penjualanprodukslw.detaildepositkeluar');
+    Route::get('pemesananprodukslw/detailpemesanan/{id}', [Setoran_tokoslawiController::class, 'show1'])->name('pemesananprodukslw.detailpemesanan');
 
     Route::resource('laporan_setorantokoslawi', \App\Http\Controllers\Toko_slawi\Laporan_setoranpenjualanslwController::class);
     Route::get('printReportsetoranslw', [Laporan_setoranpenjualanslwController::class, 'printReportsetoranslw'])->name('laporan_setoranpenjualan.print');
