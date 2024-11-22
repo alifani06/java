@@ -128,11 +128,17 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                        
+                        <tfoot>
+                            <tr>
+                                <th colspan="5" class="text-center">Total</th>
+                                <th style="text-align: right">{{ number_format($totalDeposit, 0, ',', '.') }}</th>
+                                <th></th>
+                                <th style="text-align: right">{{ number_format($grandTotalFee, 0, ',', '.') }}</th>
+                                <th style="text-align: right">{{ number_format($grandTotal, 0, ',', '.') }}</th>
+                            </tr>
+                        </tfoot>
                     </table>
-                    
-
-                    
+   
                 </div>
                 <!-- /.card-body -->
             </div>

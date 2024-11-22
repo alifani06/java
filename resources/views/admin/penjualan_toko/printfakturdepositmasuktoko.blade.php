@@ -74,7 +74,6 @@
                             @php
                                 $grandTotal = 0;
                                 $grandTotalFee = 0;
-                                $totalDeposit = 0;
                             @endphp
                             @foreach ($inquery as $item)
                                 @php
@@ -87,18 +86,13 @@
                                     $total_fee = preg_replace('/[^\d]/', '', $item->total_fee ?? 0);
                                     $total_fee = (float) $total_fee;
                                     $grandTotalFee += $total_fee;
-                        
-                                    // Mengambil nilai deposit jika ada
-                                    $deposit = $item->dppemesanan->dp_pemesanan ?? 0;
-                                    $deposit = (float) preg_replace('/[^\d]/', '', $deposit);
-                                    $totalDeposit += $deposit;
                                 @endphp
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td class="text-center">
-                                    <a href="{{ route('pemesananproduk.detailpemesanan', ['id' => $item->id]) }}" target="_blank">
-                                        {{ $item->kode_pemesanan }}
-                                    </a>
+                                        <a href="{{ route('pemesananproduk.detailpemesanan', ['id' => $item->id]) }}" target="_blank">
+                                            {{ $item->kode_pemesanan }}
+                                        </a>
                                     </td>
                                     <td>{{ $item->kasir ?? '-' }}</td>
                                     <td>
@@ -108,7 +102,6 @@
                                             Non Member
                                         @endif
                                     </td>
-                                   
                                     <td>{{ $item->metodepembayaran->nama_metode ?? 'Tunai' }}</td>
                                     <td style="text-align: right">
                                         @if ($total_fee == 0)
@@ -123,8 +116,15 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                        
+                        <tfoot>
+                            <tr>
+                                <th colspan="5" class="text-center">Total</th>
+                                <th style="text-align: right">{{ number_format($grandTotalFee, 0, ',', '.') }}</th>
+                                <th style="text-align: right">{{ number_format($grandTotal, 0, ',', '.') }}</th>
+                            </tr>
+                        </tfoot>
                     </table>
+                    
                     
 
                     
