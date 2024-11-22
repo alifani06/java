@@ -736,7 +736,7 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('/print-penjualantoko-bersihbnj', [Setoran_tokobanjaranController::class, 'printPenjualanBersihbnj'])->name('print.penjualantoko.bersihbnj');
     Route::get('penjualanprodukbnj/detail/{id}', [Setoran_tokobanjaranController::class, 'show'])->name('penjualanprodukbnj.detail');
     Route::get('penjualanprodukbnj/detaildepositkeluar/{id}', [Setoran_tokobanjaranController::class, 'show2'])->name('penjualanprodukbnj.detaildepositkeluar');
-    Route::get('pemesananprodukbnj/detail/{id}', [Setoran_tokobanjaranController::class, 'show1'])->name('pemesananprodukbnj.detailpemesanan');
+    Route::get('pemesananprodukbnj/detailpemesanan/{id}', [Setoran_tokobanjaranController::class, 'show1'])->name('pemesananprodukbnj.detailpemesanan');
 
     Route::resource('laporan_setorantokobanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_setoranpenjualanController::class);
     Route::get('printReportsetoran', [Laporan_setoranpenjualanController::class, 'printReportsetoran'])->name('laporan_setoranpenjualan.print');
