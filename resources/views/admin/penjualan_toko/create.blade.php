@@ -507,7 +507,7 @@
                 if (tokoId) {
                     urlFakturPemesananTransfer.searchParams.set('toko_id', tokoId);
                 }
-            document.getElementById('penjualan_transfer_link_modal').href = urlFakturPemesananTransfer.toString();
+            document.getElementById('pemesanan_transfer_link_modal').href = urlFakturPemesananTransfer.toString();
 
             const urlFakturPenjualanGobiz = new URL(baseUrlFakturPenjualanGobiz, window.location.origin);
             if (tanggalPenjualan) {
