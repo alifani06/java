@@ -58,7 +58,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="float-right">
-                        <a href="{{ url('toko_slawi/setoran_tokoslawi/create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url('toko_tegal/setoran_tokotegal/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> 
                         </a>
                     </div>
@@ -131,71 +131,4 @@
         </div>
     </section>
 
-    <!-- /.card -->
-    <script>
-        var tanggalAwal = document.getElementById('tanggal_penjualan');
-        var tanggalAkhir = document.getElementById('tanggal_akhir');
-        if (tanggalAwal.value == "") {
-            tanggalAkhir.readOnly = true;
-        }
-        tanggalAwal.addEventListener('change', function() {
-            if (this.value == "") {
-                tanggalAkhir.readOnly = true;
-            } else {
-                tanggalAkhir.readOnly = false;
-            };
-            tanggalAkhir.value = "";
-            var today = new Date().toISOString().split('T')[0];
-            tanggalAkhir.value = today;
-            tanggalAkhir.setAttribute('min', this.value);
-        });
-        var form = document.getElementById('form-action')
-
-        function cari() {
-            form.action = "{{ url('toko_slawi/laporan_setorantokobanjaran') }}";
-            form.submit();
-        }
-    </script>
-
-<script>
-    function printReport() {
-    const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_slawi/printReportsetoran') }}";
-    form.target = "_blank";
-    form.submit();
-}
-
-</script>
-
-<script>
-    document.getElementById('kategori1').addEventListener('change', function() {
-        var selectedValue = this.value;
-
-        if (selectedValue === 'global') {
-            window.location.href = "{{ url('toko_slawi/indexglobal') }}";
-        } else if (selectedValue === 'rinci') {
-            window.location.href = "{{ url('toko_slawi/laporan_penjualanproduk') }}";
-        }
-    });
-</script>
-
-<script>
-    function filterProduk() {
-        var klasifikasiId = document.getElementById('klasifikasi').value;
-        var produkSelect = document.getElementById('produk');
-        var produkOptions = produkSelect.options;
-    
-        for (var i = 0; i < produkOptions.length; i++) {
-            var option = produkOptions[i];
-            if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
-                option.style.display = "block";
-            } else {
-                option.style.display = "none";
-            }
-        }
-    
-        // Reset the selected value of the product select box
-        produkSelect.selectedIndex = 0;
-    }
-    </script>
 @endsection

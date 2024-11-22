@@ -946,7 +946,7 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::get('/print-fakturpemesanangobiztgl', [Setoran_tokotegalController::class, 'printFakturpemesananGobiztgl'])->name('print.fakturpemesanangobiztgl');
     Route::get('/print-fakturdepositmasuktokotgl', [Setoran_tokotegalController::class, 'printFakturdepositMasuktgl'])->name('print.fakturdepositmasuktokotgl');
     Route::get('/print-fakturdepositkeluartokotgl', [Setoran_tokotegalController::class, 'printFakturdepositKeluartgl'])->name('print.fakturdepositkeluartokotgl');
-    Route::get('/print-penjualantoko-diskontgl', [Setoran_tokotegalController::class, 'printPenjualanDiskonslw'])->name('print.penjualantoko.diskontgl');
+    Route::get('/print-penjualantoko-diskontgl', [Setoran_tokotegalController::class, 'printPenjualanDiskontgl'])->name('print.penjualantoko.diskontgl');
     Route::get('/print-penjualantoko-bersihtgl', [Setoran_tokotegalController::class, 'printPenjualanBersihtgl'])->name('print.penjualantoko.bersihtgl');
     Route::get('penjualanproduktgl/detail/{id}', [Setoran_tokotegalController::class, 'show'])->name('penjualanproduktgl.detail');
     Route::get('penjualanproduktgl/detaildepositkeluar/{id}', [Setoran_tokotegalController::class, 'show2'])->name('penjualanproduktgl.detaildepositkeluar');
@@ -1128,9 +1128,25 @@ Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {
     Route::get('printpengirimantokopemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_pengirimantokopemalangController::class, 'printReport']);
 
     Route::resource('setoran_tokopemalang', \App\Http\Controllers\Toko_pemalang\Setoran_tokopemalangController::class);
-    // Route::post('/get-penjualan-kotor', [Setoran_tokopemalangController::class, 'getdata'])->name('getdata');
     Route::post('toko_pemalang/setoran_tokopemalang', [Setoran_tokopemalangController::class, 'store'])->name('setoran.store');
-    Route::post('/get-penjualanpemalang', [Setoran_tokopemalangController::class, 'getdata'])->name('getdata');
+    Route::post('/get-penjualanpemalang', [Setoran_tokopemalangController::class, 'getdatapemalang'])->name('getdatapemalang');
+    Route::get('/print-penjualantoko-kotorpml', [Setoran_tokopemalangController::class, 'printPenjualanKotorpml'])->name('print.penjualantoko.kotorpml');
+    Route::get('/print-fakturpenjualantokopml', [Setoran_tokopemalangController::class, 'printFakturpenjualanpml'])->name('print.fakturpenjualantokopml');
+    Route::get('/print-fakturpenjualanmesinedcpml', [Setoran_tokopemalangController::class, 'printFakturpenjualanMesinedcpml'])->name('print.fakturpenjualanmesinedcpml');
+    Route::get('/print-fakturpemesananmesinedcpml', [Setoran_tokopemalangController::class, 'printFakturpemesananMesinedcpml'])->name('print.fakturpemesananmesinedcpml');
+    Route::get('/print-fakturpenjualanqrispml', [Setoran_tokopemalangController::class, 'printFakturpenjualanQrispml'])->name('print.fakturpenjualanqrispml');
+    Route::get('/print-fakturpemesananqrispml', [Setoran_tokopemalangController::class, 'printFakturpemesananQrispml'])->name('print.fakturpemesananqrispml');
+    Route::get('/print-fakturpenjualantransferpml', [Setoran_tokopemalangController::class, 'printFakturpenjualanTransferpml'])->name('print.fakturpenjualantransferpml');
+    Route::get('/print-fakturpemesanantransfertgl', [Setoran_tokopemalangController::class, 'printFakturpemesananTransferpml'])->name('print.fakturpemesanantransferpml');
+    Route::get('/print-fakturpenjualangobizpml', [Setoran_tokopemalangController::class, 'printFakturpenjualanGobizpml'])->name('print.fakturpenjualangobizpml');
+    Route::get('/print-fakturpemesanangobizpml', [Setoran_tokopemalangController::class, 'printFakturpemesananGobizpml'])->name('print.fakturpemesanangobizpml');
+    Route::get('/print-fakturdepositmasuktokopml', [Setoran_tokopemalangController::class, 'printFakturdepositMasukpml'])->name('print.fakturdepositmasuktokopml');
+    Route::get('/print-fakturdepositkeluartokopml', [Setoran_tokopemalangController::class, 'printFakturdepositKeluarpml'])->name('print.fakturdepositkeluartokopml');
+    Route::get('/print-penjualantoko-diskonpml', [Setoran_tokopemalangController::class, 'printPenjualanDiskonpml'])->name('print.penjualantoko.diskonpml');
+    Route::get('/print-penjualantoko-bersihpml', [Setoran_tokopemalangController::class, 'printPenjualanBersihpml'])->name('print.penjualantoko.bersihpml');
+    Route::get('penjualanprodukpml/detail/{id}', [Setoran_tokopemalangController::class, 'show'])->name('penjualanprodukpml.detail');
+    Route::get('penjualanprodukpml/detaildepositkeluar/{id}', [Setoran_tokopemalangController::class, 'show2'])->name('penjualanprodukpml.detaildepositkeluar');
+    Route::get('pemesananprodukpml/detailpemesanan/{id}', [Setoran_tokopemalangController::class, 'show1'])->name('pemesananprodukpml.detailpemesanan');
 
 
     Route::resource('laporan_setorantokopemalang', \App\Http\Controllers\Toko_pemalang\Laporan_setoranpenjualanpmlController::class);
