@@ -96,7 +96,7 @@
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td class="text-center">
-                                        <a href="{{ route('pemesananproduk.detailpemesanan', ['id' => $item->id]) }}" target="_blank">
+                                        <a href="{{ route('pemesananprodukbnj.detailpemesanan', ['id' => $item->id]) }}" target="_blank">
                                             {{ $item->kode_pemesanan }}
                                         </a>
                                     </td>
