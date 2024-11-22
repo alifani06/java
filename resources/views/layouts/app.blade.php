@@ -56,46 +56,14 @@
         request()->is('toko_banjaran/pemesanan_produk*') ||
         request()->is('toko_slawi/penjualan_produk*') ||
         request()->is('admin/penjualan_toko*') ||
+        request()->is('admin/inquery_penjualantoko*') ||
+        request()->is('admin/laporan_penjualantoko*') ||
         request()->is('admin/inquery_setoranpelunasan*') ||
-        request()->is('admin/inquery_fakturekspedisi*') ||
-        request()->is('admin/tablememo*') ||
-        request()->is('admin/tablefaktur*') ||
-        request()->is('admin/inquery_memoekspedisi*') ||
-        request()->is('admin/inquery_memoborong*') ||
-        request()->is('admin/inquery_memotambahan*') ||
-        request()->is('admin/laporan_memoekspedisi*') ||
-        request()->is('admin/laporan_memoborong*') ||
-        request()->is('admin/laporan_fakturekspedisi*') ||
-        request()->is('admin/faktur_pelunasan*') ||
-        request()->is('admin/faktur_penjualanreturn*') ||
-        request()->is('admin/inquery_fakturpenjualanreturn*') ||
-        request()->is('admin/inquery_fakturpelunasan*') ||
-        request()->is('admin/indexnon*') ||
-        request()->is('admin/inquery_buktipotongpajak*') ||
-        request()->is('admin/bukti_potongpajak*') ||
-        request()->is('admin/perhitungan_gaji*') ||
-        request()->is('admin/perhitungan_gajibulanan*') ||
-        request()->is('admin/inquery_perhitungangaji*') ||
-        request()->is('admin/inquery_perhitungangajibulanan*') ||
+       
         request()->is('admin/laporan_memotambahan*')) sidebar-open sidebar-collapse @endif">
     <div class="wrapper">
 
-        <!-- Navbar -->
-        {{-- <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-            <!-- Left navbar links -->
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i
-                            class="fas fa-bars"></i></a>
-                </li>
 
-                <li class="nav-item d-none d-sm-inline-block">
-                    <img  src="{{ asset('storage/uploads/icon/bakery.png') }}"
-                        alt="JavaBakery" height="60" width="100">
-                </li>
-                
-            </ul>
-        </nav> --}}
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <!-- Left navbar links -->
             <ul class="navbar-nav">

@@ -313,6 +313,11 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('inquery_penjualantoko/unpost_penjualantoko/{id}', [\App\Http\Controllers\Admin\Inquery_penjualantokoController::class, 'unpost_penjualantoko']);
     Route::get('inquery_penjualantoko/posting_penjualantoko/{id}', [\App\Http\Controllers\Admin\Inquery_penjualantokoController::class, 'posting_penjualantoko']);
 
+    Route::resource('laporan_penjualantoko', \App\Http\Controllers\Admin\Laporan_penjualantokoController::class);
+    Route::get('printReportpenjualanToko', [\App\Http\Controllers\Admin\Laporan_penjualantokoController::class, 'printReportpenjualanToko']);
+
+
+
     Route::resource('inquery_penjualanproduk', \App\Http\Controllers\Admin\Inquery_penjualanprodukController::class);
     Route::get('/admin/inquery_penjualanproduk', [Inquery_penjualanprodukController::class, 'index'])->name('admin.inquery_penjualanproduk.index');
     Route::get('inquery_penjualanproduk/unpost_penjualanproduk/{id}', [\App\Http\Controllers\Admin\Inquery_penjualanprodukController::class, 'unpost_penjualanproduk']);
