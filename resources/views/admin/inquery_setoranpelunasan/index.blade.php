@@ -175,7 +175,7 @@
                                         @if ($item->status == 'unpost')
                                             <a class="dropdown-item posting-btn" data-memo-id="{{ $item->id }}">Posting</a>
                                             <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.print', $item->id) }}" target="_blank">Print</a>
-                                            <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.edit', $item->id) }}">Pelunasan</a>
+                                            {{-- <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.edit', $item->id) }}">Pelunasan</a> --}}
                                         @endif
                                         @if ($item->status == 'posting')
                                             <a class="dropdown-item unpost-btn" data-memo-id="{{ $item->id }}">Unpost</a>
