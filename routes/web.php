@@ -1727,9 +1727,25 @@ Route::middleware('toko_cilacap')->prefix('toko_cilacap')->group(function () {
     Route::get('printpengirimantokocilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_pengirimantokocilacapController::class, 'printReport']);
 
     Route::resource('setoran_tokocilacap', \App\Http\Controllers\Toko_cilacap\Setoran_tokocilacapController::class);
-    // Route::post('/get-penjualan-kotor', [Setoran_tokocilacapController::class, 'getdata'])->name('getdata');
     Route::post('toko_cilacap/setoran_tokocilacap', [Setoran_tokocilacapController::class, 'store'])->name('setoran.store');
-    Route::post('/get-penjualancilacap', [Setoran_tokocilacapController::class, 'getdata'])->name('getdata');
+    Route::post('/get-penjualancilacap', [Setoran_tokocilacapController::class, 'getdatacilacap'])->name('getdatacilacap');
+    Route::get('/print-penjualantoko-kotorclc', [Setoran_tokocilacapController::class, 'printPenjualanKotorclc'])->name('print.penjualantoko.kotorclc');
+    Route::get('/print-fakturpenjualantokoclc', [Setoran_tokocilacapController::class, 'printFakturpenjualanclc'])->name('print.fakturpenjualantokoclc');
+    Route::get('/print-fakturpenjualanmesinedcclc', [Setoran_tokocilacapController::class, 'printFakturpenjualanMesinedcclc'])->name('print.fakturpenjualanmesinedcclc');
+    Route::get('/print-fakturpemesananmesinedcclc', [Setoran_tokocilacapController::class, 'printFakturpemesananMesinedcclc'])->name('print.fakturpemesananmesinedcclc');
+    Route::get('/print-fakturpenjualanqrisclc', [Setoran_tokocilacapController::class, 'printFakturpenjualanQrisclc'])->name('print.fakturpenjualanqrisclc');
+    Route::get('/print-fakturpemesananqrisclc', [Setoran_tokocilacapController::class, 'printFakturpemesananQrisclc'])->name('print.fakturpemesananqrisclc');
+    Route::get('/print-fakturpenjualantransferclc', [Setoran_tokocilacapController::class, 'printFakturpenjualanTransferclc'])->name('print.fakturpenjualantransferclc');
+    Route::get('/print-fakturpemesanantransferclc', [Setoran_tokocilacapController::class, 'printFakturpemesananTransferclc'])->name('print.fakturpemesanantransferclc');
+    Route::get('/print-fakturpenjualangobizclc', [Setoran_tokocilacapController::class, 'printFakturpenjualanGobizclc'])->name('print.fakturpenjualangobizclc');
+    Route::get('/print-fakturpemesanangobizclc', [Setoran_tokocilacapController::class, 'printFakturpemesananGobizclc'])->name('print.fakturpemesanangobizclc');
+    Route::get('/print-fakturdepositmasuktokoclc', [Setoran_tokocilacapController::class, 'printFakturdepositMasukclc'])->name('print.fakturdepositmasuktokoclc');
+    Route::get('/print-fakturdepositkeluartokoclc', [Setoran_tokocilacapController::class, 'printFakturdepositKeluarclc'])->name('print.fakturdepositkeluartokoclc');
+    Route::get('/print-penjualantoko-diskonclc', [Setoran_tokocilacapController::class, 'printPenjualanDiskonclc'])->name('print.penjualantoko.diskonclc');
+    Route::get('/print-penjualantoko-bersihclc', [Setoran_tokocilacapController::class, 'printPenjualanBersihclc'])->name('print.penjualantoko.bersihclc');
+    Route::get('penjualanprodukclc/detail/{id}', [Setoran_tokocilacapController::class, 'show'])->name('penjualanprodukclc.detail');
+    Route::get('penjualanprodukclc/detaildepositkeluar/{id}', [Setoran_tokocilacapController::class, 'show2'])->name('penjualanprodukclc.detaildepositkeluar');
+    Route::get('pemesananprodukclc/detailpemesanan/{id}', [Setoran_tokocilacapController::class, 'show1'])->name('pemesananprodukclc.detailpemesanan');
 
 
     Route::resource('laporan_setorantokocilacap', \App\Http\Controllers\Toko_cilacap\Laporan_setoranpenjualanclcController::class);

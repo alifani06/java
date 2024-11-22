@@ -45,13 +45,21 @@ class Setoran_tokocilacapController extends Controller
 
     public function index(Request $request)
     {
-        $setoranPenjualans = Setoran_penjualan::where('toko_id', 6)
-            ->orderBy('id', 'DESC')
+        $tanggalPenjualan = $request->input('tanggal_penjualan');
+        $tanggalAkhir = $request->input('tanggal_akhir');
+
+        $setoranPenjualans = Setoran_penjualan::where('toko_id', 6) 
+            ->when($tanggalPenjualan, function ($query) use ($tanggalPenjualan, $tanggalAkhir) {
+                return $query->whereDate('tanggal_setoran', '>=', $tanggalPenjualan)
+                            ->whereDate('tanggal_setoran', '<=', $tanggalAkhir ?? $tanggalPenjualan);
+            })
+            ->orderBy('id', 'asc')
             ->get();
-    
+
         // Kirim data ke view
         return view('toko_cilacap.setoran_tokocilacap.index', compact('setoranPenjualans'));
     }
+    
     
     public function create(Request $request)
     {
@@ -169,25 +177,25 @@ class Setoran_tokocilacapController extends Controller
         ));
     }
 
-    public function getdata(Request $request)
+    public function getdatacilacap(Request $request)
     {
         // Validasi input tanggal
         $request->validate([
             'tanggal_penjualan' => 'required|date',
         ]);
-    
+
         // Ambil tanggal dan toko_id dari request
-        $tanggalPenjualan = $request->input('tanggal_penjualan');
+        $tanggalPenjualan = Carbon::parse($request->input('tanggal_penjualan'))->startOfDay();
         $tokoId = $request->input('toko_id');
-    
+
         // Query untuk menghitung penjualan kotor dengan filter toko
         $query = Penjualanproduk::whereDate('tanggal_penjualan', $tanggalPenjualan);
         if ($tokoId) {
             $query->where('toko_id', $tokoId);
         }
-    
+
         $penjualan_kotor = $query->sum(Penjualanproduk::raw('CAST(REGEXP_REPLACE(REPLACE(sub_totalasli, "Rp", ""), "[^0-9]", "") AS UNSIGNED)'));
-    
+
         // Menghitung diskon penjualan
         $diskon_penjualan = Detailpenjualanproduk::whereHas('penjualanproduk', function ($q) use ($tanggalPenjualan, $tokoId) {
             $q->whereDate('tanggal_penjualan', $tanggalPenjualan);
@@ -198,13 +206,13 @@ class Setoran_tokocilacapController extends Controller
             $harga = (float)str_replace(['Rp.', '.'], '', $detail->harga);
             $jumlah = $detail->jumlah;
             $diskon = $detail->diskon / 100;
-    
+
             return $harga * $jumlah * $diskon;
         });
-    
+
         // Hitung penjualan bersih
         $penjualan_bersih = $penjualan_kotor - $diskon_penjualan;
-    
+
         // Hitung total deposit keluar
         $deposit_keluar = Dppemesanan::whereHas('penjualanproduk', function ($q) use ($tanggalPenjualan, $tokoId) {
             $q->whereDate('tanggal_penjualan', $tanggalPenjualan);
@@ -212,7 +220,7 @@ class Setoran_tokocilacapController extends Controller
                 $q->where('toko_id', $tokoId);
             }
         })->sum('dp_pemesanan');
-    
+
         // Hitung total deposit masuk
         $deposit_masuk = Dppemesanan::whereHas('pemesananproduk', function ($q) use ($tanggalPenjualan, $tokoId) {
             $q->whereDate('tanggal_pemesanan', $tanggalPenjualan);
@@ -220,35 +228,45 @@ class Setoran_tokocilacapController extends Controller
                 $q->where('toko_id', $tokoId);
             }
         })->sum('dp_pemesanan');
+
+        $metodePembayaran = function ($metode_id, $tanggalPenjualan) use ($tokoId) {
+            // Query untuk penjualan produk
+            $queryPenjualan = Penjualanproduk::where('metode_id', $metode_id)
+                ->whereDate('tanggal_penjualan', $tanggalPenjualan);
     
-        // Hitung total metode pembayaran dengan filter toko
-        $mesin_edc = Penjualanproduk::where('metode_id', 1)
-            ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-            ->when($tokoId, function ($q) use ($tokoId) {
-                $q->where('toko_id', $tokoId);
-            })
-            ->sum(Penjualanproduk::raw('CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)'));
+            if ($tokoId) {
+                $queryPenjualan->where('toko_id', $tokoId);
+            }
     
-        $qris = Penjualanproduk::where('metode_id', 17)
-            ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-            ->when($tokoId, function ($q) use ($tokoId) {
-                $q->where('toko_id', $tokoId);
-            })
-            ->sum(Penjualanproduk::raw('CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)'));
+            // Perhitungan total penjualan
+            if ($metode_id == 1) {
+                $totalPenjualan = $queryPenjualan->select(Penjualanproduk::raw(
+                    'SUM(CAST(REGEXP_REPLACE(REPLACE(sub_totalasli, "Rp", ""), "[^0-9]", "") AS UNSIGNED) - CAST(REGEXP_REPLACE(REPLACE(nominal_diskon, "Rp", ""), "[^0-9]", "") AS UNSIGNED)) as total'
+                ))->value('total');
+            } else {
+                $totalPenjualan = $queryPenjualan->select(Penjualanproduk::raw(
+                    'SUM(CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)) as total'
+                ))->value('total');
+            }
     
-        $gobiz = Penjualanproduk::where('metode_id', 2)
-            ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-            ->when($tokoId, function ($q) use ($tokoId) {
-                $q->where('toko_id', $tokoId);
-            })
-            ->sum(Penjualanproduk::raw('CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)'));
+            // Query untuk dp pemesanan
+            $totalPemesanan = Dppemesanan::whereHas('pemesananproduk', function ($q) use ($metode_id, $tanggalPenjualan, $tokoId) {
+                $q->where('metode_id', $metode_id)
+                    ->whereDate('tanggal_pemesanan', $tanggalPenjualan);
     
-        $transfer = Penjualanproduk::where('metode_id', 3)
-            ->whereDate('tanggal_penjualan', $tanggalPenjualan)
-            ->when($tokoId, function ($q) use ($tokoId) {
-                $q->where('toko_id', $tokoId);
-            })
-            ->sum(Penjualanproduk::raw('CAST(REGEXP_REPLACE(REPLACE(sub_total, "Rp", ""), "[^0-9]", "") AS UNSIGNED)'));
+                if ($tokoId) {
+                    $q->where('toko_id', $tokoId);
+                }
+            })->sum('dp_pemesanan');
+    
+            return $totalPenjualan + $totalPemesanan;
+        };
+    
+        // Panggil metodePembayaran dengan metode_id yang relevan
+        $mesin_edc = $metodePembayaran(1, $tanggalPenjualan);
+        $qris = $metodePembayaran(17, $tanggalPenjualan);
+        $gobiz = $metodePembayaran(2, $tanggalPenjualan);
+        $transfer = $metodePembayaran(3, $tanggalPenjualan);
     
         // Hitung total penjualan
         $total_penjualan = $penjualan_bersih - ($deposit_keluar - $deposit_masuk);
@@ -269,6 +287,722 @@ class Setoran_tokocilacapController extends Controller
             'total_metode' => number_format($total_metode, 0, ',', '.'),
             'total_setoran' => number_format($total_setoran, 0, ',', '.'),
         ]);
+    }
+    
+    public function printPenjualanKotorclc(Request $request)
+    {
+        // Ambil parameter tanggal_penjualan dan toko_id dari request
+        $tanggal_penjualan = $request->get('tanggal_penjualan'); // Menggunakan query string
+        $toko_id = $request->get('toko_id'); // Mengambil toko_id dari query string
+
+        // Pastikan tanggal_penjualan tidak null
+        if (!$tanggal_penjualan) {
+            return redirect()->back()->with('error', 'Tanggal penjualan tidak boleh kosong.');
+        }
+
+        // Query data penjualan
+        $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id); // Filter berdasarkan toko_id
+            })
+            ->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan)->startOfDay()) // Filter berdasarkan tanggal
+            ->orderBy('tanggal_penjualan', 'asc'); // Urutkan berdasarkan tanggal
+
+        $inquery = $query->get();
+
+        // Gabungkan hasil berdasarkan produk_id
+        $finalResults = [];
+        foreach ($inquery as $penjualan) {
+            foreach ($penjualan->detailPenjualanProduk as $detail) {
+                $produk = $detail->produk;
+
+                if ($produk) {
+                    $key = $produk->id; // Menggunakan ID produk sebagai key
+                    if (!isset($finalResults[$key])) {
+                        $finalResults[$key] = [
+                            'tanggal_penjualan' => $penjualan->tanggal_penjualan,
+                            'kode_lama' => $produk->kode_lama,
+                            'nama_produk' => $produk->nama_produk,
+                            'harga' => $produk->harga,
+                            'jumlah' => 0,
+                            'diskon' => 0,
+                            'total' => 0,
+                            'penjualan_kotor' => 0,
+                            'penjualan_bersih' => 0,
+                        ];
+                    }
+
+                    $finalResults[$key]['jumlah'] += $detail->jumlah;
+                    $finalResults[$key]['penjualan_kotor'] += $detail->jumlah * $produk->harga;
+                    $finalResults[$key]['total'] += $detail->total;
+
+                    if ($detail->diskon > 0) {
+                        $diskonPerItem = $produk->harga * 0.10;
+                        $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
+                    }
+
+                    $finalResults[$key]['penjualan_bersih'] = $finalResults[$key]['penjualan_kotor'] - $finalResults[$key]['diskon'];
+                }
+            }
+        }
+
+        // Mengurutkan finalResults berdasarkan kode_lama
+        uasort($finalResults, function ($a, $b) {
+            return strcmp($a['kode_lama'], $b['kode_lama']);
+        });
+
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+
+        // Menampilkan halaman biasa (bukan PDF)
+        return view('toko_cilacap.setoran_tokocilacap.printpenjualantoko', [
+            'finalResults' => $finalResults,
+            'startDate' => $tanggal_penjualan,
+            'branchName' => $branchName,
+        ]);
+    }
+
+    public function printFakturPenjualanclc(Request $request)
+    {
+        $tanggal_penjualan = $request->get('tanggal_penjualan');
+        $toko_id = $request->get('toko_id');
+    
+        // Query data berdasarkan filter
+        $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
+                return $query->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan));
+            })
+            ->orderBy('tanggal_penjualan', 'asc');
+    
+        $inquery = $query->get();
+    
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+    
+        // Set periode tanggal (hanya satu tanggal)
+        $startDate = $tanggal_penjualan; 
+        $endDate = null; // Tidak ada tanggal akhir karena hanya satu tanggal
+    
+        // Buat PDF
+        return view('toko_cilacap.setoran_tokocilacap.printfakturpenjualantoko', [
+            'inquery' => $inquery,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'branchName' => $branchName,
+        ]);
+    
+        return $pdf->stream('faktur_penjualan.pdf');
+    }
+
+    public function printFakturdepositKeluarclc(Request $request)
+    {
+        $tanggal_penjualan = $request->get('tanggal_penjualan');
+        $toko_id = $request->get('toko_id');
+
+        // Query data berdasarkan filter
+        $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+            ->whereNotNull('dppemesanan_id') // Tambahkan kondisi ini
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
+                return $query->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan));
+            })
+            ->orderBy('tanggal_penjualan', 'asc');
+
+        $inquery = $query->get();
+
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+
+        // Set periode tanggal (hanya satu tanggal)
+        $startDate = $tanggal_penjualan; 
+        $endDate = null; // Tidak ada tanggal akhir karena hanya satu tanggal
+
+        // Buat PDF
+        return view('toko_cilacap.setoran_tokocilacap.printfakturdepositkeluartoko', [
+            'inquery' => $inquery,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'branchName' => $branchName,
+        ]);
+
+        return $pdf->stream('faktur_penjualan.pdf');
+    }
+
+    public function printFakturPenjualanMesinedcclc(Request $request)
+    {
+        $tanggal_penjualan = $request->get('tanggal_penjualan');
+        $toko_id = $request->get('toko_id');
+    
+        // Query data berdasarkan filter
+        $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+            ->where('metode_id', 1) // Tambahkan filter untuk metode_id = 1
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
+                return $query->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan));
+            })
+            ->orderBy('tanggal_penjualan', 'asc');
+    
+        $inquery = $query->get();
+    
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+    
+        // Set periode tanggal (hanya satu tanggal)
+        $startDate = $tanggal_penjualan; 
+        $endDate = null; // Tidak ada tanggal akhir karena hanya satu tanggal
+    
+        // Buat PDF
+        return view('toko_cilacap.setoran_tokocilacap.printfakturpenjualantoko', [
+            'inquery' => $inquery,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'branchName' => $branchName,
+        ]);
+    
+        return $pdf->stream('faktur_penjualan.pdf');
+    }
+
+    public function printFakturPemesananMesinedcclc(Request $request)
+    {
+        $tanggal_penjualan = $request->get('tanggal_penjualan');
+        $toko_id = $request->get('toko_id');
+    
+        // Jika tanggal_penjualan tidak diisi, gunakan tanggal_pemesanan sebagai fallback
+        $tanggal_pemesanan = $tanggal_penjualan ?: $request->get('tanggal_pemesanan');
+    
+        // Query data berdasarkan filter
+        $query = Pemesananproduk::with('detailPemesananProduk.produk')
+            ->where('metode_id', 1) // Tambahkan filter untuk metode_id = 1
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->when($tanggal_pemesanan, function ($query, $tanggal_pemesanan) {
+                return $query->whereDate('tanggal_pemesanan', Carbon::parse($tanggal_pemesanan));
+            })
+            ->orderBy('tanggal_pemesanan', 'asc');
+    
+        $inquery = $query->get();
+    
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+    
+        // Set periode tanggal (hanya satu tanggal)
+        $startDate = $tanggal_pemesanan; 
+        $endDate = null; // Tidak ada tanggal akhir karena hanya satu tanggal
+    
+        // Buat PDF
+        return view('toko_cilacap.setoran_tokocilacap.printfakturdepositmasuktoko', [
+            'inquery' => $inquery,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'branchName' => $branchName,
+        ]);
+    
+        return $pdf->stream('faktur_penjualan.pdf');
+    }
+    
+    public function printFakturPenjualanQrisclc(Request $request)
+    {
+        $tanggal_penjualan = $request->get('tanggal_penjualan');
+        $toko_id = $request->get('toko_id');
+    
+        // Query data berdasarkan filter
+        $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+            ->where('metode_id', 17) // Tambahkan filter untuk metode_id = 1
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
+                return $query->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan));
+            })
+            ->orderBy('tanggal_penjualan', 'asc');
+    
+        $inquery = $query->get();
+    
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+    
+        // Set periode tanggal (hanya satu tanggal)
+        $startDate = $tanggal_penjualan; 
+        $endDate = null; // Tidak ada tanggal akhir karena hanya satu tanggal
+    
+        // Buat PDF
+        return view('toko_cilacap.setoran_tokocilacap.printfakturpenjualantoko', [
+            'inquery' => $inquery,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'branchName' => $branchName,
+        ]);
+    
+        return $pdf->stream('faktur_penjualan.pdf');
+    }
+
+    public function printFakturPemesananQrisclc(Request $request)
+    {
+        $tanggal_penjualan = $request->get('tanggal_penjualan');
+        $toko_id = $request->get('toko_id');
+    
+        // Jika tanggal_penjualan tidak diisi, gunakan tanggal_pemesanan sebagai fallback
+        $tanggal_pemesanan = $tanggal_penjualan ?: $request->get('tanggal_pemesanan');
+    
+        // Query data berdasarkan filter
+        $query = Pemesananproduk::with('detailPemesananProduk.produk')
+            ->where('metode_id', 17) // Tambahkan filter untuk metode_id = 1
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->when($tanggal_pemesanan, function ($query, $tanggal_pemesanan) {
+                return $query->whereDate('tanggal_pemesanan', Carbon::parse($tanggal_pemesanan));
+            })
+            ->orderBy('tanggal_pemesanan', 'asc');
+    
+        $inquery = $query->get();
+    
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+    
+        // Set periode tanggal (hanya satu tanggal)
+        $startDate = $tanggal_pemesanan; 
+        $endDate = null; // Tidak ada tanggal akhir karena hanya satu tanggal
+    
+        // Buat PDF
+        return view('toko_cilacap.setoran_tokocilacap.printfakturdepositmasuktoko', [
+            'inquery' => $inquery,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'branchName' => $branchName,
+        ]);
+    
+        return $pdf->stream('faktur_penjualan.pdf');
+    }
+
+    public function printFakturPenjualanTransferclc(Request $request)
+    {
+        $tanggal_penjualan = $request->get('tanggal_penjualan');
+        $toko_id = $request->get('toko_id');
+    
+        // Query data berdasarkan filter
+        $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+            ->where('metode_id', 3) // Tambahkan filter untuk metode_id = 1
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
+                return $query->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan));
+            })
+            ->orderBy('tanggal_penjualan', 'asc');
+    
+        $inquery = $query->get();
+    
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+    
+        // Set periode tanggal (hanya satu tanggal)
+        $startDate = $tanggal_penjualan; 
+        $endDate = null; // Tidak ada tanggal akhir karena hanya satu tanggal
+    
+        // Buat PDF
+        return view('toko_cilacap.setoran_tokocilacap.printfakturpenjualantoko', [
+            'inquery' => $inquery,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'branchName' => $branchName,
+        ]);
+    
+        return $pdf->stream('faktur_penjualan.pdf');
+    }
+
+    public function printFakturPemesananTransferclc(Request $request)
+    {
+        $tanggal_penjualan = $request->get('tanggal_penjualan');
+        $toko_id = $request->get('toko_id');
+    
+        // Jika tanggal_penjualan tidak diisi, gunakan tanggal_pemesanan sebagai fallback
+        $tanggal_pemesanan = $tanggal_penjualan ?: $request->get('tanggal_pemesanan');
+    
+        // Query data berdasarkan filter
+        $query = Pemesananproduk::with('detailPemesananProduk.produk')
+            ->where('metode_id', 3) // Tambahkan filter untuk metode_id = 1
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->when($tanggal_pemesanan, function ($query, $tanggal_pemesanan) {
+                return $query->whereDate('tanggal_pemesanan', Carbon::parse($tanggal_pemesanan));
+            })
+            ->orderBy('tanggal_pemesanan', 'asc');
+    
+        $inquery = $query->get();
+    
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+    
+        // Set periode tanggal (hanya satu tanggal)
+        $startDate = $tanggal_pemesanan; 
+        $endDate = null; // Tidak ada tanggal akhir karena hanya satu tanggal
+    
+        // Buat PDF
+        return view('toko_cilacap.setoran_tokocilacap.printfakturdepositmasuktoko', [
+            'inquery' => $inquery,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'branchName' => $branchName,
+        ]);
+    
+        return $pdf->stream('faktur_penjualan.pdf');
+    }
+
+    public function printFakturPenjualanGobizclc(Request $request)
+    {
+        $tanggal_penjualan = $request->get('tanggal_penjualan');
+        $toko_id = $request->get('toko_id');
+    
+        // Query data berdasarkan filter
+        $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+            ->where('metode_id', 2) // Tambahkan filter untuk metode_id = 1
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
+                return $query->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan));
+            })
+            ->orderBy('tanggal_penjualan', 'asc');
+    
+        $inquery = $query->get();
+    
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+    
+        // Set periode tanggal (hanya satu tanggal)
+        $startDate = $tanggal_penjualan; 
+        $endDate = null; // Tidak ada tanggal akhir karena hanya satu tanggal
+    
+        // Buat PDF
+        return view('toko_cilacap.setoran_tokocilacap.printfakturpenjualantoko', [
+            'inquery' => $inquery,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'branchName' => $branchName,
+        ]);
+    
+        return $pdf->stream('faktur_penjualan.pdf');
+    }
+
+    public function printFakturPemesananGobizclc(Request $request)
+    {
+        $tanggal_penjualan = $request->get('tanggal_penjualan');
+        $toko_id = $request->get('toko_id');
+    
+        // Jika tanggal_penjualan tidak diisi, gunakan tanggal_pemesanan sebagai fallback
+        $tanggal_pemesanan = $tanggal_penjualan ?: $request->get('tanggal_pemesanan');
+    
+        // Query data berdasarkan filter
+        $query = Pemesananproduk::with('detailPemesananProduk.produk')
+            ->where('metode_id', 2) // Tambahkan filter untuk metode_id = 1
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->when($tanggal_pemesanan, function ($query, $tanggal_pemesanan) {
+                return $query->whereDate('tanggal_pemesanan', Carbon::parse($tanggal_pemesanan));
+            })
+            ->orderBy('tanggal_pemesanan', 'asc');
+    
+        $inquery = $query->get();
+    
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+    
+        // Set periode tanggal (hanya satu tanggal)
+        $startDate = $tanggal_pemesanan; 
+        $endDate = null; // Tidak ada tanggal akhir karena hanya satu tanggal
+    
+        // Buat PDF
+        return view('toko_cilacap.setoran_tokocilacap.printfakturdepositmasuktoko', [
+            'inquery' => $inquery,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'branchName' => $branchName,
+        ]);
+    
+        return $pdf->stream('faktur_penjualan.pdf');
+    }
+
+    public function printFakturdepositMasukclc(Request $request)
+    {
+        $tanggal_penjualan = $request->get('tanggal_penjualan');
+        $toko_id = $request->get('toko_id');
+    
+        // Jika tanggal_penjualan tidak diisi, gunakan tanggal_pemesanan sebagai fallback
+        $tanggal_pemesanan = $tanggal_penjualan ?: $request->get('tanggal_pemesanan');
+    
+        // Query data berdasarkan filter
+        $query = Pemesananproduk::with(['detailpemesananproduk.produk', 'dppemesanan'])
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id);
+            })
+            ->when($tanggal_pemesanan, function ($query, $tanggal_pemesanan) {
+                return $query->whereDate('tanggal_pemesanan', Carbon::parse($tanggal_pemesanan));
+            })
+            ->orderBy('tanggal_pemesanan', 'asc');
+
+        $inquery = $query->get();
+
+    
+        // Menentukan nama cabang/toko
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+    
+        // Set periode tanggal
+        $startDate = $tanggal_pemesanan; // Menggunakan tanggal_pemesanan sebagai pengganti tanggal_penjualan
+        $endDate = null; // Tidak ada rentang akhir karena hanya satu tanggal
+    
+        // Buat PDF
+        return view('toko_cilacap.setoran_tokocilacap.printfakturdepositmasuktoko', [
+            'inquery' => $inquery,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'branchName' => $branchName,
+        ]);
+    
+        return $pdf->stream('faktur_penjualan.pdf');
+    }
+      
+    public function printPenjualanDiskonclc(Request $request)
+    {
+        // Ambil parameter tanggal_penjualan dan toko_id dari request
+        $tanggal_penjualan = $request->get('tanggal_penjualan'); // Menggunakan query string
+        $toko_id = $request->get('toko_id'); // Mengambil toko_id dari query string
+
+        // Pastikan tanggal_penjualan tidak null
+        if (!$tanggal_penjualan) {
+            return redirect()->back()->with('error', 'Tanggal penjualan tidak boleh kosong.');
+        }
+
+        // Query data penjualan
+        $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id); // Filter berdasarkan toko_id
+            })
+            ->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan)->startOfDay()) // Filter berdasarkan tanggal
+            ->orderBy('tanggal_penjualan', 'asc'); // Urutkan berdasarkan tanggal
+
+        $inquery = $query->get();
+
+        // Gabungkan hasil berdasarkan produk_id
+        $finalResults = [];
+        foreach ($inquery as $penjualan) {
+            foreach ($penjualan->detailPenjualanProduk as $detail) {
+                $produk = $detail->produk;
+
+                if ($produk) {
+                    $key = $produk->id; // Menggunakan ID produk sebagai key
+                    if (!isset($finalResults[$key])) {
+                        $finalResults[$key] = [
+                            'tanggal_penjualan' => $penjualan->tanggal_penjualan,
+                            'kode_lama' => $produk->kode_lama,
+                            'nama_produk' => $produk->nama_produk,
+                            'harga' => $produk->harga,
+                            'jumlah' => 0,
+                            'diskon' => 0,
+                            'total' => 0,
+                            'penjualan_kotor' => 0,
+                            'penjualan_bersih' => 0,
+                        ];
+                    }
+
+                    $finalResults[$key]['jumlah'] += $detail->jumlah;
+                    $finalResults[$key]['penjualan_kotor'] += $detail->jumlah * $produk->harga;
+                    $finalResults[$key]['total'] += $detail->total;
+
+                    if ($detail->diskon > 0) {
+                        $diskonPerItem = $produk->harga * 0.10;
+                        $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
+                    }
+
+                    $finalResults[$key]['penjualan_bersih'] = $finalResults[$key]['penjualan_kotor'] - $finalResults[$key]['diskon'];
+                }
+            }
+        }
+
+        // Mengurutkan finalResults berdasarkan kode_lama
+        uasort($finalResults, function ($a, $b) {
+            return strcmp($a['kode_lama'], $b['kode_lama']);
+        });
+
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+
+        // Menggunakan Barryvdh\DomPDF\Facade\Pdf untuk memuat dan menghasilkan PDF
+        $pdf = FacadePdf::loadView('toko_cilacap.setoran_tokocilacap.printpenjualantoko', [
+            'finalResults' => $finalResults,
+            'startDate' => $tanggal_penjualan,
+            'branchName' => $branchName,
+        ]);
+
+        return $pdf->stream('laporan_penjualan_produk.pdf');
+    }
+
+    public function printPenjualanBersihclc(Request $request)
+    {
+        // Ambil parameter tanggal_penjualan dan toko_id dari request
+        $tanggal_penjualan = $request->get('tanggal_penjualan'); // Menggunakan query string
+        $toko_id = $request->get('toko_id'); // Mengambil toko_id dari query string
+
+        // Pastikan tanggal_penjualan tidak null
+        if (!$tanggal_penjualan) {
+            return redirect()->back()->with('error', 'Tanggal penjualan tidak boleh kosong.');
+        }
+
+        // Query data penjualan
+        $query = Penjualanproduk::with('detailPenjualanProduk.produk')
+            ->when($toko_id, function ($query, $toko_id) {
+                return $query->where('toko_id', $toko_id); // Filter berdasarkan toko_id
+            })
+            ->whereDate('tanggal_penjualan', Carbon::parse($tanggal_penjualan)->startOfDay()) // Filter berdasarkan tanggal
+            ->orderBy('tanggal_penjualan', 'asc'); // Urutkan berdasarkan tanggal
+
+        $inquery = $query->get();
+
+        // Gabungkan hasil berdasarkan produk_id
+        $finalResults = [];
+        foreach ($inquery as $penjualan) {
+            foreach ($penjualan->detailPenjualanProduk as $detail) {
+                $produk = $detail->produk;
+
+                if ($produk) {
+                    $key = $produk->id; // Menggunakan ID produk sebagai key
+                    if (!isset($finalResults[$key])) {
+                        $finalResults[$key] = [
+                            'tanggal_penjualan' => $penjualan->tanggal_penjualan,
+                            'kode_lama' => $produk->kode_lama,
+                            'nama_produk' => $produk->nama_produk,
+                            'harga' => $produk->harga,
+                            'jumlah' => 0,
+                            'diskon' => 0,
+                            'total' => 0,
+                            'penjualan_kotor' => 0,
+                            'penjualan_bersih' => 0,
+                        ];
+                    }
+
+                    $finalResults[$key]['jumlah'] += $detail->jumlah;
+                    $finalResults[$key]['penjualan_kotor'] += $detail->jumlah * $produk->harga;
+                    $finalResults[$key]['total'] += $detail->total;
+
+                    if ($detail->diskon > 0) {
+                        $diskonPerItem = $produk->harga * 0.10;
+                        $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
+                    }
+
+                    $finalResults[$key]['penjualan_bersih'] = $finalResults[$key]['penjualan_kotor'] - $finalResults[$key]['diskon'];
+                }
+            }
+        }
+
+        // Mengurutkan finalResults berdasarkan kode_lama
+        uasort($finalResults, function ($a, $b) {
+            return strcmp($a['kode_lama'], $b['kode_lama']);
+        });
+
+        $branchName = 'Semua Toko';
+        if ($toko_id) {
+            $toko = Toko::find($toko_id);
+            $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+        }
+
+        // Menggunakan Barryvdh\DomPDF\Facade\Pdf untuk memuat dan menghasilkan PDF
+        $pdf = FacadePdf::loadView('toko_cilacap.setoran_tokocilacap.printpenjualantoko', [
+            'finalResults' => $finalResults,
+            'startDate' => $tanggal_penjualan,
+            'branchName' => $branchName,
+        ]);
+
+        return $pdf->stream('laporan_penjualan_produk.pdf');
+    }
+
+
+    public function show($id)
+    {
+        $penjualan = Penjualanproduk::with('toko', 'metodepembayaran')->findOrFail($id); // Eager load relasi
+        $pelanggans = Pelanggan::all();
+        $tokos = $penjualan->toko;
+    
+        $pdf = FacadePdf::loadView('toko_cilacap.setoran_tokocilacap.detail', compact('penjualan', 'tokos', 'pelanggans'));
+        $pdf->setPaper('a4', 'portrait');
+    
+        return $pdf->stream('penjualan.pdf');
+    }
+
+    public function show1($id)
+    {
+        $pemesanan = Pemesananproduk::findOrFail($id);
+        $pelanggans = Pelanggan::all();
+        
+        $dp = $pemesanan->dppemesanan;
+        $tokos = $pemesanan->toko;
+    
+        $pdf = FacadePdf::loadView('toko_cilacap.setoran_tokocilacap.detailpemesanan', compact('pemesanan', 'tokos', 'pelanggans','dp'));
+        $pdf->setPaper('a4', 'portrait');
+    
+        return $pdf->stream('pemesanan.pdf');
+    }
+
+    public function show2($id)
+    {
+        $inquery = Penjualanproduk::with(['toko', 'metodepembayaran', 'dppemesanan.pemesananproduk', 'pelunasan'])
+                    ->findOrFail($id); // Eager load relasi pelunasan
+        $pelanggans = Pelanggan::all();
+        $tokos = $inquery->toko;
+    
+        $pdf = FacadePdf::loadView('toko_cilacap.setoran_tokocilacap.detaildepositkeluar', compact('inquery', 'tokos', 'pelanggans'));
+        $pdf->setPaper('a4', 'portrait');
+    
+        return $pdf->stream('penjualan.pdf');
     }
 
 
@@ -301,7 +1035,7 @@ class Setoran_tokocilacapController extends Controller
         };
     
         // Simpan data ke database
-        Setoran_penjualan::create([
+        $setoran = Setoran_penjualan::create([
             'tanggal_penjualan' => $request->tanggal_penjualan,
             'penjualan_kotor' => $removeFormat($request->penjualan_kotor),
             'diskon_penjualan' => $removeFormat($request->diskon_penjualan),
@@ -319,28 +1053,45 @@ class Setoran_tokocilacapController extends Controller
             'nominal_setoran' => $removeFormat($request->nominal_setoran),
             'nominal_setoran2' => $removeFormat($request->nominal_setoran2),
             'plusminus' => $removeFormat($request->plusminus),
-            'toko_id' => 6, // Ambil nilai toko_id dari request
-            'status' => 'unpost',
+            'toko_id' => 6, 
+            'status' => 'posting',
+            'no_fakturpenjualantoko' => $this->kode(), 
         ]);
     
+        // Update status penjualanproduk menjadi 'selesai' berdasarkan toko_id dan tanggal_penjualan
+        Penjualanproduk::where('toko_id', $request->toko_id)
+            ->whereDate('tanggal_penjualan', $request->tanggal_penjualan)
+            ->update(['status' => 'selesai']);
+    
         // Redirect ke halaman index dengan pesan sukses
-        return redirect()->route('setoran_tokocilacap.index')->with('success', 'Data berhasil disimpan!');
+        return redirect()->route('setoran_tokocilacap.index')->with('success', 'Data berhasil disimpan dan status penjualan berhasil diperbarui!');
     }
-    
-    
 
-    
-
-    public function print($id)
+    public function kode()
     {
-        // Ambil data setoran penjualan berdasarkan id yang dipilih
-        $setoranPenjualans = Setoran_penjualan::findOrFail($id);
+        $prefix = 'FTG';
     
-        // Load view untuk PDF dan kirimkan data
-        $pdf = FacadePdf::loadView('toko_cilacap.setoran_tokocilacap.printtunai', compact('setoranPenjualans'));
+        $year = date('y'); // Tahun dua digit
+        $monthDay = date('dm'); // Bulan dan tanggal
     
-        // Return PDF stream agar langsung bisa ditampilkan
-        return $pdf->stream('setoran_penjualan.pdf');
+        // Cari kode terakhir berdasarkan prefix dan tanggal
+        $lastBarang = Setoran_penjualan::where('no_fakturpenjualantoko', 'LIKE', $prefix . $monthDay . $year . '%')
+                                        ->orderBy('no_fakturpenjualantoko', 'desc') // Urutkan dari yang terbaru
+                                        ->first();
+    
+        // Tentukan urutan berikutnya
+        if (!$lastBarang) {
+            $num = 1; // Jika belum ada kode, mulai dari 1
+        } else {
+            $lastCode = $lastBarang->no_fakturpenjualantoko;
+            $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Ambil nomor urut terakhir
+            $num = $lastNum + 1; // Tambahkan 1 untuk nomor urut berikutnya
+        }
+    
+        $formattedNum = sprintf("%04d", $num); // Format menjadi 4 digit
+        $newCode = $prefix . $monthDay . $year . $formattedNum;
+    
+        return $newCode;
     }
     
 
