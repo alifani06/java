@@ -1320,9 +1320,25 @@ Route::middleware('toko_bumiayu')->prefix('toko_bumiayu')->group(function () {
     Route::get('printpengirimantokobumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_pengirimantokobumiayuController::class, 'printReport']);
 
     Route::resource('setoran_tokobumiayu', \App\Http\Controllers\Toko_bumiayu\Setoran_tokobumiayuController::class);
-    // Route::post('/get-penjualan-kotor', [Setoran_tokobumiayuController::class, 'getdata'])->name('getdata');
     Route::post('toko_bumiayu/setoran_tokobumiayu', [Setoran_tokobumiayuController::class, 'store'])->name('setoran.store');
-    Route::post('/get-penjualanbumiayu', [Setoran_tokobumiayuController::class, 'getdata'])->name('getdata');
+    Route::post('/get-penjualanbumiayu', [Setoran_tokobumiayuController::class, 'getdatabumiayu'])->name('getdatabumiayu');
+    Route::get('/print-penjualantoko-kotorbmy', [Setoran_tokobumiayuController::class, 'printPenjualanKotorbmy'])->name('print.penjualantoko.kotorbmy');
+    Route::get('/print-fakturpenjualantokobmy', [Setoran_tokobumiayuController::class, 'printFakturpenjualanbmy'])->name('print.fakturpenjualantokobmy');
+    Route::get('/print-fakturpenjualanmesinedcbmy', [Setoran_tokobumiayuController::class, 'printFakturpenjualanMesinedcbmy'])->name('print.fakturpenjualanmesinedcbmy');
+    Route::get('/print-fakturpemesananmesinedcbmy', [Setoran_tokobumiayuController::class, 'printFakturpemesananMesinedcbmy'])->name('print.fakturpemesananmesinedcbmy');
+    Route::get('/print-fakturpenjualanqrisbmy', [Setoran_tokobumiayuController::class, 'printFakturpenjualanQrisbmy'])->name('print.fakturpenjualanqrisbmy');
+    Route::get('/print-fakturpemesananqrisbmy', [Setoran_tokobumiayuController::class, 'printFakturpemesananQrisbmy'])->name('print.fakturpemesananqrisbmy');
+    Route::get('/print-fakturpenjualantransferbmy', [Setoran_tokobumiayuController::class, 'printFakturpenjualanTransferbmy'])->name('print.fakturpenjualantransferbmy');
+    Route::get('/print-fakturpemesanantransferbmy', [Setoran_tokobumiayuController::class, 'printFakturpemesananTransferbmy'])->name('print.fakturpemesanantransferbmy');
+    Route::get('/print-fakturpenjualangobizbmy', [Setoran_tokobumiayuController::class, 'printFakturpenjualanGobizbmy'])->name('print.fakturpenjualangobizbmy');
+    Route::get('/print-fakturpemesanangobizbmy', [Setoran_tokobumiayuController::class, 'printFakturpemesananGobizbmy'])->name('print.fakturpemesanangobizbmy');
+    Route::get('/print-fakturdepositmasuktokobmy', [Setoran_tokobumiayuController::class, 'printFakturdepositMasukbmy'])->name('print.fakturdepositmasuktokobmy');
+    Route::get('/print-fakturdepositkeluartokobmy', [Setoran_tokobumiayuController::class, 'printFakturdepositKeluarbmy'])->name('print.fakturdepositkeluartokobmy');
+    Route::get('/print-penjualantoko-diskonbmy', [Setoran_tokobumiayuController::class, 'printPenjualanDiskonbmy'])->name('print.penjualantoko.diskonbmy');
+    Route::get('/print-penjualantoko-bersihbmy', [Setoran_tokobumiayuController::class, 'printPenjualanBersihbmy'])->name('print.penjualantoko.bersihbmy');
+    Route::get('penjualanprodukbmy/detail/{id}', [Setoran_tokobumiayuController::class, 'show'])->name('penjualanprodukbmy.detail');
+    Route::get('penjualanprodukbmy/detaildepositkeluar/{id}', [Setoran_tokobumiayuController::class, 'show2'])->name('penjualanprodukbmy.detaildepositkeluar');
+    Route::get('pemesananprodukbmy/detailpemesanan/{id}', [Setoran_tokobumiayuController::class, 'show1'])->name('pemesananprodukbmy.detailpemesanan');
 
 
     Route::resource('laporan_setorantokobumiayu', \App\Http\Controllers\Toko_bumiayu\Laporan_setoranpenjualanbmyController::class);
