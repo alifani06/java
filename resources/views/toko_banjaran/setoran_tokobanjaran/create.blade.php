@@ -62,7 +62,7 @@
                                 <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Penjualan Kotor</a>
                             </label>
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="penjualan_kotor" name="penjualan_kotor" placeholder="">
+                                <input type="text" class="form-control" id="penjualan_kotor" name="penjualan_kotor" readonly>
                             </div>
                         </div>
 
@@ -72,7 +72,7 @@
                                 <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Diskon Penjualan</a>
                             </label>                            
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="diskon_penjualan" name="diskon_penjualan" >
+                                <input type="text" class="form-control" id="diskon_penjualan" name="diskon_penjualan" readonly>
                             </div>
                         </div>
 
@@ -86,7 +86,7 @@
                                 <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Penjualan Bersih</a>
                             </label>
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="penjualan_bersih" name="penjualan_bersih" >
+                                <input type="text" class="form-control" id="penjualan_bersih" name="penjualan_bersih" readonly>
                             </div>
                         </div>
 
@@ -95,7 +95,7 @@
                                 <a id="deposit_keluar_link" href="#" data-toggle="modal" data-target="#depositKeluarModal" class="text-decoration-none">Deposit Keluar</a>
                             </label>                            
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="deposit_keluar" name="deposit_keluar" >
+                                <input type="text" class="form-control" id="deposit_keluar" name="deposit_keluar" readonly>
                             </div>
                         </div>
 
@@ -104,7 +104,7 @@
                                 <a id="deposit_masuk_link" href="#" data-toggle="modal" data-target="#depositMasukModal" class="text-decoration-none">Deposit Masuk</a>
                             </label>                            
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="deposit_masuk" name="deposit_masuk" >
+                                <input type="text" class="form-control" id="deposit_masuk" name="deposit_masuk" readonly>
                             </div>
                         </div>
                         
@@ -117,7 +117,7 @@
                                 <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Total Penjualan</a>
                             </label>                            
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="total_penjualan" name="total_penjualan" >
+                                <input type="text" class="form-control" id="total_penjualan" name="total_penjualan" readonly>
                             </div>
                         </div>
 
@@ -126,7 +126,7 @@
                                 <a id="penjualan_mesinedc_link" href="#" data-toggle="modal" data-target="#penjualanMesinedcModal" class="text-decoration-none">Mesin EDC</a>
                             </label>                            
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="mesin_edc" name="mesin_edc" >
+                                <input type="text" class="form-control" id="mesin_edc" name="mesin_edc" readonly>
                             </div>
                         </div>
 

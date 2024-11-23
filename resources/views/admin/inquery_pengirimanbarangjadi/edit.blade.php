@@ -90,7 +90,7 @@
                                     value="{{ old('toko_id', $pengiriman->toko_id) }}">
                                 <input hidden type="text" class="form-control" id="qrcode_pengiriman" name="qrcode_pengiriman"
                                     value="{{ old('qrcode_pengiriman', $qrcodePengiriman) }}">
-                                <input hidden type="text" class="form-control" id="kode_produksi" name="kode_produksi"
+                                <input  type="text" class="form-control" id="kode_produksi" name="kode_produksi"
                                     value="{{ old('kode_produksi', $kodeProduksi) }}">
 
                             </div>
@@ -195,7 +195,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($uniqueStokBarangjadi as $barang)
-                                        <tr data-id="{{ $barang->id }}" 
+                                        <tr data-id="{{ $barang->produk_id }}" 
                                             data-kode_lama="{{ $barang->produk->kode_lama  }}"
                                             data-nama_produk="{{ $barang->produk->nama_produk }}">
 
