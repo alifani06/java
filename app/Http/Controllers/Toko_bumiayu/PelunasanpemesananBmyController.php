@@ -354,17 +354,17 @@ class PelunasanpemesananBmyController extends Controller
     public function cetak($id)
     {   
         // Mengambil satu item Pelunasan berdasarkan ID
-        $inquery = Pelunasan::with(['metodePembayaran', 'dppemesanan.pemesananproduk'])
+        $penjualan = Pelunasan::with(['metodePembayaran', 'dppemesanan.pemesananproduk'])
                     ->findOrFail($id);
         
         // Mengambil semua pelanggan
         $pelanggans = Pelanggan::all();
     
-        // Mengakses toko dari $inquery yang sekarang menjadi instance model
-        $tokos = $inquery->toko;
+        // Mengakses toko dari $penjualan yang sekarang menjadi instance model
+        $tokos = $penjualan->toko;
     
         // Mengirim data ke view
-        return view('toko_bumiayu/pelunasan_pemesananBmy/cetak', compact('inquery', 'tokos', 'pelanggans'));
+        return view('toko_bumiayu/pelunasan_pemesananBmy/cetak', compact('penjualan', 'tokos', 'pelanggans'));
     }
 
     public function cetakpelunasan($id)
