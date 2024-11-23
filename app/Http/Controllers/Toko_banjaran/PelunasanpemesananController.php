@@ -399,7 +399,7 @@ class PelunasanpemesananController extends Controller
     public function cetakPdf($id)
 {
     // Mengambil satu item Pelunasan berdasarkan ID
-    $inquery = Pelunasan::with([
+    $penjualan = Pelunasan::with([
         'metodePembayaran', 
         'penjualanproduk.detailpenjualanproduk', 
         'dppemesanan.pemesananproduk' // Menambahkan relasi ke Pemesananproduk
@@ -412,12 +412,12 @@ class PelunasanpemesananController extends Controller
     $pelanggans = Pelanggan::all();
 
     // Mengakses toko dari $inquery yang sekarang menjadi instance model
-    $tokos = $inquery->toko;
+    $tokos = $penjualan->toko;
 
     // Mengambil catatan dari tabel Pemesananproduk melalui dppemesanan
     $pemesananproduk = $inquery->dppemesanan->pemesananproduk ?? null; // Mengakses relasi ke Pemesananproduk
 
-    $pdf = FacadePdf::loadView('toko_banjaran.pelunasan_pemesanan.cetak-pdf', compact('inquery', 'tokos', 'pelanggans', 'kode_dppemesanan', 'pemesananproduk'));
+    $pdf = FacadePdf::loadView('toko_banjaran.pelunasan_pemesanan.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans', 'kode_dppemesanan', 'pemesananproduk'));
     $pdf->setPaper('a4', 'portrait');
     
     return $pdf->stream('pelunasan.pdf');
