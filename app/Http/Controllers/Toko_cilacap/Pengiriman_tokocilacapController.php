@@ -403,77 +403,153 @@ class Pengiriman_tokocilacapController extends Controller{
         return response()->json(['success' => 'Berhasil mengubah status dan memperbarui stok.']);
     }
 
+    // public function unpost_pengiriman($id)
+    // {
+    //     // Ambil data stok_tokobanjaran berdasarkan ID
+    //     $stok = Pengiriman_tokocilacap::where('id', $id)->first();
+
+    //     // Pastikan data ditemukan
+    //     if (!$stok) {
+    //         return response()->json(['error' => 'Data tidak ditemukan.'], 404);
+    //     }
+
+    //     // Ambil kode_pengiriman dan pengiriman_barangjadi_id dari stok yang diambil
+    //     $kodePengiriman = $stok->kode_pengiriman;
+    //     $pengirimanId = $stok->pengiriman_barangjadi_id;
+
+    //     // Ambil pengiriman terkait dari tabel pengiriman_barangjadi
+    //     $pengiriman = Pengiriman_barangjadi::find($pengirimanId);
+
+    //     // Pastikan data pengiriman ditemukan
+    //     if (!$pengiriman) {
+    //         return response()->json(['error' => 'Data pengiriman tidak ditemukan.'], 404);
+    //     }
+
+    //     // Ambil semua produk terkait dengan pengiriman
+    //     $productsInPengiriman = Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->get();
+
+    //     foreach ($productsInPengiriman as $pengirimanItem) {
+    //         // Ambil stok yang ada di stok_tokobanjaran untuk produk ini
+    //         $stokToko = Stok_tokocilacap::where('produk_id', $pengirimanItem->produk_id)->first();
+            
+    //         if ($stokToko) {
+    //             // Mengurangi jumlah pada stok_tokobanjaran sesuai jumlah pengiriman
+    //             $stokToko->jumlah -= $pengirimanItem->jumlah;
+
+    //             // Jika jumlah stok menjadi negatif, kembalikan error
+    //             if ($stokToko->jumlah < 0) {
+    //                 return response()->json(['error' => 'Stok tidak cukup untuk mengurangi jumlah produk dengan ID: ' . $pengirimanItem->produk_id], 400);
+    //             }
+
+    //             $stokToko->save();
+    //         }
+
+    //         // Ambil semua detail stok barang jadi untuk produk ini, urutkan dari yang paling baru
+    //         $detailStoks = Detail_stokbarangjadi::where('produk_id', $pengirimanItem->produk_id)
+    //                         ->orderBy('created_at', 'desc') // Menggunakan stok yang paling baru dahulu (LIFO)
+    //                         ->get();
+
+    //         $remaining = $pengirimanItem->jumlah;
+
+    //         foreach ($detailStoks as $detailStok) {
+    //             if ($remaining > 0) {
+    //                 $detailStok->stok += $remaining; // Mengembalikan jumlah ke detail_stokbarangjadi
+    //                 $detailStok->save();
+    //                 $remaining = 0; // Pengembalian selesai
+    //             } else {
+    //                 break; // Jika tidak ada sisa pengembalian, keluar dari loop
+    //             }
+    //         }
+    //     }
+
+    //     // Update status untuk semua stok_tokobanjaran dengan kode_pengiriman yang sama
+    //     Pengiriman_tokocilacap::where('kode_pengiriman', $kodePengiriman)->update([
+    //         'status' => 'unpost',
+    //         'tanggal_terima' => null, // Reset tanggal terima
+    //     ]);
+
+    //     // Update status untuk pengiriman_barangjadi
+    //     Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->update([
+    //         'status' => 'unpost',
+    //         'tanggal_terima' => null, // Reset tanggal terima
+    //     ]);
+
+    //     return response()->json(['success' => 'Berhasil mengubah status menjadi unpost dan memperbarui stok.']);
+    // }
+
     public function unpost_pengiriman($id)
     {
         // Ambil data stok_tokobanjaran berdasarkan ID
         $stok = Pengiriman_tokocilacap::where('id', $id)->first();
-
+    
         // Pastikan data ditemukan
         if (!$stok) {
             return response()->json(['error' => 'Data tidak ditemukan.'], 404);
         }
-
+    
         // Ambil kode_pengiriman dan pengiriman_barangjadi_id dari stok yang diambil
         $kodePengiriman = $stok->kode_pengiriman;
         $pengirimanId = $stok->pengiriman_barangjadi_id;
-
+    
         // Ambil pengiriman terkait dari tabel pengiriman_barangjadi
         $pengiriman = Pengiriman_barangjadi::find($pengirimanId);
-
+    
         // Pastikan data pengiriman ditemukan
         if (!$pengiriman) {
             return response()->json(['error' => 'Data pengiriman tidak ditemukan.'], 404);
         }
-
+    
         // Ambil semua produk terkait dengan pengiriman
         $productsInPengiriman = Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->get();
-
+    
         foreach ($productsInPengiriman as $pengirimanItem) {
             // Ambil stok yang ada di stok_tokobanjaran untuk produk ini
             $stokToko = Stok_tokocilacap::where('produk_id', $pengirimanItem->produk_id)->first();
             
             if ($stokToko) {
-                // Mengurangi jumlah pada stok_tokobanjaran sesuai jumlah pengiriman
+                // Kurangi stok tanpa membatasi stok minimum
                 $stokToko->jumlah -= $pengirimanItem->jumlah;
-
-                // Jika jumlah stok menjadi negatif, kembalikan error
-                if ($stokToko->jumlah < 0) {
-                    return response()->json(['error' => 'Stok tidak cukup untuk mengurangi jumlah produk dengan ID: ' . $pengirimanItem->produk_id], 400);
-                }
-
                 $stokToko->save();
+            } else {
+                // Jika stok belum ada di tabel stok_tokobanjaran, tambahkan dengan jumlah negatif
+                Stok_tokocilacap::create([
+                    'produk_id' => $pengirimanItem->produk_id,
+                    'jumlah' => -$pengirimanItem->jumlah,
+                ]);
             }
-
+    
             // Ambil semua detail stok barang jadi untuk produk ini, urutkan dari yang paling baru
             $detailStoks = Detail_stokbarangjadi::where('produk_id', $pengirimanItem->produk_id)
                             ->orderBy('created_at', 'desc') // Menggunakan stok yang paling baru dahulu (LIFO)
                             ->get();
-
+    
             $remaining = $pengirimanItem->jumlah;
-
+    
             foreach ($detailStoks as $detailStok) {
                 if ($remaining > 0) {
-                    $detailStok->stok += $remaining; // Mengembalikan jumlah ke detail_stokbarangjadi
-                    $detailStok->save();
+                    // Mengembalikan jumlah ke detail_stokbarangjadi
+                    $detailStok->stok += $remaining;
+    
                     $remaining = 0; // Pengembalian selesai
+                    $detailStok->save();
                 } else {
                     break; // Jika tidak ada sisa pengembalian, keluar dari loop
                 }
             }
         }
-
+    
         // Update status untuk semua stok_tokobanjaran dengan kode_pengiriman yang sama
         Pengiriman_tokocilacap::where('kode_pengiriman', $kodePengiriman)->update([
             'status' => 'unpost',
             'tanggal_terima' => null, // Reset tanggal terima
         ]);
-
+    
         // Update status untuk pengiriman_barangjadi
         Pengiriman_barangjadi::where('kode_pengiriman', $kodePengiriman)->update([
             'status' => 'unpost',
             'tanggal_terima' => null, // Reset tanggal terima
         ]);
-
+    
         return response()->json(['success' => 'Berhasil mengubah status menjadi unpost dan memperbarui stok.']);
     }
 
