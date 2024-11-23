@@ -508,10 +508,9 @@ class Laporan_stoktokobanjaranController extends Controller
             'totalHarga' => $totalHarga,
             'totalStok' => $totalStok,
             'totalSubTotal' => $totalSubTotal,
-            'tokoCabang' => 'BANJARAN', // Ini harus ada untuk menyertakan variabel
+            'tokoCabang' => 'BANJARAN', 
         ]);
 
-        // Menambahkan nomor halaman di kanan bawah
         $pdf->output();
         $dompdf = $pdf->getDomPDF();
         $canvas = $dompdf->getCanvas();
