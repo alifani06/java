@@ -561,25 +561,25 @@ class PelunasanpemesananTglController extends Controller
     public function cetakPdf($id)
     {
         // Mengambil satu item Pelunasan berdasarkan ID
-        $inquery = Pelunasan::with([
+        $penjualan = Pelunasan::with([
             'metodePembayaran', 
             'penjualanproduk.detailpenjualanproduk', 
             'dppemesanan.pemesananproduk' // Menambahkan relasi ke Pemesananproduk
         ])->findOrFail($id);
     
         // Mengambil kode_dppemesanan
-        $kode_dppemesanan = $inquery->dppemesanan->kode_dppemesanan ?? 'N/A'; // Mengakses kode_dppemesanan
+        $kode_dppemesanan = $penjualan->dppemesanan->kode_dppemesanan ?? 'N/A'; // Mengakses kode_dppemesanan
     
         // Mengambil semua pelanggan
         $pelanggans = Pelanggan::all();
     
-        // Mengakses toko dari $inquery yang sekarang menjadi instance model
-        $tokos = $inquery->toko;
+        // Mengakses toko dari $penjualan yang sekarang menjadi instance model
+        $tokos = $penjualan->toko;
     
         // Mengambil catatan dari tabel Pemesananproduk melalui dppemesanan
-        $pemesananproduk = $inquery->dppemesanan->pemesananproduk ?? null; // Mengakses relasi ke Pemesananproduk
+        $pemesananproduk = $penjualan->dppemesanan->pemesananproduk ?? null; // Mengakses relasi ke Pemesananproduk
     
-        $pdf = FacadePdf::loadView('toko_tegal.pelunasan_pemesananTgl.cetak-pdf', compact('inquery', 'tokos', 'pelanggans', 'kode_dppemesanan', 'pemesananproduk'));
+        $pdf = FacadePdf::loadView('toko_tegal.pelunasan_pemesananTgl.cetak-pdf', compact('penjualan', 'tokos', 'pelanggans', 'kode_dppemesanan', 'pemesananproduk'));
         $pdf->setPaper('a4', 'portrait');
         
         return $pdf->stream('pelunasan.pdf');
