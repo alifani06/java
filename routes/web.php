@@ -426,8 +426,12 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('admin/inquery_pengirimanpesanan', [Inquery_pengirimanpesananController::class, 'index'])->name('admin.inquery_pengirimanpesanan.index');
     Route::get('inquery_pengirimanpesanan/unpost_pengirimanpesanan/{id}', [\App\Http\Controllers\Admin\Inquery_pengirimanpesananController::class, 'unpost_pengirimanpesanan']);
     Route::get('inquery_pengirimanpesanan/posting_pengirimanpesanan/{id}', [\App\Http\Controllers\Admin\Inquery_pengirimanpesananController::class, 'posting_pengirimanpesanan']);
+    Route::delete('inquery_pengirimanpesanan/deleteprodukpengiriman/{id}', [\App\Http\Controllers\Admin\Inquery_pengirimanpesananController::class, 'deleteprodukpengiriman']);
+
+
     Route::resource('laporan_pengirimanbarangjadi', \App\Http\Controllers\Admin\Laporan_pengirimanbarangjadiController::class);
     Route::get('print', [\App\Http\Controllers\Admin\Laporan_pengirimanbarangjadiController::class, 'printReport']);
+
 
     Route::resource('laporan_pengirimanpesanan', \App\Http\Controllers\Admin\Laporan_pengirimanpesananController::class);
     Route::get('printpesanan', [\App\Http\Controllers\Admin\Laporan_pengirimanpesananController::class, 'printReport']);

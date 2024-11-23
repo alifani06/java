@@ -8,9 +8,13 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Pengiriman Barang Jadi</h1>
+                    <h1 class="m-0">Pengiriman Barang Jadi Pesanan</h1>
                 </div><!-- /.col -->
-               
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+     
+                    </ol>
+                </div>
             </div>
         </div>
     </div>
@@ -76,13 +80,17 @@
                             <div class="form-group">
                                 <label for="nama">Nomor Pengiriman</label>
                                 <input type="text" class="form-control" id="kode_pengirimanpesanan" name="kode_pengirimanpesanan"
-                                    value="{{ old('kode_pengirimanpesanan', $pengiriman->kode_pengirimanpesanan) }}">
+                                    value="{{ old('kode_pengirimanpesanan', $pengiriman->kode_pengirimanpesanan) }}" readonly><br>
+
+                                    <label for="nama">Tanggal Pengiriman</label>
+                                <input type="text" class="form-control" id="tanggal_pengiriman" name="tanggal_pengiriman"
+                                    value="{{ old('tanggal_pengiriman', $pengiriman->tanggal_pengiriman) }}" readonly>
 
                                 <input hidden type="text" class="form-control" id="toko_id" name="toko_id"
                                     value="{{ old('toko_id', $pengiriman->toko_id) }}">
                                 <input hidden type="text" class="form-control" id="qrcode_pengiriman" name="qrcode_pengiriman"
                                     value="{{ old('qrcode_pengiriman', $qrcodePengiriman) }}">
-                                <input hidden type="text" class="form-control" id="kode_produksi" name="kode_produksi"
+                                <input  type="text" class="form-control" id="kode_produksi" name="kode_produksi"
                                     value="{{ old('kode_produksi', $kodeProduksi) }}">
 
                             </div>
@@ -149,9 +157,7 @@
                                             
                                         </tr>
                                     @endforeach
-                                </tbody>
-                                
-                                
+                                </tbody>  
                                 
                             </table>
                         </div>
@@ -189,7 +195,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($uniqueStokBarangjadi as $barang)
-                                        <tr data-id="{{ $barang->id }}" 
+                                        <tr data-id="{{ $barang->produk_id }}" 
                                             data-kode_lama="{{ $barang->produk->kode_lama  }}"
                                             data-nama_produk="{{ $barang->produk->nama_produk }}">
 
@@ -243,8 +249,6 @@
         document.getElementById("searchInputrutes").addEventListener("input", filterTablefaktur);
     </script>
 
-    
-
 
     <script>
         var data_pembelian = @json(session('data_pembelians'));
@@ -291,7 +295,7 @@
             row.remove();
     
             $.ajax({
-                url: "{{ url('admin/inquery_pengirimanbarangjadi/deleteprodukpengiriman/') }}/" + detailId,
+                url: "{{ url('admin/inquery_pengirimanpesanan/deleteprodukpengiriman/') }}/" + detailId,
                 type: "POST",
                 data: {
                     _method: 'DELETE',
@@ -409,6 +413,6 @@
         }
 
     </script>
-
-
+    
+  
 @endsection

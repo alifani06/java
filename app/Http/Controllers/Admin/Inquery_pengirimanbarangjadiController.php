@@ -801,30 +801,6 @@ private function updateTokoData($validatedData, $pengiriman)
 }
 
 
-    // public function deleteprodukpengiriman($id)
-    // {
-    //     // Temukan item berdasarkan ID
-    //     $item = Pengiriman_barangjadi::find($id);
-
-    //     // Pastikan item ditemukan
-    //     if (!$item) {
-    //         return response()->json(['message' => 'Detail Faktur tidak ditemukan'], 404);
-    //     }
-
-    //     // Simpan kode_pengiriman untuk referensi
-    //     $kodePengiriman = $item->kode_pengiriman;
-
-    //     // Hapus item dari pengiriman_barangjadi
-    //     $item->delete();
-
-    //     // Hapus semua produk terkait dari pengiriman_tokobanjaran berdasarkan kode_pengiriman
-    //     Pengiriman_tokobanjaran::where('kode_pengiriman', $kodePengiriman)
-    //         ->where('produk_id', $item->produk_id) // Hanya menghapus yang sesuai produk_id
-    //         ->delete();
-
-    //     return response()->json(['message' => 'Produk berhasil dihapus dari pengiriman.']);
-    // }
-
     public function deleteprodukpengiriman($id)
 {
     // Temukan item berdasarkan ID
