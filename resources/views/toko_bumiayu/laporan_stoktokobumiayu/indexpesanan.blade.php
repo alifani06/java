@@ -92,6 +92,7 @@
                                             {{ $subklasifikasi->nama }}
                                         </option>
                                     @endforeach
+
                                 </select>
                                 <label for="subklasifikasi">(Pilih Sub Klasifikasi)</label>
                             </div>
@@ -103,6 +104,9 @@
                                 </button>
                                 <button type="button" class="btn btn-primary btn-block" onclick="printReport(event)">
                                     <i class="fas fa-print"></i> Cetak
+                                </button>
+                                <button type="button" class="btn btn-success btn-block" onclick="printExcel(event)">
+                                    <i class="fas fa-print"></i> Ekspor Excel
                                 </button>
                             </div>
                         </div>
@@ -150,35 +154,45 @@
         </div>
     </section>
     
-    <script>
+<script>
     function printReport() {
-        if (event) event.preventDefault();
+    if (event) event.preventDefault();
     const form = document.getElementById('form-action');
     form.action = "{{ url('toko_bumiayu/printstoktokopesananbumiayu') }}";
     form.target = "_blank";
     form.submit();
-}
-    </script>
+    }
+</script>
+
+<script>
+    function printExcel() {
+        if (event) event.preventDefault();
+    const form = document.getElementById('form-action');
+    form.action = "{{ url('toko_bumiayu/printexcelstokpesananbumiayu') }}";
+    form.target = "_blank";
+    form.submit();
+    }
+</script>
 
 <script>
     function filterSubKlasifikasi() {
-var klasifikasiId = document.getElementById('klasifikasi').value;
-var subKlasifikasiSelect = document.getElementById('subklasifikasi');
-var subKlasifikasiOptions = subKlasifikasiSelect.options;
+    var klasifikasiId = document.getElementById('klasifikasi').value;
+    var subKlasifikasiSelect = document.getElementById('subklasifikasi');
+    var subKlasifikasiOptions = subKlasifikasiSelect.options;
 
-// Show all options initially
-for (var i = 0; i < subKlasifikasiOptions.length; i++) {
-    var option = subKlasifikasiOptions[i];
-    if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
-        option.style.display = "block";
-    } else {
-        option.style.display = "none";
+    // Show all options initially
+    for (var i = 0; i < subKlasifikasiOptions.length; i++) {
+        var option = subKlasifikasiOptions[i];
+        if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
+            option.style.display = "block";
+        } else {
+            option.style.display = "none";
+        }
     }
-}
 
-// Don't automatically select sub classification, let the user decide
-subKlasifikasiSelect.selectedIndex = 0;
-}
+    // Don't automatically select sub classification, let the user decide
+    subKlasifikasiSelect.selectedIndex = 0;
+    }
 
 </script>
 

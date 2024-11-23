@@ -508,7 +508,7 @@ class Laporan_stoktokopemalangController extends Controller
             'totalHarga' => $totalHarga,
             'totalStok' => $totalStok,
             'totalSubTotal' => $totalSubTotal,
-            'tokoCabang' => 'PEMAALANG', // Ini harus ada untuk menyertakan variabel
+            'tokoCabang' => 'PEMALANG', // Ini harus ada untuk menyertakan variabel
         ]);
 
         // Menambahkan nomor halaman di kanan bawah
