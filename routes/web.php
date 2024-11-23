@@ -715,6 +715,7 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('semuastoktokobanjaran', [Laporan_stoktokobanjaranController::class, 'semuaStokTokoBanjaran'])->name('laporan.semuaStokTokoBanjaran');
     Route::get('printsemuastoktokobanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_stoktokobanjaranController::class, 'printReportsemuastokbanjaran']);
     Route::get('printexcelsemuabanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_stoktokobanjaranController::class, 'exportExcelsemua']);
+    Route::get('printexcelstokpesananbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_stoktokobanjaranController::class, 'exportExcelpesanan']);
 
 
 
@@ -1126,6 +1127,7 @@ Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {
     Route::get('semuastoktokopemalang', [Laporan_stoktokopemalangController::class, 'semuaStokTokoPemalang'])->name('laporan.semuaStokTokopemalang');
     Route::get('printsemuastoktokopemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_stoktokopemalangController::class, 'printReportsemuastokpemalang']);
     Route::get('printexcelsemuapemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_stoktokopemalangController::class, 'exportExcelsemua']);
+    Route::get('printexcelstokpesananpemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_stoktokopemalangController::class, 'exportExcelpesanan']);
 
 
     Route::resource('laporan_pengirimantokopemalang', \App\Http\Controllers\Toko_pemalang\Laporan_pengirimantokopemalangController::class);
@@ -1319,6 +1321,7 @@ Route::middleware('toko_bumiayu')->prefix('toko_bumiayu')->group(function () {
     Route::get('semuastoktokobumiayu', [Laporan_stoktokobumiayuController::class, 'semuaStokTokoBumiayu'])->name('laporan.semuaStokTokoBumiayu');
     Route::get('printsemuastoktokobumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_stoktokobumiayuController::class, 'printReportsemuastokbumiayu']);
     Route::get('printexcelsemuabumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_stoktokobumiayuController::class, 'exportExcelsemua']);
+    Route::get('printexcelstokpesananbumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_stoktokobumiayuController::class, 'exportExcelpesanan']);
 
     Route::resource('laporan_pengirimantokobumiayu', \App\Http\Controllers\Toko_bumiayu\Laporan_pengirimantokobumiayuController::class);
     Route::get('printpengirimantokobumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_pengirimantokobumiayuController::class, 'printReport']);
@@ -1514,6 +1517,7 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
     Route::get('semuastoktokoslawi', [Laporan_stoktokoslawiController::class, 'semuaStokTokoSlawi'])->name('laporan.semuaStokTokoSlawi');
     Route::get('printsemuastoktokoslawi', [\App\Http\Controllers\Toko_slawi\Laporan_stoktokoslawiController::class, 'printReportsemuastokslawi']);
     Route::get('printexcelsemuaslawi', [\App\Http\Controllers\Toko_slawi\Laporan_stoktokoslawiController::class, 'exportExcelsemua']);
+    Route::get('printexcelstokpesananslawi', [\App\Http\Controllers\Toko_slawi\Laporan_stoktokoslawiController::class, 'exportExcelpesanan']);
 
     Route::resource('laporan_pengirimantokoslawi', \App\Http\Controllers\Toko_slawi\Laporan_pengirimantokoslawiController::class);
     Route::get('printpengirimantokoslawi', [\App\Http\Controllers\Toko_slawi\Laporan_pengirimantokoslawiController::class, 'printReport']);
@@ -1726,6 +1730,7 @@ Route::middleware('toko_cilacap')->prefix('toko_cilacap')->group(function () {
     Route::get('semuastoktokocilacap', [Laporan_stoktokocilacapController::class, 'semuaStokTokoCilacap'])->name('laporan.semuaStokTokoCilacap');
     Route::get('printsemuastoktokocilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_stoktokocilacapController::class, 'printReportsemuastokcilacap']);
     Route::get('printexcelsemuacilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_stoktokocilacapController::class, 'exportExcelsemua']);
+    Route::get('printexcelstokpesanancilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_stoktokocilacapController::class, 'exportExcelpesanan']);
 
     Route::resource('laporan_pengirimantokocilacap', \App\Http\Controllers\Toko_cilacap\Laporan_pengirimantokocilacapController::class);
     Route::get('printpengirimantokocilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_pengirimantokocilacapController::class, 'printReport']);

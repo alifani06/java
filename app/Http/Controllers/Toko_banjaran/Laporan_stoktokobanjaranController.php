@@ -603,6 +603,73 @@ class Laporan_stoktokobanjaranController extends Controller
         return Excel::download(new ProdukExport($produkWithStok, $selectedKlasifikasi->nama ?? 'Semua Klasifikasi'), $fileName);
     }
     
+    public function exportExcelpesanan(Request $request)
+    {
+        $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);
+    
+        // Filter berdasarkan klasifikasi_id
+        if ($request->has('klasifikasi_id') && $request->klasifikasi_id) {
+            $produkQuery->where('klasifikasi_id', $request->klasifikasi_id);
+        }
+    
+        // Filter berdasarkan subklasifikasi_id
+        if ($request->has('subklasifikasi_id') && $request->subklasifikasi_id) {
+            $produkQuery->where('subklasifikasi_id', $request->subklasifikasi_id);
+        }
+    
+        $produk = $produkQuery->get();
+    
+        // Filter berdasarkan toko_id
+        $toko_id = $request->get('toko_id');
+        if ($toko_id == '1') {
+            $stok = Stokpesanan_tokobanjaran::with('produk')->get();
+        } elseif ($toko_id == '2') {
+            $stok = Stokpesanan_tokotegal::with('produk')->get();
+        } elseif ($toko_id == '3') {
+            $stok = Stokpesanan_tokoslawi::with('produk')->get();
+        } elseif ($toko_id == '4') {
+            $stok = Stokpesanan_tokopemalang::with('produk')->get();
+        } elseif ($toko_id == '5') {
+            $stok = Stokpesanan_tokobumiayu::with('produk')->get();
+        } elseif ($toko_id == '6') {
+            $stok = Stokpesanan_tokocilacap::with('produk')->get();
+        } else {
+            $stok = collect();
+        }
+    
+        // Mengelompokkan stok berdasarkan produk_id
+        $stokGrouped = $stok->groupBy('produk_id')->map(function ($group) {
+            $firstItem = $group->first();
+            $totalJumlah = $group->sum('jumlah');
+            $firstItem->jumlah = $totalJumlah;
+            return $firstItem;
+        })->values();
+    
+        // Menghitung total harga dan stok
+        $produkWithStok = $produk->map(function ($item) use ($stokGrouped) {
+            $stokItem = $stokGrouped->firstWhere('produk_id', $item->id);
+            $item->jumlah = $stokItem ? $stokItem->jumlah : 0;
+            $item->subTotal = $item->jumlah * $item->harga;
+            return $item;
+        });
+    
+        // Mendapatkan nama klasifikasi yang dipilih
+        $selectedKlasifikasi = null;
+        if ($request->has('klasifikasi_id') && $request->klasifikasi_id) {
+            $selectedKlasifikasi = Klasifikasi::find($request->klasifikasi_id);
+        }
+    
+        // Menentukan nama file
+        $fileName = 'laporan_stoktoko';
+        if ($selectedKlasifikasi) {
+            $fileName = 'laporan_' . strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $selectedKlasifikasi->nama))) . '.xlsx';
+        } else {
+            $fileName .= '.xlsx';
+        }
+    
+        // Mengunduh file Excel
+        return Excel::download(new ProdukExport($produkWithStok, $selectedKlasifikasi->nama ?? 'Semua Klasifikasi'), $fileName);
+    }
 
     public function exportExcelsemua(Request $request)
     {

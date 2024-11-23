@@ -104,6 +104,9 @@
                                 <button type="button" class="btn btn-primary btn-block" onclick="printReport(event)">
                                     <i class="fas fa-print"></i> Cetak
                                 </button>
+                                <button type="button" class="btn btn-success btn-block" onclick="printExcel(event)">
+                                    <i class="fas fa-print"></i> Ekspor Excel
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -159,6 +162,16 @@
     form.submit();
 }
     </script>
+
+<script>
+    function printExcel() {
+        if (event) event.preventDefault();
+    const form = document.getElementById('form-action');
+    form.action = "{{ url('toko_slawi/printexcelstokpesananslawi') }}";
+    form.target = "_blank";
+    form.submit();
+    }
+</script>
 
 <script>
     function filterSubKlasifikasi() {
