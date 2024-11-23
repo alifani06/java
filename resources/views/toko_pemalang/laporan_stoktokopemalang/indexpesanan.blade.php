@@ -60,7 +60,7 @@
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="toko" name="toko_id">
                                     {{-- <option value="">- Semua Toko -</option> --}}
-                                    <option value="1" {{ Request::get('toko_id') == '4' ? 'selected' : '' }}>Toko Pemalang</option>
+                                    <option value="4" {{ Request::get('toko_id') == '4' ? 'selected' : '' }}>Toko Pemalang</option>
                                     {{-- <option value="2" {{ Request::get('toko_id') == '2' ? 'selected' : '' }}>Toko Tegal</option>
                                     <option value="3" {{ Request::get('toko_id') == '3' ? 'selected' : '' }}>Toko Slawi</option>
                                     <option value="4" {{ Request::get('toko_id') == '4' ? 'selected' : '' }}>Toko Pemalang</option>
