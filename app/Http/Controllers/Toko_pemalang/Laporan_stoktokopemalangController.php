@@ -298,31 +298,8 @@ class Laporan_stoktokopemalangController extends Controller
             $selectedKlasifikasi = Klasifikasi::find($request->klasifikasi_id);
         }
     
-        // Cek apakah ada permintaan untuk ekspor Excel
-        if ($request->has('export') && $request->export === 'excel') {
-            // Menentukan nama file sesuai dengan klasifikasi yang dipilih
-            $fileName = 'laporan_stoktoko';
-            if ($selectedKlasifikasi) {
-                // Menggunakan nama klasifikasi untuk nama file
-                $fileName = 'laporan_' . strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $selectedKlasifikasi->nama))) . '.xlsx';
-            } else {
-                $fileName .= '.xlsx';
-            }
-    
-            // Mengunduh file dengan nama yang ditentukan
-            return Excel::download(new ProdukExport($produkWithStok, $selectedKlasifikasi->nama ?? 'Semua Klasifikasi'), $fileName);
-        }
-
-    
-        // Inisialisasi DOMPDF untuk cetak PDF
-        $options = new Options();
-        $options->set('isHtml5ParserEnabled', true);
-        $options->set('isRemoteEnabled', true);
-    
-        $dompdf = new Dompdf($options);
-    
-        // Memuat konten HTML dari view
-        $html = view('toko_pemalang.laporan_stoktokopemalang.print', [
+        // Menggunakan FacadePdf untuk membuat PDF
+        $pdf = FacadePdf::loadView('toko_pemalang.laporan_stoktokopemalang.print', [
             'produkWithStok' => $produkWithStok,
             'klasifikasis' => $klasifikasis,
             'subklasifikasis' => $subklasifikasis,
@@ -331,42 +308,36 @@ class Laporan_stoktokopemalangController extends Controller
             'totalSubTotal' => $totalSubTotal,
             'tokoCabang' => $tokoCabang,
             'selectedKlasifikasi' => $selectedKlasifikasi 
-        ])->render();
-    
-        $dompdf->loadHtml($html);
-    
-        // Set ukuran kertas dan orientasi
-        $dompdf->setPaper('A4', 'portrait');
-    
-        // Render PDF
-        $dompdf->render();
-    
+        ]);
+
         // Menambahkan nomor halaman di kanan bawah
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF();
         $canvas = $dompdf->getCanvas();
         $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
             $text = "Page $pageNumber of $pageCount";
             $font = $fontMetrics->getFont('Arial', 'normal');
-            $size = 10;
-    
+            $size = 8;
+
             // Menghitung lebar teks
             $width = $fontMetrics->getTextWidth($text, $font, $size);
-    
+
             // Mengatur koordinat X dan Y
             $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
             $y = $canvas->get_height() - 15; // 15 pixel dari bawah
-    
+
             // Menambahkan teks ke posisi yang ditentukan
             $canvas->text($x, $y, $text, $font, $size);
         });
-    
+
         // Output PDF ke browser dengan nama file sesuai klasifikasi yang dipilih
         $fileName = 'laporan_stoktoko';
         if ($selectedKlasifikasi) {
             // Menggunakan nama klasifikasi untuk nama file
             $fileName = 'laporan_' . strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $selectedKlasifikasi->nama))) . '.pdf';
         }
-    
-        return $dompdf->stream($fileName, ['Attachment' => false]);
+
+        return $pdf->stream($fileName);
     }
 
     public function printReportstokpesananpemalang(Request $request)
@@ -441,15 +412,8 @@ class Laporan_stoktokopemalangController extends Controller
             ? SubKlasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get() 
             : collect();
     
-        // Inisialisasi DOMPDF
-        $options = new Options();
-        $options->set('isHtml5ParserEnabled', true);
-        $options->set('isRemoteEnabled', true);
-    
-        $dompdf = new Dompdf($options);
-    
-        // Memuat konten HTML dari view
-        $html = view('toko_pemalang.laporan_stoktokopemalang.printpesanan', [
+        // Membuat PDF menggunakan FacadePDF
+        $pdf = FacadePdf::loadView('toko_pemalang.laporan_stoktokopemalang.printpesanan', [
             'produkWithStok' => $produkWithStok,
             'klasifikasis' => $klasifikasis,
             'subklasifikasis' => $subklasifikasis,
@@ -457,36 +421,30 @@ class Laporan_stoktokopemalangController extends Controller
             'totalStok' => $totalStok,
             'totalSubTotal' => $totalSubTotal,
             'tokoCabang' => $tokoCabang,
-        ])->render();
-    
-        $dompdf->loadHtml($html);
-    
-        // Set ukuran kertas dan orientasi
-        $dompdf->setPaper('A4', 'portrait');
-    
-        // Render PDF
-        $dompdf->render();
-    
+        ]);
+
         // Menambahkan nomor halaman di kanan bawah
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF();
         $canvas = $dompdf->getCanvas();
         $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
             $text = "Page $pageNumber of $pageCount";
             $font = $fontMetrics->getFont('Arial', 'normal');
             $size = 10;
-    
+
             // Menghitung lebar teks
             $width = $fontMetrics->getTextWidth($text, $font, $size);
-    
+
             // Mengatur koordinat X dan Y
             $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
             $y = $canvas->get_height() - 15; // 15 pixel dari bawah
-    
+
             // Menambahkan teks ke posisi yang ditentukan
             $canvas->text($x, $y, $text, $font, $size);
         });
-    
+
         // Output PDF ke browser
-        return $dompdf->stream('laporan_stoktoko.pdf', ['Attachment' => false]);
+        return $pdf->stream('laporan_stok_toko.pdf');
     }
     
     public function printReportsemuastokpemalang(Request $request)
@@ -542,53 +500,39 @@ class Laporan_stoktokopemalangController extends Controller
             ? SubKlasifikasi::where('klasifikasi_id', $request->klasifikasi_id)->get() 
             : collect();
     
-        // Inisialisasi DOMPDF
-        $options = new Options();
-        $options->set('isHtml5ParserEnabled', true);
-        $options->set('isRemoteEnabled', true);
-    
-        $dompdf = new Dompdf($options);
-    
-        // Memuat konten HTML dari view
-        $html = view('toko_pemalang.laporan_stoktokopemalang.printsemuastok', [
+        // Membuat PDF menggunakan FacadePDF
+        $pdf = FacadePdf::loadView('toko_tegal.laporan_stoktokotegal.printsemuastok', [
             'produkWithStok' => $produkWithStok,
             'klasifikasis' => $klasifikasis,
             'subklasifikasis' => $subklasifikasis,
             'totalHarga' => $totalHarga,
             'totalStok' => $totalStok,
             'totalSubTotal' => $totalSubTotal,
-            'tokoCabang' => 'PEMALANG', // Ini harus ada untuk menyertakan variabel
+            'tokoCabang' => 'PEMAALANG', // Ini harus ada untuk menyertakan variabel
+        ]);
 
-        ])->render();
-    
-        $dompdf->loadHtml($html);
-    
-        // Set ukuran kertas dan orientasi
-        $dompdf->setPaper('A4', 'portrait');
-    
-        // Render PDF
-        $dompdf->render();
-    
         // Menambahkan nomor halaman di kanan bawah
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF();
         $canvas = $dompdf->getCanvas();
         $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
             $text = "Page $pageNumber of $pageCount";
             $font = $fontMetrics->getFont('Arial', 'normal');
             $size = 10;
-    
+
             // Menghitung lebar teks
             $width = $fontMetrics->getTextWidth($text, $font, $size);
-    
+
             // Mengatur koordinat X dan Y
             $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
             $y = $canvas->get_height() - 15; // 15 pixel dari bawah
-    
+
             // Menambahkan teks ke posisi yang ditentukan
             $canvas->text($x, $y, $text, $font, $size);
         });
-    
+
         // Output PDF ke browser
-        return $dompdf->stream('laporan_semuastoktoko.pdf', ['Attachment' => false]);
+        return $pdf->stream('laporan_semuastoktoko.pdf');
     }
 
     public function exportExcel(Request $request)
@@ -711,6 +655,75 @@ class Laporan_stoktokopemalangController extends Controller
             $fileName .= '.xlsx';
         }
 
+        // Mengunduh file Excel
+        return Excel::download(new ProdukExport($produkWithStok, $selectedKlasifikasi->nama ?? 'Semua Klasifikasi'), $fileName);
+    }
+
+    
+    public function exportExcelpesanan(Request $request)
+    {
+        $produkQuery = Produk::with(['klasifikasi', 'subklasifikasi']);
+    
+        // Filter berdasarkan klasifikasi_id
+        if ($request->has('klasifikasi_id') && $request->klasifikasi_id) {
+            $produkQuery->where('klasifikasi_id', $request->klasifikasi_id);
+        }
+    
+        // Filter berdasarkan subklasifikasi_id
+        if ($request->has('subklasifikasi_id') && $request->subklasifikasi_id) {
+            $produkQuery->where('subklasifikasi_id', $request->subklasifikasi_id);
+        }
+    
+        $produk = $produkQuery->get();
+    
+        // Filter berdasarkan toko_id
+        $toko_id = $request->get('toko_id');
+        if ($toko_id == '1') {
+            $stok = Stokpesanan_tokobanjaran::with('produk')->get();
+        } elseif ($toko_id == '2') {
+            $stok = Stokpesanan_tokotegal::with('produk')->get();
+        } elseif ($toko_id == '3') {
+            $stok = Stokpesanan_tokoslawi::with('produk')->get();
+        } elseif ($toko_id == '4') {
+            $stok = Stokpesanan_tokopemalang::with('produk')->get();
+        } elseif ($toko_id == '5') {
+            $stok = Stokpesanan_tokobumiayu::with('produk')->get();
+        } elseif ($toko_id == '6') {
+            $stok = Stokpesanan_tokocilacap::with('produk')->get();
+        } else {
+            $stok = collect();
+        }
+    
+        // Mengelompokkan stok berdasarkan produk_id
+        $stokGrouped = $stok->groupBy('produk_id')->map(function ($group) {
+            $firstItem = $group->first();
+            $totalJumlah = $group->sum('jumlah');
+            $firstItem->jumlah = $totalJumlah;
+            return $firstItem;
+        })->values();
+    
+        // Menghitung total harga dan stok
+        $produkWithStok = $produk->map(function ($item) use ($stokGrouped) {
+            $stokItem = $stokGrouped->firstWhere('produk_id', $item->id);
+            $item->jumlah = $stokItem ? $stokItem->jumlah : 0;
+            $item->subTotal = $item->jumlah * $item->harga;
+            return $item;
+        });
+    
+        // Mendapatkan nama klasifikasi yang dipilih
+        $selectedKlasifikasi = null;
+        if ($request->has('klasifikasi_id') && $request->klasifikasi_id) {
+            $selectedKlasifikasi = Klasifikasi::find($request->klasifikasi_id);
+        }
+    
+        // Menentukan nama file
+        $fileName = 'laporan_stoktoko';
+        if ($selectedKlasifikasi) {
+            $fileName = 'laporan_' . strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $selectedKlasifikasi->nama))) . '.xlsx';
+        } else {
+            $fileName .= '.xlsx';
+        }
+    
         // Mengunduh file Excel
         return Excel::download(new ProdukExport($produkWithStok, $selectedKlasifikasi->nama ?? 'Semua Klasifikasi'), $fileName);
     }
