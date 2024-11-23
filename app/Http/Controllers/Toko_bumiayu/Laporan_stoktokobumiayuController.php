@@ -500,7 +500,7 @@ class Laporan_stoktokobumiayuController extends Controller
             : collect();
     
         // Membuat PDF menggunakan FacadePDF
-        $pdf = FacadePdf::loadView('tokoobumiayu.laporan_stoktokobumiayu.printsemuastok', [
+        $pdf = FacadePdf::loadView('tokobumiayu.laporan_stoktokobumiayu.printsemuastok', [
             'produkWithStok' => $produkWithStok,
             'klasifikasis' => $klasifikasis,
             'subklasifikasis' => $subklasifikasis,
