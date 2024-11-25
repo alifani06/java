@@ -29,40 +29,41 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class HargajualController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    // public function index()
-    // {
-    //     $tokoslawi = Tokoslawi::latest()->first();
-    //     $tokobanjaran = Tokobanjaran::latest()->first();
-    //     $tokotegal = Tokotegal::latest()->first();
-    //     $tokopemalang = Tokopemalang::latest()->first();
-    //     $tokobumiayu = Tokobumiayu::latest()->first();
-    //     $tokocilacap = Tokocilacap::latest()->first();
-    //     $produk = Produk::with(['tokoslawi', 'tokobanjaran','tokotegal', 'tokopemalang', 'tokobumiayu' , 'tokocilacap'])->get();
-    //     return view('admin.hargajual.index', compact('produk', 'tokoslawi', 'tokobanjaran', 'tokotegal', 'tokopemalang', 'tokobumiayu', 'tokocilacap'));
-    // }
-
     public function index()
-{
-    $tokoslawi = Tokoslawi::latest()->first();
-    $tokobanjaran = Tokobanjaran::latest()->first();
-    $tokotegal = Tokotegal::latest()->first();
-    $tokopemalang = Tokopemalang::latest()->first();
-    $tokobumiayu = Tokobumiayu::latest()->first();
-    $tokocilacap = Tokocilacap::latest()->first();
+    {
+        $tokoslawi = Tokoslawi::latest()->first();
+        $tokobanjaran = Tokobanjaran::latest()->first();
+        $tokotegal = Tokotegal::latest()->first();
+        $tokopemalang = Tokopemalang::latest()->first();
+        $tokobumiayu = Tokobumiayu::latest()->first();
+        $tokocilacap = Tokocilacap::latest()->first();
 
-    // Tambahkan orderBy('kode_lama', 'asc') untuk mengurutkan berdasarkan kode_lama secara ascending
-    $produk = Produk::with(['tokoslawi', 'tokobanjaran', 'tokotegal', 'tokopemalang', 'tokobumiayu', 'tokocilacap'])
-                    ->orderBy('kode_lama', 'asc')
-                    ->get();
+        // Tambahkan orderBy('kode_lama', 'asc') untuk mengurutkan berdasarkan kode_lama secara ascending
+        $produk = Produk::with(['tokoslawi', 'tokobanjaran', 'tokotegal', 'tokopemalang', 'tokobumiayu', 'tokocilacap'])
+                        ->orderBy('kode_lama', 'asc')
+                        ->get();
 
-    return view('admin.hargajual.index', compact('produk', 'tokoslawi', 'tokobanjaran', 'tokotegal', 'tokopemalang', 'tokobumiayu', 'tokocilacap'));
-}
+        return view('admin.hargajual.index', compact('produk', 'tokoslawi', 'tokobanjaran', 'tokotegal', 'tokopemalang', 'tokobumiayu', 'tokocilacap'));
+    }
 
+    public function indextegal()
+    {
+        // Pastikan model dan relasi sudah sesuai dengan kebutuhan.
+        $tokoslawi = Tokoslawi::latest()->first();
+        $tokobanjaran = Tokobanjaran::latest()->first();
+        $tokotegal = Tokotegal::latest()->first();
+        $tokopemalang = Tokopemalang::latest()->first();
+        $tokobumiayu = Tokobumiayu::latest()->first();
+        $tokocilacap = Tokocilacap::latest()->first();
+    
+        // Tambahkan pengurutan berdasarkan `kode_lama`.
+        $produk = Produk::with(['tokoslawi', 'tokobanjaran', 'tokotegal', 'tokopemalang', 'tokobumiayu', 'tokocilacap'])
+                        ->orderBy('kode_lama', 'asc')
+                        ->get();
+    
+        return view('admin.hargajual.indextegal', compact('produk', 'tokoslawi', 'tokobanjaran', 'tokotegal', 'tokopemalang', 'tokobumiayu', 'tokocilacap'));
+    }
+    
 
     public function create()
     {

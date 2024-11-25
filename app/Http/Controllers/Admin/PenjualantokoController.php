@@ -560,15 +560,15 @@ class PenjualantokoController extends Controller{
         $validator = Validator::make($request->all(), [
             'tanggal_penjualan' => 'required|date',
             'total_setoran' => 'required',
-            'tanggal_setoran' => 'required|date',
-            'nominal_setoran' => 'required',
+            // 'tanggal_setoran' => 'required|date',
+            // 'nominal_setoran' => 'required',
             'toko_id' => 'required|exists:tokos,id', // Validasi bahwa toko_id harus ada di tabel tokos
         ], [
             // Custom error messages
             'tanggal_penjualan.required' => 'Tanggal penjualan tidak boleh kosong.',
             'total_setoran.required' => 'Total setoran tidak boleh kosong.',
             'tanggal_setoran.required' => 'Tanggal setoran tidak boleh kosong.',
-            'nominal_setoran.required' => 'Nominal setoran tidak boleh kosong.',
+            // 'nominal_setoran.required' => 'Nominal setoran tidak boleh kosong.',
             'toko_id.required' => 'Toko harus dipilih.',
             'toko_id.exists' => 'Toko yang dipilih tidak valid.',
         ]);
@@ -596,11 +596,11 @@ class PenjualantokoController extends Controller{
             'gobiz' => $removeFormat($request->gobiz),
             'transfer' => $removeFormat($request->transfer),
             'total_setoran' => $removeFormat($request->total_setoran),
-            'tanggal_setoran' => $request->tanggal_setoran,
-            'tanggal_setoran2' => $request->tanggal_setoran2,
-            'nominal_setoran' => $removeFormat($request->nominal_setoran),
-            'nominal_setoran2' => $removeFormat($request->nominal_setoran2),
-            'plusminus' => $removeFormat($request->plusminus),
+            'tanggal_setoran' => Carbon::now('Asia/Jakarta'),
+            // 'tanggal_setoran2' => $request->tanggal_setoran2,
+            // 'nominal_setoran' => $removeFormat($request->nominal_setoran),
+            // 'nominal_setoran2' => $removeFormat($request->nominal_setoran2),
+            // 'plusminus' => $removeFormat($request->plusminus),
             'toko_id' => $request->toko_id, // Ambil nilai toko_id dari request
             'status' => 'posting',
             'no_fakturpenjualantoko' => $this->kode($request->toko_id), // Generate kode berdasarkan toko_id

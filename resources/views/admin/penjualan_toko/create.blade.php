@@ -69,7 +69,7 @@
                                 <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Penjualan Kotor</a>
                             </label>
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="penjualan_kotor" name="penjualan_kotor" placeholder="">
+                                <input type="text" class="form-control" id="penjualan_kotor" name="penjualan_kotor" readonly>
                             </div>
                         </div>
 
@@ -79,7 +79,7 @@
                                 <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Diskon Penjualan</a>
                             </label>                            
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="diskon_penjualan" name="diskon_penjualan" >
+                                <input type="text" class="form-control" id="diskon_penjualan" name="diskon_penjualan" readonly>
                             </div>
                         </div>
 
@@ -93,7 +93,7 @@
                                 <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Penjualan Bersih</a>
                             </label>
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="penjualan_bersih" name="penjualan_bersih" >
+                                <input type="text" class="form-control" id="penjualan_bersih" name="penjualan_bersih" readonly>
                             </div>
                         </div>
 
@@ -102,7 +102,7 @@
                                 <a id="deposit_keluar_link" href="#" data-toggle="modal" data-target="#depositKeluarModal" class="text-decoration-none">Deposit Keluar</a>
                             </label>                            
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="deposit_keluar" name="deposit_keluar" >
+                                <input type="text" class="form-control" id="deposit_keluar" name="deposit_keluar" readonly>
                             </div>
                         </div>
 
@@ -111,7 +111,7 @@
                                 <a id="deposit_masuk_link" href="#" data-toggle="modal" data-target="#depositMasukModal" class="text-decoration-none">Deposit Masuk</a>
                             </label>                            
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="deposit_masuk" name="deposit_masuk" >
+                                <input type="text" class="form-control" id="deposit_masuk" name="deposit_masuk" readonly>
                             </div>
                         </div>
                         
@@ -124,7 +124,7 @@
                                 <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Total Penjualan</a>
                             </label>                            
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="total_penjualan" name="total_penjualan" >
+                                <input type="text" class="form-control" id="total_penjualan" name="total_penjualan" readonly>
                             </div>
                         </div>
 
@@ -133,7 +133,7 @@
                                 <a id="penjualan_mesinedc_link" href="#" data-toggle="modal" data-target="#penjualanMesinedcModal" class="text-decoration-none">Mesin EDC</a>
                             </label>                            
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="mesin_edc" name="mesin_edc" >
+                                <input type="text" class="form-control" id="mesin_edc" name="mesin_edc" readonly>
                             </div>
                         </div>
 
@@ -142,7 +142,7 @@
                                 <a id="penjualan_qris_link" href="#" data-toggle="modal" data-target="#penjualanQrisModal" class="text-decoration-none">Qris</a>
                             </label>                            
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="qris" name="qris" >
+                                <input type="text" class="form-control" id="qris" name="qris" readonly>
                             </div>
                         </div>
 
@@ -151,7 +151,7 @@
                                 <a id="penjualan_gobiz_link" href="#" data-toggle="modal" data-target="#penjualanGobizModal" class="text-decoration-none">Gobiz</a>
                             </label>                            
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="gobiz" name="gobiz" >
+                                <input type="text" class="form-control" id="gobiz" name="gobiz" readonly>
                             </div>
                         </div>
 
@@ -160,7 +160,7 @@
                                 <a id="penjualan_transfer_link" href="#" data-toggle="modal" data-target="#penjualanTransferModal" class="text-decoration-none">Transfer</a>
                             </label>                            
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="transfer" name="transfer" >
+                                <input type="text" class="form-control" id="transfer" name="transfer" readonly>
                             </div>
                         </div>
 
@@ -173,38 +173,12 @@
                                 <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Total Setoran</a>
                             </label>                            
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="total_setoran" name="total_setoran" >
+                                <input type="text" class="form-control" id="total_setoran" name="total_setoran" readonly>
                             </div>
                         </div>
 
-                        <div class="col-sm-3 offset-sm-3">
-                            <hr style="border: 1px solid #000;"> <!-- Ubah nilai 2px sesuai ketebalan yang diinginkan -->
-                        </div>
-
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="tambahInputCheckbox">
-                            <label class="form-check-label" for="tambahInputCheckbox">2 x setoran</label>
-                        </div>
-                        <div class="form-group row mb-3" id="row1">
-                            <div class="col-sm-3">
-                                <input class="form-control" id="tanggal_setoran" name="tanggal_setoran" type="date" value="{{ Request::get('tanggal_setoran') }}" />
-                            </div>  
-                            <div class="col-sm-3">
-                                <input type="text" class="form-control" id="nominal_setoran" name="nominal_setoran" oninput="formatNumber(this); updatePlusMinus();">
-                            </div>
-                        </div>
-                        
-                        <!-- Tempat tambahan input ketika checkbox di centang -->
-                        <div id="extraRows"></div>
-                        
-                        <div class="form-group row mb-3">
-                            <label for="plusminus" class="col-sm-3 col-form-label">
-                                <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">+/-</a>
-                            </label>                             
-                            <div class="col-sm-3">
-                                <input type="text" class="form-control" id="plusminus" name="plusminus"> 
-                            </div>
-                        </div>
+                      
+                  
                         
                     </div>       
                     </div>   

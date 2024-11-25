@@ -159,11 +159,11 @@
     <script>
     function printReport() {
         if (event) event.preventDefault();
-    const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printstoktokobanjaran') }}";
-    form.target = "_blank";
-    form.submit();
-}
+        const form = document.getElementById('form-action');
+        form.action = "{{ url('toko_banjaran/printstoktokobanjaran') }}";
+        form.target = "_blank";
+        form.submit();
+        }
     </script>
     
 
@@ -174,28 +174,28 @@
         form.action = "{{ url('toko_banjaran/printexcelstoktokobanjaran') }}";
         form.target = "_blank";
         form.submit();
-    }
-        </script>
+        }
+    </script>
 
 <script>
     function filterSubKlasifikasi() {
-var klasifikasiId = document.getElementById('klasifikasi').value;
-var subKlasifikasiSelect = document.getElementById('subklasifikasi');
-var subKlasifikasiOptions = subKlasifikasiSelect.options;
+    var klasifikasiId = document.getElementById('klasifikasi').value;
+    var subKlasifikasiSelect = document.getElementById('subklasifikasi');
+    var subKlasifikasiOptions = subKlasifikasiSelect.options;
 
-// Show all options initially
-for (var i = 0; i < subKlasifikasiOptions.length; i++) {
-    var option = subKlasifikasiOptions[i];
-    if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
-        option.style.display = "block";
-    } else {
-        option.style.display = "none";
+    // Show all options initially
+    for (var i = 0; i < subKlasifikasiOptions.length; i++) {
+        var option = subKlasifikasiOptions[i];
+        if (klasifikasiId === "" || option.getAttribute('data-klasifikasi') == klasifikasiId) {
+            option.style.display = "block";
+        } else {
+            option.style.display = "none";
+        }
     }
-}
 
-// Don't automatically select sub classification, let the user decide
-subKlasifikasiSelect.selectedIndex = 0;
-}
+    // Don't automatically select sub classification, let the user decide
+    subKlasifikasiSelect.selectedIndex = 0;
+    }
 
 </script>
 
