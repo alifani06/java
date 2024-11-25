@@ -307,9 +307,11 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/print-fakturdepositkeluartoko', [PenjualantokoController::class, 'printFakturdepositKeluar'])->name('print.fakturdepositkeluartoko');
     Route::get('/print-penjualantoko-diskon', [PenjualantokoController::class, 'printPenjualanDiskon'])->name('print.penjualantoko.diskon');
     Route::get('/print-penjualantoko-bersih', [PenjualantokoController::class, 'printPenjualanBersih'])->name('print.penjualantoko.bersih');
-    Route::get('penjualanproduk/detail/{id}', [PenjualantokoController::class, 'show'])->name('penjualanproduk.detail');
+    Route::get('/penjualan_toko/{id}', [PenjualantokoController::class, 'show'])->name('penjualan_toko.show');
+    Route::get('penjualanproduk/detail/{id}', [PenjualantokoController::class, 'show3'])->name('penjualanproduk.detail');
     Route::get('penjualanproduk/detaildepositkeluar/{id}', [PenjualantokoController::class, 'show2'])->name('penjualanproduk.detaildepositkeluar');
     Route::get('pemesananproduk/detailpemesanan/{id}', [PenjualantokoController::class, 'show1'])->name('pemesananproduk.detailpemesanan');
+    Route::get('/penjualan_toko/{id}/print', [PenjualantokoController::class, 'print'])->name('penjualan_toko.print');
 
     Route::resource('inquery_penjualantoko', \App\Http\Controllers\Admin\Inquery_penjualantokoController::class);
     Route::get('/admin/inquery_penjualantoko/{id}/print', [Inquery_penjualantokoController::class, 'print'])->name('inquery_penjualantoko.print');

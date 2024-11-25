@@ -122,80 +122,99 @@
                 <span class="title">PT JAVA BAKERY FACTORY</span><br>
                 <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
             </div>
-            {{-- <div class="col-2 text-left">
-                <div class="title">JAVA BAKERY</div>
-                <p>Cabang : {{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
-                <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
-            </div> --}}
+           
         </div>
         {{-- <hr class="divider"> --}}
 
         <!-- Judul Surat -->
         <div class="change-header">FAKTUR PENJUALAN TOKO</div>
         <div class="change-header1">
-            <p style="margin-bottom: 2px; font-size: 18px;">{{ $firstItem->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
-            <p>{{ $firstItem->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
+            <p style="margin-bottom: 2px; font-size: 18px;">{{ $setoran->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
+            <p>{{ $setoran->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
         </div>
         <!-- Informasi Permintaan -->
         <div>
             <p style="margin-bottom: 2px;">
-                <strong>No Faktur:</strong> {{ $firstItem->no_fakturpenjualantoko }}
+                <strong>No Faktur :</strong> {{ $setoran->no_fakturpenjualantoko }}
             </p>
             <p style="margin-bottom: 2px;">
-                <strong>Tanggal Kirim:</strong> {{ \Carbon\Carbon::parse($firstItem->tanggal_setoran)->format('d-m-Y H:i') }}
+                <strong>Tanggal Setoran :</strong> {{ \Carbon\Carbon::parse($setoran->tanggal_setoran)->format('d-m-Y H:i') }}
             </p>
             
         </div>
 
-        <!-- Detail Produk -->
-        {{-- @foreach($groupedByKlasifikasi as $klasifikasi => $items)
-            <div class="section-title">{{ $klasifikasi }}</div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Kode Produk</th>
-                        <th>Kategori</th>
-                        <th>Produk</th>
-                        <th>Jumlah</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($items as $key => $detail)
-                    <tr>
-                        <td>{{ $key + 1 }}</td>
-                        <td>{{ $detail->produk->kode_lama }}</td>
-                        <td>{{ $detail->produk->subklasifikasi->nama }}</td>
-                        <td>{{ $detail->produk->nama_produk }}</td>
-                        <td>{{ $detail->jumlah }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="4" style="text-align:right;"><strong>Total</strong></td>
-                        <td><strong>{{ $items->sum('jumlah') }}</strong></td>
-                    </tr>
-                </tfoot>
-            </table><br>
-        @endforeach --}}
-
+        <table class="table table-bordered table-striped" style="margin-top: 20px;">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width: 70%; text-align: left;">Keterangan</th>
+                    <th style="width: 30%; text-align: right;">Nilai</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Penjualan Kotor</td>
+                    <td style="text-align: right;">{{ number_format($setoran->penjualan_kotor, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td>Diskon Penjualan</td>
+                    <td style="text-align: right;">{{ number_format($setoran->diskon_penjualan, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td>Penjualan Bersih</td>
+                    <td style="text-align: right;">{{ number_format($setoran->penjualan_bersih, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td>Deposit Masuk</td>
+                    <td style="text-align: right;">{{ number_format($setoran->deposit_masuk, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td>Deposit Keluar</td>
+                    <td style="text-align: right;">{{ number_format($setoran->deposit_keluar, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td>Total Penjualan</td>
+                    <td style="text-align: right;">{{ number_format($setoran->total_penjualan, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td>Mesin EDC</td>
+                    <td style="text-align: right;">{{ number_format($setoran->mesin_edc, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td>QRIS</td>
+                    <td style="text-align: right;">{{ number_format($setoran->qris, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td>GOBIZ</td>
+                    <td style="text-align: right;">{{ number_format($setoran->gobiz, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td>Transfer</td>
+                    <td style="text-align: right;">{{ number_format($setoran->transfer, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td>Total Setoran</td>
+                    <td style="text-align: right;">{{ number_format($setoran->total_setoran, 0, ',', '.') }}</td>
+                </tr>
+            </tbody>
+        </table>
         
 
+        
         <div class="d-flex justify-content-between">
             <div>
-                <a href="{{ url('admin/pengiriman_barangjadi') }}" class="btn btn-primary btn-sm">
+                <a href="{{ url('admin/penjualan_toko') }}" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus"></i> Kembali
                 </a>
             </div>
             <div>
-                <a href="{{ route('pengiriman_barangjadi.print', $firstItem->id) }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
+                <a href="{{ route('penjualan_toko.print', $setoran->id) }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
                     <i class="fas fa-print"></i> Cetak 
                 </a>
             </div>  
         </div>
     </div>
 </body>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </html>
 
