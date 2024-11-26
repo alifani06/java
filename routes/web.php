@@ -539,7 +539,6 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('printExcelBr', [Laporan_hasilpenjualanController::class, 'exportExcelBR'])->name('printExcelBr');
     Route::get('/get-produk-by-klasifikasi/{id}', [Laporan_hasilpenjualanController::class, 'getByKlasifikasi'])->name('getProdukByKlasifikasi');
     
-
     Route::resource('setoran_pelunasan', \App\Http\Controllers\Admin\Setoran_pelunasanController::class);
     Route::post('/get-penjualan1', [Setoran_pelunasanController::class, 'getdata1'])->name('getdata1');
     Route::get('/print-penjualan-kotor', [Setoran_pelunasanController::class, 'printPenjualanKotor'])->name('print.penjualan.kotor');
@@ -771,28 +770,27 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::resource('laporan_returbanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_returbanjaranController::class);
     Route::get('printReportreturbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_returbanjaranController::class, 'printReportreturbanjaran']);
 
-    Route::resource('laporan_historibanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class);
-    Route::get('barangMasukpesananbanjaran', [Laporan_historibanjaranController::class, 'barangMasukpesananbanjaran'])->name('barangMasukpesananbanjaran');
-    Route::get('barangMasuksemuabanjaran', [Laporan_historibanjaranController::class, 'barangMasuksemuabanjaran'])->name('barangMasuksemuabanjaran');
-    Route::get('printLaporanBmbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBmbanjaran']);
-    Route::get('printLaporanBmpesananbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBmpesananbanjaran']);
-    Route::get('printLaporanBmsemuabanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBmsemuabanjaran']);
-    Route::get('printExcelBmbanjaran', [Laporan_historibanjaranController::class, 'exportExcel'])->name('printExcelBmbanjaran');
-    Route::get('printExcelBmpesananbanjaran', [Laporan_historibanjaranController::class, 'exportExcelBMpesanan'])->name('printExcelBmpesananbanjaran');
-    Route::get('printExcelBmsemuabanjaran', [Laporan_historibanjaranController::class, 'exportExcelBMsemua'])->name('printExcelBmsemuabanjaran');
+    // Route::resource('laporan_historibanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class);
+    // Route::get('barangMasukpesananbanjaran', [Laporan_historibanjaranController::class, 'barangMasukpesananbanjaran'])->name('barangMasukpesananbanjaran');
+    // Route::get('barangMasuksemuabanjaran', [Laporan_historibanjaranController::class, 'barangMasuksemuabanjaran'])->name('barangMasuksemuabanjaran');
+    // Route::get('printLaporanBmbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBmbanjaran']);
+    // Route::get('printLaporanBmpesananbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBmpesananbanjaran']);
+    // Route::get('printLaporanBmsemuabanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBmsemuabanjaran']);
+    // Route::get('printExcelBmbanjaran', [Laporan_historibanjaranController::class, 'exportExcel'])->name('printExcelBmbanjaran');
+    // Route::get('printExcelBmpesananbanjaran', [Laporan_historibanjaranController::class, 'exportExcelBMpesanan'])->name('printExcelBmpesananbanjaran');
+    // Route::get('printExcelBmsemuabanjaran', [Laporan_historibanjaranController::class, 'exportExcelBMsemua'])->name('printExcelBmsemuabanjaran');
     
-    Route::get('barangKeluarbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangKeluarbanjaran'])->name('barangKeluar');
-    Route::get('barangKeluarRincibanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangKeluarRincibanjaran'])->name('barangKeluarRincibanjaran');
-    Route::get('printLaporanBKbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBKbanjaran']);
-    Route::get('printLaporanBKrincibanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBKrincibanjaran']);
-    Route::get('printExcelBkbanjaran', [Laporan_historibanjaranController::class, 'exportExcelBK'])->name('printExcelBkbanjaran');
+    // Route::get('barangKeluarbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangKeluarbanjaran'])->name('barangKeluarbanjaran');
+    // Route::get('barangKeluarRincibanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangKeluarRincibanjaran'])->name('barangKeluarRincibanjaran');
+    // Route::get('printLaporanBKbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBKbanjaran']);
+    // Route::get('printLaporanBKrincibanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBKrincibanjaran']);
+    // Route::get('printExcelBkbanjaran', [Laporan_historibanjaranController::class, 'exportExcelBK'])->name('printExcelBkbanjaran');
     
-    // Route::get('barangReturbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangReturbanjaran']);
-    Route::get('barangReturbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangReturbanjaran'])->name('barangReturbanjaran');
-    Route::get('/print-report', [Laporan_historibanjaranController::class, 'printReport'])->name('print.report');
-    Route::get('printLaporanBRbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBRbanjaran']);
-    Route::get('printExcelBrbanjaran', [Laporan_historibanjaranController::class, 'exportExcelBR'])->name('printExcelBrbanjaran');
-    Route::get('/get-produk-by-klasifikasi/{id}', [Laporan_historibanjaranController::class, 'getByKlasifikasi'])->name('getProdukByKlasifikasi');
+    // Route::get('barangReturbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangReturbanjaran'])->name('barangReturbanjaran');
+    // Route::get('/print-report', [Laporan_historibanjaranController::class, 'printReport'])->name('print.report');
+    // Route::get('printLaporanBRbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBRbanjaran']);
+    // Route::get('printExcelBrbanjaran', [Laporan_historibanjaranController::class, 'exportExcelBR'])->name('printExcelBrbanjaran');
+    // Route::get('/get-produk-by-klasifikasi/{id}', [Laporan_historibanjaranController::class, 'getByKlasifikasi'])->name('getProdukByKlasifikasi');
 
 });
 
@@ -1572,28 +1570,28 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
     Route::resource('laporan_returslawi', \App\Http\Controllers\Toko_slawi\Laporan_returslawiController::class);
     Route::get('printReportreturslawi', [\App\Http\Controllers\Toko_slawi\Laporan_returslawiController::class, 'printReportreturslawi']);
 
-    Route::resource('laporan_historislawi', \App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class);
-    Route::get('barangMasukpesananslawi', [Laporan_historislawiController::class, 'barangMasukpesananslawi'])->name('barangMasukpesananslawi');
-    Route::get('barangMasuksemuaslawi', [Laporan_historislawiController::class, 'barangMasuksemuaslawi'])->name('barangMasuksemuaslawi');
-    Route::get('printLaporanBmslawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'printLaporanBmslawi']);
-    Route::get('printLaporanBmpesananslawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'printLaporanBmpesananslawi']);
-    Route::get('printLaporanBmsemuaslawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'printLaporanBmsemuaslawi']);
-    Route::get('printExcelBmslawi', [Laporan_historislawiController::class, 'exportExcelslawi'])->name('printExcelBmslawi');
-    Route::get('printExcelBmpesananslawi', [Laporan_historislawiController::class, 'exportExcelBMpesananslawi'])->name('printExcelBmpesananslawi');
-    Route::get('printExcelBmsemuaslawi', [Laporan_historislawiController::class, 'exportExcelBMsemuaslawi'])->name('printExcelBmsemuaslawi');
+    // Route::resource('laporan_historislawi', \App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class);
+    // Route::get('barangMasukpesananslawi', [Laporan_historislawiController::class, 'barangMasukpesananslawi'])->name('barangMasukpesananslawi');
+    // Route::get('barangMasuksemuaslawi', [Laporan_historislawiController::class, 'barangMasuksemuaslawi'])->name('barangMasuksemuaslawi');
+    // Route::get('printLaporanBmslawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'printLaporanBmslawi']);
+    // Route::get('printLaporanBmpesananslawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'printLaporanBmpesananslawi']);
+    // Route::get('printLaporanBmsemuaslawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'printLaporanBmsemuaslawi']);
+    // Route::get('printExcelBmslawi', [Laporan_historislawiController::class, 'exportExcelslawi'])->name('printExcelBmslawi');
+    // Route::get('printExcelBmpesananslawi', [Laporan_historislawiController::class, 'exportExcelBMpesananslawi'])->name('printExcelBmpesananslawi');
+    // Route::get('printExcelBmsemuaslawi', [Laporan_historislawiController::class, 'exportExcelBMsemuaslawi'])->name('printExcelBmsemuaslawi');
     
-    Route::get('barangKeluarslawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'barangKeluarslawi'])->name('barangKeluar');
-    Route::get('barangKeluarRincislawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'barangKeluarRincislawi'])->name('barangKeluarRincislawi');
-    Route::get('printLaporanBKslawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'printLaporanBKslawi']);
-    Route::get('printLaporanBKrincislawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'printLaporanBKrincislawi']);
-    Route::get('printExcelBkslawi', [Laporan_historislawiController::class, 'exportExcelBK'])->name('printExcelBkslawi');
+    // Route::get('barangKeluarslawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'barangKeluarslawi'])->name('barangKeluar');
+    // Route::get('barangKeluarRincislawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'barangKeluarRincislawi'])->name('barangKeluarRincislawi');
+    // Route::get('printLaporanBKslawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'printLaporanBKslawi']);
+    // Route::get('printLaporanBKrincislawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'printLaporanBKrincislawi']);
+    // Route::get('printExcelBkslawi', [Laporan_historislawiController::class, 'exportExcelBK'])->name('printExcelBkslawi');
     
-    // Route::get('barangReturbanjaran', [\App\Http\Controllers\Toko_slawi\Laporan_historibanjaranController::class, 'barangReturbanjaran']);
-    Route::get('barangReturslawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'barangReturslawi'])->name('barangReturslawi');
-    Route::get('/print-report', [Laporan_historislawiController::class, 'printReport'])->name('print.report');
-    Route::get('printLaporanBRslawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'printLaporanBRslawi']);
-    Route::get('printExcelBrslawi', [Laporan_historislawiController::class, 'exportExcelBR'])->name('printExcelBrslawi');
-    Route::get('/get-produk-by-klasifikasi/{id}', [Laporan_historislawiController::class, 'getByKlasifikasi'])->name('getProdukByKlasifikasi');
+    // // Route::get('barangReturbanjaran', [\App\Http\Controllers\Toko_slawi\Laporan_historibanjaranController::class, 'barangReturbanjaran']);
+    // Route::get('barangReturslawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'barangReturslawi'])->name('barangReturslawi');
+    // Route::get('/print-report', [Laporan_historislawiController::class, 'printReport'])->name('print.report');
+    // Route::get('printLaporanBRslawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'printLaporanBRslawi']);
+    // Route::get('printExcelBrslawi', [Laporan_historislawiController::class, 'exportExcelBR'])->name('printExcelBrslawi');
+    // Route::get('/get-produk-by-klasifikasi/{id}', [Laporan_historislawiController::class, 'getByKlasifikasi'])->name('getProdukByKlasifikasi');
 
 });
 
