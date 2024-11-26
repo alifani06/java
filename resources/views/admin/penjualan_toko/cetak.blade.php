@@ -102,46 +102,29 @@
 </head>
 <body>
     <div class="container">
-        <!-- Kop Surat -->
-        <div class="header row">
-            <div class="col-2 text-right">
-                <div class="logo">
-                    {{-- <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY"> --}}
-                </div>
-                {{-- <div>
-                    <span class="title">PT JAVA BAKERY FACTORY</span><br>
-                    <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
-                
-                </div> --}}
-            </div>
-        
-            <div class="col-8 text-center">
-                <div class="logo">
-                    <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
-                </div>
-                <span class="title">PT JAVA BAKERY FACTORY</span><br>
-                <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
-            </div>
-           
-        </div>
-        {{-- <hr class="divider"> --}}
 
-        <!-- Judul Surat -->
         <div class="change-header">FAKTUR PENJUALAN TOKO</div>
-        <div class="change-header1">
-            <p style="margin-bottom: 2px; font-size: 18px;">{{ $setoran->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
-            <p>{{ $setoran->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
-        </div>
+    
         <!-- Informasi Permintaan -->
         <div>
             <p style="margin-bottom: 2px;">
-                <strong>No Faktur :</strong> {{ $setoran->no_fakturpenjualantoko }}
+                <strong style="display: inline-block; width: 150px;">Cabang</strong> : 
+                {{ $setoran->toko->nama_toko ?? 'Nama toko tidak tersedia' }}
             </p>
             <p style="margin-bottom: 2px;">
-                <strong>Tanggal Setoran :</strong> {{ \Carbon\Carbon::parse($setoran->tanggal_setoran)->format('d-m-Y H:i') }}
+                <strong style="display: inline-block; width: 150px;">Alamat</strong> : 
+                {{ $setoran->toko->alamat ?? 'Alamat tidak tersedia' }}
             </p>
-            
+            <p style="margin-bottom: 2px;">
+                <strong style="display: inline-block; width: 150px;">No. Faktur</strong> : 
+                {{ $setoran->no_fakturpenjualantoko }}
+            </p>
+            <p style="margin-bottom: 2px;">
+                <strong style="display: inline-block; width: 150px;">Tanggal Setoran</strong> : 
+                {{ \Carbon\Carbon::parse($setoran->tanggal_setoran)->format('d-m-Y H:i') }}
+            </p>
         </div>
+        
 
         <table class="table table-bordered table-striped" style="margin-top: 20px;">
             <thead class="table-dark">

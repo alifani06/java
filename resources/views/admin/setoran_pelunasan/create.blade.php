@@ -38,7 +38,7 @@
         <form action="{{ url('admin/setoran_pelunasan') }}" method="POST" enctype="multipart/form-data" id="myForm">
             @csrf
                     <div class="card">
-                        <div class="card-body">
+                        {{-- <div class="card-body">
                             <div class="row">
                                 <div class="col-md-3 mb-3">
                                     <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
@@ -60,19 +60,22 @@
                                     <button type="button" id="btnCari" class="btn btn-outline-primary">Cari</button>
                                 </div>
                             </div>
+                             --}}
+
+
                             {{-- <div class="input-group mb-3">
                                 <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="no_fakturpenjualantoko" name="no_fakturpenjualantoko" value="{{ old('no_fakturpenjualantoko') }}">
                                 <button class="btn btn-outline-primary" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
                                     <i class="fas fa-search">Cari Faktur</i>
                                 </button>
-                            </div>
+                            </div> --}}
                           
                         </div>
                 
                         <div class="card-body">
-                            {{-- <div class="form-group row mb-3">
+                            <div class="form-group row mb-3">
                                 <label for="penjualan_kotor" class="col-sm-3 col-form-label">
-                                    <a id=""  data-toggle="modal"  class="text-decoration-none">No. Faktur</a>
+                                    <a id=""  data-toggle="modal"  class="text-decoration-none">No. Faktur Penjualan Toko </a>
                                 </label>
                                 <div class="col-sm-3">
                                     <input type="text" id="no_fakturpenjualantoko" name="no_fakturpenjualantoko" class="form-control" readonly />
@@ -80,26 +83,26 @@
                                 <button class="btn btn-outline-primary" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
                                     <i class="fas fa-search"></i>
                                 </button>
-                            </div> --}}
+                            </div>
 
                                 <input type="text" id="setoran_id" name="id" class="form-control" hidden/>
-                                <input type="text" id="tanggal_penjualan" name="tanggal_penjualan" class="form-control" hidden/>
+                                {{-- <input type="text" id="tanggal_penjualan" name="tanggal_penjualan" class="form-control" hidden/> --}}
                           
-                            <div class="form-group row mb-3">
+                            {{-- <div class="form-group row mb-3">
                                 <label for="no_fakturpenjualantoko" class="col-sm-3 col-form-label">
-                                    <a  class="text-decoration-none">Faktur Penjualan Toko </a>
+                                    <a  class="text-decoration-none">No. Faktur Penjualan Toko </a>
                                 </label>
                                 <div class="col-sm-3">
                                     <input type="text" class="form-control" id="no_fakturpenjualantoko" name="no_fakturpenjualantoko" readonly>
                                 </div>
                           
-                            </div>
+                            </div> --}}
                             <div class="form-group row mb-3">
                                 <label for="tanggal_setoran" class="col-sm-3 col-form-label">
-                                    <a  class="text-decoration-none">Tanggal Pelunasan</a>
+                                    <a  class="text-decoration-none">Tanggal Penjualan</a>
                                 </label>
                                 <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="tanggal_setoran" name="tanggal_setoran" readonly>
+                                    <input type="text" class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" readonly>
                                 </div>
                           
                             </div>
@@ -340,7 +343,7 @@
                                 <tr>
                                     <th class="text-center">No</th>
                                     <th>No. Faktur</th>
-                                    <th>Penjuaan Kotor</th>
+                                    <th>Tanggal Penjualan</th>
                                     
                                     <th>Opsi</th>
                                 </tr>

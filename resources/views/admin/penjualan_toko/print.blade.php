@@ -73,7 +73,7 @@
             padding: 4px;
             border: 1px solid black;
             text-align: left;
-            font-size: 10px;
+            font-size: 14px;
         }
         th {
             background-color: white;
@@ -145,53 +145,38 @@
 </head>
 <body>
     <!-- Kop Surat -->
-    <div class="header row">
-        <div class="col-2 text-right">
-            <div class="logo">
-                {{-- <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY"> --}}
-            </div>
-            {{-- <div>
-                <span class="title">PT JAVA BAKERY FACTORY</span><br>
-                <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
-            </div> --}}
-        </div>
-        <div class="col-8 text-center">
-            <div class="logo">
-                <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
-            </div>
-            <span class="title">PT JAVA BAKERY FACTORY</span><br>
-            <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
-        </div>
-    </div>
+    
 
     <!-- Judul Surat -->
     <div class="change-header">FAKTUR PENJUALAN TOKO</div>
-    <div class="change-header1">
-        <p style="margin-bottom: 2px; font-size: 18px;">{{ $setoran->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
-        <p>{{ $setoran->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
-    </div>
+
 
     <!-- Informasi Permintaan -->
-    <div>
-        <p style="margin-bottom: 2px;">
-            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>No. Faktur</strong></span>
-            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $setoran->no_fakturpenjualantoko }}</span>
+    <div style="font-family: Arial, sans-serif; font-size: 14px;">
+        <p style="margin: 0; line-height: 1.5;">
+            <strong style="display: inline-block; width: 110px; vertical-align: top;">Cabang</strong> : 
+            {{ $setoran->toko->nama_toko ?? 'Nama toko tidak tersedia' }}
         </p>
-        <p style="margin-bottom: 2px;">
-            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal Setoran</strong> </span>
-            <span style="min-width: 50px; display: inline-flex; align-items: center;">
-                : {{ $setoran->created_at->locale('id')->translatedFormat('d F Y H:i') }}
-            </span>
-        </p> 
+        <p style="margin: 0; line-height: 1.5;">
+            <strong style="display: inline-block; width: 110px; vertical-align: top;">Alamat</strong> : 
+            {{ $setoran->toko->alamat ?? 'Alamat tidak tersedia' }}
+        </p>
+        <p style="margin: 0; line-height: 1.5;">
+            <strong style="display: inline-block; width: 110px; vertical-align: top;">No. Faktur</strong> : 
+            {{ $setoran->no_fakturpenjualantoko }}
+        </p>
+        <p style="margin: 0; line-height: 1.5;">
+            <strong style="display: inline-block; width: 110px; vertical-align: top;">Tanggal Penjualan</strong> : 
+            {{ \Carbon\Carbon::parse($setoran->tanggal_penjualan)->format('d-m-Y') }}
+        </p>
     </div>
+    
 
     <table class="table table-bordered table-striped" style="margin-top: 20px;">
-        <thead class="table-dark">
             <tr>
                 <th style="width: 70%; text-align: left;">Keterangan</th>
-                <th style="width: 30%; text-align: right;">Nilai</th>
+                <th style="width: 30%; text-align: left;">Nilai</th>
             </tr>
-        </thead>
         <tbody>
             <tr>
                 <td>Penjualan Kotor</td>
