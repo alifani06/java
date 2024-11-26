@@ -54,31 +54,26 @@ class Setoran_pelunasanController extends Controller
     public function create(Request $request)
     {
         $tokos = Toko::all();
-        $setoranPenjualans = Setoran_penjualan::orderBy('id', 'DESC')->first();
+        $setoranPenjualans = Setoran_penjualan::orderBy('id', 'DESC')->get();
     
         // dd($setoranPenjualans); // Periksa isi variabel sebelum dikirim ke view
         return view('admin.setoran_pelunasan.create', compact('setoranPenjualans', 'tokos'));
     }
     
-
-    
-    
-    
-
-    public function getdata1(Request $request)
+    function getdata1(Request $request)
     {
         // Validasi input
         $request->validate([
-            'tanggal_setoran' => 'required|date',
+            'tanggal_penjualan' => 'required|date',
             'toko_id' => 'nullable|exists:tokos,id' // Validasi toko_id
         ]);
     
         // Ambil parameter dari request
-        $tanggalPenjualan = $request->input('tanggal_setoran');
+        $tanggalPenjualan = $request->input('tanggal_penjualan');
         $tokoId = $request->input('toko_id');
     
         // Query untuk mengambil data dari tabel setoran_penjualan
-        $query = Setoran_penjualan::whereDate('tanggal_setoran', $tanggalPenjualan);
+        $query = Setoran_penjualan::whereDate('tanggal_penjualan', $tanggalPenjualan);
     
         // Filter berdasarkan toko_id jika diberikan
         if ($tokoId) {
@@ -92,6 +87,7 @@ class Setoran_pelunasanController extends Controller
         if (!$setoranPenjualan) {
             return response()->json([
                 'id' => null,
+                'tanggal_setoran' => null,
                 'penjualan_kotor' => 0,
                 'diskon_penjualan' => 0,
                 'penjualan_bersih' => 0,
@@ -109,11 +105,15 @@ class Setoran_pelunasanController extends Controller
             ]);
         }
     
+        // Format tanggal_setoran menjadi d-m-Y H:i:s
+        $tanggalSetoranFormatted = Carbon::parse($setoranPenjualan->tanggal_setoran)->format('d-m-Y H:i:s');
+    
         // Kembalikan hasil dari setoran_penjualan dalam format JSON
         return response()->json([
             'id' => $setoranPenjualan->id,
             'no_fakturpenjualantoko' => $setoranPenjualan->no_fakturpenjualantoko,
-            'tanggal_setoran' => $setoranPenjualan->tanggal_setoran,
+            'tanggal_setoran' => $tanggalSetoranFormatted,
+            'tanggal_penjualan' => $setoranPenjualan->tanggal_penjualan,
             'penjualan_kotor' => number_format($setoranPenjualan->penjualan_kotor, 0, ',', '.'),
             'diskon_penjualan' => number_format($setoranPenjualan->diskon_penjualan, 0, ',', '.'),
             'penjualan_bersih' => number_format($setoranPenjualan->penjualan_bersih, 0, ',', '.'),
@@ -130,6 +130,7 @@ class Setoran_pelunasanController extends Controller
             'plusminus' => number_format($setoranPenjualan->plusminus, 0, ',', '.'),
         ]);
     }
+    
     
  
     public function updateStatus(Request $request)

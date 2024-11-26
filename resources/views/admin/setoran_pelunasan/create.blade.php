@@ -41,9 +41,9 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-3 mb-3">
-                                    <input class="form-control" id="tanggal_setoran" name="tanggal_setoran" type="date"
-                                        value="{{ Request::get('tanggal_setoran') }}" onchange="updateModalLink()" />
-                                        <label for="tanggal_setoran">(Tanggal Setoran)</label>
+                                    <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
+                                        value="{{ Request::get('tanggal_penjualan') }}" onchange="updateModalLink()" />
+                                        <label for="tanggal_penjualan">(Tanggal Penjualan)</label>
 
                                 </div>
                                 <div class="col-md-3 mb-3">
@@ -53,30 +53,49 @@
                                             <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
                                         @endforeach
                                     </select>
-                                    <label for="tanggal_setoran">(Pilih Toko)</label>
+                                    <label for="tanggal_penjualan">(Pilih Toko)</label>
 
                                 </div>
                                 <div class="col-md-3 mb-3">
                                     <button type="button" id="btnCari" class="btn btn-outline-primary">Cari</button>
                                 </div>
                             </div>
+                            {{-- <div class="input-group mb-3">
+                                <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="no_fakturpenjualantoko" name="no_fakturpenjualantoko" value="{{ old('no_fakturpenjualantoko') }}">
+                                <button class="btn btn-outline-primary" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
+                                    <i class="fas fa-search">Cari Faktur</i>
+                                </button>
+                            </div>
                           
                         </div>
                 
                         <div class="card-body">
-                            <div class="form-group row mb-3">
+                            {{-- <div class="form-group row mb-3">
                                 <label for="penjualan_kotor" class="col-sm-3 col-form-label">
                                     <a id=""  data-toggle="modal"  class="text-decoration-none">No. Faktur</a>
                                 </label>
                                 <div class="col-sm-3">
                                     <input type="text" id="no_fakturpenjualantoko" name="no_fakturpenjualantoko" class="form-control" readonly />
                                 </div>
-                                
-                            </div>
+                                <button class="btn btn-outline-primary" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div> --}}
+
                                 <input type="text" id="setoran_id" name="id" class="form-control" hidden/>
-                                <input type="text" id="tanggal_setoran" name="tanggal_setoran" class="form-control" hidden/>
+                                <input type="text" id="tanggal_penjualan" name="tanggal_penjualan" class="form-control" hidden/>
                           
-                            <!-- Tempat untuk menampilkan Penjualan Kotor -->
+                            <div class="form-group row mb-3">
+                                <label for="tanggal_setoran" class="col-sm-3 col-form-label">
+                                    <a  class="text-decoration-none">Tanggal Pelunasan</a>
+                                </label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="tanggal_setoran" name="tanggal_setoran" readonly>
+                                </div>
+                          
+                            </div>
+
+
                             <div class="form-group row mb-3">
                                 <label for="penjualan_kotor" class="col-sm-3 col-form-label">
                                     <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Penjualan Kotor</a>
@@ -291,23 +310,16 @@
                         </div>       
                     </div>  
                     
-                    {{-- <div class="input-group mb-3">
-                        <input  type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('kode_pelanggan') }}" onclick="showCategoryModalpemesanan()">
-                        <input  type="text" class="form-control" id="kode_pelangganlama" name="kode_pelangganlama" value="{{ old('kode_pelangganlama') }}" onclick="showCategoryModalpemesanan()">
-                        <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="no_fakturpenjualantoko" name="no_fakturpenjualantoko" value="{{ old('no_fakturpenjualantoko') }}">
-                        <button class="btn btn-outline-primary" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div> --}}
+                  
         </form>
 
         </div>
 
-        {{-- <div class="modal fade" id="tableMarketing" data-backdrop="static">
+        <div class="modal fade" id="tableMarketing" data-backdrop="static">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Data Pelanggan</h4>
+                        <h4 class="modal-title">Data Pelunasan Penjualan</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -318,21 +330,21 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">No</th>
-                                    <th>Kode Pelanggan</th>
-                                    <th>Kode Lama</th>
-                                    <th>Nama Pelanggan</th>
-                                    <th>No penjualan_kotoron</th>
-                                    <th>Alamat</th>
+                                    <th>No. Faktur</th>
+                                    <th>Penjuaan Kotor</th>
+                                    
                                     <th>Opsi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($setoranPenjualans as $item)
-                                    <tr onclick="getSelectedDataPemesanan('{{ $item->no_fakturpenjualantoko }}', '{{ $item->penjualan_kotor }}')">
+                                    <tr onclick="getSelectedDataPemesanan('{{ $item->no_fakturpenjualantoko }}', '{{ $item->penjualan_kotor }}', '{{ $item->diskon_penjualan }}'
+                                    , '{{ $item->penjualan_bersih }}', '{{ $item->deposit_masuk }}', '{{ $item->deposit_keluar }}', '{{ $item->total_penjualan }}', '{{ $item->mesin_edc }}'
+                                    , '{{ $item->qris }}', '{{ $item->gobiz }}', '{{ $item->transfer }}', '{{ $item->total_setoran }}', '{{ $item->tanggal_penjualan }}')">
                                         <td class="text-center">{{ $loop->iteration }}</td>
                              
                                         <td>{{ $item->no_fakturpenjualantoko }}</td>
-                                        <td>{{ $item->penjualan_kotor }}</td>
+                                        <td>{{ $item->tanggal_penjualan }}</td>
                                         <td class="text-center">
                                             <button type="button" class="btn btn-primary btn-sm" >
                                                 <i class="fas fa-plus"></i>
@@ -345,7 +357,7 @@
                     </div>
                 </div>
             </div>
-        </div> --}}
+        </div>
     
 
         <div class="modal fade" id="penjualanKotorModal" tabindex="-1" role="dialog" aria-labelledby="penjualanKotorModalLabel" aria-hidden="true">
@@ -539,7 +551,7 @@
 <script>
     // Fungsi untuk memperbarui URL link di dalam modal
     function updateModalLink() {
-        const tanggalPenjualan = document.getElementById('tanggal_setoran').value;
+        const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
         const tokoId = document.getElementById('toko').value;
 
         // Base URL untuk Barang Keluar (link di dalam modal)
@@ -560,7 +572,7 @@
         // Perbarui URL untuk Barang Keluar
         const urlBarangKeluar = new URL(baseUrlBarangKeluar, window.location.origin);
         if (tanggalPenjualan) {
-            urlBarangKeluar.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlBarangKeluar.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlBarangKeluar.searchParams.set('toko_id', tokoId);
@@ -570,7 +582,7 @@
         // Perbarui URL untuk Faktur Penjualan
         const urlFakturPenjualan = new URL(baseUrlFakturPenjualan, window.location.origin); // Perbaikan nama variabel
         if (tanggalPenjualan) {
-            urlFakturPenjualan.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturPenjualan.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturPenjualan.searchParams.set('toko_id', tokoId);
@@ -579,7 +591,7 @@
 
         const urlFakturDeposit = new URL(baseUrlFakturDeposit, window.location.origin); // Perbaikan nama variabel
         if (tanggalPenjualan) {
-            urlFakturDeposit.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturDeposit.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturDeposit.searchParams.set('toko_id', tokoId);
@@ -588,7 +600,7 @@
 
         const urlFakturDepositKeluar = new URL(baseUrlFakturDepositKeluar, window.location.origin); // Perbaikan nama variabel
         if (tanggalPenjualan) {
-            urlFakturDepositKeluar.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturDepositKeluar.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturDepositKeluar.searchParams.set('toko_id', tokoId);
@@ -597,7 +609,7 @@
 
         const urlFakturPenjualanMesinedc = new URL(baseUrlFakturPenjualanMesinedc, window.location.origin);
         if (tanggalPenjualan) {
-            urlFakturPenjualanMesinedc.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturPenjualanMesinedc.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturPenjualanMesinedc.searchParams.set('toko_id', tokoId);
@@ -606,7 +618,7 @@
 
         const urlFakturPemesananMesinedc = new URL(baseUrlFakturPemesananMesinedc, window.location.origin);
         if (tanggalPenjualan) {
-            urlFakturPemesananMesinedc.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturPemesananMesinedc.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturPemesananMesinedc.searchParams.set('toko_id', tokoId);
@@ -615,7 +627,7 @@
 
         const urlFakturPenjualanQris = new URL(baseUrlFakturPenjualanQris, window.location.origin);
         if (tanggalPenjualan) {
-            urlFakturPenjualanQris.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturPenjualanQris.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturPenjualanQris.searchParams.set('toko_id', tokoId);
@@ -624,7 +636,7 @@
 
         const urlFakturPemesananQris = new URL(baseUrlFakturPemesananQris, window.location.origin);
         if (tanggalPenjualan) {
-            urlFakturPemesananQris.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturPemesananQris.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturPemesananQris.searchParams.set('toko_id', tokoId);
@@ -633,7 +645,7 @@
 
         const urlFakturPenjualanTransfer = new URL(baseUrlFakturPenjualanTransfer, window.location.origin);
         if (tanggalPenjualan) {
-            urlFakturPenjualanTransfer.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturPenjualanTransfer.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturPenjualanTransfer.searchParams.set('toko_id', tokoId);
@@ -642,7 +654,7 @@
 
         const urlFakturPemesananTransfer = new URL(baseUrlFakturPemesananTransfer, window.location.origin);
         if (tanggalPenjualan) {
-            urlFakturPemesananTransfer.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturPemesananTransfer.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturPemesananTransfer.searchParams.set('toko_id', tokoId);
@@ -651,7 +663,7 @@
 
         const urlFakturPenjualanGobiz = new URL(baseUrlFakturPenjualanGobiz, window.location.origin);
         if (tanggalPenjualan) {
-            urlFakturPenjualanGobiz.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturPenjualanGobiz.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturPenjualanGobiz.searchParams.set('toko_id', tokoId);
@@ -660,7 +672,7 @@
 
         const urlFakturPemesananGobiz = new URL(baseUrlFakturPemesananGobiz, window.location.origin);
         if (tanggalPenjualan) {
-            urlFakturPemesananGobiz.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturPemesananGobiz.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturPemesananGobiz.searchParams.set('toko_id', tokoId);
@@ -690,7 +702,7 @@
     <script>
         $(document).ready(function () {
     $('#btnCari').on('click', function () {
-        var tanggalPenjualan = $('#tanggal_setoran').val();
+        var tanggalPenjualan = $('#tanggal_penjualan').val();
         var tokoId = $('#toko').val();
 
         if (tanggalPenjualan) {
@@ -699,14 +711,14 @@
                 type: "POST",
                 data: {
                     _token: '{{ csrf_token() }}',
-                    tanggal_setoran: tanggalPenjualan,
+                    tanggal_penjualan: tanggalPenjualan,
                     toko_id: tokoId // Kirim toko_id
                 },
                 success: function (response) {
                     // Isi field-form dengan data dari respons
                     $('#setoran_id').val(response.id); 
+                    $('#tanggal_setoran').val(response.tanggal_setoran); 
                     $('#no_fakturpenjualantoko').val(response.no_fakturpenjualantoko); 
-                    // $('#tanggal_setoran').val(response.tanggal_setoran); 
                     $('#penjualan_kotor').val(response.penjualan_kotor);
                     $('#diskon_penjualan').val(response.diskon_penjualan);
                     $('#penjualan_bersih').val(response.penjualan_bersih);
@@ -871,31 +883,37 @@
 </script>
 
 
-{{-- <script>
-    // Inisialisasi DataTable dan atur modal
-    $(document).ready(function() {
-        var pelangganTable = $('#datatables4').DataTable();
+<script>
 
-        $('#tableMarketing').on('shown.bs.modal', function () {
-            pelangganTable.columns.adjust().draw();
-        });
-    });
-
-    // Fungsi untuk menampilkan modal
     function showCategoryModalpemesanan() {
         $('#tableMarketing').modal('show');
     }
 
-    // Fungsi untuk mendapatkan data pelanggan dari modal dan menyembunyikan modal
-    function getSelectedDataPemesanan(no_fakturpenjualantoko, penjualan_kotor) {
-        // Masukkan data yang dipilih ke dalam input form
-        document.getElementById('no_fakturpenjualantoko').value = no_fakturpenjualantoko;
-        document.getElementById('penjualan_kotor').value = penjualan_kotor;
+    function formatRibuan(angka) {
+        return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
 
-        // Sembunyikan modal setelah data dipilih
+    function getSelectedDataPemesanan(no_fakturpenjualantoko, penjualan_kotor,diskon_penjualan, penjualan_bersih,deposit_keluar,deposit_masuk,
+        total_penjualan,mesin_edc,qris,gobiz,transfer,total_setoran,tanggal_penjualan) {
+        document.getElementById('no_fakturpenjualantoko').value = no_fakturpenjualantoko;
+        document.getElementById('tanggal_penjualan').value = tanggal_penjualan;
+
+        document.getElementById('penjualan_kotor').value = formatRibuan(penjualan_kotor);   
+        document.getElementById('diskon_penjualan').value = formatRibuan(diskon_penjualan);
+        document.getElementById('penjualan_bersih').value = formatRibuan(penjualan_bersih);
+        document.getElementById('deposit_masuk').value = formatRibuan(deposit_masuk);
+        document.getElementById('deposit_keluar').value = formatRibuan(deposit_keluar);
+        document.getElementById('total_penjualan').value = formatRibuan(total_penjualan);
+        document.getElementById('mesin_edc').value = formatRibuan(mesin_edc);
+        document.getElementById('qris').value = formatRibuan(qris);
+        document.getElementById('gobiz').value = formatRibuan(gobiz);
+        document.getElementById('transfer').value = formatRibuan(transfer);
+        document.getElementById('total_setoran').value = formatRibuan(total_setoran);
+
         $('#tableMarketing').modal('hide');
     }
-</script> --}}
+</script>
+
 @endsection
 
 

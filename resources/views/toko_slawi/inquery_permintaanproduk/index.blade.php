@@ -132,7 +132,7 @@
                                         @endif
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($permintaan->status == 'unpost')
-                                                    <a class="dropdown-item posting-btn"data-memo-id="{{ $permintaan->id }}">Posting</a>
+                                                    {{-- <a class="dropdown-item posting-btn"data-memo-id="{{ $permintaan->id }}">Posting</a> --}}
                                                     <a class="dropdown-item" href="{{ url('toko_slawi/permintaan_produk/' . $permintaan->id . '/edit') }}">Update</a>
                                                     <a class="dropdown-item" href="{{ url('toko_slawi/permintaan_produk/' . $permintaan->id) }}">Show</a>
                                                     <form action="{{ url('toko_slawi/permintaan_produk/' . $permintaan->id) }}" method="POST" style="display: inline;">
