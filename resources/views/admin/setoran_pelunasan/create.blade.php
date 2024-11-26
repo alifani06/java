@@ -86,6 +86,15 @@
                                 <input type="text" id="tanggal_penjualan" name="tanggal_penjualan" class="form-control" hidden/>
                           
                             <div class="form-group row mb-3">
+                                <label for="no_fakturpenjualantoko" class="col-sm-3 col-form-label">
+                                    <a  class="text-decoration-none">Faktur Penjualan Toko </a>
+                                </label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="no_fakturpenjualantoko" name="no_fakturpenjualantoko" readonly>
+                                </div>
+                          
+                            </div>
+                            <div class="form-group row mb-3">
                                 <label for="tanggal_setoran" class="col-sm-3 col-form-label">
                                     <a  class="text-decoration-none">Tanggal Pelunasan</a>
                                 </label>

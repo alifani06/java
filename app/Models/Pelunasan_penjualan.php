@@ -18,6 +18,7 @@ class Pelunasan_penjualan extends Model
     
     protected $fillable = [
         'tanggal_penjualan',
+        'faktur_pelunasanpenjualan',
         'penjualan_kotor1',
         'diskon_penjualan1',
         'penjualan_bersih1',

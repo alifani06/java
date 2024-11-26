@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faktur Penjualan Toko</title>
+    <title>Faktur Pelunasan Penjualan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
         body {
@@ -127,7 +127,7 @@
         {{-- <hr class="divider"> --}}
 
         <!-- Judul Surat -->
-        <div class="change-header">FAKTUR PENJUALAN TOKO</div>
+        <div class="change-header">FAKTUR PELUNASAN PENJUALAN</div>
         <div class="change-header1">
             <p style="margin-bottom: 2px; font-size: 18px;">{{ $setoran->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
             <p>{{ $setoran->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
@@ -135,7 +135,7 @@
         <!-- Informasi Permintaan -->
         <div>
             <p style="margin-bottom: 2px;">
-                <strong>No Faktur :</strong> {{ $setoran->no_fakturpenjualantoko }}
+                <strong>No Faktur :</strong> {{ $setoran->faktur_pelunasanpenjualan }}
             </p>
             <p style="margin-bottom: 2px;">
                 <strong>Tanggal Setoran :</strong> {{ \Carbon\Carbon::parse($setoran->tanggal_setoran)->format('d-m-Y H:i') }}

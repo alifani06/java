@@ -175,7 +175,7 @@
     <div>
         <p style="margin-bottom: 2px;">
             <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>No. Faktur</strong></span>
-            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $setoran->no_fakturpenjualantoko }}</span>
+            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $setoran->faktur_pelunasanpenjualan }}</span>
         </p>
         <p style="margin-bottom: 2px;">
             <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal Setoran</strong> </span>
@@ -186,13 +186,11 @@
     </div>
 
     <table class="table table-bordered table-striped" style="margin-top: 20px;">
-        <thead class="table-dark">
             <tr>
                 <th style="width: 50%; text-align: left;">Keterangan</th>
-                <th style="width: 30%; text-align: right;">Nilai</th>
-                <th style="width: 20%; text-align: right;">Selisih</th>
+                <th style="width: 30%; text-align: left;">Nilai</th>
+                <th style="width: 20%; text-align: left;">Selisih</th>
             </tr>
-        </thead>
         <tbody>
             <tr>
                 <td>Penjualan Kotor</td>

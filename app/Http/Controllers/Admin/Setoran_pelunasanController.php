@@ -195,6 +195,7 @@ class Setoran_pelunasanController extends Controller
                 'gobiz_selisih' => 'nullable|numeric',
                 'transfer_selisih' => 'nullable|numeric',
                 'totalsetoran_selisih' => 'nullable|numeric',
+                'no_fakturpenjualantoko' => 'nullable',
             ],
             [
                 'penjualan_kotor1.nullable' => 'Masukkan kode lama',
@@ -220,6 +221,8 @@ class Setoran_pelunasanController extends Controller
             [
                 'status' => 'posting',
                 'tanggal_setoran' => Carbon::now('Asia/Jakarta'),
+                'faktur_pelunasanpenjualan' => $this->kode(),
+
             ]
         ));
 
@@ -227,6 +230,32 @@ class Setoran_pelunasanController extends Controller
         return redirect()->route('setoran_pelunasan.show', $pelunasan->id)
             ->with('success', 'Berhasil menyimpan data');
     }
+
+    public function kode()
+    {
+        $prefix = 'FPel';
+        $year = date('y'); // Dua digit terakhir dari tahun
+        $monthDay = date('dm'); // Format bulan dan hari: MMDD
+
+        // Mengambil kode terakhir yang dibuat pada hari yang sama dengan prefix PBNJ
+        $lastBarang = Pelunasan_penjualan::where('faktur_pelunasanpenjualan', 'LIKE', $prefix . '%')
+                                    ->whereDate('tanggal_setoran', Carbon::today())
+                                    ->orderBy('faktur_pelunasanpenjualan', 'desc')
+                                    ->first();
+
+        if (!$lastBarang) {
+            $num = 1;
+        } else {
+            $lastCode = $lastBarang->faktur_pelunasanpenjualan;
+            $lastNum = (int) substr($lastCode, strlen($prefix . $monthDay . $year)); // Mengambil urutan terakhir
+            $num = $lastNum + 1;
+        }
+
+        $formattedNum = sprintf("%04d", $num); // Urutan dengan 4 digit
+        $newCode = $prefix . $monthDay . $year . $formattedNum;
+        return $newCode;
+    }
+
 
     public function print($id)
     {
