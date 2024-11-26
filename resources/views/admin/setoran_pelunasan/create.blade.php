@@ -116,7 +116,7 @@
                                     <input type="text" class="form-control" id="penjualan_kotor1" name="penjualan_kotor1">
                                 </div>
                                 <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="penjualan_selisih" name="penjualan_selisih" placeholder="Selisih" readonly>
+                                    <input type="text" class="form-control" id="penjualan_selisih" name="penjualan_selisih" placeholder="" readonly>
                                     <small id="penjualan_keterangan" class="text-muted"></small>
                                 </div>
                             </div>
@@ -133,7 +133,7 @@
                                     <input type="text" class="form-control" id="diskon_penjualan1" name="diskon_penjualan1">
                                 </div>
                                 <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="diskon_selisih" name="diskon_selisih" placeholder="Selisih" readonly>
+                                    <input type="text" class="form-control" id="diskon_selisih" name="diskon_selisih" placeholder="" readonly>
                                     <small id="diskon_keterangan" class="text-muted"></small>
                                 </div>
                             </div>
@@ -154,7 +154,7 @@
                                         <input type="text" class="form-control" id="penjualan_bersih1" name="penjualan_bersih1" >
                                 </div>
                                 <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="penjualanbersih_selisih" name="penjualanbersih_selisih" placeholder="Selisih" readonly>
+                                    <input type="text" class="form-control" id="penjualanbersih_selisih" name="penjualanbersih_selisih" placeholder="" readonly>
                                     <small id="penjualanbersih_keterangan" class="text-muted"></small>
                                 </div>
                               
@@ -172,7 +172,7 @@
                                         <input type="text" class="form-control" id="deposit_keluar1" name="deposit_keluar1" >
                                     </div>
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="depositkeluar_selisih" name="depositkeluar_selisih" placeholder="Selisih" readonly>
+                                        <input type="text" class="form-control" id="depositkeluar_selisih" name="depositkeluar_selisih" placeholder="" readonly>
                                         <small id="depositkeluar_keterangan" class="text-muted"></small>
                                     </div>
                                  
@@ -190,7 +190,7 @@
                                         <input type="text" class="form-control" id="deposit_masuk1" name="deposit_masuk1" >
                                     </div>
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="depositmasuk_selisih" name="depositmasuk_selisih" placeholder="Selisih" readonly>
+                                        <input type="text" class="form-control" id="depositmasuk_selisih" name="depositmasuk_selisih" placeholder="" readonly>
                                         <small id="depositmasuk_keterangan" class="text-muted"></small>
                                     </div>
                             </div>
@@ -211,7 +211,7 @@
                                         <input type="text" class="form-control" id="total_penjualan1" name="total_penjualan1" >
                                     </div>
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="totalpenjualan_selisih" name="totalpenjualan_selisih" placeholder="Selisih" readonly>
+                                        <input type="text" class="form-control" id="totalpenjualan_selisih" name="totalpenjualan_selisih" placeholder="" readonly>
                                         <small id="totalpenjualan_keterangan" class="text-muted"></small>
                                     </div>
                                   
@@ -229,7 +229,7 @@
                                         <input type="text" class="form-control" id="mesin_edc1" name="mesin_edc1" >
                                     </div>
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="mesinedc_selisih" name="mesinedc_selisih" placeholder="Selisih" readonly>
+                                        <input type="text" class="form-control" id="mesinedc_selisih" name="mesinedc_selisih" placeholder="" readonly>
                                         <small id="mesinedc_keterangan" class="text-muted"></small>
                                     </div>
                                  
@@ -247,7 +247,7 @@
                                         <input type="text" class="form-control" id="qris1" name="qris1" >
                                     </div>
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="qris_selisih" name="qris_selisih" placeholder="Selisih" readonly>
+                                        <input type="text" class="form-control" id="qris_selisih" name="qris_selisih" placeholder="" readonly>
                                         <small id="qris_keterangan" class="text-muted"></small>
                                     </div>
                                    
@@ -265,7 +265,7 @@
                                         <input type="text" class="form-control" id="gobiz1" name="gobiz1" >
                                     </div>
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="gobiz_selisih" name="gobiz_selisih" placeholder="Selisih" readonly>
+                                        <input type="text" class="form-control" id="gobiz_selisih" name="gobiz_selisih" placeholder="" readonly>
                                         <small id="gobiz_keterangan" class="text-muted"></small>
                                     </div>
                                   
@@ -283,7 +283,7 @@
                                         <input type="text" class="form-control" id="transfer1" name="transfer1" >
                                     </div>
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="transfer_selisih" name="transfer_selisih" placeholder="Selisih" readonly>
+                                        <input type="text" class="form-control" id="transfer_selisih" name="transfer_selisih" placeholder="" readonly>
                                         <small id="transfer_keterangan" class="text-muted"></small>
                                     </div>
                                   
@@ -306,7 +306,7 @@
                                     <input type="text" class="form-control" id="total_setoran1" name="total_setoran1" >
                                 </div>
                                 <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="totalsetoran_selisih" name="totalsetoran_selisih" placeholder="Selisih" readonly>
+                                    <input type="text" class="form-control" id="totalsetoran_selisih" name="totalsetoran_selisih" placeholder="" readonly>
                                     <small id="totalsetoran_keterangan" class="text-muted"></small>
                                 </div>
                              
