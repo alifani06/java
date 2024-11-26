@@ -177,12 +177,14 @@
                             </div>
                         </div>
 
-                      
+                        <div class="card-footer text-right mt-3">
+                            <button type="submit" class="btn btn-primary">Simpan</button>                             
+                            
+                        </div>
                   
                         
                     </div>       
                     </div>   
-                    <button type="submit" class="btn btn-primary">Simpan</button>        
             </form>
         </div>
         <!-- Modal -->

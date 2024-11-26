@@ -215,12 +215,12 @@
         
         <div class="d-flex justify-content-between">
             <div>
-                <a href="{{ url('admin/penjualan_toko') }}" class="btn btn-primary btn-sm">
+                <a href="{{ url('admin/setoran_pelunasan') }}" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus"></i> Kembali
                 </a>
             </div>
             <div>
-                <a href="{{ route('penjualan_toko.print', $setoran->id) }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
+                <a href="{{ route('setoran_pelunasan.print', $setoran->id) }}" id="printButton" target="_blank" class="btn btn-primary btn-sm">
                     <i class="fas fa-print"></i> Cetak 
                 </a>
             </div>  

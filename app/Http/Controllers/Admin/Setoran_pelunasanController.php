@@ -167,127 +167,101 @@ class Setoran_pelunasanController extends Controller
         // Jika setoran tidak ditemukan
         return redirect()->back()->with('error', 'Setoran tidak ditemukan');
     }
-    
 
-// public function store(Request $request)
-// {
-//     $validator = Validator::make(
-//         $request->all(),
-//         [
-//         'penjualan_kotor1' => 'nullable|numeric',
-//         'diskon_penjualan1' => 'nullable|numeric',
-//         'penjualan_bersih1' => 'nullable|numeric',
-//         'deposit_keluar1' => 'nullable|numeric',
-//         'deposit_masuk1' => 'nullable|numeric',
-//         'total_penjualan1' => 'nullable|numeric',
-//         'mesin_edc1' => 'nullable|numeric',
-//         'qris1' => 'nullable|numeric',
-//         'gobiz1' => 'nullable|numeric',
-//         'transfer1' => 'nullable|numeric',
-//         'total_setoran1' => 'nullable|numeric',
-//         'penjualan_selisih' => 'nullable|numeric',
-//         'diskon_selisih' => 'nullable|numeric',
-//         'penjualanbersih_selisih' => 'nullable|numeric',
-//         'depositkeluar_selisih' => 'nullable|numeric',
-//         'depositmasuk_selisih' => 'nullable|numeric',
-//         'totalpenjualan_selisih' => 'nullable|numeric',
-//         'mesinedc_selisih' => 'nullable|numeric',
-//         'qris_selisih' => 'nullable|numeric',
-//         'gobiz_selisih' => 'nullable|numeric',
-//         'transfer_selisih' => 'nullable|numeric',
-//         'totalsetoran_selisih' => 'nullable|numeric',
-//         ],
-//         [
-         
-//             'penjualan_kotor1.nullable' => 'Masukkan kode lama',
-//             'diskon_penjualan1.nullable' => 'Masukkan nama pelanggan',
-//             'penjualan_bersih1.nullable' => 'masukan pekerjaan',
-//             'deposit_keluar1.nullable' => 'peilih gender',
-//             'total_penjualan1.nullable' => 'Masukkan email',
-//             'total_penjualan1.nullable' => 'Masukkan no telepon',
-//             'mesin_edc1.nullable' => 'Masukkan alamat',
-//             'qris1.nullable' => 'Masukkan tanggal lahir',
-//             'gobiz1.nullable' => 'Masukkan tanggal gabung',
-//             'transfer1.nullable' => 'Masukkan tanggal expired',
-//             'total_setoran1.nullable' => 'Gambar yang dimasukan salah!',
-//         ]
-//     );
+    public function store(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'penjualan_kotor1' => 'nullable|numeric',
+                'diskon_penjualan1' => 'nullable|numeric',
+                'penjualan_bersih1' => 'nullable|numeric',
+                'deposit_keluar1' => 'nullable|numeric',
+                'deposit_masuk1' => 'nullable|numeric',
+                'total_penjualan1' => 'nullable|numeric',
+                'mesin_edc1' => 'nullable|numeric',
+                'qris1' => 'nullable|numeric',
+                'gobiz1' => 'nullable|numeric',
+                'transfer1' => 'nullable|numeric',
+                'total_setoran1' => 'nullable|numeric',
+                'penjualan_selisih' => 'nullable|numeric',
+                'diskon_selisih' => 'nullable|numeric',
+                'penjualanbersih_selisih' => 'nullable|numeric',
+                'depositkeluar_selisih' => 'nullable|numeric',
+                'depositmasuk_selisih' => 'nullable|numeric',
+                'totalpenjualan_selisih' => 'nullable|numeric',
+                'mesinedc_selisih' => 'nullable|numeric',
+                'qris_selisih' => 'nullable|numeric',
+                'gobiz_selisih' => 'nullable|numeric',
+                'transfer_selisih' => 'nullable|numeric',
+                'totalsetoran_selisih' => 'nullable|numeric',
+            ],
+            [
+                'penjualan_kotor1.nullable' => 'Masukkan kode lama',
+                'diskon_penjualan1.nullable' => 'Masukkan nama pelanggan',
+                'penjualan_bersih1.nullable' => 'Masukan pekerjaan',
+                'deposit_keluar1.nullable' => 'Pilih gender',
+                'total_penjualan1.nullable' => 'Masukkan email',
+                'total_penjualan1.nullable' => 'Masukkan no telepon',
+                'mesin_edc1.nullable' => 'Masukkan alamat',
+                'qris1.nullable' => 'Masukkan tanggal lahir',
+                'gobiz1.nullable' => 'Masukkan tanggal gabung',
+                'transfer1.nullable' => 'Masukkan tanggal expired',
+                'total_setoran1.nullable' => 'Gambar yang dimasukkan salah!',
+            ]
+        );
 
+        // if ($validator->fails()) {
+        //     return redirect()->back()->withErrors($validator)->withInput();
+        // }
 
-//     Pelunasan_penjualan::create(array_merge(
-//         $request->all(),
-//         [
-//             'status' => 'null',
-//             'tanggal_setoran' => Carbon::now('Asia/Jakarta'),
+        $pelunasan = Pelunasan_penjualan::create(array_merge(
+            $request->all(),
+            [
+                'status' => 'posting',
+                'tanggal_setoran' => Carbon::now('Asia/Jakarta'),
+            ]
+        ));
 
-//         ]
-//     ));
+        // Redirect ke halaman show dengan ID yang baru dibuat
+        return redirect()->route('setoran_pelunasan.show', $pelunasan->id)
+            ->with('success', 'Berhasil menyimpan data');
+    }
 
-//     return redirect('admin/setoran_pelunasan')->with('success', 'Berhasil');
-// }
-public function store(Request $request)
-{
-    $validator = Validator::make(
-        $request->all(),
-        [
-            'penjualan_kotor1' => 'nullable|numeric',
-            'diskon_penjualan1' => 'nullable|numeric',
-            'penjualan_bersih1' => 'nullable|numeric',
-            'deposit_keluar1' => 'nullable|numeric',
-            'deposit_masuk1' => 'nullable|numeric',
-            'total_penjualan1' => 'nullable|numeric',
-            'mesin_edc1' => 'nullable|numeric',
-            'qris1' => 'nullable|numeric',
-            'gobiz1' => 'nullable|numeric',
-            'transfer1' => 'nullable|numeric',
-            'total_setoran1' => 'nullable|numeric',
-            'penjualan_selisih' => 'nullable|numeric',
-            'diskon_selisih' => 'nullable|numeric',
-            'penjualanbersih_selisih' => 'nullable|numeric',
-            'depositkeluar_selisih' => 'nullable|numeric',
-            'depositmasuk_selisih' => 'nullable|numeric',
-            'totalpenjualan_selisih' => 'nullable|numeric',
-            'mesinedc_selisih' => 'nullable|numeric',
-            'qris_selisih' => 'nullable|numeric',
-            'gobiz_selisih' => 'nullable|numeric',
-            'transfer_selisih' => 'nullable|numeric',
-            'totalsetoran_selisih' => 'nullable|numeric',
-        ],
-        [
-            'penjualan_kotor1.nullable' => 'Masukkan kode lama',
-            'diskon_penjualan1.nullable' => 'Masukkan nama pelanggan',
-            'penjualan_bersih1.nullable' => 'Masukan pekerjaan',
-            'deposit_keluar1.nullable' => 'Pilih gender',
-            'total_penjualan1.nullable' => 'Masukkan email',
-            'total_penjualan1.nullable' => 'Masukkan no telepon',
-            'mesin_edc1.nullable' => 'Masukkan alamat',
-            'qris1.nullable' => 'Masukkan tanggal lahir',
-            'gobiz1.nullable' => 'Masukkan tanggal gabung',
-            'transfer1.nullable' => 'Masukkan tanggal expired',
-            'total_setoran1.nullable' => 'Gambar yang dimasukkan salah!',
-        ]
-    );
+    public function print($id)
+    {
+        $setoran = Pelunasan_penjualan::with('toko')->findOrFail($id);
 
-    // if ($validator->fails()) {
-    //     return redirect()->back()->withErrors($validator)->withInput();
-    // }
+        if (!$setoran) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        }
 
-    $pelunasan = Pelunasan_penjualan::create(array_merge(
-        $request->all(),
-        [
-            'status' => 'posting',
-            'tanggal_setoran' => Carbon::now('Asia/Jakarta'),
-        ]
-    ));
+        $toko = $setoran->toko;
 
-    // Redirect ke halaman show dengan ID yang baru dibuat
-    return redirect()->route('setoran_pelunasan.show', $pelunasan->id)
-        ->with('success', 'Berhasil menyimpan data');
-}
+        $pdf = FacadePdf::loadView('admin.setoran_pelunasan.print', compact('setoran', 'toko'));
 
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF();
+        $canvas = $dompdf->getCanvas();
+        $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+            $text = "Page $pageNumber of $pageCount";
+            $font = $fontMetrics->getFont('Arial', 'normal');
+            $size = 8;
 
-    
-    
+            // Menghitung lebar teks
+            $width = $fontMetrics->getTextWidth($text, $font, $size);
+
+            // Mengatur koordinat X dan Y
+            $x = $canvas->get_width() - $width - 10; // 10 pixel dari kanan
+            $y = $canvas->get_height() - 15; // 15 pixel dari bawah
+
+            // Menambahkan teks ke posisi yang ditentukan
+            $canvas->text($x, $y, $text, $font, $size);
+        });
+
+        // Stream PDF ke browser
+        return $pdf->stream('faktur_setoran_penjualan.pdf');
+    }
 
     public function printPenjualanKotor(Request $request) 
     {
