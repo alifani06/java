@@ -35,15 +35,15 @@
                 {{ session('error') }}
             </div>
         @endif
-        <form action="{{ url('admin/setoran_pelunasan') }}" method="POST" enctype="multipart/form-data" id="myForm">
+        <form action="{{ route('setoran_pelunasan.update_status') }}" method="POST" enctype="multipart/form-data" id="myForm">
             @csrf
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-3 mb-3">
-                                    <input class="form-control" id="tanggal_setoran" name="tanggal_setoran" type="date"
-                                        value="{{ Request::get('tanggal_setoran') }}" onchange="updateModalLink()" />
-                                        <label for="tanggal_setoran">(Tanggal Setoran)</label>
+                                    <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
+                                        value="{{ Request::get('tanggal_penjualan') }}" onchange="updateModalLink()" />
+                                        <label for="tanggal_penjualan">(Tanggal Penjualan)</label>
 
                                 </div>
                                 <div class="col-md-3 mb-3">
@@ -53,60 +53,54 @@
                                             <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
                                         @endforeach
                                     </select>
-                                    <label for="tanggal_setoran">(Pilih Toko)</label>
+                                    <label for="tanggal_penjualan">(Pilih Toko)</label>
 
                                 </div>
                                 <div class="col-md-3 mb-3">
                                     <button type="button" id="btnCari" class="btn btn-outline-primary">Cari</button>
                                 </div>
                             </div>
-                          
                         </div>
                 
                         <div class="card-body">
-                            <div class="form-group row mb-3">
-                                <label for="penjualan_kotor" class="col-sm-3 col-form-label">
-                                    <a id=""  data-toggle="modal"  class="text-decoration-none">No. Faktur</a>
-                                </label>
-                                <div class="col-sm-3">
-                                    <input type="text" id="no_fakturpenjualantoko" name="no_fakturpenjualantoko" class="form-control" readonly />
-                                </div>
-                                
-                            </div>
+
                                 <input type="text" id="setoran_id" name="id" class="form-control" hidden/>
-                                <input type="text" id="tanggal_setoran" name="tanggal_setoran" class="form-control" hidden/>
+                                <input type="text" id="tanggal_penjualan" name="tanggal_penjualan" class="form-control" hidden/>
                           
                             <!-- Tempat untuk menampilkan Penjualan Kotor -->
                             <div class="form-group row mb-3">
                                 <label for="penjualan_kotor" class="col-sm-3 col-form-label">
                                     <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Penjualan Kotor</a>
                                 </label>
-                                <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="penjualan_kotor" name="penjualan_kotor" readonly>
+                                <div>
+                                    <input type="checkbox" class="form-check-input custom-checkbox" id="check_penjualan_kotor" onchange="toggleGreenCheck('penjualan_kotor')">
                                 </div>
                                 <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="penjualan_kotor1" name="penjualan_kotor1">
+                                    <input type="text" class="form-control" id="penjualan_kotor" name="penjualan_kotor" placeholder="" readonly>
                                 </div>
-                                <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="penjualan_selisih" name="penjualan_selisih" placeholder="Selisih" readonly>
-                                    <small id="penjualan_keterangan" class="text-muted"></small>
+                                               
+                                <div class="col-sm-1">
+                                    <button type="button" class="btn btn-success d-none" id="btn_penjualan_kotor">
+                                        ✓
+                                    </button>
                                 </div>
                             </div>
                 
-
+                            <!-- Tempat untuk menampilkan Diskon Penjualan -->
                             <div class="form-group row mb-3">
                                 <label for="diskon_penjualan" class="col-sm-3 col-form-label">
                                     <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Diskon Penjualan</a>
                                 </label>
+                                <div>
+                                    <input type="checkbox" class="form-check-input custom-checkbox" id="check_diskon_penjualan" onchange="toggleGreenCheck('diskon_penjualan')">
+                                </div>                            
                                 <div class="col-sm-3">
                                     <input type="text" class="form-control" id="diskon_penjualan" name="diskon_penjualan" readonly>
                                 </div>
-                                <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="diskon_penjualan1" name="diskon_penjualan1">
-                                </div>
-                                <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="diskon_selisih" name="diskon_selisih" placeholder="Selisih" readonly>
-                                    <small id="diskon_keterangan" class="text-muted"></small>
+                                <div class="col-sm-1">
+                                    <button type="button" class="btn btn-success d-none" id="btn_diskon_penjualan">
+                                        ✓
+                                    </button>
                                 </div>
                             </div>
 
@@ -118,52 +112,50 @@
                                 <label for="penjualan_bersih" class="col-sm-3 col-form-label">
                                     <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Penjualan Bersih</a>
                                 </label>
-                                                        
+                                <div>
+                                        <input type="checkbox" class="form-check-input custom-checkbox" id="check_penjualan_bersih" onchange="toggleGreenCheck('penjualan_bersih')">
+                                </div>                            
                                 <div class="col-sm-3">
                                         <input type="text" class="form-control" id="penjualan_bersih" name="penjualan_bersih" readonly>
                                 </div>
-                                <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="penjualan_bersih1" name="penjualan_bersih1" >
+                                <div class="col-sm-1">
+                                        <button type="button" class="btn btn-success d-none" id="btn_penjualan_bersih">
+                                            ✓
+                                        </button>
                                 </div>
-                                <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="penjualanbersih_selisih" name="penjualanbersih_selisih" placeholder="Selisih" readonly>
-                                    <small id="penjualanbersih_keterangan" class="text-muted"></small>
-                                </div>
-                              
                             </div>
 
                             <div class="form-group row mb-3">
                                     <label for="deposit_keluar" class="col-sm-3 col-form-label">
                                         <a id="deposit_keluar_link" href="#" data-toggle="modal" data-target="#depositKeluarModal" class="text-decoration-none">Deposit Keluar</a>
                                     </label>
-                                                              
+                                    <div>
+                                        <input type="checkbox" class="form-check-input custom-checkbox" id="check_deposit_keluar" onchange="toggleGreenCheck('deposit_keluar')">
+                                    </div>                            
                                     <div class="col-sm-3">
                                         <input type="text" class="form-control" id="deposit_keluar" name="deposit_keluar" readonly>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="deposit_keluar1" name="deposit_keluar1" >
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-success d-none" id="btn_deposit_keluar">
+                                            ✓
+                                        </button>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="depositkeluar_selisih" name="depositkeluar_selisih" placeholder="Selisih" readonly>
-                                        <small id="depositkeluar_keterangan" class="text-muted"></small>
-                                    </div>
-                                 
                             </div>
 
                             <div class="form-group row mb-3">
                                     <label for="deposit_masuk" class="col-sm-3 col-form-label">
                                         <a id="deposit_masuk_link" href="#" data-toggle="modal" data-target="#depositMasukModal" class="text-decoration-none">Deposit Masuk</a>
                                     </label>
-                                                             
+                                    <div>
+                                        <input type="checkbox" class="form-check-input custom-checkbox" id="check_deposit_masuk" onchange="toggleGreenCheck('deposit_masuk')">
+                                    </div>                            
                                     <div class="col-sm-3">
                                         <input type="text" class="form-control" id="deposit_masuk" name="deposit_masuk" readonly>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="deposit_masuk1" name="deposit_masuk1" >
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="depositmasuk_selisih" name="depositmasuk_selisih" placeholder="Selisih" readonly>
-                                        <small id="depositmasuk_keterangan" class="text-muted"></small>
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-success d-none" id="btn_deposit_masuk">
+                                            ✓
+                                        </button>
                                     </div>
                             </div>
 
@@ -175,180 +167,169 @@
                                     <label for="total_penjualan" class="col-sm-3 col-form-label">
                                         <a id="penjualan_kotor_link" href="#" data-toggle="modal" data-target="#penjualanKotorModal" class="text-decoration-none">Total Penjualan</a>
                                     </label>
-                                                           
+                                    <div>
+                                        <input type="checkbox" class="form-check-input custom-checkbox" id="check_total_penjualan" onchange="toggleGreenCheck('total_penjualan')">
+                                    </div>                            
                                     <div class="col-sm-3">
                                         <input type="text" class="form-control" id="total_penjualan" name="total_penjualan" readonly>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="total_penjualan1" name="total_penjualan1" >
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-success d-none" id="btn_total_penjualan">
+                                            ✓
+                                        </button>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="totalpenjualan_selisih" name="totalpenjualan_selisih" placeholder="Selisih" readonly>
-                                        <small id="totalpenjualan_keterangan" class="text-muted"></small>
-                                    </div>
-                                  
                             </div>
 
                             <div class="form-group row mb-3">
                                     <label for="mesin_edc" class="col-sm-3 col-form-label">
                                         <a id="penjualan_mesinedc_link" href="#" data-toggle="modal" data-target="#penjualanMesinedcModal" class="text-decoration-none">Mesin EDC</a>
                                     </label>
-                                                               
+                                    <div>
+                                        <input type="checkbox" class="form-check-input custom-checkbox" id="check_mesin_edc" onchange="toggleGreenCheck('mesin_edc')">
+                                    </div>                            
                                     <div class="col-sm-3">
                                         <input type="text" class="form-control" id="mesin_edc" name="mesin_edc" readonly>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="mesin_edc1" name="mesin_edc1" >
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-success d-none" id="btn_mesin_edc">
+                                            ✓
+                                        </button>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="mesinedc_selisih" name="mesinedc_selisih" placeholder="Selisih" readonly>
-                                        <small id="mesinedc_keterangan" class="text-muted"></small>
-                                    </div>
-                                 
                             </div>
 
                             <div class="form-group row mb-3">
                                     <label for="qris" class="col-sm-3 col-form-label">
                                         <a id="penjualan_qris_link" href="#" data-toggle="modal" data-target="#penjualanQrisModal" class="text-decoration-none">Qris</a>
                                     </label>
-                                                              
+                                    <div>
+                                        <input type="checkbox" class="form-check-input custom-checkbox" id="check_qris" onchange="toggleGreenCheck('qris')">
+                                    </div>                            
                                     <div class="col-sm-3">
                                         <input type="text" class="form-control" id="qris" name="qris" readonly>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="qris1" name="qris1" >
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-success d-none" id="btn_qris">
+                                            ✓
+                                        </button>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="qris_selisih" name="qris_selisih" placeholder="Selisih" readonly>
-                                        <small id="qris_keterangan" class="text-muted"></small>
-                                    </div>
-                                   
                             </div>
 
                             <div class="form-group row mb-3">
                                     <label for="gobiz" class="col-sm-3 col-form-label">
                                         <a id="penjualan_gobiz_link" href="#" data-toggle="modal" data-target="#penjualanGobizModal" class="text-decoration-none">Gobiz</a>
                                     </label>
-                                                             
+                                    <div>
+                                        <input type="checkbox" class="form-check-input custom-checkbox" id="check_gobiz" onchange="toggleGreenCheck('gobiz')">
+                                    </div>                            
                                     <div class="col-sm-3">
                                         <input type="text" class="form-control" id="gobiz" name="gobiz" readonly>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="gobiz1" name="gobiz1" >
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-success d-none" id="btn_gobiz">
+                                            ✓
+                                        </button>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="gobiz_selisih" name="gobiz_selisih" placeholder="Selisih" readonly>
-                                        <small id="gobiz_keterangan" class="text-muted"></small>
-                                    </div>
-                                  
                             </div>
 
                             <div class="form-group row mb-3">
                                     <label for="transfer" class="col-sm-3 col-form-label">
                                         <a id="penjualan_transfer_link" href="#" data-toggle="modal" data-target="#penjualanTransferModal" class="text-decoration-none">Transfer</a>
                                     </label>
-                                                               
+                                    <div>
+                                        <input type="checkbox" class="form-check-input custom-checkbox" id="check_transfer" onchange="toggleGreenCheck('transfer')">
+                                    </div>                            
                                     <div class="col-sm-3">
                                         <input type="text" class="form-control" id="transfer" name="transfer" readonly>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="transfer1" name="transfer1" >
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-success d-none" id="btn_transfer">
+                                            ✓
+                                        </button>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="transfer_selisih" name="transfer_selisih" placeholder="Selisih" readonly>
-                                        <small id="transfer_keterangan" class="text-muted"></small>
-                                    </div>
-                                  
                             </div>
 
 
                             <div class="col-sm-3 offset-sm-3">
-                                <hr style="border: 1px solid #000;"> 
+                                <hr style="border: 1px solid #000;"> <!-- Ubah nilai 2px sesuai ketebalan yang diinginkan -->
                             </div>
 
                             <div class="form-group row mb-3">
                                 <label for="total_setoran" class="col-sm-3 col-form-label">
-                                    <a class="text-decoration-none">Total Setoran</a>
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Total Setoran</a>
                                 </label>
-                                                        
+                                <div>
+                                    <input type="checkbox" class="form-check-input custom-checkbox" id="check_total_setoran" onchange="toggleGreenCheck('total_setoran')">
+                                </div>                            
                                 <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="total_setoran" name="total_setoran" readonly>
+                                    <input type="text" class="form-control" id="total_setoran" name="total_setoran" >
                                 </div>
-                                <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="total_setoran1" name="total_setoran1" >
+                                <div class="col-sm-1">
+                                    <button type="button" class="btn btn-success d-none" id="btn_total_setoran">
+                                        ✓
+                                    </button>
                                 </div>
-                                <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="totalsetoran_selisih" name="totalsetoran_selisih" placeholder="Selisih" readonly>
-                                    <small id="totalsetoran_keterangan" class="text-muted"></small>
-                                </div>
-                             
                             </div>
 
-                            <div class="card-footer text-right mt-3">
-                                <button type="submit" class="btn btn-primary">Simpan</button>                             
-                                
+                            <div class="form-group row mb-3">
+                                <label for="nominal_setoran" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Nominal Setoran</a>
+                                </label>
+                                <div>
+                                    <input type="checkbox" class="form-check-input custom-checkbox" id="check_nominal_setoran" onchange="toggleGreenCheck('nominal_setoran')">
+                                </div>                            
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="nominal_setoran" name="nominal_setoran" >
+                                </div>
+                                <div class="col-sm-1">
+                                    <button type="button" class="btn btn-success d-none" id="btn_nominal_setoran">
+                                        ✓
+                                    </button>
+                                </div>
                             </div>
+
+                            {{-- @if(!is_null($setoranPenjualans->nominal_setoran2))
+                            <div class="form-group row mb-3">
+                                <label for="nominal_setoran2" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">Nominal Setoran 2</a>
+                                </label>
+                                <div>
+                                    <input type="checkbox" class="form-check-input custom-checkbox" id="check_nominal_setoran2" onchange="toggleGreenCheck('nominal_setoran2')">
+                                </div>                            
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="nominal_setoran2" name="nominal_setoran2" >
+                                </div>
+                                <div class="col-sm-1">
+                                    <button type="button" class="btn btn-success d-none" id="btn_nominal_setoran2">
+                                        ✓
+                                    </button>
+                                </div>
+                            </div>
+                            @endif --}}
+
+                            <div class="form-group row mb-3">
+                                <label for="plusminus" class="col-sm-3 col-form-label">
+                                    <a href="{{ url('link-yang-dituju') }}" target="_blank" class="text-decoration-none">+/-</a>
+                                </label>
+                                <div>
+                                    <input type="checkbox" class="form-check-input custom-checkbox" id="check_plusminus" onchange="toggleGreenCheck('plusminus')">
+                                </div>                            
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="plusminus" name="plusminus" >
+                                </div>
+                                <div class="col-sm-1">
+                                    <button type="button" class="btn btn-success d-none" id="btn_plusminus">
+                                        ✓
+                                    </button>
+                                </div>
+                            </div> 
                         </div>       
-                    </div>  
-                    
-                    {{-- <div class="input-group mb-3">
-                        <input  type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('kode_pelanggan') }}" onclick="showCategoryModalpemesanan()">
-                        <input  type="text" class="form-control" id="kode_pelangganlama" name="kode_pelangganlama" value="{{ old('kode_pelangganlama') }}" onclick="showCategoryModalpemesanan()">
-                        <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="no_fakturpenjualantoko" name="no_fakturpenjualantoko" value="{{ old('no_fakturpenjualantoko') }}">
-                        <button class="btn btn-outline-primary" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div> --}}
+                    </div>   
+            <button type="submit" class="btn btn-primary">Simpan</button>
         </form>
 
         </div>
 
-        {{-- <div class="modal fade" id="tableMarketing" data-backdrop="static">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Data Pelanggan</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    
-                    <div class="modal-body">
-                        <table id="datatables4" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">No</th>
-                                    <th>Kode Pelanggan</th>
-                                    <th>Kode Lama</th>
-                                    <th>Nama Pelanggan</th>
-                                    <th>No penjualan_kotoron</th>
-                                    <th>Alamat</th>
-                                    <th>Opsi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($setoranPenjualans as $item)
-                                    <tr onclick="getSelectedDataPemesanan('{{ $item->no_fakturpenjualantoko }}', '{{ $item->penjualan_kotor }}')">
-                                        <td class="text-center">{{ $loop->iteration }}</td>
-                             
-                                        <td>{{ $item->no_fakturpenjualantoko }}</td>
-                                        <td>{{ $item->penjualan_kotor }}</td>
-                                        <td class="text-center">
-                                            <button type="button" class="btn btn-primary btn-sm" >
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endforeach 
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-    
-
-        <div class="modal fade" id="penjualanKotorModal" tabindex="-1" role="dialog" aria-labelledby="penjualanKotorModalLabel" aria-hidden="true">
+<div class="modal fade" id="penjualanKotorModal" tabindex="-1" role="dialog" aria-labelledby="penjualanKotorModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -535,11 +516,155 @@
 
     </section>
 
+    <script>
+        document.getElementById('myForm').addEventListener('submit', function(event) {
+            // Cek apakah checkbox penjualan kotor dicentang
+            const checkPenjualanKotor = document.getElementById('check_penjualan_kotor');
+            const checkDiskonPenjualan = document.getElementById('check_diskon_penjualan');
+            const checkPenjualanBersih = document.getElementById('check_penjualan_bersih');
+            const checkDepositKeluar = document.getElementById('check_deposit_keluar');
+            const checkDepositMasuk = document.getElementById('check_deposit_masuk');
+            const checkTotalPenjualan = document.getElementById('check_total_penjualan');
+            const checkMesinEdc = document.getElementById('check_mesin_edc');
+            const checkQris = document.getElementById('check_qris');
+            const checkGobiz = document.getElementById('check_gobiz');
+            const checkTransfer = document.getElementById('check_transfer');
+            const checkTotalSetoran = document.getElementById('check_total_setoran');
+            const checkNominalSetoran = document.getElementById('check_nominal_setoran');
+            const checkPlusMinus = document.getElementById('check_plusminus');
+    
+            // Jika checkbox belum dicentang, mencegah submit dan tampilkan SweetAlert
+            if (!checkPenjualanKotor.checked) {
+                event.preventDefault(); // Mencegah form disubmit
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Anda harus mencentang checkbox Penjualan Kotor terlebih dahulu.',
+                });
+                return false;
+            }
+    
+            // Cek apakah checkbox diskon penjualan dicentang
+            if (!checkDiskonPenjualan.checked) {
+                event.preventDefault(); // Mencegah form disubmit
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Anda harus mencentang checkbox Diskon Penjualan terlebih dahulu.',
+                });
+                return false;
+            }
+        });
+    
+        function toggleGreenCheck(id) {
+            const checkbox = document.getElementById('check_' + id);
+            const button = document.getElementById('btn_' + id);
+    
+            if (checkbox.checked) {
+                button.classList.remove('d-none');
+            } else {
+                button.classList.add('d-none');
+            }
+        }
+    </script>
 
+{{-- <script>
+    // Fungsi untuk memperbarui URL link di dalam modal
+    function updateModalLink() {
+        const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
+        const tokoId = document.getElementById('toko').value;
+
+        // Base URL untuk Barang Keluar (link di dalam modal)
+        const baseUrlBarangKeluar = "{{ route('print.penjualantoko.kotor') }}";
+        const baseUrlFakturPenjualan = "{{ route('print.fakturpenjualantoko') }}"; // Perbaikan nama variabel
+        const baseUrlFakturDeposit = "{{ route('print.fakturdepositmasuktoko') }}"; // Perbaikan nama variabel
+        const baseUrlFakturPenjualanMesinedc = "{{ route('print.fakturpenjualanmesinedc') }}"; // Perbaikan nama variabel
+        const baseUrlFakturPenjualanQris = "{{ route('print.fakturpenjualanqris') }}"; // Perbaikan nama variabel
+        const baseUrlFakturPenjualanTransfer = "{{ route('print.fakturpenjualantransfer') }}"; // Perbaikan nama variabel
+        const baseUrlFakturPenjualanGobiz = "{{ route('print.fakturpenjualangobiz') }}"; // Perbaikan nama variabel
+
+
+        // Perbarui URL untuk Barang Keluar
+        const urlBarangKeluar = new URL(baseUrlBarangKeluar, window.location.origin);
+        if (tanggalPenjualan) {
+            urlBarangKeluar.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+        }
+        if (tokoId) {
+            urlBarangKeluar.searchParams.set('toko_id', tokoId);
+        }
+        document.getElementById('penjualan_kotor_link_modal').href = urlBarangKeluar.toString();
+
+        // Perbarui URL untuk Faktur Penjualan
+        const urlFakturPenjualan = new URL(baseUrlFakturPenjualan, window.location.origin); // Perbaikan nama variabel
+        if (tanggalPenjualan) {
+            urlFakturPenjualan.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+        }
+        if (tokoId) {
+            urlFakturPenjualan.searchParams.set('toko_id', tokoId);
+        }
+        document.getElementById('faktur_penjualan_link_modal').href = urlFakturPenjualan.toString();
+
+        const urlFakturDeposit = new URL(baseUrlFakturDeposit, window.location.origin); // Perbaikan nama variabel
+        if (tanggalPenjualan) {
+            urlFakturDeposit.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+        }
+        if (tokoId) {
+            urlFakturDeposit.searchParams.set('toko_id', tokoId);
+        }
+        document.getElementById('faktur_deposit_masuk_link_modal').href = urlFakturDeposit.toString();
+
+        const urlFakturPenjualanMesinedc = new URL(baseUrlFakturPenjualanMesinedc, window.location.origin);
+        if (tanggalPenjualan) {
+            urlFakturPenjualanMesinedc.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+        }
+        if (tokoId) {
+            urlFakturPenjualanMesinedc.searchParams.set('toko_id', tokoId);
+        }
+        document.getElementById('penjualan_mesinedc_link_modal').href = urlFakturPenjualanMesinedc.toString();
+
+        const urlFakturPenjualanQris = new URL(baseUrlFakturPenjualanQris, window.location.origin);
+        if (tanggalPenjualan) {
+            urlFakturPenjualanQris.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+        }
+        if (tokoId) {
+            urlFakturPenjualanQris.searchParams.set('toko_id', tokoId);
+        }
+        document.getElementById('penjualan_qris_link_modal').href = urlFakturPenjualanQris.toString();
+
+        const urlFakturPenjualanTransfer = new URL(baseUrlFakturPenjualanTransfer, window.location.origin);
+        if (tanggalPenjualan) {
+            urlFakturPenjualanTransfer.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+        }
+        if (tokoId) {
+            urlFakturPenjualanTransfer.searchParams.set('toko_id', tokoId);
+        }
+        document.getElementById('penjualan_transfer_link_modal').href = urlFakturPenjualanTransfer.toString();
+
+        const urlFakturPenjualanGobiz = new URL(baseUrlFakturPenjualanGobiz, window.location.origin);
+        if (tanggalPenjualan) {
+            urlFakturPenjualanGobiz.searchParams.set('tanggal_penjualan', tanggalPenjualan);
+        }
+        if (tokoId) {
+            urlFakturPenjualanGobiz.searchParams.set('toko_id', tokoId);
+        }
+        document.getElementById('penjualan_gobiz_link_modal').href = urlFakturPenjualanGobiz.toString();
+
+    }
+
+    // Pastikan modal dipicu dengan tautan yang benar saat ditampilkan
+    $('#penjualanKotorModal').on('show.bs.modal', function () {
+        updateModalLink(); // Panggil fungsi untuk memperbarui link di dalam modal
+    });
+
+    // Inisialisasi pertama
+    document.addEventListener("DOMContentLoaded", function () {
+        updateModalLink();
+    });
+</script> --}}
 <script>
     // Fungsi untuk memperbarui URL link di dalam modal
     function updateModalLink() {
-        const tanggalPenjualan = document.getElementById('tanggal_setoran').value;
+        const tanggalPenjualan = document.getElementById('tanggal_penjualan').value;
         const tokoId = document.getElementById('toko').value;
 
         // Base URL untuk Barang Keluar (link di dalam modal)
@@ -560,7 +685,7 @@
         // Perbarui URL untuk Barang Keluar
         const urlBarangKeluar = new URL(baseUrlBarangKeluar, window.location.origin);
         if (tanggalPenjualan) {
-            urlBarangKeluar.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlBarangKeluar.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlBarangKeluar.searchParams.set('toko_id', tokoId);
@@ -570,7 +695,7 @@
         // Perbarui URL untuk Faktur Penjualan
         const urlFakturPenjualan = new URL(baseUrlFakturPenjualan, window.location.origin); // Perbaikan nama variabel
         if (tanggalPenjualan) {
-            urlFakturPenjualan.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturPenjualan.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturPenjualan.searchParams.set('toko_id', tokoId);
@@ -579,7 +704,7 @@
 
         const urlFakturDeposit = new URL(baseUrlFakturDeposit, window.location.origin); // Perbaikan nama variabel
         if (tanggalPenjualan) {
-            urlFakturDeposit.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturDeposit.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturDeposit.searchParams.set('toko_id', tokoId);
@@ -588,7 +713,7 @@
 
         const urlFakturDepositKeluar = new URL(baseUrlFakturDepositKeluar, window.location.origin); // Perbaikan nama variabel
         if (tanggalPenjualan) {
-            urlFakturDepositKeluar.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturDepositKeluar.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturDepositKeluar.searchParams.set('toko_id', tokoId);
@@ -597,7 +722,7 @@
 
         const urlFakturPenjualanMesinedc = new URL(baseUrlFakturPenjualanMesinedc, window.location.origin);
         if (tanggalPenjualan) {
-            urlFakturPenjualanMesinedc.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturPenjualanMesinedc.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturPenjualanMesinedc.searchParams.set('toko_id', tokoId);
@@ -606,7 +731,7 @@
 
         const urlFakturPemesananMesinedc = new URL(baseUrlFakturPemesananMesinedc, window.location.origin);
         if (tanggalPenjualan) {
-            urlFakturPemesananMesinedc.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturPemesananMesinedc.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturPemesananMesinedc.searchParams.set('toko_id', tokoId);
@@ -615,7 +740,7 @@
 
         const urlFakturPenjualanQris = new URL(baseUrlFakturPenjualanQris, window.location.origin);
         if (tanggalPenjualan) {
-            urlFakturPenjualanQris.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturPenjualanQris.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturPenjualanQris.searchParams.set('toko_id', tokoId);
@@ -624,7 +749,7 @@
 
         const urlFakturPemesananQris = new URL(baseUrlFakturPemesananQris, window.location.origin);
         if (tanggalPenjualan) {
-            urlFakturPemesananQris.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturPemesananQris.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturPemesananQris.searchParams.set('toko_id', tokoId);
@@ -633,7 +758,7 @@
 
         const urlFakturPenjualanTransfer = new URL(baseUrlFakturPenjualanTransfer, window.location.origin);
         if (tanggalPenjualan) {
-            urlFakturPenjualanTransfer.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturPenjualanTransfer.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturPenjualanTransfer.searchParams.set('toko_id', tokoId);
@@ -642,7 +767,7 @@
 
         const urlFakturPemesananTransfer = new URL(baseUrlFakturPemesananTransfer, window.location.origin);
         if (tanggalPenjualan) {
-            urlFakturPemesananTransfer.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturPemesananTransfer.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturPemesananTransfer.searchParams.set('toko_id', tokoId);
@@ -651,7 +776,7 @@
 
         const urlFakturPenjualanGobiz = new URL(baseUrlFakturPenjualanGobiz, window.location.origin);
         if (tanggalPenjualan) {
-            urlFakturPenjualanGobiz.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturPenjualanGobiz.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturPenjualanGobiz.searchParams.set('toko_id', tokoId);
@@ -660,7 +785,7 @@
 
         const urlFakturPemesananGobiz = new URL(baseUrlFakturPemesananGobiz, window.location.origin);
         if (tanggalPenjualan) {
-            urlFakturPemesananGobiz.searchParams.set('tanggal_setoran', tanggalPenjualan);
+            urlFakturPemesananGobiz.searchParams.set('tanggal_penjualan', tanggalPenjualan);
             }
             if (tokoId) {
                 urlFakturPemesananGobiz.searchParams.set('toko_id', tokoId);
@@ -680,17 +805,136 @@
     });
 </script>
 
+    <script>
+        document.getElementById('tambahInputCheckbox').addEventListener('change', function() {
+            const extraRowsContainer = document.getElementById('extraRows');
+            
+            if (this.checked) {
+                // Buat elemen input tambahan (dua set input untuk tanggal_penjualan dan nominal_setoran)
+                const newRow1 = document.createElement('div');
+                newRow1.className = 'form-group row mb-3';
+                newRow1.innerHTML = `
+                    <div class="col-sm-3">
+                        <input class="form-control" name="tanggal_penjualan[]" type="date">
+                    </div>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" name="nominal_setoran[]" oninput="formatNumber(this);">
+                    </div>
+                `;
+
+                // Tambahkan kedua row ke container
+                extraRowsContainer.appendChild(newRow1);
+            } else {
+                // Hapus semua input tambahan jika checkbox di-uncheck
+                extraRowsContainer.innerHTML = '';
+            }
+        });
+    </script>
     
-   
+    <script>
+        // Fungsi untuk menghapus format angka
+        function unformatNumber(number) {
+            return parseFloat(number.replace(/\./g, '').replace(',', '.')) || 0;
+        }
+    
+        // Fungsi untuk memformat angka dengan pemisah ribuan
+        function formatNumber(input) {
+            let value = input.value.replace(/\./g, ''); // Hapus titik sebelumnya
+            if (!isNaN(value) && value !== "") {
+                input.value = new Intl.NumberFormat('id-ID').format(value);
+            }
+        }
+    
+        // Fungsi untuk menghitung nilai plus/minus
+        function updatePlusMinus() {
+            const nominalSetoran = unformatNumber(document.getElementById('nominal_setoran').value);
+            const totalSetoran = unformatNumber(document.getElementById('total_setoran').value);
+            const plusMinus = nominalSetoran - totalSetoran;
+    
+            document.getElementById('plusminus').value = new Intl.NumberFormat('id-ID').format(plusMinus);
+        }
+    </script>
+    
+
+    <script>
+        document.getElementById('tambahInput').addEventListener('click', function() {
+            // Buat elemen div untuk row baru
+            const newRow = document.createElement('div');
+            newRow.className = 'form-group row mb-3';
+    
+            // Buat elemen input untuk tanggal_penjualan
+            const dateInput = document.createElement('input');
+            dateInput.type = 'date';
+            dateInput.name = 'tanggal_penjualan[]'; // Ganti menjadi array untuk menampung beberapa input
+            dateInput.className = 'form-control col-sm-3';
+    
+            // Buat elemen input untuk total_setoran
+            const totalInput = document.createElement('input');
+            totalInput.type = 'text';
+            totalInput.name = 'total_setoran[]'; // Ganti menjadi array untuk menampung beberapa input
+            totalInput.className = 'form-control col-sm-3';
+    
+            // Tambahkan input ke dalam row
+            newRow.appendChild(dateInput);
+            newRow.appendChild(totalInput);
+    
+            // Temukan elemen +/-
+            const plusMinusElement = document.querySelector('.form-group.row.mb-3:last-of-type');
+    
+            // Tambahkan row baru di atas elemen +/-
+            plusMinusElement.parentNode.insertBefore(newRow, plusMinusElement);
+        });
+    </script>
     
 
     <!-- Tambahkan script JQuery untuk Ajax -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+
+    {{-- <script>
+        $(document).ready(function () {
+            $('#tanggal_penjualan').on('change', function () {
+                var tanggalPenjualan = $(this).val();
+
+                if (tanggalPenjualan) {
+                    $.ajax({
+                        url: "{{ route('getdata1') }}",
+                        type: "POST",
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            tanggal_penjualan: tanggalPenjualan
+                        },
+                        success: function(response) {
+                            // Populate form fields with response data
+                            $('#setoran_id').val(response.id); // Menampilkan ID setoran
+                            $('#penjualan_kotor').val(response.penjualan_kotor);
+                            $('#diskon_penjualan').val(response.diskon_penjualan);
+                            $('#penjualan_bersih').val(response.penjualan_bersih);
+                            $('#deposit_keluar').val(response.deposit_keluar);
+                            $('#deposit_masuk').val(response.deposit_masuk);
+                            $('#mesin_edc').val(response.mesin_edc);
+                            $('#qris').val(response.qris);
+                            $('#gobiz').val(response.gobiz);
+                            $('#transfer').val(response.transfer);
+                            $('#total_penjualan').val(response.total_penjualan);
+                            $('#total_setoran').val(response.total_setoran);
+                            $('#nominal_setoran').val(response.nominal_setoran);
+                            $('#nominal_setoran2').val(response.nominal_setoran2);
+                            $('#plusminus').val(response.plusminus);
+                        },
+                        error: function (xhr) {
+                            console.log(xhr.responseText); // Debugging
+                        }
+                    });
+                }
+            });
+        });
+    </script> --}}
+
     <script>
         $(document).ready(function () {
     $('#btnCari').on('click', function () {
-        var tanggalPenjualan = $('#tanggal_setoran').val();
+        var tanggalPenjualan = $('#tanggal_penjualan').val();
         var tokoId = $('#toko').val();
 
         if (tanggalPenjualan) {
@@ -699,14 +943,13 @@
                 type: "POST",
                 data: {
                     _token: '{{ csrf_token() }}',
-                    tanggal_setoran: tanggalPenjualan,
+                    tanggal_penjualan: tanggalPenjualan,
                     toko_id: tokoId // Kirim toko_id
                 },
                 success: function (response) {
                     // Isi field-form dengan data dari respons
                     $('#setoran_id').val(response.id); 
-                    $('#no_fakturpenjualantoko').val(response.no_fakturpenjualantoko); 
-                    // $('#tanggal_setoran').val(response.tanggal_setoran); 
+                    // $('#tanggal_penjualan').val(response.tanggal_penjualan); 
                     $('#penjualan_kotor').val(response.penjualan_kotor);
                     $('#diskon_penjualan').val(response.diskon_penjualan);
                     $('#penjualan_bersih').val(response.penjualan_bersih);
@@ -749,153 +992,6 @@
     </script>
 
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Fungsi Format Rupiah
-        function formatRupiah(angka) {
-            let numberString = angka.replace(/[^,\d]/g, "").toString(),
-                split = numberString.split(","),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-            if (ribuan) {
-                let separator = sisa ? "." : "";
-                rupiah += separator + ribuan.join(".");
-            }
-
-            return split[1] !== undefined ? rupiah + "," + split[1] : rupiah;
-        }
-
-        // Fungsi Hitung Selisih dan Beri Keterangan
-        function hitungSelisih(input1, input2, output, keterangan) {
-            let value1 = parseInt(input1.value.replace(/[^,\d]/g, "")) || 0;
-            let value2 = parseInt(input2.value.replace(/[^,\d]/g, "")) || 0;
-            let selisih = value1 - value2;
-
-            output.value = formatRupiah(selisih.toString());
-
-            // Tentukan Keterangan
-            if (selisih > 0) {
-                keterangan.textContent = "Kurang Bayar";
-                keterangan.classList.remove("text-success");
-                keterangan.classList.add("text-danger");
-            } else if (selisih < 0) {
-                keterangan.textContent = "Lebih Bayar";
-                keterangan.classList.remove("text-danger");
-                keterangan.classList.add("text-success");
-            } else {
-                keterangan.textContent = "Lunas";
-                keterangan.classList.remove("text-danger", "text-success");
-            }
-        }
-
-        // Element Inputs
-        const inputs = [
-            {
-                input1: document.getElementById("penjualan_kotor"),
-                input2: document.getElementById("penjualan_kotor1"),
-                output: document.getElementById("penjualan_selisih"),
-                keterangan: document.getElementById("penjualan_keterangan"),
-            },
-            {
-                input1: document.getElementById("diskon_penjualan"),
-                input2: document.getElementById("diskon_penjualan1"),
-                output: document.getElementById("diskon_selisih"),
-                keterangan: document.getElementById("diskon_keterangan"),
-            },
-            {
-                input1: document.getElementById("penjualan_bersih"),
-                input2: document.getElementById("penjualan_bersih1"),
-                output: document.getElementById("penjualanbersih_selisih"),
-                keterangan: document.getElementById("penjualanbersih_keterangan"),
-            },
-            {
-                input1: document.getElementById("deposit_keluar"),
-                input2: document.getElementById("deposit_keluar1"),
-                output: document.getElementById("depositkeluar_selisih"),
-                keterangan: document.getElementById("depositkeluar_keterangan"),
-            },
-            {
-                input1: document.getElementById("deposit_masuk"),
-                input2: document.getElementById("deposit_masuk1"),
-                output: document.getElementById("depositmasuk_selisih"),
-                keterangan: document.getElementById("depositmasuk_keterangan"),
-            },
-            {
-                input1: document.getElementById("total_penjualan"),
-                input2: document.getElementById("total_penjualan1"),
-                output: document.getElementById("totalpenjualan_selisih"),
-                keterangan: document.getElementById("totalpenjualan_keterangan"),
-            },
-            {
-                input1: document.getElementById("mesin_edc"),
-                input2: document.getElementById("mesin_edc1"),
-                output: document.getElementById("mesinedc_selisih"),
-                keterangan: document.getElementById("mesinedc_keterangan"),
-            },
-            {
-                input1: document.getElementById("qris"),
-                input2: document.getElementById("qris1"),
-                output: document.getElementById("qris_selisih"),
-                keterangan: document.getElementById("qris_keterangan"),
-            },
-            {
-                input1: document.getElementById("gobiz"),
-                input2: document.getElementById("gobiz1"),
-                output: document.getElementById("gobiz_selisih"),
-                keterangan: document.getElementById("gobiz_keterangan"),
-            },
-            {
-                input1: document.getElementById("transfer"),
-                input2: document.getElementById("transfer1"),
-                output: document.getElementById("transfer_selisih"),
-                keterangan: document.getElementById("transfer_keterangan"),
-            },
-            {
-                input1: document.getElementById("total_setoran"),
-                input2: document.getElementById("total_setoran1"),
-                output: document.getElementById("totalsetoran_selisih"),
-                keterangan: document.getElementById("totalsetoran_keterangan"),
-            }
-        ];
-
-        // Tambahkan Event Listener ke Setiap Input
-        inputs.forEach(({ input1, input2, output, keterangan }) => {
-            input2.addEventListener("keyup", function () {
-                this.value = formatRupiah(this.value, "");
-                hitungSelisih(input1, input2, output, keterangan);
-            });
-        });
-    });
-</script>
-
-
-{{-- <script>
-    // Inisialisasi DataTable dan atur modal
-    $(document).ready(function() {
-        var pelangganTable = $('#datatables4').DataTable();
-
-        $('#tableMarketing').on('shown.bs.modal', function () {
-            pelangganTable.columns.adjust().draw();
-        });
-    });
-
-    // Fungsi untuk menampilkan modal
-    function showCategoryModalpemesanan() {
-        $('#tableMarketing').modal('show');
-    }
-
-    // Fungsi untuk mendapatkan data pelanggan dari modal dan menyembunyikan modal
-    function getSelectedDataPemesanan(no_fakturpenjualantoko, penjualan_kotor) {
-        // Masukkan data yang dipilih ke dalam input form
-        document.getElementById('no_fakturpenjualantoko').value = no_fakturpenjualantoko;
-        document.getElementById('penjualan_kotor').value = penjualan_kotor;
-
-        // Sembunyikan modal setelah data dipilih
-        $('#tableMarketing').modal('hide');
-    }
-</script> --}}
 @endsection
 
 

@@ -111,11 +111,6 @@
                                 <th>Transfer</th>
                                 <th>Qris</th>
                                 <th>Total Setoran</th>
-                                <th>Nominal Setoran</th>
-                                @if($hasNominalSetoran2)
-                                    <th>Nominal Setoran 2</th>
-                                @endif
-                                <th>Plus Minus</th>
                                 <th class="text-center" width="20">Opsi</th>
                             </tr>
                         </thead>
@@ -125,32 +120,25 @@
 
                             <tr class="dropdown" {{ $item->id }}>
                                 <td class="text-center">{{ $index + 1 }}</td>
-                                <td>{{ $item->tanggal_setoran ? \Carbon\Carbon::parse($item->tanggal_setoran)->format('d-m-Y') : '-' }}</td>
+                                <td>{{ $item->tanggal_setoran ? \Carbon\Carbon::parse($item->tanggal_setoran)->format('d-m-Y') : '-' }}</td> <!-- Menampilkan Tanggal item -->
                                 <td>{{ $item->toko->nama_toko }}</td>
-                                <td>{{ number_format($item->penjualan_kotor, 0, ',', '.') }}</td>
-                                <td>{{ number_format($item->diskon_penjualan, 0, ',', '.') }}</td>
-                                <td>{{ number_format($item->penjualan_bersih, 0, ',', '.') }}</td>
-                                <td>{{ number_format($item->deposit_keluar, 0, ',', '.') }}</td>
-                                <td>{{ number_format($item->deposit_masuk, 0, ',', '.') }}</td>
-                                <td>{{ number_format($item->total_penjualan, 0, ',', '.') }}</td>
-                                <td>{{ number_format($item->mesin_edc ?? 0, 0, ',', '.') }}</td>
-                                <td>{{ number_format($item->gobiz ?? 0, 0, ',', '.') }}</td>
-                                <td>{{ number_format($item->transfer ?? 0, 0, ',', '.') }}</td>
-                                <td>{{ number_format($item->qris ?? 0, 0, ',', '.') }}</td>
-                                <td>{{ number_format($item->total_setoran, 0, ',', '.') }}</td>
-                                <td>{{ number_format($item->nominal_setoran, 0, ',', '.') }}</td>
-                            
-                                @if($item->nominal_setoran2 !== null)
-                                    <td>{{ number_format($item->nominal_setoran2, 0, ',', '.') }}</td>
-                                @endif
-                            
-                            
-                                <td>{{ number_format($item->plusminus, 0, ',', '.') }}</td>
+                                <td>{{ $item->penjualan_kotor1 }}</td>
+                                <td>{{ $item->diskon_penjualan1 }}</td>
+                                <td>{{ $item->penjualan_bersih1 }}</td>
+                                <td>{{ $item->deposit_keluar1 }}</td>
+                                <td>{{ $item->deposit_masuk1 }}</td>
+                                <td>{{ $item->total_penjualan1 }}</td>
+                                <td>{{ $item->mesin_edc1 ?? '0' }}</td>
+                                <td>{{ $item->gobiz1 ?? '0' }}</td>
+                                <td>{{ $item->transfer1 ?? '0' }}</td>
+                                <td>{{ $item->qris1 ?? '0' }}</td>
+                                <td>{{ $item->total_setoran1 }}</td>
+
                             
                                 <td class="text-center">
                                     @if ($item->status == 'posting')
-                                        <button type="button" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-minus"></i>
+                                        <button type="button" class="btn btn-success btn-sm">
+                                            <i class="fas fa-check"></i>
                                         </button>
                                     @endif
                                     @if ($item->status == 'unpost')
@@ -167,16 +155,14 @@
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         @if ($item->status == 'unpost')
                                             <a class="dropdown-item posting-btn" data-memo-id="{{ $item->id }}">Posting</a>
-                                            <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.print', $item->id) }}" target="_blank">Print</a>
-                                            {{-- <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.edit', $item->id) }}">Pelunasan</a> --}}
+                                            <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.print', $item->id) }}" target="_blank">Show</a>
                                         @endif
                                         @if ($item->status == 'posting')
                                             <a class="dropdown-item unpost-btn" data-memo-id="{{ $item->id }}">Unpost</a>
-                                            {{-- <a class="dropdown-item approve-btn" data-memo-id="{{ $item->id }}">Approve</a> --}}
-                                            <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.print', $item->id) }}" target="_blank">Print</a>
+                                            <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.print', $item->id) }}" target="_blank">Show</a>
                                         @endif
                                         @if ($item->status == 'approve')
-                                            <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.print', $item->id) }}" target="_blank">Print</a>
+                                            <a class="dropdown-item" href="{{ route('inquery_setoranpelunasan.print', $item->id) }}" target="_blank">Show</a>
                                         @endif
                                     </div>
                                 </td>

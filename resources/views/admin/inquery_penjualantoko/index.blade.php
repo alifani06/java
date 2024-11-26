@@ -154,12 +154,12 @@
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @if ($item->status == 'unpost')
                                             <a class="dropdown-item posting-btn" data-memo-id="{{ $item->id }}">Posting</a>
-                                                <a class="dropdown-item" href="{{ route('inquery_penjualantoko.print', $item->id) }}" target="_blank">Print</a>  
+                                                <a class="dropdown-item" href="{{ route('inquery_penjualantoko.print', $item->id) }}" target="_blank">Show</a>  
                                             @endif
 
                                             @if ($item->status == 'posting')
                                                 <a class="dropdown-item unpost-btn" data-memo-id="{{ $item->id }}">Unpost</a>
-                                                <a class="dropdown-item" href="{{ route('inquery_penjualantoko.print', $item->id) }}" target="_blank">Print</a>
+                                                <a class="dropdown-item" href="{{ route('inquery_penjualantoko.print', $item->id) }}" target="_blank">Show</a>
                                             @endif
                                            
                                         </div>

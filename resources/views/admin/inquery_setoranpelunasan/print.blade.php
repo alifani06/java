@@ -2,260 +2,261 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cetak penjualan Produk</title>
+    <title>Surat Pengiriman Produk</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
-        html,
-            body {
+        body {
             font-family: Arial, sans-serif;
-            line-height: 1.6;
-            /* margin: 0; */
-            margin-left: -5;
-            margin-top: 0;
-            /* padding: 0; */
-            padding-right: 450px;
-            font-size: 10px;
-            background-color: #fff;
-        }
-            .container {
-            width: 70mm; /* Adjusted width */
-            margin: 0 auto;
-            border: 1px solid #ddd;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0px 0px 5px rgba(0,0,0,0.1);
-        }
-
-        .header {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100px; /* Sesuaikan tinggi header sesuai kebutuhan */
-         }
-
-        .header .text {
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* Mengatur konten di dalam .text agar berada di tengah */
-            text-align: center; /* Mengatur teks di dalam .text agar berada di tengah */
-        }
-
-        .header .text h1 {
-            margin-top: 10px;
-            margin-bottom: 0px;
-            padding: 0;
-            font-size: 16px;
-            color: #0c0c0c;
-            text-transform: uppercase;
-        }
-
-        .header .text p {
-            margin: 2px ;
-            font-size: 8px;
-            margin-bottom: 2px;
-        }
-        .section {
-            margin-bottom: 10px;
-        }
-        .section h2 {
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 5px;
-            text-align: center;
-            margin-bottom: 5px;
             font-size: 12px;
-            text-transform: uppercase;
+            margin: 0;
+            padding: 0;
+            padding-bottom: 60px;
         }
-        .section table {
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+        .logo img {
+            width: 150px;
+            height: 77px;
+        }
+        .header {
             width: 100%;
-            border-collapse: collapse;
+            border-bottom: 1px solid #000;
+            padding: 10px;
+        }
+        .header td {
+            border: none;
+        }
+        .header .title {
+            font-weight: bold;
+            font-size: 28px;
+        }
+        .header .address, .header .contact {
+            font-size: 12px;
+        }
+        .divider {
+            border: 0.5px solid #000;
+            margin: 10px 0;
+        }
+        .change-header {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .change-header1 {
+            text-align: center;
+            font-size: 12px;
             margin-top: 5px;
         }
-        .section table th, .section table td {
-            border: 1px solid #ccc;
-            padding: 5px;
-            font-size: 8px;
+        .tanggal {
+            text-align: left;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 20px;
         }
-        
-        .float-right {
-            text-align: right;
+        .section-title {
+            margin-top: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 14px;
+            text-align: left;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
             margin-top: 10px;
         }
-        .float-right button {
-            padding: 5px 10px;
+        th, td {
+            padding: 4px;
+            border: 1px solid black;
+            text-align: left;
             font-size: 10px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            border-radius: 3px;
-            box-shadow: 0px 1px 3px rgba(0,0,0,0.1);
         }
-        .float-right button:hover {
-            background-color: #0056b3;
+        th {
+            background-color: white;
         }
-
-    
-        .divider {
-            border: 0.5px solid;
-            margin-top: -10px;
-            margin-bottom: 2px;
-            border-bottom: 2px solid #0f0e0e;
+        .row p {
+            margin: 0;
         }
-
-        table.no-border, 
-        table.no-border tr, 
-        table.no-border td {
-            border: none !important;
+        .total-row {
+            font-weight: bold;
         }
-        @media print {
-    body {
-        font-size: 10px;
-        background-color: #fff;
-        margin: 0;
-        padding: 0;
-    }
-    .container {
-        width: 70mm; /* Sesuaikan dengan lebar kertas thermal */
-        margin: 0 auto;
-        border: none;
-        padding: 0;
-        box-shadow: none;
-    }
-    .header .logo img {
-        max-width: 80px; /* Sesuaikan jika perlu */
-        height: auto;
-    }
-    .section table {
-        width: 100%;
-        margin-top: 5px;
-    }
-    .section table th, .section table td {
-        border: 1px solid #ccc;
-        padding: 5px;
-        font-size: 8px;
-    }
-
-
-    .float-right button {
-        font-size: 10px;
-        padding: 5px 10px;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        cursor: pointer;
-        border-radius: 3px;
-        box-shadow: 0px 1px 3px rgba(0,0,0,0.1);
-    }
-    .float-right button:hover {
-        background-color: #0056b3;
-    }
- 
-    .divider {
-        border: 0.5px solid;
-        margin-top: 3px;
-        margin-bottom: 1px;
-        border-bottom: 1px solid #0f0e0e;
         
-    }
-    
-    @page {
-        size: 70mm auto; /* Sesuaikan dengan ukuran kertas thermal */
-        margin: 0mm; /* Set margin ke 0 untuk semua sisi */
-    }
-}
+        /* CSS untuk tampilan cetak */
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            .container {
+                width: 100%;
+                margin: 0;
+            }
+            .header {
+                border-bottom: 1px solid #000;
+                page-break-inside: avoid;
+            }
+            .divider {
+                border: 0.5px solid #000;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
+            th, td {
+                padding: 6px;
+                border: 1px solid #000;
+            }
+            .change-header {
+                page-break-before: always;
+            }
+        }
 
+        .signature-section {
+            margin-top: 40px;
+        }
+        .signature-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .signature-table td {
+            padding: 20px;
+            vertical-align: top;
+            border: none;
+        }
+        .signature-title {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .signature-line {
+            border-top: 1px solid black;
+            margin-top: 40px;
+            margin-bottom: 5px;
+        }
+        .signature-name {
+            text-align: center;
+        }
     </style>
-
-    
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="text">
-                <h1>PT JAVA BAKERY FACTORY</h1>
-                <p>Cabang : BANJARAN</p>
-                <p>Jl. Raya Utara Adiwerna No.40, Pesalakan, Adiwerna, Kec. Adiwerna, Kabupaten Tegal, Jawa Tengah 52194</p>
+    <!-- Kop Surat -->
+    <div class="header row">
+        <div class="col-2 text-right">
+            <div class="logo">
+                {{-- <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY"> --}}
             </div>
+            {{-- <div>
+                <span class="title">PT JAVA BAKERY FACTORY</span><br>
+                <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
+            </div> --}}
         </div>
-        <hr class="divider">
-        <hr class="divider">
-        <div class="section">
-            <h2>NOTA SETORAN TUNAI PENJUALAN</h2>
-            {{-- <strong>Kasir:</strong> {{ $kasir ? $kasir : 'Semua Kasir' }} --}}
-            <p style="text-align: right; font-size: 8px;">
-            </p>
-            
-            <table class="no-border mb-1">
-                <tr>
-                    <td class="text-left"><strong>PENJUALAN KOTOR</strong></td>
-                    <td style="text-align: right">{{ $setoranPenjualans->penjualan_kotor }}</td>
-                </tr>
-                <tr>
-                    <td class="text-left"><strong>DISKON PENJUALAN</strong></td>
-                    <td style="text-align: right">{{ $setoranPenjualans->diskon_penjualan }}</td>
-                </tr>
-                <tr>
-                    <td colspan="2"><hr style="border-top: 0.5px solid #000;"></td>
-                </tr>
-                <tr>
-                    <td class="text-left"><strong>PENJUALAN BERSIH</strong></td>
-                    <td style="text-align: right">{{ $setoranPenjualans->penjualan_bersih }}</td>
-                </tr>
-                <tr>
-                    <td class="text-left"><strong>DEPOSIT KELUAR</strong></td>
-                    <td style="text-align: right">{{ $setoranPenjualans->deposit_keluar }}</td>
-                </tr>
-                <tr>
-                    <td class="text-left"><strong>DEPOSIT MASUK</strong></td>
-                    <td style="text-align: right">{{ $setoranPenjualans->deposit_masuk }}</td>
-                </tr>
-                <tr>
-                    <td colspan="2"><hr style="border-top: 0.5px solid #000;"></td>
-                </tr>
-                <tr>
-                    <td class="text-left"><strong>TOTAL PENJUALAN</strong></td>
-                    <td style="text-align: right">{{ $setoranPenjualans->total_penjualan }}</td>
-                </tr>
-                <tr>
-                    <td class="text-left"><strong>GO-BIZ</strong></td>
-                    <td style="text-align: right">{{ $setoranPenjualans->gobiz }}</td>
-                </tr>
-                <tr>
-                    <td class="text-left"><strong>EDC</strong></td>
-                    <td style="text-align: right">{{ $setoranPenjualans->mesin_edc }}</td>
-                </tr>
-                <tr>
-                    <td class="text-left"><strong>TRANSFER</strong></td>
-                    <td style="text-align: right">{{ $setoranPenjualans->transfer }}</td>
-                </tr>
-                <tr>
-                    <td class="text-left"><strong>QRIS</strong></td>
-                    <td style="text-align: right">{{ $setoranPenjualans->qris }}</td>
-                </tr>
-                <tr>
-                    <td colspan="2"><hr style="border-top: 0.5px solid #000;"></td>
-                </tr>
-                <tr>
-                    <td class="text-left"><strong>TOTAL SETORAN</strong></td>
-                    <td style="text-align: right">{{ $setoranPenjualans->total_setoran }}</td>
-                </tr>
-                <tr>
-                    <td class="text-left"><strong>NOMINAL SETORAN</strong></td>
-                    <td style="text-align: right">{{ $setoranPenjualans->nominal_setoran }}</td>
-                </tr>
-                <tr>
-                    <td colspan="2"><hr style="border-top: 0.5px solid #000;"></td>
-                </tr>
-                <tr>
-                    <td class="text-left"><strong>PLUS MINUS</strong></td>
-                    <td style="text-align: right">{{ $setoranPenjualans->plusminus }}</td>
-                </tr>
-            </table>
-            
+        <div class="col-8 text-center">
+            <div class="logo">
+                <img src="{{ asset('storage/uploads/icon/bakery.png') }}" alt="JAVA BAKERY">
+            </div>
+            <span class="title">PT JAVA BAKERY FACTORY</span><br>
+            <p>Jl. HOS. Cokro Aminoto No.5, Kagok, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411</p><br>
         </div>
-        
-        
-    </body>
-    </html>
-    
+    </div>
+
+    <!-- Judul Surat -->
+    <div class="change-header">FAKTUR PENJUALAN TOKO</div>
+    <div class="change-header1">
+        <p style="margin-bottom: 2px; font-size: 18px;">{{ $setoran->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
+        <p>{{ $setoran->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
+    </div>
+
+    <!-- Informasi Permintaan -->
+    <div>
+        <p style="margin-bottom: 2px;">
+            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>No. Faktur</strong></span>
+            <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $setoran->no_fakturpenjualantoko }}</span>
+        </p>
+        <p style="margin-bottom: 2px;">
+            <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Tanggal Setoran</strong> </span>
+            <span style="min-width: 50px; display: inline-flex; align-items: center;">
+                : {{ $setoran->created_at->locale('id')->translatedFormat('d F Y H:i') }}
+            </span>
+        </p> 
+    </div>
+
+    <table class="table table-bordered table-striped" style="margin-top: 20px;">
+        <thead class="table-dark">
+            <tr>
+                <th style="width: 50%; text-align: left;">Keterangan</th>
+                <th style="width: 30%; text-align: right;">Nilai</th>
+                <th style="width: 20%; text-align: right;">Selisih</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Penjualan Kotor</td>
+                <td style="text-align: right;">{{ $setoran->penjualan_kotor1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->penjualan_selisih ?? 0 }}</td>
+            </tr>
+            <tr>
+                <td>Diskon Penjualan</td>
+                <td style="text-align: right;">{{ $setoran->diskon_penjualan1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->diskon_selisih ?? 0 }}</td>
+            </tr>
+            <tr>
+                <td>Penjualan Bersih</td>
+                <td style="text-align: right;">{{ $setoran->penjualan_bersih1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->penjualanbersih_selisih ?? 0 }}</td>
+            </tr>
+            <tr>
+                <td>Deposit Masuk</td>
+                <td style="text-align: right;">{{ $setoran->deposit_masuk1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->depositmasuk_selisih ?? 0 }}</td>
+            </tr>
+            <tr>
+                <td>Deposit Keluar</td>
+                <td style="text-align: right;">{{ $setoran->deposit_keluar1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->depositkeluar_selisih ?? 0 }}</td>
+            </tr>
+            <tr>
+                <td>Total Penjualan</td>
+                <td style="text-align: right;">{{ $setoran->total_penjualan1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->totalpenjualan_selisih ?? 0 }}</td>
+            </tr>
+            <tr>
+                <td>Mesin EDC</td>
+                <td style="text-align: right;">{{ $setoran->mesin_edc1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->mesinedc_selisih ?? 0 }}</td>
+            </tr>
+            <tr>
+                <td>QRIS</td>
+                <td style="text-align: right;">{{ $setoran->qris1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->qris_selisih ?? 0 }}</td>
+            </tr>
+            <tr>
+                <td>GOBIZ</td>
+                <td style="text-align: right;">{{ $setoran->gobiz1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->gobiz_selisih ?? 0 }}</td>
+            </tr>
+            <tr>
+                <td>Transfer</td>
+                <td style="text-align: right;">{{ $setoran->transfer1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->transfer_selisih ?? 0 }}</td>
+            </tr>
+            <tr>
+                <td>Total Setoran</td>
+                <td style="text-align: right;">{{ $setoran->total_setoran1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->totalsetoran_selisih ?? 0 }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- Tanda Tangan -->
+   
+
+    <div class="print-date" style="position: fixed; bottom: 0; right: 0; text-align: right; margin-top: 20px; width: 100%;">
+        <p style="margin: 0; font-size: 10px;">
+            {{ now()->locale('id')->translatedFormat('d F Y H:i') }}
+        </p>
+</body>
+</html>

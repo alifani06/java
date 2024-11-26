@@ -24,6 +24,7 @@ use App\Models\Detailtokoslawi;
 use App\Models\Dppemesanan;
 use App\Models\Input;
 use App\Models\Karyawan;
+use App\Models\Pelunasan_penjualan;
 use App\Models\Setoran_penjualan;
 use App\Models\Penjualanproduk;
 use Carbon\Carbon;
@@ -44,7 +45,7 @@ class Setoran_pelunasanController extends Controller
     public function index(Request $request)
     {
         // Ambil semua data setoran penjualan
-        $setoranPenjualans = Setoran_penjualan::orderBy('id', 'DESC')->get();
+        $setoranPenjualans = Pelunasan_penjualan::orderBy('id', 'DESC')->get();
     
         // Kirim data ke view
         return view('admin.setoran_pelunasan.index', compact('setoranPenjualans'));
@@ -53,33 +54,31 @@ class Setoran_pelunasanController extends Controller
     public function create(Request $request)
     {
         $tokos = Toko::all();
-
-        // Ambil satu record terbaru dari Setoran_penjualan
         $setoranPenjualans = Setoran_penjualan::orderBy('id', 'DESC')->first();
     
-        // Kirim data ke view
-        return view('admin.setoran_pelunasan.create', compact('setoranPenjualans','tokos'));
+        // dd($setoranPenjualans); // Periksa isi variabel sebelum dikirim ke view
+        return view('admin.setoran_pelunasan.create', compact('setoranPenjualans', 'tokos'));
     }
     
+
+    
     
     
 
-
-   
     public function getdata1(Request $request)
     {
         // Validasi input
         $request->validate([
-            'tanggal_penjualan' => 'required|date',
+            'tanggal_setoran' => 'required|date',
             'toko_id' => 'nullable|exists:tokos,id' // Validasi toko_id
         ]);
     
         // Ambil parameter dari request
-        $tanggalPenjualan = $request->input('tanggal_penjualan');
+        $tanggalPenjualan = $request->input('tanggal_setoran');
         $tokoId = $request->input('toko_id');
     
         // Query untuk mengambil data dari tabel setoran_penjualan
-        $query = Setoran_penjualan::whereDate('tanggal_penjualan', $tanggalPenjualan);
+        $query = Setoran_penjualan::whereDate('tanggal_setoran', $tanggalPenjualan);
     
         // Filter berdasarkan toko_id jika diberikan
         if ($tokoId) {
@@ -113,7 +112,8 @@ class Setoran_pelunasanController extends Controller
         // Kembalikan hasil dari setoran_penjualan dalam format JSON
         return response()->json([
             'id' => $setoranPenjualan->id,
-            'tanggal_penjualan' => $setoranPenjualan->tanggal_penjualan,
+            'no_fakturpenjualantoko' => $setoranPenjualan->no_fakturpenjualantoko,
+            'tanggal_setoran' => $setoranPenjualan->tanggal_setoran,
             'penjualan_kotor' => number_format($setoranPenjualan->penjualan_kotor, 0, ',', '.'),
             'diskon_penjualan' => number_format($setoranPenjualan->diskon_penjualan, 0, ',', '.'),
             'penjualan_bersih' => number_format($setoranPenjualan->penjualan_bersih, 0, ',', '.'),
@@ -131,52 +131,7 @@ class Setoran_pelunasanController extends Controller
         ]);
     }
     
-
-
-    
-
-    // public function store(Request $request)
-    // {
-    //     // Validasi data
-    //     $request->validate([
-    //         'penjualan_kotor' => 'required|numeric',
-    //         'diskon_penjualan' => 'required|numeric',
-    //         'penjualan_bersih' => 'required|numeric',
-    //         'deposit_keluar' => 'required|numeric',
-    //         'deposit_masuk' => 'required|numeric',
-    //         'total_penjualan' => 'required|numeric',
-    //         'mesin_edc' => 'required|numeric',
-    //         'qris' => 'required|numeric',
-    //         'gobiz' => 'required|numeric',
-    //         'transfer' => 'required|numeric',
-    //         'tanggal_penjualan' => 'required|date',
-    //     ]);
-
-    //     // Simpan data ke database
-    //     $setoranPelunasan = new Setoran_penjualan();
-    //     $setoranPelunasan->penjualan_kotor = $request->penjualan_kotor;
-    //     $setoranPelunasan->diskon_penjualan = $request->diskon_penjualan;
-    //     $setoranPelunasan->penjualan_bersih = $request->penjualan_bersih;
-    //     $setoranPelunasan->deposit_keluar = $request->deposit_keluar;
-    //     $setoranPelunasan->deposit_masuk = $request->deposit_masuk;
-    //     $setoranPelunasan->total_penjualan = $request->total_penjualan;
-    //     $setoranPelunasan->mesin_edc = $request->mesin_edc;
-    //     $setoranPelunasan->qris = $request->qris;
-    //     $setoranPelunasan->gobiz = $request->gobiz;
-    //     $setoranPelunasan->transfer = $request->transfer;
-    //     $setoranPelunasan->tanggal_penjualan = $request->tanggal_penjualan;
-    //     $setoranPelunasan->total_setoran = $request->total_setoran;
-    //     $setoranPelunasan->nominal_setoran = $request->nominal_setoran;
-    //     $setoranPelunasan->plusminus = $request->plusminus;
-    //     $setoranPelunasan->status = 'posting';
-    //     $setoranPelunasan->save();
-
-    //     // Redirect ke halaman lain atau berikan pesan sukses
-    //     return redirect()->back()->with('success', 'Data berhasil disimpan!');
-    // }
-
  
-
     public function updateStatus(Request $request)
     {
         // Ambil id setoran dari request
@@ -212,7 +167,124 @@ class Setoran_pelunasanController extends Controller
         return redirect()->back()->with('error', 'Setoran tidak ditemukan');
     }
     
-    
+
+// public function store(Request $request)
+// {
+//     $validator = Validator::make(
+//         $request->all(),
+//         [
+//         'penjualan_kotor1' => 'nullable|numeric',
+//         'diskon_penjualan1' => 'nullable|numeric',
+//         'penjualan_bersih1' => 'nullable|numeric',
+//         'deposit_keluar1' => 'nullable|numeric',
+//         'deposit_masuk1' => 'nullable|numeric',
+//         'total_penjualan1' => 'nullable|numeric',
+//         'mesin_edc1' => 'nullable|numeric',
+//         'qris1' => 'nullable|numeric',
+//         'gobiz1' => 'nullable|numeric',
+//         'transfer1' => 'nullable|numeric',
+//         'total_setoran1' => 'nullable|numeric',
+//         'penjualan_selisih' => 'nullable|numeric',
+//         'diskon_selisih' => 'nullable|numeric',
+//         'penjualanbersih_selisih' => 'nullable|numeric',
+//         'depositkeluar_selisih' => 'nullable|numeric',
+//         'depositmasuk_selisih' => 'nullable|numeric',
+//         'totalpenjualan_selisih' => 'nullable|numeric',
+//         'mesinedc_selisih' => 'nullable|numeric',
+//         'qris_selisih' => 'nullable|numeric',
+//         'gobiz_selisih' => 'nullable|numeric',
+//         'transfer_selisih' => 'nullable|numeric',
+//         'totalsetoran_selisih' => 'nullable|numeric',
+//         ],
+//         [
+         
+//             'penjualan_kotor1.nullable' => 'Masukkan kode lama',
+//             'diskon_penjualan1.nullable' => 'Masukkan nama pelanggan',
+//             'penjualan_bersih1.nullable' => 'masukan pekerjaan',
+//             'deposit_keluar1.nullable' => 'peilih gender',
+//             'total_penjualan1.nullable' => 'Masukkan email',
+//             'total_penjualan1.nullable' => 'Masukkan no telepon',
+//             'mesin_edc1.nullable' => 'Masukkan alamat',
+//             'qris1.nullable' => 'Masukkan tanggal lahir',
+//             'gobiz1.nullable' => 'Masukkan tanggal gabung',
+//             'transfer1.nullable' => 'Masukkan tanggal expired',
+//             'total_setoran1.nullable' => 'Gambar yang dimasukan salah!',
+//         ]
+//     );
+
+
+//     Pelunasan_penjualan::create(array_merge(
+//         $request->all(),
+//         [
+//             'status' => 'null',
+//             'tanggal_setoran' => Carbon::now('Asia/Jakarta'),
+
+//         ]
+//     ));
+
+//     return redirect('admin/setoran_pelunasan')->with('success', 'Berhasil');
+// }
+public function store(Request $request)
+{
+    $validator = Validator::make(
+        $request->all(),
+        [
+            'penjualan_kotor1' => 'nullable|numeric',
+            'diskon_penjualan1' => 'nullable|numeric',
+            'penjualan_bersih1' => 'nullable|numeric',
+            'deposit_keluar1' => 'nullable|numeric',
+            'deposit_masuk1' => 'nullable|numeric',
+            'total_penjualan1' => 'nullable|numeric',
+            'mesin_edc1' => 'nullable|numeric',
+            'qris1' => 'nullable|numeric',
+            'gobiz1' => 'nullable|numeric',
+            'transfer1' => 'nullable|numeric',
+            'total_setoran1' => 'nullable|numeric',
+            'penjualan_selisih' => 'nullable|numeric',
+            'diskon_selisih' => 'nullable|numeric',
+            'penjualanbersih_selisih' => 'nullable|numeric',
+            'depositkeluar_selisih' => 'nullable|numeric',
+            'depositmasuk_selisih' => 'nullable|numeric',
+            'totalpenjualan_selisih' => 'nullable|numeric',
+            'mesinedc_selisih' => 'nullable|numeric',
+            'qris_selisih' => 'nullable|numeric',
+            'gobiz_selisih' => 'nullable|numeric',
+            'transfer_selisih' => 'nullable|numeric',
+            'totalsetoran_selisih' => 'nullable|numeric',
+        ],
+        [
+            'penjualan_kotor1.nullable' => 'Masukkan kode lama',
+            'diskon_penjualan1.nullable' => 'Masukkan nama pelanggan',
+            'penjualan_bersih1.nullable' => 'Masukan pekerjaan',
+            'deposit_keluar1.nullable' => 'Pilih gender',
+            'total_penjualan1.nullable' => 'Masukkan email',
+            'total_penjualan1.nullable' => 'Masukkan no telepon',
+            'mesin_edc1.nullable' => 'Masukkan alamat',
+            'qris1.nullable' => 'Masukkan tanggal lahir',
+            'gobiz1.nullable' => 'Masukkan tanggal gabung',
+            'transfer1.nullable' => 'Masukkan tanggal expired',
+            'total_setoran1.nullable' => 'Gambar yang dimasukkan salah!',
+        ]
+    );
+
+    // if ($validator->fails()) {
+    //     return redirect()->back()->withErrors($validator)->withInput();
+    // }
+
+    $pelunasan = Pelunasan_penjualan::create(array_merge(
+        $request->all(),
+        [
+            'status' => 'posting',
+            'tanggal_setoran' => Carbon::now('Asia/Jakarta'),
+        ]
+    ));
+
+    // Redirect ke halaman show dengan ID yang baru dibuat
+    return redirect()->route('setoran_pelunasan.show', $pelunasan->id)
+        ->with('success', 'Berhasil menyimpan data');
+}
+
+
     
     
 
@@ -529,6 +601,10 @@ class Setoran_pelunasanController extends Controller
         return $pdf->stream('laporan_penjualan_produk.pdf');
     }
     
-
+    public function show($id)
+    {
+        $setoran = pelunasan_penjualan::findOrFail($id);
+        return view('admin.setoran_pelunasan.show', compact('setoran'));
+    }
 
 }   

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surat Pengiriman Produk</title>
+    <title>Pelunasan Penjualan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
         body {
@@ -165,7 +165,7 @@
     </div>
 
     <!-- Judul Surat -->
-    <div class="change-header">FAKTUR PENJUALAN TOKO</div>
+    <div class="change-header">FAKTUR PELUNASAN PENJUALAN</div>
     <div class="change-header1">
         <p style="margin-bottom: 2px; font-size: 18px;">{{ $setoran->toko->nama_toko ?? 'Nama toko tidak tersedia' }}</p>
         <p>{{ $setoran->toko->alamat ?? 'Alamat tidak tersedia' }}</p>
@@ -188,54 +188,66 @@
     <table class="table table-bordered table-striped" style="margin-top: 20px;">
         <thead class="table-dark">
             <tr>
-                <th style="width: 70%; text-align: left;">Keterangan</th>
+                <th style="width: 50%; text-align: left;">Keterangan</th>
                 <th style="width: 30%; text-align: right;">Nilai</th>
+                <th style="width: 20%; text-align: right;">Selisih</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>Penjualan Kotor</td>
-                <td style="text-align: right;">{{ number_format($setoran->penjualan_kotor, 0, ',', '.') }}</td>
+                <td style="text-align: right;">{{ $setoran->penjualan_kotor1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->penjualan_selisih ?? 0 }}</td>
             </tr>
             <tr>
                 <td>Diskon Penjualan</td>
-                <td style="text-align: right;">{{ number_format($setoran->diskon_penjualan, 0, ',', '.') }}</td>
+                <td style="text-align: right;">{{ $setoran->diskon_penjualan1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->diskon_selisih ?? 0 }}</td>
             </tr>
             <tr>
                 <td>Penjualan Bersih</td>
-                <td style="text-align: right;">{{ number_format($setoran->penjualan_bersih, 0, ',', '.') }}</td>
+                <td style="text-align: right;">{{ $setoran->penjualan_bersih1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->penjualanbersih_selisih ?? 0 }}</td>
             </tr>
             <tr>
                 <td>Deposit Masuk</td>
-                <td style="text-align: right;">{{ number_format($setoran->deposit_masuk, 0, ',', '.') }}</td>
+                <td style="text-align: right;">{{ $setoran->deposit_masuk1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->depositmasuk_selisih ?? 0 }}</td>
             </tr>
             <tr>
                 <td>Deposit Keluar</td>
-                <td style="text-align: right;">{{ number_format($setoran->deposit_keluar, 0, ',', '.') }}</td>
+                <td style="text-align: right;">{{ $setoran->deposit_keluar1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->depositkeluar_selisih ?? 0 }}</td>
             </tr>
             <tr>
                 <td>Total Penjualan</td>
-                <td style="text-align: right;">{{ number_format($setoran->total_penjualan, 0, ',', '.') }}</td>
+                <td style="text-align: right;">{{ $setoran->total_penjualan1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->totalpenjualan_selisih ?? 0 }}</td>
             </tr>
             <tr>
                 <td>Mesin EDC</td>
-                <td style="text-align: right;">{{ number_format($setoran->mesin_edc, 0, ',', '.') }}</td>
+                <td style="text-align: right;">{{ $setoran->mesin_edc1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->mesinedc_selisih ?? 0 }}</td>
             </tr>
             <tr>
                 <td>QRIS</td>
-                <td style="text-align: right;">{{ number_format($setoran->qris, 0, ',', '.') }}</td>
+                <td style="text-align: right;">{{ $setoran->qris1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->qris_selisih ?? 0 }}</td>
             </tr>
             <tr>
                 <td>GOBIZ</td>
-                <td style="text-align: right;">{{ number_format($setoran->gobiz, 0, ',', '.') }}</td>
+                <td style="text-align: right;">{{ $setoran->gobiz1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->gobiz_selisih ?? 0 }}</td>
             </tr>
             <tr>
                 <td>Transfer</td>
-                <td style="text-align: right;">{{ number_format($setoran->transfer, 0, ',', '.') }}</td>
+                <td style="text-align: right;">{{ $setoran->transfer1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->transfer_selisih ?? 0 }}</td>
             </tr>
             <tr>
                 <td>Total Setoran</td>
-                <td style="text-align: right;">{{ number_format($setoran->total_setoran, 0, ',', '.') }}</td>
+                <td style="text-align: right;">{{ $setoran->total_setoran1 ?? 0 }}</td>
+                <td style="text-align: right;">{{ $setoran->totalsetoran_selisih ?? 0 }}</td>
             </tr>
         </tbody>
     </table>

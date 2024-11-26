@@ -24,6 +24,7 @@ use App\Models\Detailtokoslawi;
 use App\Models\Dppemesanan;
 use App\Models\Input;
 use App\Models\Karyawan;
+use App\Models\Pelunasan_penjualan;
 use App\Models\Pemesananproduk;
 use App\Models\Penjualanproduk;
 use App\Models\Setoran_penjualan;
@@ -52,7 +53,7 @@ class Inquery_setoranpelunasanController extends Controller
         $toko_id = $request->input('toko_id'); // Tambahkan parameter toko_id
         
         // Query dasar untuk setoran penjualan
-        $query = Setoran_penjualan::query();
+        $query = Pelunasan_penjualan::query();
         
         // Filter berdasarkan tanggal setoran
         if ($tanggalPenjualan && $tanggalAkhir) {
@@ -350,10 +351,10 @@ class Inquery_setoranpelunasanController extends Controller
     public function print($id)
     {
         // Ambil data setoran penjualan berdasarkan id yang dipilih
-        $setoranPenjualans = Setoran_penjualan::findOrFail($id);
+        $setoran = Pelunasan_penjualan::findOrFail($id);
 
         // Load view untuk PDF dan kirimkan data
-        $pdf = FacadePdf::loadView('admin.inquery_setoranpelunasan.print', compact('setoranPenjualans'));
+        $pdf = FacadePdf::loadView('admin.inquery_setoranpelunasan.print', compact('setoran'));
 
         // Return PDF stream agar langsung bisa ditampilkan
         return $pdf->stream('setoran_penjualan.pdf');

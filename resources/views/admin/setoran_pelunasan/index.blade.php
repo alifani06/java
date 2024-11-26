@@ -83,8 +83,7 @@
                                 <th>Transfer</th>
                                 <th>Qris</th>
                                 <th>Total Setoran</th>
-                                <th>Noiminal Setoran</th>
-                                <th>Plus Minus</th>
+                                
                             </tr>
                         </thead>
                         <tbody>
@@ -92,19 +91,18 @@
                             <tr>
                                 <td class="text-center">{{ $index + 1 }}</td>
                                 <td>{{ $setoran->tanggal_setoran ? \Carbon\Carbon::parse($setoran->tanggal_setoran)->format('d-m-Y') : '-' }}</td> <!-- Menampilkan Tanggal Setoran -->
-                                <td>{{ $setoran->penjualan_kotor }}</td>
-                                <td>{{ $setoran->diskon_penjualan }}</td>
-                                <td>{{ $setoran->penjualan_bersih }}</td>
-                                <td>{{ $setoran->deposit_keluar }}</td>
-                                <td>{{ $setoran->deposit_masuk }}</td>
-                                <td>{{ $setoran->total_penjualan }}</td>
-                                <td>{{ $setoran->mesin_edc ?? '0' }}</td>
-                                <td>{{ $setoran->gobiz ?? '0' }}</td>
-                                <td>{{ $setoran->transfer ?? '0' }}</td>
-                                <td>{{ $setoran->qris ?? '0' }}</td>
-                                <td>{{ $setoran->total_setoran }}</td>
-                                <td>{{ $setoran->nominal_setoran }}</td>
-                                <td>{{ $setoran->plusminus }}</td>
+                                <td>{{ $setoran->penjualan_kotor1 }}</td>
+                                <td>{{ $setoran->diskon_penjualan1 }}</td>
+                                <td>{{ $setoran->penjualan_bersih1 }}</td>
+                                <td>{{ $setoran->deposit_keluar1 }}</td>
+                                <td>{{ $setoran->deposit_masuk1 }}</td>
+                                <td>{{ $setoran->total_penjualan1 }}</td>
+                                <td>{{ $setoran->mesin_edc1 ?? '0' }}</td>
+                                <td>{{ $setoran->gobiz1 ?? '0' }}</td>
+                                <td>{{ $setoran->transfer1 ?? '0' }}</td>
+                                <td>{{ $setoran->qris1 ?? '0' }}</td>
+                                <td>{{ $setoran->total_setoran1 }}</td>
+                             
                             </tr>
                             @endforeach
                         </tbody>

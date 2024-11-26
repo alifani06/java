@@ -547,6 +547,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/print-deposit-keluar', [Setoran_pelunasanController::class, 'printDepositKeluar'])->name('print.deposit.keluar');
     Route::post('/setoran_pelunasan/store', [Setoran_pelunasanController::class, 'store'])->name('setoran_pelunasan.store');
     Route::post('/setoran_pelunasan/update-status', [Setoran_pelunasanController::class, 'updateStatus'])->name('setoran_pelunasan.update_status');
+    Route::get('admin/setoran_pelunasan/{id}', [Setoran_pelunasanController::class, 'show'])->name('admin.setoran_pelunasan.show');
 
     Route::resource('inquery_setoranpelunasan', \App\Http\Controllers\Admin\Inquery_setoranpelunasanController::class);
     Route::get('inquery_setoranpelunasan/unpost_setorantunai/{id}', [\App\Http\Controllers\Admin\Inquery_setoranpelunasanController::class, 'unpost_setorantunai']);
