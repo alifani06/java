@@ -370,26 +370,30 @@
                         @endforeach
                 
     
-                         <tr>
+                        <tr>
                             @if($penjualan->metode_id !== null)
-                                <td colspan="4" style="text-align: right; font-size: 10px; padding: 5px;">
-                                    <strong>
-                                        Fee {{$penjualan->metodepembayaran->nama_metode}}</strong>
-                                    @if($penjualan->total_fee != 0)
-                                        {{$penjualan->metodepembayaran->fee}}% 
-                                    @endif <span style="color: white">llllllllllllllllll</span>
-                                </td>
-                                <td style="font-size: 10px; text-align: right; padding: 5px;">
-                                    @if($penjualan->total_fee != 0)
-                                        @php
-                                            $total_fee = preg_replace('/[^\d]/', '', $penjualan->total_fee);
-                                            $total_fee = (float) $total_fee;
-                                        @endphp
-                                        {{ number_format($total_fee, 0, ',', '.') }}
-                                    @endif
-                                </td>
+                                @if(!in_array($penjualan->metode_id, [3, 17]))
+                                    <td colspan="4" style="text-align: right; font-size: 10px; padding: 5px;">
+                                        <strong>
+                                            Fee {{$penjualan->metodepembayaran->nama_metode}}</strong>
+                                        @if($penjualan->total_fee != 0)
+                                            {{$penjualan->metodepembayaran->fee}}% 
+                                        @endif 
+                                        <span style="color: white">llllllllllllllllll</span>
+                                    </td>
+                                    <td style="font-size: 10px; text-align: right; padding: 5px;">
+                                        @if($penjualan->total_fee != 0)
+                                            @php
+                                                $total_fee = preg_replace('/[^\d]/', '', $penjualan->total_fee);
+                                                $total_fee = (float) $total_fee;
+                                            @endphp
+                                            {{ number_format($total_fee, 0, ',', '.') }}
+                                        @endif
+                                    </td>
+                                @endif
                             @endif
                         </tr>
+                        
                        
                         <tr>
                             <td colspan="4" style="text-align: right; font-size: 10px; padding: 5px;">
@@ -450,13 +454,17 @@
                 
                 <table style="width: 100%; font-size: 12px; text-align: right;">
                     @if($penjualan->metode_id !== NULL)
-                    <tr>
-                        <td style="font-size: 10px; word-wrap: break-word; text-align: right;">
-                         <strong> No.<span style="color: white">llllllllllllllllll</span> </strong> {{ $penjualan->keterangan }}
-                        </td>
-                    </tr>
+                        <tr>
+                            <td style="font-size: 10px; word-wrap: break-word; text-align: right;">
+                                @if(in_array($penjualan->metode_id, [3, 17]))
+                                    <strong>{{ $penjualan->metodepembayaran->nama_metode }} - </strong>
+                                @endif
+                                <strong>No.<span style="color: white">lllllllllllllllll</span></strong> {{ $penjualan->keterangan }}
+                            </td>
+                        </tr>
                     @endif
                 </table>
+                
                 
                 
                 @endif
