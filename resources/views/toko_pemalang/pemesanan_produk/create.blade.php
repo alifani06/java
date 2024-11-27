@@ -397,10 +397,10 @@
                                         data-lama="{{ $item->kode_lama }}"
                                         data-catatan="{{ $item->catatanproduk }}"
                                         data-nama="{{ $item->nama_produk }}"
-                                        data-member="{{ $tokopemalang ? $tokopemalang->member_harga_bnjr : '' }}"
-                                        data-diskonmember="{{ $tokopemalang ? $tokopemalang->member_diskon_bnjr : '' }}"
-                                        data-nonmember="{{ $tokopemalang ? $tokopemalang->non_harga_bnjr : '' }}"
-                                        data-diskonnonmember="{{ $tokopemalang ? $tokopemalang->non_diskon_bnjr : '' }}">
+                                        data-member="{{ $tokopemalang ? $tokopemalang->member_harga_pml : '' }}"
+                                        data-diskonmember="{{ $tokopemalang ? $tokopemalang->member_diskon_pml : '' }}"
+                                        data-nonmember="{{ $tokopemalang ? $tokopemalang->non_harga_pml : '' }}"
+                                        data-diskonnonmember="{{ $tokopemalang ? $tokopemalang->non_diskon_pml : '' }}">
                                         <td class="text-center">{{ $loop->iteration }}</td>
                                         <td>{{ $item->kode_produk }}</td>
                                         <td>{{ $item->kode_lama }}</td>
