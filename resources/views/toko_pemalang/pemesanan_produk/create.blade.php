@@ -387,8 +387,8 @@
                             <tbody>
                                 @foreach ($produks as $item)
                                     @php
-                                        $tokobanjaran = $item->tokobanjaran->first();
-                                        $stokpesanan_tokobanjaran = $item->stokpesanan_tokobanjaran ? $item->stokpesanan_tokobanjaran->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
+                                        $tokopemalang = $item->tokopemalang->first();
+                                        $stokpesanan_tokopemalang = $item->stokpesanan_tokopemalang ? $item->stokpesanan_tokopemalang->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
 
                                     @endphp
                                     <tr class="pilih-btn"
@@ -397,25 +397,25 @@
                                         data-lama="{{ $item->kode_lama }}"
                                         data-catatan="{{ $item->catatanproduk }}"
                                         data-nama="{{ $item->nama_produk }}"
-                                        data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
-                                        data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
-                                        data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
-                                        data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
+                                        data-member="{{ $tokopemalang ? $tokopemalang->member_harga_bnjr : '' }}"
+                                        data-diskonmember="{{ $tokopemalang ? $tokopemalang->member_diskon_bnjr : '' }}"
+                                        data-nonmember="{{ $tokopemalang ? $tokopemalang->non_harga_bnjr : '' }}"
+                                        data-diskonnonmember="{{ $tokopemalang ? $tokopemalang->non_diskon_bnjr : '' }}">
                                         <td class="text-center">{{ $loop->iteration }}</td>
                                         <td>{{ $item->kode_produk }}</td>
                                         <td>{{ $item->kode_lama }}</td>
                                         <td>{{ $item->nama_produk }}</td>
                                         <td>
-                                            <span class="member_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}</span>
+                                            <span class="member_harga_pml">{{ $tokopemalang ? $tokopemalang->member_harga_pml : '' }}</span>
                                         </td>
                                         <td>
-                                            <span class="member_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}</span>
+                                            <span class="member_diskon_pml">{{ $tokopemalang ? $tokopemalang->member_diskon_pml : '' }}</span>
                                         </td>
                                         <td>
-                                            <span class="non_harga_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}</span>
+                                            <span class="non_harga_pml">{{ $tokopemalang ? $tokopemalang->non_harga_pml : '' }}</span>
                                         </td>
                                         <td>
-                                            <span class="non_diskon_bnjr">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}</span>
+                                            <span class="non_diskon_pml">{{ $tokopemalang ? $tokopemalang->non_diskon_pml : '' }}</span>
                                         </td>
                                     
                                         <td class="text-center">
@@ -425,10 +425,10 @@
                                                 data-lama="{{ $item->kode_lama }}"
                                                 data-catatan="{{ $item->catatanproduk }}"
                                                 data-nama="{{ $item->nama_produk }}"
-                                                data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
-                                                data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
-                                                data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
-                                                data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
+                                                data-member="{{ $tokopemalang ? $tokopemalang->member_harga_pml : '' }}"
+                                                data-diskonmember="{{ $tokopemalang ? $tokopemalang->member_diskon_pml : '' }}"
+                                                data-nonmember="{{ $tokopemalang ? $tokopemalang->non_harga_pml : '' }}"
+                                                data-diskonnonmember="{{ $tokopemalang ? $tokopemalang->non_diskon_pml : '' }}">
                                                 <i class="fas fa-plus"></i> 
                                             </button>
                                         </td>
