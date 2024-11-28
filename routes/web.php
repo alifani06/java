@@ -139,6 +139,7 @@ use App\Http\Controllers\Toko_tegal\Inquery_pemindahantegalController;
 use App\Http\Controllers\Toko_tegal\Inquery_penjualanproduktegalController;
 use App\Http\Controllers\Toko_tegal\Inquery_returtegalController;
 use App\Http\Controllers\Toko_tegal\Inquery_setorantunaitegalController;
+use App\Http\Controllers\Toko_tegal\Laporan_historitegalController;
 use App\Http\Controllers\Toko_tegal\Laporan_pemesananproduktegalController;
 use App\Http\Controllers\Toko_tegal\Laporan_pemindahantegalController;
 use App\Http\Controllers\Toko_tegal\Laporan_setoranpenjualantglController;
@@ -977,13 +978,35 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::get('printReportdepositrinci', [\App\Http\Controllers\Toko_tegal\Laporan_deposittegalController::class, 'printReportdepositrinci']);
     Route::get('printReportsaldo', [\App\Http\Controllers\Toko_tegal\Laporan_deposittegalController::class, 'printReportsaldo']);
     
-    Route::resource('inquery_setorantunaibanjaran', \App\Http\Controllers\Toko_tegal\Inquery_setorantunaitegalController::class);
-    Route::get('/toko_banjaran/inquery_setorantunaitegal/{id}/print', [Inquery_setorantunaitegalController::class, 'print'])->name('inquery_setorantunaitegal.print');
+    Route::resource('inquery_setorantunaitegal', \App\Http\Controllers\Toko_tegal\Inquery_setorantunaitegalController::class);
+    Route::get('/toko_tegal/inquery_setorantunaitegal/{id}/print', [Inquery_setorantunaitegalController::class, 'print'])->name('inquery_setorantunaitegal.print');
 
     Route::resource('laporan_setorantunaitegal', \App\Http\Controllers\Toko_tegal\Laporan_setorantunaitegalController::class);
 
     Route::resource('laporan_returtegal', \App\Http\Controllers\Toko_tegal\Laporan_returtegalController::class);
-    Route::get('printReportreturtegal', [\App\Http\Controllers\Toko_tegal\Laporan_returtegalController::class, 'printReportreturbanjaran']);
+    Route::get('printReportreturtegal', [\App\Http\Controllers\Toko_tegal\Laporan_returtegalController::class, 'printReportreturtegal']);
+
+    Route::resource('laporan_historitegal', \App\Http\Controllers\Toko_tegal\Laporan_historitegalController::class);
+    Route::get('barangMasukpesanantegal', [Laporan_historitegalController::class, 'barangMasukpesanantegal'])->name('barangMasukpesanantegal');
+    Route::get('barangMasuksemuategal', [Laporan_historitegalController::class, 'barangMasuksemuategal'])->name('barangMasuksemuategal');
+    Route::get('printLaporanBmtegal', [\App\Http\Controllers\Toko_tegal\Laporan_historitegalController::class, 'printLaporanBmtegal']);
+    Route::get('printLaporanBmpesanantegal', [\App\Http\Controllers\Toko_tegal\Laporan_historitegalController::class, 'printLaporanBmpesanantegal']);
+    Route::get('printLaporanBmsemuategal', [\App\Http\Controllers\Toko_tegal\Laporan_historitegalController::class, 'printLaporanBmsemuategal']);
+    Route::get('printExcelBmtegal', [Laporan_historitegalController::class, 'exportExcel'])->name('printExcelBmtegal');
+    Route::get('printExcelBmpesanantegal', [Laporan_historitegalController::class, 'exportExcelBMpesanan'])->name('printExcelBmpesanantegal');
+    Route::get('printExcelBmsemuategal', [Laporan_historitegalController::class, 'exportExcelBMsemua'])->name('printExcelBmsemuategal');
+    
+    Route::get('barangKeluartegal', [\App\Http\Controllers\Toko_tegal\Laporan_historitegalController::class, 'barangKeluartegal'])->name('barangKeluartegal');
+    Route::get('barangKeluarRincitegal', [\App\Http\Controllers\Toko_tegal\Laporan_historitegalController::class, 'barangKeluarRincitegal'])->name('barangKeluarRincitegal');
+    Route::get('printLaporanBKtegal', [\App\Http\Controllers\Toko_tegal\Laporan_historitegalController::class, 'printLaporanBKtegal']);
+    Route::get('printLaporanBKrincitegal', [\App\Http\Controllers\Toko_tegal\Laporan_historitegalController::class, 'printLaporanBKrincitegal']);
+    Route::get('printExcelBktegal', [Laporan_historitegalController::class, 'exportExcelBK'])->name('printExcelBktegal');
+    
+    Route::get('barangReturtegal', [\App\Http\Controllers\Toko_tegal\Laporan_historitegalController::class, 'barangReturtegal'])->name('barangReturtegal');
+    Route::get('/print-report', [Laporan_historitegalController::class, 'printReport'])->name('print.report');
+    Route::get('printLaporanBRtegal', [\App\Http\Controllers\Toko_tegal\Laporan_historitegalController::class, 'printLaporanBRtegal']);
+    Route::get('printExcelBrtegal', [Laporan_historitegalController::class, 'exportExcelBR'])->name('printExcelBrtegal');
+    Route::get('/get-produk-by-klasifikasi/{id}', [Laporan_historitegalController::class, 'getByKlasifikasi'])->name('getProdukByKlasifikasi');
 
 });
 
@@ -1203,6 +1226,8 @@ Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {
     Route::get('printLaporanBRpemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class, 'printLaporanBRpemalang']);
     Route::get('printExcelBrpemalang', [Laporan_historipemalangController::class, 'exportExcelBR'])->name('printExcelBrpemalang');
     Route::get('/get-produk-by-klasifikasi/{id}', [Laporan_historipemalangController::class, 'getByKlasifikasi'])->name('getProdukByKlasifikasi');
+
+    
 
 });
 

@@ -73,8 +73,7 @@
                         <div class="row">
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="toko_id" name="toko_id">
-                                    <option value="1" selected>Toko Banjaran</option>
-
+                                    <option value="2" selected>Toko Tegal</option>
                                 </select>
                                 <label for="toko_id">(Pilih Toko)</label>
                             </div>
@@ -194,7 +193,7 @@
     
         function cari() {
             var form = document.getElementById('form-action');
-            form.action = "{{ route('barangReturbanjaran') }}";
+            form.action = "{{ route('barangReturtegal') }}";
             form.submit();  
         }
     </script>
@@ -204,11 +203,11 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'masuk') {
-            window.location.href = "{{ url('toko_banjaran/laporan_historibanjaran') }}";
+            window.location.href = "{{ url('toko_tegal/laporan_historitegal') }}";
         } else if (selectedValue === 'keluar') {
-            window.location.href = "{{ url('toko_banjaran/barangKeluarbanjaran') }}";
+            window.location.href = "{{ url('toko_tegal/barangKeluartegal') }}";
         }else if (selectedValue === 'retur') {
-            window.location.href = "{{ url('toko_banjaran/barangReturbanjaran') }}";
+            window.location.href = "{{ url('toko_tegal/barangReturtegal') }}";
         }
     });
 </script>
@@ -234,7 +233,7 @@
         }
 
         const form = document.getElementById('form-action');
-        form.action = "{{ url('toko_banjaran/printLaporanBRbanjaran') }}";
+        form.action = "{{ url('toko_tegal/printLaporanBRtegal') }}";
         form.target = "_blank";
         form.submit();
     }
@@ -244,7 +243,7 @@
 <script>
     function exportExcelBR() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printExcelBrbanjaran') }}";
+    form.action = "{{ url('toko_tegal/printExcelBrtegal') }}";
     form.target = "_blank";
     form.submit();
 }
