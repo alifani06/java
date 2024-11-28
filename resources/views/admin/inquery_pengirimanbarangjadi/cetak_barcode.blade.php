@@ -12,45 +12,78 @@
         * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         /* Kontainer untuk satu baris dengan 3 barcode */
         .row {
             display: flex;
+            flex-wrap: wrap; /* Agar baris baru otomatis dimulai */
             justify-content: space-between;
             margin-bottom: 10px; /* Jarak antar baris */
         }
 
-        /* Menjaga format dan ukuran setiap barcode sesuai cetakan */
+        /* Mengatur kotak untuk barcode dan teks */
         .box {
-            width: 50%; /* Lebar setiap barcode */
-            margin-left: 0px;
-            margin-top: 0px;
+            display: flex; /* Mengatur elemen dalam baris horizontal */
+            flex-direction: row;
+            align-items: center; /* Menyelaraskan teks di tengah barcode secara vertikal */
+            width: 32%; /* Ukuran fleksibel untuk tiga kolom */
+            margin: 0;
         }
 
-        /* Kondisi khusus untuk barcode pertama, kedua dan ketiga */
-        .barcode-first {
-            margin-top: 0px;
-        }
-
-        .barcode-second {
-            margin-top: 50px; /* Set margin-top lebih besar untuk barcode kedua */
-        }
-
-        .barcode-third {
-            margin-top: 50px; /* Set margin-top lebih besar untuk barcode ketiga */
+        .box img {
+            width: 50px; /* Ukuran barcode */
+            height: 50px;
+            margin-right: 10px; /* Jarak antara barcode dan teks */
         }
 
         .text-container {
-            position: relative;
-            margin-right: 760px;
-            margin-left: 6px;
-            margin-top: 4px;
-            transform: rotate(90deg);
+            font-size: 6px;
+            margin-top: -45px;
+            margin-left: 50px;
         }
 
-        .text {
-            font-size: 7px;
+        .box1 {
+            display: flex; /* Mengatur elemen dalam baris horizontal */
+            flex-direction: row;
+            align-items: center; /* Menyelaraskan teks di tengah barcode secara vertikal */
+            width: 32%; /* Ukuran fleksibel untuk tiga kolom */
+            margin: 0;
+        }
+
+        .box1 img {
+            width: 50px; 
+            height: 50px;
+            margin-left: 140px; 
+            margin-top: -50px;
+        }
+
+        .text-container1 {
+            font-size: 6px;
+            margin-top: -64px;
+            margin-left: 190px;
+        }
+
+        .box2 {
+            display: flex; 
+            flex-direction: row;
+            align-items: center; 
+            width: 32%; 
+            margin: 0;
+        }
+
+        .box2 img {
+            width: 50px; 
+            height: 50px;
+            margin-left: 270px; 
+            margin-top: -70px;
+        }
+
+        .text-container2 {
+            font-size: 6px;
+            margin-top: -88px;
+            margin-left: 320px;
         }
 
         .bold-text {
@@ -65,7 +98,7 @@
             text-overflow: ellipsis;
         }
 
-        /* Menambahkan pemisah halaman setelah setiap 3 barcode */
+        /* Menambahkan pemisah halaman setelah baris penuh */
         .page-break {
             page-break-after: always;
         }
@@ -73,42 +106,30 @@
 
 </head>
 
-
 <body>
     @foreach ($dataProduk as $produkData)
         @for ($i = 1; $i <= $produkData['jumlah']; $i++)
-            
-            @if (($i - 1) % 3 == 0)
-                <div class="row">
-            @endif
+                
+        @if (($i - 1) % 3 == 0)
+            <div class="row">
+        @endif
 
-            <div class="box
-                @if ($i % 3 == 1) barcode-first 
-                @elseif ($i % 3 == 2) barcode-second 
-                @elseif ($i % 3 == 0) barcode-third @endif">
-                
+            <div class="box">
                 <img src="data:image/png;base64,{{ $produkData['qrcodeData'] }}" alt="QR Code Produk" />
-            </div>
-            
-            <div class="text-container
-                @if ($i % 3 == 1) barcode-first 
-                @elseif ($i % 3 == 2) barcode-second 
-                @elseif ($i % 3 == 0) barcode-third @endif">
-                
-                <div class="text">
+
+                <div class="text-container">
                     <p class="bold-text">{{ $produkData['produk']->kode_lama }}</p>
-                
+
                     @php
-                        // Membagi nama produk ke dalam potongan teks agar tidak terlalu panjang
                         $chunks = str_split($produkData['produk']->nama_produk, 15);
                     @endphp
-                
+
                     @foreach ($chunks as $chunk)
-                        <p style="font-size: 6px;" class="bold-text truncate">{{ $chunk }}</p>
+                        <p class="bold-text truncate">{{ $chunk }}</p>
                     @endforeach
-                
-                    <p style="font-size: 7px;" class="bold-text">Rp. {{ number_format($produkData['produk']->harga, 0, ',', '.') }}</p>
-                
+
+                    <p class="bold-text">Rp. {{ number_format($produkData['produk']->harga, 0, ',', '.') }}</p>
+
                     <p class="bold-text">
                         @if (is_array($produkData['kodeProduksi']))
                             @foreach ($produkData['kodeProduksi'] as $kode)
@@ -118,25 +139,78 @@
                             {{ $produkData['kodeProduksi'] }}
                         @endif
                     </p>
-                    
                 </div>
-                
             </div>
 
+            <div class="box1">
+                <img src="data:image/png;base64,{{ $produkData['qrcodeData'] }}" alt="QR Code Produk" />
+
+                <div class="text-container1">
+                    <p class="bold-text">{{ $produkData['produk']->kode_lama }}</p>
+
+                    @php
+                        $chunks = str_split($produkData['produk']->nama_produk, 15);
+                    @endphp
+
+                    @foreach ($chunks as $chunk)
+                        <p class="bold-text truncate">{{ $chunk }}</p>
+                    @endforeach
+
+                    <p class="bold-text">Rp. {{ number_format($produkData['produk']->harga, 0, ',', '.') }}</p>
+
+                    <p class="bold-text">
+                        @if (is_array($produkData['kodeProduksi']))
+                            @foreach ($produkData['kodeProduksi'] as $kode)
+                                {{ $kode }}<br>
+                            @endforeach
+                        @else
+                            {{ $produkData['kodeProduksi'] }}
+                        @endif
+                    </p>
+                </div>
+            </div>
+
+            <div class="box2">
+                <img src="data:image/png;base64,{{ $produkData['qrcodeData'] }}" alt="QR Code Produk" />
+
+                <div class="text-container2">
+                    <p class="bold-text">{{ $produkData['produk']->kode_lama }}</p>
+
+                    @php
+                        $chunks = str_split($produkData['produk']->nama_produk, 15);
+                    @endphp
+
+                    @foreach ($chunks as $chunk)
+                        <p class="bold-text truncate">{{ $chunk }}</p>
+                    @endforeach
+
+                    <p class="bold-text">Rp. {{ number_format($produkData['produk']->harga, 0, ',', '.') }}</p>
+
+                    <p class="bold-text">
+                        @if (is_array($produkData['kodeProduksi']))
+                            @foreach ($produkData['kodeProduksi'] as $kode)
+                                {{ $kode }}<br>
+                            @endforeach
+                        @else
+                            {{ $produkData['kodeProduksi'] }}
+                        @endif
+                    </p>
+                </div>
+            </div>
             @if ($i % 3 == 0 || $i == $produkData['jumlah'])
-                </div> <!-- Menutup baris -->
-            @endif
+        </div> <!-- Menutup baris -->
+    @endif
 
-            @if ($i % 3 == 0 && $i != $produkData['jumlah'])
-                <div class="page-break"></div> <!-- Memaksa pindah halaman setelah 3 produk -->
-            @endif
+    @if ($i % 3 == 0 && $i != $produkData['jumlah'])
+        <div class="page-break"></div> <!-- Memaksa pindah halaman setelah 3 produk -->
+    @endif
 
-            @if ($i == $produkData['jumlah'] && !$loop->last)
-                <div class="page-break"></div> <!-- Memaksa pindah halaman setelah produk terakhir -->
-            @endif
-        @endfor
+    @if ($i == $produkData['jumlah'] && !$loop->last)
+        <div class="page-break"></div> <!-- Memaksa pindah halaman setelah produk terakhir -->
+    @endif
+    @endfor
+    
     @endforeach
 </body>
-
 
 </html>

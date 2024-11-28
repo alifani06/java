@@ -794,7 +794,7 @@ private function updateTokoData($validatedData, $pengiriman)
     ));
 
     // Set ukuran kertas dan orientasi
-    $pdf->setPaper([0, 0, 612, 400], 'portrait');
+    $pdf->setPaper([0, 0, 612, 500], 'portrait');
 
     // Stream PDF hasil cetak
     return $pdf->stream('penjualan.pdf');
