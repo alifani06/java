@@ -253,220 +253,33 @@ class Laporan_hasilpenjualanController extends Controller
         return view('admin.laporan_hasilpenjualan.barangmasuksemua', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'produks'));
     }
     
-    // public function barangKeluar(Request $request)
-    // {
-    //     $status = $request->status;
-    //     $tanggal_penjualan = $request->tanggal_penjualan;
-    //     $tanggal_akhir = $request->tanggal_akhir;
-    //     $toko_id = $request->toko_id;
-    //     $klasifikasi_id = $request->klasifikasi_id;
-    //     $produk_id = $request->produk; 
-    
-    //     // Query dasar untuk mengambil data penjualan produk
-    //     $inquery = Penjualanproduk::with('detailPenjualanProduk.produk')
-    //         ->when($status, function ($query, $status) {
-    //             return $query->where('status', $status);
-    //         })
-    //         ->when($toko_id, function ($query, $toko_id) {
-    //             return $query->where('toko_id', $toko_id);
-    //         })
-    //         ->when($tanggal_penjualan && $tanggal_akhir, function ($query) use ($tanggal_penjualan, $tanggal_akhir) {
-    //             $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //             return $query->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
-    //         })
-    //         ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
-    //             $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-    //             return $query->where('tanggal_penjualan', '>=', $tanggal_penjualan);
-    //         })
-    //         ->when($tanggal_akhir, function ($query, $tanggal_akhir) {
-    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-    //             return $query->where('tanggal_penjualan', '<=', $tanggal_akhir);
-    //         });
-    
-    //     // Ambil data penjualan
-    //     $inquery = $inquery->get();
-    
-    //     // Gabungkan hasil berdasarkan produk_id
-    //     $finalResults = [];
-    
-    //     foreach ($inquery as $penjualan) {
-    //         foreach ($penjualan->detailPenjualanProduk as $detail) {
-    //             // Pastikan produk tidak null sebelum mengakses properti
-    //             if ($detail->produk) {
-    //                 // Filter produk berdasarkan klasifikasi jika klasifikasi_id dipilih
-    //                 if ($klasifikasi_id && $detail->produk->klasifikasi_id != $klasifikasi_id) {
-    //                     continue; // Lewati produk yang tidak sesuai dengan klasifikasi
-    //                 }
-    
-    //                 // Filter ulang berdasarkan produk_id jika diperlukan
-    //                 if ($produk_id && $detail->produk_id != $produk_id) {
-    //                     continue; // Lewati produk yang tidak sesuai dengan filter
-    //                 }
-    
-    //                 $key = $detail->produk_id;
-    
-    //                 if (!isset($finalResults[$key])) {
-    //                     $finalResults[$key] = [
-    //                         'tanggal_penjualan' => $penjualan->tanggal_penjualan,
-    //                         'kode_lama' => $detail->produk->kode_lama,
-    //                         'nama_produk' => $detail->produk->nama_produk,
-    //                         'harga' => $detail->produk->harga,
-    //                         'jumlah' => 0,
-    //                         'diskon' => 0,
-    //                         'total' => 0,
-    //                     ];
-    //                 }
-    
-    //                 // Jumlahkan jumlah dan total
-    //                 $finalResults[$key]['jumlah'] += $detail->jumlah;
-    //                 $finalResults[$key]['total'] += $detail->total;
-    
-    //                 // Hitung diskon 10% dari jumlah * harga
-    //                 if ($detail->diskon > 0) {
-    //                     $diskonPerItem = round($detail->produk->harga * 0.10); // Diskon per unit
-    //                     $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
-    //                 }
-    //             }
-    //         }
-    //     }
-    
-    //     // Mengurutkan finalResults berdasarkan kode_lama
-    //     uasort($finalResults, function ($a, $b) {
-    //         return strcmp($a['kode_lama'], $b['kode_lama']);
-    //     });
-    
-    //     // Ambil semua data toko dan klasifikasi untuk dropdown
-    //     $tokos = Toko::all();
-    //     $klasifikasis = Klasifikasi::all();
-    //     $produks = Produk::all(); // Ambil semua produk untuk dropdown
-    
-    //     return view('admin.laporan_hasilpenjualan.barangkeluar', [
-    //         'finalResults' => $finalResults,
-    //         'tokos' => $tokos,
-    //         'produks' => $produks,
-    //         'klasifikasis' => $klasifikasis,
-    //     ]);
-    // }
+
 
     public function barangKeluar(Request $request)
-{
-    $status = $request->status;
-    $tanggal_penjualan = $request->tanggal_penjualan;
-    $tanggal_akhir = $request->tanggal_akhir;
-    $toko_id = $request->toko_id;
-    $klasifikasi_id = $request->klasifikasi_id;
-    $produk_id = $request->produk; 
-    
-    // Ambil semua data toko dan klasifikasi untuk dropdown
-    $tokos = Toko::all();
-    $klasifikasis = Klasifikasi::all();
-    $produks = Produk::all(); // Ambil semua produk untuk dropdown
-    
-    // Cek apakah ada filter yang dipilih
-    if (!$status && !$tanggal_penjualan && !$tanggal_akhir && !$toko_id && !$klasifikasi_id && !$produk_id) {
-        // Jika tidak ada filter, kirim data kosong ke view
-        return view('admin.laporan_hasilpenjualan.barangkeluar', [
-            'finalResults' => [],
-            'tokos' => $tokos,
-            'produks' => $produks,
-            'klasifikasis' => $klasifikasis,
-        ]);
-    }
-    
-    // Query dasar untuk mengambil data penjualan produk
-    $inquery = Penjualanproduk::with('detailPenjualanProduk.produk')
-        ->when($status, function ($query, $status) {
-            return $query->where('status', $status);
-        })
-        ->when($toko_id, function ($query, $toko_id) {
-            return $query->where('toko_id', $toko_id);
-        })
-        ->when($tanggal_penjualan && $tanggal_akhir, function ($query) use ($tanggal_penjualan, $tanggal_akhir) {
-            $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-            return $query->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
-        })
-        ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
-            $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
-            return $query->where('tanggal_penjualan', '>=', $tanggal_penjualan);
-        })
-        ->when($tanggal_akhir, function ($query, $tanggal_akhir) {
-            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-            return $query->where('tanggal_penjualan', '<=', $tanggal_akhir);
-        });
-
-    // Ambil data penjualan
-    $inquery = $inquery->get();
-
-    // Gabungkan hasil berdasarkan produk_id
-    $finalResults = [];
-
-    foreach ($inquery as $penjualan) {
-        foreach ($penjualan->detailPenjualanProduk as $detail) {
-            // Pastikan produk tidak null sebelum mengakses properti
-            if ($detail->produk) {
-                // Filter produk berdasarkan klasifikasi jika klasifikasi_id dipilih
-                if ($klasifikasi_id && $detail->produk->klasifikasi_id != $klasifikasi_id) {
-                    continue; // Lewati produk yang tidak sesuai dengan klasifikasi
-                }
-
-                // Filter ulang berdasarkan produk_id jika diperlukan
-                if ($produk_id && $detail->produk_id != $produk_id) {
-                    continue; // Lewati produk yang tidak sesuai dengan filter
-                }
-
-                $key = $detail->produk_id;
-
-                if (!isset($finalResults[$key])) {
-                    $finalResults[$key] = [
-                        'tanggal_penjualan' => $penjualan->tanggal_penjualan,
-                        'kode_lama' => $detail->produk->kode_lama,
-                        'nama_produk' => $detail->produk->nama_produk,
-                        'harga' => $detail->produk->harga,
-                        'jumlah' => 0,
-                        'diskon' => 0,
-                        'total' => 0,
-                    ];
-                }
-
-                // Jumlahkan jumlah dan total
-                $finalResults[$key]['jumlah'] += $detail->jumlah;
-                $finalResults[$key]['total'] += $detail->total;
-
-                // Hitung diskon 10% dari jumlah * harga
-                if ($detail->diskon > 0) {
-                    $diskonPerItem = round($detail->produk->harga * 0.10); // Diskon per unit
-                    $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
-                }
-            }
-        }
-    }
-
-    // Mengurutkan finalResults berdasarkan kode_lama
-    uasort($finalResults, function ($a, $b) {
-        return strcmp($a['kode_lama'], $b['kode_lama']);
-    });
-
-    return view('admin.laporan_hasilpenjualan.barangkeluar', [
-        'finalResults' => $finalResults,
-        'tokos' => $tokos,
-        'produks' => $produks,
-        'klasifikasis' => $klasifikasis,
-    ]);
-}
-
-    
-
-    public function barangKeluarRinci(Request $request)
     {
         $status = $request->status;
         $tanggal_penjualan = $request->tanggal_penjualan;
         $tanggal_akhir = $request->tanggal_akhir;
         $toko_id = $request->toko_id;
         $klasifikasi_id = $request->klasifikasi_id;
-        $produk_id = $request->produk; // Tambahkan filter produk
-
+        $produk_id = $request->produk; 
+        
+        // Ambil semua data toko dan klasifikasi untuk dropdown
+        $tokos = Toko::all();
+        $klasifikasis = Klasifikasi::all();
+        $produks = Produk::all(); // Ambil semua produk untuk dropdown
+        
+        // Cek apakah ada filter yang dipilih
+        if (!$status && !$tanggal_penjualan && !$tanggal_akhir && !$toko_id && !$klasifikasi_id && !$produk_id) {
+            // Jika tidak ada filter, kirim data kosong ke view
+            return view('admin.laporan_hasilpenjualan.barangkeluar', [
+                'finalResults' => [],
+                'tokos' => $tokos,
+                'produks' => $produks,
+                'klasifikasis' => $klasifikasis,
+            ]);
+        }
+        
         // Query dasar untuk mengambil data penjualan produk
         $inquery = Penjualanproduk::with('detailPenjualanProduk.produk')
             ->when($status, function ($query, $status) {
@@ -499,7 +312,7 @@ class Laporan_hasilpenjualanController extends Controller
             foreach ($penjualan->detailPenjualanProduk as $detail) {
                 // Pastikan produk tidak null sebelum mengakses properti
                 if ($detail->produk) {
-                    // Filter ulang berdasarkan klasifikasi_id jika diperlukan
+                    // Filter produk berdasarkan klasifikasi jika klasifikasi_id dipilih
                     if ($klasifikasi_id && $detail->produk->klasifikasi_id != $klasifikasi_id) {
                         continue; // Lewati produk yang tidak sesuai dengan klasifikasi
                     }
@@ -529,25 +342,225 @@ class Laporan_hasilpenjualanController extends Controller
 
                     // Hitung diskon 10% dari jumlah * harga
                     if ($detail->diskon > 0) {
-                        $diskonPerItem = $detail->harga * 0.10; // Diskon per unit
+                        $diskonPerItem = round($detail->produk->harga * 0.10); // Diskon per unit
                         $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
                     }
                 }
             }
         }
 
-        // Ambil semua data toko dan klasifikasi untuk dropdown
-        $tokos = Toko::all();
-        $klasifikasis = Klasifikasi::all();
-        $produks = Produk::all(); // Ambil semua produk untuk dropdown
+        // Mengurutkan finalResults berdasarkan kode_lama
+        uasort($finalResults, function ($a, $b) {
+            return strcmp($a['kode_lama'], $b['kode_lama']);
+        });
 
-        return view('admin.laporan_hasilpenjualan.barangkeluarrinci', [
+        return view('admin.laporan_hasilpenjualan.barangkeluar', [
             'finalResults' => $finalResults,
             'tokos' => $tokos,
             'produks' => $produks,
             'klasifikasis' => $klasifikasis,
         ]);
     }
+
+    
+
+    // public function barangKeluarRinci(Request $request)
+    // {
+    //     $status = $request->status;
+    //     $tanggal_penjualan = $request->tanggal_penjualan;
+    //     $tanggal_akhir = $request->tanggal_akhir;
+    //     $toko_id = $request->toko_id;
+    //     $klasifikasi_id = $request->klasifikasi_id;
+    //     $produk_id = $request->produk; // Tambahkan filter produk
+
+    //     // Query dasar untuk mengambil data penjualan produk
+    //     $inquery = Penjualanproduk::with('detailPenjualanProduk.produk')
+    //         ->when($status, function ($query, $status) {
+    //             return $query->where('status', $status);
+    //         })
+    //         ->when($toko_id, function ($query, $toko_id) {
+    //             return $query->where('toko_id', $toko_id);
+    //         })
+    //         ->when($tanggal_penjualan && $tanggal_akhir, function ($query) use ($tanggal_penjualan, $tanggal_akhir) {
+    //             $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //             return $query->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+    //         })
+    //         ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
+    //             $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+    //             return $query->where('tanggal_penjualan', '>=', $tanggal_penjualan);
+    //         })
+    //         ->when($tanggal_akhir, function ($query, $tanggal_akhir) {
+    //             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+    //             return $query->where('tanggal_penjualan', '<=', $tanggal_akhir);
+    //         });
+
+    //     // Ambil data penjualan
+    //     $inquery = $inquery->get();
+
+    //     // Gabungkan hasil berdasarkan produk_id
+    //     $finalResults = [];
+
+    //     foreach ($inquery as $penjualan) {
+    //         foreach ($penjualan->detailPenjualanProduk as $detail) {
+    //             // Pastikan produk tidak null sebelum mengakses properti
+    //             if ($detail->produk) {
+    //                 // Filter ulang berdasarkan klasifikasi_id jika diperlukan
+    //                 if ($klasifikasi_id && $detail->produk->klasifikasi_id != $klasifikasi_id) {
+    //                     continue; // Lewati produk yang tidak sesuai dengan klasifikasi
+    //                 }
+
+    //                 // Filter ulang berdasarkan produk_id jika diperlukan
+    //                 if ($produk_id && $detail->produk_id != $produk_id) {
+    //                     continue; // Lewati produk yang tidak sesuai dengan filter
+    //                 }
+
+    //                 $key = $detail->produk_id;
+
+    //                 if (!isset($finalResults[$key])) {
+    //                     $finalResults[$key] = [
+    //                         'tanggal_penjualan' => $penjualan->tanggal_penjualan,
+    //                         'kode_lama' => $detail->produk->kode_lama,
+    //                         'nama_produk' => $detail->produk->nama_produk,
+    //                         'harga' => $detail->produk->harga,
+    //                         'jumlah' => 0,
+    //                         'diskon' => 0,
+    //                         'total' => 0,
+    //                     ];
+    //                 }
+
+    //                 // Jumlahkan jumlah dan total
+    //                 $finalResults[$key]['jumlah'] += $detail->jumlah;
+    //                 $finalResults[$key]['total'] += $detail->total;
+
+    //                 // Hitung diskon 10% dari jumlah * harga
+    //                 if ($detail->diskon > 0) {
+    //                     $diskonPerItem = $detail->harga * 0.10; // Diskon per unit
+    //                     $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     // Ambil semua data toko dan klasifikasi untuk dropdown
+    //     $tokos = Toko::all();
+    //     $klasifikasis = Klasifikasi::all();
+    //     $produks = Produk::all(); // Ambil semua produk untuk dropdown
+
+    //     return view('admin.laporan_hasilpenjualan.barangkeluarrinci', [
+    //         'finalResults' => $finalResults,
+    //         'tokos' => $tokos,
+    //         'produks' => $produks,
+    //         'klasifikasis' => $klasifikasis,
+    //     ]);
+    // }
+    public function barangKeluarRinci(Request $request)
+{
+    $status = $request->status;
+    $tanggal_penjualan = $request->tanggal_penjualan;
+    $tanggal_akhir = $request->tanggal_akhir;
+    $toko_id = $request->toko_id;
+    $klasifikasi_id = $request->klasifikasi_id;
+    $produk_id = $request->produk; // Tambahkan filter produk
+
+    // Ambil semua data toko, klasifikasi, dan produk untuk dropdown
+    $tokos = Toko::all();
+    $klasifikasis = Klasifikasi::all();
+    $produks = Produk::all(); // Ambil semua produk untuk dropdown
+
+    // Cek apakah ada filter yang dipilih
+    if (!$status && !$tanggal_penjualan && !$tanggal_akhir && !$toko_id && !$klasifikasi_id && !$produk_id) {
+        // Jika tidak ada filter yang dipilih, kirim data kosong ke view
+        return view('admin.laporan_hasilpenjualan.barangkeluarrinci', [
+            'finalResults' => [],
+            'tokos' => $tokos,
+            'produks' => $produks,
+            'klasifikasis' => $klasifikasis,
+        ]);
+    }
+
+    // Query dasar untuk mengambil data penjualan produk
+    $inquery = Penjualanproduk::with('detailPenjualanProduk.produk')
+        ->when($status, function ($query, $status) {
+            return $query->where('status', $status);
+        })
+        ->when($toko_id, function ($query, $toko_id) {
+            return $query->where('toko_id', $toko_id);
+        })
+        ->when($tanggal_penjualan && $tanggal_akhir, function ($query) use ($tanggal_penjualan, $tanggal_akhir) {
+            $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            return $query->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+        })
+        ->when($tanggal_penjualan, function ($query, $tanggal_penjualan) {
+            $tanggal_penjualan = Carbon::parse($tanggal_penjualan)->startOfDay();
+            return $query->where('tanggal_penjualan', '>=', $tanggal_penjualan);
+        })
+        ->when($tanggal_akhir, function ($query, $tanggal_akhir) {
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            return $query->where('tanggal_penjualan', '<=', $tanggal_akhir);
+        });
+
+    // Ambil data penjualan
+    $inquery = $inquery->get();
+
+    // Gabungkan hasil berdasarkan produk_id
+    $finalResults = [];
+
+    foreach ($inquery as $penjualan) {
+        foreach ($penjualan->detailPenjualanProduk as $detail) {
+            // Pastikan produk tidak null sebelum mengakses properti
+            if ($detail->produk) {
+                // Filter ulang berdasarkan klasifikasi_id jika diperlukan
+                if ($klasifikasi_id && $detail->produk->klasifikasi_id != $klasifikasi_id) {
+                    continue; // Lewati produk yang tidak sesuai dengan klasifikasi
+                }
+
+                // Filter ulang berdasarkan produk_id jika diperlukan
+                if ($produk_id && $detail->produk_id != $produk_id) {
+                    continue; // Lewati produk yang tidak sesuai dengan filter
+                }
+
+                $key = $detail->produk_id;
+
+                if (!isset($finalResults[$key])) {
+                    $finalResults[$key] = [
+                        'tanggal_penjualan' => $penjualan->tanggal_penjualan,
+                        'kode_lama' => $detail->produk->kode_lama,
+                        'nama_produk' => $detail->produk->nama_produk,
+                        'harga' => $detail->produk->harga,
+                        'jumlah' => 0,
+                        'diskon' => 0,
+                        'total' => 0,
+                    ];
+                }
+
+                // Jumlahkan jumlah dan total
+                $finalResults[$key]['jumlah'] += $detail->jumlah;
+                $finalResults[$key]['total'] += $detail->total;
+
+                // Hitung diskon 10% dari jumlah * harga
+                if ($detail->diskon > 0) {
+                    $diskonPerItem = $detail->harga * 0.10; // Diskon per unit
+                    $finalResults[$key]['diskon'] += $detail->jumlah * $diskonPerItem;
+                }
+            }
+        }
+    }
+
+    // Mengurutkan finalResults berdasarkan kode_lama
+    uasort($finalResults, function ($a, $b) {
+        return strcmp($a['kode_lama'], $b['kode_lama']);
+    });
+
+    return view('admin.laporan_hasilpenjualan.barangkeluarrinci', [
+        'finalResults' => $finalResults,
+        'tokos' => $tokos,
+        'produks' => $produks,
+        'klasifikasis' => $klasifikasis,
+    ]);
+}
+
 
     
     public function barangRetur(Request $request)
