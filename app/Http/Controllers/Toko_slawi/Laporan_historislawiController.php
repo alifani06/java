@@ -253,6 +253,20 @@ public function barangKeluarslawi(Request $request)
     $klasifikasi_id = $request->klasifikasi_id;
     $produk_id = $request->produk;
 
+    $tokos = Toko::all();
+    $klasifikasis = Klasifikasi::all();
+    $produks = Produk::all(); // Ambil semua produk untuk dropdown
+
+
+    if (!$status && !$tanggal_penjualan && !$tanggal_akhir && !$klasifikasi_id && !$produk_id) {
+        // Jika tidak ada filter yang dipilih, kirim data kosong ke view
+        return view('toko_slawi.laporan_historislawi.barangkeluar', [
+            'finalResults' => [],
+            'tokos' => $tokos,
+            'produks' => $produks,
+            'klasifikasis' => $klasifikasis,
+        ]);
+    }
     // Query dasar untuk mengambil data penjualan produk dengan toko_id tetap 1
     $inquery = Penjualanproduk::with('detailPenjualanProduk.produk')
         ->where('toko_id', 3) // Membatasi data hanya untuk toko_id = 1
@@ -351,8 +365,22 @@ public function barangKeluarslawi(Request $request)
     
         // Tetapkan toko_id menjadi 1
         $toko_id = 3;
+        // Ambil semua data toko dan klasifikasi untuk dropdown
+        $tokos = Toko::all();
+        $klasifikasis = Klasifikasi::all();
+        $produks = Produk::all(); // Ambil semua produk untuk dropdown
     
-        // Query dasar untuk mengambil data penjualan produk
+           // Cek apakah ada filter yang dipilih
+        if (!$status && !$tanggal_penjualan && !$tanggal_akhir && !$klasifikasi_id && !$produk_id) {
+            // Jika tidak ada filter yang dipilih, kirim data kosong ke view
+            return view('toko_slawi.laporan_historislawi.barangkeluarrinci', [
+                'finalResults' => [],
+                'tokos' => $tokos,
+                'produks' => $produks,
+                'klasifikasis' => $klasifikasis,
+            ]);
+        }
+            // Query dasar untuk mengambil data penjualan produk
         $inquery = Penjualanproduk::with('detailPenjualanProduk.produk')
             ->when($status, function ($query, $status) {
                 return $query->where('status', $status);
