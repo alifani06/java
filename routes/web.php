@@ -66,6 +66,7 @@ use App\Http\Controllers\Toko_bumiayu\Inquery_pemindahanbumiayuController;
 use App\Http\Controllers\Toko_bumiayu\Inquery_penjualanprodukbumiayuController;
 use App\Http\Controllers\Toko_bumiayu\Inquery_returbumiayuController;
 use App\Http\Controllers\Toko_bumiayu\Inquery_setorantunaibumiayuController;
+use App\Http\Controllers\Toko_bumiayu\Laporan_historibumiayuController;
 use App\Http\Controllers\Toko_bumiayu\Laporan_pemesananprodukbumiayuController;
 use App\Http\Controllers\Toko_bumiayu\Laporan_pemindahanbumiayuController;
 use App\Http\Controllers\Toko_bumiayu\Laporan_setoranpenjualanbmyController;
@@ -1420,7 +1421,29 @@ Route::middleware('toko_bumiayu')->prefix('toko_bumiayu')->group(function () {
     Route::resource('laporan_setorantunaibumiayu', \App\Http\Controllers\Toko_bumiayu\Laporan_setorantunaibumiayuController::class);
 
     Route::resource('laporan_returbumiayu', \App\Http\Controllers\Toko_bumiayu\Laporan_returbumiayuController::class);
-    Route::get('printReportreturbumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_returbumiayuController::class, 'printReportreturbanjaran']);
+    Route::get('printReportreturbumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_returbumiayuController::class, 'printReportreturbumiayu']);
+
+    Route::resource('laporan_historibumiayu', \App\Http\Controllers\Toko_bumiayu\Laporan_historibumiayuController::class);
+    Route::get('barangMasukpesananbumiayu', [Laporan_historibumiayuController::class, 'barangMasukpesananbumiayu'])->name('barangMasukpesananbumiayu');
+    Route::get('barangMasuksemuabumiayu', [Laporan_historibumiayuController::class, 'barangMasuksemuabumiayu'])->name('barangMasuksemuabumiayu');
+    Route::get('printLaporanBmbumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_historibumiayuController::class, 'printLaporanBmbumiayu']);
+    Route::get('printLaporanBmpesananbumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_historibumiayuController::class, 'printLaporanBmpesananbumiayu']);
+    Route::get('printLaporanBmsemuabumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_historibumiayuController::class, 'printLaporanBmsemuabumiayu']);
+    Route::get('printExcelBmbumiayu', [Laporan_historibumiayuController::class, 'exportExcel'])->name('printExcelBmbumiayu');
+    Route::get('printExcelBmpesananbumiayu', [Laporan_historibumiayuController::class, 'exportExcelBMpesanan'])->name('printExcelBmpesananbumiayu');
+    Route::get('printExcelBmsemuabumiayu', [Laporan_historibumiayuController::class, 'exportExcelBMsemua'])->name('printExcelBmsemuabumiayu');
+    
+    Route::get('barangKeluarbumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_historibumiayuController::class, 'barangKeluarbumiayu'])->name('barangKeluarbumiayu');
+    Route::get('barangKeluarRincibumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_historibumiayuController::class, 'barangKeluarRincibumiayu'])->name('barangKeluarRincibumiayu');
+    Route::get('printLaporanBKbumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_historibumiayuController::class, 'printLaporanBKbumiayu']);
+    Route::get('printLaporanBKrincibumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_historibumiayuController::class, 'printLaporanBKrincibumiayu']);
+    Route::get('printExcelBkbumiayu', [Laporan_historibumiayuController::class, 'exportExcelBK'])->name('printExcelBkbumiayu');
+    
+    Route::get('barangReturbumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_historibumiayuController::class, 'barangReturbumiayu'])->name('barangReturbumiayu');
+    Route::get('/print-report', [Laporan_historibumiayuController::class, 'printReport'])->name('print.report');
+    Route::get('printLaporanBRbumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_historibumiayuController::class, 'printLaporanBRbumiayu']);
+    Route::get('printExcelBrbumiayu', [Laporan_historibumiayuController::class, 'exportExcelBR'])->name('printExcelBrbumiayu');
+    Route::get('/get-produk-by-klasifikasi/{id}', [Laporan_historibumiayuController::class, 'getByKlasifikasi'])->name('getProdukByKlasifikasi');
 
 });
 
