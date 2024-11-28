@@ -35,7 +35,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Barang Masuk Permintaan</h1>
+                    <h1 class="m-0">Laporan Barang Masuk (Stok)</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -77,7 +77,7 @@
                             <option value="retur" {{ old('kategori1') == 'retur' ? 'selected' : '' }}>Barang Retur</option>
                         </select>
                     </div>
-                    <h3 class="card-title">Laporan Barang Masuk Permintaan</h3>
+                    <h3 class="card-title">Laporan Barang Masuk (Stok)</h3>
                 </div>
                 
                 <div class="card-body">
@@ -90,9 +90,10 @@
                                     <option value="">- Pilih -</option>
                                     <option value="permintaan" {{ old('kategori2') == 'permintaan' ? 'selected' : '' }}>BM STOK</option>
                                     <option value="pemesanan" {{ old('kategori2') == 'pemesanan' ? 'selected' : '' }}>BM PEMESANAN</option>
+                                    <option value="semua" {{ old('kategori2') == 'semua' ? 'selected' : '' }}>SEMUA BM </option>
                                 </select>
                             </div>
-                            <div class="col-md-3 mb-3">
+                            <div hidden class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="toko_id" name="toko_id">
                                     <option value="">- Semua Toko -</option>
                                     @foreach($tokos as $toko)
@@ -100,6 +101,17 @@
                                     @endforeach
                                 </select>
                                 <label for="toko_id">(Pilih Toko)</label>
+                            </div>
+                              
+                            <div class="col-md-3 mb-3">
+                                <input class="form-control" id="tanggal_pengiriman" name="tanggal_pengiriman" type="date"
+                                    value="{{ Request::get('tanggal_pengiriman') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_pengiriman">(Dari Tanggal)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
+                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
 
                             <div class="col-md-3 mb-3">
@@ -127,17 +139,14 @@
                                 </select>
                                 <label style="margin-top:7px" for="produk_id">Produk</label>
                             </div>
-                            
-                            <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_pengiriman" name="tanggal_pengiriman" type="date"
-                                    value="{{ Request::get('tanggal_pengiriman') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_pengiriman">(Dari Tanggal)</label>
+
+                            <div class="col-md-3 mb-3" >
+                                <input class="form-control" style="border: none; background-color: transparent; color: white;"/>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
-                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_akhir">(Sampai Tanggal)</label>
+                                <input  class="form-control" style="border: none; background-color: transparent; color: white;"/>
                             </div>
+                          
                             <div class="col-md-3 mb-3">
                                 <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
                                     <i class="fas fa-search"></i> Cari
@@ -236,7 +245,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_banjaran/laporan_historibanjaran') }}";
+            form.action = "{{ url('toko_pemalang/laporan_historipemalang') }}";
             form.submit();
         }
 
@@ -247,11 +256,11 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'masuk') {
-            window.location.href = "{{ url('toko_banjaran/laporan_historibanjaran') }}";
+            window.location.href = "{{ url('toko_pemalang/laporan_historipemalang') }}";
         } else if (selectedValue === 'keluar') {
-            window.location.href = "{{ url('toko_banjaran/barangKeluarbanjaran') }}";
+            window.location.href = "{{ url('toko_pemalang/barangKeluarpemalang') }}";
         }else if (selectedValue === 'retur') {
-            window.location.href = "{{ url('toko_banjaran/barangReturbanjaran') }}";
+            window.location.href = "{{ url('toko_pemalang/barangReturpemalang') }}";
         }
     });
 </script>
@@ -260,12 +269,15 @@
         var selectedValue = this.value;
 
         if (selectedValue === 'permintaan') {
-            window.location.href = "{{ url('toko_banjaran/laporan_historibanjaran') }}";
+            window.location.href = "{{ url('toko_pemalang/laporan_historipemalang') }}";
         } else if (selectedValue === 'pemesanan') {
-            window.location.href = "{{ url('toko_banjaran/barangMasukpesananbanjaran') }}";
+            window.location.href = "{{ route('barangMasukpesananpemalang') }}"; 
+        } else if (selectedValue === 'semua') {
+            window.location.href = "{{ route('barangMasuksemuapemalang') }}"; 
         }
     });
 </script>
+
 
 <script>
     function printReport() {
@@ -288,7 +300,7 @@
         }
 
         const form = document.getElementById('form-action');
-        form.action = "{{ url('toko_banjaran/printLaporanBmbanjaran') }}";
+        form.action = "{{ url('toko_pemalang/printLaporanBmpemalang') }}";
         form.target = "_blank";
         form.submit();
     }
@@ -299,7 +311,7 @@
 <script>
     function exportExcel() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_banjaran/printExcelBmbanjaran') }}";
+    form.action = "{{ url('toko_pemalang/printExcelBmpemalang') }}";
     form.target = "_blank";
     form.submit();
 }

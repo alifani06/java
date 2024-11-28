@@ -101,6 +101,7 @@ use App\Http\Controllers\Toko_pemalang\Inquery_pemindahanpemalangController;
 use App\Http\Controllers\Toko_pemalang\Inquery_penjualanprodukpemalangController;
 use App\Http\Controllers\Toko_pemalang\Inquery_returpemalangController;
 use App\Http\Controllers\Toko_pemalang\Inquery_setorantunaipemalangController;
+use App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController;
 use App\Http\Controllers\Toko_pemalang\Laporan_pemesananprodukpemalangController;
 use App\Http\Controllers\Toko_pemalang\Laporan_pemindahanpemalangController;
 use App\Http\Controllers\Toko_pemalang\Laporan_setoranpenjualanpmlController;
@@ -1179,7 +1180,29 @@ Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {
     Route::resource('laporan_setorantunaipemalang', \App\Http\Controllers\Toko_pemalang\Laporan_setorantunaipemalangController::class);
 
     Route::resource('laporan_returpemalang', \App\Http\Controllers\Toko_pemalang\Laporan_returpemalangController::class);
-    Route::get('printReportreturpemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_returpemalangController::class, 'printReportreturbanjaran']);
+    Route::get('printReportreturpemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_returpemalangController::class, 'printReportreturpemalang']);
+
+    Route::resource('laporan_historipemalang', \App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class);
+    Route::get('barangMasukpesananpemalang', [Laporan_historipemalangController::class, 'barangMasukpesananpemalang'])->name('barangMasukpesananpemalang');
+    Route::get('barangMasuksemuapemalang', [Laporan_historipemalangController::class, 'barangMasuksemuapemalang'])->name('barangMasuksemuapemalang');
+    Route::get('printLaporanBmpemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class, 'printLaporanBmpemalang']);
+    Route::get('printLaporanBmpesananpemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class, 'printLaporanBmpesananpemalang']);
+    Route::get('printLaporanBmsemuapemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class, 'printLaporanBmsemuapemalang']);
+    Route::get('printExcelBmpemalang', [Laporan_historipemalangController::class, 'exportExcel'])->name('printExcelBmpemalang');
+    Route::get('printExcelBmpesananpemalang', [Laporan_historipemalangController::class, 'exportExcelBMpesanan'])->name('printExcelBmpesananpemalang');
+    Route::get('printExcelBmsemuapemalang', [Laporan_historipemalangController::class, 'exportExcelBMsemua'])->name('printExcelBmsemuapemalang');
+    
+    Route::get('barangKeluarpemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class, 'barangKeluarpemalang'])->name('barangKeluarpemalang');
+    Route::get('barangKeluarRincipemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class, 'barangKeluarRincipemalang'])->name('barangKeluarRincipemalang');
+    Route::get('printLaporanBKpemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class, 'printLaporanBKpemalang']);
+    Route::get('printLaporanBKrincipemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class, 'printLaporanBKrincipemalang']);
+    Route::get('printExcelBkpemalang', [Laporan_historipemalangController::class, 'exportExcelBK'])->name('printExcelBkpemalang');
+    
+    Route::get('barangReturpemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class, 'barangReturpemalang'])->name('barangReturpemalang');
+    Route::get('/print-report', [Laporan_historipemalangController::class, 'printReport'])->name('print.report');
+    Route::get('printLaporanBRpemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class, 'printLaporanBRpemalang']);
+    Route::get('printExcelBrpemalang', [Laporan_historipemalangController::class, 'exportExcelBR'])->name('printExcelBrpemalang');
+    Route::get('/get-produk-by-klasifikasi/{id}', [Laporan_historipemalangController::class, 'getByKlasifikasi'])->name('getProdukByKlasifikasi');
 
 });
 
