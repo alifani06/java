@@ -84,6 +84,7 @@ use App\Http\Controllers\Toko_cilacap\Inquery_pemindahancilacapController;
 use App\Http\Controllers\Toko_cilacap\Inquery_penjualanprodukcilacapController;
 use App\Http\Controllers\Toko_cilacap\Inquery_returcilacapController;
 use App\Http\Controllers\Toko_cilacap\Inquery_setorantunaicilacapController;
+use App\Http\Controllers\Toko_cilacap\Laporan_historicilacapController;
 use App\Http\Controllers\Toko_cilacap\Laporan_pemesananprodukcilacapController;
 use App\Http\Controllers\Toko_cilacap\Laporan_pemindahancilacapController;
 use App\Http\Controllers\Toko_cilacap\Laporan_setoranpenjualanclcController;
@@ -1853,6 +1854,28 @@ Route::middleware('toko_cilacap')->prefix('toko_cilacap')->group(function () {
 
     Route::resource('laporan_returcilacap', \App\Http\Controllers\Toko_cilacap\Laporan_returcilacapController::class);
     Route::get('printReportreturcilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_returcilacapController::class, 'printReportreturcilacap']);
+
+    Route::resource('laporan_historicilacap', \App\Http\Controllers\Toko_cilacap\Laporan_historicilacapController::class);
+    Route::get('barangMasukpesanancilacap', [Laporan_historicilacapController::class, 'barangMasukpesanancilacap'])->name('barangMasukpesanancilacap');
+    Route::get('barangMasuksemuacilacap', [Laporan_historicilacapController::class, 'barangMasuksemuacilacap'])->name('barangMasuksemuacilacap');
+    Route::get('printLaporanBmcilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_historicilacapController::class, 'printLaporanBmcilacap']);
+    Route::get('printLaporanBmpesanancilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_historicilacapController::class, 'printLaporanBmpesanancilacap']);
+    Route::get('printLaporanBmsemuacilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_historicilacapController::class, 'printLaporanBmsemuacilacap']);
+    Route::get('printExcelBmcilacap', [Laporan_historicilacapController::class, 'exportExcel'])->name('printExcelBmcilacap');
+    Route::get('printExcelBmpesanancilacap', [Laporan_historicilacapController::class, 'exportExcelBMpesanan'])->name('printExcelBmpesanancilacap');
+    Route::get('printExcelBmsemuacilacap', [Laporan_historicilacapController::class, 'exportExcelBMsemua'])->name('printExcelBmsemuacilacap');
+    
+    Route::get('barangKeluarcilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_historicilacapController::class, 'barangKeluarcilacap'])->name('barangKeluarcilacap');
+    Route::get('barangKeluarRincicilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_historicilacapController::class, 'barangKeluarRincicilacap'])->name('barangKeluarRincicilacap');
+    Route::get('printLaporanBKcilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_historicilacapController::class, 'printLaporanBKcilacap']);
+    Route::get('printLaporanBKrincicilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_historicilacapController::class, 'printLaporanBKrincicilacap']);
+    Route::get('printExcelBkcilacap', [Laporan_historicilacapController::class, 'exportExcelBK'])->name('printExcelBkcilacap');
+    
+    Route::get('barangReturcilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_historicilacapController::class, 'barangReturcilacap'])->name('barangReturcilacap');
+    Route::get('/print-report', [Laporan_historicilacapController::class, 'printReport'])->name('print.report');
+    Route::get('printLaporanBRcilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_historicilacapController::class, 'printLaporanBRcilacap']);
+    Route::get('printExcelBrcilacap', [Laporan_historicilacapController::class, 'exportExcelBR'])->name('printExcelBrcilacap');
+    Route::get('/get-produk-by-klasifikasi/{id}', [Laporan_historicilacapController::class, 'getByKlasifikasi'])->name('getProdukByKlasifikasi');
 
 });
 

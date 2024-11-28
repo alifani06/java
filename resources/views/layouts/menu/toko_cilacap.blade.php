@@ -368,6 +368,7 @@
     request()->is('toko_cilacap/laporan_setorantokocilacap*')||
     request()->is('toko_cilacap/laporan_setorantunaicilacap*')||
     request()->is('toko_cilacap/laporan_depositcilacap*')||
+    request()->is('toko_cilacap/laporan_historicilacap*')||
     request()->is('toko_cilacap/laporan_pengirimanbarangjadi*')
     // request()->is('toko_cilacap/input*')
   
@@ -386,6 +387,7 @@
         request()->is('toko_cilacap/laporan_setorantokocilacap*')|| 
         request()->is('toko_cilacap/laporan_setorantunaicilacap*')|| 
         request()->is('toko_cilacap/laporan_depositcilacap*')|| 
+        request()->is('toko_cilacap/laporan_historicilacap*')|| 
         request()->is('toko_cilacap/laporan_spengirimanarangjadi*') 
         // request()->is('toko_cilacap/input*')
       
@@ -494,6 +496,16 @@
                     class="nav-link {{ request()->is('toko_cilacap/laporan_depositcilacap*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                     <p style="font-size: 13px;">Laporan Depsit</p>
+                </a>
+            </li>
+            {{-- @endif --}}
+
+              {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
+              <li class="nav-item">
+                <a href="{{ url('toko_cilacap/laporan_historicilacap') }}"
+                    class="nav-link {{ request()->is('toko_cilacap/laporan_historicilacap*') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
+                    <p style="font-size: 13px;">Laporan Histori Barang</p>
                 </a>
             </li>
             {{-- @endif --}}
