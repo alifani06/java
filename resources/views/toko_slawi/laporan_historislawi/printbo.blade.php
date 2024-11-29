@@ -101,7 +101,8 @@
             <tr>
                 <th class="text-center">No</th>
                 {{-- <th>Tanggal Retur</th> --}}
-                <th>Kode Operan</th>
+                <th>No. Faktur Operan</th>
+                <th>Ke Toko</th>
                 <th>Kode Produk</th>
                 <th>Produk</th>
                 <th>Jumlah</th>
@@ -117,6 +118,7 @@
                     <td class="text-center">{{ $no++ }}</td>
                     {{-- <td>{{ \Carbon\Carbon::parse($retur['tanggal_retur'])->format('d/m/Y H:i') }}</td> --}}
                     <td>{{ $retur->kode_pemindahan }}</td>
+                    <td>{{ $retur->keterangan }}</td>
                     <td>{{ $retur->produk->kode_lama }}</td>
                     <td>{{ $retur->produk->nama_produk }}</td>
                     <td style="text-align: right">{{ number_format($retur->jumlah, 0, ',', '.') }}</td>
@@ -128,10 +130,10 @@
         </tbody>
         <tfoot>
             <tr>
-                <th colspan="4" class="text-center">Total</th>
+                <th colspan="5" class="text-center">Total</th>
                 <th style="text-align: right">{{ $totalJumlah }}</th>
                 <th></th>
-                <th style="text-align: right">Rp {{ number_format($grandTotal, 0, ',', '.') }}</th>
+                <th style="text-align: right">{{ number_format($grandTotal, 0, ',', '.') }}</th>
             </tr>
         </tfoot>
     </table>

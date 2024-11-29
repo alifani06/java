@@ -1289,7 +1289,7 @@ public function barangOperanslawiMasuk(Request $request)
     $klasifikasi_id = $request->klasifikasi_id;
 
 
-    $query = Pemindahan_tokoslawimasuk::with('produk.klasifikasi');
+    $query = Pemindahan_tokoslawimasuk::with(['produk.klasifikasi', 'toko']);
 
     // Filter berdasarkan status
     if ($status) {
