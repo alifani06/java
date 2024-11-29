@@ -26,17 +26,21 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ProdukController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $produks = Produk::all();
-        return view('toko_tegal.produk.index', compact('produks'));
-    }
+        $search = $request->input('search'); // Ambil input pencarian
+        $klasifikasis = Klasifikasi::all();
+        $subklasifikasis = Subklasifikasi::all();
+        
 
+        $produks = Produk::when($search, function ($query, $search) {
+            return $query->where('nama_produk', 'like', '%' . $search . '%')
+                         ->orWhere('kode_lama', 'like', '%' . $search . '%');
+        })
+        ->paginate(10); // Menampilkan 10 data per halaman
+    
+        return view('toko_tegal.produk.index', compact('produks', 'search', 'klasifikasis','subklasifikasis'));
+    }
     public function getkategori($id)
     {
 

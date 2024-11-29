@@ -39,13 +39,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Data produk</h3>
-                    {{-- <div class="float-right">
-                        <a href="{{ url('toko_pemala/produk/create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus"></i>
-                        </a>
-                    </div> --}}
-                    <!-- Form Pencarian -->
-                    
+            
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body mb-3">
@@ -68,7 +62,6 @@
                                 <th>Harga</th>
                                 <th>Satuan</th>
                                 <th>Qrcode</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -79,34 +72,13 @@
                                     <td>{{ $produk->nama_produk }}</td>
                                     <td>{{ 'Rp. ' . number_format($produk->harga, 0, ',', '.') }}</td> <!-- Format harga -->
                                     <td>{{ $produk->satuan }}</td>
-                                    <td>
-                                        @if ($produk->gambar)
-                                            <img src="{{ asset('storage/uploads/' . $produk->gambar) }}" alt="{{ $produk->nama_produk }}" style="width: 100px; height: auto;">
-                                        @else
-                                            <img src="{{ asset('toko_pemalanglte/dist/img/img-placeholder.jpg') }}" alt="{{ $produk->nama_produk }}" style="width: 100px; height: auto;">
-                                        @endif
-                                    </td>
+                                    
                                     <td data-toggle="modal" data-target="#modal-qrcode-{{ $produk->id }}" style="text-align: center;">
                                         <div style="display: inline-block;">
                                             {!! DNS2D::getBarcodeHTML("$produk->qrcode_produk", 'QRCODE', 2, 2) !!}
                                         </div>
                                     </td>
-                                    <td class="text-center">
-                                        <a href="{{ route('produk.cetak_barcode', $produk->id) }}" class="btn btn-primary btn-sm" target="_blank">
-                                            <i class="fas fa-print"></i>
-                                        </a>
-                                        
-                                        <a href="{{ url('toko_pemalang/produk/' . $produk->id ) }}" class="btn btn-success btn-sm">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        
-                                        <a href="{{ url('toko_pemalang/produk/' . $produk->id . '/edit') }}" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <button type="submit" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modal-hapus-{{ $produk->id }}">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
+                            
                                 </tr>
                                 <!-- Modal Hapus -->
                                 <div class="modal fade" id="modal-hapus-{{ $produk->id }}">
@@ -123,7 +95,7 @@
                                             </div>
                                             <div class="modal-footer justify-content-between">
                                                 <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
-                                                <form action="{{ url('toko_pemalang/produk/' . $produk->id) }}" method="POST">
+                                                <form action="{{ url('/produk/' . $produk->id) }}" method="POST">
                                                     @csrf
                                                     @method('delete')
                                                     <button type="submit" class="btn btn-danger">Hapus</button>
@@ -163,12 +135,11 @@
                         </tbody>
                     </table>
 
-                    <!-- Pagination Links -->
-                    {{-- <div class="pagination">
+                    {{-- <!-- Pagination Links -->
+                    <div class="pagination">
                         {{ $produks->appends(['search' => $search])->links() }}
-                    </div> --}}
+                    </div>  --}}
                 </div>
-                <!-- /.card-body -->
             </div>
         </div>
     </section>
