@@ -1148,7 +1148,7 @@ Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {
     Route::get('/inquery_pemindahanpemalang/{id}/print', [Inquery_pemindahanpemalangController::class, 'print'])->name('inquery_pemindahanpemalang.print');
 
     Route::resource('laporan_pemindahanpemalang', \App\Http\Controllers\Toko_pemalang\Laporan_pemindahanpemalangController::class);
-    Route::get('/Toko_pemalang/print_report', [Laporan_pemindahanpemalangController::class, 'printReport'])->name('print.report');
+    Route::get('printReportpemindahanPml/{id}', [\App\Http\Controllers\Toko_pemalang\Laporan_pemindahanpemalangController::class, 'printReportpemindahanPml']);
 
     Route::resource('laporan_stoktokopemalang', \App\Http\Controllers\Toko_pemalang\Laporan_stoktokopemalangController::class);
     Route::get('printstoktokopemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_stoktokopemalangController::class, 'printReport']);
