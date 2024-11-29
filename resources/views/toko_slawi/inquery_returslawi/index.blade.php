@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Inquery Retur Toko Tegal</h1>
+                    <h1 class="m-0">Inquery Retur Toko Slawi</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -81,13 +81,13 @@
                                 <label for="status">(Pilih Status)</label>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_pengiriman" name="tanggal_pengiriman" type="date"
-                                    value="{{ Request::get('tanggal_pengiriman') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_pengiriman">(Dari Tanggal)</label>
+                                <input class="form-control" id="tanggal_input" name="tanggal_input" type="date"
+                                    value="{{ Request::get('tanggal_input') }}"  />
+                                <label for="tanggal_input">(Dari Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
-                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
+                                    value="{{ Request::get('tanggal_akhir') }}"  />
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
@@ -101,7 +101,7 @@
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
-                                <th>Kode Retur</th>
+                                <th>No Retur</th>
                                 <th>Tanggal Pengiriman</th>
                                 <th>Tanggal Terima</th>
                                 <th>Status</th>
@@ -209,7 +209,7 @@
     </section>
 
     <script>
-        var tanggalAwal = document.getElementById('tanggal_pengiriman');
+        var tanggalAwal = document.getElementById('tanggal_input');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
         if (tanggalAwal.value == "") {
             tanggalAkhir.readOnly = true;

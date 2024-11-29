@@ -85,14 +85,6 @@ class Inquery_returbanjaranController extends Controller{
 
     
 
-public function create()
-{
-    // Fetch all products
-    $produks = Produk::all();
-    $tokos = Toko::all();
-
-    return view('toko_banjaran.retur_tokoslawi.create', compact('produks', 'tokos'));
-}
 
 public function show($id)
 {

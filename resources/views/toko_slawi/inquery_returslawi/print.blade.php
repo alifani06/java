@@ -190,7 +190,7 @@
         <!-- Informasi Permintaan -->
         <div>
             <p style="margin-bottom: 2px;">
-                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>Kode Pengiriman</strong></span>
+                <span style="min-width: 100px; display: inline-flex; align-items: center;"><strong>No. Pengiriman</strong></span>
                 <span style="min-width: 50px; display: inline-flex; align-items: center;">: {{ $pengirimanBarangJadi->first()->kode_retur }}</span>
             </p>
             <p>

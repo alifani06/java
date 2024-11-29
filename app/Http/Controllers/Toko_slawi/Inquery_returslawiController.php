@@ -73,19 +73,9 @@ class Inquery_returslawiController extends Controller{
             // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
             $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_retur');
 
-            return view('toko_slawi.inquery_returtegal.index', compact('stokBarangJadi'));
+            return view('toko_slawi.inquery_returslawi.index', compact('stokBarangJadi'));
     }
 
-    
-
-public function create()
-{
-    // Fetch all products
-    $produks = Produk::all();
-    $tokos = Toko::all();
-
-    return view('toko_slawi.retur_tokotegal.create', compact('produks', 'tokos'));
-}
 
 public function show($id)
 {
@@ -121,7 +111,7 @@ public function print($id)
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
         
-        $pdf = FacadePdf::loadView('toko_slawi.inquery_returtegal.print', compact('pengirimanBarangJadi', 'firstItem'));
+        $pdf = FacadePdf::loadView('toko_slawi.inquery_returslawi.print', compact('pengirimanBarangJadi', 'firstItem'));
 
         return $pdf->stream('surat_retur_produk.pdf');
         

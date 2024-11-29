@@ -75,6 +75,7 @@
                             <option value="masuk" {{ old('kategori1') == 'masuk' ? 'selected' : '' }}>Barang Masuk</option>
                             <option value="keluar" {{ old('kategori1') == 'keluar' ? 'selected' : '' }}>Barang Keluar</option>
                             <option value="retur" {{ old('kategori1') == 'retur' ? 'selected' : '' }}>Barang Retur</option>
+                            <option value="oper" {{ old('kategori1') == 'oper' ? 'selected' : '' }}>Barang Operan</option>
                         </select>
                     </div>
                     <h3 class="card-title">Laporan Barang Masuk Permintaan</h3>
@@ -253,6 +254,8 @@
             window.location.href = "{{ url('admin/barangKeluar') }}";
         }else if (selectedValue === 'retur') {
             window.location.href = "{{ url('admin/barangRetur') }}";
+        }else if (selectedValue === 'oper') {
+            window.location.href = "{{ url('admin/barangOperantoko') }}";
         }
     });
 </script>

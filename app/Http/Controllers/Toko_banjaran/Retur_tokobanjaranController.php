@@ -86,68 +86,95 @@ class Retur_tokobanjaranController extends Controller{
     
 
 
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'produk_id' => 'required|array',
-    //         'produk_id.*' => 'exists:produks,id',
-    //         'jumlah' => 'required|array',
-    //         'jumlah.*' => 'integer|min:1',
-    //         'keterangan' => 'required|array',
-    //         // 'keterangan.*' => 'in:produk_gagal,oper,sampel',
-    //     ]);
+  
+//     public function store(Request $request)
+// {
+//     $request->validate([
+//         'produk_id' => 'required|array',
+//         'produk_id.*' => 'exists:produks,id',
+//         'jumlah' => 'required|array',
+//         'jumlah.*' => 'integer|min:1',
+//         'keterangan' => 'required|array',
+//     ]);
 
-    //     $kode = $this->kode();
-    //     $produk_ids = $request->input('produk_id');
-    //     $jumlahs = $request->input('jumlah');
-    //     $keterangans = $request->input('keterangan');
+//     $kode = $this->kode();
+//     $produk_ids = $request->input('produk_id');
+//     $jumlahs = $request->input('jumlah');
+//     $keterangans = $request->input('keterangan');
 
-    //     foreach ($produk_ids as $index => $produk_id) {
-    //         $jumlah_yang_dibutuhkan = $jumlahs[$index];
-            
-    //         $produk = Produk::find($produk_id);
-    //         if (!$produk) {
-    //             return redirect()->back()->with('error', 'Produk dengan ID ' . $produk_id . ' tidak ditemukan.');
-    //         }
+//     foreach ($produk_ids as $index => $produk_id) {
+//         $jumlah_yang_dibutuhkan = $jumlahs[$index];
 
-    //         $nama_produk_retur = $produk->nama_produk . ' RETUR';
+//         $produk = Produk::find($produk_id);
+//         if (!$produk) {
+//             return redirect()->back()->with('error', 'Produk dengan ID ' . $produk_id . ' tidak ditemukan.');
+//         }
 
-    //         // Ambil semua stok yang tersedia untuk produk ini
-    //         $stok_items = Stok_tokobanjaran::where('produk_id', $produk_id)
-    //             ->where('jumlah', '>', 0)
-    //             ->orderBy('jumlah', 'asc')
-    //             ->get();
+//         $nama_produk_retur = $produk->nama_produk . ' RETUR';
 
-    //         if ($stok_items->isEmpty()) {
-    //             return redirect()->back()->with('error', 'Stok untuk produk dengan ID ' . $produk_id . ' tidak ditemukan.');
-    //         }
+//         // Ambil semua stok yang tersedia untuk produk ini
+//         $stok_items = Stok_tokobanjaran::where('produk_id', $produk_id)
+//             ->where('jumlah', '>', 0)
+//             ->orderBy('jumlah', 'asc')
+//             ->get();
 
-    //         // Menyimpan retur tanpa mengurangi stok
-    //         Retur_tokobanjaran::create([
-    //             'kode_retur' => $kode,
-    //             'produk_id' => $produk_id,
-    //             'toko_id' => '1',
-    //             'status' => 'unpost',
-    //             'jumlah' => $jumlah_yang_dibutuhkan,
-    //             'keterangan' => $keterangans[$index],
-    //             'tanggal_input' => Carbon::now('Asia/Jakarta'),
-    //         ]);
+//         if ($stok_items->isEmpty()) {
+//             return redirect()->back()->with('error', 'Stok untuk produk dengan ID ' . $produk_id . ' tidak ditemukan.');
+//         }
 
-    //         Retur_barangjadi::create([
-    //             'kode_retur' => $kode,
-    //             'produk_id' => $produk_id,
-    //             'toko_id' => '1',
-    //             'nama_produk' => $nama_produk_retur,
-    //             'status' => 'unpost',
-    //             'jumlah' => $jumlah_yang_dibutuhkan,
-    //             'keterangan' => $keterangans[$index],
-    //             'tanggal_retur' => Carbon::now('Asia/Jakarta'),
-    //         ]);
-    //     }
+//         // Lakukan pengurangan stok
+//         $sisa_kebutuhan = $jumlah_yang_dibutuhkan;
 
-    //     return redirect()->route('retur_tokobanjaran.index')->with('success', 'Data retur barang berhasil disimpan.');
-    // }
-    public function store(Request $request)
+//         foreach ($stok_items as $stok) {
+//             if ($sisa_kebutuhan <= 0) {
+//                 break; // Jika kebutuhan sudah terpenuhi, hentikan pengurangan stok
+//             }
+
+//             if ($stok->jumlah >= $sisa_kebutuhan) {
+//                 // Jika stok cukup untuk memenuhi seluruh sisa kebutuhan
+//                 $stok->jumlah -= $sisa_kebutuhan;
+//                 $stok->save();
+//                 $sisa_kebutuhan = 0; // Kebutuhan terpenuhi
+//             } else {
+//                 // Jika stok tidak cukup, kurangi stok yang ada dan lanjutkan ke item berikutnya
+//                 $sisa_kebutuhan -= $stok->jumlah;
+//                 $stok->jumlah = 0;
+//                 $stok->save();
+//             }
+//         }
+
+//         // Jika kebutuhan masih belum terpenuhi setelah semua stok diperiksa
+//         if ($sisa_kebutuhan > 0) {
+//             return redirect()->back()->with('error', 'Stok untuk produk dengan ID ' . $produk_id . ' tidak mencukupi.');
+//         }
+
+//         // Menyimpan retur dengan status 'posting'
+//         Retur_tokobanjaran::create([
+//             'kode_retur' => $kode,
+//             'produk_id' => $produk_id,
+//             'toko_id' => '1',
+//             'status' => 'unpost', // Ubah status menjadi posting
+//             'jumlah' => $jumlah_yang_dibutuhkan,
+//             'keterangan' => $keterangans[$index],
+//             'tanggal_input' => Carbon::now('Asia/Jakarta'),
+//         ]);
+
+//         Retur_barangjadi::create([
+//             'kode_retur' => $kode,
+//             'produk_id' => $produk_id,
+//             'toko_id' => '1',
+//             'nama_produk' => $nama_produk_retur,
+//             'status' => 'unpost', // Ubah status menjadi posting
+//             'jumlah' => $jumlah_yang_dibutuhkan,
+//             'keterangan' => $keterangans[$index],
+//             'tanggal_retur' => Carbon::now('Asia/Jakarta'),
+//         ]);
+//     }
+
+//     return redirect()->route('retur_tokobanjaran.index')->with('success', 'Data retur barang berhasil disimpan dan stok berhasil dikurangi.');
+// }
+
+public function store(Request $request)
 {
     $request->validate([
         'produk_id' => 'required|array',
@@ -157,7 +184,13 @@ class Retur_tokobanjaranController extends Controller{
         'keterangan' => 'required|array',
     ]);
 
-    $kode = $this->kode();
+    // Jika tanggal_input tidak diisi, gunakan tanggal hari ini
+    $tanggalPengiriman = $request->input('tanggal_input', now()->toDateString());
+    $tanggalPengirimanDenganJam = Carbon::parse($tanggalPengiriman)->setTime(now()->hour, now()->minute);
+
+    // Gunakan function kode dengan tanggal pengiriman
+    $kode = $this->kode($tanggalPengirimanDenganJam);
+
     $produk_ids = $request->input('produk_id');
     $jumlahs = $request->input('jumlah');
     $keterangans = $request->input('keterangan');
@@ -213,10 +246,10 @@ class Retur_tokobanjaranController extends Controller{
             'kode_retur' => $kode,
             'produk_id' => $produk_id,
             'toko_id' => '1',
-            'status' => 'unpost', // Ubah status menjadi posting
+            'status' => 'unpost',
             'jumlah' => $jumlah_yang_dibutuhkan,
             'keterangan' => $keterangans[$index],
-            'tanggal_input' => Carbon::now('Asia/Jakarta'),
+            'tanggal_input' => $tanggalPengirimanDenganJam,
         ]);
 
         Retur_barangjadi::create([
@@ -224,10 +257,10 @@ class Retur_tokobanjaranController extends Controller{
             'produk_id' => $produk_id,
             'toko_id' => '1',
             'nama_produk' => $nama_produk_retur,
-            'status' => 'unpost', // Ubah status menjadi posting
+            'status' => 'unpost',
             'jumlah' => $jumlah_yang_dibutuhkan,
             'keterangan' => $keterangans[$index],
-            'tanggal_retur' => Carbon::now('Asia/Jakarta'),
+            'tanggal_retur' => $tanggalPengirimanDenganJam,
         ]);
     }
 
@@ -237,12 +270,11 @@ class Retur_tokobanjaranController extends Controller{
 
 
 
-
-public function kode()
+public function kode($tanggalPengiriman)
 {
     $prefix = 'FRC';
-    $year = date('y'); // Dua digit terakhir dari tahun
-    $date = date('dm'); // Format bulan dan hari: MMDD
+    $year = Carbon::parse($tanggalPengiriman)->format('y'); // Dua digit terakhir dari tahun
+    $date = Carbon::parse($tanggalPengiriman)->format('dm'); // Format bulan dan hari: MMDD
 
     // Mengambil kode retur terakhir yang dibuat pada hari yang sama
     $lastBarang = Retur_tokobanjaran::whereDate('tanggal_input', Carbon::today())
