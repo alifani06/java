@@ -355,11 +355,11 @@ document.addEventListener('DOMContentLoaded', function() {
         item_pembelian += '<option value="MAINAN DIJUAL"' + (keterangan === 'MAINAN DIJUAL' ? ' selected' : '') + '>MAINAN DIJUAL</option>';
         item_pembelian += '<option value="MAKLON"' + (keterangan === 'MAKLON' ? ' selected' : '') + '>MAKLON</option>';
         item_pembelian += '<option value="SPECIAL PRODUK"' + (keterangan === 'SPECIAL PRODUK' ? ' selected' : '') + '>SPECIAL PRODUK</option>';
+        item_pembelian += '<option value="CAFFE"' + (keterangan === 'CAFFE' ? ' selected' : '') + '>CAFFE</option>';
         item_pembelian += '<option value="PRODUK GAGAL"' + (keterangan === 'PRODUK GAGAL' ? ' selected' : '') + '>PRODUK GAGAL</option>';
         item_pembelian += '<option value="SAMPEL"' + (keterangan === 'SAMPEL' ? ' selected' : '') + '>SAMPEL</option>';
         item_pembelian += '<option value="RETUR TUKANG SAPU"' + (keterangan === 'RETUR TUKANG SAPU' ? ' selected' : '') + '>RETUR TUKANG SAPU</option>';
         item_pembelian += '<option value="SORTIR"' + (keterangan === 'SORTIR' ? ' selected' : '') + '>SORTIR</option>';
-
         item_pembelian += '</select></div></td>';
  
          item_pembelian += '<td style="width: 100px"><button type="button" class="btn btn-primary btn-sm" onclick="showCategoryModal(' + urutan + ')"><i class="fas fa-plus"></i></button><button style="margin-left:5px" type="button" class="btn btn-danger btn-sm" onclick="removeBan(' + urutan + ')"><i class="fas fa-trash"></i></button></td>';

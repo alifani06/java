@@ -189,16 +189,16 @@ public function store(Request $request)
         'keterangan' => 'required|array',
     ]);
 
-    $kode = $this->kode();
-    
     // Jika tanggal_input tidak diisi, gunakan tanggal hari ini
-    $tanggalPengiriman = $request->input('tanggal_input', now()->toDateString()); // default ke tanggal hari ini
+    $tanggalPengiriman = $request->input('tanggal_input', now()->toDateString());
+    $tanggalPengirimanDenganJam = Carbon::parse($tanggalPengiriman)->setTime(now()->hour, now()->minute);
+
+    // Gunakan function kode dengan tanggal pengiriman
+    $kode = $this->kode($tanggalPengirimanDenganJam);
 
     $produk_ids = $request->input('produk_id');
     $jumlahs = $request->input('jumlah');
     $keterangans = $request->input('keterangan');
-
-    $tanggalPengirimanDenganJam = Carbon::parse($tanggalPengiriman)->setTime(now()->hour, now()->minute);
 
     foreach ($produk_ids as $index => $produk_id) {
         $jumlah_yang_dibutuhkan = $jumlahs[$index];
@@ -251,7 +251,7 @@ public function store(Request $request)
             'kode_retur' => $kode,
             'produk_id' => $produk_id,
             'toko_id' => '6',
-            'status' => 'unpost', // Ubah status menjadi posting
+            'status' => 'unpost',
             'jumlah' => $jumlah_yang_dibutuhkan,
             'keterangan' => $keterangans[$index],
             'tanggal_input' => $tanggalPengirimanDenganJam,
@@ -262,7 +262,7 @@ public function store(Request $request)
             'produk_id' => $produk_id,
             'toko_id' => '6',
             'nama_produk' => $nama_produk_retur,
-            'status' => 'unpost', // Ubah status menjadi posting
+            'status' => 'unpost',
             'jumlah' => $jumlah_yang_dibutuhkan,
             'keterangan' => $keterangans[$index],
             'tanggal_retur' => $tanggalPengirimanDenganJam,
@@ -276,14 +276,15 @@ public function store(Request $request)
 
 
 
-public function kode()
+
+public function kode($tanggalPengiriman)
 {
     $prefix = 'FRG';
-    $year = date('y'); // Dua digit terakhir dari tahun
-    $date = date('dm'); // Format bulan dan hari: MMDD
+    $year = Carbon::parse($tanggalPengiriman)->format('y'); // Dua digit terakhir dari tahun
+    $date = Carbon::parse($tanggalPengiriman)->format('dm'); // Format bulan dan hari: MMDD
 
     // Mengambil kode retur terakhir yang dibuat pada hari yang sama
-    $lastBarang = Retur_tokocilacap::whereDate('tanggal_input', Carbon::today())
+    $lastBarang = Retur_tokocilacap::whereDate('tanggal_input', Carbon::parse($tanggalPengiriman))
                                   ->orderBy('kode_retur', 'desc')
                                   ->first();
 
