@@ -1337,7 +1337,7 @@ public function barangOperanslawiMasuk(Request $request)
     return view('toko_slawi.laporan_historislawi.barangopermasuk', compact('stokBarangJadi',  'klasifikasis', 'totalJumlah', 'grandTotal'));
 }
 
-public function printLaporanBOsalwi(Request $request)
+public function printLaporanBOslawi(Request $request)
 {
     // Ambil parameter filter dari request
     $status = $request->status;
