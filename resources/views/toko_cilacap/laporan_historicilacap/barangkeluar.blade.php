@@ -62,6 +62,8 @@
                             <option value="masuk" {{ old('kategori1') == 'masuk' ? 'selected' : '' }}>Barang Masuk</option>
                             <option value="keluar" {{ old('kategori1') == 'keluar' ? 'selected' : '' }}>Barang Keluar</option>
                             <option value="retur" {{ old('kategori1') == 'retur' ? 'selected' : '' }}>Barang Retur</option>
+                            <option value="oper" {{ old('kategori1') == 'oper' ? 'selected' : '' }}>Barang Oper</option>
+
                         </select>
                     </div>
                     <h3 class="card-title">Laporan Barang Keluar Global</h3>
@@ -260,6 +262,8 @@
             window.location.href = "{{ url('toko_cilacap/barangKeluarcilacap') }}";
         }else if (selectedValue === 'retur') {
             window.location.href = "{{ url('toko_cilacap/barangReturcilacap') }}";
+        }else if (selectedValue === 'oper') {
+            window.location.href = "{{ url('toko_cilacap/barangOpercilacap') }}";
         }
     });
 </script>

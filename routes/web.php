@@ -1241,7 +1241,7 @@ Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {
     Route::get('/get-produk-by-klasifikasi/{id}', [Laporan_historipemalangController::class, 'getByKlasifikasi'])->name('getProdukByKlasifikasi');
 
     Route::get('barangOperpemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class, 'barangOperpemalang'])->name('barangOperpemalang');
-    Route::get('barangOperanpemalangMasuk', [\App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class, 'barangOperapemalanglMasuk'])->name('barangOperanpemalangMasuk');
+    Route::get('barangOperanpemalangMasuk', [\App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class, 'barangOperapemalangMasuk'])->name('barangOperanpemalangMasuk');
     Route::get('printLaporanBOpemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class, 'printLaporanBOpemalang']);
     Route::get('printLaporanBOpemalangMasuk', [\App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class, 'printLaporanBOpemalangMasuk']);
 
@@ -1901,6 +1901,11 @@ Route::middleware('toko_cilacap')->prefix('toko_cilacap')->group(function () {
     Route::get('printLaporanBRcilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_historicilacapController::class, 'printLaporanBRcilacap']);
     Route::get('printExcelBrcilacap', [Laporan_historicilacapController::class, 'exportExcelBR'])->name('printExcelBrcilacap');
     Route::get('/get-produk-by-klasifikasi/{id}', [Laporan_historicilacapController::class, 'getByKlasifikasi'])->name('getProdukByKlasifikasi');
+
+    Route::get('barangOpercilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_historicilacapController::class, 'barangOpercilacap'])->name('barangOpercilacap');
+    Route::get('barangOperancilacapMasuk', [\App\Http\Controllers\Toko_cilacap\Laporan_historicilacapController::class, 'barangOperacilacapMasuk'])->name('barangOperancilacapMasuk');
+    Route::get('printLaporanBOcilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_historicilacapController::class, 'printLaporanBOcilacap']);
+    Route::get('printLaporanBOcilacapMasuk', [\App\Http\Controllers\Toko_cilacap\Laporan_historicilacapController::class, 'printLaporanBOcilacapMasuk']);
 
 });
 
