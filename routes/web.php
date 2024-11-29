@@ -1677,6 +1677,11 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
     Route::get('printExcelBrslawi', [Laporan_historislawiController::class, 'exportExcelBR'])->name('printExcelBrslawi');
     Route::get('/get-produk-by-klasifikasi/{id}', [Laporan_historislawiController::class, 'getByKlasifikasi'])->name('getProdukByKlasifikasi');
 
+    Route::get('barangOperslawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'barangOperslawi'])->name('barangOperslawi');
+    Route::get('barangOperanslawiMasuk', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'barangOperanslawiMasuk'])->name('barangOperanslawiMasuk');
+    Route::get('printLaporanBOslawi', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'printLaporanBOslawi']);
+    Route::get('printLaporanBOslawiMasuk', [\App\Http\Controllers\Toko_slawi\Laporan_historislawiController::class, 'printLaporanBOslawiMasuk']);
+
 });
 
 Route::middleware('toko_cilacap')->prefix('toko_cilacap')->group(function () {
