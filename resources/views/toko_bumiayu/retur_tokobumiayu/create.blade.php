@@ -89,6 +89,10 @@
                                                     <i class="fas fa-plus"></i>
                                                 </button>
                                             </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label for="tanggal_input">Tanggal Retur:</label>
+                                                <input type="date" class="form-control" id="tanggal_input" name="tanggal_input" value="{{ old('tanggal_input') }}">
+                                            </div>
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
@@ -351,6 +355,7 @@ document.addEventListener('DOMContentLoaded', function() {
         item_pembelian += '<option value="MAINAN DIJUAL"' + (keterangan === 'MAINAN DIJUAL' ? ' selected' : '') + '>MAINAN DIJUAL</option>';
         item_pembelian += '<option value="MAKLON"' + (keterangan === 'MAKLON' ? ' selected' : '') + '>MAKLON</option>';
         item_pembelian += '<option value="SPECIAL PRODUK"' + (keterangan === 'SPECIAL PRODUK' ? ' selected' : '') + '>SPECIAL PRODUK</option>';
+        item_pembelian += '<option value="CAFFE"' + (keterangan === 'CAFFE' ? ' selected' : '') + '>CAFFE</option>';
         item_pembelian += '<option value="PRODUK GAGAL"' + (keterangan === 'PRODUK GAGAL' ? ' selected' : '') + '>PRODUK GAGAL</option>';
         item_pembelian += '<option value="SAMPEL"' + (keterangan === 'SAMPEL' ? ' selected' : '') + '>SAMPEL</option>';
         item_pembelian += '<option value="RETUR TUKANG SAPU"' + (keterangan === 'RETUR TUKANG SAPU' ? ' selected' : '') + '>RETUR TUKANG SAPU</option>';
