@@ -1586,6 +1586,7 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
 
     Route::resource('laporan_pemindahanslawi', \App\Http\Controllers\Toko_slawi\Laporan_pemindahanslawiController::class);
     Route::get('/toko_slawi/print_report', [Laporan_pemindahanslawiController::class, 'printReport'])->name('print.report');
+    Route::get('printReportpemindahanSlw/{id}', [\App\Http\Controllers\Toko_slawi\Laporan_pemindahanslawiController::class, 'printReportpemindahanSlw']);
 
     Route::resource('laporan_stoktokoslawi', \App\Http\Controllers\Toko_slawi\Laporan_stoktokoslawiController::class);
     Route::get('printstoktokoslawi', [\App\Http\Controllers\Toko_slawi\Laporan_stoktokoslawiController::class, 'printReport']);

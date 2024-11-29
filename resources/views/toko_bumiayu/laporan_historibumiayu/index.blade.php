@@ -90,7 +90,7 @@
                                     <option value="">- Pilih -</option>
                                     <option value="permintaan" {{ old('kategori2') == 'permintaan' ? 'selected' : '' }}>BM STOK</option>
                                     <option value="pemesanan" {{ old('kategori2') == 'pemesanan' ? 'selected' : '' }}>BM PEMESANAN</option>
-                                    <option value="semua" {{ old('kategori2') == 'semua' ? 'selected' : '' }}>SEUA BM </option>
+                                    <option value="semua" {{ old('kategori2') == 'semua' ? 'selected' : '' }}>SEMUA BM </option>
                                 </select>
                             </div>
                             <div hidden class="col-md-3 mb-3">
