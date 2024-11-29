@@ -1240,7 +1240,10 @@ Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {
     Route::get('printExcelBrpemalang', [Laporan_historipemalangController::class, 'exportExcelBR'])->name('printExcelBrpemalang');
     Route::get('/get-produk-by-klasifikasi/{id}', [Laporan_historipemalangController::class, 'getByKlasifikasi'])->name('getProdukByKlasifikasi');
 
-    
+    Route::get('barangOperpemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class, 'barangOperpemalang'])->name('barangOperpemalang');
+    Route::get('barangOperanpemalangMasuk', [\App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class, 'barangOperapemalanglMasuk'])->name('barangOperanpemalangMasuk');
+    Route::get('printLaporanBOpemalang', [\App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class, 'printLaporanBOpemalang']);
+    Route::get('printLaporanBOpemalangMasuk', [\App\Http\Controllers\Toko_pemalang\Laporan_historipemalangController::class, 'printLaporanBOpemalangMasuk']);
 
 });
 

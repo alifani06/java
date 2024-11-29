@@ -41,6 +41,8 @@ use App\Exports\StokBarangExportBMsemua;
 use App\Exports\StokBarangExportBR;
 use App\Exports\StokBarangExportExcelSemua;
 use App\Exports\StokBarangExportSemua;
+use App\Models\Pemindahan_tokopemalang;
+use App\Models\Pemindahan_tokopemalangmasuk;
 use Illuminate\Support\Facades\DB;
 
 
@@ -1206,6 +1208,296 @@ public function barangKeluarRincipemalang(Request $request)
     return $pdf->stream('laporan_barangretur.pdf', ['Attachment' => false]);
 }
 
+
+public function barangOperpemalang(Request $request)
+{
+    $status = $request->status;
+    $tanggal_input = $request->tanggal_input;
+    $tanggal_akhir = $request->tanggal_akhir;
+    $klasifikasi_id = $request->klasifikasi_id;
+
+    $toko_id = 4;
+
+    $query = Pemindahan_tokopemalang::with('produk.klasifikasi');
+
+    // Filter berdasarkan status
+    if ($status) {
+        $query->where('status', $status);
+    }
+
+    // Filter berdasarkan tanggal
+    if ($tanggal_input && $tanggal_akhir) {
+        $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
+        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+        $query->whereBetween('tanggal_input', [$tanggal_input, $tanggal_akhir]);
+    } elseif ($tanggal_input) {
+        $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
+        $query->where('tanggal_input', '>=', $tanggal_input);
+    } elseif ($tanggal_akhir) {
+        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+        $query->where('tanggal_input', '<=', $tanggal_akhir);
+    } else {
+        // Jika tidak ada filter tanggal, tampilkan data hari ini
+        $query->whereDate('tanggal_input', Carbon::today());
+    }
+
+    // Filter berdasarkan toko yang sudah ditetapkan menjadi 1
+    $query->where('toko_id', $toko_id);
+
+    // Filter berdasarkan klasifikasi
+    if ($klasifikasi_id) {
+        $query->whereHas('produk.klasifikasi', function ($query) use ($klasifikasi_id) {
+            $query->where('id', $klasifikasi_id);
+        });
+    }
+
+    $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_retur');
+
+    $totalJumlah = 0;
+    $grandTotal = 0;
+
+    foreach ($stokBarangJadi as $returGroup) {
+        foreach ($returGroup as $retur) {
+            $totalJumlah += $retur->jumlah;
+            $grandTotal += $retur->jumlah * $retur->produk->harga;
+        }
+    }
+
+    // Ambil semua data toko dan klasifikasi untuk dropdown
+    $tokos = Toko::all();
+    $klasifikasis = Klasifikasi::all();
+
+    return view('toko_pemalang.laporan_historipemalang.barangoper', compact('stokBarangJadi', 'tokos', 'klasifikasis', 'totalJumlah', 'grandTotal'));
+}
+
+public function barangOperanpemalangMasuk(Request $request)
+{
+    $status = $request->status;
+    $tanggal_input = $request->tanggal_input;
+    $tanggal_akhir = $request->tanggal_akhir;
+    $klasifikasi_id = $request->klasifikasi_id;
+
+
+    $query = Pemindahan_tokopemalangmasuk::with(['produk.klasifikasi', 'toko']);
+
+    // Filter berdasarkan status
+    if ($status) {
+        $query->where('status', $status);
+    }
+
+    // Filter berdasarkan tanggal
+    if ($tanggal_input && $tanggal_akhir) {
+        $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
+        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+        $query->whereBetween('tanggal_input', [$tanggal_input, $tanggal_akhir]);
+    } elseif ($tanggal_input) {
+        $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
+        $query->where('tanggal_input', '>=', $tanggal_input);
+    } elseif ($tanggal_akhir) {
+        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+        $query->where('tanggal_input', '<=', $tanggal_akhir);
+    } else {
+        // Jika tidak ada filter tanggal, tampilkan data hari ini
+        $query->whereDate('tanggal_input', Carbon::today());
+    }
+
+    if ($klasifikasi_id) {
+        $query->whereHas('produk.klasifikasi', function ($query) use ($klasifikasi_id) {
+            $query->where('id', $klasifikasi_id);
+        });
+    }
+
+    $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pemindahan');
+
+    $totalJumlah = 0;
+    $grandTotal = 0;
+
+    foreach ($stokBarangJadi as $returGroup) {
+        foreach ($returGroup as $retur) {
+            $totalJumlah += $retur->jumlah;
+            $grandTotal += $retur->jumlah * $retur->produk->harga;
+        }
+    }
+
+    // Ambil semua data toko dan klasifikasi untuk dropdown
+    $tokos = Toko::all();
+    $klasifikasis = Klasifikasi::all();
+
+    return view('toko_pemalang.laporan_historipemalang.barangopermasuk', compact('stokBarangJadi',  'klasifikasis', 'totalJumlah', 'grandTotal'));
+}
+
+public function printLaporanBOpemalang(Request $request)
+{
+    // Ambil parameter filter dari request
+    $status = $request->status;
+    $tanggal_input = $request->tanggal_input;
+    $tanggal_akhir = $request->tanggal_akhir;
+    $klasifikasi_id = $request->klasifikasi_id;
+
+    // Tetapkan toko_id menjadi 1
+    $toko_id = 4;
+
+    // Format tanggal untuk tampilan
+    $formattedStartDate = $tanggal_input ? Carbon::parse($tanggal_input)->format('d-m-Y') : 'N/A';
+    $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : 'N/A';
+
+    // Ambil nama toko berdasarkan ID (langsung diset ke toko_id = 1)
+    $branchName = 'Semua Toko'; // Default jika tidak ada filter toko
+    $toko = Toko::find($toko_id);
+    $branchName = $toko ? $toko->nama_toko : 'Semua Toko';
+
+    // Query dasar untuk mengambil data Retur_barangjadi
+    $query = Pemindahan_tokopemalang::with('produk.klasifikasi')
+        ->join('produks', 'produks.id', '=', 'pemindahan_tokopemalangs.produk_id') // Join with 'produks'
+        ->orderBy('produks.kode_lama', 'asc') // Order by 'kode_lama'
+        ->orderBy('pemindahan_tokopemalangs.tanggal_input', 'desc'); // Then order by 'tanggal_input'
+
+    // Filter berdasarkan status
+    if ($status) {
+        $query->where('pemindahan_tokopemalangs.status', $status);
+    }
+
+    // Filter berdasarkan toko_id yang sudah ditetapkan menjadi 1
+    $query->where('pemindahan_tokopemalangs.toko_id', $toko_id);
+
+    // Filter berdasarkan klasifikasi_id
+    if ($klasifikasi_id) {
+        $query->whereHas('produk', function ($q) use ($klasifikasi_id) {
+            $q->where('klasifikasi_id', $klasifikasi_id);
+        });
+    }
+
+    // Filter berdasarkan tanggal retur
+    if ($tanggal_input && $tanggal_akhir) {
+        $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
+        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+        $query->whereBetween('pemindahan_tokopemalangs.tanggal_input', [$tanggal_input, $tanggal_akhir]);
+    } elseif ($tanggal_input) {
+        $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
+        $query->where('pemindahan_tokopemalangs.tanggal_input', '>=', $tanggal_input);
+    } elseif ($tanggal_akhir) {
+        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+        $query->where('pemindahan_tokopemalangs.tanggal_input', '<=', $tanggal_akhir);
+    } else {
+        // Jika tidak ada filter tanggal, tampilkan data untuk hari ini
+        $query->whereDate('pemindahan_tokopemalangs.tanggal_input', Carbon::today());
+    }
+
+    // Eksekusi query dan dapatkan hasilnya
+    $stokBarangJadi = $query->select('pemindahan_tokopemalangs.*') // Select only 'retur_barangjadi' fields
+        ->get()
+        ->groupBy('kode_pemindahan');
+
+    // Hitung total jumlah dan grand total
+    $totalJumlah = 0;
+    $grandTotal = 0;
+
+    foreach ($stokBarangJadi as $returGroup) {
+        foreach ($returGroup as $retur) {
+            $totalJumlah += $retur->jumlah;
+            $grandTotal += $retur->jumlah * $retur->produk->harga;
+        }
+    }
+
+    // Menggunakan FacadePdf untuk menghasilkan PDF
+    $pdf = FacadePdf::loadView('toko_pemalang.laporan_historipemalang.printbo', [
+        'stokBarangJadi' => $stokBarangJadi,
+        'startDate' => $formattedStartDate,
+        'endDate' => $formattedEndDate,
+        'branchName' => $branchName,
+        'totalJumlah' => $totalJumlah,
+        'grandTotal' => $grandTotal,
+    ]);
+
+    // Menambahkan nomor halaman di kanan bawah
+    $pdf->setPaper('A4', 'portrait')
+        ->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])
+        ->setOption('footer-right', 'Halaman [page] dari [topage]');
+
+    // Output PDF ke browser
+    return $pdf->stream('laporan_barangoperan.pdf', ['Attachment' => false]);
+}
+
+public function printLaporanBOpemalangMasuk(Request $request)
+{
+    // Ambil parameter filter dari request
+    $status = $request->status;
+    $tanggal_input = $request->tanggal_input;
+    $tanggal_akhir = $request->tanggal_akhir;
+    $klasifikasi_id = $request->klasifikasi_id;
+
+
+    // Format tanggal untuk tampilan
+    $formattedStartDate = $tanggal_input ? Carbon::parse($tanggal_input)->format('d-m-Y') : 'N/A';
+    $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : 'N/A';
+
+    // Query dasar untuk mengambil data Retur_barangjadi
+    $query = Pemindahan_tokopemalangmasuk::with('produk.klasifikasi')
+        ->join('produks', 'produks.id', '=', 'pemindahan_tokopemalangmasuks.produk_id') // Join with 'produks'
+        ->orderBy('produks.kode_lama', 'asc') // Order by 'kode_lama'
+        ->orderBy('pemindahan_tokopemalangmasuks.tanggal_input', 'desc'); // Then order by 'tanggal_input'
+
+    // Filter berdasarkan status
+    if ($status) {
+        $query->where('pemindahan_tokopemalangmasuks.status', $status);
+    }
+
+    // Filter berdasarkan klasifikasi_id
+    if ($klasifikasi_id) {
+        $query->whereHas('produk', function ($q) use ($klasifikasi_id) {
+            $q->where('klasifikasi_id', $klasifikasi_id);
+        });
+    }
+
+    // Filter berdasarkan tanggal retur
+    if ($tanggal_input && $tanggal_akhir) {
+        $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
+        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+        $query->whereBetween('pemindahan_tokopemalangmasuks.tanggal_input', [$tanggal_input, $tanggal_akhir]);
+    } elseif ($tanggal_input) {
+        $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
+        $query->where('pemindahan_tokopemalangmasuks.tanggal_input', '>=', $tanggal_input);
+    } elseif ($tanggal_akhir) {
+        $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+        $query->where('pemindahan_tokopemalangmasuks.tanggal_input', '<=', $tanggal_akhir);
+    } else {
+        // Jika tidak ada filter tanggal, tampilkan data untuk hari ini
+        $query->whereDate('pemindahan_tokopemalangmasuks.tanggal_input', Carbon::today());
+    }
+
+    // Eksekusi query dan dapatkan hasilnya
+    $stokBarangJadi = $query->select('pemindahan_tokopemalangmasuks.*') // Select only 'retur_barangjadi' fields
+        ->get()
+        ->groupBy('kode_pemindahan');
+
+    // Hitung total jumlah dan grand total
+    $totalJumlah = 0;
+    $grandTotal = 0;
+
+    foreach ($stokBarangJadi as $returGroup) {
+        foreach ($returGroup as $retur) {
+            $totalJumlah += $retur->jumlah;
+            $grandTotal += $retur->jumlah * $retur->produk->harga;
+        }
+    }
+
+    // Menggunakan FacadePdf untuk menghasilkan PDF
+    $pdf = FacadePdf::loadView('toko_pemalang.laporan_historipemalang.printbomasuk', [
+        'stokBarangJadi' => $stokBarangJadi,
+        'startDate' => $formattedStartDate,
+        'endDate' => $formattedEndDate,
+        'totalJumlah' => $totalJumlah,
+        'grandTotal' => $grandTotal,
+    ]);
+
+    // Menambahkan nomor halaman di kanan bawah
+    $pdf->setPaper('A4', 'portrait')
+        ->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])
+        ->setOption('footer-right', 'Halaman [page] dari [topage]');
+
+    // Output PDF ke browser
+    return $pdf->stream('laporan_barangoperan.pdf', ['Attachment' => false]);
+}
 
     public function exportExcelBK(Request $request)
     {
