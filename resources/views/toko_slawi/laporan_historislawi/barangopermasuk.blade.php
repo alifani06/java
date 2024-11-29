@@ -214,7 +214,7 @@
         if (selectedValue === 'masuk') {
             window.location.href = "{{ route('barangOperanslawiMasuk') }}";
         } else if (selectedValue === 'keluar') {
-            window.location.href = "{{ route('barangOperbumiayu') }}"; 
+            window.location.href = "{{ route('barangOperslawi') }}"; 
         }
     });
 </script>
