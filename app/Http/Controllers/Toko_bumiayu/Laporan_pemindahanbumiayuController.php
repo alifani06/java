@@ -168,43 +168,6 @@ public function show($id)
     return view('toko_bumiayu.inquery_pemindahanbumiayu.show', compact('pengirimanBarangJadi', 'firstItem'));
 }
 
-// public function printReport(Request $request)
-// {
-//     $status = $request->status;
-//     $tanggal_input = $request->tanggal_pengiriman;
-//     $tanggal_akhir = $request->tanggal_akhir;
-
-//     $query = Pemindahan_tokobumiayu::with('produk.klasifikasi');
-
-//     if ($status) {
-//         $query->where('status', $status);
-//     }
-
-//     if ($tanggal_input && $tanggal_akhir) {
-//         $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
-//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-//         $query->whereBetween('tanggal_input', [$tanggal_input, $tanggal_akhir]);
-//     } elseif ($tanggal_input) {
-//         $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
-//         $query->where('tanggal_input', '>=', $tanggal_input);
-//     } elseif ($tanggal_akhir) {
-//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-//         $query->where('tanggal_input', '<=', $tanggal_akhir);
-//     } else {
-//         // Jika tidak ada filter tanggal, tampilkan data hari ini
-//         $query->whereDate('tanggal_input', Carbon::today());
-//     }
-
-//     // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
-//     $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pemindahan');
-
-//     // Generate PDF
-//     $pdf = FacadePdf::loadView('toko_bumiayu.laporan_pemindahanbumiayu.print', compact('stokBarangJadi', 'status', 'tanggal_input', 'tanggal_akhir'));
-
-//     // Download PDF file
-//     return $pdf->stream('laporan_pemindahan.pdf');
-// }
-
 public function printReportpemindahanBmy(Request $request)
 {
     $status = $request->input('status');

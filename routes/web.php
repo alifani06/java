@@ -715,7 +715,7 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('/inquery_pemindahanbanjaran/{id}/print', [Inquery_pemindahanbanjaranController::class, 'print'])->name('inquery_pemindahanbanjaran.print');
 
     Route::resource('laporan_pemindahanbanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_pemindahanbanjaranController::class);
-    Route::get('/Toko_banjaran/print_report', [Laporan_pemindahanbanjaranController::class, 'printReport'])->name('print.report');
+    Route::get('printReportpemindahanBnj/{id}', [\App\Http\Controllers\Toko_banjaran\Laporan_pemindahanbanjaranController::class, 'printReportpemindahanBnj']);
 
     Route::resource('laporan_stoktokobanjaran', \App\Http\Controllers\Toko_banjaran\Laporan_stoktokobanjaranController::class);
     Route::get('printstoktokobanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_stoktokobanjaranController::class, 'printReport']);
@@ -1585,7 +1585,6 @@ Route::middleware('toko_slawi')->prefix('toko_slawi')->group(function () {
     Route::get('/inquery_pemindahanslawi/{id}/print', [Inquery_pemindahanslawiController::class, 'print'])->name('inquery_pemindahanslawi.print');
 
     Route::resource('laporan_pemindahanslawi', \App\Http\Controllers\Toko_slawi\Laporan_pemindahanslawiController::class);
-    Route::get('/toko_slawi/print_report', [Laporan_pemindahanslawiController::class, 'printReport'])->name('print.report');
     Route::get('printReportpemindahanSlw/{id}', [\App\Http\Controllers\Toko_slawi\Laporan_pemindahanslawiController::class, 'printReportpemindahanSlw']);
 
     Route::resource('laporan_stoktokoslawi', \App\Http\Controllers\Toko_slawi\Laporan_stoktokoslawiController::class);
