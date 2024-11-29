@@ -1016,6 +1016,11 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::get('printExcelBrtegal', [Laporan_historitegalController::class, 'exportExcelBR'])->name('printExcelBrtegal');
     Route::get('/get-produk-by-klasifikasi/{id}', [Laporan_historitegalController::class, 'getByKlasifikasi'])->name('getProdukByKlasifikasi');
 
+    Route::get('barangOpertegal', [\App\Http\Controllers\Toko_tegal\Laporan_historitegalController::class, 'barangOpertegal'])->name('barangOpertegal');
+    Route::get('barangOperantegalMasuk', [\App\Http\Controllers\Toko_tegal\Laporan_historitegalController::class, 'barangOperantegalMasuk'])->name('barangOperantegalMasuk');
+    Route::get('printLaporanBOtegal', [\App\Http\Controllers\Toko_tegal\Laporan_historitegalController::class, 'printLaporanBOtegal']);
+    Route::get('printLaporanBOtegalMasuk', [\App\Http\Controllers\Toko_tegal\Laporan_historitegalController::class, 'printLaporanBOtegalMasuk']);
+
 });
 
 Route::middleware('toko_pemalang')->prefix('toko_pemalang')->group(function () {

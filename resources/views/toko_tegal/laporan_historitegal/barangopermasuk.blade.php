@@ -18,18 +18,7 @@
     </script>
     <!-- Content Header (Page header) -->
     <div class="content-header" style="display: none;" id="mainContent">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Barang Retur </h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active">Laporan Barang Retur </li>
-                    </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
+        
     </div>
     <!-- /.content-header -->
 
@@ -66,18 +55,20 @@
 
                         </select>
                     </div>
-                    <h3 class="card-title">Laporan Barang Retur</h3>
+                    <h3 class="card-title">Laporan Barang Operan (Masuk)</h3>
                 </div>
                 <!-- /.card-header -->
                  
                 <div class="card-body">
                     <form method="GET" id="form-action">
                         <div class="row">
+                         
                             <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="toko_id" name="toko_id">
-                                    <option value="2" selected>Toko Tegal</option>
+                                <select class="form-control" id="kategori2" name="kategori">
+                                    <option value="">- Pilih -</option>
+                                    <option value="masuk" {{ old('kategori2') == 'masuk' ? 'selected' : '' }}>OPERAN MASUK</option>
+                                    <option value="keluar" {{ old('kategori2') == 'keluar' ? 'selected' : '' }}>OPERAN KELUAR</option>
                                 </select>
-                                <label for="toko_id">(Pilih Toko)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <select class="custom-select form-control" id="klasifikasi_id" name="klasifikasi_id">
@@ -92,9 +83,9 @@
                                 <label for="klasifikasi_id">(Pilih Klasifikasi)</label>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_retur" name="tanggal_retur" type="date"
-                                    value="{{ Request::get('tanggal_retur') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_retur">(Dari Tanggal)</label>
+                                <input class="form-control" id="tanggal_input" name="tanggal_input" type="date"
+                                    value="{{ Request::get('tanggal_input') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_input">(Dari Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
@@ -124,8 +115,9 @@
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
-                                <th>Tanggal Retur</th>
-                                <th>Kode Retur</th>
+                                <th>Tanggal Oper</th>
+                                <th>No. Faktur Oper</th>
+                                <th>Dari Toko</th>
                                 <th>Nama Produk</th>
                                 <th>Jumlah</th>
                                 <th>Harga</th>
@@ -138,8 +130,9 @@
                                 @foreach($returGroup as $retur)
                                 <tr>
                                     <td class="text-center">{{ $no++ }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($retur['tanggal_retur'])->format('d/m/Y H:i') }}</td>
-                                    <td>{{ $retur->kode_retur }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($retur['tanggal_input'])->format('d/m/Y H:i') }}</td>
+                                    <td>{{ $retur->kode_pemindahan }}</td>
+                                    <td>{{ $retur->toko->nama_toko }}</td>
                                     <td>{{ $retur->produk->nama_produk }}</td>
                                     <td style="text-align: right">{{ number_format($retur->jumlah, 0, ',', '.') }}</td>
                                     <td style="text-align: right">{{ number_format($retur->produk->harga, 0, ',', '.') }}</td>
@@ -150,7 +143,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="4" class="text-center">Total</th>
+                                <th colspan="5" class="text-center">Total</th>
                                 <th style="text-align: right">{{ number_format($totalJumlah, 0, ',', '.') }}</th>
                                 <th></th>
                                 <th style="text-align: right">Rp {{ number_format($grandTotal, 0, ',', '.') }}</th>
@@ -179,7 +172,7 @@
 
     <!-- /.card -->
     <script>
-        var tanggalAwal = document.getElementById('tanggal_retur');
+        var tanggalAwal = document.getElementById('tanggal_input');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
     
         tanggalAwal.addEventListener('change', function() {
@@ -195,7 +188,7 @@
     
         function cari() {
             var form = document.getElementById('form-action');
-            form.action = "{{ route('barangReturtegal') }}";
+            form.action = "{{ route('barangOperantegalMasuk') }}";
             form.submit();  
         }
     </script>
@@ -217,8 +210,20 @@
 </script>
 
 <script>
+    document.getElementById('kategori2').addEventListener('change', function() {
+        var selectedValue = this.value;
+
+        if (selectedValue === 'masuk') {
+            window.location.href = "{{ route('barangOperantegalMasuk') }}";
+        } else if (selectedValue === 'keluar') {
+            window.location.href = "{{ route('barangOpertegal') }}"; 
+        }
+    });
+</script>
+
+<script>
     function printReport() {
-        var tanggalAwal = document.getElementById('tanggal_retur').value;
+        var tanggalAwal = document.getElementById('tanggal_input').value;
         var tanggalAkhir = document.getElementById('tanggal_akhir').value;
 
         if (tanggalAwal === "" || tanggalAkhir === "") {
@@ -237,7 +242,7 @@
         }
 
         const form = document.getElementById('form-action');
-        form.action = "{{ url('toko_tegal/printLaporanBRtegal') }}";
+        form.action = "{{ url('toko_tegal/printLaporanBOtegalMasuk') }}";
         form.target = "_blank";
         form.submit();
     }
@@ -247,7 +252,7 @@
 <script>
     function exportExcelBR() {
     const form = document.getElementById('form-action');
-    form.action = "{{ url('toko_tegal/printExcelBrtegal') }}";
+    form.action = "{{ url('toko_tegal/printExcelBotegal') }}";
     form.target = "_blank";
     form.submit();
 }
