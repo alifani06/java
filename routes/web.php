@@ -1798,7 +1798,7 @@ Route::middleware('toko_cilacap')->prefix('toko_cilacap')->group(function () {
     Route::get('/inquery_pemindahancilacap/{id}/print', [Inquery_pemindahancilacapController::class, 'print'])->name('inquery_pemindahancilacap.print');
 
     Route::resource('laporan_pemindahancilacap', \App\Http\Controllers\Toko_cilacap\Laporan_pemindahancilacapController::class);
-    Route::get('/toko_cilacap/print_report', [Laporan_pemindahancilacapController::class, 'printReport'])->name('print.report');
+    Route::get('printReportpemindahanClc/{id}', [\App\Http\Controllers\Toko_cilacap\Laporan_pemindahancilacapController::class, 'printReportpemindahanClc']);
 
     Route::resource('laporan_stoktokocilacap', \App\Http\Controllers\Toko_cilacap\Laporan_stoktokocilacapController::class);
     Route::get('printstoktokocilacap', [\App\Http\Controllers\Toko_cilacap\Laporan_stoktokocilacapController::class, 'printReport']);

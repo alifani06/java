@@ -53,11 +53,11 @@ class Pemindahan_tokocilacapController extends Controller{
 
     public function index()
     {
-        $pemindahan_tokotegal = Pemindahan_tokocilacap::with('produk')
+        $pemindahan_tokocilacap = Pemindahan_tokocilacap::with('produk')
                             ->orderBy('created_at', 'desc')
                             ->get();
     
-        return view('toko_cilacap.pemindahan_tokocilacap.index', compact('pemindahan_tokotegal'));
+        return view('toko_cilacap.pemindahan_tokocilacap.index', compact('pemindahan_tokocilacap'));
     }
       
 

@@ -40,7 +40,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Pemindahan Produk Toko Cilacap</h3>
                     <div class="float-right">
-                        <a href="{{ url('toko_tegal/pemindahan_tokotegal/create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url('toko_cilacap/pemindahan_tokocilacap/create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> 
                         </a>
                     </div>
@@ -58,7 +58,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($pemindahan_tokotegal as $stok)
+                            @foreach ($pemindahan_tokocilacap as $stok)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $stok->kode_pemindahan }}</td>

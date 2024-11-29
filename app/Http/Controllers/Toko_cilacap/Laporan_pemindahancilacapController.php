@@ -40,6 +40,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Imports\ProdukImport;
 use App\Models\Pemindahan_tokobanjaran;
 use App\Models\Pemindahan_tokocilacap;
+use App\Models\Pemindahan_tokocilacapmasuk;
 use App\Models\Pemindahan_tokotegal;
 use App\Models\Retur_barnagjadi;
 use Maatwebsite\Excel\Facades\Excel;
@@ -48,128 +49,140 @@ class Laporan_pemindahancilacapController extends Controller{
 
     public function index(Request $request)
     {
-            $status = $request->status;
-            $tanggal_input = $request->tanggal_input;
-            $tanggal_akhir = $request->tanggal_akhir;
-
-            $query = Pemindahan_tokocilacap::with('produk.klasifikasi');
-
-            if ($status) {
-                $query->where('status', $status);
-            }
-
-            if ($tanggal_input && $tanggal_akhir) {
-                $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
-                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-                $query->whereBetween('tanggal_input', [$tanggal_input, $tanggal_akhir]);
-            } elseif ($tanggal_input) {
-                $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
-                $query->where('tanggal_input', '>=', $tanggal_input);
-            } elseif ($tanggal_akhir) {
-                $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-                $query->where('tanggal_input', '<=', $tanggal_akhir);
-            } else {
-                // Jika tidak ada filter tanggal, tampilkan data hari ini
-                $query->whereDate('tanggal_input', Carbon::today());
-            }
-
-            // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
-            $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pemindahan');
-
-            return view('toko_cilacap.laporan_pemindahancilacap.index', compact('stokBarangJadi'));
-    }
-
-
-
-
-
-public function show($id)
-{
-    // Ambil kode_retur dari pengiriman_barangjadi berdasarkan id
-    $detailStokBarangJadi = Pemindahan_tokocilacap::where('id', $id)->value('kode_pemindahan');
+        $status = $request->status;
+        $tanggal_input = $request->tanggal_input;
+        $tanggal_akhir = $request->tanggal_akhir;
     
-    // Jika kode_pemindahan tidak ditemukan, tampilkan pesan error
-    if (!$detailStokBarangJadi) {
-        return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        // Query untuk pemindahan_bumiayu
+        $queryCilacap = Pemindahan_tokocilacap::with('produk.klasifikasi');
+    
+        // Query untuk pemindahan_bumiayumasuk
+        $queryMasuk = Pemindahan_tokocilacapmasuk::with('produk.klasifikasi');
+    
+        if ($status) {
+            $queryCilacap->where('status', $status);
+            $queryMasuk->where('status', $status);
+        }
+    
+        if ($tanggal_input && $tanggal_akhir) {
+            $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $queryCilacap->whereBetween('tanggal_input', [$tanggal_input, $tanggal_akhir]);
+            $queryMasuk->whereBetween('tanggal_input', [$tanggal_input, $tanggal_akhir]);
+        } elseif ($tanggal_input) {
+            $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
+            $queryCilacap->where('tanggal_input', '>=', $tanggal_input);
+            $queryMasuk->where('tanggal_input', '>=', $tanggal_input);
+        } elseif ($tanggal_akhir) {
+            $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
+            $queryCilacap->where('tanggal_input', '<=', $tanggal_akhir);
+            $queryMasuk->where('tanggal_input', '<=', $tanggal_akhir);
+        } else {
+            $queryCilacap->whereDate('tanggal_input', Carbon::today());
+            $queryMasuk->whereDate('tanggal_input', Carbon::today());
+        }
+    
+        // Ambil data, urutkan, dan gabungkan
+        $stokCilacap = $queryCilacap->orderBy('created_at', 'desc')->get();
+        $stokMasuk = $queryMasuk->orderBy('created_at', 'desc')->get();
+    
+        // Gabungkan koleksi berdasarkan kode_pemindahan
+        $stokBarangJadi = $stokCilacap->merge($stokMasuk)->groupBy('kode_pemindahan');
+    
+        return view('toko_cilacap.laporan_pemindahancilacap.index', compact('stokBarangJadi'));
     }
     
-    // Ambil semua data dengan kode_pemindahan yang sama
-    $pengirimanBarangJadi = Pemindahan_tokocilacap::with(['produk.subklasifikasi', 'toko'])->where('kode_pemindahan', $detailStokBarangJadi)->get();
-    
-    // Ambil item pertama untuk informasi toko
-    $firstItem = $pengirimanBarangJadi->first();
-    
-    return view('toko_cilacap.inquery_pemindahancilacap.show', compact('pengirimanBarangJadi', 'firstItem'));
-}
 
-// public function printReport(Request $request)
-// {
-//     $status = $request->status;
-//     $tanggal_input = $request->tanggal_pengiriman;
-//     $tanggal_akhir = $request->tanggal_akhir;
 
-//     $query = Pemindahan_tokoslawi::with('produk.klasifikasi');
-
-//     if ($status) {
-//         $query->where('status', $status);
-//     }
-
-//     if ($tanggal_input && $tanggal_akhir) {
-//         $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
-//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-//         $query->whereBetween('tanggal_input', [$tanggal_input, $tanggal_akhir]);
-//     } elseif ($tanggal_input) {
-//         $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
-//         $query->where('tanggal_input', '>=', $tanggal_input);
-//     } elseif ($tanggal_akhir) {
-//         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-//         $query->where('tanggal_input', '<=', $tanggal_akhir);
-//     } else {
-//         // Jika tidak ada filter tanggal, tampilkan data hari ini
-//         $query->whereDate('tanggal_input', Carbon::today());
-//     }
-
-//     // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
-//     $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pemindahan');
-
-//     return view('toko_cilacap.laporan_pemindahancilacap.print', compact('stokBarangJadi', 'status', 'tanggal_input', 'tanggal_akhir'));
-// }
-
-public function printReport(Request $request)
+public function printReportpemindahanClc(Request $request)
 {
-    $status = $request->status;
-    $tanggal_input = $request->tanggal_pengiriman;
-    $tanggal_akhir = $request->tanggal_akhir;
+    $status = $request->input('status');
+    $tanggal_input = $request->input('tanggal_input');
+    $tanggal_akhir = $request->input('tanggal_akhir');
 
-    $query = Pemindahan_tokocilacap::with('produk.klasifikasi');
+    // Query untuk pemindahan_bumiayu
+    $queryCilacap = Pemindahan_tokocilacap::with('produk.klasifikasi');
+
+    // Query untuk pemindahan_bumiayumasuk
+    $queryMasuk = Pemindahan_tokocilacapmasuk::with('produk.klasifikasi');
 
     if ($status) {
-        $query->where('status', $status);
+        $queryCilacap->where('status', $status);
+        $queryMasuk->where('status', $status);
     }
 
     if ($tanggal_input && $tanggal_akhir) {
         $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-        $query->whereBetween('tanggal_input', [$tanggal_input, $tanggal_akhir]);
+        $queryCilacap->whereBetween('tanggal_input', [$tanggal_input, $tanggal_akhir]);
+        $queryMasuk->whereBetween('tanggal_input', [$tanggal_input, $tanggal_akhir]);
     } elseif ($tanggal_input) {
         $tanggal_input = Carbon::parse($tanggal_input)->startOfDay();
-        $query->where('tanggal_input', '>=', $tanggal_input);
+        $queryCilacap->where('tanggal_input', '>=', $tanggal_input);
+        $queryMasuk->where('tanggal_input', '>=', $tanggal_input);
     } elseif ($tanggal_akhir) {
         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
-        $query->where('tanggal_input', '<=', $tanggal_akhir);
+        $queryCilacap->where('tanggal_input', '<=', $tanggal_akhir);
+        $queryMasuk->where('tanggal_input', '<=', $tanggal_akhir);
     } else {
         // Jika tidak ada filter tanggal, tampilkan data hari ini
-        $query->whereDate('tanggal_input', Carbon::today());
+        $queryCilacap->whereDate('tanggal_input', Carbon::today());
+        $queryMasuk->whereDate('tanggal_input', Carbon::today());
     }
 
-    // Mengambil data yang telah difilter dan mengelompokkan berdasarkan kode_input
-    $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_pemindahan');
+    // Ambil data dari kedua query
+    $stokCilacap = $queryCilacap->orderBy('created_at', 'desc')->get();
+    $stokMasuk = $queryMasuk->orderBy('created_at', 'desc')->get();
 
-    // Generate PDF
-    $pdf = FacadePdf::loadView('toko_cilacap.laporan_pemindahancilacap.print', compact('stokBarangJadi', 'status', 'tanggal_input', 'tanggal_akhir'));
+    // Gabungkan data
+    $stokBarangJadi = $stokCilacap->merge($stokMasuk)->groupBy('kode_pemindahan');
 
-    // Download PDF file
-    return $pdf->stream('laporan_pemindahan.pdf');
+    // Format tanggal untuk header laporan
+    $formattedStartDate = $tanggal_input ? Carbon::parse($tanggal_input)->format('d-m-Y') : 'N/A';
+    $formattedEndDate = $tanggal_akhir ? Carbon::parse($tanggal_akhir)->format('d-m-Y') : 'N/A';
+
+    // Inisialisasi DOMPDF
+    $options = new \Dompdf\Options();
+    $options->set('isHtml5ParserEnabled', true);
+    $options->set('isRemoteEnabled', true);
+
+    $dompdf = new \Dompdf\Dompdf($options);
+
+    // Muat konten HTML dari view
+    $html = view('toko_cilacap.laporan_pemindahancilacap.print', [
+        'stokBarangJadi' => $stokBarangJadi,
+        'tanggal_input' => $tanggal_input,
+        'tanggal_akhir' => $tanggal_akhir,
+        'startDate' => $formattedStartDate,
+        'endDate' => $formattedEndDate,
+    ])->render();
+
+    $dompdf->loadHtml($html);
+
+    // Set ukuran kertas dan orientasi
+    $dompdf->setPaper('A4', 'portrait');
+
+    // Render PDF
+    $dompdf->render();
+
+    // Menambahkan nomor halaman di kanan bawah
+    $canvas = $dompdf->getCanvas();
+    $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+        $text = "Page $pageNumber of $pageCount";
+        $font = $fontMetrics->getFont('Arial', 'normal');
+        $size = 10;
+
+        // Hitung posisi teks
+        $width = $fontMetrics->getTextWidth($text, $font, $size);
+        $x = $canvas->get_width() - $width - 10;
+        $y = $canvas->get_height() - 15;
+
+        // Tambahkan teks
+        $canvas->text($x, $y, $text, $font, $size);
+    });
+
+    // Output PDF ke browser
+    return $dompdf->stream('laporan_pemindahan_barangjadi.pdf', ['Attachment' => false]);
 }
 }
 

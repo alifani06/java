@@ -108,84 +108,65 @@
                                 <th>Tanggal Pengiriman</th>
                                 <th>Tanggal Terima</th>
                                 <th>Status</th>
-                              
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($stokBarangJadi as $kodeInput => $stokBarangJadiItems)
-                            @php
-                                $firstItem = $stokBarangJadiItems->first();
-                            @endphp
+                                @php
+                                    $firstItem = $stokBarangJadiItems->first();
+                                @endphp
                                 <tr class="dropdown" data-permintaan-id="{{ $firstItem->id }}">
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                <td>{{ $firstItem->kode_pemindahan }}</td>
-                                <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_input)->format('d/m/Y H:i') }}</td>
-                                <td>
-                                    @if ($firstItem->tanggal_terima)
-                                        {{ \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') }}
-                                    @else
-                                        -
-                                    @endif
-                                </td>
-                                    <td class="text-center">
-                                    @if ($firstItem->status == 'posting')
-                                        <button type="button" class="btn btn-success btn-sm">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                    @endif
-                                    @if ($firstItem->status == 'unpost')
-                                    <button type="button" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                    @endif
-                                 
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        @if ($firstItem->status == 'unpost')
-                                           
-                                                <a class="dropdown-item posting-btn"
-                                                    data-memo-id="{{ $firstItem->id }}">Posting</a>
-                                            
-                                                <a class="dropdown-item"
-                                                href="{{ url('/toko_cilacap/inquery_pemindahancilacap/' . $firstItem->id ) }}">Show</a>
-                                                @endif
-                                        @if ($firstItem->status == 'posting')
-                                                <a class="dropdown-item"
-                                                href="{{ url('/toko_cilacap/inquery_pemindahancilacap/' . $firstItem->id ) }}">Show</a>
+                                    <td>{{ $firstItem->kode_pemindahan }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_input)->format('d/m/Y H:i') }}</td>
+                                    <td>
+                                        @if ($firstItem->tanggal_terima)
+                                            {{ \Carbon\Carbon::parse($firstItem->tanggal_terima)->format('d/m/Y H:i') }}
+                                        @else
+                                            -
                                         @endif
-                                       
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="permintaan-details" id="details-{{ $firstItem->id }}" style="display: none;">
-                                <td colspan="5">
-                                    <table class="table table-bordered" style="font-size: 13px;">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Divisi</th>
-                                                <th>Kode Produk</th>
-                                                <th>Produk</th>
-                                                <th>Jumlah</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($stokBarangJadiItems as $detail)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $detail->produk->klasifikasi->nama }}</td>
-                                                <td>{{ $detail->produk->kode_produk }}</td>
-                                                <td>{{ $detail->produk->nama_produk }}</td>
-                                                <td>{{ $detail->jumlah }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                     
-                        @endforeach
+                                    </td>
+                                    <td class="text-center">
+                                        @if ($firstItem->status == 'posting')
+                                            <button type="button" class="btn btn-success btn-sm">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        @elseif ($firstItem->status == 'unpost')
+                                            <button type="button" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr class="permintaan-details" id="details-{{ $firstItem->id }}" style="display: none;">
+                                    <td colspan="5">
+                                        <table class="table table-bordered" style="font-size: 13px;">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Divisi</th>
+                                                    <th>Kode Produk</th>
+                                                    <th>Produk</th>
+                                                    <th>Jumlah</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($stokBarangJadiItems as $detail)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $detail->produk->klasifikasi->nama }}</td>
+                                                        <td>{{ $detail->produk->kode_produk }}</td>
+                                                        <td>{{ $detail->produk->nama_produk }}</td>
+                                                        <td>{{ $detail->jumlah }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
-                    </table> 
+                    </table>
                
                     
                     <!-- Modal Loading -->
@@ -226,7 +207,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_cilacap/laporan_pemindahanbanjaran') }}";
+            form.action = "{{ url('toko_cilacap/laporan_pemindahancilacap') }}";
             form.submit();
         }
 
@@ -234,86 +215,14 @@
 
 <script>
     function printReport() {
-        var status = document.getElementById('status').value;
-        var tanggalPengiriman = document.getElementById('tanggal_input').value;
-        var tanggalAkhir = document.getElementById('tanggal_akhir').value;
-        var url = "{{ route('print.report') }}";
-
-        if (status) {
-            url += "?status=" + encodeURIComponent(status);
-        }
-        if (tanggalPengiriman) {
-            url += (url.indexOf('?') > -1 ? '&' : '?') + "tanggal_input=" + encodeURIComponent(tanggalPengiriman);
-        }
-        if (tanggalAkhir) {
-            url += (url.indexOf('?') > -1 ? '&' : '?') + "tanggal_akhir=" + encodeURIComponent(tanggalAkhir);
-        }
-
-        window.location.href = url;
+        const form = document.getElementById('form-action');
+        const url = "{{ url('toko_cilacap/printReportpemindahanClc') }}/" + form.dataset.id; // Adjust as necessary
+        form.action = url;
+        form.target = "_blank";
+        form.submit();
     }
 </script>
 
-
-
-    {{-- unpost stok  --}}
-    <script>
-        $(document).ready(function() {
-            $('.unpost-btn').click(function() {
-                var memoId = $(this).data('memo-id');
-                $(this).addClass('disabled');
-
-                $('#modal-loading').modal('show');
-
-                $.ajax({
-                    url: "{{ url('toko_cilacap/inquery_pemindahancilacap/unpost_pemindahan/') }}/" + memoId,
-                    type: 'GET',
-                    data: {
-                        id: memoId
-                    },
-                    success: function(response) {
-                        $('#modal-loading').modal('hide');
-                        console.log(response);
-                        $('#modal-posting-' + memoId).modal('hide');
-                        location.reload();
-                    },
-                    error: function(error) {
-                        $('#modal-loading').modal('hide');
-                        console.log(error);
-                    }
-                });
-            });
-        });
-    </script>
-
-    {{-- posting stok --}}
-    <script>
-        $(document).ready(function() {
-            $('.posting-btn').click(function() {
-                var memoId = $(this).data('memo-id');
-                $(this).addClass('disabled');
-
-                $('#modal-loading').modal('show');
-
-                $.ajax({
-                    url: "{{ url('toko_cilacap/inquery_pemindahancilacap/posting_pemindahan/') }}/" + memoId,
-                    type: 'GET',
-                    data: {
-                        id: memoId
-                    },
-                    success: function(response) {
-                        $('#modal-loading').modal('hide');
-                        console.log(response);
-                        $('#modal-posting-' + memoId).modal('hide');
-                        location.reload();
-                    },
-                    error: function(error) {
-                        $('#modal-loading').modal('hide');
-                        console.log(error);
-                    }
-                });
-            });
-        });
-    </script>
 
  <script>
     $(document).ready(function() {
