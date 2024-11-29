@@ -796,6 +796,12 @@ Route::middleware('toko_banjaran')->prefix('toko_banjaran')->group(function () {
     Route::get('printExcelBrbanjaran', [Laporan_historibanjaranController::class, 'exportExcelBR'])->name('printExcelBrbanjaran');
     Route::get('/get-produk-by-klasifikasi/{id}', [Laporan_historibanjaranController::class, 'getByKlasifikasi'])->name('getProdukByKlasifikasi');
 
+    Route::get('barangOperbanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangOperbanjaran'])->name('barangOperbanjaran');
+    Route::get('barangOperanbanjaranMasuk', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'barangOperanbanjaranMasuk'])->name('barangOperanbanjaranMasuk');
+    Route::get('printLaporanBObanjaran', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBObanjaran']);
+    Route::get('printLaporanBObanjaranMasuk', [\App\Http\Controllers\Toko_banjaran\Laporan_historibanjaranController::class, 'printLaporanBObanjaranMasuk']);
+
+
 });
 
 Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
@@ -1446,6 +1452,11 @@ Route::middleware('toko_bumiayu')->prefix('toko_bumiayu')->group(function () {
     Route::get('printLaporanBRbumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_historibumiayuController::class, 'printLaporanBRbumiayu']);
     Route::get('printExcelBrbumiayu', [Laporan_historibumiayuController::class, 'exportExcelBR'])->name('printExcelBrbumiayu');
     Route::get('/get-produk-by-klasifikasi/{id}', [Laporan_historibumiayuController::class, 'getByKlasifikasi'])->name('getProdukByKlasifikasi');
+
+    Route::get('barangOperbumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_historibumiayuController::class, 'barangOperbumiayu'])->name('barangOperbumiayu');
+    Route::get('barangOperanbumiayuMasuk', [\App\Http\Controllers\Toko_bumiayu\Laporan_historibumiayuController::class, 'barangOperanbumiayuMasuk'])->name('barangOperanbumiayuMasuk');
+    Route::get('printLaporanBObumiayu', [\App\Http\Controllers\Toko_bumiayu\Laporan_historibumiayuController::class, 'printLaporanBObumiayu']);
+    Route::get('printLaporanBObumiayuMasuk', [\App\Http\Controllers\Toko_bumiayu\Laporan_historibumiayuController::class, 'printLaporanBObumiayuMasuk']);
 
 });
 
