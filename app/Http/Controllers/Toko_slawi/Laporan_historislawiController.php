@@ -1128,7 +1128,7 @@ public function barangKeluarslawi(Request $request)
 
    
     
-    public function printLaporanBRslawi(Request $request)
+public function printLaporanBRslawi(Request $request)
 {
     // Ambil parameter filter dari request
     $status = $request->status;

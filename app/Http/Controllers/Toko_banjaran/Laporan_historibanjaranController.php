@@ -585,10 +585,9 @@ public function barangKeluarRincibanjaran(Request $request)
         $tanggal_input = $request->tanggal_input;
         $tanggal_akhir = $request->tanggal_akhir;
         $klasifikasi_id = $request->klasifikasi_id;
-    
-    
-        $query = Pemindahan_tokobanjaranmasuk::with('produk.klasifikasi');
-    
+        
+       $query = Pemindahan_tokobanjaranmasuk::with(['produk.klasifikasi', 'toko']);
+
         // Filter berdasarkan status
         if ($status) {
             $query->where('status', $status);
