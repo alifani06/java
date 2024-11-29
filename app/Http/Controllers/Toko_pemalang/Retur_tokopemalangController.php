@@ -60,14 +60,7 @@ class Retur_tokopemalangController extends Controller{
             return view('toko_pemalang.retur_tokopemalang.index', compact('stokBarangJadi'));
     }
 
-    // public function create()
-    // {
-    //     $produks = Produk::all();
-    //     $tokos = Toko::all();
-    //     $klasifikasis = Klasifikasi::all(); // Pastikan ini ada
-    
-    //     return view('toko_pemalang.retur_tokopemalang.create', compact('produks', 'tokos', 'klasifikasis'));
-    // }
+
 
     public function create()
 {
@@ -85,7 +78,7 @@ class Retur_tokopemalangController extends Controller{
 }
 
     
-    public function store(Request $request)
+public function store(Request $request)
 {
     $request->validate([
         'produk_id' => 'required|array',
@@ -95,7 +88,13 @@ class Retur_tokopemalangController extends Controller{
         'keterangan' => 'required|array',
     ]);
 
-    $kode = $this->kode();
+    // Jika tanggal_input tidak diisi, gunakan tanggal hari ini
+    $tanggalPengiriman = $request->input('tanggal_input', now()->toDateString());
+    $tanggalPengirimanDenganJam = Carbon::parse($tanggalPengiriman)->setTime(now()->hour, now()->minute);
+
+    // Gunakan function kode dengan tanggal pengiriman
+    $kode = $this->kode($tanggalPengirimanDenganJam);
+
     $produk_ids = $request->input('produk_id');
     $jumlahs = $request->input('jumlah');
     $keterangans = $request->input('keterangan');
@@ -151,10 +150,10 @@ class Retur_tokopemalangController extends Controller{
             'kode_retur' => $kode,
             'produk_id' => $produk_id,
             'toko_id' => '4',
-            'status' => 'unpost', // Ubah status menjadi posting
+            'status' => 'unpost',
             'jumlah' => $jumlah_yang_dibutuhkan,
             'keterangan' => $keterangans[$index],
-            'tanggal_input' => Carbon::now('Asia/Jakarta'),
+            'tanggal_input' => $tanggalPengirimanDenganJam,
         ]);
 
         Retur_barangjadi::create([
@@ -162,24 +161,24 @@ class Retur_tokopemalangController extends Controller{
             'produk_id' => $produk_id,
             'toko_id' => '4',
             'nama_produk' => $nama_produk_retur,
-            'status' => 'unpost', // Ubah status menjadi posting
+            'status' => 'unpost',
             'jumlah' => $jumlah_yang_dibutuhkan,
             'keterangan' => $keterangans[$index],
-            'tanggal_retur' => Carbon::now('Asia/Jakarta'),
+            'tanggal_retur' => $tanggalPengirimanDenganJam,
         ]);
     }
 
     return redirect()->route('retur_tokopemalang.index')->with('success', 'Data retur barang berhasil disimpan dan stok berhasil dikurangi.');
 }
 
-public function kode()
+public function kode($tanggalPengiriman)
 {
     $prefix = 'FRE';
-    $year = date('y'); // Dua digit terakhir dari tahun
-    $date = date('dm'); // Format bulan dan hari: MMDD
+    $year = Carbon::parse($tanggalPengiriman)->format('y'); // Dua digit terakhir dari tahun
+    $date = Carbon::parse($tanggalPengiriman)->format('dm'); // Format bulan dan hari: MMDD
 
     // Mengambil kode retur terakhir yang dibuat pada hari yang sama
-    $lastBarang = Retur_tokopemalang::whereDate('tanggal_input', Carbon::today())
+    $lastBarang = Retur_tokopemalang::whereDate('tanggal_input', Carbon::parse($tanggalPengiriman))
                                   ->orderBy('kode_retur', 'desc')
                                   ->first();
 

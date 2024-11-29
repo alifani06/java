@@ -89,6 +89,10 @@
                                                     <i class="fas fa-plus"></i>
                                                 </button>
                                             </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label for="tanggal_input">Tanggal Retur:</label>
+                                                <input type="date" class="form-control" id="tanggal_input" name="tanggal_input" value="{{ old('tanggal_input') }}">
+                                            </div>
                                         </div>
                                         <div class="card-body">
                                             <div class="row">

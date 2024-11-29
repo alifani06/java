@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Inquery Retur Toko Banjaran</h1>
+                    <h1 class="m-0">Inquery Retur Toko Pemalang</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -81,9 +81,9 @@
                                 <label for="status">(Pilih Status)</label>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_pengiriman" name="tanggal_pengiriman" type="date"
-                                    value="{{ Request::get('tanggal_pengiriman') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_pengiriman">(Dari Tanggal)</label>
+                                <input class="form-control" id="tanggal_input" name="tanggal_input" type="date"
+                                    value="{{ Request::get('tanggal_input') }}" max="{{ date('Y-m-d') }}" />
+                                <label for="tanggal_input">(Dari Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
@@ -146,13 +146,13 @@
                                                     href="{{ url('admin/inquery_pengirimanbarangjadi/' . $firstItem->id . '/edit') }}">Update</a> --}}
                                             
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_banjaran/retur_tokobanjaran/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/toko_pemalang/retur_tokopemalang/' . $firstItem->id ) }}">Show</a>
                                                 @endif
                                         @if ($firstItem->status == 'posting')
                                                 {{-- <a class="dropdown-item unpost-btn"
                                                     data-memo-id="{{ $firstItem->id }}">Unpost</a> --}}
                                                 <a class="dropdown-item"
-                                                href="{{ url('/toko_banjaran/retur_tokobanjaran/' . $firstItem->id ) }}">Show</a>
+                                                href="{{ url('/toko_pemalang/retur_tokopemalang/' . $firstItem->id ) }}">Show</a>
                                         @endif
                                        
                                     </div>
@@ -209,7 +209,7 @@
     </section>
 
     <script>
-        var tanggalAwal = document.getElementById('tanggal_pengiriman');
+        var tanggalAwal = document.getElementById('tanggal_input');
         var tanggalAkhir = document.getElementById('tanggal_akhir');
         if (tanggalAwal.value == "") {
             tanggalAkhir.readOnly = true;
@@ -228,7 +228,7 @@
         var form = document.getElementById('form-action')
 
         function cari() {
-            form.action = "{{ url('toko_banjaran/inquery_returbanjaran') }}";
+            form.action = "{{ url('toko_pemalang/inquery_returpemalang') }}";
             form.submit();
         }
 
@@ -246,7 +246,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_banjaran/retur_tokobanjaran/unpost_retur/') }}/" + memoId,
+                    url: "{{ url('toko_pemalang/retur_tokopemalang/unpost_retur/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId
@@ -276,7 +276,7 @@
                 $('#modal-loading').modal('show');
 
                 $.ajax({
-                    url: "{{ url('toko_banjaran/retur_tokobanjaran/posting_retur/') }}/" + memoId,
+                    url: "{{ url('toko_pemalang/retur_tokopemalang/posting_retur/') }}/" + memoId,
                     type: 'GET',
                     data: {
                         id: memoId

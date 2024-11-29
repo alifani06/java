@@ -314,8 +314,8 @@
         {{-- @endif --}}
         {{-- @if (auth()->check() && auth()->user()->menu['karyawan']) --}}
         <li class="nav-item">
-            <a href="{{ url('toko_pemalang/inquery_returbanjaran') }}"
-                class="nav-link {{ request()->is('toko_pemalang/inquery_returbanjaran*') ? 'active' : '' }}">
+            <a href="{{ url('toko_pemalang/inquery_returpemalang') }}"
+                class="nav-link {{ request()->is('toko_pemalang/inquery_returpemalang*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon" style="font-size: 12px;"></i>
                 <p style="font-size: 14px;">Inquery Retur Pemalang</p>
             </a>

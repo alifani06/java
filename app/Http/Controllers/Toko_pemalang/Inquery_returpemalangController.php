@@ -116,7 +116,7 @@ public function show($id)
 
 public function print($id)
     {
-        $detailStokBarangJadi = Retur_tokobanjaran::where('id', $id)->value('kode_retur');
+        $detailStokBarangJadi = Retur_tokopemalang::where('id', $id)->value('kode_retur');
     
         // Jika kode_retur tidak ditemukan, tampilkan pesan error
         if (!$detailStokBarangJadi) {
@@ -124,7 +124,7 @@ public function print($id)
         }
         
         // Ambil semua data dengan kode_retur yang sama
-        $pengirimanBarangJadi = Retur_tokobanjaran::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
+        $pengirimanBarangJadi = Retur_tokopemalang::with(['produk.subklasifikasi', 'toko'])->where('kode_retur', $detailStokBarangJadi)->get();
         
         // Ambil item pertama untuk informasi toko
         $firstItem = $pengirimanBarangJadi->first();
