@@ -930,7 +930,7 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
     Route::get('/inquery_pemindahantegal/{id}/print', [Inquery_pemindahantegalController::class, 'print'])->name('inquery_pemindahantegal.print');
 
     Route::resource('laporan_pemindahantegal', \App\Http\Controllers\Toko_tegal\Laporan_pemindahantegalController::class);
-    Route::get('/Toko_tegal/print_report', [Laporan_pemindahantegalController::class, 'printReport'])->name('print.report');
+    Route::get('printReportpemindahanTgl/{id}', [\App\Http\Controllers\Toko_tegal\Laporan_pemindahantegalController::class, 'printReportpemindahanTgl']);
 
     Route::resource('laporan_stoktokotegal', \App\Http\Controllers\Toko_tegal\Laporan_stoktokotegalController::class);
     Route::get('printstoktokotegal', [\App\Http\Controllers\Toko_tegal\Laporan_stoktokotegalController::class, 'printReport']);

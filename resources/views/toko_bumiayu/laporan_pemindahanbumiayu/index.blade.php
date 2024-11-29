@@ -213,30 +213,7 @@
         }
 
     </script>
-{{-- 
-<script>
-    function printReport() {
-    var status = document.getElementById('status').value;
-    var tanggalPengiriman = document.getElementById('tanggal_input').value;
-    var tanggalAkhir = document.getElementById('tanggal_akhir').value;
-    var url = "{{ route('print.report') }}";
 
-    // Tambahkan parameter ke URL
-    if (status) {
-        url += "?status=" + encodeURIComponent(status);
-    }
-    if (tanggalPengiriman) {
-        url += (url.indexOf('?') > -1 ? '&' : '?') + "tanggal_input=" + encodeURIComponent(tanggalPengiriman);
-    }
-    if (tanggalAkhir) {
-        url += (url.indexOf('?') > -1 ? '&' : '?') + "tanggal_akhir=" + encodeURIComponent(tanggalAkhir);
-    }
-
-    // Buka halaman cetak
-    window.open(url, '_blank');
-}
-
-</script> --}}
 <script>
     function printReport() {
         const form = document.getElementById('form-action');
