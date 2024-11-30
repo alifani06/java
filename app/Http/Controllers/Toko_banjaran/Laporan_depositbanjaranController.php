@@ -210,7 +210,10 @@ class Laporan_depositbanjaranController extends Controller
 
         // Query dasar untuk mengambil data Dppemesanan
         $inquery = Dppemesanan::with(['pemesananproduk.toko'])
-            ->orderBy('created_at', 'desc');
+        ->whereHas('pemesananproduk', function ($query) {
+            $query->where('toko_id', 1); 
+        })
+        ->orderBy('created_at', 'desc');
 
         // Filter berdasarkan toko_id
         if ($toko_id) {
@@ -230,7 +233,7 @@ class Laporan_depositbanjaranController extends Controller
         }
 
         // Kirim data ke view
-        return view('toko_banjaran.laporan_depositbanjaran.indexsaldo', compact('saldoPerToko', 'tokos', 'toko_id'));
+        return view('toko_banjaran.laporan_depositbumiayu.indexsaldo', compact('saldoPerToko', 'tokos', 'toko_id'));
     }
 
 
@@ -668,52 +671,49 @@ class Laporan_depositbanjaranController extends Controller
 
     public function printReportsaldo(Request $request)
     {
-        // Ambil parameter filter dari request
-        $toko_id = $request->toko_id;
-
+        // Set toko_id ke 5
+        $toko_id = 1;
+    
         // Ambil daftar toko untuk filter
         $tokos = Toko::all();
-
+    
         // Dapatkan nama toko berdasarkan toko_id
-        $branchName = $toko_id ? Toko::find($toko_id)->nama_toko : 'Semua Cabang';
-
+        $branchName = Toko::find($toko_id)->nama_toko;
+    
         // Dapatkan alamat toko berdasarkan toko_id
-        $branchAddress = $toko_id ? Toko::find($toko_id)->alamat : 'Alamat tidak tersedia';
-
+        $branchAddress = Toko::find($toko_id)->alamat;
+    
         // Query dasar untuk mengambil data Dppemesanan dan relasi pemesananproduk
         $inquery = Dppemesanan::with(['pemesananproduk.toko'])
             ->orderBy('created_at', 'desc');
-
+    
         // Filter berdasarkan toko_id
-        if ($toko_id) {
-            $inquery->whereHas('pemesananproduk', function ($query) use ($toko_id) {
-                $query->where('toko_id', $toko_id);
-            });
-        }
-
+        $inquery->whereHas('pemesananproduk', function ($query) use ($toko_id) {
+            $query->where('toko_id', $toko_id);
+        });
+    
         // Eksekusi query dan group by toko
         $inquery = $inquery->get()->groupBy('pemesananproduk.toko_id');
-
+    
         // Hitung saldo untuk setiap toko (jumlah dp_pemesanan di mana status_pelunasan NULL)
         $saldoPerToko = [];
         foreach ($inquery as $tokoId => $dpPemesanan) {
             $totalSaldo = $dpPemesanan->whereNull('pelunasan')->sum('dp_pemesanan');
             $saldoPerToko[$tokoId] = $totalSaldo;
         }
-
+    
         // Kirim data ke view cetak
-        $pdf = FacadePdf::loadView('toko_banjaran.laporan_depositbanjaran.printsaldo', compact(
+        $pdf = FacadePdf::loadView('toko_banjaran.laporan_depositbumiayu.printsaldo', compact(
             'saldoPerToko',
             'tokos',
             'toko_id',
             'branchName',
             'branchAddress'
         ));
-
+    
         // Output PDF ke browser
         return $pdf->stream('laporan_deposit.pdf');
     }
-
     
 
 
