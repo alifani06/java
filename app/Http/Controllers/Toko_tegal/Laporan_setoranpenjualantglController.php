@@ -322,23 +322,32 @@ $diskon_penjualan = Detailpenjualanproduk::whereHas('penjualanproduk', function 
         $penjualan_kotor = $queryPenjualanKotor->value('total');
 
         // Hitung total diskon penjualan berdasarkan kasir dan tanggal_penjualan
-        $diskon_penjualan = Detailpenjualanproduk::whereHas('penjualanproduk', function ($q) use ($tanggal_penjualan, $kasir) {
-            $q->whereDate('tanggal_penjualan', $tanggal_penjualan);
+       // Hitung total diskon penjualan berdasarkan kasir dan range tanggal_penjualan
+$diskon_penjualan = Detailpenjualanproduk::whereHas('penjualanproduk', function ($q) use ($tanggal_penjualan, $tanggal_akhir, $kasir) {
+    // Terapkan filter tanggal penjualan
+    if ($tanggal_penjualan && $tanggal_akhir) {
+        $q->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+    } elseif ($tanggal_penjualan) {
+        $q->where('tanggal_penjualan', '>=', $tanggal_penjualan);
+    } elseif ($tanggal_akhir) {
+        $q->where('tanggal_penjualan', '<=', $tanggal_akhir);
+    }
 
-            // Filter berdasarkan kasir jika ada
-            if ($kasir) {
-                $q->where('kasir', $kasir);
-            }else {
-                // Jika tidak memilih kasir, maka ambil data dengan toko_id = 1
-                $q->where('toko_id', 2);
-            }
-        })->get()->sum(function ($detail) {
-            $harga = (float)str_replace(['Rp.', '.'], '', $detail->harga); // Hapus "Rp." dan "."
-            $jumlah = $detail->jumlah;
-            $diskon = $detail->diskon / 100; // Ubah diskon persen ke desimal
+    // Filter berdasarkan kasir jika ada
+    if ($kasir) {
+        $q->where('kasir', $kasir);
+    } else {
+        // Jika tidak memilih kasir, maka ambil data dengan toko_id = 4
+        $q->where('toko_id', 2);
+    }
+})->get()->sum(function ($detail) {
+    $harga = (float)str_replace(['Rp.', '.'], '', $detail->harga); // Hapus "Rp." dan "."
+    $jumlah = $detail->jumlah;
+    $diskon = $detail->diskon / 100; // Ubah diskon persen ke desimal
 
-            return $harga * $jumlah * $diskon;
-        });
+    return $harga * $jumlah * $diskon;
+});
+
 
         $penjualan_bersih = $penjualan_kotor - $diskon_penjualan;
 
