@@ -530,6 +530,8 @@ class Pengiriman_tokopemalangController extends Controller{
     
         return response()->json(['success' => 'Berhasil mengubah status menjadi unpost dan memperbarui stok.']);
     }
+
+    //stok 0 bisa posting
     public function posting_pengirimanpemesanan($id)
     {
         // Ambil data stok_tokobanjaran berdasarkan ID
@@ -615,7 +617,7 @@ class Pengiriman_tokopemalangController extends Controller{
     }
 
 
-    
+    //stok 0 tidak bisa posting
     // public function posting_pengirimanpemesanan($id)
     // {
     //     // Ambil data stok_tokobanjaran berdasarkan ID
@@ -766,6 +768,7 @@ class Pengiriman_tokopemalangController extends Controller{
 
     //     return response()->json(['success' => 'Berhasil mengubah status menjadi unpost dan memperbarui stok.']);
     // }
+
     public function unpost_pengirimanpemesanan($id)
     {
         // Ambil data stok_tokobanjaran berdasarkan ID
