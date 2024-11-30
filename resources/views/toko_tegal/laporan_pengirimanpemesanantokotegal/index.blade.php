@@ -66,7 +66,7 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Laporan Pengiriman Toko Tegal</h3>
+                    <h3 class="card-title">Laporan Pengiriman Pemesanan Toko Tegal</h3>
                 </div>
                 <div class="card-header">
                     <div class="float-right">
@@ -129,7 +129,7 @@
                             @endphp
                                 <tr class="dropdown" data-permintaan-id="{{ $firstItem->id }}">
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                <td>{{ $firstItem->kode_pengiriman }}</td>
+                                <td>{{ $firstItem->kode_pengirimanpesanan }}</td>
                                 <td>{{ \Carbon\Carbon::parse($firstItem->tanggal_input)->format('d-m-Y H:i') }}</td>
                                 <td class="text-center">
                                     @if ($firstItem->status == 'posting')
@@ -287,7 +287,7 @@
     const tanggalAkhir = document.getElementById('tanggal_akhir').value;
     const status = document.getElementById('status').value;
 
-    form.action = `{{ url('toko_tegal/printpengirimantokotegal') }}?tanggal_input=${tanggalPengiriman}&tanggal_akhir=${tanggalAkhir}&status=${status}`;
+    form.action = `{{ url('toko_tegal/printpengirimanpemesananTgl') }}?tanggal_input=${tanggalPengiriman}&tanggal_akhir=${tanggalAkhir}&status=${status}`;
     form.target = "_blank";
     form.submit();
 }

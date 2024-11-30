@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\PemesananprodukController;
 use App\Http\Controllers\Admin\KlasifikasiController as AdminKlasifikasiController;
 use App\Http\Controllers\Admin\Laporan_hasilpenjualanController;
 use App\Http\Controllers\Admin\Laporan_pemesananprodukController;
+use App\Http\Controllers\Admin\Laporan_pengirimanpesananController;
 use App\Http\Controllers\Admin\PelangganController;
 use App\Http\Controllers\Admin\PenjualanprodukController;
 use App\Http\Controllers\Admin\PermintaanprodukController;
@@ -144,6 +145,8 @@ use App\Http\Controllers\Toko_tegal\Inquery_setorantunaitegalController;
 use App\Http\Controllers\Toko_tegal\Laporan_historitegalController;
 use App\Http\Controllers\Toko_tegal\Laporan_pemesananproduktegalController;
 use App\Http\Controllers\Toko_tegal\Laporan_pemindahantegalController;
+use App\Http\Controllers\Toko_tegal\Laporan_pengirimanpemesanantokotegalController;
+use App\Http\Controllers\Toko_tegal\Laporan_pengirimantokotegalController;
 use App\Http\Controllers\Toko_tegal\Laporan_setoranpenjualantglController;
 use App\Http\Controllers\Toko_tegal\Laporan_stoktokotegalController;
 use App\Http\Controllers\Toko_tegal\PelunasanpemesananTglController;
@@ -951,6 +954,11 @@ Route::middleware('toko_tegal')->prefix('toko_tegal')->group(function () {
 
     Route::resource('laporan_pengirimantokotegal', \App\Http\Controllers\Toko_tegal\Laporan_pengirimantokotegalController::class);
     Route::get('printpengirimantokotegal', [\App\Http\Controllers\Toko_tegal\Laporan_pengirimantokotegalController::class, 'printReport']);
+    Route::get('toko_tegal/laporan_pengirimantokotegal/index', [Laporan_pengirimantokotegalController::class, 'index'])->name('toko_tegal.laporan_pengirimantokotegal.index');
+
+    Route::resource('laporan_pemesanantokotegal', \App\Http\Controllers\Toko_tegal\Laporan_pengirimanpemesanantokotegalController::class);
+    Route::get('printpengirimanpemesananTgl', [\App\Http\Controllers\Toko_tegal\Laporan_pengirimanpemesanantokotegalController::class, 'printReport']);
+    Route::get('toko_tegal/laporan_pemesanantokotegal/index', [Laporan_pengirimanpemesanantokotegalController::class, 'index'])->name('toko_tegal.laporan_pemesanantokotegal.index');
 
     Route::resource('setoran_tokotegal', \App\Http\Controllers\Toko_tegal\Setoran_tokotegalController::class);
     Route::post('toko_tegal/setoran_tokotegal', [Setoran_tokotegalController::class, 'store'])->name('setoran.store');

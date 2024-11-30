@@ -127,7 +127,6 @@ public function barangMasukpesananpemalang(Request $request)
         ->with('produk.klasifikasi')
         ->where('pengiriman_barangjadipesanans.status', 'posting'); // Tampilkan hanya status "posting"
 
-    // Pastikan hanya data dengan toko_id 1
     $query->where('pengiriman_barangjadipesanans.toko_id', $toko_id);
 
     // Filter berdasarkan status
