@@ -36,7 +36,7 @@ class Laporan_depositpemalangController extends Controller
         // Query dasar untuk mengambil data Dppemesanan
         $inquery = Dppemesanan::with(['pemesananproduk.toko'])
             ->whereHas('pemesananproduk', function ($query) {
-                $query->where('toko_id', 1); // Secara default ambil toko_id = 1
+                $query->where('toko_id', 4); // Secara default ambil toko_id = 1
             })
             ->orderBy('created_at', 'desc');
 
@@ -125,7 +125,7 @@ class Laporan_depositpemalangController extends Controller
         // Query dasar untuk mengambil data Dppemesanan
         $inquery = Dppemesanan::with(['pemesananproduk.toko'])
             ->whereHas('pemesananproduk', function ($query) {
-                $query->where('toko_id', 1); // Secara default ambil toko_id = 1
+                $query->where('toko_id', 4); // Secara default ambil toko_id = 1
             })
             ->orderBy('created_at', 'desc');
 
@@ -237,7 +237,7 @@ class Laporan_depositpemalangController extends Controller
     public function printReportdeposit(Request $request)
     {
         // Set default toko_id untuk Banjaran
-        $banjaranTokoId = 1;
+        $banjaranTokoId = 4;
     
         // Ambil parameter filter dari request
         $status = $request->status;
