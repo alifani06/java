@@ -40,17 +40,16 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 class Inquery_penjualanprodukpemalangController extends Controller
 {
 
-
-    public function index(Request $request)
+public function index(Request $request)
 {
     $status = $request->status;
     $tanggal_penjualan = $request->tanggal_penjualan;
     $tanggal_akhir = $request->tanggal_akhir;
+    $metode_bayar = $request->metode_bayar; // Ganti dari metode_bayar ke metode_bayar
 
-    $inquery = Penjualanproduk::query();
+    $metodes = MetodePembayaran::all(); // Ambil semua metode pembayaran
 
-    // Tambahkan filter toko_id = 4
-    $inquery->where('toko_id', 4);
+    $inquery = Penjualanproduk::with('metodePembayaran')->where('toko_id', 4);
 
     if ($status) {
         $inquery->where('status', $status);
@@ -67,14 +66,17 @@ class Inquery_penjualanprodukpemalangController extends Controller
         $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
         $inquery->where('tanggal_penjualan', '<=', $tanggal_akhir);
     } else {
-        // Jika tidak ada filter tanggal, filter berdasarkan hari ini
         $inquery->whereDate('tanggal_penjualan', Carbon::today());
+    }
+
+    if ($metode_bayar) {
+        $inquery->where('metode_id', $metode_bayar); // Pastikan kolom ini sesuai dengan database
     }
 
     $inquery->orderBy('id', 'DESC');
     $inquery = $inquery->get();
 
-    return view('toko_pemalang.inquery_penjualanproduk.index', compact('inquery'));
+    return view('toko_pemalang.inquery_penjualanproduk.index', compact('inquery', 'metodes'));
 }
 
 

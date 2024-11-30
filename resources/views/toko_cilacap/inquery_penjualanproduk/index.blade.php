@@ -9,7 +9,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            setTimeout(function() {
+            setTimeout(function() { 
                 document.getElementById("loadingSpinner").style.display = "none";
                 document.getElementById("mainContent").style.display = "block";
                 document.getElementById("mainContentSection").style.display = "block";
@@ -61,6 +61,8 @@
                 <!-- /.card-header -->
                  
                 <div class="card-body">
+                   
+                    
                     <form method="GET" id="form-action">
                         <div class="row">
                             <div class="col-md-3 mb-3">
@@ -82,15 +84,26 @@
                                 <label for="tanggal_akhir">(Sampai Tanggal)</label>
                             </div>
                             <div class="col-md-3 mb-3">
+                                <select class="custom-select form-control" id="metode_bayar" name="metode_bayar">
+                                    <option value="">- Semua Metode -</option>
+                                    @foreach ($metodes as $metode)
+                                        <option value="{{ $metode->id }}" 
+                                            {{ Request::get('metode_bayar') == $metode->id ? 'selected' : '' }}>
+                                            {{ $metode->nama_metode }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                
+                                <label for="metode_bayar">(Pilih Metode Pembayaran)</label>
+                            </div>
+                            <div class="col-md-3 mb-3">
                                 <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
                                     <i class="fas fa-search"></i> Cari
                                 </button>
                             </div>
                         </div>
                     </form>
-                    
 
-                   
                     <table id="datatables66" class="table table-bordered table-striped table-hover" style="font-size: 13px">
                         <thead class="">
                             <tr>
@@ -100,7 +113,7 @@
                                 <th>Tanggal penjualan</th>
                                 <th>Kasir</th>
                                 <th>Pelanggan</th>
-                          
+                                <th>Pembayaran</th>
                                 <th>Total</th>
                                 <th class="text-center" width="20">Opsi</th>
                             </tr>
@@ -126,6 +139,13 @@
                                             Non Member
                                         @endif
                                     </td>
+                                    <td>
+                                        @if($item->metodePembayaran)
+                                            {{ $item->metodePembayaran->nama_metode }}
+                                        @else
+                                            Tunai
+                                        @endif
+                                    </td>
                                     {{-- <td>
                                         @if ($item->detailpenjualanproduk->isNotEmpty())
                                             {{ $item->detailpenjualanproduk->pluck('nama_produk')->implode(', ') }}
@@ -133,6 +153,7 @@
                                             tidak ada
                                         @endif
                                     </td> --}}
+
                                     <td>
                                         {{ Str::startsWith($item->sub_total, 'Rp') ? $item->sub_total : 'Rp ' . number_format((float)$item->sub_total, 0, ',', '.') }}
                                     </td>

@@ -46,8 +46,11 @@ class Inquery_penjualanprodukcilacapController extends Controller
         $status = $request->status;
         $tanggal_penjualan = $request->tanggal_penjualan;
         $tanggal_akhir = $request->tanggal_akhir;
+        $metode_bayar = $request->metode_bayar; // Ganti dari metode_bayar ke metode_bayar
     
-        $inquery = Penjualanproduk::query() ->where('toko_id', 6);;
+        $metodes = MetodePembayaran::all(); // Ambil semua metode pembayaran
+    
+        $inquery = Penjualanproduk::with('metodePembayaran')->where('toko_id', 6);
     
         if ($status) {
             $inquery->where('status', $status);
@@ -64,14 +67,17 @@ class Inquery_penjualanprodukcilacapController extends Controller
             $tanggal_akhir = Carbon::parse($tanggal_akhir)->endOfDay();
             $inquery->where('tanggal_penjualan', '<=', $tanggal_akhir);
         } else {
-            // Jika tidak ada filter tanggal, filter berdasarkan hari ini
             $inquery->whereDate('tanggal_penjualan', Carbon::today());
+        }
+    
+        if ($metode_bayar) {
+            $inquery->where('metode_id', $metode_bayar); // Pastikan kolom ini sesuai dengan database
         }
     
         $inquery->orderBy('id', 'DESC');
         $inquery = $inquery->get();
     
-        return view('toko_cilacap.inquery_penjualanproduk.index', compact('inquery'));
+        return view('toko_cilacap.inquery_penjualanproduk.index', compact('inquery', 'metodes'));
     }
     
 
