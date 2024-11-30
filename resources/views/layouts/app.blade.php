@@ -54,7 +54,16 @@
 <body class="hold-transition sidebar-mini @if (request()->is('toko_banjaran/penjualan_produk*') ||
         // request()->is('admin/ban*') ||
         request()->is('toko_banjaran/pemesanan_produk*') ||
+        request()->is('toko_slawi/pemesanan_produk*') ||
+        request()->is('toko_tegal/pemesanan_produk*') ||
+        request()->is('toko_pemalang/pemesanan_produk*') ||
+        request()->is('toko_bumiayu/pemesanan_produk*') ||
+        request()->is('toko_cilacap/pemesanan_produk*') ||
         request()->is('toko_slawi/penjualan_produk*') ||
+        request()->is('toko_tegal/penjualan_produk*') ||
+        request()->is('toko_pemalang/penjualan_produk*') ||
+        request()->is('toko_bumiayu/penjualan_produk*') ||
+        request()->is('toko_cilacap/penjualan_produk*') ||
         request()->is('admin/penjualan_toko*') ||
         request()->is('admin/inquery_penjualantoko*') ||
         request()->is('admin/laporan_penjualantoko*') ||

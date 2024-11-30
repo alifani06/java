@@ -384,71 +384,7 @@
     }
 </script>
 
-{{-- <script>
-    $(document).ready(function() {
-        $('#simpanButton').on('click', function(event) {
-            event.preventDefault(); // Mencegah aksi default tombol
-            var bayar = parseInt($('#bayar').val().replace(/[^\d]/g, '')) || 0; // Ambil nilai bayar tanpa format dan ubah menjadi integer
-            var subTotal = parseInt($('#sub_total').val().replace(/[^\d]/g, '')) || 0; // Ambil nilai sub total tanpa format dan ubah menjadi integer
 
-            if (!bayar) {
-                // Tampilkan SweetAlert jika input bayar kosong
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Perhatian',
-                    text: 'Silakan masukkan jumlah uang bayar terlebih dahulu.',
-                    confirmButtonText: 'OK'
-                });
-            } else if (bayar < subTotal) {
-                // Tampilkan SweetAlert jika uang bayar kurang dari sub total
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Uang Bayar Kurang',
-                    text: 'Jumlah uang bayar kurang dari total yang harus dibayar.',
-                    confirmButtonText: 'OK'
-                });
-            } else {
-                // Lanjutkan ke proses simpan dengan submit form secara manual
-                $('#penjualanForm').submit(); 
-            }
-        });
-
-        // Proses submit form menggunakan AJAX
-        $('#penjualanForm').on('submit', function(event) {
-            event.preventDefault(); // Mencegah pengiriman form default
-
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function(response) {
-                    if (response.pdfUrl) {
-                        // Membuka URL di tab baru
-                        window.open(response.pdfUrl, '_blank');
-                    }
-                    if (response.success) {
-                        // Tampilkan pesan sukses menggunakan SweetAlert2
-                        Swal.fire({
-                            title: 'Sukses!',
-                            text: response.success,
-                            icon: 'success',
-                            confirmButtonText: 'OK',
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                // Lakukan refresh halaman setelah menekan OK
-                                location.reload(); // Ini akan merefresh seluruh halaman
-                            }
-                        });
-                    }
-                },
-                error: function(xhr) {
-                    // Tangani error jika diperlukan
-                    console.log(xhr.responseText);
-                }
-            });
-        });
-    });
-</script> --}}
 <script>
     $(document).ready(function() {
         // Jalankan handleSave saat tombol "Simpan" diklik

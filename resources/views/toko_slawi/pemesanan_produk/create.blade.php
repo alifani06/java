@@ -157,13 +157,11 @@
                                 <div class="row mb-3 align-items-center">
                                     <div class="col-md-6">
                                         <label for="tanggal_kirim">Tanggal Pengambilan:</label>
-                                        <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
+                                        <div class="input-group date" id="tanggal_kirim_date" data-target-input="nearest">
                                             <input type="text" id="tanggal_kirim" name="tanggal_kirim"
-                                                   class="form-control datetimepicker-input"
-                                                   data-target="#reservationdatetime"
-                                                   value="{{ old('tanggal_kirim') }}" 
-                                                   placeholder="DD/MM/YYYY HH:mm">
-                                            <div class="input-group-append" data-target="#reservationdatetime" data-toggle="datetimepicker">
+                                                class="form-control datetimepicker-input" data-target="#tanggal_kirim_date"
+                                                value="{{ old('tanggal_kirim') }}" placeholder="DD/MM/YYYY">
+                                            <div class="input-group-append" data-target="#tanggal_kirim_date" data-toggle="datetimepicker">
                                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                             </div>
                                         </div>
@@ -171,8 +169,23 @@
                                             <div class="text-danger">{{ $errors->first('tanggal_kirim') }}</div>
                                         @endif
                                     </div>
+                                    <div class="col-md-6">
+                                        <label for="waktu_kirim">Waktu Pengambilan:</label>
+                                        <div class="input-group date" id="waktu_kirim_time" data-target-input="nearest">
+                                            <input type="text" id="waktu_kirim" name="waktu_kirim"
+                                                class="form-control datetimepicker-input" data-target="#waktu_kirim_time"
+                                                value="{{ old('waktu_kirim') }}" placeholder="HH:mm">
+                                            <div class="input-group-append" data-target="#waktu_kirim_time" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                                            </div>
+                                        </div>
+                                        @if ($errors->has('waktu_kirim'))
+                                            <div class="text-danger">{{ $errors->first('waktu_kirim') }}</div>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -447,54 +460,65 @@
     </section>
 
     
-    
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
+
 <script>
     $(document).ready(function() {
-        // Set locale Moment.js ke bahasa Indonesia
-        moment.locale('id');
+        // Set locale Moment.js ke bahasa Indonesia sebelum inisialisasi datetimepicker
+        moment.locale('id'); // Pastikan moment.js locale diatur ke Indonesia
 
-        // Inisialisasi datetimepicker
-        $('#reservationdatetime').datetimepicker({
-            format: 'DD/MM/YYYY HH:mm',
-            locale: 'id',
+        // Inisialisasi datetimepicker untuk tanggal
+        $('#tanggal_kirim_date').datetimepicker({
+            format: 'DD/MM/YYYY',
+            locale: 'id', // Pastikan locale Indonesia diterapkan
             icons: {
-                time: 'fa fa-clock',
                 date: 'fa fa-calendar',
-                up: 'fa fa-arrow-up',
-                down: 'fa fa-arrow-down',
-                previous: 'fa fa-chevron-left',
-                next: 'fa fa-chevron-right',
-                today: 'fa fa-calendar-check-o',
-                clear: 'fa fa-trash',
-                close: 'fa fa-times'
             }
         });
 
-        // Pastikan locale diterapkan ulang setelah inisialisasi datetimepicker
-        $('#reservationdatetime').datetimepicker('locale', 'id');
+        // Inisialisasi datetimepicker untuk waktu
+        $('#waktu_kirim_time').datetimepicker({
+            format: 'HH:mm',  // Pastikan hanya waktu yang ditampilkan
+            locale: 'id', // Pastikan locale Indonesia diterapkan
+            icons: {
+                time: 'fa fa-clock',
+            },
+            useCurrent: false  // Jangan set waktu saat ini secara otomatis
+        });
+
+        // Cegah masalah locale yang tidak ter-set dengan benar dengan memaksa locale setelah inisialisasi
+        $('#tanggal_kirim_date').on('dp.change', function() {
+            $(this).data("DateTimePicker").locale('id');
+        });
+        
+        $('#waktu_kirim_time').on('dp.change', function() {
+            $(this).data("DateTimePicker").locale('id');
+        });
 
         $('#pemesananForm').submit(function(event) {
             event.preventDefault(); // Mencegah pengiriman form default
 
-            // Check if tanggal_kirim is filled
-            if (!$('#tanggal_kirim').val()) {
+            // Pastikan tanggal dan waktu diisi
+            if (!$('#tanggal_kirim').val() || !$('#waktu_kirim').val()) {
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Tanggal pengambilan harus diisi!',
+                    text: 'Tanggal dan waktu pengambilan harus diisi!',
                     icon: 'error',
                     confirmButtonText: 'OK',
                 });
                 return; // Stop the submission
             }
 
+            // Gabungkan tanggal dan waktu
+            var tanggal_kirim = $('#tanggal_kirim').val() + ' ' + $('#waktu_kirim').val();
+            
             $.ajax({
                 url: $(this).attr('action'),
                 type: 'POST',
-                data: $(this).serialize(),
+                data: $(this).serialize() + '&tanggal_kirim=' + tanggal_kirim, // Kirim tanggal dan waktu
                 success: function(response) {
                     if (response.pdfUrl) {
                         // Membuka URL di tab baru
@@ -510,7 +534,7 @@
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 // Lakukan refresh halaman setelah menekan OK
-                                location.reload(); // Ini akan merefresh seluruh halaman
+                                location.reload();
                             }
                         });
                     }
@@ -521,75 +545,89 @@
                 }
             });
         });
-
-        // Menyimpan nilai default untuk setiap elemen form ketika halaman dimuat
-        $('#pemesananForm').find('input[type="text"], input[type="number"], textarea, select').each(function() {
-            $(this).data('default-value', $(this).val());
-        });
     });
 </script>
+
+
 <script>
-     function getData1() {
+    function applyDiscount() {
+        var subTotalAsli = parseFloat(document.getElementById('sub_totalasli').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+        var discount = 10; // Misal diskon 10% (dapat diubah sesuai kebutuhan atau dari input lain)
+        var discountedTotal = subTotalAsli - (subTotalAsli * discount / 100);
+
+        document.getElementById('sub_total').value = formatCurrency(discountedTotal);
+    }
+
+    function getData1() {
         var metodeId = document.getElementById('nama_metode').value;
         var fee = document.getElementById('fee');
         var keterangan = document.getElementById('keterangan');
         var paymentFields = document.getElementById('payment-fields');
-        var paymentRow = document.getElementById('payment-row');
-        var changeRow = document.getElementById('change-row');
-    
-        if (metodeId && document.querySelector('#nama_metode option:checked').text === 'Tunai') {
+
+        // Terapkan diskon sebelum melanjutkan
+        applyDiscount();
+
+        // Reset fee dan keterangan jika metode belum dipilih
+        if (!metodeId || document.querySelector('#nama_metode option:checked').text === '- Pilih -') {
             paymentFields.style.display = 'none';
-        } else if (metodeId) {
+            fee.value = '';
+            keterangan.value = '';
+
+            // Update perhitungan untuk kembali ke nilai awal
+            updateCalculations();
+            return;
+        }
+
+        // Jika metode pembayaran "Tunai", tidak ada fee tambahan
+        if (document.querySelector('#nama_metode option:checked').text === 'Tunai') {
+            paymentFields.style.display = 'none';
+        } else {
+            // Ambil data metode pembayaran via AJAX
             $.ajax({
                 url: "{{ url('toko_slawi/metodebayar/metode') }}" + "/" + metodeId,
                 type: "GET",
                 dataType: "json",
                 success: function(response) {
                     console.log('Respons dari server:', response);
-    
+
                     fee.value = '';
                     keterangan.value = '';
                     paymentFields.style.display = 'block';
-    
+
                     if (response && response.fee) {
                         fee.value = response.fee;
                     }
                     if (response && response.keterangan) {
                         keterangan.value = response.keterangan;
                     }
-    
-                    // Update calculations whenever data is fetched
+
+                    // Update perhitungan setelah data diambil
                     updateCalculations();
                 },
                 error: function(xhr, status, error) {
                     console.error('Terjadi kesalahan dalam permintaan AJAX:', error);
                 }
             });
-        } else {
-            paymentFields.style.display = 'none';
         }
-    
-        // Display payment and change rows for all payment methods
-        paymentRow.style.display = 'block';
-        changeRow.style.display = 'block';
-        
-        // Update calculations to reflect any changes
+
+        // Update perhitungan untuk merefleksikan perubahan
         updateCalculations();
     }
 
     function updateCalculations() {
+        // Gunakan nilai sub_total yang sudah diskon
         var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
         var fee = parseFloat(document.getElementById('fee').value.replace('%', '').trim()) || 0;
         var totalFee = (subTotal * fee / 100) || 0;
         var finalTotal = subTotal + totalFee;
 
-        // Format the values without .00
+        // Format nilai menjadi mata uang
         function formatCurrency(value) {
             var formattedValue = value.toFixed(2).replace(/\.00$/, '');
             return 'Rp' + formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
 
-        // Update total fee and final sub total fields
+        // Update total fee dan final sub total
         document.getElementById('total_fee').value = formatCurrency(totalFee);
         document.getElementById('sub_total').value = formatCurrency(finalTotal);
 
@@ -609,42 +647,35 @@
     }
 
     function validateDP() {
-    var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
-    var dpPemesanan = parseFloat(document.getElementById('dp_pemesanan').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
-    var minDP = subTotal * 0.5;
-    var dpPemesananElement = document.getElementById('dp_pemesanan');
-    
-    if (dpPemesanan < minDP) {
-        dpPemesananElement.setCustomValidity('DP inimal 50% dari Total');
-    } else if (dpPemesanan > subTotal) {
-        dpPemesananElement.setCustomValidity('DP Tidak Boleh Melebihi Total');
-    } else {
-        dpPemesananElement.setCustomValidity('');
-    }
+        var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+        var dpPemesanan = parseFloat(document.getElementById('dp_pemesanan').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+        var minDP = subTotal * 0.5;
+        var dpPemesananElement = document.getElementById('dp_pemesanan');
+
+        if (dpPemesanan < minDP) {
+            dpPemesananElement.setCustomValidity('DP minimal 50% dari Total');
+        } else if (dpPemesanan > subTotal) {
+            dpPemesananElement.setCustomValidity('DP Tidak Boleh Melebihi Total');
+        } else {
+            dpPemesananElement.setCustomValidity('');
+        }
     }
 
+    function formatCurrency(value) {
+        var formattedValue = value.toFixed(2).replace(/\.00$/, '');
+        return 'Rp' + formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    // Event listeners
     document.getElementById('dp_pemesanan').addEventListener('input', function() {
         formatAndUpdateKembali();
         validateDP();
     });
 
-
-    // Add event listeners for initialization
     document.getElementById('nama_metode').addEventListener('change', getData1);
-    document.getElementById('sub_total').addEventListener('input', updateCalculations);
-    document.getElementById('dp_pemesanan').addEventListener('input', formatAndUpdateKembali);
-    
-    // Initialize with "Tunai" as default method
     document.addEventListener('DOMContentLoaded', function() {
-        var defaultMethod = 'Tunai';
-        var options = document.getElementById('nama_metode').options;
-        for (var i = 0; i < options.length; i++) {
-            if (options[i].text === defaultMethod) {
-                options[i].selected = true;
-                break;
-            }
-        }
-        getData1();
+        applyDiscount(); // Terapkan diskon saat halaman dimuat
+        getData1(); // Tetapkan metode pembayaran default
     });
 </script>
 
@@ -927,25 +958,25 @@
 
     <script>
        document.addEventListener('DOMContentLoaded', function() {
-    document.addEventListener('keydown', function(event) {
-        // Cek apakah elemen yang aktif adalah textarea
-        const activeElement = document.activeElement;
-        if (activeElement.tagName === 'TEXTAREA') {
-            return; // Jika ya, biarkan Enter untuk pindah ke baris baru
-        }
+        document.addEventListener('keydown', function(event) {
+            // Cek apakah elemen yang aktif adalah textarea
+            const activeElement = document.activeElement;
+            if (activeElement.tagName === 'TEXTAREA') {
+                return; // Jika ya, biarkan Enter untuk pindah ke baris baru
+            }
 
-        if (event.key === 'Enter') {
-            event.preventDefault(); // Mencegah aksi default dari tombol Enter
-            addPesanan(); // Memanggil addPesanan saat tombol Enter ditekan
-        }
-        
-        if (event.key === 'F1') { // Misalnya, F1 untuk menampilkan modal produk
-            event.preventDefault(); // Mencegah aksi default dari tombol F1
-            var urutan = $('#tabel-pembelian tr').length; // Ambil urutan terakhir atau default
-            showCategoryModal(urutan); // Menampilkan modal produk
-        }
-    });
-});
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Mencegah aksi default dari tombol Enter
+                addPesanan(); // Memanggil addPesanan saat tombol Enter ditekan
+            }
+            
+            if (event.key === 'F1') { // Misalnya, F1 untuk menampilkan modal produk
+                event.preventDefault(); // Mencegah aksi default dari tombol F1
+                var urutan = $('#tabel-pembelian tr').length; // Ambil urutan terakhir atau default
+                showCategoryModal(urutan); // Menampilkan modal produk
+            }
+        });
+         });
 
 
 

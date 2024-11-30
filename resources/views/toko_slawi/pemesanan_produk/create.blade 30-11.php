@@ -88,149 +88,95 @@
                     @endforeach
                 </div>
             @endif
-            <form id="pemesananForm" action="{{ url('toko_banjaran/pemesanan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+            <form id="pemesananForm" action="{{ url('toko_slawi/pemesanan_produk') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 {{-- detail pelanggan --}}
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row mb-3 align-items-center">
-                            <div class="col-md-2 mt-2">
-                                <label class="form-label" for="kategori">Tipe Pelanggan</label>
-                                <select class="form-control" id="kategori" name="kategori">
-                                    <option value="">- Pilih -</option>
-                                    <option value="member" {{ old('kategori') == 'member' ? 'selected' : null }}>Member</option>
-                                    <option value="nonmember" {{ old('kategori') == 'nonmember' ? 'selected' : null }}>Non Member</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3 mt-2" id="kodePelangganRow" hidden>
-                                <label for="qrcode_pelanggan">Scan Kode Pelanggan</label>
-                                <input type="text" class="form-control" id="qrcode_pelanggan" name="qrcode_pelanggan" placeholder="scan kode Pelanggan" onchange="getData(this.value)">
-                            </div>
-
-                        </div>
-                    
-                        <div class="row mb-3 align-items-center" id="namaPelangganRow" style="display: none;">
-                            <div class="col-md">
-                                <button class="btn btn-outline-primary mb-3 btn-sm" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
-                                    <i class="fas fa-search" style=""></i>Cari pelanggan
-                                </button> 
-                            </div>      
-                            <div class="col-md-6 mb-3 "> 
-                                <input hidden type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('kode_pelanggan') }}" onclick="showCategoryModalpemesanan()">
-                                <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}">
-                            </div>     
-                        </div>
-
-                        <div class="row  align-items-center" id="telpRow" hidden>
-                            <div class="col-md-6 mb-3">
-                                <label for="telp">No. Telepon</label>
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">+62</span>
-                                    </div>
-                                    <input type="number" id="telp" name="telp" class="form-control" placeholder="Masukan nomor telepon" value="{{ old('telp') }}">
-                                </div>
-                            </div>
-                        </div>
-                    
-                        <div class="row mb-3 align-items-center" id="alamatRow" hidden>
-                            <div class="col-md-6 mb-3">
-                                <label for="catatan">Alamat</label>
-                                <textarea placeholder="" type="text" class="form-control" id="alamat" name="alamat">{{ old('alamat') }}</textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal fade" id="tableMarketing" data-backdrop="static">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Data Pelanggan</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" id="toggleButton">
+                                    <i class="fas fa-minus"></i>
                                 </button>
                             </div>
-                            <div class="modal-body">
-                                <table id="datatables4" class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">No</th>
-                                            <th>Kode Pelanggan</th>
-                                            <th>Kode Lama</th>
-                                            <th>Nama Pelanggan</th>
-                                            <th>No Telpon</th>
-                                            <th>Alamat</th>
-                                            <th>Opsi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($pelanggans as $item)
-                                            <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}')">
-                                                <td class="text-center">{{ $loop->iteration }}</td>
-                                                <td>{{ $item->kode_pelanggan }}</td>
-                                                <td>{{ $item->kode_lama }}</td>
-                                                <td>{{ $item->nama_pelanggan }}</td>
-                                                <td>{{ $item->telp }}</td>
-                                                <td>{{ $item->alamat }}</td>
-                                                <td class="text-center">
-                                                    <button type="button" class="btn btn-primary btn-sm" >
-                                                        <i class="fas fa-plus"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        @endforeach 
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Detail Pengambilan</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="col-md-4 mb-3">
-                            <label for="tanggal_kirim">Tanggal Pengambilan:</label>
-                            <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
-                                <input type="text" id="tanggal_kirim" name="tanggal_kirim"
-                                       class="form-control datetimepicker-input"
-                                       data-target="#reservationdatetime"
-                                       value="{{ old('tanggal_kirim') }}"
-                                       placeholder="DD/MM/YYYY HH:mm">
-                                <div class="input-group-append" data-target="#reservationdatetime" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-3 align-items-center">
-                            <div class="col-md-6 -auto" id="" >
-                                <label for="nama_penerima">Nama Penerima </label> <span style="font-size: 10px;">(kosongkan jika sama dengan nama pelanggan)</span>
-                                <input type="text" class="form-control" id="nama_penerima" name="nama_penerima" placeholder="masukan nama Penerima" value="{{ old('nama_penerima') }}">
-                            </div>
-                        </div>
-                        <div class="row  align-items-center" id="telp_penerima" >
-                            <div class="col-md-6">
-                                <label for="telp_penerima">No. Telepon</label> <span style="font-size: 10px;">(kosongkan jika sama dengan Nomer telepon pelanggan)</span>
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">+62</span>
+                            <div class="card-body collapse show" id="cardContent">
+                                <!-- Your form fields go here -->
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-6 mt-2">
+                                        <label class="form-label" for="kategori">Tipe Pelanggan</label>
+                                        <select class="form-control" id="kategori" name="kategori">
+                                            <option value="">- Pilih -</option>
+                                            <option value="member" {{ old('kategori') == 'member' ? 'selected' : null }}>Member</option>
+                                            <option value="nonmember" {{ old('kategori') == 'nonmember' ? 'selected' : null }}>Non Member</option>
+                                        </select>
                                     </div>
-                                    <input type="number" id="telp_penerima" name="telp_penerima" class="form-control" placeholder="Masukan nomor telepon" value="{{ old('telp_penerima') }}">
+                                    <div class="col-md-6 mt-2" id="kodePelangganRow" hidden>
+                                        <label for="qrcode_pelanggan">Scan Kode Pelanggan</label>
+                                        <input type="text" class="form-control" id="qrcode_pelanggan" name="qrcode_pelanggan" placeholder="scan kode Pelanggan" onchange="getData(this.value)">
+                                    </div>
+                                </div>
+                    
+                                <div class="row mb-3 align-items-center" id="namaPelangganRow" style="display: none;">
+                                    <div class="col-md">
+                                        <button class="btn btn-outline-primary mb-3 btn-sm" type="button" id="searchButton" onclick="showCategoryModalpemesanan()">
+                                            <i class="fas fa-search"></i>Cari pelanggan
+                                        </button> 
+                                    </div>      
+                                    <div class="col-md-12 mb-3 "> 
+                                        <input hidden type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" value="{{ old('kode_pelanggan') }}" onclick="showCategoryModalpemesanan()">
+                                        <input readonly placeholder="Masukan Nama Pelanggan" type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}">
+                                    </div>     
+                                </div>
+                    
+                                <div class="row align-items-center" id="telpRow" hidden>
+                                    <div class="col-md-12 mb-3">
+                                        <label for="telp">No. Telepon</label>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">+62</span>
+                                            </div>
+                                            <input type="number" id="telp" name="telp" class="form-control" placeholder="Masukan nomor telepon" value="{{ old('telp') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                    
+                                <div class="row mb-3 align-items-center" id="alamatRow" hidden>
+                                    <div class="col-md-12 mb-3">
+                                        <label for="catatan">Alamat</label>
+                                        <textarea placeholder="" type="text" class="form-control" id="alamat" name="alamat">{{ old('alamat') }}</textarea>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb-3 align-items-center" id="alamat_penerima" >
-                            <div class="col-md-6 mb-3">
-                                <label for="alamat_penerima">Alamat Penerima</label><span style="font-size: 10px;"> (kosongkan jika sama dengan alamat pelanggan)</span>
-                                <textarea placeholder="Masukan alamat penerima" type="text" class="form-control" id="alamat_penerima" name="alamat_penerima">{{ old('alamat_penerima') }}</textarea>
+                    </div>
+                
+                    <div class="col-md-6">
+                        <div class="card">
+                           
+                            <div class="card-body">
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-6">
+                                        <label for="tanggal_kirim">Tanggal Pengambilan:</label>
+                                        <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
+                                            <input type="text" id="tanggal_kirim" name="tanggal_kirim"
+                                                   class="form-control datetimepicker-input"
+                                                   data-target="#reservationdatetime"
+                                                   value="{{ old('tanggal_kirim') }}" 
+                                                   placeholder="DD/MM/YYYY HH:mm">
+                                            <div class="input-group-append" data-target="#reservationdatetime" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                        @if ($errors->has('tanggal_kirim'))
+                                            <div class="text-danger">{{ $errors->first('tanggal_kirim') }}</div>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+       
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title"><span></span></h3>
@@ -248,7 +194,7 @@
                                         <tr>
                                             <th style="font-size:14px" class="text-center">No</th>
                                             {{-- <th style="font-size:14px">Kode Produk</th> --}}
-                                            <th style="font-size:14px">Kode Lama</th>
+                                            <th style="font-size:14px">Kode Produk</th>
                                             <th style="font-size:14px">Nama Produk</th>
                                             <th style="font-size:14px">Jumlah</th>
                                             <th style="font-size:14px">Diskon</th>
@@ -266,91 +212,6 @@
                     </div>
                 </div>
 
-                <div class="modal fade" id="tableProduk" data-backdrop="static">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Data Produk</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <table id="datatables5" class="table table-bordered table-striped" style="font-size: 12px;">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">No</th>
-                                            <th>Kode Produk</th>
-                                            <th>Kode Lama</th>
-                                            <th>Nama Produk</th>
-                                            <th>Harga Member</th>
-                                            <th>Diskon Member</th>
-                                            <th>Harga Non Member</th>
-                                            <th>Diskon Non Member</th>
-                                            <th>Stok</th>
-                                            <th>Opsi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($produks as $item)
-                                            @php
-                                                $tokobanjaran = $item->tokobanjaran->first();
-                                                $stokpesanan_tokobanjaran = $item->stokpesanan_tokobanjaran ? $item->stokpesanan_tokobanjaran->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
-
-                                            @endphp
-                                            <tr class="pilih-btn"
-                                                data-id="{{ $item->id }}"
-                                                data-kode="{{ $item->kode_produk }}"
-                                                data-lama="{{ $item->kode_lama }}"
-                                                data-catatan="{{ $item->catatanproduk }}"
-                                                data-nama="{{ $item->nama_produk }}"
-                                                data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
-                                                data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
-                                                data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
-                                                data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
-                                                <td class="text-center">{{ $loop->iteration }}</td>
-                                                <td>{{ $item->kode_produk }}</td>
-                                                <td>{{ $item->kode_lama }}</td>
-                                                <td>{{ $item->nama_produk }}</td>
-                                                <td>
-                                                    <span class="member_harga_slw">{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="member_diskon_slw">{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="non_harga_slw">{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="non_diskon_slw">{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}</span>
-                                                </td>
-                                                <td class="text-center">
-                                                    {{ $stokpesanan_tokobanjaran }} <!-- Tampilkan stok produk -->
-                                                </td>
-                                                <td class="text-center">
-                                                    <button type="button" class="btn btn-primary btn-sm pilih-btn"
-                                                        data-id="{{ $item->id }}"
-                                                        data-kode="{{ $item->kode_produk }}"
-                                                        data-lama="{{ $item->kode_lama }}"
-                                                        data-catatan="{{ $item->catatanproduk }}"
-                                                        data-nama="{{ $item->nama_produk }}"
-                                                        data-member="{{ $tokobanjaran ? $tokobanjaran->member_harga_bnjr : '' }}"
-                                                        data-diskonmember="{{ $tokobanjaran ? $tokobanjaran->member_diskon_bnjr : '' }}"
-                                                        data-nonmember="{{ $tokobanjaran ? $tokobanjaran->non_harga_bnjr : '' }}"
-                                                        data-diskonnonmember="{{ $tokobanjaran ? $tokobanjaran->non_diskon_bnjr : '' }}">
-                                                        <i class="fas fa-plus"></i> 
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                
-                            </div>
-                 
-                        </div>
-                    </div>
-                </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <div class="card">
@@ -454,44 +315,181 @@
                 </div>
             </form>
         </div>
+
+        <div class="modal fade" id="tableMarketing" data-backdrop="static">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Data Pelanggan</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table id="datatables4" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">No</th>
+                                    <th>Kode Pelanggan</th>
+                                    <th>Kode Lama</th>
+                                    <th>Nama Pelanggan</th>
+                                    <th>No Telpon</th>
+                                    <th>Alamat</th>
+                                    <th>Opsi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($pelanggans as $item)
+                                    <tr onclick="getSelectedDataPemesanan('{{ $item->nama_pelanggan }}', '{{ $item->telp }}', '{{ $item->alamat }}', '{{ $item->kode_pelanggan }}')">
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td>{{ $item->kode_pelanggan }}</td>
+                                        <td>{{ $item->kode_pelangganlama }}</td>
+                                        <td>{{ $item->nama_pelanggan }}</td>
+                                        <td>{{ $item->telp }}</td>
+                                        <td>{{ $item->alamat }}</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-primary btn-sm" >
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach 
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="tableProduk" data-backdrop="static">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Data Produk</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table id="datatables5" class="table table-bordered table-striped" style="font-size: 12px;">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">No</th>
+                                    <th>Kode Produk</th>
+                                    <th>Kode Lama</th>
+                                    <th>Nama Produk</th>
+                                    <th>Harga Member</th>
+                                    <th>Diskon Member</th>
+                                    <th>Harga Non Member</th>
+                                    <th>Diskon Non Member</th>
+                                    <th>Opsi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($produks as $item)
+                                    @php
+                                        $tokoslawi = $item->tokoslawi->first();
+                                        $stokpesanan_tokoslawi = $item->stokpesanan_tokoslawi ? $item->stokpesanan_tokoslawi->jumlah : 0; // Jika stok ada, tampilkan, jika tidak tampilkan 0
+
+                                    @endphp
+                                    <tr class="pilih-btn"
+                                        data-id="{{ $item->id }}"
+                                        data-kode="{{ $item->kode_produk }}"
+                                        data-lama="{{ $item->kode_lama }}"
+                                        data-catatan="{{ $item->catatanproduk }}"
+                                        data-nama="{{ $item->nama_produk }}"
+                                        data-member="{{ $tokoslawi ? $tokoslawi->member_harga_slw : '' }}"
+                                        data-diskonmember="{{ $tokoslawi ? $tokoslawi->member_diskon_slw : '' }}"
+                                        data-nonmember="{{ $tokoslawi ? $tokoslawi->non_harga_slw : '' }}"
+                                        data-diskonnonmember="{{ $tokoslawi ? $tokoslawi->non_diskon_slw : '' }}">
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td>{{ $item->kode_produk }}</td>
+                                        <td>{{ $item->kode_lama }}</td>
+                                        <td>{{ $item->nama_produk }}</td>
+                                        <td>
+                                            <span class="member_harga_slw">{{ $tokoslawi ? $tokoslawi->member_harga_slw : '' }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="member_diskon_slw">{{ $tokoslawi ? $tokoslawi->member_diskon_slw : '' }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="non_harga_slw">{{ $tokoslawi ? $tokoslawi->non_harga_slw : '' }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="non_diskon_slw">{{ $tokoslawi ? $tokoslawi->non_diskon_slw : '' }}</span>
+                                        </td>
+                                    
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-primary btn-sm pilih-btn"
+                                                data-id="{{ $item->id }}"
+                                                data-kode="{{ $item->kode_produk }}"
+                                                data-lama="{{ $item->kode_lama }}"
+                                                data-catatan="{{ $item->catatanproduk }}"
+                                                data-nama="{{ $item->nama_produk }}"
+                                                data-member="{{ $tokoslawi ? $tokoslawi->member_harga_slw : '' }}"
+                                                data-diskonmember="{{ $tokoslawi ? $tokoslawi->member_diskon_slw : '' }}"
+                                                data-nonmember="{{ $tokoslawi ? $tokoslawi->non_harga_slw : '' }}"
+                                                data-diskonnonmember="{{ $tokoslawi ? $tokoslawi->non_diskon_slw : '' }}">
+                                                <i class="fas fa-plus"></i> 
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        
+                    </div>
+         
+                </div>
+            </div>
+        </div>
+
     </section>
 
-    
-    <script>
-        $(document).ready(function () {
-            // Set locale Moment.js ke bahasa Indonesia
-            moment.locale('id');
-            
-            // Inisialisasi datetimepicker
-            $('#reservationdatetime').datetimepicker({
-                format: 'DD/MM/YYYY HH:mm',
-                locale: 'id',  // Locale diatur di sini
-                icons: {
-                    time: 'fa fa-clock',
-                    date: 'fa fa-calendar',
-                    up: 'fa fa-arrow-up',
-                    down: 'fa fa-arrow-down',
-                    previous: 'fa fa-chevron-left',
-                    next: 'fa fa-chevron-right',
-                    today: 'fa fa-calendar-check-o',
-                    clear: 'fa fa-trash',
-                    close: 'fa fa-times'
-                }
-            });
-        
-            // Pastikan locale diterapkan ulang setelah inisialisasi datetimepicker
-            $('#reservationdatetime').datetimepicker('locale', 'id');  // Memaksa locale ke bahasa Indonesia
-        });
-        </script>
     
     
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     $(document).ready(function() {
+        // Set locale Moment.js ke bahasa Indonesia
+        moment.locale('id');
+
+        // Inisialisasi datetimepicker
+        $('#reservationdatetime').datetimepicker({
+            format: 'DD/MM/YYYY HH:mm',
+            locale: 'id',
+            icons: {
+                time: 'fa fa-clock',
+                date: 'fa fa-calendar',
+                up: 'fa fa-arrow-up',
+                down: 'fa fa-arrow-down',
+                previous: 'fa fa-chevron-left',
+                next: 'fa fa-chevron-right',
+                today: 'fa fa-calendar-check-o',
+                clear: 'fa fa-trash',
+                close: 'fa fa-times'
+            }
+        });
+
+        // Pastikan locale diterapkan ulang setelah inisialisasi datetimepicker
+        $('#reservationdatetime').datetimepicker('locale', 'id');
+
         $('#pemesananForm').submit(function(event) {
             event.preventDefault(); // Mencegah pengiriman form default
+
+            // Check if tanggal_kirim is filled
+            if (!$('#tanggal_kirim').val()) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Tanggal pengambilan harus diisi!',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+                return; // Stop the submission
+            }
 
             $.ajax({
                 url: $(this).attr('action'),
@@ -531,126 +529,141 @@
     });
 </script>
 
+
+
 <script>
-     function getData1() {
-        var metodeId = document.getElementById('nama_metode').value;
-        var fee = document.getElementById('fee');
-        var keterangan = document.getElementById('keterangan');
-        var paymentFields = document.getElementById('payment-fields');
-        var paymentRow = document.getElementById('payment-row');
-        var changeRow = document.getElementById('change-row');
-    
-        if (metodeId && document.querySelector('#nama_metode option:checked').text === 'Tunai') {
-            paymentFields.style.display = 'none';
-        } else if (metodeId) {
-            $.ajax({
-                url: "{{ url('toko_banjaran/metodebayar/metode') }}" + "/" + metodeId,
-                type: "GET",
-                dataType: "json",
-                success: function(response) {
-                    console.log('Respons dari server:', response);
-    
-                    fee.value = '';
-                    keterangan.value = '';
-                    paymentFields.style.display = 'block';
-    
-                    if (response && response.fee) {
-                        fee.value = response.fee;
-                    }
-                    if (response && response.keterangan) {
-                        keterangan.value = response.keterangan;
-                    }
-    
-                    // Update calculations whenever data is fetched
-                    updateCalculations();
-                },
-                error: function(xhr, status, error) {
-                    console.error('Terjadi kesalahan dalam permintaan AJAX:', error);
-                }
-            });
-        } else {
-            paymentFields.style.display = 'none';
-        }
-    
-        // Display payment and change rows for all payment methods
-        paymentRow.style.display = 'block';
-        changeRow.style.display = 'block';
-        
-        // Update calculations to reflect any changes
-        updateCalculations();
+    function getData1() {
+    var metodeId = document.getElementById('nama_metode').value;
+    var fee = document.getElementById('fee');
+    var keterangan = document.getElementById('keterangan');
+    var paymentFields = document.getElementById('payment-fields');
+    var paymentRow = document.getElementById('payment-row');
+    var changeRow = document.getElementById('change-row');
+
+    // Reset sub_total ke nilai asli
+    var subTotalAsli = document.getElementById('sub_totalasli').value;
+    document.getElementById('sub_total').value = subTotalAsli;
+
+    if (!metodeId || document.querySelector('#nama_metode option:checked').text === '- Pilih -') {
+        // Jika opsi "Pilih" dipilih
+        paymentFields.style.display = 'none';
+        fee.value = '';
+        keterangan.value = '';
+        paymentRow.style.display = 'none';
+        changeRow.style.display = 'none';
+        updateCalculations(); // Pastikan perhitungan direset
+        return;
     }
 
-    function updateCalculations() {
-        var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
-        var fee = parseFloat(document.getElementById('fee').value.replace('%', '').trim()) || 0;
-        var totalFee = (subTotal * fee / 100) || 0;
-        var finalTotal = subTotal + totalFee;
-
-        // Format the values without .00
-        function formatCurrency(value) {
-            var formattedValue = value.toFixed(2).replace(/\.00$/, '');
-            return 'Rp' + formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        }
-
-        // Update total fee and final sub total fields
-        document.getElementById('total_fee').value = formatCurrency(totalFee);
-        document.getElementById('sub_total').value = formatCurrency(finalTotal);
-
-        // Validate DP
-        validateDP();
-    }
-
-    function formatAndUpdateKembali() {
-        var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
-        var dpPemesanan = parseFloat(document.getElementById('dp_pemesanan').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
-        var kekuranganPemesanan = subTotal - dpPemesanan;
-
-        document.getElementById('kekurangan_pemesanan').value = formatCurrency(kekuranganPemesanan);
-
-        // Validate DP
-        validateDP();
-    }
-
-    function validateDP() {
-    var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
-    var dpPemesanan = parseFloat(document.getElementById('dp_pemesanan').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
-    var minDP = subTotal * 0.5;
-    var dpPemesananElement = document.getElementById('dp_pemesanan');
-    
-    if (dpPemesanan < minDP) {
-        dpPemesananElement.setCustomValidity('DP inimal 50% dari Total');
-    } else if (dpPemesanan > subTotal) {
-        dpPemesananElement.setCustomValidity('DP Tidak Boleh Melebihi Total');
+    if (document.querySelector('#nama_metode option:checked').text === 'Tunai') {
+        paymentFields.style.display = 'none';
     } else {
-        dpPemesananElement.setCustomValidity('');
-    }
-    }
+        $.ajax({
+            url: "{{ url('toko_slawi/metodebayar/metode') }}" + "/" + metodeId,
+            type: "GET",
+            dataType: "json",
+            success: function(response) {
+                console.log('Respons dari server:', response);
 
-    document.getElementById('dp_pemesanan').addEventListener('input', function() {
-        formatAndUpdateKembali();
-        validateDP();
-    });
+                fee.value = '';
+                keterangan.value = '';
+                paymentFields.style.display = 'block';
 
+                if (response && response.fee) {
+                    fee.value = response.fee;
+                }
+                if (response && response.keterangan) {
+                    keterangan.value = response.keterangan;
+                }
 
-    // Add event listeners for initialization
-    document.getElementById('nama_metode').addEventListener('change', getData1);
-    document.getElementById('sub_total').addEventListener('input', updateCalculations);
-    document.getElementById('dp_pemesanan').addEventListener('input', formatAndUpdateKembali);
-    
-    // Initialize with "Tunai" as default method
-    document.addEventListener('DOMContentLoaded', function() {
-        var defaultMethod = 'Tunai';
-        var options = document.getElementById('nama_metode').options;
-        for (var i = 0; i < options.length; i++) {
-            if (options[i].text === defaultMethod) {
-                options[i].selected = true;
-                break;
+                // Update perhitungan setelah data diambil
+                updateCalculations();
+            },
+            error: function(xhr, status, error) {
+                console.error('Terjadi kesalahan dalam permintaan AJAX:', error);
             }
-        }
-        getData1();
-    });
-</script>
+        });
+    }
 
+    // Tampilkan payment dan change rows untuk semua metode pembayaran
+    paymentRow.style.display = 'block';
+    changeRow.style.display = 'block';
+
+    // Update perhitungan untuk merefleksikan perubahan
+    updateCalculations();
+}
+
+
+   function updateCalculations() {
+       var subTotalAsli = parseFloat(document.getElementById('sub_totalasli').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+   var fee = parseFloat(document.getElementById('fee').value.replace('%', '').trim()) || 0;
+   var totalFee = (subTotalAsli * fee / 100) || 0;
+   var finalTotal = subTotalAsli + totalFee;
+
+   // Format nilai menjadi mata uang
+   function formatCurrency(value) {
+       var formattedValue = value.toFixed(2).replace(/\.00$/, '');
+       return 'Rp' + formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+   }
+
+   // Update total fee dan final sub total
+   document.getElementById('total_fee').value = formatCurrency(totalFee);
+   document.getElementById('sub_total').value = formatCurrency(finalTotal);
+
+       // Validate DP
+       validateDP();
+   }
+
+   function formatAndUpdateKembali() {
+       var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+       var dpPemesanan = parseFloat(document.getElementById('dp_pemesanan').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+       var kekuranganPemesanan = subTotal - dpPemesanan;
+
+       document.getElementById('kekurangan_pemesanan').value = formatCurrency(kekuranganPemesanan);
+
+       // Validate DP
+       validateDP();
+   }
+
+   function validateDP() {
+   var subTotal = parseFloat(document.getElementById('sub_total').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+   var dpPemesanan = parseFloat(document.getElementById('dp_pemesanan').value.replace('Rp', '').replace(/\./g, '').trim()) || 0;
+   var minDP = subTotal * 0.5;
+   var dpPemesananElement = document.getElementById('dp_pemesanan');
+   
+   if (dpPemesanan < minDP) {
+       dpPemesananElement.setCustomValidity('DP inimal 50% dari Total');
+   } else if (dpPemesanan > subTotal) {
+       dpPemesananElement.setCustomValidity('DP Tidak Boleh Melebihi Total');
+   } else {
+       dpPemesananElement.setCustomValidity('');
+   }
+   }
+
+   document.getElementById('dp_pemesanan').addEventListener('input', function() {
+       formatAndUpdateKembali();
+       validateDP();
+   });
+
+
+   // Add event listeners for initialization
+   document.getElementById('nama_metode').addEventListener('change', getData1);
+   document.getElementById('sub_total').addEventListener('input', updateCalculations);
+   document.getElementById('dp_pemesanan').addEventListener('input', formatAndUpdateKembali);
+   
+   // Initialize with "Tunai" as default method
+   document.addEventListener('DOMContentLoaded', function() {
+       var defaultMethod = 'Tunai';
+       var options = document.getElementById('nama_metode').options;
+       for (var i = 0; i < options.length; i++) {
+           if (options[i].text === defaultMethod) {
+               options[i].selected = true;
+               break;
+           }
+       }
+       getData1();
+   });
+</script>
     <script>
         function showCategoryModalCatatan(urutan) {
             // Tampilkan modal

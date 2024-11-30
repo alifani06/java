@@ -122,21 +122,22 @@ class PemesananprodukcilacapController extends Controller
             $request->all(),
             [
                 'nama_pelanggan' => 'required',
-                'telp' => 'required',
+                'telp' => 'nullable',
                 'alamat' => 'nullable',
                 'kategori' => 'required',
+                'tanggal_kirim' => 'required', // Tambahkan ini
             ],
             [
                 'nama_pelanggan.required' => 'Masukkan nama pelanggan',
-                'telp.required' => 'Masukkan telepon',
+                'telp.nullable' => 'Masukkan telepon',
                 'alamat.required' => 'Masukkan alamat',
                 'kategori.required' => 'Pilih kategori pelanggan',
+                'tanggal_kirim.required' => 'Tanggal pengambilan harus diisi', // Tambahkan ini
             ]
         );
 
         // Handling errors for pelanggan
-        $error_pelanggans = array();
-
+        $error_pelanggans = [];
         if ($validasi_pelanggan->fails()) {
             array_push($error_pelanggans, $validasi_pelanggan->errors()->all()[0]);
         }
@@ -193,10 +194,12 @@ class PemesananprodukcilacapController extends Controller
                 ->with('data_pembelians', $data_pembelians);
         }
 
+        
         $kode = $this->kode();
+        $tanggal_kirim = $request->tanggal_kirim . ' ' . $request->waktu_kirim;
         $format = 'd/m/Y H:i';
         $tanggal_kirim = Carbon::createFromFormat($format, $request->tanggal_kirim)->format('Y-m-d H:i:s');
-        
+
         // Buat pemesanan baru
         $cetakpdf = Pemesananproduk::create([
             'nama_pelanggan' => $request->nama_pelanggan,
@@ -211,7 +214,6 @@ class PemesananprodukcilacapController extends Controller
             'alamat_penerima' => $request->alamat_penerima,
             'tanggal_kirim' => $tanggal_kirim,
             'toko_id' => '6',
-            // 'toko_id' =>$request->toko_id,
             'kasir' => ucfirst(auth()->user()->karyawan->nama_lengkap),
             'metode_id' => $request->metode_id, 
             'sub_totalasli' => $request->sub_totalasli,
@@ -222,7 +224,6 @@ class PemesananprodukcilacapController extends Controller
             'tanggal_pemesanan' => Carbon::now('Asia/Jakarta'),
             'status' => 'posting',
             'nominal_diskon' => $nominal_diskon, // Simpan total nominal diskon
-
         ]);
 
         // Simpan detail pemesanan
@@ -249,22 +250,20 @@ class PemesananprodukcilacapController extends Controller
                 'dp_pemesanan' => preg_replace('/[^0-9]/', '', $request->dp_pemesanan),
                 'kekurangan_pemesanan' => preg_replace('/[^0-9]/', '', $request->kekurangan_pemesanan),
                 'tanggal_dp' => Carbon::now('Asia/Jakarta'),
-
             ]);
         }
 
         // Ambil detail pemesanan untuk ditampilkan di halaman cetak
         $details = Detailpemesananproduk::where('pemesananproduk_id', $cetakpdf->id)->get();
 
+        // Kirimkan URL untuk tab baru
+        $pdfUrl = route('toko_cilacap.pemesanan_produk.cetak-pdf', ['id' => $cetakpdf->id]);
 
-            // Kirimkan URL untuk tab baru
-    $pdfUrl = route('toko_cilacap.pemesanan_produk.cetak-pdf', ['id' => $cetakpdf->id]);
-
-    // Return response dengan URL PDF
-    return response()->json([
-        'success' => 'Transaksi Berhasil',
-        'pdfUrl' => $pdfUrl,
-    ]);
+        // Return response dengan URL PDF
+        return response()->json([
+            'success' => 'Transaksi Berhasil',
+            'pdfUrl' => $pdfUrl,
+        ]);
     }
 
 
