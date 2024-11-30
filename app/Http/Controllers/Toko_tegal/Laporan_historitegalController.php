@@ -1094,7 +1094,7 @@ public function barangKeluarRincitegal(Request $request)
     $endDate = $tanggal_akhir;
 
     // Menggunakan Barryvdh\DomPDF\Facade\Pdf untuk memuat dan menghasilkan PDF
-    $pdf = FacadePdf::loadView('toko_tegal.laporan_historibanjaran.printbkrinci', [
+    $pdf = FacadePdf::loadView('toko_tegal.laporan_historitegal.printbkrinci', [
         'finalResults' => $finalResults,
         'startDate' => $startDate,
         'endDate' => $endDate,
