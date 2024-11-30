@@ -61,33 +61,7 @@
                 <!-- /.card-header -->
                  
                 <div class="card-body">
-                    {{-- <form method="GET" id="form-action">
-                        <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="status" name="status">
-                                    <option value="">- Semua Status -</option>
-                                    <option value="posting" {{ Request::get('status') == 'posting' ? 'selected' : '' }}>Posting</option>
-                                    <option value="unpost" {{ Request::get('status') == 'unpost' ? 'selected' : '' }}>Unpost</option>
-                                </select>
-                                <label for="status">(Pilih Status)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_penjualan" name="tanggal_penjualan" type="date"
-                                    value="{{ Request::get('tanggal_penjualan') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_penjualan">(Dari Tanggal)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <input class="form-control" id="tanggal_akhir" name="tanggal_akhir" type="date"
-                                    value="{{ Request::get('tanggal_akhir') }}" max="{{ date('Y-m-d') }}" />
-                                <label for="tanggal_akhir">(Sampai Tanggal)</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <button type="button" class="btn btn-outline-primary btn-block" onclick="cari()">
-                                    <i class="fas fa-search"></i> Cari
-                                </button>
-                            </div>
-                        </div>
-                    </form> --}}
+                   
                     
                     <form method="GET" id="form-action">
                         <div class="row">
