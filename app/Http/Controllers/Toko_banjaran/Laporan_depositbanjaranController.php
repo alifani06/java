@@ -233,7 +233,7 @@ class Laporan_depositbanjaranController extends Controller
         }
 
         // Kirim data ke view
-        return view('toko_banjaran.laporan_depositbumiayu.indexsaldo', compact('saldoPerToko', 'tokos', 'toko_id'));
+        return view('toko_banjaran.laporan_depositbanjaran.indexsaldo', compact('saldoPerToko', 'tokos', 'toko_id'));
     }
 
 
@@ -703,7 +703,7 @@ class Laporan_depositbanjaranController extends Controller
         }
     
         // Kirim data ke view cetak
-        $pdf = FacadePdf::loadView('toko_banjaran.laporan_depositbumiayu.printsaldo', compact(
+        $pdf = FacadePdf::loadView('toko_banjaran.laporan_depositbanjaran.printsaldo', compact(
             'saldoPerToko',
             'tokos',
             'toko_id',
