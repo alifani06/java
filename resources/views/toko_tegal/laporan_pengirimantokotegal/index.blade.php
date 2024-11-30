@@ -32,9 +32,7 @@
     <div class="content-header" style="display: none;" id="mainContent">
         <div class="container-fluid">
             <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Laporan Pengiriman Toko Banjaran</h1>
-                </div><!-- /.col -->
+        
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         {{-- <li class="breadcrumb-item active">Laporan penjualan Produk</li> --}}
@@ -68,7 +66,7 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Laporan Pengiriman Toko Banjaran</h3>
+                    <h3 class="card-title">Laporan Pengiriman Toko Tegal</h3>
                 </div>
 
                 <!-- /.card-header -->
@@ -281,7 +279,7 @@
     const tanggalAkhir = document.getElementById('tanggal_akhir').value;
     const status = document.getElementById('status').value;
 
-    form.action = `{{ url('toko_banjaran/printpengirimantokobanjaran') }}?tanggal_input=${tanggalPengiriman}&tanggal_akhir=${tanggalAkhir}&status=${status}`;
+    form.action = `{{ url('toko_tegal/printpengirimantokotegal') }}?tanggal_input=${tanggalPengiriman}&tanggal_akhir=${tanggalAkhir}&status=${status}`;
     form.target = "_blank";
     form.submit();
 }

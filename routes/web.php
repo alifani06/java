@@ -254,7 +254,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/admin/hargajual/filter', [HargajualController::class, 'all'])->name('admin.hargajual.filter');
     Route::get('/produk/perubahan', [HargajualController::class, 'showPerubahanProduk'])->name('produk.showPerubahan');
     Route::get('/print-reporthargajual', [HargajualController::class, 'print'])->name('print.reporthargajual');
-    Route::get('admin/indextegal', [\App\Http\Controllers\Admin\HargajualController::class, 'indextegal'])->name('indextegal');
+    Route::get('indextegal', [\App\Http\Controllers\Admin\HargajualController::class, 'indextegal'])->name('indextegal');
 
 
 

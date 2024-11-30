@@ -54,22 +54,7 @@
             </div>
    
             <div class="card-body">
-                <!-- Dropdown untuk memilih toko -->
-                {{-- <div class="form-group">
-                    <label for="tokoSelect">Pilih Toko:</label>
-                    <select id="tokoSelect" class="form-control" onchange="showTable(this.value)">
-                        <option value="banjaran">Toko Banjaran</option>
-                        <option value="slawi">Toko Slawi</option>
-                        <option value="tegal">Toko Tegal</option>
-                        <option value="pemalang">Toko Pemalang</option>
-                        <option value="bumiayu">Toko Bumiayu</option>
-                        <option value="cilacap">Toko Cilacap</option>
-                        <!-- Tambahkan opsi lain di sini jika ada toko tambahan -->
-                    </select>
-                </div> --}}
-   
-                <!-- Tabel Toko Banjaran -->
-                <div id="tabelBanjaran">
+
                     <table id="datatables1" class="table table-sm table-bordered table-striped table-hover" style="font-size: 12px;">
                         <thead>
                             <tr>
@@ -125,7 +110,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                </div>
+            
 
                 
             </div>
@@ -135,91 +120,91 @@
 </section>
 @endsection
 
-<script>
+{{-- <script>
     // Variabel untuk menyimpan DataTable instance
-let tableBanjaran;
-let tableTegal;
-let tablePemalang;
-let tableSlawi;
-let tableBumiayu;
-let tableCilacap;
+    let tableBanjaran;
+    let tableTegal;
+    let tablePemalang;
+    let tableSlawi;
+    let tableBumiayu;
+    let tableCilacap;
 
-// Fungsi untuk menampilkan tabel dan menginisialisasi DataTable
-function showTable(toko) {
-    // Sembunyikan semua tabel toko terlebih dahulu
-    let tables = document.querySelectorAll('[id^="tabel"]');
-    tables.forEach(table => table.style.display = 'none');
+    // Fungsi untuk menampilkan tabel dan menginisialisasi DataTable
+    function showTable(toko) {
+        // Sembunyikan semua tabel toko terlebih dahulu
+        let tables = document.querySelectorAll('[id^="tabel"]');
+        tables.forEach(table => table.style.display = 'none');
 
-    // Hapus DataTable jika sebelumnya sudah diinisialisasi
-    if ($.fn.DataTable.isDataTable('#datatables1')) {
-        $('#datatables1').DataTable().destroy();
+        // Hapus DataTable jika sebelumnya sudah diinisialisasi
+        if ($.fn.DataTable.isDataTable('#datatables1')) {
+            $('#datatables1').DataTable().destroy();
+        }
+
+        // Tampilkan dan inisialisasi DataTable sesuai toko yang dipilih
+        if (toko === 'banjaran') {
+            document.getElementById('tabelBanjaran').style.display = 'block';
+
+            // Inisialisasi DataTable dengan fitur pencarian aktif
+            tableBanjaran = $('#datatables1').DataTable({
+                searching: true,
+                paging: true,
+                info: true,
+            });
+
+        } else if (toko === 'tegal') {
+            document.getElementById('tabelTegal').style.display = 'block';
+
+            // Inisialisasi DataTable dengan fitur pencarian non-aktif
+            tableTegal = $('#datatables1').DataTable({
+                searching: false,
+                paging: true,
+                info: true,
+            });
+        }else if (toko === 'pemalang') {
+            document.getElementById('tabelPemalang').style.display = 'block';
+
+            // Inisialisasi DataTable dengan fitur pencarian non-aktif
+            tableTegal = $('#datatables1').DataTable({
+                searching: false,
+                paging: true,
+                info: true,
+            });
+        }else if (toko === 'slawi') {
+            document.getElementById('tabelSlawi').style.display = 'block';
+
+            // Inisialisasi DataTable dengan fitur pencarian non-aktif
+            tableTegal = $('#datatables1').DataTable({
+                searching: false,
+                paging: true,
+                info: true,
+            });
+        }else if (toko === 'bumiayu') {
+            document.getElementById('tabelBumiayu').style.display = 'block';
+
+            // Inisialisasi DataTable dengan fitur pencarian non-aktif
+            tableTegal = $('#datatables1').DataTable({
+                searching: false,
+                paging: true,
+                info: true,
+            });
+        }else if (toko === 'cilacap') {
+            document.getElementById('tabelCilacap').style.display = 'block';
+
+            // Inisialisasi DataTable dengan fitur pencarian non-aktif
+            tableTegal = $('#datatables1').DataTable({
+                searching: false,
+                paging: true,
+                info: true,
+            });
+        }
     }
 
-    // Tampilkan dan inisialisasi DataTable sesuai toko yang dipilih
-    if (toko === 'banjaran') {
-        document.getElementById('tabelBanjaran').style.display = 'block';
+    // Inisialisasi tampilan tabel berdasarkan pilihan default
+    document.addEventListener('DOMContentLoaded', () => {
+        showTable(document.getElementById('tokoSelect').value);
+    });
 
-        // Inisialisasi DataTable dengan fitur pencarian aktif
-        tableBanjaran = $('#datatables1').DataTable({
-            searching: true,
-            paging: true,
-            info: true,
-        });
-
-    } else if (toko === 'tegal') {
-        document.getElementById('tabelTegal').style.display = 'block';
-
-        // Inisialisasi DataTable dengan fitur pencarian non-aktif
-        tableTegal = $('#datatables1').DataTable({
-            searching: false,
-            paging: true,
-            info: true,
-        });
-    }else if (toko === 'pemalang') {
-        document.getElementById('tabelPemalang').style.display = 'block';
-
-        // Inisialisasi DataTable dengan fitur pencarian non-aktif
-        tableTegal = $('#datatables1').DataTable({
-            searching: false,
-            paging: true,
-            info: true,
-        });
-    }else if (toko === 'slawi') {
-        document.getElementById('tabelSlawi').style.display = 'block';
-
-        // Inisialisasi DataTable dengan fitur pencarian non-aktif
-        tableTegal = $('#datatables1').DataTable({
-            searching: false,
-            paging: true,
-            info: true,
-        });
-    }else if (toko === 'bumiayu') {
-        document.getElementById('tabelBumiayu').style.display = 'block';
-
-        // Inisialisasi DataTable dengan fitur pencarian non-aktif
-        tableTegal = $('#datatables1').DataTable({
-            searching: false,
-            paging: true,
-            info: true,
-        });
-    }else if (toko === 'cilacap') {
-        document.getElementById('tabelCilacap').style.display = 'block';
-
-        // Inisialisasi DataTable dengan fitur pencarian non-aktif
-        tableTegal = $('#datatables1').DataTable({
-            searching: false,
-            paging: true,
-            info: true,
-        });
-    }
-}
-
-// Inisialisasi tampilan tabel berdasarkan pilihan default
-document.addEventListener('DOMContentLoaded', () => {
-    showTable(document.getElementById('tokoSelect').value);
-});
-
-</script>
+</script> --}}
 
 
 <script>
@@ -287,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (selectedValue === 'banjaran') {
             window.location.href = "{{ url('admin/hargajual') }}";
         } else if (selectedValue === 'tegal') {
-            window.location.href = "{{ url('admin/hargajual') }}";
+            window.location.href = "{{ url('indextegal') }}";
         }
     });
 </script>
