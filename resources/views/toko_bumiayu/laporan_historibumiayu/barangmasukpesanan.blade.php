@@ -97,13 +97,11 @@
                                 </select>
                             </div>
                             <div hidden class="col-md-3 mb-3">
-                                <select class="custom-select form-control" id="toko_id" name="toko_id">
-                                    <option value="">- Semua Toko -</option>
-                                    @foreach($tokos as $toko)
-                                        <option value="{{ $toko->id }}" {{ Request::get('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->nama_toko }}</option>
-                                    @endforeach
-                                </select>
+                            
                                 <label for="toko_id">(Pilih Toko)</label>
+                                <select class="form-control" name="toko_id" id="toko_id" readonly>
+                                    <option value="5" selected>Toko Bumiayu</option>
+                                </select>
                             </div>
                               
                             <div class="col-md-3 mb-3">
@@ -274,6 +272,7 @@
     function printReport() {
         var tanggalAwal = document.getElementById('tanggal_pengiriman').value;
         var tanggalAkhir = document.getElementById('tanggal_akhir').value;
+        var tokoId = document.getElementById('toko_id').value;
 
         if (tanggalAwal === "" || tanggalAkhir === "") {
             Swal.fire({
@@ -290,8 +289,23 @@
             return;
         }
 
+        if (tokoId != 5) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Toko Tidak Valid!',
+                text: 'Hanya bisa mencetak laporan untuk Toko ID 4.',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#d33',
+                background: '#fff',
+                customClass: {
+                    popup: 'animated shake'
+                }
+            });
+            return;
+        }
+
         const form = document.getElementById('form-action');
-        form.action = "{{ url('toko_bumiayu/printLaporanBmpesananbumiayu') }}";
+        form.action = "{{ url('toko_bumiayu/printLaporanBmpesana_bumiayu') }}";
         form.target = "_blank";
         form.submit();
     }
