@@ -111,9 +111,16 @@ class Laporan_setoranpenjualanpmlController extends Controller
     // Ambil nilai total dari query penjualan kotor
     $penjualan_kotor = $queryPenjualanKotor->value('total');
 
-    // Hitung total diskon penjualan berdasarkan kasir dan tanggal_penjualan
-    $diskon_penjualan = Detailpenjualanproduk::whereHas('penjualanproduk', function ($q) use ($tanggal_penjualan, $kasir) {
-        $q->whereDate('tanggal_penjualan', $tanggal_penjualan);
+
+    $diskon_penjualan = Detailpenjualanproduk::whereHas('penjualanproduk', function ($q) use ($tanggal_penjualan, $tanggal_akhir, $kasir) {
+        // Terapkan filter tanggal penjualan
+        if ($tanggal_penjualan && $tanggal_akhir) {
+            $q->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+        } elseif ($tanggal_penjualan) {
+            $q->where('tanggal_penjualan', '>=', $tanggal_penjualan);
+        } elseif ($tanggal_akhir) {
+            $q->where('tanggal_penjualan', '<=', $tanggal_akhir);
+        }
 
         // Filter berdasarkan kasir jika ada
         if ($kasir) {
