@@ -94,7 +94,7 @@ class Laporan_setoranpenjualanController extends Controller
     //     // Hitung penjualan bersih
     //     $penjualan_bersih = $penjualan_kotor - $diskon_penjualan;
 
-    //     // Query terpisah untuk menghitung total deposit_masuk dari tabel dppemesanan berdasarkan kasir
+    //     // Query terpisah untuk menghitung total deposit masuk dari tabel dppemesanan berdasarkan kasir
     //     $deposit_masuk = Dppemesanan::whereHas('pemesananproduk', function ($q) use ($tanggal_penjualan, $tanggal_akhir, $kasir) {
     //         if ($tanggal_penjualan && $tanggal_akhir) {
     //             $q->whereBetween('tanggal_pemesanan', [$tanggal_penjualan, $tanggal_akhir]);
@@ -109,8 +109,7 @@ class Laporan_setoranpenjualanController extends Controller
     //         }
     //     })->sum('dp_pemesanan');
 
-
-    //     // Query untuk menghitung total deposit keluar dari tabel dppemesanan
+    //     // Query untuk menghitung total deposit keluar dari tabel dppemesanan yang terkait dengan penjualanproduk
     //     $deposit_keluar = Dppemesanan::whereHas('penjualanproduk', function ($q) use ($kasir, $tanggal_penjualan, $tanggal_akhir) {
     //         if ($tanggal_penjualan && $tanggal_akhir) {
     //             $q->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
@@ -124,7 +123,6 @@ class Laporan_setoranpenjualanController extends Controller
     //             $q->where('kasir', $kasir);
     //         }
     //     })->sum('dp_pemesanan');
-
 
     //     // Hitung total dari berbagai metode pembayaran
     //     $mesin_edc = Penjualanproduk::where('metode_id', 1)
@@ -147,13 +145,13 @@ class Laporan_setoranpenjualanController extends Controller
     //         ->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
     //         ->value('total');
 
-    //     $total_penjualan = $penjualan_bersih + $deposit_masuk;
+    //     $total_penjualan = $penjualan_bersih - ($deposit_keluar - $deposit_masuk);
 
     //     // Ambil semua data produk, toko, kasir, klasifikasi untuk dropdown
     //     $produks = Produk::all();
     //     $tokos = Toko::all();
     //     $klasifikasis = Klasifikasi::all();
-    //     $kasirs = Penjualanproduk::select('kasir')->distinct()->get();
+    //     $kasirs = Penjualanproduk::select('kasir')->where('toko_id', 5)->distinct()->get();
 
     //     // Hitung total metode dan setoran
     //     $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
@@ -218,19 +216,29 @@ class Laporan_setoranpenjualanController extends Controller
     // Ambil data penjualan produk
     $inquery = $query->with(['toko', 'detailpenjualanproduk.produk.klasifikasi'])->get();
 
-    // Buat query terpisah untuk menghitung total penjualan kotor
+    // Perbaikan logika menghitung diskon_penjualan
+    $diskon_query = Penjualanproduk::query();
+    if ($tanggal_penjualan && $tanggal_akhir) {
+        $diskon_query->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
+    } elseif ($tanggal_penjualan) {
+        $diskon_query->where('tanggal_penjualan', '>=', $tanggal_penjualan);
+    } elseif ($tanggal_akhir) {
+        $diskon_query->where('tanggal_penjualan', '<=', $tanggal_akhir);
+    }
+    if ($kasir) {
+        $diskon_query->where('kasir', $kasir);
+    }
+    $diskon_penjualan = $diskon_query->sum('nominal_diskon');
+
+    // Perhitungan penjualan lainnya
     $penjualan_kotor = Penjualanproduk::select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_totalasli, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
-        ->where('kasir', $kasir) // Sesuaikan dengan filter
-        ->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]) // Sesuaikan dengan filter
+        ->where('kasir', $kasir)
+        ->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir])
         ->value('total');
 
-    // Hitung total diskon penjualan (nominal_diskon)
-    $diskon_penjualan = $query->sum('nominal_diskon');
-
-    // Hitung penjualan bersih
     $penjualan_bersih = $penjualan_kotor - $diskon_penjualan;
 
-    // Query terpisah untuk menghitung total deposit masuk dari tabel dppemesanan berdasarkan kasir
+    // Query terpisah untuk menghitung total deposit masuk
     $deposit_masuk = Dppemesanan::whereHas('pemesananproduk', function ($q) use ($tanggal_penjualan, $tanggal_akhir, $kasir) {
         if ($tanggal_penjualan && $tanggal_akhir) {
             $q->whereBetween('tanggal_pemesanan', [$tanggal_penjualan, $tanggal_akhir]);
@@ -239,13 +247,11 @@ class Laporan_setoranpenjualanController extends Controller
         } elseif ($tanggal_akhir) {
             $q->where('tanggal_pemesanan', '<=', $tanggal_akhir);
         }
-        // Filter berdasarkan kasir
         if ($kasir) {
             $q->where('kasir', $kasir);
         }
     })->sum('dp_pemesanan');
 
-    // Query untuk menghitung total deposit keluar dari tabel dppemesanan yang terkait dengan penjualanproduk
     $deposit_keluar = Dppemesanan::whereHas('penjualanproduk', function ($q) use ($kasir, $tanggal_penjualan, $tanggal_akhir) {
         if ($tanggal_penjualan && $tanggal_akhir) {
             $q->whereBetween('tanggal_penjualan', [$tanggal_penjualan, $tanggal_akhir]);
@@ -254,13 +260,11 @@ class Laporan_setoranpenjualanController extends Controller
         } elseif ($tanggal_akhir) {
             $q->where('tanggal_penjualan', '<=', $tanggal_akhir);
         }
-        // Filter berdasarkan kasir
         if ($kasir) {
             $q->where('kasir', $kasir);
         }
     })->sum('dp_pemesanan');
 
-    // Hitung total dari berbagai metode pembayaran
     $mesin_edc = Penjualanproduk::where('metode_id', 1)
         ->where('kasir', $kasir)
         ->select(Penjualanproduk::raw('SUM(CAST(REPLACE(REPLACE(sub_total, "Rp.", ""), ".", "") AS UNSIGNED)) as total'))
@@ -283,17 +287,14 @@ class Laporan_setoranpenjualanController extends Controller
 
     $total_penjualan = $penjualan_bersih - ($deposit_keluar - $deposit_masuk);
 
-    // Ambil semua data produk, toko, kasir, klasifikasi untuk dropdown
     $produks = Produk::all();
     $tokos = Toko::all();
     $klasifikasis = Klasifikasi::all();
     $kasirs = Penjualanproduk::select('kasir')->where('toko_id', 5)->distinct()->get();
 
-    // Hitung total metode dan setoran
     $total_metode = $mesin_edc + $qris + $gobiz + $transfer;
     $total_setoran = $total_penjualan - $total_metode;
 
-    // Kembalikan view dengan data yang diperlukan
     return view('toko_bumiayu.laporan_setoranpenjualan.index', compact(
         'inquery',
         'kasirs',
@@ -310,6 +311,7 @@ class Laporan_setoranpenjualanController extends Controller
         'deposit_keluar'
     ));
 }
+
 
 
     public function printReportsetoran(Request $request)
