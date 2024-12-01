@@ -79,6 +79,11 @@
                                             {{ $klasifikasi->nama }}
                                         </option>
                                     @endforeach
+                                    <!-- Opsi Manual -->
+                                    <option value="gagal" {{ Request::get('klasifikasi_id') == 'gagal' ? 'selected' : '' }}>PRODUK GAGAL</option>
+                                    <option value="sampel" {{ Request::get('klasifikasi_id') == 'sampel' ? 'selected' : '' }}>SAMPEL</option>
+                                    <option value="retur_tukang_sapu" {{ Request::get('klasifikasi_id') == 'retur_tukang_sapu' ? 'selected' : '' }}>RETUR TUKKANG SAPU</option>
+                                    <option value="sortir" {{ Request::get('klasifikasi_id') == 'sortir' ? 'selected' : '' }}>SORTIR</option>
                                 </select>
                                 <label for="klasifikasi_id">(Pilih Klasifikasi)</label>
                             </div>

@@ -75,12 +75,21 @@ class Laporan_returtegalController extends Controller
     
         $query->where('toko_id', 2);
 
-        // Filter berdasarkan klasifikasi
         if ($klasifikasi_id) {
-            $query->whereHas('produk.klasifikasi', function ($query) use ($klasifikasi_id) {
-                $query->where('id', $klasifikasi_id);
-            });
+            if (in_array($klasifikasi_id, ['gagal', 'sampel', 'retur_tukang_sapu', 'sortir'])) {
+                // Konversi underscore ke spasi untuk mencocokkan dengan data di database
+                $formattedKlasifikasi = str_replace('_', ' ', $klasifikasi_id);
+        
+                // Filter berdasarkan kolom keterangan
+                $query->where('keterangan', $formattedKlasifikasi);
+            } else {
+                // Filter untuk klasifikasi dari tabel produk.klasifikasi
+                $query->whereHas('produk.klasifikasi', function ($query) use ($klasifikasi_id) {
+                    $query->where('id', $klasifikasi_id);
+                });
+            }
         }
+        
     
         $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_retur');
 
@@ -131,12 +140,21 @@ class Laporan_returtegalController extends Controller
 
          $query->where('retur_barangjadis.toko_id', 2);
 
-        // Filter berdasarkan klasifikasi_id
-        if ($klasifikasi_id) {
+        // Filter berdasarkan klasifikasi
+    if ($klasifikasi_id) {
+        if (in_array($klasifikasi_id, ['gagal', 'sampel', 'retur_tukang_sapu', 'sortir'])) {
+            // Konversi underscore ke spasi untuk mencocokkan dengan data di database
+            $formattedKlasifikasi = str_replace('_', ' ', $klasifikasi_id);
+
+            // Filter berdasarkan kolom keterangan
+            $query->where('retur_barangjadis.keterangan', $formattedKlasifikasi);
+        } else {
+            // Filter untuk klasifikasi dari tabel produk.klasifikasi
             $query->whereHas('produk', function ($q) use ($klasifikasi_id) {
                 $q->where('klasifikasi_id', $klasifikasi_id);
             });
         }
+    }
 
         // Filter berdasarkan tanggal retur
         if ($tanggal_retur && $tanggal_akhir) {

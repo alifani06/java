@@ -112,7 +112,7 @@
                             <button type="button" class="btn btn-primary btn-block" onclick="printReport()">
                                 <i class="fas fa-print"></i> Cetak
                             </button>
-                            <button type="button" class="btn btn-success btn-block" onclick="exportExcelBR()">
+                            <button type="button" class="btn btn-success btn-block" onclick="exportExcelBO()">
                                 <i class="fas fa-file-excel"></i> Export Excel
                             </button>
                         </div>
@@ -256,7 +256,7 @@
 
 
 <script>
-    function exportExcelBR() {
+    function exportExcelBO() {
     const form = document.getElementById('form-action');
     form.action = "{{ url('toko_slawi/printExcelBoslawi') }}";
     form.target = "_blank";
