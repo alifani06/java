@@ -4,37 +4,10 @@ namespace App\Http\Controllers\Toko_cilacap;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Produk;
 use App\Models\Klasifikasi;
-use App\Models\Subklasifikasi;
-use App\Models\Subsub;
-use App\Models\Pelanggan;
-use App\Models\Hargajual;
-use App\Models\Tokoslawi;
-use App\Models\Tokobenjaran;
-use App\Models\Tokotegal;
-use App\Models\Tokopemalang;
-use App\Models\Tokobumiayu;
-use App\Models\Tokocilacap;
-use App\Models\Barang;
 use App\Models\Retur_barangjadi;
-use App\Models\Detailpemesananproduk;
-use App\Models\Detailtokoslawi;
-use App\Models\Input;
-use App\Models\Karyawan;
-use App\Models\Pemesananproduk;
-use App\Models\Penjualanproduk;
-use App\Models\Stok_barangjadi;
-use App\Models\Permintaanproduk;
-use App\Models\Detailpermintaanproduk;
-use App\Models\Pengiriman_barangjadi;
 use Carbon\Carbon;
 use App\Models\Toko;
-use Dompdf\Dompdf;
-use Dompdf\Options;
-
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
@@ -75,11 +48,19 @@ class Laporan_returcilacapController extends Controller
     
         $query->where('toko_id', 6);
 
-        // Filter berdasarkan klasifikasi
         if ($klasifikasi_id) {
-            $query->whereHas('produk.klasifikasi', function ($query) use ($klasifikasi_id) {
-                $query->where('id', $klasifikasi_id);
-            });
+            if (in_array($klasifikasi_id, ['gagal', 'sampel', 'retur_tukang_sapu', 'sortir'])) {
+                // Konversi underscore ke spasi untuk mencocokkan dengan data di database
+                $formattedKlasifikasi = str_replace('_', ' ', $klasifikasi_id);
+        
+                // Filter berdasarkan kolom keterangan
+                $query->where('keterangan', $formattedKlasifikasi);
+            } else {
+                // Filter untuk klasifikasi dari tabel produk.klasifikasi
+                $query->whereHas('produk.klasifikasi', function ($query) use ($klasifikasi_id) {
+                    $query->where('id', $klasifikasi_id);
+                });
+            }
         }
     
         $stokBarangJadi = $query->orderBy('created_at', 'desc')->get()->groupBy('kode_retur');
@@ -131,11 +112,19 @@ class Laporan_returcilacapController extends Controller
 
          $query->where('retur_barangjadis.toko_id', 6);
 
-        // Filter berdasarkan klasifikasi_id
-        if ($klasifikasi_id) {
-            $query->whereHas('produk', function ($q) use ($klasifikasi_id) {
-                $q->where('klasifikasi_id', $klasifikasi_id);
-            });
+         if ($klasifikasi_id) {
+            if (in_array($klasifikasi_id, ['gagal', 'sampel', 'retur_tukang_sapu', 'sortir'])) {
+                // Konversi underscore ke spasi untuk mencocokkan dengan data di database
+                $formattedKlasifikasi = str_replace('_', ' ', $klasifikasi_id);
+        
+                // Filter berdasarkan kolom keterangan
+                $query->where('keterangan', $formattedKlasifikasi);
+            } else {
+                // Filter untuk klasifikasi dari tabel produk.klasifikasi
+                $query->whereHas('produk.klasifikasi', function ($query) use ($klasifikasi_id) {
+                    $query->where('id', $klasifikasi_id);
+                });
+            }
         }
 
         // Filter berdasarkan tanggal retur
