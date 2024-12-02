@@ -78,7 +78,6 @@ class Retur_tokotegalController extends Controller{
 
     
 
-
 public function store(Request $request)
 {
     $request->validate([
@@ -100,15 +99,19 @@ public function store(Request $request)
     $jumlahs = $request->input('jumlah');
     $keterangans = $request->input('keterangan');
 
+    // Array untuk menampung pesan error
+    $errors = [];
+
     foreach ($produk_ids as $index => $produk_id) {
         $jumlah_yang_dibutuhkan = $jumlahs[$index];
 
         $produk = Produk::find($produk_id);
         if (!$produk) {
-            return redirect()->back()->with('error', 'Produk dengan ID ' . $produk_id . ' tidak ditemukan.');
+            $errors[] = 'Produk tidak ditemukan.';
+            continue;
         }
 
-        $nama_produk_retur = $produk->nama_produk . ' RETUR';
+        $nama_produk = $produk->nama_produk;
 
         // Ambil semua stok yang tersedia untuk produk ini
         $stok_items = Stok_tokotegal::where('produk_id', $produk_id)
@@ -117,7 +120,15 @@ public function store(Request $request)
             ->get();
 
         if ($stok_items->isEmpty()) {
-            return redirect()->back()->with('error', 'Stok untuk produk dengan ID ' . $produk_id . ' tidak ditemukan.');
+            $errors[] = 'Stok untuk produk ' . $nama_produk . ' tidak ditemukan.';
+            continue;
+        }
+
+        // Periksa total stok yang tersedia
+        $total_stok_tersedia = $stok_items->sum('jumlah');
+        if ($total_stok_tersedia < $jumlah_yang_dibutuhkan) {
+            $errors[] = 'Stok untuk produk ' . $nama_produk . ' tidak mencukupi. Total stok tersedia: ' . $total_stok_tersedia;
+            continue;
         }
 
         // Lakukan pengurangan stok
@@ -141,11 +152,6 @@ public function store(Request $request)
             }
         }
 
-        // Jika kebutuhan masih belum terpenuhi setelah semua stok diperiksa
-        if ($sisa_kebutuhan > 0) {
-            return redirect()->back()->with('error', 'Stok untuk produk dengan ID ' . $produk_id . ' tidak mencukupi.');
-        }
-
         // Menyimpan retur dengan status 'posting'
         Retur_tokotegal::create([
             'kode_retur' => $kode,
@@ -161,7 +167,7 @@ public function store(Request $request)
             'kode_retur' => $kode,
             'produk_id' => $produk_id,
             'toko_id' => '2',
-            'nama_produk' => $nama_produk_retur,
+            'nama_produk' => $nama_produk . ' RETUR',
             'status' => 'unpost',
             'jumlah' => $jumlah_yang_dibutuhkan,
             'keterangan' => $keterangans[$index],
@@ -169,9 +175,13 @@ public function store(Request $request)
         ]);
     }
 
+    // Jika ada error, kembalikan semua pesan error
+    if (!empty($errors)) {
+        return redirect()->back()->with('error', implode('<br>', $errors));
+    }
+
     return redirect()->route('retur_tokotegal.index')->with('success', 'Data retur barang berhasil disimpan dan stok berhasil dikurangi.');
 }
-
 
 
 

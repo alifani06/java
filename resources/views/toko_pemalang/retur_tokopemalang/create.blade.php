@@ -59,14 +59,15 @@
                 </div>
             @endif
             @if (session('error'))
-                <div class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <h5>
-                        <i class="icon fas fa-ban"></i> Error!
-                    </h5>
-                    {{ session('error') }}
-                </div>
-            @endif
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <h5>
+                    <i class="icon fas fa-ban"></i> Error!
+                </h5>
+                {!! session('error') !!}
+            </div>
+             @endif
+        
             <div class="card">
                 
                 <!-- /.card-header -->
@@ -149,7 +150,7 @@
                                             </thead>
                                             <tbody>
                                                 @foreach ($produks as $item)
-                                                    {{-- <tr class="pilih-btn" data-id="{{ $item->id }}" data-kode="{{ $item->kode_produk }}" data-nama="{{ $item->nama_produk }}"> --}}
+                                                    {{-- <tr class="pilih-btn" data-id="{{ $item->id }}" data-kode="{{ $item->kode_lama }}" data-nama="{{ $item->nama_produk }}"> --}}
                                                         <tr>
                                                         <td class="text-center">{{ $loop->iteration }}</td>
                                                         <td>{{ $item->kode_lama }}</td>
@@ -158,7 +159,7 @@
                                                         <td class="text-center">
                                                             <!-- Tombol hanya bisa diklik jika stok lebih dari 0 -->
                                                             @if (isset($stokProduk[$item->id]) && $stokProduk[$item->id] > 0)
-                                                                <button type="button" class="btn btn-primary btn-sm pilih-btn" data-id="{{ $item->id }}" data-kode="{{ $item->kode_produk }}" data-nama="{{ $item->nama_produk }}">
+                                                                <button type="button" class="btn btn-primary btn-sm pilih-btn" data-id="{{ $item->id }}" data-kode="{{ $item->kode_lama }}" data-nama="{{ $item->nama_produk }}">
                                                                     <i class="fas fa-plus"></i>
                                                                 </button>
                                                             @else
@@ -269,12 +270,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Fungsi untuk memilih data barang dari modal
-    function getSelectedData(id, kode_produk, nama_produk) {
+    function getSelectedData(id, kode_lama, nama_produk) {
         var urutan = $('#tableProduk').attr('data-urutan');
     
         // Set nilai input pada baris yang sesuai
         $('#produk_id-' + urutan).val(id);
-        $('#kode_produk-' + urutan).val(kode_produk);
+        $('#kode_lama-' + urutan).val(kode_lama);
         $('#nama_produk-' + urutan).val(nama_produk);
     
         $('#tableProduk').modal('hide');
@@ -313,14 +314,14 @@ document.addEventListener('DOMContentLoaded', function() {
  
      function itemPembelian(urutan, key, value = null) {
          var produk_id = '';
-         var kode_produk = '';
+         var kode_lama = '';
          var nama_produk = '';
          var jumlah = '';
          var keterangan = '';
  
          if (value !== null) {
              produk_id = value.produk_id;
-             kode_produk = value.kode_produk;
+             kode_lama = value.kode_lama;
              nama_produk = value.nama_produk;
              jumlah = value.jumlah;
              keterangan = value.keterangan;
@@ -329,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
          var item_pembelian = '<tr id="pembelian-' + urutan + '">';
          item_pembelian += '<td style="width: 70px; font-size:14px" class="text-center" id="urutan-' + urutan + '">' + urutan + '</td>';
          item_pembelian += '<td hidden><div class="form-group"><input type="text" class="form-control" id="produk_id-' + urutan + '" name="produk_id[]" value="' + produk_id + '"></div></td>';
-         item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_produk-' + urutan + '" name="kode_produk[]" value="' + kode_produk + '"></div></td>';
+         item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="kode_lama-' + urutan + '" name="kode_lama[]" value="' + kode_lama + '"></div></td>';
          item_pembelian += '<td onclick="showCategoryModal(' + urutan + ')"><div class="form-group"><input type="text" class="form-control" style="font-size:14px" readonly id="nama_produk-' + urutan + '" name="nama_produk[]" value="' + nama_produk + '"></div></td>';
          item_pembelian += '<td style="width: 150px"><div class="form-group"><input type="number" class="form-control" style="font-size:14px" id="jumlah-' + urutan + '" name="jumlah[]" value="' + jumlah + '" oninput="hitungTotal(' + urutan + ')" onkeydown="handleEnter(event, ' + urutan + ')"></div></td>';
          

@@ -59,14 +59,6 @@ class Retur_tokobanjaranController extends Controller{
             return view('toko_banjaran.retur_tokobanjaran.index', compact('stokBarangJadi'));
     }
 
-    // public function create()
-    // {
-    //     $produks = Produk::all();
-    //     $tokos = Toko::all();
-    //     $klasifikasis = Klasifikasi::all(); // Pastikan ini ada
-    
-    //     return view('toko_banjaran.retur_tokobanjaran.create', compact('produks', 'tokos', 'klasifikasis'));
-    // }
 
     public function create()
 {
@@ -83,96 +75,7 @@ class Retur_tokobanjaranController extends Controller{
     return view('toko_banjaran.retur_tokobanjaran.create', compact('produks', 'tokos', 'klasifikasis', 'stokProduk'));
 }
 
-    
 
-
-  
-//     public function store(Request $request)
-// {
-//     $request->validate([
-//         'produk_id' => 'required|array',
-//         'produk_id.*' => 'exists:produks,id',
-//         'jumlah' => 'required|array',
-//         'jumlah.*' => 'integer|min:1',
-//         'keterangan' => 'required|array',
-//     ]);
-
-//     $kode = $this->kode();
-//     $produk_ids = $request->input('produk_id');
-//     $jumlahs = $request->input('jumlah');
-//     $keterangans = $request->input('keterangan');
-
-//     foreach ($produk_ids as $index => $produk_id) {
-//         $jumlah_yang_dibutuhkan = $jumlahs[$index];
-
-//         $produk = Produk::find($produk_id);
-//         if (!$produk) {
-//             return redirect()->back()->with('error', 'Produk dengan ID ' . $produk_id . ' tidak ditemukan.');
-//         }
-
-//         $nama_produk_retur = $produk->nama_produk . ' RETUR';
-
-//         // Ambil semua stok yang tersedia untuk produk ini
-//         $stok_items = Stok_tokobanjaran::where('produk_id', $produk_id)
-//             ->where('jumlah', '>', 0)
-//             ->orderBy('jumlah', 'asc')
-//             ->get();
-
-//         if ($stok_items->isEmpty()) {
-//             return redirect()->back()->with('error', 'Stok untuk produk dengan ID ' . $produk_id . ' tidak ditemukan.');
-//         }
-
-//         // Lakukan pengurangan stok
-//         $sisa_kebutuhan = $jumlah_yang_dibutuhkan;
-
-//         foreach ($stok_items as $stok) {
-//             if ($sisa_kebutuhan <= 0) {
-//                 break; // Jika kebutuhan sudah terpenuhi, hentikan pengurangan stok
-//             }
-
-//             if ($stok->jumlah >= $sisa_kebutuhan) {
-//                 // Jika stok cukup untuk memenuhi seluruh sisa kebutuhan
-//                 $stok->jumlah -= $sisa_kebutuhan;
-//                 $stok->save();
-//                 $sisa_kebutuhan = 0; // Kebutuhan terpenuhi
-//             } else {
-//                 // Jika stok tidak cukup, kurangi stok yang ada dan lanjutkan ke item berikutnya
-//                 $sisa_kebutuhan -= $stok->jumlah;
-//                 $stok->jumlah = 0;
-//                 $stok->save();
-//             }
-//         }
-
-//         // Jika kebutuhan masih belum terpenuhi setelah semua stok diperiksa
-//         if ($sisa_kebutuhan > 0) {
-//             return redirect()->back()->with('error', 'Stok untuk produk dengan ID ' . $produk_id . ' tidak mencukupi.');
-//         }
-
-//         // Menyimpan retur dengan status 'posting'
-//         Retur_tokobanjaran::create([
-//             'kode_retur' => $kode,
-//             'produk_id' => $produk_id,
-//             'toko_id' => '1',
-//             'status' => 'unpost', // Ubah status menjadi posting
-//             'jumlah' => $jumlah_yang_dibutuhkan,
-//             'keterangan' => $keterangans[$index],
-//             'tanggal_input' => Carbon::now('Asia/Jakarta'),
-//         ]);
-
-//         Retur_barangjadi::create([
-//             'kode_retur' => $kode,
-//             'produk_id' => $produk_id,
-//             'toko_id' => '1',
-//             'nama_produk' => $nama_produk_retur,
-//             'status' => 'unpost', // Ubah status menjadi posting
-//             'jumlah' => $jumlah_yang_dibutuhkan,
-//             'keterangan' => $keterangans[$index],
-//             'tanggal_retur' => Carbon::now('Asia/Jakarta'),
-//         ]);
-//     }
-
-//     return redirect()->route('retur_tokobanjaran.index')->with('success', 'Data retur barang berhasil disimpan dan stok berhasil dikurangi.');
-// }
 
 public function store(Request $request)
 {
@@ -195,15 +98,19 @@ public function store(Request $request)
     $jumlahs = $request->input('jumlah');
     $keterangans = $request->input('keterangan');
 
+    // Array untuk menampung pesan error
+    $errors = [];
+
     foreach ($produk_ids as $index => $produk_id) {
         $jumlah_yang_dibutuhkan = $jumlahs[$index];
 
         $produk = Produk::find($produk_id);
         if (!$produk) {
-            return redirect()->back()->with('error', 'Produk dengan ID ' . $produk_id . ' tidak ditemukan.');
+            $errors[] = 'Produk tidak ditemukan.';
+            continue;
         }
 
-        $nama_produk_retur = $produk->nama_produk . ' RETUR';
+        $nama_produk = $produk->nama_produk;
 
         // Ambil semua stok yang tersedia untuk produk ini
         $stok_items = Stok_tokobanjaran::where('produk_id', $produk_id)
@@ -212,7 +119,15 @@ public function store(Request $request)
             ->get();
 
         if ($stok_items->isEmpty()) {
-            return redirect()->back()->with('error', 'Stok untuk produk dengan ID ' . $produk_id . ' tidak ditemukan.');
+            $errors[] = 'Stok untuk produk ' . $nama_produk . ' tidak ditemukan.';
+            continue;
+        }
+
+        // Periksa total stok yang tersedia
+        $total_stok_tersedia = $stok_items->sum('jumlah');
+        if ($total_stok_tersedia < $jumlah_yang_dibutuhkan) {
+            $errors[] = 'Stok untuk produk ' . $nama_produk . ' tidak mencukupi. Total stok tersedia: ' . $total_stok_tersedia;
+            continue;
         }
 
         // Lakukan pengurangan stok
@@ -236,11 +151,6 @@ public function store(Request $request)
             }
         }
 
-        // Jika kebutuhan masih belum terpenuhi setelah semua stok diperiksa
-        if ($sisa_kebutuhan > 0) {
-            return redirect()->back()->with('error', 'Stok untuk produk dengan ID ' . $produk_id . ' tidak mencukupi.');
-        }
-
         // Menyimpan retur dengan status 'posting'
         Retur_tokobanjaran::create([
             'kode_retur' => $kode,
@@ -256,7 +166,7 @@ public function store(Request $request)
             'kode_retur' => $kode,
             'produk_id' => $produk_id,
             'toko_id' => '1',
-            'nama_produk' => $nama_produk_retur,
+            'nama_produk' => $nama_produk . ' RETUR',
             'status' => 'unpost',
             'jumlah' => $jumlah_yang_dibutuhkan,
             'keterangan' => $keterangans[$index],
@@ -264,8 +174,15 @@ public function store(Request $request)
         ]);
     }
 
+    // Jika ada error, kembalikan semua pesan error
+    if (!empty($errors)) {
+        return redirect()->back()->with('error', implode('<br>', $errors));
+    }
+
     return redirect()->route('retur_tokobanjaran.index')->with('success', 'Data retur barang berhasil disimpan dan stok berhasil dikurangi.');
 }
+
+
 
 
 
