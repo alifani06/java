@@ -27,7 +27,7 @@ class BarangController extends Controller
         // return view('admin.barang.index', compact('barangs'));
     }
 
-   
+
 
 
 
@@ -46,56 +46,56 @@ class BarangController extends Controller
 
     public function create()
     {
-        
+
         $klasifikasis = Klasifikasi::all();
         $subs = Subklasifikasi::all();
         $subs1 = Subsub::all();
-        return view('admin/barang.create',compact('klasifikasis','subs', 'subs1'));
+        return view('admin/barang.create', compact('klasifikasis', 'subs', 'subs1'));
     }
 
-public function store(Request $request)
-{
-    $validator = Validator::make(
-        $request->all(),
-        [
-            // 'kode_barang' => 'required',
-            'keterangan' => 'required',
-            'jumlah' => 'required',
-            'harga' => 'required',
-            
-            'subsub_id' => 'required',
-        ],
-        [
-            // 'kode_barang.required' => 'Masukkan kode barang',
-            'keterangan.required' => 'Masukkan keterangan',
-            'jumlah.required' => 'Masukkan jumlah',
-            'harga.required' => 'Masukkan harga',
-           
-            'subsub_id.required' => 'Masukkan subsub',
-        ]
-    );
+    public function store(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                // 'kode_barang' => 'required',
+                'keterangan' => 'required',
+                'jumlah' => 'required',
+                'harga' => 'required',
 
-    if ($validator->fails()) {
-        return redirect()->back()->withErrors($validator)->withInput();
+                'subsub_id' => 'required',
+            ],
+            [
+                // 'kode_barang.required' => 'Masukkan kode barang',
+                'keterangan.required' => 'Masukkan keterangan',
+                'jumlah.required' => 'Masukkan jumlah',
+                'harga.required' => 'Masukkan harga',
+
+                'subsub_id.required' => 'Masukkan subsub',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $kode = $this->kode();
+        $total = $request->harga - ($request->harga * $request->diskon / 100);
+
+        $barang = new Barang();
+        $barang->kode_barang = $kode; // Generate and assign kode_barang
+        $barang->qrcode_barang = 'https://javabakery.id/barang/' . $kode; // Generate and assign qrcode_barang
+        $barang->keterangan = $request->keterangan;
+        $barang->jumlah = $request->jumlah;
+        $barang->harga = $request->harga;
+        $barang->diskon = $request->diskon;
+        $barang->total = $total;
+        $barang->subsub_id = $request->subsub_id;
+
+        $barang->save();
+
+        return redirect('admin/barang')->with('success', 'Berhasil menambahkan barang');
     }
-
-    $kode = $this->kode();
-    $total = $request->harga - ($request->harga * $request->diskon / 100);
-
-    $barang = new Barang();
-    $barang->kode_barang = $kode; // Generate and assign kode_barang
-    $barang->qrcode_barang = 'https://javabakery.id/barang/' . $kode; // Generate and assign qrcode_barang
-    $barang->keterangan = $request->keterangan;
-    $barang->jumlah = $request->jumlah;
-    $barang->harga = $request->harga;
-    $barang->diskon = $request->diskon;
-    $barang->total = $total;
-    $barang->subsub_id = $request->subsub_id;
-
-    $barang->save();
-
-    return redirect('admin/barang')->with('success', 'Berhasil menambahkan barang');
-}
 
     public function kode()
     {
@@ -127,7 +127,7 @@ public function store(Request $request)
         $validator = Validator::make(
             $request->all(),
             [
-              
+
                 'jumlah' => 'required',
                 'diskon' => 'required',
                 'harga' => 'required',
@@ -145,7 +145,7 @@ public function store(Request $request)
         }
 
         $barang = Barang::findOrFail($id);
-        
+
 
         Barang::where('id', $id)->update([
             'jumlah' => $request->jumlah,

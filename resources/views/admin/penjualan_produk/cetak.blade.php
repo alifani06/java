@@ -79,7 +79,7 @@
             padding: 5px;
             font-size: 8px;
         }
-     
+
         .float-right {
             text-align: right;
             margin-top: 10px;
@@ -102,7 +102,7 @@
             margin-top: -24px;
             flex-direction: column;
         }
-       
+
         .detail-info .penjualan{
             display: flex;
             margin-top: 2px;
@@ -150,12 +150,12 @@
         }
         .pelanggan p span {
             margin-top: 1px;
-            
+
         }
         .kasir p span {
             margin-top: 1px;
         }
-        
+
         .tanggal p span {
             margin-top: 3px;
         }
@@ -212,7 +212,7 @@
                         <p>
                             <span style="min-width: 100px; display: inline-flex; align-items: center;">Pelanggan</span>
                             <span style="min-width: 50px; display: inline-flex; align-items: center;">
-                                : 
+                                :
                                 @if ($penjualan->kode_pelanggan && $penjualan->nama_pelanggan)
                                     {{ $penjualan->kode_pelanggan }} / {{ $penjualan->nama_pelanggan }}
                                 @else
@@ -223,7 +223,6 @@
                     </div>
                 @endif
 
-                
                 @if($penjualan->detailpenjualanproduk->isEmpty())
                     <p>Tidak ada detail penjualan produk.</p>
                 @else
@@ -276,8 +275,8 @@
                                     </td>
                                 @endif
                             </tr>
-                        
-                        
+
+
                         <tr>
                             <td colspan="5" style="text-align: right; font-size: 8px;"><strong>Total </strong></td>
                             <td>
@@ -296,47 +295,47 @@
                                     {{ Str::startsWith($penjualan->kembali, 'Rp') ? $penjualan->kembali : 'Rp ' . number_format((float)$penjualan->kembali, 0, ',', '.') }}
                                 </td>                            </tr>
                         @elseif($penjualan->metode_bayar == 'mesinedc' || $penjualan->metode_bayar == 'gobiz')
-                            
+
                         @endif
                     </tbody>
                 </table>
-                
-                
-                
+
+
+
                 @endif
             </div>
-            
+
             @if(!is_null($penjualan->catatan))
             <div class="catatan">
                 <label>Catatan:</label>
                 <p>{{$penjualan->catatan}}</p>
             </div>
              @endif
-             
+
              @if(preg_replace('/[^0-9]/', '', $penjualan->sub_total) < preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli))
              <div class="hemat">
                  <label>Anda telah hemat: </label>
                  <span><strong>{{ 'Rp. ' . number_format(preg_replace('/[^0-9]/', '', $penjualan->sub_totalasli) - preg_replace('/[^0-9]/', '', $penjualan->sub_total), 0, ',', '.') }}</strong></span>
              </div>
              @endif
-             
-         
+
+
             <div class="terimakasih">
                 <p>Untuk pemesanan, kritik dan saran Hubungi.082136638003.</p>
             </div>
 
             <div class="terimakasihd" style="text-align: left; margin-top: 2px ; font-size: 10px; font-style: italic" >
-                <p>Barang yang sudah dibeli tidak bisa dikembalikan atau ditukar.</p><br> 
+                <p>Barang yang sudah dibeli tidak bisa dikembalikan atau ditukar.</p><br>
             </div>
             <div class="terimakasihd" style="text-align: center; margin-top: -35px" >
-                <p>Terimakasih atas kunjungannya</p><br> 
+                <p>Terimakasih atas kunjungannya</p><br>
             </div>
             <div class="qr" style="display: flex; justify-content: center; align-items: center; margin-top: 10px; margin-left: 4px">
                 <div style="text-align: center;">
                     {!! DNS2D::getBarcodeHTML($penjualan->qrcode_penjualan, 'QRCODE', 1.5, 1.5) !!}
                 </div>
-            </div> 
-            
+            </div>
+
             <div class="d-flex justify-content-between">
                 <div>
                     <a href="{{ url('admin/penjualan_produk') }}" class="btn btn-primary btn-sm">
@@ -350,7 +349,7 @@
                 </div>
             </div>
         </div>
-    
+
     </body>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script>
@@ -377,4 +376,4 @@
     });
 </script>
     </html>
-    
+
